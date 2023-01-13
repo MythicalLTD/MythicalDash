@@ -1,7 +1,7 @@
 {
     "sites": [
         {
-            "url": "http://localhost",
+            "url": "http://example.com",
             "reason": "This is for testing"
         },
         {
