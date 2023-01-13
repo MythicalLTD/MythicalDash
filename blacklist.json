@@ -1,0 +1,16 @@
+{
+    "sites": [
+        {
+            "url": "https://localhost/lop",
+            "reason": "This is for testing"
+        },
+        {
+            "url": "http://example2.com",
+            "reason": "Violates company policy"
+        },
+        {
+            "url": "http://example3.com",
+            "reason": "Spam website"
+        }
+    ]
+}
