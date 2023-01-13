@@ -1,7 +1,7 @@
 {
     "sites": [
         {
-            "url": "https://localhost/lop",
+            "url": "http://localhost",
             "reason": "This is for testing"
         },
         {
