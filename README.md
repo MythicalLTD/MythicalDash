@@ -1,6 +1,6 @@
 # AtoroDash
 
-<p>Open Source Clien area for Pterodactyl & HestiaCP/CyberPanel. Made in PHP, JS, CSS</p>
+<p>Open Source Client area for Pterodactyl & HestiaCP/CyberPanel. Made in PHP, JS, CSS</p>
 
 ## Features
 - Coin Earning
