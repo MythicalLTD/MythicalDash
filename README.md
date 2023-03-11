@@ -8,7 +8,7 @@
 - User (Creation, Delete, Edit)
 - Databases
 - Ports
-- Webhosting Panel Soon
+
 
 Question?
-Discord - Tye#6365
+Discord - Tye#6365 / NaysKutzu#5375
