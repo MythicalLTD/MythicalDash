@@ -1,0 +1,19 @@
+{
+    "name": "mythical/dash",
+    "description": "A fully customizable shared-resources based dashboard for pterodactyl hosting services",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mythical\\Dash\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "MythicalSystems"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.7"
+    }
+}
