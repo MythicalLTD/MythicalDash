@@ -35,7 +35,6 @@ else
   echo '<script>window.location.replace("/auth/login");</script>';
 }
 
-$user = $_SESSION['user'];
 if (!is_numeric($_GET["server"])) {
     $_SESSION['error'] = "Server id is invalid.";
           echo '<script>window.location.replace("/");</script>';
@@ -55,10 +54,7 @@ if ($ownsServer->num_rows == 0) {
 */
 $serverInformation = $ownsServer->fetch_object();
 if ($serverInformation->type == 2) {
-    $userdb = mysqli_query($cpconn, "SELECT * FROM users WHERE user_id = '" . mysqli_real_escape_string($cpconn, $_SESSION["uid"]) . "'")->fetch_object();
-    $current_qc = $userdb->coins;
-    $new_qc = $getsettingsdb["vipqueue"] + $current_qc;
-    mysqli_query($cpconn, "UPDATE users SET coins = '$new_qc' WHERE user_id = '" . mysqli_real_escape_string($cpconn, $_SESSION["uid"]) . "'");
+    //Some old code from premium queue that was not working
 }
 if (mysqli_query($cpconn, "DELETE FROM servers_queue WHERE id = '" . mysqli_real_escape_string($cpconn, $_GET["server"]) . "'")) {
           echo '<script>window.location.replace("/");</script>';

@@ -33,7 +33,6 @@ else
   session_destroy();
   echo '<script>window.location.replace("/auth/login");</script>';
 }
-$user = $_SESSION['user'];
 if (!is_numeric($_GET["server"])) {
     $_SESSION['error'] = "Server id is invalid.";
           echo '<script>window.location.replace("/");</script>';

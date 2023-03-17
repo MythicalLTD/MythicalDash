@@ -1,7 +1,6 @@
 <?php 
 require("../core/require/page.php");
 $getsettingsdb = $cpconn->query("SELECT * FROM settings")->fetch_array();
-$user = $_SESSION['user'];
 $pgetpid = $cpconn->query("SELECT * FROM users WHERE user_id = '" . mysqli_real_escape_string($cpconn, $_SESSION["uid"]) . "'")->fetch_array();
 $serverid = $_GET['id'];
 

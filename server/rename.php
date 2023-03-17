@@ -146,95 +146,271 @@ if (isset($_POST['submit'])) {
 }
 
 ?>
-<div class="header bg-primary pb-6">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-white d-inline-block mb-0">Rename Server </h6>
-                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                            <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Servers</li>
-                        </ol>
-                    </nav>
+<head>
+    <title><?= $getsettingsdb['name'] ?> | Edit</title>
+    <?php include('../core/imports/header.php');?>
+</head>
+<body data-background-color="dark">
+    <div class="wrapper">
+        <div class="main-header">
+            <div class="logo-header" data-background-color="dark2">
+                <a href="/" class="logo">
+                    <p style="color:white;" class="navbar-brand"><?= $getsettingsdb["name"]?></p>
+                </a>
+                <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
+                    data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon">
+                        <i class="icon-menu"></i>
+                    </span>
+                </button>
+                <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+                <div class="nav-toggle">
+                    <button class="btn btn-toggle toggle-sidebar">
+                        <i class="icon-menu"></i>
+                    </button>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<input id="node" name="node" type="hidden" value="">
+            <nav class="navbar navbar-header navbar-expand-lg" data-background-color="dark">
 
-<div class="container-fluid mt--6">
-<div class="app-content content">
-    <div class="content-wrapper">
-        <div class="content-header row">
+                <div class="container-fluid">
+                    <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+                        <li class="nav-item dropdown hidden-caret">
+                            <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"
+                                aria-expanded="false">
+                                <div class="avatar-sm">
+                                    <img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle">
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user animated fadeIn">
+                                <div class="dropdown-user-scroll scrollbar-outer">
+                                    <li>
+                                        <div class="user-box">
+                                            <div class="avatar-lg"><img src="<?= $userdb['avatar']?>"
+                                                    alt="image profile" class="avatar-img rounded"></div>
+                                            <div class="u-text">
+                                                <h4><?= $userdb['username']?></h4>
+                                                <p class="text-muted"><?= $userdb['role']?></p>
+                                                <p class="text-muted">Coins: <?= $userdb['coins']?></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="/regen">Reset Password</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="/auth/logout">Logout</a>
+                                    </li>
+                                </div>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-        <div class="content-body">
-            <section id="dashboard-analytics">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="mb-0 text-center">Change server "<?= htmlspecialchars($currentName) ?>"</h4>
-                                <h5 class="mb-0 text-center">Want to change the server resources?  <a href="manage?id=<?= $serverid ?>">Do it right here</a></h5>
-                            </div>
-                            <div class="card-body">
-                                <form action="" method="post">
-                                    <label for="svname">Name:</label>
-                                    <input type="text" class="form-control" name="svname" value="<?= $currentName ?>" required>
-                                    <br>
-                                    <button class="btn btn-lg btn-primary" style="width:100%;" name="submit" type="submit">Rename Server</button>
-                                </form>
-                            </div>
+        <div class="sidebar sidebar-style-2" data-background-color="dark2">
+            <div class="sidebar-wrapper scrollbar scrollbar-inner">
+                <div class="sidebar-content">
+                    <div class="user">
+                        <div class="avatar-sm float-left mr-2">
+                            <img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle">
+                        </div>
+                        <div class="info">
+                            <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+                                <span>
+                                    <?= $userdb['username']?>
+
+                                    <span class="user-level"><?= $userdb['role']?></span>
+
+                                </span>
+                            </a>
                         </div>
                     </div>
+                    <ul class="nav nav-primary">
+                        <li class="nav-item">
+                            <a href="/" class="collapsed">
+                                <i class="fas fa-home"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a href="/server/create" class="collapsed">
+                                <i class="fas fa-plus-square"></i>
+                                <p>New Server</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/store" class="collapsed">
+                                <i class="fas fa-shopping-bag"></i>
+                                <p>Shop</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item ">
+                            <a data-toggle="collapse" href="#earn">
+                                <i class="fas fa-coins"></i>
+                                <p>Earn</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse" id="earn">
+                                <ul class="nav nav-collapse">
+                                    <li class="nav-item ">
+                                        <a href="/earn/afk" class="collapsed">
+                                            <p class="">AFK</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/earn/linkvertise" class="collapsed">
+                                            <p>Linkvertise</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/earn/redeem" class="collapsed">
+                                            <p>Redeem</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-section">
+                            <span class="sidebar-mini-icon">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </span>
+                            <h4 class="text-section">Links</h4>
+                        </li>
+                        <?php 
+                        if ($getsettingsdb['enable_mainwebsite'] == "false")
+                        {
+
+                        }
+                        else
+                        {
+                            ?>
+                        <li class="nav-item">
+                            <a href="<?= $getsettingsdb['website']?>" class="collapsed">
+                                <i class="bi bi-house-fill"></i>
+                                <p>Website</p>
+                            </a>
+                        </li>
+                        <?php 
+                            
+                        }
+                        
+                        if ($getsettingsdb['enable_discord'] == "false")
+                        {
+
+                        }
+                        else
+                        {
+                            ?>
+                        <li class="nav-item">
+                            <a href="<?= $getsettingsdb['discordserver']?>" class="collapsed">
+                                <i class="bi bi-discord"></i>
+                                <p>Discord</p>
+                            </a>
+                        </li>
+                        <?php
+                        }
+
+                        if ($getsettingsdb['enable_phpmyadmin'] == "false")
+                        {
+
+                        }
+                        else
+                        {
+                            
+                            ?>
+                            <li class="nav-item">
+                            <a href="<?= $getsettingsdb['phpmyadmin']?>" class="collapsed">
+                                <i class="bi bi-server"></i>
+                                <p>PhpMyAdmin</p>
+                            </a>
+                            </li>
+                            <?php
+                        }
+                        if ($getsettingsdb['enable_status'] == "false")
+                        {
+
+                        }
+                        else
+                        {
+                            ?>
+                            <li class="nav-item">
+                            <a href="<?= $getsettingsdb['statuspage']?>" class="collapsed">
+                                <i class="fas fa-signal"></i>
+                                <p>Status</p>
+                            </a>
+                            </li>
+                            <?php
+                        }
+                        ?>
+
+                        <li class="nav-item">
+                            <a href="<?= $getsettingsdb['ptero_url']?>" class="collapsed">
+                                <i class="fas fa-external-link-square-alt"></i>
+                                <p>Panel</p>
+                            </a>
+                        </li>
+
+
+                        <li class="nav-section">
+                            <span class="sidebar-mini-icon">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </span>
+                            <h4 class="text-section">Administrative Overview</h4>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            </section>
         </div>
-        <div class="col-md-10">
-    </div>
-</div>
-
-<!-- END: Content-->
-
-<div class="sidenav-overlay"></div>
-<div class="drag-target"></div>
-
-<!-- BEGIN: Footer-->
-<footer class="footer pt-0">
-        <div class="row align-items-center justify-content-lg-between">
-            <div class="col-lg-6">
-                <div class="copyright text-center  text-lg-left  text-muted">
-                    Copyright &copy;2022-2023 <a href="https://github.com/MythicalLTD/MythicalDash" class="font-weight-bold ml-1" target="_blank">ShadowDash x MythicalDash </a> - Theme by <a href="https://creativetim.com" target="_blank">Creative Tim</a>
-                </div>
+        <div class="main-panel">
+            <div class="container">
+                <div class="content">
+                    <div class="page-inner">
+                        <div class="mt-2 mb-4">
+                            <h2 class="text-white pb-2">Welcome back, <?= $userdb['username']?>!</h2>
+                        </div>
+                        <div class="row">
+                        <?php include('../core/imports/resources.php');?>
+                        </div>
+                        <?php if (isset($_SESSION["error"])) {
+            ?>
+            <div class="alert alert-danger text-danger" role="alert">
+                <strong>Error!</strong> <?= $_SESSION["error"] ?>
             </div>
-            <div class="col-lg-6">
-                <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                    <li class="nav-item">
-                        <a href="<?= $getsettingsdb["website"] ?>" class="nav-link" target="_blank"> Website</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= $getsettingsdb["statuspage"] ?>" class="nav-link" target="_blank">Uptime / Status</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= $getsettingsdb["privacypolicy"] ?>" class="nav-link" target="_blank">Privacy policy</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= $getsettingsdb["termsofservice"] ?>" class="nav-link" target="_blank">Terms of service</a>
-                    </li>
-                </ul>
+            <?php
+            unset($_SESSION["error"]);
+        }
+        ?>
+        <?php
+        if (isset($_SESSION["success"])) {
+            ?>
+            <div class="alert alert-success text-danger" role="alert">
+                <strong>Success!</strong> <?= $_SESSION["success"] ?>
             </div>
-        </div>
-    </footer>
-  <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/js/jquery.min.js"></script>
-  <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/js/bootstrap.bundle.min.js"></script>
-  <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/js/js.cookie.js"></script>
-  <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/js/jquery.scrollbar.min.js"></script>
-  <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/js/jquery-scrollLock.min.js"></script>
-  <!-- Argon JS -->
-  <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/js/argon.js?v=1.2.0"></script>
+            <?php
+            unset($_SESSION["success"]);
+        }
+        ?>
+         <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Rename Server</div>
+                                </div>
+                                <div class="card-body">
+                                    <form method="POST">
+                                        <p>Name: <b><?= htmlspecialchars($currentName) ?></b></p>
+                                        <p>New name:&nbsp;&nbsp;&nbsp;<input class="form-control" id="svname" name="svname" value="<?= $currentName ?>"></p>
+    
+                                        <button name="submit" type="submit" class="btn btn-primary" style="background-color: #33404D;">Modify</button>
+                                        <br>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+					</div>
+				</div>
+			</div>
+    <?php include('../core/imports/footer.php');?>
 </body>
 
 </html>
