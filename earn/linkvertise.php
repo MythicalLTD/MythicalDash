@@ -1,12 +1,34 @@
 <?php 
+
 session_start();
 
 require("../core/require/sql.php");
 require("../core/require/addons.php");
-
 $userdb = $cpconn->query("SELECT * FROM users WHERE user_id = '" . mysqli_real_escape_string($cpconn, $_SESSION["uid"]) . "'")->fetch_array();
 $getperms = $cpconn->query("SELECT * FROM roles WHERE name= '". $userdb['role']. "'")->fetch_array();
 $getsettingsdb = $cpconn->query("SELECT * FROM settings")->fetch_array();
+
+if(isset($_GET['key'])) {
+  $key = $_GET['key'];
+  $result = mysqli_query($cpconn, "SELECT * FROM adfoc WHERE sckey='$key'");
+  if (mysqli_num_rows($result) > 0) {
+      $row = mysqli_fetch_assoc($result);
+      if ($row['claim'] == "true") {
+          echo "Error: Key has already been used.";
+      } else {
+          $usr_coins = $userdb['coins'];
+          $newcoins = $usr_coins + $getsettingsdb['adfoc_coins'];
+          $cpconn->query("UPDATE `users` SET `coins` = '" . $newcoins . "' WHERE `users`.`user_id` = " . $_SESSION["uid"]);
+          echo "Success: Key is valid.";
+          $cpconn->query("DELETE FROM adfoc WHERE sckey='$key'");
+          echo '<script>window.location.replace("/");</script>';
+      }
+  } else {
+      echo "Error: Key not found.";
+  }
+  mysqli_close($cpconn);
+}
+
 if ($getsettingsdb['disable_earning'] == "true")
 {
     echo '<script>window.location.replace("/");</script>';
@@ -180,7 +202,7 @@ else
         $linkid = $genid;
         mysqli_query($cpconn, "INSERT INTO `adfoc` (`sckey`) VALUES ('".$linkid."');");
         mysqli_close($cpconn);
-        $url = $getsettingsdb['proto'].$_SERVER['SERVER_NAME']."/api/adfoc/getcoins?key=".$linkid;
+        $url = $getsettingsdb['proto'].$_SERVER['SERVER_NAME']."/earn/linkvertise?key=".$linkid;
         echo '
         <a href="'.$url.'"><button type="button" name="button">Continue</button></a>
         ';

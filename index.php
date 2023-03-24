@@ -394,7 +394,6 @@ else
                                                         </div>
                                                     </th>
                                                     <td>
-                                                        <img src="<?= $location["icon"] ?>" width="20" />
                                                         <?= $location["name"] ?>
                                                     </td>
                                                     <td>
@@ -405,7 +404,6 @@ else
                                                                 <br />
                                                     </td>
                                                     <td>
-                                                        <img src="<?= $egg["icon"] ?>" height="20" />
                                                         <?= $egg["name"] ?>
                                                     </td>
                                                     <td>
@@ -442,7 +440,6 @@ else
                                                         </div>
                                                     </th>
                                                     <td>
-                                                        <img src="<?= $location["icon"] ?>" width="20" />
                                                         <?= $location["name"] ?>
                                                     </td>
                                                     <td>
@@ -457,7 +454,6 @@ else
                                         ?>
                                                     </td>
                                                     <td>
-                                                        <img src="<?= $egg["icon"] ?>" height="20" />
                                                         <?= $egg["name"] ?>
                                                     </td>
                                                     <td>

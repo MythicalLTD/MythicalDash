@@ -17,7 +17,7 @@ if (!$cpconn->ping()) {
 
 if(isset($_POST['reg_user']))
 {
-    $referral = file_get_contents($getsettingsdb["proto"] . $_SERVER['SERVER_NAME'] . "/api/tools/randompassword?length=5");
+    //$referral = file_get_contents($getsettingsdb["proto"] . $_SERVER['SERVER_NAME'] . "/api/tools/randompassword?length=5");
     $username = mysqli_real_escape_string($cpconn, $_POST['username']);
     $first_name = mysqli_real_escape_string($cpconn, $_POST['first_name']);
     $last_name = mysqli_real_escape_string($cpconn, $_POST['last_name']);
@@ -156,9 +156,9 @@ if(isset($_POST['reg_user']))
       die();
     }
     $cpconn->query("INSERT INTO login_logs (ipaddr, userid) VALUES ('$ip_addres', '$usr_id')");
-    if (!mysqli_query($cpconn, "INSERT INTO referral_codes (uid, referral) VALUES ('$usr_id', '$referral')")) {
-      echo '<script>window.location.replace("/auth/login");</script>';
-    }
+    //if (!mysqli_query($cpconn, "INSERT INTO referral_codes (uid, referral) VALUES ('$usr_id', '$referral')")) {
+    //  echo '<script>window.location.replace("/auth/login");</script>';
+    //}
 
     //if (isset($_POST['r_code'])) {
     //    $r = mysqli_query($cpconn, "SELECT * FROM referral_codes WHERE referral = '" . mysqli_real_escape_string($cpconn, $_POST['r_code']) . "'")->fetch_object();
@@ -326,7 +326,6 @@ if (isset($_SESSION["error"])) {
                                     class="btn btn-primary w-100 fw-bold">Sign Up</button>
                             </div>
                         </div>
-                        <br><br><br>
                     </div>
                 </form>
             </div>
