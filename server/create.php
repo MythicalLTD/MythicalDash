@@ -1,4 +1,5 @@
-<?php
+<?php 
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -16,531 +17,329 @@ else
     $_SESSION['error'] = "You are not allowed to create servers";
     die;
 }
-$userdb = mysqli_query($cpconn, "SELECT * FROM users where user_id = '". $_SESSION["uid"]. "'")->fetch_object();
-
+//$userdb = mysqli_query($cpconn, "SELECT * FROM users where user_id = '". $_SESSION["uid"]. "'")->fetch_object();
+$userdb = $cpconn->query("SELECT * FROM users WHERE user_id = '" . mysqli_real_escape_string($cpconn, $_SESSION["uid"]) . "'")->fetch_array();
 
 ?>
-<!-- Header -->
-<div class="header bg-primary pb-6">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-white d-inline-block mb-0">Create a server</h6>
-                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                            <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Create a new server</li>
-                        </ol>
-                    </nav>
-                </div>
-                <div class="col-lg-6 col-5 text-right">
-                    <button class="btn btn-sm btn-neutral" id="chksrvslots" onClick="seeServerSlots();">Only check server slots</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<input id="node" name="node" type="hidden" value="">
-<!-- Page content -->
-<div class="container-fluid mt--6">
-    <div class="row justify-content-center">
-    <div class="col-md-12">
-            </div>
-        <div class="col-lg-8 card-wrapper">
-            <div class="card" id="stepsCard">
-                <div class="card-header">
-                    <h3 class="mb-0"><img src="https://i.imgur.com/F8TP5Tx.png" width="30"> Create a new server</h3>
-                </div>
-                <div class="card-body">
-                <div class="progress-wrapper">
-                    <div class="progress-info">
-                        <div class="progress-label">
-                            <span id="currentStep">Step 1/3</span>
-                        </div>
-                        <div class="progress-percentage">
-                            <span id="stepPercentage">33%</span>
-                        </div>
-                    </div>
-                    <div class="progress" id="progressColor">
-                        <div id="stepProgress" class="progress-bar bg-primary" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%;"></div>
-                    </div>
-                </div>
-                </div>
-            </div>
-            <!-- Alerts -->
-            <?php
-            if (isset($_SESSION["success"])) {
-                echo '<div class="alert alert-success" role="alert"><strong>Success!</strong> ' . $_SESSION["success"] . '</div>';
-                unset($_SESSION["success"]);
-            }
-            ?>
-            <?php
-            if (isset($_SESSION["error"])) {
-                echo '<div class="alert alert-danger" role="alert"><strong>Error!</strong> ' . $_SESSION["error"] . '</div>';
-                unset($_SESSION["error"]);
-            }
-            ?>
-            
-        </div>
-            <div id="alert"></div>
-            <!--
-                LOADING CARD
-            --->
-            <div class="card" id="loadingCard" style="display: none;">
-                <div class="card-header">
-                    <h4 class="card-title"></h4>
-                </div>
-                <div class="card-content collapse show" aria-expanded="true">
-                    <div class="card-body">
-                        <p class="card-text">
-                        <center>
-                            <h3>
-                                <img src="https://i.imgur.com/UxVBmZl.png" /><br/>
-                                Please wait
-                                <br/><br/>
-                                <img src="https://assets.mythicalnodes.xyz/mythicaldash/img/loading.gif" width="64">
-                            </h3>
-                        </center>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <!--
-                STEP 1
-            --->
-            <div class="card" id="step1">
-                <div class="card-header">
-                    <h4 class="card-title">Set your server info and specs.</h4>
-                </div>
-                <div class="card-content collapse show" aria-expanded="true">
-                    <div class="card-body">
-                        <p class="card-text">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Server name</label>
-                            <input type="text" id="name" name="name" class="form-control" placeholder="Awesome server" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="memory" class="form-label">Amount of RAM (In MB)</label>
-                            <input type="number" id="memory" name="memory" class="form-control memory" value="<?= floor($userdb->memory/$userdb->server_limit) ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="cores" class="form-label">CPU limit (In %)</label>
-                            <input type="number" id="cores" name="cores" class="form-control cores" value="<?= floor($userdb->cpu/$userdb->server_limit) ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="disk" class="form-label">Amount of disk (In MB)</label>
-                            <input type="number" id="disk" name="disk" class="form-control disk" value="<?= floor($userdb->disk_space/$userdb->server_limit) ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="ports" class="form-lavel">Additional Ports</label>
-                            <input type="number" id="ports" name="ports" class="form-control ports" value="0" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="databases" class="form-label">Databases</label>
-                            <input type="number" id="databases" name="databases" class="form-control databases" value="0" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="backups" class="form-label">Backups</label>
-                            <input type="number" id="backups" name="backups" class="form-control backups" value="0" required>
-                        </div>
-                        </p>
-                        <p><small>By proceeding to the next step, you agree to our <a href="<?= $getsettingsdb["termsofservice"] ?>" target="_blank">terms and conditions</a>, and our <a href="<?= $getsettingsdb["privacypolicy"] ?>">privacy policy</a>.</small></p>
-                        <button class="btn btn-primary" id="step1btn" onClick="nextStep();">Next »</button>
-                    </div>
-                </div>
-            </div>
-            <!---
-                Step 2
-            --->
-            <div class="card" id="step2" style="display: none;">
-                <div class="card-header">
-                    <h4 class="card-title" id="selectNodeText">Select the location for your server</h4>
-                </div>
-                <div class="card-content collapse show" aria-expanded="true">
-                    <div class="card-body">
-                        <p class="card-text">
-                            <div style="text-align: center;">
-                                <div class="container">
-                                    <div class="row">
-                                    <?php
-                                    $locations = mysqli_query($cpconn, "SELECT * FROM locations")->fetch_all(MYSQLI_ASSOC);
-                                    foreach ($locations as $location) {
-                                    $serversOnLoc = mysqli_query($cpconn, "SELECT * FROM servers WHERE location='" . $location["id"] . "'")->fetch_all(MYSQLI_ASSOC);
-                                    $availableSlots = $location['slots'] - count($serversOnLoc);
-                                    $serversInQueue = mysqli_query($cpconn, "SELECT * FROM servers_queue WHERE location='" . $location["id"] . "'")->fetch_all(MYSQLI_ASSOC);
-                                    ?><div class="col-sm">
-                                        <?php
-                                        if ($location["status"] == "PRIVATE") {
-                                            echo "<span class='badge badge-warning badge-glow' style='font-size: 15px;'>Private node</span>";
-                                        }
-                                        if ($location["status"] == "MAINTENANCE") {
-                                            echo "<span class='badge badge-danger badge-glow' style='font-size: 15px;'>In maintenance</span>";
-                                        }
-                                        ?>
-                                        <br/>
-                                        <img src="<?=$location["icon"] ?>" width="70">
-                                        <h3><?= $location["name"] ?></h3>
-                        <p><b><?= $availableSlots ?></b> out of <b><?php echo $location["slots"]; ?></b> slots left.<br/>
-                            <b><?php echo count($serversInQueue); ?></b> servers in queue.</p>
-                        <br/><br/>
-                        <?php
-                        if ($location["status"] == "PRIVATE") {
-                            if ($isDonator == false) {
-                                echo '<button type="button" class="btn btn-danger" style="cursor: not-allowed;" disabled="1">Private node users only</button><br/><a href="/billing/buy/private">Buy private node access</a>';
-                            }
-                            else {
-                                echo '<button type="button" class="btn btn-primary" id="btnnode' . $location["id"] . '" onclick="selectNode(' . $location["id"] . ', this);">SELECT</button>';
-                            }
 
-                        } elseif ($location["status"] == "MAINTENANCE") {
-                            echo '<button type="button" class="btn btn-danger" style="cursor: not-allowed;" disabled="1">Maintenance</button>';
-                        } else {
-                            echo '<button type="button" class="btn btn-primary" id="btnnode' . $location["id"] . '" tag="nodeselectionbutton" onclick="selectNode(' . $location["id"] . ', this);">SELECT</button>';
-                        }
-                        ?>
-                    </div>
-                    <?php
-                    }
-		    if (count($locations) == 0) {
-			echo "No nodes are available at the moment; Server creation might currently be disabled.";
-		    }
-                    ?>
-                </div>
-                </div>
-                </center>
-                </p>
-                <button class="btn btn-primary" id="prevstep2btn" onclick="previousStep()">« Previous</button>
-                <button class="btn btn-primary" id="step2btn" disabled="1" onClick="nextStep();">Next »</button>
-            </div>
-        </div>
-    </div>
-</div>
-    <!---
-        Step 3
-    --->
-    <div class="card" id="step3" style="display: none;">
-        <div class="card-header">
-            <h4 class="card-title">Select the server type</h4>
-        </div>
-        <div class="card-content collapse show" aria-expanded="true">
-            <div class="card-body">
-                <p class="card-text">
-                    <button class="btn btn-primary" onclick="previousStep()">Previous «</button>
-                <div style="text-align: center;">
-                    <div class="container">
-                        <div class="row">
-                    <?php
-                    $alrCategories = array();
-                    $categories = mysqli_query($cpconn, "SELECT category FROM eggs")->fetch_all(MYSQLI_ASSOC);
-                    foreach ($categories as $category) {
-                        if (in_array($category["category"], $alrCategories)) {
-                            continue;
-                        }
-                        echo "</div><br/><br/>";
-                        array_push($alrCategories, $category["category"]);
-                        echo "<h3>" . $category["category"] . "</h3> <br/>";
-                        $eggs = mysqli_query($cpconn, "SELECT * FROM eggs WHERE category='" . $category["category"] . "'")->fetch_all(MYSQLI_ASSOC);
-                        $i = -1;
-                        echo '<div class="row">';
-                        foreach ($eggs as $egg) {
-                            $i++;
-                            if ($i == 3) {
-                                echo "</div><div class='row' style='align-content: center;'>";
-                                $i = 0;
-                            }
-                            ?>
-                            <div class="col-sm">
-                                <br/>
-                                <img src="<?= $egg["icon"] ?>" width="70">
-                                <h3><?= $egg["name"] ?></h3>
-                                <br/><br/>
 
-                                <button type="button" onclick="submitForm(<?= $egg['id'] ?>)" class="btn btn-primary">Create!</button>
+ <head>
+    <title><?= $getsettingsdb['name'] ?> | Edit</title>
+    <?php include('../core/imports/header.php');?>
+</head>
+<body data-background-color="dark">
+    <div class="wrapper">
+        <div class="main-header">
+            <div class="logo-header" data-background-color="dark2">
+                <a href="/" class="logo">
+                    <p style="color:white;" class="navbar-brand"><?= $getsettingsdb["name"]?></p>
+                </a>
+                <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
+                    data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon">
+                        <i class="icon-menu"></i>
+                    </span>
+                </button>
+                <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+                <div class="nav-toggle">
+                    <button class="btn btn-toggle toggle-sidebar">
+                        <i class="icon-menu"></i>
+                    </button>
+                </div>
+            </div>
+            <nav class="navbar navbar-header navbar-expand-lg" data-background-color="dark">
+
+                <div class="container-fluid">
+                    <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+                        <li class="nav-item dropdown hidden-caret">
+                            <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"
+                                aria-expanded="false">
+                                <div class="avatar-sm">
+                                    <img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle">
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user animated fadeIn">
+                                <div class="dropdown-user-scroll scrollbar-outer">
+                                    <li>
+                                        <div class="user-box">
+                                            <div class="avatar-lg"><img src="<?= $userdb['avatar']?>"
+                                                    alt="image profile" class="avatar-img rounded"></div>
+                                            <div class="u-text">
+                                                <h4><?= $userdb['username']?></h4>
+                                                <p class="text-muted"><?= $userdb['role']?></p>
+                                                <p class="text-muted">Coins: <?= $userdb['coins']?></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="/regen">Reset Password</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="/auth/logout">Logout</a>
+                                    </li>
+                                </div>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="sidebar sidebar-style-2" data-background-color="dark2">
+            <div class="sidebar-wrapper scrollbar scrollbar-inner">
+                <div class="sidebar-content">
+                    <div class="user">
+                        <div class="avatar-sm float-left mr-2">
+                            <img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle">
+                        </div>
+                        <div class="info">
+                            <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+                                <span>
+                                    <?= $userdb['username']?>
+
+                                    <span class="user-level"><?= $userdb['role']?></span>
+
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <ul class="nav nav-primary">
+                        <li class="nav-item">
+                            <a href="/" class="collapsed">
+                                <i class="fas fa-home"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a href="/server/create" class="collapsed">
+                                <i class="fas fa-plus-square"></i>
+                                <p>New Server</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/store" class="collapsed">
+                                <i class="fas fa-shopping-bag"></i>
+                                <p>Shop</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item ">
+                            <a data-toggle="collapse" href="#earn">
+                                <i class="fas fa-coins"></i>
+                                <p>Earn</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse" id="earn">
+                                <ul class="nav nav-collapse">
+                                    <li class="nav-item ">
+                                        <a href="/earn/afk" class="collapsed">
+                                            <p class="">AFK</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/earn/linkvertise" class="collapsed">
+                                            <p>Linkvertise</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/earn/redeem" class="collapsed">
+                                            <p>Redeem</p>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
+                        </li>
+                        <li class="nav-section">
+                            <span class="sidebar-mini-icon">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </span>
+                            <h4 class="text-section">Links</h4>
+                        </li>
+                        <?php 
+                        if ($getsettingsdb['enable_mainwebsite'] == "false")
+                        {
+
+                        }
+                        else
+                        {
+                            ?>
+                        <li class="nav-item">
+                            <a href="<?= $getsettingsdb['website']?>" class="collapsed">
+                                <i class="bi bi-house-fill"></i>
+                                <p>Website</p>
+                            </a>
+                        </li>
+                        <?php 
+                            
+                        }
+                        
+                        if ($getsettingsdb['enable_discord'] == "false")
+                        {
+
+                        }
+                        else
+                        {
+                            ?>
+                        <li class="nav-item">
+                            <a href="<?= $getsettingsdb['discordserver']?>" class="collapsed">
+                                <i class="bi bi-discord"></i>
+                                <p>Discord</p>
+                            </a>
+                        </li>
+                        <?php
+                        }
+
+                        if ($getsettingsdb['enable_phpmyadmin'] == "false")
+                        {
+
+                        }
+                        else
+                        {
+                            
+                            ?>
+                            <li class="nav-item">
+                            <a href="<?= $getsettingsdb['phpmyadmin']?>" class="collapsed">
+                                <i class="bi bi-server"></i>
+                                <p>PhpMyAdmin</p>
+                            </a>
+                            </li>
                             <?php
                         }
-                    }
-                    ?>
-                        </div>
-                    </div>
-            </div>
-            </center>
-            </p><br/><br/>
-        </div>
-    </div>
+                        if ($getsettingsdb['enable_status'] == "false")
+                        {
 
+                        }
+                        else
+                        {
+                            ?>
+                            <li class="nav-item">
+                            <a href="<?= $getsettingsdb['statuspage']?>" class="collapsed">
+                                <i class="fas fa-signal"></i>
+                                <p>Status</p>
+                            </a>
+                            </li>
+                            <?php
+                        }
+                        ?>
+
+                        <li class="nav-item">
+                            <a href="<?= $getsettingsdb['ptero_url']?>" class="collapsed">
+                                <i class="fas fa-external-link-square-alt"></i>
+                                <p>Panel</p>
+                            </a>
+                        </li>
+
+
+                        <li class="nav-section">
+                            <span class="sidebar-mini-icon">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </span>
+                            <h4 class="text-section">Administrative Overview</h4>
+                        </li>
+                    </ul>
                 </div>
-                <div class="col-md-12">
-            <br><br>
-            
+            </div>
         </div>
-            
-        </div>
-    </div>
-
-    <!-- Argon Scripts -->
-    <!-- Core -->
-<!-- Step changing -->
-<script type="text/javascript">
-    var currentStep = 1;
-    async function previousStep() {
-        currentStep--;
-        lastStep = currentStep - 1;
-        var w = parseInt(document.getElementById('stepProgress').style.width);
-        document.getElementById('stepProgress').style.width= (w - 30) +'%';
-        document.getElementById("currentStep").innerHTML = "Step " + currentStep + "/3"
-        document.getElementById("stepPercentage").innerHTML = (currentStep*33) + "%"
-        if (currentStep == 1) {
-            document.getElementById("step1").style.display = "block";
-            document.getElementById("step1").style.display = "block";
-            document.getElementById("step2").style.display = "none";
+        <div class="main-panel">
+            <div class="container">
+                <div class="content">
+                    <div class="page-inner">
+                        <div class="mt-2 mb-4">
+                            <h2 class="text-white pb-2">Welcome back, <?= $userdb['username']?>!</h2>
+                        </div>
+                        <div class="row">
+                        <?php include('../core/imports/resources.php');?>
+                        </div>
+                        <?php if (isset($_SESSION["error"])) {
+            ?>
+            <div class="alert alert-danger text-danger" role="alert">
+                <strong>Error!</strong> <?= $_SESSION["error"] ?>
+            </div>
+            <?php
+            unset($_SESSION["error"]);
         }
-        if (currentStep == 2) {
-            document.getElementById("step2").style.display = "block";
-            document.getElementById("step3").style.display = "none";
+        ?>
+        <?php
+        if (isset($_SESSION["success"])) {
+            ?>
+            <div class="alert alert-success text-danger" role="alert">
+                <strong>Success!</strong> <?= $_SESSION["success"] ?>
+            </div>
+            <?php
+            unset($_SESSION["success"]);
         }
-        if (currentStep == 3) {
-            document.getElementById("step3").style.display = "block";
-            document.getElementById("step2").style.display = "none";
-        }
+        ?>                   
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Create Server</div>
+                                </div>
+                                <div class="card-body">
+                                    <input type="text" class="form-control" id="name" placeholder="Name">
+                                    <br>
+                                    <?php
+$locations = mysqli_query($cpconn, "SELECT * FROM locations")->fetch_all(MYSQLI_ASSOC);
+?>
 
-    }
-    async function nextStep() {
-        var div = document.getElementById("alert");
-        var error = false;
-        if (currentStep == 1) {
-            document.getElementById("loadingCard").style.display = "block";
-            document.getElementById("step1").style.display = "none";
+<label for="location">Location:</label>
+<select class="form-control" id="location">
+  <?php foreach ($locations as $location): ?>
+    <?php
+      $serversOnLoc = mysqli_query($cpconn, "SELECT * FROM servers WHERE location='" . $location["id"] . "'")->fetch_all(MYSQLI_ASSOC);
+      $serversInQueue = mysqli_query($cpconn, "SELECT * FROM servers_queue WHERE location='" . $location["id"] . "'")->fetch_all(MYSQLI_ASSOC);
+      $availableSlots = $location['slots'] - count($serversOnLoc) - count($serversInQueue);
+    ?>
+    <option value="<?= $location["id"] ?>">
+      <?= $location["name"] ?> (<?= $availableSlots ?>/<?= $location["slots"] ?> slots) [<?= $location["status"] === "MAINTENANCE" ? "MAINTENANCE" : ($availableSlots > 0 ? "ONLINE" : "OFFLINE") ?>]
+    </option>
+  <?php endforeach; ?>
+</select>
 
-            var name = document.getElementById("name").value;
-            var memory = document.getElementById("memory").value;
-            var cores = document.getElementById("cores").value;
-            var disk = document.getElementById("disk").value;
-
-            var free_memory = null;
-            var free_disk = null;
-            var free_cpu = null;
-            var cpuLimit = null;
-            name = name.toString();
-            if (name.length == 0) {
-                error = true;
-                var button = document.createElement("button");
-                button.className = "alert alert-danger";
-                button.innerHTML = "The name field is empty.";
-                button.style = "width:100%";
-                div.appendChild(button);
-
-                document.getElementById("loadingCard").style.display = "none";
-                document.getElementById("step1").style.display = "block";
-            }
-            await $.get("/api/user/freememory?userid=<?= $_SESSION["uid"] ?>", function(data) {
-                free_memory = JSON.parse(data).freeMemory;
-                console.log(free_memory);
-                if (memory > free_memory) {
-                    error = true;
-                    var button = document.createElement("button");
-                    button.className = "alert alert-danger";
-                    button.innerHTML = "You don't have enough memory, you only have " + free_memory + "MB left. <span data-dismiss='alert' class='pull-right float-right'>✕</span>";
-                    button.style = "width:100%";
-                    var div = document.getElementById("alert");
-                    div.appendChild(button);
-
-                    document.getElementById("loadingCard").style.display = "none";
-                    document.getElementById("step1").style.display = "block";
-                }
-            });
-            await $.get("/api/user/freedisk?userid=<?= $_SESSION["uid"] ?>", function(data) {
-                free_disk = JSON.parse(data).freeDisk;
-
-                if (disk > free_disk) {
-                    error = true;
-                    var button = document.createElement("button");
-                    button.className = "alert alert-danger";
-                    button.innerHTML = "You don't have enough disk, you only have " + free_disk + "MB left. <span data-dismiss='alert' class='pull-right float-right'>✕</span>";
-                    button.style = "width:100%";
-                    var div = document.getElementById("alert");
-                    div.appendChild(button);
-
-                    document.getElementById("loadingCard").style.display = "none";
-                    document.getElementById("step1").style.display = "block";
-                }
-            });
-            await $.get("/api/user/freecpu?userid=<?= $_SESSION["uid"] ?>", function(data) {
-                free_cpu = JSON.parse(data).freecpu;
-
-                if (cores > free_cpu) {
-                    error = true;
-                    var button = document.createElement("button");
-                    button.className = "alert alert-danger";
-                    button.innerHTML = "You don't have enough cpu limit, you only have <?= $userdb->cpu ?>% limit. <span data-dismiss='alert' class='pull-right float-right'>✕</span>";
-                    button.style = "width:100%";
-                    var div = document.getElementById("alert");
-                    div.appendChild(button);
-
-                    document.getElementById("loadingCard").style.display = "none";
-                    document.getElementById("step1").style.display = "block";
-
-                }
-            });
+<?php if (count($locations) == 0): ?>
+  <p>No nodes are available at the moment; Server creation might currently be disabled.</p>
+<?php endif; ?>
 
 
-            if (memory < 256) {
-                error = true;
-                var button = document.createElement("button");
-                button.className = "alert alert-danger";
-                button.innerHTML = "Minimum memory is 256MB <span data-dismiss='alert' class='pull-right float-right'>✕</span>";
-                button.style = "width:100%";
-                var div = document.getElementById("alert");
-                div.appendChild(button);
 
-                document.getElementById("loadingCard").style.display = "none";
-                document.getElementById("step1").style.display = "block";
+                                    <br>
+                                    <label for="location">Egg:</label>
+                                    <select class="form-control" id="egg">
+                                      <% for (let [name, value] of Object.entries(settings.api.client.eggs)) { %>
+                                        <option value="<%= name %>"><%= value.display %></option>
+                                      <% } %>
+                                    </select>
+                                    <br>
+                                    <label for="ram">RAM:</label>
+                                    <input type="text" class="form-control" id="ram" placeholder="RAM">
+                                    <br>
+                                    <label for="disk">DISK:</label>
+                                    <input type="text" class="form-control" id="disk" placeholder="DISK">
+                                    <br>
+                                    <label for="cpu">CPU:</label>
+                                    <input type="text" class="form-control" id="cpu" placeholder="CPU">
+                                    <br>
+                                    <button onclick="submitForm()" class="btn btn-primary" style="background-color: #33404D;">Create</button>
+                                <br></div>
+                                <script>
+                                    async function submitForm() {
+                                        let name = encodeURIComponent(document.getElementById("name").value);
+                                        let egg = encodeURIComponent(document.getElementById("egg").value);
+                                        let ram = encodeURIComponent(document.getElementById("ram").value);
+                                        let disk = encodeURIComponent(document.getElementById("disk").value);
+                                        let cpu = encodeURIComponent(document.getElementById("cpu").value);
+                                        let location = encodeURIComponent(document.getElementById("location").value);
+                                        document.location.href = `/create?name=${name}&egg=${egg}&ram=${ram}&disk=${disk}&cpu=${cpu}&location=${location}`;
+                                    };
+                                </script>
+                                </div>
+                            </div>
+                        </div>
+					</div>
+				</div>
+			</div>
+          </div>
+		</div>
+	  </div>
 
-            }
-            if (disk < 256) {
-                error = true;
-                var button = document.createElement("button");
-                button.className = "alert alert-danger";
-                button.innerHTML = "Minimum disk is 256MB <span data-dismiss='alert' class='pull-right float-right'>✕</span>";
-                button.style = "width:100%;";
-                div.appendChild(button);
-
-                document.getElementById("loadingCard").style.display = "none";
-                document.getElementById("step1").style.display = "block";
-            }
-            if (cores < 0.15) {
-                error = true;
-                var button = document.createElement("button");
-                button.className = "alert alert-danger";
-                button.innerHTML = "Minimum cores is 0.15 <span data-dismiss='alert' class='pull-right float-right'>✕</span>";
-                button.style = "width:100%;";
-                div.appendChild(button);
-
-                document.getElementById("loadingCard").style.display = "none";
-                document.getElementById("step1").style.display = "block";
-            }
-
-
-        }
-        currentStep++;
-        document.getElementById("stepPercentage").innerHTML = (currentStep*33) + "%"
-        if (error == true) {
-            currentStep = 1;
-        }
-        var w = parseInt(document.getElementById('stepProgress').style.width);
-        if (error !== true) {document.getElementById('stepProgress').style.width= (w + 30) +'%';
-            document.getElementById("currentStep").innerHTML = "Step " + currentStep + "/3"; }
-        if (currentStep == 2) {
-            document.getElementById("loadingCard").style.display = "none";
-            document.getElementById("step1").style.display = "none";
-            document.getElementById("step2").style.display = "block";
-        }
-        if (currentStep == 3) {
-            document.getElementById("loadingCard").style.display = "none";
-            document.getElementById("step2").style.display = "none";
-            document.getElementById("step3").style.display = "block";
-        }
-        if (currentStep == 4) {
-            document.getElementById("loadingCard").style.display = "none";
-            document.getElementById("step3").style.display = "block";
-            document.getElementById("step4").style.display = "none";
-        }
-    }
-</script>
-<!-- Only check server slots -->
-<script>
-    function seeServerSlots() {
-        document.getElementById("loadingCard").style.display = "none";
-        document.getElementById("step1").style.display = "none";
-        document.getElementById("step2").style.display = "block";
-        document.getElementById("step2btn").style.display = "none";
-        document.getElementById("stepsCard").style.display = "none";
-        document.getElementById("selectNodeText").innerHTML = "Available nodes and slots";
-        document.getElementById("prevstep2btn").style.display = "none";
-        document.getElementById("chksrvslots").style.display = "none";
-        var ele = document.getElementsByTagName("Button");
-        if (ele.length > 0) {
-            for (i = 0; i < ele.length; i++) {
-                if (ele[i].type == "button")
-                    ele[i].style.display = "none";
-            }
-        }
-    }
-</script>
-<!-- Node selection -->
-<script type="text/javascript">
-    var lastbutton = "";
-
-    function selectNode(nodeID, btn) {
-        document.getElementById("node").value = nodeID;
-        document.getElementById("step2btn").disabled = false;
-        if (btn == lastbutton) {
-
-        } else {
-            lastbutton.textContent = "SELECT";
-            lastbutton.className = "btn btn-primary";
-            lastbutton = btn;
-        }
-        btn.textContent = "SELECTED";
-        btn.className = "btn btn-success";
-    }
-    async function submitForm(egg) {
-        var w = parseInt(document.getElementById('stepProgress').style.width);
-        document.getElementById('stepProgress').style.width= (w + 100) +'%';
-        document.getElementById('progressColor').className = "progress progress-bar-success mt-25";
-        document.getElementById("loadingCard").style.display = "block";
-        document.getElementById("step3").style.display = "none";
-        var node = document.getElementById("node").value;
-        var name = document.getElementById("name").value;
-        var memory = document.getElementById("memory").value;
-        var disk = document.getElementById("disk").value;
-        var cores = document.getElementById("cores").value;
-        var dbs = document.getElementById("databases").value;
-        var ports = document.getElementById("ports").value;
-        var backups = document.getElementById("backups").value;
-        $.post('/api/user/servers/create',   // url
-            {
-                "name": name,
-                "memory": memory,
-                "cores": cores,
-                "disk": disk,
-                "ports": ports,
-                "databases": dbs,
-                "backups": backups,
-                "location": node,
-                "egg": egg
-
-            }, // data to be submit
-            function(data, status, jqXHR) {// success callback
-                console.log(data)
-                var response = JSON.parse(data);
-                var status = response.success;
-                if (status == true) {
-                    window.location.replace("/");
-                }
-                else {
-                    var button = document.createElement("button");
-                    button.className = "alert alert-danger";
-                    button.innerHTML = "<strong>Error:</strong> " + response['errors']['detail'] + "<span data-dismiss='alert' class='pull-right float-right'>✕</span>";
-                    button.style = "width:100%";
-                    var div = document.getElementById("alert");
-                    div.appendChild(button);
-                    document.getElementById("loadingCard").style.display = "none";
-                    document.getElementById("step3").style.display = "block";
-                }
-            });
-
-
-    }
-</script>
-<script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/js/jquery.min.js"></script>
-  <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/js/bootstrap.bundle.min.js"></script>
-  <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/js/js.cookie.js"></script>
-  <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/js/jquery.scrollbar.min.js"></script>
-  <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/js/jquery-scrollLock.min.js"></script>
-  <!-- Argon JS -->
-  <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/js/argon.js?v=1.2.0"></script>
-</div>
-
-</html>
+    </body>
+  </html>
+<?php include('../core/imports/footer.php');?>
