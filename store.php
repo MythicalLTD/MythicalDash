@@ -15,8 +15,6 @@ else
 }
 
 $usrdb = $cpconn->query("SELECT * FROM users WHERE user_id = '" . mysqli_real_escape_string($cpconn, $_SESSION["uid"]) . "'")->fetch_array();
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
 $cpuprice = $getsettingsdb["cpuprice"];
 $ramprice = $getsettingsdb["ramprice"];
 $diskprice = $getsettingsdb["diskprice"];

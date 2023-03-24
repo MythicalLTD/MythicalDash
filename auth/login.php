@@ -12,81 +12,84 @@ if (!$cpconn->ping()) {
     $_SESSION['error'] = "There was an error communicating with MYSQL";
     echo '<script>window.location.replace("/auth/login");</script>';
     die();
-    
 }
 
 if (isset($_POST['log_user'])) {
-    $ip_addres = getclientip();    
+    $ip_address = getclientip();    
     $email = mysqli_real_escape_string($cpconn, $_POST['email']);
     $password = mysqli_real_escape_string($cpconn, $_POST['password']);
-    $query = "SELECT * FROM users WHERE email='$email' AND password='$password'";
+    $query = "SELECT * FROM users WHERE email='$email'";
     $result = mysqli_query($cpconn, $query);
     if (mysqli_num_rows($result) > 0) {
-        $userdb = $cpconn->query("SELECT * FROM users WHERE email='$email' AND password='$password'")->fetch_array();
-        $usr_id = $userdb['user_id'];
-        //VPN Check
-        if ($ip_addres == "127.0.0.1") {
-            $ip_addres = "12.34.56.78";
-        }
-        $url = "http://ipinfo.io/$ip_addres/json";
-        $data = json_decode(file_get_contents($url), true);
-    
-        if(isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
-          $_SESSION['error'] = "You are using a VPN. This is not allowed.";
-          echo '<script>window.location.replace("/auth/errors/vpn");</script>';
-          die();
-        } else {
+        $userdb = mysqli_fetch_assoc($result);
+        if (password_verify($password, $userdb['password'])) {
+            $usr_id = $userdb['user_id'];
+            //VPN Check
+            if ($ip_address == "127.0.0.1") {
+                $ip_address = "12.34.56.78";
+            }
+            $url = "http://ipinfo.io/$ip_address/json";
+            $data = json_decode(file_get_contents($url), true);
 
-        }
-        $userids = array();
-        $loginlogs = mysqli_query($cpconn, "SELECT * FROM login_logs WHERE userid = '$usr_id'");
-        foreach ($loginlogs as $login) {
-            $ip = $login['ipaddr'];
-            if ($ip == "12.34.56.78") {
-                continue;
-            }
-            $saio = mysqli_query($cpconn, "SELECT * FROM login_logs WHERE ipaddr = '$ip'");
-            foreach ($saio as $hello) {
-                if (in_array($hello['userid'], $userids)) {
+            if(isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
+                $_SESSION['error'] = "You are using a VPN. This is not allowed.";
+                echo '<script>window.location.replace("/auth/errors/vpn");</script>';
+                die();
+            } 
+
+            $userids = array();
+            $loginlogs = mysqli_query($cpconn, "SELECT * FROM login_logs WHERE userid = '$usr_id'");
+            foreach ($loginlogs as $login) {
+                $ip = $login['ipaddr'];
+                if ($ip == "12.34.56.78") {
                     continue;
                 }
-                if ($hello['userid'] == $usr_id) {
-                    continue;
+                $saio = mysqli_query($cpconn, "SELECT * FROM login_logs WHERE ipaddr = '$ip'");
+                foreach ($saio as $hello) {
+                    if (in_array($hello['userid'], $userids)) {
+                        continue;
+                    }
+                    if ($hello['userid'] == $usr_id) {
+                        continue;
+                    }
+                    array_push($userids, $hello['userid']);
                 }
-                array_push($userids, $hello['userid']);
             }
-        }
-        if (count($userids) !== 0) {
-            if ($_SESSION["uid"] != 638672769009319956 && $_SESSION["uid"] != 536579437064486912) {
-            $_SESSION["alts"] = $userids;
-            echo '<script>window.location.replace("/auth/errors/alting");</script>';
-            die();
+            if (count($userids) !== 0) {
+                if ($_SESSION["uid"] != 638672769009319956 && $_SESSION["uid"] != 536579437064486912) {
+                    $_SESSION["alts"] = $userids;
+                    echo '<script>window.location.replace("/auth/errors/alting");</script>';
+                    die();
+                }
             }
+
+            $cpconn->query("INSERT INTO login_logs (ipaddr, userid) VALUES ('$ip_address', '$usr_id')");
+            if ($userdb["banned"] == 1) {
+                $_SESSION['ban_reason'] = $userdb["banned_reason"];
+                session_destroy();
+                echo '<script>window.location.replace("/auth/errors/banned");</script>';
+                die();
+            }
+
+            $token = bin2hex(random_bytes(32));
+            setcookie('remember_token', '', time() - 3600, '/');
+            setcookie('phpsessid', '', time() - 3600, '/');
+            setcookie('remember_token', $token, time() + (10 * 365 * 24 * 60 * 60), '/');
+            $cpconn->query("UPDATE `users` SET `session_id` = '$token' WHERE `users`.`user_id` = $usr_id;");
+            
+            $username = $userdb['username'];
+            logClient("[AUTH] ".$username." just logged in!");
+            $_SESSION['username'] = $username;
+            $_SESSION['email'] = $email;
+            $_SESSION["uid"] = $usr_id;
+            echo '<script>window.location.replace("/");</script>';
+        } else {
+            $_SESSION['error'] = "The email or the password is wrong please try again!";
         }
-        $cpconn->query("INSERT INTO login_logs (ipaddr, userid) VALUES ('$ip_addres', '$usr_id')");
-        if ($userdb["banned"] == 1) {
-          $_SESSION['ban_reason'] = $userdb["banned_reason"];
-          session_destroy();
-          echo '<script>window.location.replace("/auth/errors/banned");</script>';
-          die();
-        }
-        $token = bin2hex(random_bytes(32));
-        setcookie('remember_token', '', time() - 3600, '/');
-        setcookie('phpsessid', '', time() - 3600, '/');
-        setcookie('remember_token', $token, time() + (10 * 365 * 24 * 60 * 60), '/');
-        $cpconn->query("UPDATE `users` SET `session_id` = '$token' WHERE `users`.`user_id` = $usr_id;");
-        $username = $userdb['username'];
-        logClient("[AUTH] ".$username." just logged in!");
-        $_SESSION['username'] = $username;
-        $_SESSION['email'] = $email;
-        $_SESSION["uid"] = $usr_id;
-        echo '<script>window.location.replace("/");</script>';
-        
-    } else {
-        $_SESSION['error'] = "The email or the password is wrong please try again!";
-    }
-}
-?>
+    } 
+  }
+    ?>
+    
 <!DOCTYPE html>
 <html lang="en">
 <head>

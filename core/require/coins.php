@@ -1,5 +1,5 @@
 <?php
-require("../../../core/require/page.php");
+require("page.php");
 if ($getsettingsdb['disable_earning'] == "true")
 {
     echo '<script>window.location.replace("/");</script>';
@@ -57,9 +57,7 @@ if ($idlecheck <= $currenttimestamp)
         $cpconn->query("UPDATE `users` SET `last_seen` = '$currenttimestamp' WHERE `users`.`id` = $usrid;");
         echo '<script>window.location.replace("/earn/afk");</script>';
     }   
-            //catch block  
     catch (Exception $e) {  
-        //code to print exception caught in the block  
         echo $e;
     }  
 

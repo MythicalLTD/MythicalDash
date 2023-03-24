@@ -318,7 +318,7 @@ $nseconds = $seconds + 1;
 </body>
 <?php
     echo '<script>';
-    echo "setInterval(function () { $.ajax({ url: '../core/afk/functions/coins.php', success: function (data) { console.log(\"Earned A Coin!\"); } }); }, 60000)";
+    echo "setInterval(function () { $.ajax({ url: '../core/require/coins.php', success: function (data) { console.log(\"Earned A Coin!\"); } }); }, 60000)";
     echo '</script>';
     ?>
 

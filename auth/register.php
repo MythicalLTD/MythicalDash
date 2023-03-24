@@ -46,7 +46,6 @@ if(isset($_POST['reg_user']))
     } else {
         
     }
-    //Username blocking
     $blocked_usernames = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy", "plexed", "badsk", "username", "sex", "porn", "nudes", "nude", "ass", "hacker", "bigdick");
     if (in_array($username, $blocked_usernames)) {
         $_SESSION['error'] = "Please don`t use this username we blocked it!";
@@ -76,27 +75,20 @@ if(isset($_POST['reg_user']))
     } else {
         
     }
-
-
     $size = "200x200";
     $avatar_url = "https://robohash.org/".$username."?size=".$size.'&set=set4';
     $avatar = $avatar_url;
     $ip_addres = getclientip();
-
     $query = "SELECT * FROM login_logs WHERE ipaddr = '$ip_addres'";
     $result = mysqli_query($cpconn, $query);
     $count = mysqli_num_rows($result);
     echo $count; 
-
     if ($count >= 1) {
         echo "No account for you";
         $_SESSION['error'] = "Please dont try to abuse to get more resources.";
         echo '<script>window.location.replace("/auth/register");</script>';
         die();
     }
-
-    
-    //Alt check 1
     $query = "SELECT * FROM users WHERE username='$username' OR email='$email'";
     $result = mysqli_query($cpconn, $query);
     if (mysqli_num_rows($result) > 0) {
@@ -106,8 +98,6 @@ if(isset($_POST['reg_user']))
     } else {
         
     }
-
-    //Checks if the user is using an vpn
     if ($ip_addres == "127.0.0.1") {
         $ip_addres = "12.34.56.78";
     }
@@ -130,7 +120,6 @@ if(isset($_POST['reg_user']))
         echo '<script>window.location.replace("/auth/errors/vpn");</script>';
         die();
     }
-    //Make an panel account
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $getsettingsdb["ptero_url"].'/api/application/users');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -153,26 +142,20 @@ if(isset($_POST['reg_user']))
     $responseData = json_decode($response, true);
     $panelId = $responseData['attributes']['id'];
     $panel_username = $responseData['attributes']['username'];
-
-    // Check for errors
     if (curl_errno($ch)) {
-        //echo 'cURL Error: ' . curl_error($ch);
+
     } else {
         
     }
-    
     curl_close($ch);
-    
-    // Create the user in the database
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $random_text = bin2hex(random_bytes(4));
-    if (!mysqli_query($cpconn, "INSERT INTO `users` (`panel_id`, `user_id`,  `username`, `first_name`, `last_name`, `email`, `password`, `avatar`, `role`, `minutes_idle`, `last_seen`, `coins`, `memory`, `disk_space`, `ports`, `databases`, `cpu`, `server_limit`, `backup_limit`, `panel_username`, `panel_password`, `register_ip`, `lastlogin_ip`, `last_login`, `banned`, `banned_reason`, `staff`) VALUES ('$panelId', '$usr_id', '$username', '$first_name', '$last_name', '$email', '$password', '$avatar', 'Member', NULL, '0', '0.00', '$defram', '$defdisk', '$defalloc', '$defdata', '$defcpu', '$defsvlimit', '$defback', '$panel_username', '$password', '$ip_addres', '$ip_addres', '$time', '0', NULL, '0');")) {
+    if (!mysqli_query($cpconn, "INSERT INTO `users` (`panel_id`, `user_id`,  `username`, `first_name`, `last_name`, `email`, `password`, `avatar`, `role`, `minutes_idle`, `last_seen`, `coins`, `memory`, `disk_space`, `ports`, `databases`, `cpu`, `server_limit`, `backup_limit`, `panel_username`, `panel_password`, `register_ip`, `lastlogin_ip`, `last_login`, `banned`, `banned_reason`, `staff`) VALUES ('$panelId', '$usr_id', '$username', '$first_name', '$last_name', '$email', '$hashedPassword', '$avatar', 'Member', NULL, '0', '0.00', '$defram', '$defdisk', '$defalloc', '$defdata', '$defcpu', '$defsvlimit', '$defback', '$panel_username', '$password', '$ip_addres', '$ip_addres', '$time', '0', NULL, '0');")) {
       $_SESSION['error'] =  mysqli_error($cpconn);
       echo '<script>window.location.replace("/auth/register");</script>';
       die();
     }
-    //Logs the ip into the ip login logs table
     $cpconn->query("INSERT INTO login_logs (ipaddr, userid) VALUES ('$ip_addres', '$usr_id')");
-    //Creates a code
     if (!mysqli_query($cpconn, "INSERT INTO referral_codes (uid, referral) VALUES ('$usr_id', '$referral')")) {
       echo '<script>window.location.replace("/auth/login");</script>';
     }
@@ -189,15 +172,19 @@ if(isset($_POST['reg_user']))
     //}
 
     $_SESSION['success'] = "Done thanks for using".$getsettingsdb['name'];
-    echo '<script>window.location.replace("/auth/login");</script>';
-    mysqli_close($cpconn);
     logClient("[AUTH] ".$username." just registred!");
-
+    $token = bin2hex(random_bytes(32));
+    setcookie('remember_token', '', time() - 3600, '/');
+    setcookie('phpsessid', '', time() - 3600, '/');
+    setcookie('remember_token', $token, time() + (10 * 365 * 24 * 60 * 60), '/');
+    $cpconn->query("UPDATE `users` SET `session_id` = '$token' WHERE `users`.`user_id` = $usr_id;");
+    $_SESSION['username'] = $username;
+    $_SESSION['email'] = $email;
+    $_SESSION["uid"] = $usr_id;
     
+    echo '<script>window.location.replace("/");</script>';
+    mysqli_close($cpconn);    
 }
-
-
-
 
 ?>
 <!DOCTYPE html>
