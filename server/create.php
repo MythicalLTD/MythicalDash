@@ -148,6 +148,12 @@ $userdb = $cpconn->query("SELECT * FROM users WHERE user_id = '" . mysqli_real_e
                                 </ul>
                             </div>
                         </li>
+                        <li class="nav-item">
+                            <a href="/support/select" class="collapsed">
+                                <i class="fa-solid fa-ticket" style="color: #b9babf;"></i>
+                                <p>Support</p>
+                            </a>
+                        </li>
                         <li class="nav-section">
                             <span class="sidebar-mini-icon">
                                 <i class="fa fa-ellipsis-h"></i>

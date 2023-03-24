@@ -9,6 +9,7 @@
 <meta property="og:image" content="<?= $getsettingsdb['logo'] ?>">
 <link rel="icon" href="<?= $getsettingsdb["logo"] ?>" type="image/png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/js/plugin/webfont/webfont.min.js"></script>
 <script>
 	WebFont.load({

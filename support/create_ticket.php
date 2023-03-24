@@ -177,7 +177,7 @@ if (isset($_POST['create_ticket'])) {
                             </span>
                             <h4 class="text-section">Overview</h4>
                         </li>
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a href="/" class="collapsed">
                                 <i class="fas fa-home"></i>
                                 <p>Dashboard</p>
@@ -221,6 +221,12 @@ if (isset($_POST['create_ticket'])) {
                                     </li>
                                 </ul>
                             </div>
+                        </li>
+                        <li class="nav-item active">
+                            <a href="/support/select" class="collapsed">
+                                <i class="fa-solid fa-ticket" style="color: #b9babf;"></i>
+                                <p>Support</p>
+                            </a>
                         </li>
                         <li class="nav-section">
                             <span class="sidebar-mini-icon">

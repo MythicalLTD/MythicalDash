@@ -339,6 +339,7 @@ if (isset($_SESSION["error"])) {
                                     class="btn btn-primary w-100 fw-bold">Sign Up</button>
                             </div>
                         </div>
+                        <br><br><br>
                     </div>
                 </form>
             </div>

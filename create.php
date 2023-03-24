@@ -210,6 +210,12 @@ include('core/imports/resources.php');
                                 </ul>
                             </div>
                         </li>
+                        <li class="nav-item">
+                            <a href="/support/select" class="collapsed">
+                                <i class="fa-solid fa-ticket" style="color: #b9babf;"></i>
+                                <p>Support</p>
+                            </a>
+                        </li>
                         <li class="nav-section">
                             <span class="sidebar-mini-icon">
                                 <i class="fa fa-ellipsis-h"></i>

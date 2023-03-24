@@ -39,14 +39,24 @@ if (isset($_GET['id'])) {
       
     }
     if (isset($_POST['add_message'])) {
+      
       $ticket_id = $_POST['ticket_id'];
       $content = mysqli_real_escape_string($cpconn, $_POST['content']);
-      $user_id = $_SESSION['uid'];
-      $ticketdb = $cpconn->query("SELECT * FROM users WHERE user_id = '" . mysqli_real_escape_string($cpconn, $_SESSION["uid"]) . "'")->fetch_array();
-      $query = "INSERT INTO messages (ticket_id, user_id, username, content) VALUES ('$ticket_id', '$user_id', '".$ticketdb['username']."', '$content')";
-      mysqli_query($cpconn, $query);
-      echo '<script>window.location.replace("view_ticket.php?id='.$ticket_id.'");</script>';
-      exit;
+      if ($content == "") {
+        $_SESSION['error'] = "Message can't be empty";
+        echo '<script>window.location.replace("view_ticket.php?id='.$ticket_id.'");</script>';
+        die();
+      }
+      else
+      {
+        $user_id = $_SESSION['uid'];
+        $ticketdb = $cpconn->query("SELECT * FROM users WHERE user_id = '" . mysqli_real_escape_string($cpconn, $_SESSION["uid"]) . "'")->fetch_array();
+        $query = "INSERT INTO messages (ticket_id, user_id, username, content) VALUES ('$ticket_id', '$user_id', '".$ticketdb['username']."', '$content')";
+        mysqli_query($cpconn, $query);
+        echo '<script>window.location.replace("view_ticket.php?id='.$ticket_id.'");</script>';
+        exit;
+      }
+
     }
 
     if (isset($_POST['reopen_ticket'])) {
@@ -182,7 +192,7 @@ else
                             </span>
                             <h4 class="text-section">Overview</h4>
                         </li>
-                        <li class="nav-item active">
+                        <li class="nav-item ">
                             <a href="/" class="collapsed">
                                 <i class="fas fa-home"></i>
                                 <p>Dashboard</p>
@@ -226,6 +236,12 @@ else
                                     </li>
                                 </ul>
                             </div>
+                        </li>
+                        <li class="nav-item active">
+                            <a href="/support/select" class="collapsed">
+                                <i class="fa-solid fa-ticket" style="color: #b9babf;"></i>
+                                <p>Support</p>
+                            </a>
                         </li>
                         <li class="nav-section">
                             <span class="sidebar-mini-icon">
@@ -337,11 +353,92 @@ else
   background: #191C21;
 }
 </style>
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 card-wrapper">
+            <div class="card">
+                <div class="card-header text-center">
+                    <br>
+                            <div class="message-header">
+								<div class="message-title">
+									<a class="btn btn-secondary btn-link" href="./select">
+										<i class="fa fa-flip-horizontal fa-share"></i>
+									</a>
+									<div class="user ml-2">
+										<div class="avatar avatar-online">
+											<img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle border border-white">
+										</div>
+										<div class="info-user ml-2">
+											<span class="name text-white"><?php echo $_SESSION['uid']; ?></span>
+											<span class="last-active text-white">Ticket #<?php echo $_GET['id']; ?> | <?= $ticket_db['status']?></span>
+										</div>
+									</div>
+									<div class="ml-auto">
+										<button class="btn btn-secondary btn-link page-sidebar-toggler d-xl-none">
+											<i class="fa fa-angle-double-left"></i>
+										</button>
+									</div>
+								</div>
+							</div>
+                </div>
+                <div class="card-body">
+                  <div class="card-header text-white">
+                    Messages:
+                  </div>
+                  <ul class="list-group list-group-flush">
+                    <?php
+                    $ticket_id = $_GET['id'];
+                    $query = "SELECT * FROM messages WHERE ticket_id='$ticket_id' ORDER BY created_at ASC";
+                    $result = mysqli_query($cpconn, $query);
+                    while ($row = mysqli_fetch_array($result)) {
+                      echo '<li class="list-group-item">';
+                      echo '<p class="text-white">' . $row['content'] . '</p>';
+                      echo '<p class="text-muted">Sent by: <code>' . $row['username'] . '</code> at ' . $row['created_at'] . '</p>';
+                      echo '</li>';
+                    }
+                    ?>
+                  </ul>
+                </div>
+                    <div class="card-body">
+                        <form method="post">
+                            <input type="hidden" name="ticket_id" value="<?php echo $ticket_id; ?>">
+                            <div class="form-group">
+                                <label for="content">Message</label>
+                                <input class="form-control" name="content" id="content" rows="3" ></input>
+                                <br>
+                            <?php 
+                            if ($ticket_db['status'] == "closed")
+                            {
+                                ?>
+                                    <button type="submit" name="reopen_ticket" class="btn btn-sm btn-primary">Open again</button>
+                                    <button type="submit" name="delete_ticket" class="btn btn-sm btn-danger">Delete ticket</button>
+                                <?php
+                            }
+                            else if ($ticket_db['status'] == "open")
+                            {
+                                ?>
+                                <button type="submit" name="add_message" class="btn btn-primary">Add Message</button>
+                                <button type="submit" name="close_ticket" class="btn btn-danger">Close ticket</button>
+                                <?php
+                            }
+                            else
+                            {
+
+                            }
+                            ?>
+                        </form>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+<!--
         <div class="main-panel">
-			<div class="container container-full mt--6 ">
+			<div class="container container-full ">
 				<div class="page-wrapper has-sidebar">
 					<div class="row justify-content-center">
-						<div class="col-lg-11 conversations">
+						<div class="col-lg-11 conversations ">
 							<div class="message-header">
 								<div class="message-title">
 									<a class="btn btn-secondary btn-link" href="./select">
@@ -363,15 +460,15 @@ else
 									</div>
 								</div>
 							</div>
-                            <ul class="list-group list-group-flush">
+                            <ul class="list-group">
                                 <div class="conversations-body" >
                                     <div class="conversations-content bg-black">
-                                        <div class="message-content-wrapper" >
-                                            <div class="card-body mw-100">
+                                        <div class="message-content-wrapper " >
+                                            <div class="card-body ">
                                                 <div class="card-header">
                                                     Messages:
                                                 </div>
-                                                <ul class="list-group list-group-flush">
+                                                <ul class="list-group  list-group-flush">
                                                 <?php
                                                 $ticket_id = $_GET['id'];
                                                 $query = "SELECT * FROM messages WHERE ticket_id='$ticket_id' ORDER BY created_at ASC";
@@ -423,7 +520,7 @@ else
 			    </div>
 		    </div>
         </div>
-
+                            -->
 </body>
 <?php 
 include('../core/imports/footer.php')
