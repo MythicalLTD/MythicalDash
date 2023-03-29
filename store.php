@@ -149,10 +149,9 @@ if(isset($_POST['buyback'])) {
         <div class="main-header">
             <div class="logo-header" data-background-color="dark2">
                 <a href="/" class="logo">
-                    <p style="color:white;" class="navbar-brand"><?= $getsettingsdb["name"]?></p>
+                    <p style="color: white;" class="navbar-brand"><?= $getsettingsdb["name"]?></p>
                 </a>
-                <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
-                    data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon">
                         <i class="icon-menu"></i>
                     </span>
@@ -165,26 +164,27 @@ if(isset($_POST['buyback'])) {
                 </div>
             </div>
             <nav class="navbar navbar-header navbar-expand-lg" data-background-color="dark">
-
                 <div class="container-fluid">
                     <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
                         <li class="nav-item dropdown hidden-caret">
-                            <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"
-                                aria-expanded="false">
+                            <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
                                 <div class="avatar-sm">
-                                    <img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle">
+                                    <img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle" />
                                 </div>
                             </a>
                             <ul class="dropdown-menu dropdown-user animated fadeIn">
                                 <div class="dropdown-user-scroll scrollbar-outer">
                                     <li>
                                         <div class="user-box">
-                                            <div class="avatar-lg"><img src="<?= $userdb['avatar']?>"
-                                                    alt="image profile" class="avatar-img rounded"></div>
+                                            <div class="avatar-lg"><img src="<?= $userdb['avatar']?>" alt="image profile" class="avatar-img rounded" /></div>
+
                                             <div class="u-text">
                                                 <h4><?= $userdb['username']?></h4>
                                                 <p class="text-muted"><?= $userdb['role']?></p>
-                                                <p class="text-muted">Coins: <?= $userdb['coins']?></p>
+                                                <p class="text-muted">
+                                                    Coins:
+                                                    <?= $userdb['coins']?>
+                                                </p>
                                             </div>
                                         </div>
                                     </li>
@@ -206,7 +206,7 @@ if(isset($_POST['buyback'])) {
                 <div class="sidebar-content">
                     <div class="user">
                         <div class="avatar-sm float-left mr-2">
-                            <img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle">
+                            <img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle" />
                         </div>
                         <div class="info">
                             <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
@@ -214,7 +214,6 @@ if(isset($_POST['buyback'])) {
                                     <?= $userdb['username']?>
 
                                     <span class="user-level"><?= $userdb['role']?></span>
-
                                 </span>
                             </a>
                         </div>
@@ -226,7 +225,7 @@ if(isset($_POST['buyback'])) {
                             </span>
                             <h4 class="text-section">Overview</h4>
                         </li>
-                        <li class="nav-item ">
+                        <li class="nav-item">
                             <a href="/" class="collapsed">
                                 <i class="fas fa-home"></i>
                                 <p>Dashboard</p>
@@ -238,7 +237,7 @@ if(isset($_POST['buyback'])) {
                                 <p>New Server</p>
                             </a>
                         </li>
-                        <li class="nav-item active  ">
+                        <li class="nav-item active">
                             <a href="/store" class="collapsed">
                                 <i class="fas fa-shopping-bag"></i>
                                 <p>Shop</p>
@@ -357,14 +356,12 @@ if(isset($_POST['buyback'])) {
                             </a>
                         </li>
 
-
                         <li class="nav-section">
                             <span class="sidebar-mini-icon">
                                 <i class="fa fa-ellipsis-h"></i>
                             </span>
                             <h4 class="text-section">Administrative Overview</h4>
                         </li>
-
                     </ul>
                 </div>
             </div>
@@ -374,16 +371,19 @@ if(isset($_POST['buyback'])) {
                 <div class="content">
                     <div class="page-inner">
                         <div class="mt-2 mb-4">
-                            <h2 class="text-white pb-2">Welcome back, <?= $userdb['username']?>!</h2>
+                            <h2 class="text-white pb-2">
+                                Welcome back,
+                                <?= $userdb['username']?>!
+                            </h2>
                         </div>
                         <div class="row">
-                        <?php include('core/imports/resources.php');?>
-
+                            <?php include('core/imports/resources.php');?>
                         </div>
                         <?php         if (isset($_SESSION["error"])) {
             ?>
                         <div class="alert alert-danger text-danger" role="alert">
-                            <strong>Error!</strong> <?= $_SESSION["error"] ?>
+                            <strong>Error!</strong>
+                            <?= $_SESSION["error"] ?>
                         </div>
                         <?php
             unset($_SESSION["error"]);
@@ -393,191 +393,200 @@ if(isset($_POST['buyback'])) {
         if (isset($_SESSION["success"])) {
             ?>
                         <div class="alert alert-success" role="alert">
-                            <strong>Success!</strong> <?= $_SESSION["success"] ?>
+                            <strong>Success!</strong>
+                            <?= $_SESSION["success"] ?>
                         </div>
                         <?php
             unset($_SESSION["success"]);
         }
         ?>
-        <style>
-.card-img-top {
- height: 140px;
- width: 160px;
-}
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-}
-</style>
+                        <style>
+                            .card-img-top {
+                                height: 140px;
+                                width: 160px;
+                            }
+                            .card-footer {
+                                display: flex;
+                                justify-content: space-between;
+                            }
+                        </style>
                         <div class="container-fluid mt--6">
                             <div class="row justify-content-center">
-                                <div class="col-md-12">
-                                </div>
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="mb-0"><img src="https://i.imgur.com/2WYzXDV.png" width="30">
-                                                Coins shop</h3>
+                                <div class="col-md-12"></div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="mb-0"><img src="https://i.imgur.com/2WYzXDV.png" width="30" /> Coins shop</h3>
+                                    </div>
 
-                                        </div>
+                                    <div class="card-body" style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-6 mb-9">
+                                                <div class="h-100 text-center">
+                                                    <a class="mx-auto text-center"><img class="card-img-top" src="https://i.imgur.com/b6TNCeZ.png" alt="" /></a>
 
-                                        <div class="card-body" style="text-align: center;">
-                                            <div class="row">
-                                                <div class="col-lg-3 col-md-6 mb-9">
-                                                    <div class="h-100 text-center">
-                                                        <a class="mx-auto text-center"><img class="card-img-top"
-                                                                src="https://i.imgur.com/b6TNCeZ.png" alt=""></a>
-                                                        <div class="card-body">
-                                                            <h4 class="card-title">
-                                                                <a>CPU</a>
-                                                            </h4>
-                                                            <h5><?= $cpuprice ?>€</h5>
-                                                            <p class="card-text">For every <?= $cpuprice ?> coins you
-                                                                get 1VCore to use on your server / bot.</p>
-                                                        </div>
-                                                        <form action="resources" method="POST">
-                                                            <div class="card-footer">
-                                                                <button name="buycpu" value="yes"
-                                                                    class="btn btn-primary btn-block ">Buy</button>
-                                                            </div>
-                                                        </form>
+                                                    <div class="card-body">
+                                                        <h4 class="card-title">
+                                                            <a>CPU</a>
+                                                        </h4>
+                                                        <h5><?= $cpuprice ?>€</h5>
+                                                        <p class="card-text">
+                                                            For every
+                                                            <?= $cpuprice ?>
+                                                            coins you get 1VCore to use on your server / bot.
+                                                        </p>
                                                     </div>
+                                                    <form action="resources" method="POST">
+                                                        <div class="card-footer">
+                                                            <button name="buycpu" value="yes" class="btn btn-primary btn-block">Buy</button>
+                                                        </div>
+                                                    </form>
                                                 </div>
+                                            </div>
 
-                                                <div class="col-lg-3 col-md-6 mb-9">
-                                                    <div class="h-100 text-center">
-                                                        <a class="mx-auto text-center"><img class="card-img-top"
-                                                                src="https://i.imgur.com/sxZ4OB4.png" alt=""></a>
-                                                        <div class="card-body">
-                                                            <h4 class="card-title">
-                                                                <a>RAM</a>
-                                                            </h4>
-                                                            <h5><?= $ramprice ?>€</h5>
-                                                            <p class="card-text">For every <?= $ramprice ?> coins you
-                                                                get 1GB ram to use on your application.</p>
-                                                        </div>
-                                                        <form action="resources" method="POST">
-                                                            <div class="card-footer">
-                                                                <button name="buyram" value="yes"
-                                                                    class="btn btn-primary btn-block">Buy</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3 col-md-6 mb-9">
-                                                    <div class="h-100 text-center">
-                                                        <a class="mx-auto text-center"><img class="card-img-top"
-                                                                src="https://i.imgur.com/N0MwF0M.png" alt=""></a>
-                                                        <div class="card-body">
-                                                            <h4 class="card-title">
-                                                                <a>Disk</a>
-                                                            </h4>
-                                                            <h5><?= $diskprice ?>€</h5>
-                                                            <p class="card-text">For every <?= $diskprice ?> coins you
-                                                                get 1GB disk to use on your application.</p>
-                                                        </div>
-                                                        <form action="resources" method="POST">
-                                                            <div class="card-footer">
-                                                                <button name="buydisk" value="yes"
-                                                                    class="btn btn-primary btn-block">Buy</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3 col-md-6 mb-9">
-                                                    <div class="h-100 text-center">
-                                                        <a class="mx-auto text-center"><img class="card-img-top"
-                                                                src="https://i.imgur.com/3w5wt0k.png" alt=""></a>
-                                                        <div class="card-body">
-                                                            <h4 class="card-title">
-                                                                <a>Server Slot</a>
-                                                            </h4>
-                                                            <h5><?= $svprice ?>€</h5>
+                                            <div class="col-lg-3 col-md-6 mb-9">
+                                                <div class="h-100 text-center">
+                                                    <a class="mx-auto text-center"><img class="card-img-top" src="https://i.imgur.com/sxZ4OB4.png" alt="" /></a>
 
-                                                            <p class="card-text">For every <?= $svprice ?> coins you get
-                                                                1 server slot to deploy your application.</p>
-                                                        </div>
-                                                        <form action="resources" method="POST">
-                                                            <div class="card-footer">
-                                                                <button name="buysv" value="yes"
-                                                                    class="btn btn-primary btn-block">Buy</button>
-                                                            </div>
-                                                        </form>
+                                                    <div class="card-body">
+                                                        <h4 class="card-title">
+                                                            <a>RAM</a>
+                                                        </h4>
+                                                        <h5><?= $ramprice ?>€</h5>
+                                                        <p class="card-text">
+                                                            For every
+                                                            <?= $ramprice ?>
+                                                            coins you get 1GB ram to use on your application.
+                                                        </p>
                                                     </div>
-                                                </div>
-                                                <!-- Row 2 -->
-                                                <div class="col-lg-3 col-md-6 mb-9">
-                                                    <div class="h-100 text-center">
-                                                        <a class="mx-auto text-center"><img class="card-img-top"
-                                                                src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/img/internet_hub_480px.png"
-                                                                alt=""></a>
-                                                        <div class="card-body">
-                                                            <h4 class="card-title">
-                                                                <a>Ports</a>
-                                                            </h4>
-                                                            <h5><?= $portsprice ?>€</h5>
-                                                            <p class="card-text">For every <?= $portsprice ?> coins you
-                                                                get 1 more port to use on your server</p>
+                                                    <form action="resources" method="POST">
+                                                        <div class="card-footer">
+                                                            <button name="buyram" value="yes" class="btn btn-primary btn-block">Buy</button>
                                                         </div>
-                                                        <form action="resources" method="POST">
-                                                            <div class="card-footer">
-                                                                <button name="buyport" value="yes"
-                                                                    class="btn btn-primary btn-block">Buy</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
+                                                    </form>
                                                 </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-6 mb-9">
+                                                <div class="h-100 text-center">
+                                                    <a class="mx-auto text-center"><img class="card-img-top" src="https://i.imgur.com/N0MwF0M.png" alt="" /></a>
 
-                                                <div class="col-lg-3 col-md-6 mb-9">
-                                                    <div class="h-100 text-center">
-                                                        <a class="mx-auto text-center"><img class="card-img-top"
-                                                                src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/img/synchronize_480px.png"
-                                                                alt=""></a>
-                                                        <div class="card-body">
-                                                            <h4 class="card-title">
-                                                                <a>Backup</a>
-                                                            </h4>
-                                                            <h5><?= $backupprice ?>€</h5>
-                                                            <p class="card-text">For every <?= $backupprice ?> coins you
-                                                                get 1 backup slot to backup your server / bot.</p>
-                                                        </div>
-                                                        <form action="resources" method="POST">
-                                                            <div class="card-footer">
-                                                                <button name="buyback" value="yes"
-                                                                    class="btn btn-primary btn-block">Buy</button>
-                                                            </div>
-                                                        </form>
+                                                    <div class="card-body">
+                                                        <h4 class="card-title">
+                                                            <a>Disk</a>
+                                                        </h4>
+                                                        <h5><?= $diskprice ?>€</h5>
+                                                        <p class="card-text">
+                                                            For every
+                                                            <?= $diskprice ?>
+                                                            coins you get 1GB disk to use on your application.
+                                                        </p>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-3 col-md-6 mb-9">
-                                                    <div class="h-100 text-center">
-                                                        <a class="mx-auto text-center"><img class="card-img-top"
-                                                                src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/img/mysql_logo_480px.png"
-                                                                alt=""></a>
-                                                        <div class="card-body">
-                                                            <h4 class="card-title">
-                                                                <a>Database</a>
-                                                            </h4>
-                                                            <h5><?= $databaseprice ?>€</h5>
-                                                            <p class="card-text">For every <?= $databaseprice ?> coins
-                                                                you get 1 database to use on your application.</p>
+                                                    <form action="resources" method="POST">
+                                                        <div class="card-footer">
+                                                            <button name="buydisk" value="yes" class="btn btn-primary btn-block">Buy</button>
                                                         </div>
-                                                        <form action="resources" method="POST">
-                                                            <div class="card-footer">
-                                                                <button name="buydata" value="yes"
-                                                                    class="btn btn-primary btn-block">Buy</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
+                                                    </form>
                                                 </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-6 mb-9">
+                                                <div class="h-100 text-center">
+                                                    <a class="mx-auto text-center"><img class="card-img-top" src="https://i.imgur.com/3w5wt0k.png" alt="" /></a>
 
+                                                    <div class="card-body">
+                                                        <h4 class="card-title">
+                                                            <a>Server Slot</a>
+                                                        </h4>
+                                                        <h5><?= $svprice ?>€</h5>
+
+                                                        <p class="card-text">
+                                                            For every
+                                                            <?= $svprice ?>
+                                                            coins you get 1 server slot to deploy your application.
+                                                        </p>
+                                                    </div>
+                                                    <form action="resources" method="POST">
+                                                        <div class="card-footer">
+                                                            <button name="buysv" value="yes" class="btn btn-primary btn-block">Buy</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <!-- Row 2 -->
+                                            <div class="col-lg-3 col-md-6 mb-9">
+                                                <div class="h-100 text-center">
+                                                    <a class="mx-auto text-center"><img class="card-img-top" src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/img/internet_hub_480px.png" alt=""></a>
+                                                    <div class="card-body">
+                                                        <h4 class="card-title">
+                                                            <a>Ports</a>
+                                                        </h4>
+                                                        <h5><?= $portsprice ?>€</h5>
+                                                        <p class="card-text">
+                                                            For every
+                                                            <?= $portsprice ?>
+                                                            coins you get 1 more port to use on your server
+                                                        </p>
+                                                    </div>
+                                                    <form action="resources" method="POST">
+                                                        <div class="card-footer">
+                                                            <button name="buyport" value="yes" class="btn btn-primary btn-block">Buy</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3 col-md-6 mb-9">
+                                                <div class="h-100 text-center">
+                                                    <a class="mx-auto text-center"><img class="card-img-top" src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/img/synchronize_480px.png" alt=""></a>
+                                                    <div class="card-body">
+                                                        <h4 class="card-title">
+                                                            <a>Backup</a>
+                                                        </h4>
+                                                        <h5><?= $backupprice ?>€</h5>
+                                                        <p class="card-text">
+                                                            For every
+                                                            <?= $backupprice ?>
+                                                            coins you get 1 backup slot to backup your server / bot.
+                                                        </p>
+                                                    </div>
+                                                    <form action="resources" method="POST">
+                                                        <div class="card-footer">
+                                                            <button name="buyback" value="yes" class="btn btn-primary btn-block">Buy</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-6 mb-9">
+                                                <div class="h-100 text-center">
+                                                    <a class="mx-auto text-center"><img class="card-img-top" src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/img/mysql_logo_480px.png" alt=""></a>
+                                                    <div class="card-body">
+                                                        <h4 class="card-title">
+                                                            <a>Database</a>
+                                                        </h4>
+                                                        <h5><?= $databaseprice ?>€</h5>
+                                                        <p class="card-text">
+                                                            For every
+                                                            <?= $databaseprice ?>
+                                                            coins you get 1 database to use on your application.
+                                                        </p>
+                                                    </div>
+                                                    <form action="resources" method="POST">
+                                                        <div class="card-footer">
+                                                            <button name="buydata" value="yes" class="btn btn-primary btn-block">Buy</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
-                                    
-
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <?php include('core/imports/footer.php');?>
                     </div>
-
-                    </html>
+                </div>
+            </div>
+            <?php 
+            include('core/imports/credits.php')
+            ?>
+        </div>
+    </div>
+</body>

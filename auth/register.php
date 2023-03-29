@@ -86,7 +86,7 @@ if(isset($_POST['reg_user']))
     if ($count >= 1) {
         echo "No account for you";
         $_SESSION['error'] = "Please dont try to abuse to get more resources.";
-        echo '<script>window.location.replace("/auth/register");</script>';
+        echo '<script>window.location.replace("/auth/errors/alting");</script>';
         die();
     }
     $query = "SELECT * FROM users WHERE username='$username' OR email='$email'";
@@ -329,8 +329,9 @@ if (isset($_SESSION["error"])) {
                     </div>
                 </form>
             </div>
-        </div>
-        </div>
+        </div> 
+
+
         <script src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/js/core/jquery.3.2.1.min.js">
         </script>
         <script

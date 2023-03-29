@@ -1,0 +1,9 @@
+AtoroCient API response
+
+200 | OK |  > Everything is ok, the API will give you what you need< |RETURNS JSON / response
+400 | BAD | >Something unexpected happened<| RETURNS JSON / response
+500 | MYSQL ERROR | >Host can't reach the MySQL db<| RETURNS JSON / response 
+401 | BAD API KEY | >API key can't be found< |RETURNS JSON /  response
+402 | NO API KEY | >No API key was specified< | RETURNS JSON /  response 
+403 | MISSING INFO | >Some information was not given<| RETURNS JSON / response
+404 | NOT FOUND |> The info was not found in the db or the API dose not exist<| RETURNS JSON / response

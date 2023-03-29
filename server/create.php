@@ -482,13 +482,11 @@ if (isset($_GET['createsv'])) {
                                 </div>
                             </div>
                         </div>
-					</div>
-				</div>
-			</div>
-          </div>
-		</div>
-	  </div>
-
-    </body>
-  </html>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
 <?php include('../core/imports/footer.php');?>

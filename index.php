@@ -130,6 +130,8 @@ else
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="/regen">Reset Password</a>
                                         <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="/auth/discord">[NEW] Link discord</a>
+                                        <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="/auth/logout">Logout</a>
                                     </li>
                                 </div>
@@ -496,8 +498,12 @@ else
                     </div>
                 </div>
             </div>
+            <?php 
+            include('core/imports/credits.php')
+            ?>
         </div>
     </div>
+    
 </body>
 <?php 
 include('core/imports/footer.php')
