@@ -1,23 +1,29 @@
 <?php 
 require("../../core/require/sql.php");
 $getsettingsdb = $cpconn->query("SELECT * FROM settings")->fetch_array();
-
-$token = mysqli_real_escape_string($cpconn, $_GET['token']);
-$query = "SELECT * FROM password_reset WHERE token='$token'";
-$result = mysqli_query($cpconn, $query);
-if (mysqli_num_rows($result) > 0) {
-    $db = $cpconn->query("SELECT * FROM password_reset WHERE token='$token'")->fetch_array();
-    $email = $db['email'];
+if(isset($_GET['token'])) {
+  $token = mysqli_real_escape_string($cpconn, $_GET['token']);
+  $query = "SELECT * FROM password_reset WHERE token='$token'";
+  $result = mysqli_query($cpconn, $query);
+  if (mysqli_num_rows($result) > 0) {
+      $db = $cpconn->query("SELECT * FROM password_reset WHERE token='$token'")->fetch_array();
+      $email = $db['email'];
+  }
+  else
+  {
+      echo '<script>window.location.replace("/");</script>';
+  }
 }
 else
 {
-    echo '<script>window.location.replace("/");</script>';
+  echo '<script>window.location.replace("/");</script>';
 }
 
 if(isset($_POST['res_pass']))
 {
     $password = mysqli_real_escape_string($cpconn, $_POST['password']);
-    $cpconn->query("UPDATE `users` SET `password` = '$password' WHERE `users`.`email` = '$email';");
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $cpconn->query("UPDATE `users` SET `password` = '$hashedPassword' WHERE `users`.`email` = '$email';");
     $cpconn->query("DELETE FROM password_reset WHERE `password_reset`.`token` = '$token'");
     echo '<script>window.location.replace("/auth/login");</script>';
 }

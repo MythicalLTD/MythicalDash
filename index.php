@@ -127,10 +127,22 @@ else
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="/regen">Reset Password</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="/auth/discord">[NEW] Link discord</a>
+                                        <?php 
+                                        if(!$userdb['discord_id'] == null || !$userdb['discord_username'] == null || !$userdb['discord_discriminator'] == null || !$userdb['discord_email'] == null)
+                                        {
+                                            ?>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" href="/auth/discord">Relink discord</a>
+                                            <?php
+                                        }
+                                        else
+                                        {
+                                            ?>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" href="/auth/discord">Link discord</a>
+                                            <?php
+                                        }
+                                        ?>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="/auth/logout">Logout</a>
                                     </li>

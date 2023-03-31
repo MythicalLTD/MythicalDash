@@ -22,8 +22,6 @@ if (isset($_POST['e_submit'])) {
         'password' => $userdb['password'],
         'language' => 'en'
     )));
-
-    // Execute the request
     $result = curl_exec($ch);
     curl_close($ch);
     if ($email == "")
