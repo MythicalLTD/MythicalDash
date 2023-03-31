@@ -365,6 +365,9 @@ if(isset($_GET['submit'])) {
 					</div>
  				</div>
 			</div>
+            <?php 
+            include('../core/imports/credits.php')
+            ?>
           </div>
 		</div>
 	  </div>

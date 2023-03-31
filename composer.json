@@ -1,5 +1,6 @@
 {
     "name": "mythical/dash",
+    "minimum-stability": "stable",
     "description": "A fully customizable shared-resources based dashboard for pterodactyl hosting services",
     "type": "project",
     "license": "MIT",
@@ -14,6 +15,7 @@
         }
     ],
     "require": {
-        "phpmailer/phpmailer": "^6.7"
+        "phpmailer/phpmailer": "^6.7",
+        "textalk/websocket": "^1.6"
     }
 }

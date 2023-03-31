@@ -312,7 +312,11 @@ $nseconds = $seconds + 1;
                 </div>
             </div>
         </div>
+        <?php 
+            include('../core/imports/credits.php')
+            ?>
     </div>
+
 </div>
     </div>
 </body>

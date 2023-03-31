@@ -1,10 +1,9 @@
 <?php
-require("../core/require/page.php");
-include_once("../core/require/sql.php");
+require "../core/require/page.php";
+include_once "../core/require/sql.php";
 
 $query = "SELECT * FROM tickets WHERE status='open'";
 $result = mysqli_query($cpconn, $query);
-
 ?>
 <!-- Header -->
 <input id="node" name="node" type="hidden" value="">
@@ -18,9 +17,7 @@ $result = mysqli_query($cpconn, $query);
     <meta charset="utf-8">
 
     <title><?= $getsettingsdb["name"] ?></title>
-    <?php 
-		include('../core/imports/header.php');
-  ?>
+    <?php include '../core/imports/header.php'; ?>
 </head>
 
 <body data-background-color="dark">
@@ -28,7 +25,7 @@ $result = mysqli_query($cpconn, $query);
         <div class="main-header">
             <div class="logo-header" data-background-color="dark2">
                 <a href="/" class="logo">
-                    <p style="color:white;" class="navbar-brand"><?= $getsettingsdb["name"]?></p>
+                    <p style="color:white;" class="navbar-brand"><?= $getsettingsdb["name"] ?></p>
                 </a>
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
                     data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,19 +48,19 @@ $result = mysqli_query($cpconn, $query);
                             <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"
                                 aria-expanded="false">
                                 <div class="avatar-sm">
-                                    <img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle">
+                                    <img src="<?= $userdb['avatar'] ?>" alt="..." class="avatar-img rounded-circle">
                                 </div>
                             </a>
                             <ul class="dropdown-menu dropdown-user animated fadeIn">
                                 <div class="dropdown-user-scroll scrollbar-outer">
                                     <li>
                                         <div class="user-box">
-                                            <div class="avatar-lg"><img src="<?= $userdb['avatar']?>"
+                                            <div class="avatar-lg"><img src="<?= $userdb['avatar'] ?>"
                                                     alt="image profile" class="avatar-img rounded"></div>
                                             <div class="u-text">
-                                                <h4><?= $userdb['username']?></h4>
-                                                <p class="text-muted"><?= $userdb['role']?></p>
-                                                <p class="text-muted">Coins: <?= $userdb['coins']?></p>
+                                                <h4><?= $userdb['username'] ?></h4>
+                                                <p class="text-muted"><?= $userdb['role'] ?></p>
+                                                <p class="text-muted">Coins: <?= $userdb['coins'] ?></p>
                                             </div>
                                         </div>
                                     </li>
@@ -85,14 +82,14 @@ $result = mysqli_query($cpconn, $query);
                 <div class="sidebar-content">
                     <div class="user">
                         <div class="avatar-sm float-left mr-2">
-                            <img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle">
+                            <img src="<?= $userdb['avatar'] ?>" alt="..." class="avatar-img rounded-circle">
                         </div>
                         <div class="info">
                             <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
                                 <span>
-                                    <?= $userdb['username']?>
+                                    <?= $userdb['username'] ?>
 
-                                    <span class="user-level"><?= $userdb['role']?></span>
+                                    <span class="user-level"><?= $userdb['role'] ?></span>
 
                                 </span>
                             </a>
@@ -162,33 +159,24 @@ $result = mysqli_query($cpconn, $query);
                             </span>
                             <h4 class="text-section">Links</h4>
                         </li>
-                        <?php 
-                        if ($getsettingsdb['enable_mainwebsite'] == "false")
-                        {
-
-                        }
-                        else
-                        {
-                            ?>
+                        <?php
+                        if ($getsettingsdb['enable_mainwebsite'] == "false") {
+                        } else {
+                             ?>
                         <li class="nav-item">
-                            <a href="<?= $getsettingsdb['website']?>" class="collapsed">
+                            <a href="<?= $getsettingsdb['website'] ?>" class="collapsed">
                                 <i class="bi bi-house-fill"></i>
                                 <p>Website</p>
                             </a>
                         </li>
-                        <?php 
-                            
+                        <?php
                         }
-                        
-                        if ($getsettingsdb['enable_discord'] == "false")
-                        {
 
-                        }
-                        else
-                        {
-                            ?>
+                        if ($getsettingsdb['enable_discord'] == "false") {
+                        } else {
+                             ?>
                         <li class="nav-item">
-                            <a href="<?= $getsettingsdb['discordserver']?>" class="collapsed">
+                            <a href="<?= $getsettingsdb['discordserver'] ?>" class="collapsed">
                                 <i class="bi bi-discord"></i>
                                 <p>Discord</p>
                             </a>
@@ -196,31 +184,22 @@ $result = mysqli_query($cpconn, $query);
                         <?php
                         }
 
-                        if ($getsettingsdb['enable_phpmyadmin'] == "false")
-                        {
-
-                        }
-                        else
-                        {
-                            
-                            ?>
+                        if ($getsettingsdb['enable_phpmyadmin'] == "false") {
+                        } else {
+                             ?>
                             <li class="nav-item">
-                            <a href="<?= $getsettingsdb['phpmyadmin']?>" class="collapsed">
+                            <a href="<?= $getsettingsdb['phpmyadmin'] ?>" class="collapsed">
                                 <i class="bi bi-server"></i>
                                 <p>PhpMyAdmin</p>
                             </a>
                             </li>
                             <?php
                         }
-                        if ($getsettingsdb['enable_status'] == "false")
-                        {
-
-                        }
-                        else
-                        {
-                            ?>
+                        if ($getsettingsdb['enable_status'] == "false") {
+                        } else {
+                             ?>
                             <li class="nav-item">
-                            <a href="<?= $getsettingsdb['statuspage']?>" class="collapsed">
+                            <a href="<?= $getsettingsdb['statuspage'] ?>" class="collapsed">
                                 <i class="fas fa-signal"></i>
                                 <p>Status</p>
                             </a>
@@ -230,7 +209,7 @@ $result = mysqli_query($cpconn, $query);
                         ?>
 
                         <li class="nav-item">
-                            <a href="<?= $getsettingsdb['ptero_url']?>" class="collapsed">
+                            <a href="<?= $getsettingsdb['ptero_url'] ?>" class="collapsed">
                                 <i class="fas fa-external-link-square-alt"></i>
                                 <p>Panel</p>
                             </a>
@@ -253,30 +232,21 @@ $result = mysqli_query($cpconn, $query);
                 <div class="content">
                     <div class="page-inner">
                         <div class="mt-2 mb-4">
-                            <h2 class="text-white pb-2">Welcome back, <?= $userdb['username']?>!</h2>
+                            <h2 class="text-white pb-2">Welcome back, <?= $userdb['username'] ?>!</h2>
                         </div>
                         <div class="row">
-                            <?php include('core/imports/resources.php');?>
+                            <?php include 'core/imports/resources.php'; ?>
                         </div>
-                        <?php         if (isset($_SESSION["error"])) {
-            ?>
+                        <?php if (isset($_SESSION["error"])) { ?>
                         <div class="alert alert-danger text-danger" role="alert">
                             <strong>Error!</strong> <?= $_SESSION["error"] ?>
                         </div>
-                        <?php
-            unset($_SESSION["error"]);
-        }
-        ?>
-                        <?php
-        if (isset($_SESSION["success"])) {
-            ?>
+                        <?php unset($_SESSION["error"]);} ?>
+                        <?php if (isset($_SESSION["success"])) { ?>
                         <div class="alert alert-success" role="alert">
                             <strong>Success!</strong> <?= $_SESSION["success"] ?>
                         </div>
-                        <?php
-            unset($_SESSION["success"]);
-        }
-        ?>
+                        <?php unset($_SESSION["success"]);} ?>
                         <div class="row">
                             <div class="col">
                                 <div class="card bg-default shadow">
@@ -294,7 +264,7 @@ $result = mysqli_query($cpconn, $query);
 												<i class="fa fa-search search-icon"></i>
 											</span>
 										</div>
-                                        <?php echo '<input type="text" class="form-control" name="query" value="'.$txtsrch.'" placeholder="Search">' ?>
+                                        <?php echo '<input type="text" class="form-control" name="query" value="' . $txtsrch . '" placeholder="Search">'; ?>
 										<div class="input-group-append">
 
 										</div>
@@ -306,37 +276,39 @@ $result = mysqli_query($cpconn, $query);
 							<section class="card mt-4">
 								<div class="list-group list-group-messages list-group-flush">
 									<div class="list-group-item unread">
-                                    <?php 
-                                        echo "<table id='tickets' class='table table-sm '>";
-                                        echo "<thead class='text-white  '><tr><th>ID</th><th>Owner</th><th>Content</th><th>Status</th><th>Created at</th><th>Actions</th></tr></thead>";
-                                        echo "<tbody>";
-                                        $result = mysqli_query($cpconn, "SELECT * FROM tickets WHERE user_id='".$_SESSION['uid']."'");
-                                        while ($row = mysqli_fetch_assoc($result)) {
-                                            echo "<tr>";
-                                            echo "<td class='text-white'>" . $row["id"] . "</td>";
-                                            echo "<td class='text-white'>" . $row["username"] . "</td>";
-                                            echo "<td class='text-white'>" . $row["content"] . "</td>";
-                                            echo "<td class='text-white'>" . $row["status"] . "</td>";
-                                            echo "<td class='text-white'>" . $row["created_at"] . "</td>";
-                                            echo "<td class='text-white'>";
-                                            echo "<a href='view_ticket?id=".$row["id"]."' class='btn btn-sm btn-primary'>Open</a> "; 
-                                            echo "</td>";
-                                            echo "</tr>";
-                                        }
-                                        echo "</tbody></table>";
-
-                                        ?>
+                                    <?php
+                                    echo "<table id='tickets' class='table table-sm '>";
+                                    echo "<thead class='text-white  '><tr><th>ID</th><th>Owner</th><th>Content</th><th>Status</th><th>Created at</th><th>Actions</th></tr></thead>";
+                                    echo "<tbody>";
+                                    $result = mysqli_query($cpconn, "SELECT * FROM tickets WHERE user_id='" . $_SESSION['uid'] . "'");
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        echo "<tr>";
+                                        echo "<td class='text-white'>" . $row["id"] . "</td>";
+                                        echo "<td class='text-white'>" . $row["username"] . "</td>";
+                                        echo "<td class='text-white'>" . $row["content"] . "</td>";
+                                        echo "<td class='text-white'>" . $row["status"] . "</td>";
+                                        echo "<td class='text-white'>" . $row["created_at"] . "</td>";
+                                        echo "<td class='text-white'>";
+                                        echo "<a href='view_ticket?id=" . $row["id"] . "' class='btn btn-sm btn-primary'>Open</a> ";
+                                        echo "</td>";
+                                        echo "</tr>";
+                                    }
+                                    echo "</tbody></table>";
+                                    ?>
+                                        </div>
 								</div>
 							</section>
                         </div>
                     </div>
                 </div>
-            </div>
+                
+            </div> 
+            <?php 
+            include('../core/imports/credits.php')
+            ?>
         </div>
     </div>
 </body>
-<?php 
-include('../core/imports/footer.php')
-?>
+<?php include '../core/imports/footer.php'; ?>
 
 </html>

@@ -6,6 +6,10 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'WebSocket\\' => array($vendorDir . '/textalk/websocket/lib'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/src'),
+    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src', $vendorDir . '/psr/http-factory/src'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
     'Mythical\\Dash\\' => array($baseDir . '/src'),
+    '' => array($vendorDir . '/phrity/util-errorhandler/src', $vendorDir . '/phrity/net-uri/src'),
 );

@@ -2,25 +2,20 @@
 				<div class="container-fluid">
 					<nav class="pull-left">
 						<ul class="nav">
-							<li class="nav-item">
-								<a class="nav-link" href="http://www.themekita.com">
-									ThemeKita
+								<a class="nav-link" href="https://atoro.tech">
+								&copy; 2023 <?= $getsettingsdb["name"]?>  - Powered by AtoroTech</a>
 								</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">
-									Help
-								</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">
-									Licenses
-								</a>
-							</li>
 						</ul>
 					</nav>
 					<div class="copyright ml-auto">
-						2018, made with <i class="fa fa-heart heart text-danger"></i> by <a href="http://www.themekita.com">ThemeKita</a>
+                        <span>v2.0</span>
+                        <span>-</span>
+						<span id="loadtime"></span>					
 					</div>				
 				</div>
+				<style>
+					    .space2 {
+        margin-left: 5px;
+    }
+				</style>
 			</footer>

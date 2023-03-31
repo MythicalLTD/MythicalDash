@@ -321,74 +321,71 @@ if (isset($_POST['create_ticket'])) {
             </div>
         </div>
 <!-- Header -->
-
-<style>
-  ::-webkit-scrollbar {
-  width: 3px;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: white;
-  border-radius: 10px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #191C21;
-}
-</style>
-<div class="container">
-    <div class="content">
-        <div class="page-inner">
-            <div class="page-header"></div>
-            <div class="container-fluid py-4">
-                <div class="row mt-4">
-                    <div class="col-12 col-md-12 mb-4 mb-md-0">
-                        <div class="">
-                            <div class="" >
-                                <br><br><br>
-                                <div class="row justify-content-center">
-                                    <h4 class="card-title">Create A Ticket</h4>
-                                </div>
+<div class="main-panel">
+    <div class="container">
+        <div class="content">
+            <div class="page-inner">
+                <div class="container-fluid py-4">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-md-12 mb-4 mb-md-0">
+                            <div class="">
                                 <div class="">
                                     <br />
-                                    <form action="create_ticket.php" method="post">
-                                        <div class="row ">
-                                            <div class="col mx-3">
-                                                <label style="font-size: 20px;" class="text-white">Ticket Name</label>
-                                                <input type="text" name="title" class="form-control" placeholder="Title of Ticket" style="background-color: #293445; color: white; border: none;" required="" />
-                                                <br />
-                                                <div class="divider"></div>
+                                    <br />
+                                    <br />
+                                    <div class="row justify-content-center">
+                                        <h4 class="card-title">Create A Ticket</h4>
+                                    </div>
+                                    <div class="">
+                                        <br />
+                                        <form action="create_ticket.php" method="post">
+                                            <div class="row">
+                                                <div class="col mx-3">
+                                                    <label style="font-size: 20px;" class="text-white">Ticket Name</label>
+                                                    <input type="text" name="title" class="form-control" placeholder="Title of Ticket" style="background-color: #293445; color: white; border: none;" required="" />
+                                                    <br />
+                                                    <div class="divider"></div>
 
-                                                <div style="background-color: #051a10 !important; border-color: #0f5132 !important; color: #75b798 !important; background-image: none !important;" class="alert alert-danger" role="alert">
-                                                    Please describe your issue with a good description.
+                                                    <div style="background-color: #051a10 !important; border-color: #0f5132 !important; color: #75b798 !important; background-image: none !important;" class="alert alert-danger" role="alert">
+                                                        Please describe your issue with a good description.
+                                                    </div>
+                                                    <label style="font-size: 20px;" class="text-white">Description:</label>
+                                                    <textarea
+                                                        name="content"
+                                                        type="text"
+                                                        placeholder="Tell us your problem here ..."
+                                                        rows="9"
+                                                        class="form-control"
+                                                        style="background-color: #293445; color: white; border: none;"
+                                                        required=""
+                                                    ></textarea>
+                                                    <p class="text-white">
+                                                        Your user ID is:
+                                                        <?php echo $_SESSION['uid']; ?>
+                                                    </p>
+                                                    <div class="row justify-content-center">
+                                                        <button type="submit" name="create_ticket" class="btn btn-primary row">Create Ticket</button>
+                                                    </div>
+                                                    <br />
+                                                    <style>
+                                                        .e {
+                                                            margin-bottom: 10px;
+                                                            margin-top: 10px;
+                                                        }
+                                                        .e:hover {
+                                                            -webkit-user-select: none;
+                                                            transform: scale(1.03);
+                                                            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+                                                        }
+                                                        .padding-0 {
+                                                            padding-right: -20px !important;
+                                                            padding-left: 0 !important;
+                                                        }
+                                                    </style>
                                                 </div>
-                                                <label style="font-size: 20px;" class="text-white">Description:</label>
-                                                <textarea name="content" type="text" placeholder="Tell us your problem here ..." rows="9"  class="form-control" style="background-color: #293445; color: white; border: none;" required=""></textarea>
-                                                <p class="text-white">Your user ID is: <?php echo $_SESSION['uid']; ?></p>
-                                                <div class="row justify-content-center">
-                                                    <button type="submit" name="create_ticket" class="btn btn-primary row ">Create Ticket</button>
-                                                </div>
-                                                <br />
-                                                <style>
-                                                    .e {
-                                                        margin-bottom: 10px;
-                                                        margin-top: 10px;
-                                                    }
-                                                    .e:hover {
-                                                        -webkit-user-select: none;
-                                                        transform: scale(1.03);
-                                                        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
-                                                    }
-                                                    .padding-0 {
-                                                        padding-right: -20px !important;
-                                                        padding-left: 0 !important;
-                                                    }
-                                                </style>
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -396,8 +393,13 @@ if (isset($_POST['create_ticket'])) {
                 </div>
             </div>
         </div>
+        <?php 
+            include('../core/imports/credits.php')
+            ?>
     </div>
 </div>
+
+
 
 
 

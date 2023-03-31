@@ -496,8 +496,10 @@ else
                             </div>
                         </div>
                     </div>
+                    <script src="core/test.js" theme="blurple" defer=""></script>
                 </div>
             </div>
+
             <?php 
             include('core/imports/credits.php')
             ?>

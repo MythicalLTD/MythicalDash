@@ -440,6 +440,9 @@ else
 					</div>
 				</div>
 			</div>
+            <?php 
+            include('../core/imports/credits.php')
+            ?>
 		</div>
 
 <!--

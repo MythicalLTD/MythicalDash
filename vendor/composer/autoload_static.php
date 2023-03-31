@@ -7,8 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInitf1d625195e941dccd0f31d3978bb54ea
 {
     public static $prefixLengthsPsr4 = array (
+        'W' => 
+        array (
+            'WebSocket\\' => 10,
+        ),
         'P' => 
         array (
+            'Psr\\Log\\' => 8,
+            'Psr\\Http\\Message\\' => 17,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
         'M' => 
@@ -18,6 +24,19 @@ class ComposerStaticInitf1d625195e941dccd0f31d3978bb54ea
     );
 
     public static $prefixDirsPsr4 = array (
+        'WebSocket\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/textalk/websocket/lib',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/src',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
@@ -26,6 +45,11 @@ class ComposerStaticInitf1d625195e941dccd0f31d3978bb54ea
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
+    );
+
+    public static $fallbackDirsPsr4 = array (
+        0 => __DIR__ . '/..' . '/phrity/util-errorhandler/src',
+        1 => __DIR__ . '/..' . '/phrity/net-uri/src',
     );
 
     public static $classMap = array (
@@ -37,6 +61,7 @@ class ComposerStaticInitf1d625195e941dccd0f31d3978bb54ea
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitf1d625195e941dccd0f31d3978bb54ea::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitf1d625195e941dccd0f31d3978bb54ea::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInitf1d625195e941dccd0f31d3978bb54ea::$fallbackDirsPsr4;
             $loader->classMap = ComposerStaticInitf1d625195e941dccd0f31d3978bb54ea::$classMap;
 
         }, null, ClassLoader::class);
