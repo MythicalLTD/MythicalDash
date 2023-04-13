@@ -150,7 +150,7 @@ if(isset($_POST['reg_user']))
     curl_close($ch);
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $random_text = bin2hex(random_bytes(4));
-    if (!mysqli_query($cpconn, "INSERT INTO `users` (`panel_id`, `user_id`,  `username`, `first_name`, `last_name`, `email`, `password`, `avatar`, `role`, `minutes_idle`, `last_seen`, `coins`, `memory`, `disk_space`, `ports`, `databases`, `cpu`, `server_limit`, `backup_limit`, `panel_username`, `panel_password`, `register_ip`, `lastlogin_ip`, `last_login`, `banned`, `banned_reason`, `staff`) VALUES ('$panelId', '$usr_id', '$username', '$first_name', '$last_name', '$email', '$hashedPassword', '$avatar', 'Member', NULL, '0', '0.00', '$defram', '$defdisk', '$defalloc', '$defdata', '$defcpu', '$defsvlimit', '$defback', '$panel_username', '$password', '$ip_addres', '$ip_addres', '$time', '0', NULL, '0');")) {
+    if (!mysqli_query($cpconn, "INSERT INTO `users` (`panel_id`, `user_id`,  `username`, `first_name`, `last_name`, `email`, `password`, `avatar`, `role`, `minutes_idle`, `last_seen`, `coins`, `memory`, `disk_space`, `ports`, `databases`, `cpu`, `server_limit`, `backup_limit`, `register_ip`, `lastlogin_ip`, `last_login`, `banned`, `banned_reason`, `staff`) VALUES ('$panelId', '$usr_id', '$username', '$first_name', '$last_name', '$email', '$hashedPassword', '$avatar', 'Member', NULL, '0', '0.00', '$defram', '$defdisk', '$defalloc', '$defdata', '$defcpu', '$defsvlimit', '$defback', '$ip_addres', '$ip_addres', '$time', '0', NULL, '0');")) {
       $_SESSION['error'] =  mysqli_error($cpconn);
       echo '<script>window.location.replace("/auth/register");</script>';
       die();

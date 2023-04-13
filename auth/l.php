@@ -13,109 +13,17 @@ if (!$cpconn->ping()) {
     echo '<script>window.location.replace("/auth/login");</script>';
     die();
 }
-if (isset($_GET['err'])) {
-  ?>
-  <script>
-    alert("<?=$_GET['err']?>");
-    window.location.replace("/auth/login");
-  </script>
-  <?php
-}
-else
-{
-
-}
-if (isset($_POST['log_user'])) {
+if(isset($_GET['login'])) {
     $ip_address = getclientip();    
     $email = mysqli_real_escape_string($cpconn, $_POST['email']);
     $password = mysqli_real_escape_string($cpconn, $_POST['password']);
-    $query = "SELECT * FROM users WHERE email='$email'";
-    $result = mysqli_query($cpconn, $query);
-    if (mysqli_num_rows($result) > 0) {
-        $userdb = mysqli_fetch_assoc($result);
-        if (password_verify($password, $userdb['password'])) {
-            $usr_id = $userdb['user_id'];
-            if ($ip_address == "127.0.0.1") {
-                $ip_address = "12.34.56.78";
-            }
-            $url = "http://ipinfo.io/$ip_address/json";
-            $data = json_decode(file_get_contents($url), true);
+    //$query = "SELECT * FROM users WHERE email='$email'";
 
-            if(isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
-                echo '<script>
-                    window.location.replace("/auth/login?err=You are using a VPN. This is not allowed");
-                    </script>';                
-                die();
-            } 
-
-            $userids = array();
-            $loginlogs = mysqli_query($cpconn, "SELECT * FROM login_logs WHERE userid = '$usr_id'");
-            foreach ($loginlogs as $login) {
-                $ip = $login['ipaddr'];
-                if ($ip == "12.34.56.78") {
-                    continue;
-                }
-                $saio = mysqli_query($cpconn, "SELECT * FROM login_logs WHERE ipaddr = '$ip'");
-                foreach ($saio as $hello) {
-                    if (in_array($hello['userid'], $userids)) {
-                        continue;
-                    }
-                    if ($hello['userid'] == $usr_id) {
-                        continue;
-                    }
-                    array_push($userids, $hello['userid']);
-                }
-            }
-            if (count($userids) !== 0) {
-                setcookie('remember_token', '', time() - 3600, '/');
-                setcookie('phpsessid', '', time() - 3600, '/');
-                echo '<script>
-                window.location.replace("/auth/login?err=Using multiple accounts is really sad when using free services!");
-                </script>';
-            }
-
-            $cpconn->query("INSERT INTO login_logs (ipaddr, userid) VALUES ('$ip_address', '$usr_id')");
-            if ($userdb["banned"] == 1) {
-                $bnrs = $userdb['banned_reason'];
-                if ($bnrs == "")
-                {
-                  $bnrs = "Nothing";
-                }
-                else
-                {
-
-                }
-                echo '<script>
-                window.location.replace("/auth/login?err=You can`t login you are banned for: '.$bnrs.'");
-                </script>';
-
-                session_destroy();
-                setcookie('remember_token', '', time() - 3600, '/');
-                setcookie('phpsessid', '', time() - 3600, '/');
-                die();
-            }
-
-            $token = bin2hex(random_bytes(32));
-            setcookie('remember_token', '', time() - 3600, '/');
-            setcookie('phpsessid', '', time() - 3600, '/');
-            setcookie('remember_token', $token, time() + (10 * 365 * 24 * 60 * 60), '/');
-            $cpconn->query("UPDATE `users` SET `session_id` = '$token' WHERE `users`.`user_id` = $usr_id;");
-            
-            $username = $userdb['username'];
-            logClient("[AUTH] ".$username." just logged in!");
-            $_SESSION['username'] = $username;
-            $_SESSION['email'] = $email;
-            $_SESSION["uid"] = $usr_id;
-            echo '<script>window.location.replace("/");</script>';
-        } else {
-            echo '<script>
-                    window.location.replace("/auth/login?err=The email or the password is wrong please try again!");
-                    </script>';                            
-        }
-    } 
-  }
-    ?>
+}
+if(isset($_GET['err'])) {
     
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -124,6 +32,8 @@ if (isset($_POST['log_user'])) {
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title><?= $getsettingsdb['name']?> | Login</title>
   <link rel="icon" type="image/x-icon" href="<?= $getsettingsdb['logo']?>">
+
+	<!-- Fonts and icons -->
 	<script src="/assets/js/plugin/webfont/webfont.min.js"></script>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" media="all"><link rel="stylesheet" href="/assets/css/fonts.min.css" media="all"><script>
 		WebFont.load({
@@ -190,7 +100,7 @@ if (isset($_SESSION["error"])) {
 		
 			<h3 class="text-center">Sign In To <?= $getsettingsdb["name"]?> </h3>
 			
-			<form method="POST">
+			<form method="GET">
 			<div class="login-form">
 				<div class="form-group">
 					<label for="email" class="placeholder"><b>Email</b></label>
@@ -207,7 +117,7 @@ if (isset($_SESSION["error"])) {
 					</div>
 				</div>
 				<div class="form-group text-center">
-				    <button type="submit" name="log_user" class="btn btn-primary col-md-5 mt-3 mt-sm-0 fw-bold"><a>Sign In</a></button>
+				    <button type="submit" name="login" class="btn btn-primary col-md-5 mt-3 mt-sm-0 fw-bold"><a>Sign In</a></button>
 				</div>
 				<div class="login-account">
 					<span class="msg">Don't have an account yet ?</span>
@@ -230,7 +140,7 @@ if (isset($_SESSION["error"])) {
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script>
     particlesJS.load('particles-js', '<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/json/particles.json', function() {
-      console.log('callback - particles.js config loaded');
+      console.log('Callback - particles.js config loaded');
     });
   </script>
 </body>

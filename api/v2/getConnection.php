@@ -57,7 +57,7 @@ $data = array(
         "panel" => $panel_status,
         "mysql" => "OK"
     )
-    header('HTTP/1.1 200 OK');
 );
+header('HTTP/1.1 200 OK');
 die(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 ?>

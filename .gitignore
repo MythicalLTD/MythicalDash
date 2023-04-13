@@ -1,3 +1,4 @@
 backup.sh
 config.php 
 core/require/config.php
+vendor/
