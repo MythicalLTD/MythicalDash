@@ -155,8 +155,22 @@ else
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="/regen">Reset Password</a>
+                                        <?php 
+                                        if(!$userdb['discord_id'] == null || !$userdb['discord_username'] == null || !$userdb['discord_discriminator'] == null || !$userdb['discord_email'] == null)
+                                        {
+                                            ?>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" href="/auth/discord">Relink discord</a>
+                                            <?php
+                                        }
+                                        else
+                                        {
+                                            ?>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" href="/auth/discord">Link discord</a>
+                                            <?php
+                                        }
+                                        ?>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="/auth/logout">Logout</a>
                                     </li>
@@ -192,7 +206,7 @@ else
                             </span>
                             <h4 class="text-section">Overview</h4>
                         </li>
-                        <li class="nav-item ">
+                        <li class="nav-item">
                             <a href="/" class="collapsed">
                                 <i class="fas fa-home"></i>
                                 <p>Dashboard</p>
@@ -210,7 +224,6 @@ else
                                 <p>Shop</p>
                             </a>
                         </li>
-
                         <li class="nav-item">
                             <a data-toggle="collapse" href="#earn">
                                 <i class="fas fa-coins"></i>
@@ -335,6 +348,36 @@ else
                 </div>
             </div>
         </div>
+        <div class="main-panel">
+            <div class="container">
+                <div class="content">
+                    <div class="page-inner">
+                        <div class="mt-2 mb-4">
+                            <h2 class="text-white pb-2">Welcome back, <?= $userdb['username']?>!</h2>
+                        </div>
+                        <div class="row">
+                            <?php include('../core/imports/resources.php');?>
+                        </div>
+                        <?php         if (isset($_SESSION["error"])) {
+            ?>
+                        <div class="alert alert-danger text-danger" role="alert">
+                            <strong>Error!</strong> <?= $_SESSION["error"] ?>
+                        </div>
+                        <?php
+            unset($_SESSION["error"]);
+        }
+        ?>
+                        <?php
+        if (isset($_SESSION["success"])) {
+            ?>
+                        <div class="alert alert-success" role="alert">
+                            <strong>Success!</strong> <?= $_SESSION["success"] ?>
+                        </div>
+                        <?php
+            unset($_SESSION["success"]);
+        }
+        ?>
+                        
 <!-- Header -->
 
 <style>
@@ -354,23 +397,19 @@ else
 }
 </style>
 
-<div class="main-panel">
-			<div class="container container-full ">
-				<div class="page-wrapper has-sidebar">
-					<div class=" page-inner-fill ">
-						<div class="conversations">
-							<div class="message-header">
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 card-wrapper">
+            <div class="card">
+                <div class="card-header text-center">
+                    <br>
+                            <div class="message-header">
 								<div class="message-title">
-									<a class="btn btn-secondary btn-link" href="messages.html">
-										<i class="fa fa-flip-horizontal fa-share"></i>
-									</a>
+                                    <h1>Support Page</h1>
 									<div class="user ml-2">
-										<div class="avatar avatar-offline">
-											<img src="../assets/img/chadengle.jpg" alt="..." class="avatar-img rounded-circle border border-white">
-										</div>
 										<div class="info-user ml-2">
-											<span class="name">Chad</span>
-											<span class="last-active">Ticket #<?php echo $_GET['id']; ?> | <?= $ticket_db['status']?></span>
+											<span class="name text-white"><?php echo $_SESSION['uid']; ?></span>
+											<span class="last-active text-white">Ticket #<?php echo $_GET['id']; ?> | <?= $ticket_db['status']?></span>
 										</div>
 									</div>
 									<div class="ml-auto">
@@ -380,164 +419,59 @@ else
 									</div>
 								</div>
 							</div>
-							<div class="conversations-body">
-								<div class="conversations-content bg-black2" >
-                                            <?php
-                                            $ticket_id = $_GET['id'];
-                                            $query = "SELECT * FROM messages WHERE ticket_id='$ticket_id' ORDER BY created_at ASC";
-                                            $result = mysqli_query($cpconn, $query);
-                                            while ($row = mysqli_fetch_array($result)) {
-                                                echo '<div class="message-content-wrapper">';
-                                                echo '<div class="message message-in">';
-                                                    echo '<div class="avatar avatar-sm">';
-                                                        echo '<img src="../assets/img/chadengle.jpg" alt="..." class="avatar-img rounded-circle border border-white">';
-                                                    echo '</div>';
-                                            echo '<div class="message-body">';
-                                                echo '<div class="message-content">';
-                                                    echo '<div class="name">' . $row["username"] . '</div>';
-                                                    echo '<div class="content">' . $row["content"] . '</div>';
-                                                echo '</div>';
-                                                echo '<div class="date">' .  $row['created_at'] . '</div>';
-                                            echo '</div>';
-                                            echo '</div>';
-                                            echo '</div>';
-                                            }
-                                            ?>
-								</div>
-							</div>
-							<div class="messages-form bg-black">
-                            <div class="card-body">
-                                <form method="post">
-                                    <input type="hidden" name="ticket_id" value="<?php echo $ticket_id; ?>">
-                                    <div class="form-group">
-                                        <label for="content">Message</label>
-                                        <input class="form-control input-pill input-solid message-input" placeholder="Type Message Here ..." name="content" id="content" rows="3" ></input>
-                                        <br>
-                                    <?php 
-                                    if ($ticket_db['status'] == "closed")
-                                    {
-                                        ?>
-                                            <button type="submit" name="reopen_ticket" class="btn btn-primary">Open again</button>
-                                            <button type="submit" name="delete_ticket" class="btn btn-danger">Delete ticket</button>
-                                        <?php
-                                    }
-                                    else if ($ticket_db['status'] == "open")
-                                    {
-                                        ?>
-                                        <button type="submit" name="add_message" class="btn btn-primary">Add Message</button>
-                                        <button type="submit" name="close_ticket" class="btn btn-danger">Close ticket</button>
-                                        <?php
-                                    }
-                                    else
-                                    {
-
-                                    }
-                                    ?>
-                                </form>
-							</div>
-                            </div>
-						</div>
-					</div>
-				</div>
-			</div>
-            <?php 
-            include('../core/imports/credits.php')
-            ?>
-		</div>
-
-<!--
-        <div class="main-panel">
-			<div class="container container-full ">
-				<div class="page-wrapper has-sidebar">
-					<div class="row justify-content-center">
-						<div class="col-lg-11 conversations ">
-							<div class="message-header">
-								<div class="message-title">
-									<a class="btn btn-secondary btn-link" href="./select">
-										<i class="fa fa-flip-horizontal fa-share"></i>
-									</a>
-									<div class="user ml-2">
-										<div class="avatar avatar-online">
-											<img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle border border-white">
-										</div>
-										<div class="info-user ml-2">
-											<span class="name"><?php echo $_SESSION['uid']; ?></span>
-											<span class="last-active">Ticket #<?php echo $_GET['id']; ?> | <?= $ticket_db['status']?></span>
-										</div>
-									</div>
-									<div class="ml-auto">
-										<button class="btn btn-secondary btn-link page-sidebar-toggler d-xl-none">
-											<i class="fa fa-angle-double-left"></i>
-										</button>
-									</div>
-								</div>
-							</div>
-                            <ul class="list-group">
-                                <div class="conversations-body" >
-                                    <div class="conversations-content bg-black">
-                                        <div class="message-content-wrapper " >
-                                            <div class="card-body ">
-                                                <div class="card-header">
-                                                    Messages:
-                                                </div>
-                                                <ul class="list-group  list-group-flush">
-                                                <?php
-                                                $ticket_id = $_GET['id'];
-                                                $query = "SELECT * FROM messages WHERE ticket_id='$ticket_id' ORDER BY created_at ASC";
-                                                $result = mysqli_query($cpconn, $query);
-                                                while ($row = mysqli_fetch_array($result)) {
-                                                echo '<li class="list-group-item ">';
-                                                echo '<p class="text-white">' . $row['content'] . '</p> ';
-                                                echo '<p class="text-muted "> Sent by: <code>' . $row['username'] . '</code> at ' . $row['created_at'] . '</p>';
-                                                echo '</li>';
-                                                }
-                                                ?>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </ul>
-                            <div class="card-body">
-                                <form method="post">
-                                <input type="hidden" name="ticket_id" value="<?php echo $ticket_id; ?>">
-                                <div class="form-group">
-                                    <label for="content">Message</label>
-                                    <input class="form-control" name="content" id="content" rows="3" ></input>
-                                    <br>
-                                    <?php 
-                                if ($ticket_db['status'] == "closed")
-                                {
-                                    ?>
-                                        <button type="submit" name="reopen_ticket" class="btn btn-sm btn-primary">Open again</button>
-                                        <button type="submit" name="delete_ticket" class="btn btn-sm btn-danger">Delete ticket</button>
-                                    <?php
-                                }
-                                else if ($ticket_db['status'] == "open")
-                                {
-                                    ?>
-                                    <button type="submit" name="add_message" class="btn btn-primary">Add Message</button>
-                                    <button type="submit" name="close_ticket" class="btn btn-danger">Close ticket</button>
-                                    <?php
-                                }
-                                else
-                                {
-
-                                }
+                </div>
+                <div class="card-body">
+                  <ul class="list-group list-group-flush">
+                    <?php
+                    $ticket_id = $_GET['id'];
+                    $query = "SELECT * FROM messages WHERE ticket_id='$ticket_id' ORDER BY created_at ASC";
+                    $result = mysqli_query($cpconn, $query);
+                    while ($row = mysqli_fetch_array($result)) {
+                        echo '<li class="list-group-item">';
+                        echo '<div>';
+                        echo '<p class="text-white">' . $row['content'] . '</p>';
+                        echo '<p class="text-muted">Sent by: <code>' . $row['username'] . '</code> at ' . $row['created_at'] . '</p>';
+                        echo '</div>';
+                        echo '</li>';
+                    }                    
+                    ?>
+                  </ul>
+                </div>
+                    <div class="card-body">
+                        <form method="post">
+                            <input type="hidden" name="ticket_id" value="<?php echo $ticket_id; ?>">
+                            <div class="form-group">
+                                <label for="content">Message</label>
+                                <input class="form-control" name="content" id="content" rows="3" ></input>
+                                <br>
+                            <?php 
+                            if ($ticket_db['status'] == "closed")
+                            {
                                 ?>
-                                </form>
-                            </div>
-					    </div>
-				    </div>
-			    </div>
-		    </div>
+                                    <button type="submit" name="reopen_ticket" class="btn btn-sm btn-primary">Open again</button>
+                                    <button type="submit" name="delete_ticket" class="btn btn-sm btn-danger">Delete ticket</button>
+                                <?php
+                            }
+                            else if ($ticket_db['status'] == "open")
+                            {
+                                ?>
+                                <button type="submit" name="add_message" class="btn btn-primary">Add Message</button>
+                                <button type="submit" name="close_ticket" class="btn btn-danger">Close ticket</button>
+                                <?php
+                            }
+                            else
+                            {
+
+                            }
+                            ?>
+                        </form>
+                    </div>
+            </div>
         </div>
-                            -->
+    </div>
+
+
 </body>
-<script>
-      const Scroll = document.getElementById('myDiv');
-      myDiv.scrollTop = myDiv.scrollHeight;
-    </script>
 <?php 
 include('../core/imports/footer.php')
 ?>

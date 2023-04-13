@@ -1,3 +1,15 @@
+<style>
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 70px; /* Set to desired footer height */
+  z-index: 9999; 
+}
+
+</style>
 <footer class="footer">
 				<div class="container-fluid">
 					<nav class="pull-left">

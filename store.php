@@ -409,6 +409,7 @@ if(isset($_POST['buyback'])) {
                                 display: flex;
                                 justify-content: space-between;
                             }
+
                         </style>
                         <div class="container-fluid mt--6">
                             <div class="row justify-content-center">
@@ -513,7 +514,7 @@ if(isset($_POST['buyback'])) {
                                             <!-- Row 2 -->
                                             <div class="col-lg-3 col-md-6 mb-9">
                                                 <div class="h-100 text-center">
-                                                    <a class="mx-auto text-center"><img class="card-img-top" src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/img/internet_hub_480px.png" alt=""></a>
+                                                    <a class="mx-auto text-center"><img class="card-img-top" src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/img/internet_hub_480px.png" alt=""></a>
                                                     <div class="card-body">
                                                         <h4 class="card-title">
                                                             <a>Ports</a>
@@ -535,7 +536,7 @@ if(isset($_POST['buyback'])) {
 
                                             <div class="col-lg-3 col-md-6 mb-9">
                                                 <div class="h-100 text-center">
-                                                    <a class="mx-auto text-center"><img class="card-img-top" src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/img/synchronize_480px.png" alt=""></a>
+                                                    <a class="mx-auto text-center"><img class="card-img-top" src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/img/synchronize_480px.png" alt=""></a>
                                                     <div class="card-body">
                                                         <h4 class="card-title">
                                                             <a>Backup</a>
@@ -556,7 +557,7 @@ if(isset($_POST['buyback'])) {
                                             </div>
                                             <div class="col-lg-3 col-md-6 mb-9">
                                                 <div class="h-100 text-center">
-                                                    <a class="mx-auto text-center"><img class="card-img-top" src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/argon/img/mysql_logo_480px.png" alt=""></a>
+                                                    <a class="mx-auto text-center"><img class="card-img-top" src="<?= $getsettingsdb["proto"] . $_SERVER['SERVER_NAME']?>/assets/img/mysql_logo_480px.png" alt=""></a>
                                                     <div class="card-body">
                                                         <h4 class="card-title">
                                                             <a>Database</a>
@@ -578,15 +579,12 @@ if(isset($_POST['buyback'])) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                        </div>
+
                         </div>
                         <?php include('core/imports/footer.php');?>
                     </div>
                 </div>
-            </div>
-            <?php 
-            include('core/imports/credits.php')
-            ?>
         </div>
     </div>
 </body>
