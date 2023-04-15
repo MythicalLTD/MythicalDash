@@ -185,25 +185,39 @@ if (isset($_GET['createsv'])) {
                             <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"
                                 aria-expanded="false">
                                 <div class="avatar-sm">
-                                    <img src="<?= $muserdb['avatar']?>" alt="..." class="avatar-img rounded-circle">
+                                    <img src="<?= $userdbd['avatar']?>" alt="..." class="avatar-img rounded-circle">
                                 </div>
                             </a>
                             <ul class="dropdown-menu dropdown-user animated fadeIn">
                                 <div class="dropdown-user-scroll scrollbar-outer">
                                     <li>
                                         <div class="user-box">
-                                            <div class="avatar-lg"><img src="<?= $muserdb['avatar']?>"
+                                            <div class="avatar-lg"><img src="<?= $userdb['avatar']?>"
                                                     alt="image profile" class="avatar-img rounded"></div>
                                             <div class="u-text">
-                                                <h4><?= $muserdb['username']?></h4>
-                                                <p class="text-muted"><?= $muserdb['role']?></p>
-                                                <p class="text-muted">Coins: <?= $muserdb['coins']?></p>
+                                                <h4><?= $userdb['username']?></h4>
+                                                <p class="text-muted"><?= $userdb['role']?></p>
+                                                <p class="text-muted">Coins: <?= $userdb['coins']?></p>
                                             </div>
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="/regen">Reset Password</a>
+                                        <?php 
+                                        if(!$userdb['discord_id'] == null || !$userdb['discord_username'] == null || !$userdb['discord_discriminator'] == null || !$userdb['discord_email'] == null)
+                                        {
+                                            ?>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" href="/auth/discord">Relink discord</a>
+                                            <?php
+                                        }
+                                        else
+                                        {
+                                            ?>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" href="/auth/discord">Link discord</a>
+                                            <?php
+                                        }
+                                        ?>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="/auth/logout">Logout</a>
                                     </li>
@@ -219,20 +233,26 @@ if (isset($_GET['createsv'])) {
                 <div class="sidebar-content">
                     <div class="user">
                         <div class="avatar-sm float-left mr-2">
-                            <img src="<?= $muserdb['avatar']?>" alt="..." class="avatar-img rounded-circle">
+                            <img src="<?= $userdb['avatar']?>" alt="..." class="avatar-img rounded-circle">
                         </div>
                         <div class="info">
                             <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
                                 <span>
-                                    <?= $muserdb['username']?>
+                                    <?= $userdb['username']?>
 
-                                    <span class="user-level"><?= $muserdb['role']?></span>
+                                    <span class="user-level"><?= $userdb['role']?></span>
 
                                 </span>
                             </a>
                         </div>
                     </div>
                     <ul class="nav nav-primary">
+                        <li class="nav-section">
+                            <span class="sidebar-mini-icon">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </span>
+                            <h4 class="text-section">Overview</h4>
+                        </li>
                         <li class="nav-item">
                             <a href="/" class="collapsed">
                                 <i class="fas fa-home"></i>
@@ -251,8 +271,7 @@ if (isset($_GET['createsv'])) {
                                 <p>Shop</p>
                             </a>
                         </li>
-
-                        <li class="nav-item ">
+                        <li class="nav-item">
                             <a data-toggle="collapse" href="#earn">
                                 <i class="fas fa-coins"></i>
                                 <p>Earn</p>
@@ -260,9 +279,9 @@ if (isset($_GET['createsv'])) {
                             </a>
                             <div class="collapse" id="earn">
                                 <ul class="nav nav-collapse">
-                                    <li class="nav-item ">
+                                    <li class="nav-item">
                                         <a href="/earn/afk" class="collapsed">
-                                            <p class="">AFK</p>
+                                            <p>AFK</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -284,93 +303,14 @@ if (isset($_GET['createsv'])) {
                                 <p>Support</p>
                             </a>
                         </li>
-                        <li class="nav-section">
-                            <span class="sidebar-mini-icon">
-                                <i class="fa fa-ellipsis-h"></i>
-                            </span>
-                            <h4 class="text-section">Links</h4>
-                        </li>
-                        <?php 
-                        if ($getsettingsdb['enable_mainwebsite'] == "false")
-                        {
-
-                        }
-                        else
-                        {
-                            ?>
-                        <li class="nav-item">
-                            <a href="<?= $getsettingsdb['website']?>" class="collapsed">
-                                <i class="bi bi-house-fill"></i>
-                                <p>Website</p>
-                            </a>
-                        </li>
-                        <?php 
-                            
-                        }
-                        
-                        if ($getsettingsdb['enable_discord'] == "false")
-                        {
-
-                        }
-                        else
-                        {
-                            ?>
-                        <li class="nav-item">
-                            <a href="<?= $getsettingsdb['discordserver']?>" class="collapsed">
-                                <i class="bi bi-discord"></i>
-                                <p>Discord</p>
-                            </a>
-                        </li>
-                        <?php
-                        }
-
-                        if ($getsettingsdb['enable_phpmyadmin'] == "false")
-                        {
-
-                        }
-                        else
-                        {
-                            
-                            ?>
-                            <li class="nav-item">
-                            <a href="<?= $getsettingsdb['phpmyadmin']?>" class="collapsed">
-                                <i class="bi bi-server"></i>
-                                <p>PhpMyAdmin</p>
-                            </a>
-                            </li>
-                            <?php
-                        }
-                        if ($getsettingsdb['enable_status'] == "false")
-                        {
-
-                        }
-                        else
-                        {
-                            ?>
-                            <li class="nav-item">
-                            <a href="<?= $getsettingsdb['statuspage']?>" class="collapsed">
-                                <i class="fas fa-signal"></i>
-                                <p>Status</p>
-                            </a>
-                            </li>
-                            <?php
-                        }
-                        ?>
-
-                        <li class="nav-item">
-                            <a href="<?= $getsettingsdb['ptero_url']?>" class="collapsed">
-                                <i class="fas fa-external-link-square-alt"></i>
-                                <p>Panel</p>
-                            </a>
-                        </li>
-
-
+                        <?php include('../core/imports/sidebar_links.php')?>
                         <li class="nav-section">
                             <span class="sidebar-mini-icon">
                                 <i class="fa fa-ellipsis-h"></i>
                             </span>
                             <h4 class="text-section">Administrative Overview</h4>
                         </li>
+
                     </ul>
                 </div>
             </div>
@@ -380,30 +320,30 @@ if (isset($_GET['createsv'])) {
                 <div class="content">
                     <div class="page-inner">
                         <div class="mt-2 mb-4">
-                            <h2 class="text-white pb-2">Welcome back, <?= $muserdb['username']?>!</h2>
+                            <h2 class="text-white pb-2">Welcome back, <?= $userdb['username']?>!</h2>
                         </div>
                         <div class="row">
-                        <?php include('../core/imports/resources.php');?>
+                            <?php include('../core/imports/resources.php');?>
                         </div>
-                        <?php if (isset($_SESSION["error"])) {
+                        <?php         if (isset($_SESSION["error"])) {
             ?>
-            <div class="alert alert-danger text-danger" role="alert">
-                <strong>Error!</strong> <?= $_SESSION["error"] ?>
-            </div>
-            <?php
+                        <div class="alert alert-danger text-danger" role="alert">
+                            <strong>Error!</strong> <?= $_SESSION["error"] ?>
+                        </div>
+                        <?php
             unset($_SESSION["error"]);
         }
         ?>
-        <?php
+                        <?php
         if (isset($_SESSION["success"])) {
             ?>
-            <div class="alert alert-success text-danger" role="alert">
-                <strong>Success!</strong> <?= $_SESSION["success"] ?>
-            </div>
-            <?php
+                        <div class="alert alert-success" role="alert">
+                            <strong>Success!</strong> <?= $_SESSION["success"] ?>
+                        </div>
+                        <?php
             unset($_SESSION["success"]);
         }
-        ?>                   
+        ?>
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">

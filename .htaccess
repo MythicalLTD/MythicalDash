@@ -87,7 +87,7 @@ ErrorDocument 500 /core/errors/404.php
 order allow,deny
 deny from all
 </Files>
-<Files logs.txt>
+<Files access.log>
 order allow,deny
 deny from all
 </Files>
