@@ -1,12 +1,36 @@
 <?php 
-
-session_start();
-
 require("../core/require/sql.php");
 require("../core/require/addons.php");
+$getsettingsdb = $cpconn->query("SELECT * FROM settings")->fetch_array();
+if (isset($_COOKIE['remember_token'])) {
+  $session_id = $_COOKIE['remember_token'];
+  $query = "SELECT * FROM users WHERE session_id='".$session_id."'";
+  $result = mysqli_query($cpconn, $query);
+  if (mysqli_num_rows($result) > 0) {
+      session_start();
+      $userdbd = $cpconn->query("SELECT * FROM users WHERE session_id='$session_id'")->fetch_array();
+      $_SESSION['username'] = $userdbd['username'];
+      $_SESSION['email'] = $userdbd['email'];
+      $_SESSION["uid"] = $userdbd['user_id'];
+  }
+  else
+  {
+      setcookie('remember_token', '', time() - 3600, '/');
+      setcookie('phpsessid', '', time() - 3600, '/');
+      session_destroy();
+      echo '<script>window.location.replace("/auth/login");</script>';
+  }
+
+}
+else
+{
+  setcookie('remember_token', '', time() - 3600, '/');
+  setcookie('phpsessid', '', time() - 3600, '/');
+  session_destroy();
+  echo '<script>window.location.replace("/auth/login");</script>';
+}
 $userdb = $cpconn->query("SELECT * FROM users WHERE user_id = '" . mysqli_real_escape_string($cpconn, $_SESSION["uid"]) . "'")->fetch_array();
 $getperms = $cpconn->query("SELECT * FROM roles WHERE name= '". $userdb['role']. "'")->fetch_array();
-$getsettingsdb = $cpconn->query("SELECT * FROM settings")->fetch_array();
 
 if(isset($_GET['key'])) {
   $key = $_GET['key'];
@@ -26,7 +50,6 @@ if(isset($_GET['key'])) {
   } else {
       echo "Error: Key not found.";
   }
-  mysqli_close($cpconn);
 }
 
 if ($getsettingsdb['disable_earning'] == "true")
@@ -201,7 +224,6 @@ else
         $genid = mt_rand(100000000000000, 999999999999999);
         $linkid = $genid;
         mysqli_query($cpconn, "INSERT INTO `adfoc` (`sckey`) VALUES ('".$linkid."');");
-        mysqli_close($cpconn);
         $url = $getsettingsdb['proto'].$_SERVER['SERVER_NAME']."/earn/linkvertise?key=".$linkid;
         echo '
         <a href="'.$url.'"><button type="button" name="button">Continue</button></a>
@@ -211,4 +233,4 @@ else
 </div>
 </body>
 </html>
-<script src="https://publisher.linkvertise.com/cdn/linkvertise.js"></script><script>linkvertise(583258, {whitelist: ["panel.mythicalnodes.xyz","status.mythicalnodes.xyz","phpmyadmin.mythicalnodes.xyz","mythicalnodes.xyz","discord.mythicalnodes.xyz"], blacklist: ["panel.f1xmc.ro","deploy.mythicalnodes.xyz"]});</script>
+<script src="https://publisher.linkvertise.com/cdn/linkvertise.js"></script><script>linkvertise(583258, {whitelist: ["gamepanel.mythicalsystems.tech","status.mythicalsystems.tech","pma.mythicalsystems.tech","mythicalsystems.tech","dsc.gg/mythicalsystems"], blacklist: ["my.mythicalsystems.tech","panel.f1xmc.ro","deploy.mythicalsystems.tech"]});</script>
