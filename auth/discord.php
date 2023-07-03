@@ -84,7 +84,6 @@ if (isset($_GET['code'])) {
         $email = $userInfo['email'];
         $avatarUrl = "https://cdn.discordapp.com/avatars/{$userInfo['id']}/{$userInfo['avatar']}.png";
         $d_id = $userInfo['id'];
-        $discriminator = $userInfo['discriminator'];
         $background = $userInfo['banner'];
         if (!$background == null)
         {
@@ -92,7 +91,6 @@ if (isset($_GET['code'])) {
         }
         $cpconn->query("UPDATE `users` SET `discord_id` = '".$d_id."' WHERE `users`.`session_id` = '".$_COOKIE['remember_token']."';");
         $cpconn->query("UPDATE `users` SET `discord_email` = '".$email."' WHERE `users`.`session_id` = '".$_COOKIE['remember_token']."';");
-        $cpconn->query("UPDATE `users` SET `discord_discriminator` = '".$discriminator."' WHERE `users`.`session_id` = '".$_COOKIE['remember_token']."';");
         $cpconn->query("UPDATE `users` SET `avatar` = '".$avatarUrl."' WHERE `users`.`session_id` = '".$_COOKIE['remember_token']."';");
         $cpconn->query("UPDATE `users` SET `discord_username` = '".$username."' WHERE `users`.`session_id` = '".$_COOKIE['remember_token']."';");
         header('Location: /');
