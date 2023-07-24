@@ -1,0 +1,9 @@
+public/assets/* linguist-generated
+public/app-assets/* linguist-generated
+public/fonts/* linguist-generated
+*.html linguist-vendored
+*.css linguist-vendored
+*.js linguist-vendored  
+*.bash linguist-vendored
+*.scss linguist-vendored
+*.twig linguist-vendored

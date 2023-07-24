@@ -1,0 +1,10 @@
+.vscode/
+.alcache/
+.mythicalide/
+.env
+core/storage/*
+/vendor
+/.idea
+logs/*.log
+/config.yml
+/public/pma/

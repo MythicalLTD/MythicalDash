@@ -1,0 +1,18 @@
+{
+    "name": "mythicalsystems/mythicaldash",
+    "description": "Open-Source Client Area for Pterodactyl",
+    "type": "project",
+    "license": "Apache2",
+    "authors": [
+        {
+            "name": "NaysKutzu",
+            "email": "nayskutuz@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "ecoal95/php-router": "^1.0",
+        "symfony/yaml": "^6.3",
+        "phpseclib/phpseclib": "^3.0"
+    }
+}

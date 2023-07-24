@@ -1,0 +1,4 @@
+<?php 
+// THIS IS THE MAIN FILE OF THE WEBHOSTING PANEL YOU CAN ADD YOUR CUSTOM TEMPLATE HERE AND STORE YOUR ASSETS INSIDE public/assets
+header('location: /dashboard');
+?>
