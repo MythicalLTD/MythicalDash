@@ -123,7 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" />
                             <label class="form-check-label" for="terms-conditions">
                                 I agree to the <a type="button" class="text-primary" data-bs-toggle="modal"
-                                    data-bs-target="#tos">terms of service &amp; privacy policy</a>
+                                    data-bs-target="#tos">terms of service</a> &amp; <a type="button" class="text-primary" data-bs-toggle="modal"
+                                    data-bs-target="#pp">privacy policy</a>
                             </label>
                         </div>
                     </div>
