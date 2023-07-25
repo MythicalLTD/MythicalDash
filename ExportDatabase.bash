@@ -25,8 +25,8 @@ select option in "Export DB (Push)" "Export DB (Release)"; do
             break
             ;;
         "Export DB (Release)")
-            export_db
             cd public
+            export_db
             echo "DO NOT DELETE THIS FILE IF YOU DID NOT INSTALL mythicaldash via the WebInterface first" > FIRST_INSTALL
             break
             ;;
