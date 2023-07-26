@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
                 $result = mysqli_query($conn, $check_query);
                 if (!mysqli_num_rows($result) > 0) {
-                    $conn->query("INSERT INTO `mythicaldash_users` (`email`, `username`, `first_name`, `last_name`, `password`, `api_key`) VALUES ('".$email."', '".$username."', '".$first_name."', '".$last_name."', '".$password."', '".$skey."');");
+                    $conn->query("INSERT INTO `mythicaldash_users` (`email`, `username`, `first_name`, `last_name`, `password`, `api_key`) VALUES ('" . $email . "', '" . $username . "', '" . $first_name . "', '" . $last_name . "', '" . $password . "', '" . $skey . "');");
                     header('location: /auth/login');
                 } else {
                     header('location: /auth/register?e=Username or email already exists. Please choose a different one');
@@ -124,8 +124,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" />
                             <label class="form-check-label" for="terms-conditions">
                                 I agree to the <a type="button" class="text-primary" data-bs-toggle="modal"
-                                    data-bs-target="#tos">terms of service</a> &amp; <a type="button" class="text-primary" data-bs-toggle="modal"
-                                    data-bs-target="#pp">privacy policy</a>
+                                    data-bs-target="#tos">terms of service</a> &amp; <a type="button"
+                                    class="text-primary" data-bs-toggle="modal" data-bs-target="#pp">privacy policy</a>
                             </label>
                         </div>
                     </div>
@@ -140,7 +140,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     ?>
                     <?= $csrf->input('register-form'); ?>
-                    <button type="submit" value="true" name="sign_up" class="btn btn-primary d-grid w-100">Sign up</button>
+                    <button type="submit" value="true" name="sign_up" class="btn btn-primary d-grid w-100">Sign
+                        up</button>
                 </form>
                 <?php
                 if (isset($_GET['e'])) {

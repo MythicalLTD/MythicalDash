@@ -49,13 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
               writeLog('auth', "The user ($email) logged in.", $conn);
               if (isset($_GET['r'])) {
-                header('location: '.$_GET['r']);
-              }
-              else
-              {
+                header('location: ' . $_GET['r']);
+              } else {
                 header('location: /dashboard');
               }
-               // Stop execution after successful login
+              // Stop execution after successful login
             } else {
               writeLog("auth", "Failed to login: 'Invalid Password'", $conn);
               header('location: /auth/login?e=Invalid Password');
@@ -90,7 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 ?>
-<html lang="en" class="dark-style customizer-hide" dir="ltr" data-theme="theme-semi-dark" data-assets-path="<?= $appURL ?>/assets/" data-template="horizontal-menu-template">
+<html lang="en" class="dark-style customizer-hide" dir="ltr" data-theme="theme-semi-dark"
+  data-assets-path="<?= $appURL ?>/assets/" data-template="horizontal-menu-template">
 
 <head>
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
@@ -158,14 +157,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ?>
             <?= $csrf->input('login-form'); ?>
             <button type="submit" name="login" class="btn btn-primary d-grid w-100">Sign in</button>
-            
+
           </form>
           <p class="text-center">
-              <span>New on our platform?</span>
-              <a href="/auth/register">
-                <span>Create an account</span>
-              </a>
-            </p>
+            <span>New on our platform?</span>
+            <a href="/auth/register">
+              <span>Create an account</span>
+            </a>
+          </p>
           <?php
           if (isset($_GET['e'])) {
             ?>
