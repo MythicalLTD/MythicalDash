@@ -38,7 +38,12 @@ else
         require("../include/main.php");
         require("../view/auth/login.php");
     });
-    
+
+    $router->add('/auth/register', function () {
+        require("../include/main.php");
+        require("../view/auth/register.php");
+    });
+
     $router->add('/dashboard', function () {
         require("../include/main.php");
         require("../view/dashboard.php");

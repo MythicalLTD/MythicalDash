@@ -159,8 +159,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ?>
             <?= $csrf->input('login-form'); ?>
             <button type="submit" name="login" class="btn btn-primary d-grid w-100">Sign in</button>
-
+            
           </form>
+          <p class="text-center">
+              <span>New on our platform?</span>
+              <a href="/auth/register">
+                <span>Create an account</span>
+              </a>
+            </p>
           <?php
           if (isset($_GET['error'])) {
             ?>

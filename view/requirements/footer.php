@@ -17,7 +17,6 @@
 <script src="<?= $appURL ?>/assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
 <script src="<?= $appURL ?>/assets/vendor/libs/cleavejs/cleave.js"></script>
 <script src="<?= $appURL ?>/assets/vendor/libs/cleavejs/cleave-phone.js"></script>
-<!--<script src="<?= $appURL ?>/assets/js/MythicalGuard.js"></script>-->
-
-<!-- Main JS -->
 <script src="<?= $appURL ?>/assets/js/main.js"></script>
+<script src="<?= $appURL ?>/assets/vendor/libs/bs-stepper/bs-stepper.js"></script>
+<!--<script src="<?= $appURL ?>/assets/js/MythicalGuard.js"></script>-->
