@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       if ($captcha_success->success == false) {
         writeLog("auth", "Failed to login: 'reCAPTCHA failed'", $conn);
-        echo "<center><div class='return' style='background-color:red'>CAPTCHA Failed. <a href='/auth/login' style='color:white;'>Click to retry</a></div></center>";
+        header('location: /auth/login?e=reCAPTCHA Verification Failed');
         exit; // Stop execution if CAPTCHA fails
       }
     }
@@ -49,26 +49,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
               writeLog('auth', "The user ($email) logged in.", $conn);
               if (isset($_GET['r'])) {
-                header('location: '.$_GET['r']);
-              }
-              else
-              {
+                header('location: ' . $_GET['r']);
+              } else {
                 header('location: /dashboard');
               }
-               // Stop execution after successful login
+              // Stop execution after successful login
             } else {
               writeLog("auth", "Failed to login: 'Invalid Password'", $conn);
-              header('location: /auth/login?error=Invalid Password');
+              header('location: /auth/login?e=Invalid Password');
               exit; // Stop execution if password is invalid
             }
           } else {
             writeLog("auth", "Failed to login: 'Invalid email'", $conn);
-            header('location: /auth/login?error=Invalid email');
+            header('location: /auth/login?e=Invalid email');
             exit; // Stop execution if email is invalid
           }
         } else {
           writeLog("error", "Failed to log user in", $conn);
-          header('location: /auth/login?error=Failed to log user in');
+          header('location: /auth/login?e=Failed to log user in');
           exit; // Stop execution if login fails
         }
         mysqli_free_result($result);
@@ -77,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     } else {
       writeLog("error", "Failed to log user in: 'Login failed'", $conn);
-      header('location: /auth/login?error=Login failed');
+      header('location: /auth/login?e=Login failed');
       exit; // Stop execution if login button is not pressed
     }
   } else {
@@ -85,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     setcookie('api_key', '', time() - (10 * 365 * 24 * 60 * 60 * 2), '/');
     setcookie('phpsessid', '', time() - (10 * 365 * 24 * 60 * 60 * 2), '/');
     writeLog("error", "Failed to log user in: 'CSRF Verification Failed'", $conn);
-    header('location: /auth/login?error=CSRF Verification Failed');
+    header('location: /auth/login?e=CSRF Verification Failed');
     exit; // Stop execution if CSRF validation fails
   }
 }
@@ -130,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="mb-3 form-password-toggle">
               <div class="d-flex justify-content-between">
                 <label class="form-label" for="password">Password</label>
-                <a href="auth-forgot-password-cover.html">
+                <a href="/auth/forgot-password">
                   <small>Forgot Password?</small>
                 </a>
               </div>
@@ -159,19 +157,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ?>
             <?= $csrf->input('login-form'); ?>
             <button type="submit" name="login" class="btn btn-primary d-grid w-100">Sign in</button>
-            
+
           </form>
           <p class="text-center">
-              <span>New on our platform?</span>
-              <a href="/auth/register">
-                <span>Create an account</span>
-              </a>
-            </p>
+            <span>New on our platform?</span>
+            <a href="/auth/register">
+              <span>Create an account</span>
+            </a>
+          </p>
           <?php
-          if (isset($_GET['error'])) {
+          if (isset($_GET['e'])) {
             ?>
             <div class="text-center alert alert-danger" role="alert">
-              <?= $_GET['error'] ?>
+              <?= $_GET['e'] ?>
             </div>
             <?php
           } else {

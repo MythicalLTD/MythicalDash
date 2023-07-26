@@ -44,6 +44,21 @@ else
         require("../view/auth/register.php");
     });
 
+    $router->add('/auth/logout', function () {
+        require("../include/main.php");
+        require("../functions/logout.php");
+    });
+
+    $router->add('/auth/forgot-password', function () {
+        require("../include/main.php");
+        require("../view/auth/forgot-password.php");
+    });
+
+    $router->add('/auth/reset-password', function () {
+        require("../include/main.php");
+        require("../view/auth/reset-password.php");
+    });
+
     $router->add('/dashboard', function () {
         require("../include/main.php");
         require("../view/dashboard.php");
@@ -62,11 +77,6 @@ else
     $router->add('/help-center', function () {
         require("../include/main.php");
         require("../view/help-center.php");
-    });
-    
-    $router->add('/auth/logout', function () {
-        require("../include/main.php");
-        require("../functions/logout.php");
     });
     
     $router->add("/e/critical", function () {
@@ -131,6 +141,11 @@ else
     $router->add("/admin/users/security/resetpwd",function() {
         require("../include/main.php");
         require("../view/admin/users/user_reset_password.php");
+    });
+
+    $router->add("/email/reset-password",function() {
+        require("../include/main.php");
+        require("../view/email/reset-password.php");
     });
     
     $router->add("/e/401", function () {
