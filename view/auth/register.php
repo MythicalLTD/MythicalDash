@@ -38,11 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $upassword = mysqli_real_escape_string($conn, $_POST['password']);
             $password = password_hash($upassword, PASSWORD_DEFAULT);
             $skey = generate_key($email, $password);
-            if (!$username == "" || $email == "" || $first_name == "" || $last_name == "" || $upassword == "") {
+            if (!$username == "" || !$email == "" || !$first_name == "" || !$last_name == "" || !$upassword == "") {
                 $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
                 $result = mysqli_query($conn, $check_query);
                 if (!mysqli_num_rows($result) > 0) {
-
+                    $conn->query("INSERT INTO `mythicaldash_users` (`email`, `username`, `first_name`, `last_name`, `password`, `api_key`) VALUES ('".$email."', '".$username."', '".$first_name."', '".$last_name."', '".$password."', '".$skey."');");
+                    header('location: /auth/login');
                 } else {
                     header('location: /auth/register?e=Username or email already exists. Please choose a different one');
                     exit();
@@ -139,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     ?>
                     <?= $csrf->input('register-form'); ?>
-                    <button name="sign_up" class="btn btn-primary d-grid w-100">Sign up</button>
+                    <button type="submit" value="true" name="sign_up" class="btn btn-primary d-grid w-100">Sign up</button>
                 </form>
                 <?php
                 if (isset($_GET['e'])) {
