@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($captcha_success->success == false) {
                 writeLog("auth", "Failed to login: 'reCAPTCHA failed'", $conn);
-                echo "<center><div class='return' style='background-color:red'>CAPTCHA Failed. <a href='/auth/register' style='color:white;'>Click to retry</a></div></center>";
+                header('location: /auth/login?e=reCAPTCHA Verification Failed');
                 exit; // Stop execution if CAPTCHA fails
             }
         }

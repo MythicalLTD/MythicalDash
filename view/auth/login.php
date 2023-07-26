@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       if ($captcha_success->success == false) {
         writeLog("auth", "Failed to login: 'reCAPTCHA failed'", $conn);
-        echo "<center><div class='return' style='background-color:red'>CAPTCHA Failed. <a href='/auth/login' style='color:white;'>Click to retry</a></div></center>";
+        header('location: /auth/login?e=reCAPTCHA Verification Failed');
         exit; // Stop execution if CAPTCHA fails
       }
     }
@@ -58,17 +58,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                // Stop execution after successful login
             } else {
               writeLog("auth", "Failed to login: 'Invalid Password'", $conn);
-              header('location: /auth/login?error=Invalid Password');
+              header('location: /auth/login?e=Invalid Password');
               exit; // Stop execution if password is invalid
             }
           } else {
             writeLog("auth", "Failed to login: 'Invalid email'", $conn);
-            header('location: /auth/login?error=Invalid email');
+            header('location: /auth/login?e=Invalid email');
             exit; // Stop execution if email is invalid
           }
         } else {
           writeLog("error", "Failed to log user in", $conn);
-          header('location: /auth/login?error=Failed to log user in');
+          header('location: /auth/login?e=Failed to log user in');
           exit; // Stop execution if login fails
         }
         mysqli_free_result($result);
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     } else {
       writeLog("error", "Failed to log user in: 'Login failed'", $conn);
-      header('location: /auth/login?error=Login failed');
+      header('location: /auth/login?e=Login failed');
       exit; // Stop execution if login button is not pressed
     }
   } else {
@@ -85,13 +85,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     setcookie('api_key', '', time() - (10 * 365 * 24 * 60 * 60 * 2), '/');
     setcookie('phpsessid', '', time() - (10 * 365 * 24 * 60 * 60 * 2), '/');
     writeLog("error", "Failed to log user in: 'CSRF Verification Failed'", $conn);
-    header('location: /auth/login?error=CSRF Verification Failed');
+    header('location: /auth/login?e=CSRF Verification Failed');
     exit; // Stop execution if CSRF validation fails
   }
 }
 ?>
-<html lang="en" class="dark-style customizer-hide" dir="ltr" data-theme="theme-semi-dark"
-  data-assets-path="<?= $appURL ?>/assets/" data-template="horizontal-menu-template">
+<html lang="en" class="dark-style customizer-hide" dir="ltr" data-theme="theme-semi-dark" data-assets-path="<?= $appURL ?>/assets/" data-template="horizontal-menu-template">
 
 <head>
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
@@ -130,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="mb-3 form-password-toggle">
               <div class="d-flex justify-content-between">
                 <label class="form-label" for="password">Password</label>
-                <a href="auth-forgot-password-cover.html">
+                <a href="/auth/forgot-password">
                   <small>Forgot Password?</small>
                 </a>
               </div>
@@ -168,10 +167,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               </a>
             </p>
           <?php
-          if (isset($_GET['error'])) {
+          if (isset($_GET['e'])) {
             ?>
             <div class="text-center alert alert-danger" role="alert">
-              <?= $_GET['error'] ?>
+              <?= $_GET['e'] ?>
             </div>
             <?php
           } else {
