@@ -34,6 +34,15 @@ else
         require("../view/index.php");
     });
     
+    $router->add("/api/mysql", function() {
+        require("../api/mysql.php");
+    });
+
+    $router->add("/api/client/info", function() {
+        require("../include/main.php");
+        require("../api/client/user/info.php");
+    });
+
     $router->add('/auth/login', function () {
         require("../include/main.php");
         require("../view/auth/login.php");

@@ -95,12 +95,12 @@
               <span class="align-middle">My Profile</span>
             </a>
           </li>
-          <li>
+          <!--<li>
             <a class="dropdown-item" href="/user/api">
               <i class="ti ti-key me-2 ti-sm"></i>
               <span class="align-middle">API Keys</span>
             </a>
-          </li>
+          </li>-->
           <li>
             <div class="dropdown-divider"></div>
           </li>
