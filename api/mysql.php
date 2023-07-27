@@ -1,8 +1,5 @@
-<?php 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-header('Content-Type: application/json');
+<?php
+include(__DIR__."/base.php");
 if (isset($_GET['host']) && isset($_GET['username']) && isset($_GET['database'])) {
     $dbhost = $_GET['host'];
     $dbport = $_GET['port'];
