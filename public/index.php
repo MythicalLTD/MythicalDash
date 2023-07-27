@@ -43,6 +43,12 @@ else
         require("../api/client/user/info.php");
     });
 
+    $router->add("/api/admin/info", function() {
+        require("../include/main.php");
+        require("../api/admin/user/info.php");
+    });
+
+
     $router->add('/auth/login', function () {
         require("../include/main.php");
         require("../view/auth/login.php");

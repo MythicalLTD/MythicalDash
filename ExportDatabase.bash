@@ -9,7 +9,7 @@ export_db() {
     /usr/bin/mariadb -u root -e "DROP DATABASE IF EXISTS $TEMP_DB_NAME;"
     /usr/bin/mariadb -u root -e "CREATE DATABASE $TEMP_DB_NAME;"
     /usr/bin/mariadb-dump -u root --no-data "$DB_NAME" | /usr/bin/mariadb -u root "$TEMP_DB_NAME"
-    /usr/bin/mariadb-dump -u root --no-data "$DB_NAME" --tables mythicaldash_logs mythicaldash_settings mythicaldash_users | /usr/bin/mariadb -u root "$TEMP_DB_NAME"
+    /usr/bin/mariadb-dump -u root --no-data "$DB_NAME" --tables mythicaldash_logs mythicaldash_settings mythicaldash_users mythicaldash_apikeys mythicaldash_resetpasswords | /usr/bin/mariadb -u root "$TEMP_DB_NAME"
     TABLES="$(/usr/bin/mariadb -u root -N -B -e "SHOW TABLES IN $TEMP_DB_NAME")"
     for TABLE in $TABLES; do
         /usr/bin/mariadb -u root -e "TRUNCATE TABLE $TEMP_DB_NAME.$TABLE;"
@@ -25,6 +25,7 @@ select option in "Export DB (Push)" "Export DB (Release)"; do
             break
             ;;
         "Export DB (Release)")
+            export_db
             cd public
             export_db
             echo "DO NOT DELETE THIS FILE IF YOU DID NOT INSTALL mythicaldash via the WebInterface first" > FIRST_INSTALL

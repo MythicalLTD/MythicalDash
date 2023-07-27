@@ -1,6 +1,20 @@
 
 
 
+DROP TABLE IF EXISTS `mythicaldash_apikeys`;
+CREATE TABLE `mythicaldash_apikeys` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `skey` text NOT NULL,
+  `ownerkey` text NOT NULL,
+  `created` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+LOCK TABLES `mythicaldash_apikeys` WRITE;
+UNLOCK TABLES;
+
+
 DROP TABLE IF EXISTS `mythicaldash_logs`;
 CREATE TABLE `mythicaldash_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -48,6 +62,8 @@ CREATE TABLE `mythicaldash_settings` (
   `smtpUsername` text DEFAULT NULL,
   `smtpPassword` text DEFAULT NULL,
   `fromEmail` text DEFAULT NULL,
+  `PterodactylURL` text DEFAULT NULL,
+  `PterodactylAPIKey` text DEFAULT NULL,
   `version` text NOT NULL DEFAULT '0.0.0.1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
