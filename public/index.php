@@ -4,6 +4,17 @@ try {
 } catch (Exception $e) {
     die('Woopps this looks like your packages are broken or you installed the wrong version of mythicaldash please check the docs error: "<code>ROUTER-CNI</code>"');
 }
+require("../functions/https.php");
+if (!isHTTPS()) {
+    header('HTTP/1.1 403 Forbidden');
+    http_response_code(403);
+    $rsp = array(
+        "code" => 403,
+        "error" => "This application only runs on https"
+    );
+    die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+}
+
 $router = new \Router\Router();
 if (file_exists('FIRST_INSTALL')) {
     $router->add("/", function() {
