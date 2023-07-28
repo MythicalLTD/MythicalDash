@@ -13,6 +13,7 @@ if (isset($_GET['api_key'])) {
                 "code" => 401,
                 "error" => "The authentication credentials are invalid"
             );
+            $conn->close();
             die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
     } else {

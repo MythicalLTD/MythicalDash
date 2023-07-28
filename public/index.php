@@ -38,16 +38,21 @@ else
         require("../api/mysql.php");
     });
 
-    $router->add("/api/client/info", function() {
+    $router->add("/api/client/user/info", function() {
         require("../include/main.php");
         require("../api/client/user/info.php");
     });
 
-    $router->add("/api/admin/info", function() {
+
+    $router->add("/api/admin/user/info", function() {
         require("../include/main.php");
         require("../api/admin/user/info.php");
     });
 
+    $router->add("/api/admin/showusers", function() {
+        require("../include/main.php");
+        require("../api/admin/users.php");
+    });
 
     $router->add('/auth/login', function () {
         require("../include/main.php");

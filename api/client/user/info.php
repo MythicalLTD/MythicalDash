@@ -18,6 +18,7 @@ $rsp = array(
         "registred_at" => $userdb['registred']
     ),
 );
+$conn->close();
 http_response_code(200);
 die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 ?>

@@ -23,6 +23,7 @@ if (isset($_GET['email'])) {
                     "registred_at" => $userdb['registred']
                 ),
             );
+            $conn->close();
             http_response_code(200);
             die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         } else {
@@ -31,6 +32,7 @@ if (isset($_GET['email'])) {
                 "code" => 404,
                 "error" => "We can't find this user in the database."
             );
+            $conn->close();
             die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
 
