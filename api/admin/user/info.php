@@ -20,6 +20,7 @@ if (isset($_GET['email'])) {
                     "avatar" => $userdb['avatar'],
                     "role" => $userdb['role'],
                     "last_login" => $userdb['last_login'],
+                    "banned" => $userdb['banned'],
                     "registred_at" => $userdb['registred']
                 ),
             );

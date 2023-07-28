@@ -1,4 +1,4 @@
-<?php 
+<?php
 include(__DIR__ . '/../base.php');
 include(__DIR__ . '/base.php');
 $sql = "SELECT * FROM mythicaldash_users";
@@ -15,6 +15,13 @@ if ($result->num_rows > 0) {
 } else {
     $conn->close();
     http_response_code(404);
-    echo json_encode(array('message' => 'No users found'));
+    die(
+        json_encode(
+            array(
+                "code" => 404,
+                "error" => "No users found"
+            )
+        )
+    );
 }
 ?>
