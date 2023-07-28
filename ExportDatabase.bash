@@ -18,21 +18,6 @@ export_db() {
     /usr/bin/mariadb -u root -e "DROP DATABASE $TEMP_DB_NAME;"
 }
 
-select option in "Export DB (Push)" "Export DB (Release)"; do
-    case $option in
-        "Export DB (Push)")
-            export_db
-            break
-            ;;
-        "Export DB (Release)")
-            export_db
-            cd public
-            export_db
-            echo "DO NOT DELETE THIS FILE IF YOU DID NOT INSTALL mythicaldash via the WebInterface first" > FIRST_INSTALL
-            break
-            ;;
-        *) 
-            echo "Invalid option, please choose again."
-            ;;
-    esac
-done
+cd public
+export_db
+echo "DO NOT DELETE THIS FILE IF YOU DID NOT INSTALL mythicaldash via the WebInterface first" > FIRST_INSTALL
