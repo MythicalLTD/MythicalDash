@@ -64,12 +64,31 @@ CREATE TABLE `mythicaldash_settings` (
   `fromEmail` text DEFAULT NULL,
   `PterodactylURL` text DEFAULT NULL,
   `PterodactylAPIKey` text DEFAULT NULL,
+  `discord_webhook` text NOT NULL,
   `version` text NOT NULL DEFAULT '0.0.0.1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 LOCK TABLES `mythicaldash_settings` WRITE;
+UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `mythicaldash_tickets`;
+CREATE TABLE `mythicaldash_tickets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ownerkey` text NOT NULL,
+  `subject` text NOT NULL,
+  `priority` enum('low','medium','high') NOT NULL,
+  `description` text NOT NULL,
+  `attachment` text NOT NULL,
+  `status` enum('open','closed') NOT NULL DEFAULT 'open',
+  `created` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+LOCK TABLES `mythicaldash_tickets` WRITE;
 UNLOCK TABLES;
 
 

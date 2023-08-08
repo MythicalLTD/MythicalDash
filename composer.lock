@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "80d99e6ee81f319a388e7a973b2c9eeb",
+    "content-hash": "2552d9af61067520dc865c25aa2ba0ae",
     "packages": [
         {
             "name": "ecoal95/php-router",
@@ -62,6 +62,49 @@
                 "source": "https://github.com/ecoal95/php-router/tree/master"
             },
             "time": "2015-08-23T22:20:07+00:00"
+        },
+        {
+            "name": "livaco/easydiscordwebhook",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/LivacoNew/EasyDiscordWebhook.git",
+                "reference": "0c9ff91f7eef4994632b92a65ce772aefbd1f70c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/LivacoNew/EasyDiscordWebhook/zipball/0c9ff91f7eef4994632b92a65ce772aefbd1f70c",
+                "reference": "0c9ff91f7eef4994632b92a65ce772aefbd1f70c",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Livaco\\EasyDiscordWebhook\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Livaco",
+                    "homepage": "https://www.livaco.dev/"
+                }
+            ],
+            "description": "An simple, lightweight, easy to use library to allow you to create and send discord webhooks in PHP.",
+            "homepage": "https://github.com/LivacoNew/EasyDiscordWebhook",
+            "keywords": [
+                "discord",
+                "php",
+                "webhook"
+            ],
+            "support": {
+                "issues": "https://github.com/LivacoNew/EasyDiscordWebhook/issues",
+                "source": "https://github.com/LivacoNew/EasyDiscordWebhook/tree/2.0.0"
+            },
+            "time": "2023-01-16T19:23:43+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
