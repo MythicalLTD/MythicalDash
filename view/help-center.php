@@ -5,9 +5,13 @@ include('requirements/page.php');
 
 <html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
   data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
+
 <head>
   <?php include('requirements/head.php'); ?>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
+  <title>
+    <?= $settings['name'] ?> | Help-Center
+  </title>
 </head>
 
 <body>
@@ -18,6 +22,8 @@ include('requirements/page.php');
         <?php include('components/navbar.php') ?>
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Help-Center /</span> Home</h4>
+            <?php include(__DIR__ . '/components/alert.php') ?>
             <div
               class="help-center-header rounded d-flex flex-column justify-content-center align-items-center bg-help-center">
               <h3 class="text-center">Hello, how can we help?</h3>
@@ -80,7 +86,8 @@ include('requirements/page.php');
                             </svg>
                             <h5 class="my-2">Support</h5>
                             <p>You feel like you need more help?</p>
-                            <a class="btn btn-sm btn-label-primary" href="/help-center/tickets/new">Open a ticket</a>
+                            <button type="button" class="btn btn-sm btn-label-primary" data-bs-toggle="modal"
+                              data-bs-target="#createticket">Open a ticket</button>
                           </div>
                         </div>
                       </div>
@@ -100,7 +107,8 @@ include('requirements/page.php');
                     </p>
                     <div class="d-flex justify-content-center flex-wrap gap-4">
                       <a href="<?= $settings['discord_invite'] ?>" class="btn btn-primary">Visit our community</a>
-                      <a href="/help-center/tickets/new" class="btn btn-primary">Open a ticket</a>
+                      <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#createticket">Open a ticket</button>
                     </div>
                   </div>
                 </div>
@@ -109,13 +117,14 @@ include('requirements/page.php');
           </div>
           <?php include('components/footer.php') ?>
           <div class="content-backdrop fade"></div>
+          <?php include('components/modals.php') ?>
         </div>
       </div>
     </div>
-    <div class="layout-overlay layout-menu-toggle"></div <div class="drag-target">
-  </div>
-  </div>
-  <?php include('requirements/footer.php') ?>
+    <div class="layout-overlay layout-menu-toggle">
+      <div class="drag-target"></div>
+    </div>
+    <?php include('requirements/footer.php') ?>
 </body>
 
 </html>

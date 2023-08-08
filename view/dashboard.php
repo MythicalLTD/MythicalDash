@@ -19,6 +19,7 @@ include('requirements/page.php');
         <?php include('components/navbar.php') ?>
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
+            <?php include(__DIR__ . '/components/alert.php') ?>
             <div class="row">
               <!-- Statistics -->
               <div class="card h-100">

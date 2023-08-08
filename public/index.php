@@ -1,8 +1,12 @@
 <?php
 try {
-    require("../vendor/autoload.php");
+    if (file_exists('../vendor/autoload.php')) { 
+        require("../vendor/autoload.php");
+    } else {
+        die('Hello, it looks like you did not run:  "<code>composer install --no-dev --optimize-autoloader</code>". Please run that and refresh the page');
+    }
 } catch (Exception $e) {
-    die('Woopps this looks like your packages are broken or you installed the wrong version of mythicaldash please check the docs error: "<code>ROUTER-CNI</code>"');
+    die('Hello, it looks like you did not run:  <code>composer install --no-dev --optimize-autoloader</code> Please run that and refresh');
 }
 require("../functions/https.php");
 if (!isHTTPS()) {
@@ -115,6 +119,11 @@ else
         require("../view/help-center.php");
     });
     
+    $router->add('/help-center/tickets/new', function () {
+        require("../include/main.php");
+        require("../view/tickets/new.php");
+    });
+
     $router->add("/e/critical", function () {
         require("../view/errors/critical.php");
     });
