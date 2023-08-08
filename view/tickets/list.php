@@ -85,7 +85,7 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                                                 echo "<td>" . $row['priority'] . "</td>";
                                                 echo "<td>" . $row['status'] . "</td>";
                                                 echo "<td>" . $row['created'] . "</td>";
-                                                echo "<td><a href=\"/help-center/tickets/view?id=" . $row['id'] . "\" class=\"btn btn-primary\">Open</a>&nbsp;<a href=\"/help-center/tickets/delete?id=" . $row['id'] . "\" class=\"btn btn-danger\">Delete</a></td>";
+                                                echo "<td><a href=\"/help-center/tickets/view?tickeduuid=" . $row['tickeduuid'] . "\" class=\"btn btn-primary\">Open</a>&nbsp;<a href=\"/help-center/tickets/delete?id=" . $row['id'] . "\" class=\"btn btn-danger\">Delete</a></td>";
                                                 echo "</tr>";
                                             }
                                         } else {

@@ -78,6 +78,7 @@ DROP TABLE IF EXISTS `mythicaldash_tickets`;
 CREATE TABLE `mythicaldash_tickets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ownerkey` text NOT NULL,
+  `tickeduuid` text NOT NULL,
   `subject` text NOT NULL,
   `priority` enum('low','medium','high') NOT NULL,
   `description` text NOT NULL,
@@ -89,6 +90,21 @@ CREATE TABLE `mythicaldash_tickets` (
 
 
 LOCK TABLES `mythicaldash_tickets` WRITE;
+UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `mythicaldash_tickets_messages`;
+CREATE TABLE `mythicaldash_tickets_messages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ticketuuid` text NOT NULL,
+  `userkey` text NOT NULL,
+  `message` text NOT NULL,
+  `created` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+LOCK TABLES `mythicaldash_tickets_messages` WRITE;
 UNLOCK TABLES;
 
 

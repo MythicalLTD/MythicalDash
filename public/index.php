@@ -129,6 +129,11 @@ else
         require("../view/tickets/list.php");
     });
 
+    $router->add('/help-center/tickets/view', function () {
+        require("../include/main.php");
+        require("../view/tickets/chat.php");
+    });
+
     $router->add("/e/critical", function () {
         require("../view/errors/critical.php");
     });
