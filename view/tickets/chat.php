@@ -44,7 +44,13 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
         <?= $settings['name'] ?> | Tickets
     </title>
     <link rel="stylesheet" href="../../assets/vendor/css/pages/app-chat.css" />
-
+    <style>
+        .badge.requestor-type {
+            font-size: 10px;
+            vertical-align: middle;
+            background-color: #28a745;
+        }
+    </style>
 </head>
 
 <body>
@@ -58,58 +64,57 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Help-Center / Tickets /</span>
                             View</h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
-                        <div class="card">
-                            <div class="card-header text-center">
-                                <h1>Ticket #
-                                    <?= $ticket_db['id']; ?> |
-                                    <?= $ticket_db['status'] ?>
-                                </h1>
-
-                            </div>
+                        <div class="card ticket-reply">
                             <div class="card-body">
-                                <div class="card-header">
-                                    Messages:
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <?php
-                                    $ticket_id = mysqli_real_escape_string($conn, $_GET['ticketuuid']);
-                                    $query = "SELECT * FROM mythicaldash_tickets_messages WHERE ticketuuid='$ticket_id' ORDER BY created ASC";
-                                    $result = mysqli_query($conn, $query);
-                                    while ($row = mysqli_fetch_array($result)) {
-                                        echo '<li class="list-group-item">';
-                                        echo '<p>' . $row['message'] . '</p>';
-                                        echo '<p class="text-muted">Sent by: <code>' . $row['userkey'] . '</code> at ' . $row['created'] . '</p>';
-                                        echo '</li>';
-                                    }
-                                    ?>
-                                </ul>
-                            </div>
-                            <div class="card-body">
-                                <form method="post">
-                                    <div class="form-group">
-                                        <label for="content">Message</label>
-                                        <textarea class="form-control" name="content" id="content" rows="3"></textarea>
+                                <div class="row align-items-center">
+                                    <div class="col-6 user">
+                                        <div class="d-flex align-items-center">
+                                            <span class="name">
+                                                NaysKutzu
+                                                <span class="badge bg-danger requestor-type ms-2">
+                                                    Owner
+                                                </span>
+                                            </span>
+                                        </div>
                                     </div>
-                                    <?php
-                                    if ($ticket_db['status'] == "closed") {
-                                        ?>
-                                        <button type="submit" name="reopen_ticket" class="btn btn-primary">Open
-                                            again</button>
-                                        <button type="submit" name="delete_ticket" class="btn btn-danger">Delete
-                                            ticket</button>
-                                        <?php
-                                    } else if ($ticket_db['status'] == "open") {
-                                        ?>
-                                            <button type="submit" name="add_message" class="btn btn-primary">Add
-                                                Message</button>
-                                            <button type="submit" name="close_ticket" class="btn btn-danger">Close
-                                                ticket</button>
-                                        <?php
-                                    } else {
-
-                                    }
-                                    ?>
-                                </form>
+                                    <div class="col-6 text-end date">
+                                        <small>08/08/2023 (20:50)</small>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-12 message">
+                                        <p>daddy</p>
+                                        <hr>
+                                        <p><small>IP Address: 178.165.161.181</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                        <br>
+                        <div class="card ticket-reply">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-6 user">
+                                        <div class="d-flex align-items-center">
+                                            <span class="name">
+                                                TyeIsGay
+                                                <span class="badge bg-sucess requestor-type ms-2">
+                                                    Member
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 text-end date">
+                                        <small>08/08/2023 (23:10)</small>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-12 message">
+                                        <p>Please offer me cook</p>
+                                        <hr>
+                                        <p><small>IP Address: 247.98.215.67</small></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
