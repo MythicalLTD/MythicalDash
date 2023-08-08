@@ -1,8 +1,8 @@
 <?php
 include(__DIR__ . '/../requirements/page.php');
 
-if (isset($_GET['tickeduuid']) && $_GET['tickeduuid'] !== "") {
-    $ticketquery_db = "SELECT * FROM mythicaldash_tickets WHERE tickeduuid = ?";
+if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
+    $ticketquery_db = "SELECT * FROM mythicaldash_tickets WHERE ticketuuid = ?";
     $stmt = mysqli_prepare($conn, $ticketquery_db);
 
     if (!$stmt) {
@@ -10,7 +10,7 @@ if (isset($_GET['tickeduuid']) && $_GET['tickeduuid'] !== "") {
         die('Prepare failed: ' . mysqli_error($conn));
     }
 
-    mysqli_stmt_bind_param($stmt, "s", $_GET['tickeduuid']);
+    mysqli_stmt_bind_param($stmt, "s", $_GET['ticketuuid']);
     mysqli_stmt_execute($stmt);
 
     if (mysqli_stmt_error($stmt)) {
@@ -72,7 +72,7 @@ if (isset($_GET['tickeduuid']) && $_GET['tickeduuid'] !== "") {
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     <?php
-                                    $ticket_id = mysqli_real_escape_string($conn, $_GET['tickeduuid']);
+                                    $ticket_id = mysqli_real_escape_string($conn, $_GET['ticketuuid']);
                                     $query = "SELECT * FROM mythicaldash_tickets_messages WHERE ticketuuid='$ticket_id' ORDER BY created ASC";
                                     $result = mysqli_query($conn, $query);
                                     while ($row = mysqli_fetch_array($result)) {

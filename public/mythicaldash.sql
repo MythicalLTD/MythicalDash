@@ -78,7 +78,7 @@ DROP TABLE IF EXISTS `mythicaldash_tickets`;
 CREATE TABLE `mythicaldash_tickets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ownerkey` text NOT NULL,
-  `tickeduuid` text NOT NULL,
+  `ticketuuid` text NOT NULL,
   `subject` text NOT NULL,
   `priority` enum('low','medium','high') NOT NULL,
   `description` text NOT NULL,
