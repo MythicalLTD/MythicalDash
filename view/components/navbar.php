@@ -81,7 +81,8 @@
                 </div>
                 <div class="flex-grow-1">
                   <span class="fw-semibold d-block"><?= $userdb['username'] ?></span>
-                  <small class="text-muted"><?= $userdb['role']?></small>
+                  <!--<small class="text-muted"><?= $userdb['role']?></small><br>-->
+                  <small class="text-muted"><?= $userdb['coins']?> coins</small>
                 </div>
               </div>
             </a>

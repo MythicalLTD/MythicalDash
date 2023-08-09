@@ -36,6 +36,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
             $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
             $upassword = mysqli_real_escape_string($conn, $_POST['password']);
+            $insecure_passwords = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy");
+            if (in_array($upassword, $insecure_passwords)) {
+                header('location: /auth/register?e=Password is not secure. Please choose a different one');
+                die();
+            }
+            $blocked_usernames = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy", "plexed", "badsk", "username", "sex", "porn", "nudes", "nude", "ass", "hacker", "bigdick");
+            if (in_array($username, $blocked_usernames)) {
+                header('location: /auth/register?e=It looks like we blocked this username from being used. Please choose another username.');
+                die();
+            }
+            if (preg_match("/[^a-zA-Z]+/", $username)) {
+                header('location: /auth/register?e=Please only use characters from A-Z in your username!');
+                die();
+            }
+            if (preg_match("/[^a-zA-Z]+/", $first_name)) {
+                header('location: /auth/register?e=Please only use characters from A-Z in your first name!');
+                die();
+            }
+            if (preg_match("/[^a-zA-Z]+/", $last_name)) {
+                header('location: /auth/register?e=Please only use characters from A-Z in your last name!');
+                die();
+            }
             $password = password_hash($upassword, PASSWORD_DEFAULT);
             $skey = generate_key($email, $password);
             if (!$username == "" || !$email == "" || !$first_name == "" || !$last_name == "" || !$upassword == "") {
@@ -57,8 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en" class="light-style customizer-hide" dir="ltr" data-theme="theme-default"
-    data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
+<html lang="en" class="dark-style customizer-hide" dir="ltr" data-theme="theme-semi-dark"
+    data-assets-path="<?= $appURL ?>/assets/" data-template="horizontal-menu-template">
 
 <head>
     <meta charset="utf-8" />
@@ -91,16 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p class="mb-4">Please create an account and embark on your adventure!</p>
                 <form id="formAuthentication" class="mb-3" method="POST">
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" required name="username"
-                            placeholder="jhondoe" autofocus />
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" required name="email"
-                            placeholder="Enter your email" />
-                    </div>
-                    <div class="mb-3">
                         <label for="first_name" class="form-label">First name</label>
                         <input type="text" class="form-control" id="first_name" required name="first_name"
                             placeholder="Jhon" autofocus />
@@ -109,6 +121,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="last_name" class="form-label">Last name</label>
                         <input type="text" class="form-control" id="last_name" required name="last_name"
                             placeholder="Doe" autofocus />
+                    </div>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" required name="username"
+                            placeholder="jhondoe" autofocus />
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required name="email"
+                            placeholder="Enter your email" />
                     </div>
                     <div class="mb-3 form-password-toggle">
                         <label class="form-label" for="password">Password</label>
