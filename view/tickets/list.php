@@ -8,16 +8,16 @@ $offset = ($page - 1) * $ticketsPerPage;
 $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
 $searchCondition = '';
 if (!empty($searchKeyword)) {
-    $searchCondition = " WHERE `subject` LIKE '%$searchKeyword%' OR `description` LIKE '%$searchKeyword%'";
+    $searchCondition = " WHERE (`subject` LIKE '%$searchKeyword%' OR `description` LIKE '%$searchKeyword%')";
 }
-$tickets_query = "SELECT * FROM mythicaldash_tickets" . $searchCondition . " ORDER BY `id` LIMIT $offset, $ticketsPerPage";
+$statusCondition = " `status` IN ('open', 'closed')";
+$tickets_query = "SELECT * FROM mythicaldash_tickets" . $searchCondition . ($searchCondition ? ' AND ' : ' WHERE ') . $statusCondition . " ORDER BY `id` LIMIT $offset, $ticketsPerPage";
 $result = $conn->query($tickets_query);
-$totalTicketsQuery = "SELECT COUNT(*) AS total_tickets FROM mythicaldash_tickets" . $searchCondition;
+$totalTicketsQuery = "SELECT COUNT(*) AS total_tickets FROM mythicaldash_tickets" . $searchCondition . ($searchCondition ? ' AND ' : ' WHERE ') . $statusCondition;
 $totalResult = $conn->query($totalTicketsQuery);
 $totalTickets = $totalResult->fetch_assoc()['total_tickets'];
 $totalPages = ceil($totalTickets / $ticketsPerPage);
 ?>
-
 <!DOCTYPE html>
 <html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
     data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
@@ -27,15 +27,6 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
     <title>
         <?= $settings['name'] ?> | Tickets
     </title>
-    <style>
-        .avatar-image {
-            width: 30px;
-            /* Adjust the size as needed */
-            height: 30px;
-            /* Adjust the size as needed */
-            border-radius: 50%;
-        }
-    </style>
 </head>
 
 <body>
@@ -85,7 +76,7 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                                                 echo "<td>" . $row['priority'] . "</td>";
                                                 echo "<td>" . $row['status'] . "</td>";
                                                 echo "<td>" . $row['created'] . "</td>";
-                                                echo "<td><a href=\"/help-center/tickets/view?ticketuuid=" . $row['ticketuuid'] . "\" class=\"btn btn-primary\">Open</a>&nbsp;<a href=\"/help-center/tickets/delete?id=" . $row['id'] . "\" class=\"btn btn-danger\">Delete</a></td>";
+                                                echo "<td><a href=\"/help-center/tickets/view?ticketuuid=" . $row['ticketuuid'] . "\" class=\"btn btn-primary\">Open</a></td>";
                                                 echo "</tr>";
                                             }
                                         } else {

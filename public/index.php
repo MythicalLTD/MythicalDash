@@ -134,6 +134,26 @@ else
         require("../view/tickets/chat.php");
     });
 
+    $router->add('/help-center/tickets/reply', function () {
+        require("../include/main.php");
+        require("../view/tickets/reply.php");
+    });
+
+    $router->add('/help-center/tickets/close', function () {
+        require("../include/main.php");
+        require("../view/tickets/close.php");
+    });
+
+    $router->add('/help-center/tickets/reopen', function () {
+        require("../include/main.php");
+        require("../view/tickets/reopen.php");
+    });
+
+    $router->add('/help-center/tickets/delete', function () {
+        require("../include/main.php");
+        require("../view/tickets/delete.php");
+    });
+
     $router->add("/e/critical", function () {
         require("../view/errors/critical.php");
     });
