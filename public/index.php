@@ -218,6 +218,11 @@ else
         require("../view/admin/users/user_reset_password.php");
     });
 
+    $router->add("/admin/tickets",function() {
+        require("../include/main.php");
+        require("../view/admin/tickets/list.php");
+    });
+
     $router->add("/email/reset-password",function() {
         require("../include/main.php");
         require("../view/email/reset-password.php");
