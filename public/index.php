@@ -1,9 +1,24 @@
 <?php
 try {
-    require("../vendor/autoload.php");
+    if (file_exists('../vendor/autoload.php')) { 
+        require("../vendor/autoload.php");
+    } else {
+        die('Hello, it looks like you did not run:  "<code>composer install --no-dev --optimize-autoloader</code>". Please run that and refresh the page');
+    }
 } catch (Exception $e) {
-    die('Woopps this looks like your packages are broken or you installed the wrong version of mythicaldash please check the docs error: "<code>ROUTER-CNI</code>"');
+    die('Hello, it looks like you did not run:  <code>composer install --no-dev --optimize-autoloader</code> Please run that and refresh');
 }
+require("../functions/https.php");
+if (!isHTTPS()) {
+    header('HTTP/1.1 403 Forbidden');
+    http_response_code(403);
+    $rsp = array(
+        "code" => 403,
+        "error" => "This application only runs on https"
+    );
+    die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+}
+
 $router = new \Router\Router();
 if (file_exists('FIRST_INSTALL')) {
     $router->add("/", function() {
@@ -34,6 +49,31 @@ else
         require("../view/index.php");
     });
     
+    $router->add("/api/mysql", function() {
+        require("../api/mysql.php");
+    });
+
+    $router->add("/api/client/user/info", function() {
+        require("../include/main.php");
+        require("../api/client/user/info.php");
+    });
+
+
+    $router->add("/api/admin/user/info", function() {
+        require("../include/main.php");
+        require("../api/admin/user/info.php");
+    });
+
+    $router->add("/api/admin/showusers", function() {
+        require("../include/main.php");
+        require("../api/admin/users.php");
+    });
+
+    $router->add("/api/admin/statistics", function() {
+        require("../include/main.php");
+        require("../api/admin/statistics.php");
+    });
+
     $router->add('/auth/login', function () {
         require("../include/main.php");
         require("../view/auth/login.php");
@@ -79,6 +119,41 @@ else
         require("../view/help-center.php");
     });
     
+    $router->add('/help-center/tickets/new', function () {
+        require("../include/main.php");
+        require("../view/tickets/new.php");
+    });
+
+    $router->add('/help-center/tickets', function () {
+        require("../include/main.php");
+        require("../view/tickets/list.php");
+    });
+
+    $router->add('/help-center/tickets/view', function () {
+        require("../include/main.php");
+        require("../view/tickets/chat.php");
+    });
+
+    $router->add('/help-center/tickets/reply', function () {
+        require("../include/main.php");
+        require("../view/tickets/reply.php");
+    });
+
+    $router->add('/help-center/tickets/close', function () {
+        require("../include/main.php");
+        require("../view/tickets/close.php");
+    });
+
+    $router->add('/help-center/tickets/reopen', function () {
+        require("../include/main.php");
+        require("../view/tickets/reopen.php");
+    });
+
+    $router->add('/help-center/tickets/delete', function () {
+        require("../include/main.php");
+        require("../view/tickets/delete.php");
+    });
+
     $router->add("/e/critical", function () {
         require("../view/errors/critical.php");
     });
@@ -141,6 +216,11 @@ else
     $router->add("/admin/users/security/resetpwd",function() {
         require("../include/main.php");
         require("../view/admin/users/user_reset_password.php");
+    });
+
+    $router->add("/admin/tickets",function() {
+        require("../include/main.php");
+        require("../view/admin/tickets/list.php");
     });
 
     $router->add("/email/reset-password",function() {

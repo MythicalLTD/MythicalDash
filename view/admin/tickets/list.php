@@ -1,39 +1,32 @@
 <?php
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
-$usersPerPage = 20;
+
+$ticketsPerPage = 20;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
-$offset = ($page - 1) * $usersPerPage;
+$offset = ($page - 1) * $ticketsPerPage;
 
 $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
 $searchCondition = '';
 if (!empty($searchKeyword)) {
-    $searchCondition = " WHERE `username` LIKE '%$searchKeyword%' OR `email` LIKE '%$searchKeyword%'";
+    $searchCondition = " WHERE `subject` LIKE '%$searchKeyword%' OR `description` LIKE '%$searchKeyword%'";
 }
-$user_query = "SELECT * FROM mythicaldash_users" . $searchCondition . " ORDER BY `id` LIMIT $offset, $usersPerPage";
-$result = $conn->query($user_query);
-$totalUsersQuery = "SELECT COUNT(*) AS total_users FROM mythicaldash_users" . $searchCondition;
-$totalResult = $conn->query($totalUsersQuery);
-$totalUsers = $totalResult->fetch_assoc()['total_users'];
-$totalPages = ceil($totalUsers / $usersPerPage);
+$tickets_query = "SELECT * FROM mythicaldash_tickets" . $searchCondition . " ORDER BY `id` LIMIT $offset, $ticketsPerPage";
+$result = $conn->query($tickets_query);
+$totalTicketsQuery = "SELECT COUNT(*) AS total_tickets FROM mythicaldash_tickets" . $searchCondition;
+$totalResult = $conn->query($totalTicketsQuery);
+$totalTickets = $totalResult->fetch_assoc()['total_tickets'];
+$totalPages = ceil($totalTickets / $ticketsPerPage);
 ?>
-
 <!DOCTYPE html>
 <html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
-  data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
+    data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
 
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Users
+        <?= $settings['name'] ?> | Tickets
     </title>
-    <style>
-        .avatar-image {
-            width: 30px; /* Adjust the size as needed */
-            height: 30px; /* Adjust the size as needed */
-            border-radius: 50%;
-        }
-    </style>
 </head>
 
 <body>
@@ -44,20 +37,13 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                 <?php include(__DIR__ . '/../../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <?php
-                        if (isset($_GET['e'])) {
-                            ?>
-                            <div class="alert alert-danger alert-dismissible" role="alert">
-                                <?= $_GET['e'] ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <?php
-                        }
-                        ?>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Help-Center / Tickets /</span>
+                            List</h4>
+                        <?php include(__DIR__ . '/../../components/alert.php') ?>
                         <!-- Search Form -->
                         <form class="mt-4">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Search users..." name="search"
+                                <input type="text" class="form-control" placeholder="Search tickets..." name="search"
                                     value="<?= $searchKeyword ?>">
                                 <button class="btn btn-outline-secondary" type="submit">Search</button>
                             </div>
@@ -65,18 +51,18 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                         <!-- Users List Table -->
                         <div class="card">
                             <h5 class="card-header">
-                                Users
-                                <a href="/admin/users/new" class="btn btn-primary float-end">Create New User</a>
+                                Tickets
+                                <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#createticket">Create New Ticket</button>
                             </h5>
                             <div class="table-responsive text-nowrap">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Avatar</th>
-                                            <th>Username</th>
-                                            <th>Email</th>
-                                            <th>Role</th>
-                                            <th>Last login</th>
+                                            <th>ID</th>
+                                            <th>Subject</th>
+                                            <th>Priority</th>
+                                            <th>Status</th>
+                                            <th>Created</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -85,17 +71,16 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                                         if ($result->num_rows > 0) {
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
-                                                echo "<td><img src='" . $row['avatar'] . "' alt='Avatar' class='rounded-circle avatar-image'></td>";
-                                                echo "<td>" . $row['username'] . "</td>";
-                                                echo "<td>" . $row['email'] . "</td>";
-                                                echo "<td>" . $row['role'] . "</td>";
-                                                echo "<td>" . $row['last_login'] . "</td>";
-                                                echo "<td><a href=\"/admin/users/edit?id=" . $row['id'] . "\" class=\"btn btn-primary\">Edit</a>&nbsp;<a href=\"/admin/users/delete?id=" . $row['id'] . "\" class=\"btn btn-danger\">Delete</a></td>";
+                                                echo "<td>" . $row['id'] . "</td>";
+                                                echo "<td>" . $row['subject'] . "</td>";
+                                                echo "<td>" . $row['priority'] . "</td>";
+                                                echo "<td>" . $row['status'] . "</td>";
+                                                echo "<td>" . $row['created'] . "</td>";
+                                                echo "<td><a href=\"/help-center/tickets/view?ticketuuid=" . $row['ticketuuid'] . "\" class=\"btn btn-primary\">Open</a></td>";
                                                 echo "</tr>";
                                             }
                                         } else {
-                                            echo "<tr><td colspan='5'>No users found.</td></tr>";
-                                        }
+                                            echo "<tr><br<center><td class='text-center'colspan='5'><br>No tickets found.<br><br>&nbsp;</td></center></tr>";                                        }
                                         ?>
                                     </tbody>
                                 </table>
@@ -113,6 +98,7 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                     </div>
                     <?php include(__DIR__ . '/../../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>
+                    <?php include(__DIR__.'/../../components/modals.php') ?>
                 </div>
             </div>
         </div>

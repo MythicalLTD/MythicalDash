@@ -1,12 +1,12 @@
 <?php
 function is_active_page($page_urls)
 {
-    foreach ($page_urls as $page_url) {
-        if (strpos($_SERVER['REQUEST_URI'], $page_url) !== false) {
-            return true;
-        }
+  foreach ($page_urls as $page_url) {
+    if (strpos($_SERVER['REQUEST_URI'], $page_url) !== false) {
+      return true;
     }
-    return false;
+  }
+  return false;
 }
 ?>
 
@@ -31,11 +31,33 @@ function is_active_page($page_urls)
         <div>Dashboard</div>
       </a>
     </li>
-    <li class="menu-item <?php echo is_active_page(['/help-center']) ? 'active' : ''; ?>">
-      <a href="/help-center" class="menu-link">
+    <li class="menu-item  <?php echo is_active_page(['/help-center']) ? 'active' : ''; ?>">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons ti ti-messages"></i>
-        <div>Help-Center</div>
+        <div data-i18n="Help-Center">Help-Center</div>
       </a>
+      <ul class="menu-sub">
+        <li class="menu-item">
+          <a href="/help-center" class="menu-link">
+            <div data-i18n="Home">Home</div>
+          </a>
+        </li>
+        <li class="menu-item <?php echo is_active_page(['/help-center/tickets']) ? 'active' : ''; ?>">
+          <a href="/help-center/tickets" class="menu-link">
+            <div data-i18n="Tickets">Tickets</div>
+          </a>
+        </li>
+        <li class="menu-item <?php echo is_active_page(['/help-center/tos']) ? 'active' : ''; ?>">
+          <a href="/help-center/tos" class="menu-link">
+            <div data-i18n="Terms of service">Terms of Service</div>
+          </a>
+        </li>
+        <li class="menu-item <?php echo is_active_page(['/help-center/pp']) ? 'active' : ''; ?>">
+          <a href="/help-center/pp" class="menu-link">
+            <div data-i18n="Privacy Policy">Privacy Policy</div>
+          </a>
+        </li>
+      </ul>
     </li>
     <?php
     if ($userdb['role'] == "Administrator") {
@@ -43,7 +65,8 @@ function is_active_page($page_urls)
       <li class="menu-header small text-uppercase">
         <span class="menu-header-text">Administration Tools</span>
       </li>
-      <li class="menu-item <?php echo is_active_page(['/admin/users/view', '/admin/users/edit','/admin/users/new']) ? 'active' : ''; ?>">
+      <li
+        class="menu-item <?php echo is_active_page(['/admin/users/view', '/admin/users/edit', '/admin/users/new']) ? 'active' : ''; ?>">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons ti ti-users"></i>
           <div>Users</div>
@@ -60,6 +83,12 @@ function is_active_page($page_urls)
             </a>
           </li>
         </ul>
+      </li>
+      <li class="menu-item <?php echo is_active_page(['/admin/tickets']) ? 'active' : ''; ?>">
+        <a href="/admin/tickets" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-messages"></i>
+          <div>Tickets</div>
+        </a>
       </li>
       <?php
     }

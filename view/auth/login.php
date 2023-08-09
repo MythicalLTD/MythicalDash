@@ -44,16 +44,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (password_verify($password, $hashedPassword)) {
               $token = $row['api_key'];
               $email = $row['email'];
-              $cookie_name = 'token';
-              $cookie_value = $token;
-              setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
-              writeLog('auth', "The user ($email) logged in.", $conn);
-              if (isset($_GET['r'])) {
-                header('location: ' . $_GET['r']);
-              } else {
-                header('location: /dashboard');
+              $banned = $row['banned'];
+              if (!$banned == "") {
+                writeLog("auth", "Failed to login: 'User banned'", $conn);
+                header('location: /auth/login?e=We are sorry but you are banned from using our system!');
+                exit; // Stop execution if user is banned
               }
-              // Stop execution after successful login
+              else {
+                $cookie_name = 'token';
+                $cookie_value = $token;
+                setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
+                writeLog('auth', "The user ($email) logged in.", $conn);
+                if (isset($_GET['r'])) {
+                  header('location: ' . $_GET['r']);
+                } else {
+                  header('location: /dashboard');
+                }
+                // Stop execution after successful login
+              }
             } else {
               writeLog("auth", "Failed to login: 'Invalid Password'", $conn);
               header('location: /auth/login?e=Invalid Password');

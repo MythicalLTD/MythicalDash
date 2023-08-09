@@ -1,5 +1,5 @@
 <?php
-header('Content-Type: application/json');
+include(__DIR__."/base.php");
 if (isset($_GET['pwd'])) {
     $pwd = $_GET['pwd'];
     $hpwd = password_hash($pwd, PASSWORD_DEFAULT);

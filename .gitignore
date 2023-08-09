@@ -8,3 +8,4 @@ core/storage/*
 logs/*.log
 /config.yml
 /public/pma/
+mythicaldash.sql
