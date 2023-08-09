@@ -83,7 +83,7 @@ CREATE TABLE `mythicaldash_tickets` (
   `priority` enum('low','medium','high') NOT NULL,
   `description` text NOT NULL,
   `attachment` text NOT NULL,
-  `status` enum('open','closed') NOT NULL DEFAULT 'open',
+  `status` enum('open','closed','deleted') NOT NULL DEFAULT 'open',
   `created` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -99,7 +99,8 @@ CREATE TABLE `mythicaldash_tickets_messages` (
   `ticketuuid` text NOT NULL,
   `userkey` text NOT NULL,
   `message` text NOT NULL,
-  `created` datetime NOT NULL,
+  `attachment` text NOT NULL,
+  `created` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
