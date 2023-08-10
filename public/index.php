@@ -58,7 +58,6 @@ else
         require("../api/client/user/info.php");
     });
 
-
     $router->add("/api/admin/user/info", function() {
         require("../include/main.php");
         require("../api/admin/user/info.php");
@@ -72,6 +71,11 @@ else
     $router->add("/api/admin/statistics", function() {
         require("../include/main.php");
         require("../api/admin/statistics.php");
+    });
+
+    $router->add("/api/ticket", function() {
+        require("../include/main.php");
+        require("../api/ticket.php");
     });
 
     $router->add('/auth/login', function () {

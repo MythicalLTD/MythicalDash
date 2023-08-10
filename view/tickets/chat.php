@@ -32,7 +32,41 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
         header('location: /help-center/tickets?e=We can\'t find this ticket in the database');
         die();
     }
-
+    if (isset($_GET['export']) && $_GET['export'] === "true") {
+        $filename = $settings['name'].'_ticket_export_' . $_GET['ticketuuid'] . '.txt';
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Type: text/plain');
+        
+        ob_start();
+        echo "Ticket Subject: " . $ticket_db['subject'] . "\r\n";
+        echo "Ticket Status: " . $ticket_db['status'] . "\r\n";
+        echo "Ticket Priority: " . $ticket_db['priority'] . "\r\n";
+        echo "Ticket Description: " . $ticket_db['description'] . "\r\n";
+        echo "Ticket Attachment: " . $ticket_db['attachment'] . "\r\n";
+        echo "Ticket Creation Date: " . $ticket_db['created'] . "\r\n";
+        echo "------------------------\r\n";
+        
+        $query = "SELECT * FROM mythicaldash_tickets_messages WHERE ticketuuid=?";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "s", $_GET['ticketuuid']);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        while ($row = mysqli_fetch_assoc($result)) {
+            $tickedusdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . $row['userkey'] . "'")->fetch_array();
+            echo "User: " . $tickedusdb['username'] . " ".$tickedusdb['role']." (" . $row['created'] . ")\r\n";
+            echo "Message: " . $row['message'] . "\r\n";
+            if (!empty($row['attachment'])) {
+                echo "Attachment: " . $row['attachment'] . "\r\n";
+            }
+            echo "------------------------\r\n";
+        }
+        echo "This is an archive of a ticket with the id: ".$_GET['ticketuuid']." created on ".$settings['name']."\r\n";
+        echo "Please do not edit the ticket because it's archived and signed by the server and can be viewed at: ".$appURL."/api/ticket?uuid=".$_GET['ticketuuid']."\r\n";
+        echo "Archived ticket signed key: ".generateticket_key($_GET['ticketuuid'])."\r\n";
+        $exportData = ob_get_clean();
+        echo $exportData;
+        exit();
+    }
     mysqli_stmt_close($stmt);
 } else {
     header('location: /help-center/tickets?e=We can\'t find this ticket in the database');
@@ -78,6 +112,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                 <div class="col-md-12 text-start">
                                     <a class="btn btn-primary" href="/help-center/tickets/reopen?ticketuuid=<?= $_GET['ticketuuid']?>">Reopen ticket</a>
                                     <a href="/help-center/tickets/delete?ticketuuid=<?= $_GET['ticketuuid']?>" class="btn btn-danger">Delete Ticket</a>
+                                    <a class="btn btn-secondary" href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true">Export Ticket</a>
                                 </div>
                             </div>
                             <?php
@@ -88,6 +123,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                         <button type="button" data-bs-toggle="modal" data-bs-target="#replyticket"
                                             class="btn btn-primary">Reply</button>
                                         <a href="/help-center/tickets/close?ticketuuid=<?= $_GET['ticketuuid']?>" class="btn btn-danger">Close Ticket</a>
+                                        <a class="btn btn-secondary" href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true">Export Ticket</a>
                                     </div>
                                 </div>
                             <?php
@@ -96,6 +132,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                 <div class="row">
                                     <div class="col-md-12 text-start">
                                         <a href="/admin/tickets" class="btn btn-danger">Exit</a>
+                                        <a class="btn btn-secondary" href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true">Export Ticket</a>
                                     </div>
                                 </div>
                             <?php

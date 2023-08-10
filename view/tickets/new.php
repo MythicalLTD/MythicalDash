@@ -10,7 +10,7 @@ if (isset($_GET['subject']) && isset($_GET['priority']) && isset($_GET['descript
         $description = mysqli_real_escape_string($conn, $_GET['description']);
         $attachment = mysqli_real_escape_string($conn, $_GET['attachment']);
         $api_key = $userdb['api_key'];
-        $conn->query("INSERT INTO `mythicaldash_tickets` (`ownerkey`, `tickeduuid`, `subject`, `priority`, `description`, `attachment`) VALUES ('".$api_key."', '".generate_keynoinfo()."', '".$subject."', '".$priority."', '".$description."', '".$attachment."');");
+        $conn->query("INSERT INTO `mythicaldash_tickets` (`ownerkey`, `ticketuuid`, `subject`, `priority`, `description`, `attachment`) VALUES ('".$api_key."', '".generate_keynoinfo()."', '".$subject."', '".$priority."', '".$description."', '".$attachment."');");
         $conn->close();
         DiscordWebhook::new($settings['discord_webhook'])
         ->addEmbed(Embed::new()
