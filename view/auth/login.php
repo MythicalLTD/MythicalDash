@@ -34,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['login'])) {
       $email = mysqli_real_escape_string($conn, $_POST['email']);
       $password = mysqli_real_escape_string($conn, $_POST['password']);
+      $ip_addres = getclientip();
       if (!$email == "" || !$password == "") {
         $query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
         $result = mysqli_query($conn, $query);
@@ -49,8 +50,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 writeLog("auth", "Failed to login: 'User banned'", $conn);
                 header('location: /auth/login?e=We are sorry but you are banned from using our system!');
                 exit; // Stop execution if user is banned
-              }
-              else {
+              } else {
+                $usr_id = $row['api_key'];
+                if ($ip_address == "127.0.0.1") {
+                  $ip_address = "12.34.56.78";
+                }
+                $url = "http://ipinfo.io/$ip_address/json";
+                $data = json_decode(file_get_contents($url), true);
+
+                if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
+                  header('location: /auth/login?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
+                  die();
+                }
+                $userids = array();
+                $loginlogs = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE userkey = '$usr_id'");
+                foreach ($loginlogs as $login) {
+                  $ip = $login['ipaddr'];
+                  if ($ip == "12.34.56.78") {
+                    continue;
+                  }
+                  $saio = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '$ip'");
+                  foreach ($saio as $hello) {
+                    if (in_array($hello['userkey'], $userids)) {
+                      continue;
+                    }
+                    if ($hello['userkey'] == $usr_id) {
+                      continue;
+                    }
+                    array_push($userids, $hello['userkey']);
+                  }
+                }
+                if (count($userids) !== 0) {
+                  header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
+                  die();
+                }
+                $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('$ip_address', '$usr_id')");
+
                 $cookie_name = 'token';
                 $cookie_value = $token;
                 setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');

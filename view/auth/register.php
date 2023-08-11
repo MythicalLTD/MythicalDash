@@ -27,51 +27,119 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($captcha_success->success == false) {
                 writeLog("auth", "Failed to login: 'reCAPTCHA failed'", $conn);
                 header('location: /auth/login?e=reCAPTCHA Verification Failed');
-                exit; // Stop execution if CAPTCHA fails
+                die();
             }
         }
         if (isset($_POST['sign_up'])) {
-            $username = mysqli_real_escape_string($conn, $_POST['username']);
-            $email = mysqli_real_escape_string($conn, $_POST['email']);
-            $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
-            $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
-            $upassword = mysqli_real_escape_string($conn, $_POST['password']);
-            $insecure_passwords = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy");
-            if (in_array($upassword, $insecure_passwords)) {
-                header('location: /auth/register?e=Password is not secure. Please choose a different one');
-                die();
-            }
-            $blocked_usernames = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy", "plexed", "badsk", "username", "sex", "porn", "nudes", "nude", "ass", "hacker", "bigdick");
-            if (in_array($username, $blocked_usernames)) {
-                header('location: /auth/register?e=It looks like we blocked this username from being used. Please choose another username.');
-                die();
-            }
-            if (preg_match("/[^a-zA-Z]+/", $username)) {
-                header('location: /auth/register?e=Please only use characters from A-Z in your username!');
-                die();
-            }
-            if (preg_match("/[^a-zA-Z]+/", $first_name)) {
-                header('location: /auth/register?e=Please only use characters from A-Z in your first name!');
-                die();
-            }
-            if (preg_match("/[^a-zA-Z]+/", $last_name)) {
-                header('location: /auth/register?e=Please only use characters from A-Z in your last name!');
-                die();
-            }
-            $password = password_hash($upassword, PASSWORD_DEFAULT);
-            $skey = generate_key($email, $password);
-            if (!$username == "" || !$email == "" || !$first_name == "" || !$last_name == "" || !$upassword == "") {
-                $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
-                $result = mysqli_query($conn, $check_query);
-                if (!mysqli_num_rows($result) > 0) {
-                    $conn->query("INSERT INTO `mythicaldash_users` (`email`, `username`, `first_name`, `last_name`, `password`, `api_key`) VALUES ('" . $email . "', '" . $username . "', '" . $first_name . "', '" . $last_name . "', '" . $password . "', '" . $skey . "');");
-                    header('location: /auth/login');
+            if (!$settings['PterodactylURL'] == "" && !$settings['PterodactylAPIKey'] == "") {
+                $ip_addres = getclientip();
+                $username = mysqli_real_escape_string($conn, $_POST['username']);
+                $email = mysqli_real_escape_string($conn, $_POST['email']);
+                $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
+                $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
+                $upassword = mysqli_real_escape_string($conn, $_POST['password']);
+                $insecure_passwords = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy");
+                if (in_array($upassword, $insecure_passwords)) {
+                    header('location: /auth/register?e=Password is not secure. Please choose a different one');
+                    die();
+                }
+                $blocked_usernames = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy", "plexed", "badsk", "username", "sex", "porn", "nudes", "nude", "ass", "hacker", "bigdick");
+                if (in_array($username, $blocked_usernames)) {
+                    header('location: /auth/register?e=It looks like we blocked this username from being used. Please choose another username.');
+                    die();
+                }
+                if (preg_match("/[^a-zA-Z]+/", $username)) {
+                    header('location: /auth/register?e=Please only use characters from A-Z in your username!');
+                    die();
+                }
+                if (preg_match("/[^a-zA-Z]+/", $first_name)) {
+                    header('location: /auth/register?e=Please only use characters from A-Z in your first name!');
+                    die();
+                }
+                if (preg_match("/[^a-zA-Z]+/", $last_name)) {
+                    header('location: /auth/register?e=Please only use characters from A-Z in your last name!');
+                    die();
+                }
+                $password = password_hash($upassword, PASSWORD_DEFAULT);
+                $skey = generate_key($email, $password);
+                if (!$username == "" || !$email == "" || !$first_name == "" || !$last_name == "" || !$upassword == "") {
+                    $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
+                    $result = mysqli_query($conn, $check_query);
+                    if (!mysqli_num_rows($result) > 0) {
+                        $aquery = "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '$ip_addres'";
+                        $aresult = mysqli_query($conn, $aquery);
+                        $acount = mysqli_num_rows($aresult);
+                        if ($acount >= 1) {
+                            header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use temporary accounts, which is not allowed.');
+                            exit();
+                        } else {
+                            if ($ip_addres == "127.0.0.1") {
+                                $ip_addres = "12.34.56.78";
+                            }
+                            $vpn = false;
+                            $response = file_get_contents("http://ip-api.com/json/" . $ip_addres . "?fields=status,message,country,regionName,city,timezone,isp,org,as,mobile,proxy,hosting,query");
+                            $response = json_decode($response, true);
+                            if (isset($response['proxy'])) {
+                                if ($response['proxy'] == true || $response['hosting'] == true) {
+                                    $vpn = true;
+                                }
+                            }
+                            if ($response['type'] = !"Residential") {
+                                $vpn = true;
+                            }
+                            if ($ip_addres == "51.161.152.218" || $ip_addres == "66.220.20.165") {
+                                $vpn = false;
+                            }
+                            if ($vpn == true) {
+                                header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
+                                die();
+                            }
+                            $ch = curl_init();
+                            curl_setopt($ch, CURLOPT_URL, $settings["PterodactylURL"] . '/api/application/users');
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                                'Accept: application/json',
+                                'Authorization: Bearer ' . $settings["PterodactylAPIKey"],
+                                'Content-Type: application/json',
+                            ]);
+                            curl_setopt($ch, CURLOPT_POST, true);
+                            $data = [
+                                'email' => $email,
+                                'username' => $username,
+                                'first_name' => $first_name,
+                                'last_name' => $last_name,
+                                'password' => $upassword,
+                                'language' => 'en',
+                            ];
+                            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+                            $response = curl_exec($ch);
+                            $responseData = json_decode($response, true);
+                            $panelId = $responseData['attributes']['id'];
+                            $panel_username = $responseData['attributes']['username'];
+                            if (curl_errno($ch)) {
+
+                            } else {
+
+                            }
+                            curl_close($ch);
+                            $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('$ip_addres', '$skey')");
+                            $default = "https://www.gravatar.com/avatar/00000000000000000000000000000000";
+                            $grav_url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default);
+                            $conn->query("INSERT INTO `mythicaldash_users` (`panel_id`,`email`, `username`, `first_name`, `last_name`, `password`, `api_key`, `avatar`, `last_ip`, `first_ip`) VALUES ('" . $panelId . "','" . $email . "', '" . $username . "', '" . $first_name . "', '" . $last_name . "', '" . $password . "', '" . $skey . "','" . $grav_url . "', '" . $ip_addres . "', '" . $ip_addres . "');");
+                            $conn->close();
+                            header('location: /auth/login');
+                            die();
+                        }
+                    } else {
+                        header('location: /auth/register?e=Username or email already exists. Please choose a different one');
+                        exit();
+                    }
                 } else {
-                    header('location: /auth/register?e=Username or email already exists. Please choose a different one');
+                    header('location: /auth/register?e=Please fill in all the required info');
                     exit();
                 }
             } else {
-                header('location: /auth/register?e=Please fill in all the information');
+                header("location: /auth/register?e=I'm sorry, but it looks like the pterodactyl panel is not linked to the dash.");
                 exit();
             }
         }
