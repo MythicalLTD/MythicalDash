@@ -1,6 +1,3 @@
-
-
-
 DROP TABLE IF EXISTS `mythicaldash_apikeys`;
 CREATE TABLE `mythicaldash_apikeys` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -12,6 +9,20 @@ CREATE TABLE `mythicaldash_apikeys` (
 
 
 LOCK TABLES `mythicaldash_apikeys` WRITE;
+UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `mythicaldash_login_logs`;
+CREATE TABLE `mythicaldash_login_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ipaddr` text NOT NULL,
+  `userkey` text NOT NULL,
+  `date` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+LOCK TABLES `mythicaldash_login_logs` WRITE;
 UNLOCK TABLES;
 
 
@@ -112,6 +123,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `mythicaldash_users`;
 CREATE TABLE `mythicaldash_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `panel_id` text NOT NULL,
   `email` text NOT NULL,
   `username` text NOT NULL,
   `first_name` text NOT NULL,
@@ -120,6 +132,7 @@ CREATE TABLE `mythicaldash_users` (
   `api_key` text NOT NULL,
   `avatar` text NOT NULL DEFAULT 'https://cdn.discordapp.com/embed/avatars/0.png',
   `role` enum('Administrator','User') NOT NULL DEFAULT 'User',
+  `coins` text DEFAULT '0',
   `last_login` datetime NOT NULL DEFAULT current_timestamp(),
   `last_ip` text DEFAULT NULL,
   `first_ip` text DEFAULT NULL,
