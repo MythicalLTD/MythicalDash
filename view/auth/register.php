@@ -125,7 +125,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('$ip_addres', '$skey')");
                             $default = "https://www.gravatar.com/avatar/00000000000000000000000000000000";
                             $grav_url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default);
-                            $conn->query("INSERT INTO `mythicaldash_users` (`panel_id`,`email`, `username`, `first_name`, `last_name`, `password`, `api_key`, `avatar`, `last_ip`, `first_ip`) VALUES ('" . $panelId . "','" . $email . "', '" . $username . "', '" . $first_name . "', '" . $last_name . "', '" . $password . "', '" . $skey . "','" . $grav_url . "', '" . $ip_addres . "', '" . $ip_addres . "');");
+                            $conn->query("INSERT INTO `mythicaldash_users` 
+                            (`panel_id`,
+                            `email`,
+                            `username`,
+                            `first_name`,
+                            `last_name`,
+                            `password`,
+                            `api_key`,
+                            `avatar`,
+                            `coins`,
+                            `ram`,
+                            `disk`,
+                            `cpu`,
+                            `server_limit`,
+                            `ports`,
+                            `databases`,
+                            `backups`,
+                            `first_ip`
+                            ) VALUES (
+                            '" . $panelId . "',
+                            '" . $email . "', 
+                            '" . $username . "',
+                            '" . $first_name . "',
+                            '" . $last_name . "',
+                            '" . $password . "',
+                            '" . $skey . "',
+                            '" . $grav_url . "',
+                            '".$settings['def_coins']."',
+                            '".$settings['def_memory']."',
+                            '".$settings['def_disk_space']."',
+                            '".$settings['def_cpu']."',
+                            '".$settings['def_server_limit']."',
+                            '".$settings['def_port']."',
+                            '".$settings['def_db']."',
+                            '".$settings['def_backups']."',
+                            '" . $ip_addres . "'
+                            );");
                             $conn->close();
                             header('location: /auth/login');
                             die();

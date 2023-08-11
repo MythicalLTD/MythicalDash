@@ -31,6 +31,12 @@ function is_active_page($page_urls)
         <div>Dashboard</div>
       </a>
     </li>
+    <li class="menu-item <?php echo is_active_page(['/store']) ? 'active' : ''; ?>">
+      <a href="/store" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-shopping-cart"></i>
+        <div>Store</div>
+      </a>
+    </li>
     <li class="menu-item  <?php echo is_active_page(['/help-center']) ? 'active' : ''; ?>">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons ti ti-messages"></i>
@@ -88,6 +94,12 @@ function is_active_page($page_urls)
         <a href="/admin/tickets" class="menu-link">
           <i class="menu-icon tf-icons ti ti-messages"></i>
           <div>Tickets</div>
+        </a>
+      </li>
+      <li class="menu-item <?php echo is_active_page(['/admin/settings']) ? 'active' : ''; ?>">
+        <a href="/admin/settings" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-settings"></i>
+          <div>Settings</div>
         </a>
       </li>
       <?php
