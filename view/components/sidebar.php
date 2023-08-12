@@ -114,6 +114,12 @@ function is_active_page($page_urls)
           </li>
         </ul>
       </li>
+      <li class="menu-item <?php echo is_active_page(['/admin/redeem']) ? 'active' : ''; ?>">
+        <a href="/admin/redeem" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-key"></i>
+          <div>Redeem Keys</div>
+        </a>
+      </li>
       <li class="menu-item <?php echo is_active_page(['/admin/tickets']) ? 'active' : ''; ?>">
         <a href="/admin/tickets" class="menu-link">
           <i class="menu-icon tf-icons ti ti-messages"></i>

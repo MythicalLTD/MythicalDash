@@ -44,6 +44,28 @@ LOCK TABLES `mythicaldash_logs` WRITE;
 UNLOCK TABLES;
 
 
+DROP TABLE IF EXISTS `mythicaldash_redeem`;
+CREATE TABLE `mythicaldash_redeem` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` text NOT NULL,
+  `uses` text NOT NULL,
+  `coins` text NOT NULL,
+  `ram` text NOT NULL,
+  `disk` text NOT NULL,
+  `cpu` text NOT NULL,
+  `server_limit` text NOT NULL,
+  `ports` text NOT NULL,
+  `databases` text NOT NULL,
+  `backups` text NOT NULL,
+  `created` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+LOCK TABLES `mythicaldash_redeem` WRITE;
+UNLOCK TABLES;
+
+
 DROP TABLE IF EXISTS `mythicaldash_resetpasswords`;
 CREATE TABLE `mythicaldash_resetpasswords` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

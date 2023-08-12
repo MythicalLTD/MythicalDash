@@ -18,7 +18,7 @@ $usr_ports = $userdb["ports"];
 $usr_databases = $userdb["databases"];
 $usr_backup_limit = $userdb["backups"];
 
-if (isset($_POST["buycpu"])) {
+if (isset($_GET["buycpu"])) {
     if ($usr_coins >= $cpuprice) {
         $newcoins = $usr_coins - $cpuprice;
         $newcpu = $usr_cpu + "100";
@@ -33,7 +33,7 @@ if (isset($_POST["buycpu"])) {
     }
 }
 
-if (isset($_POST["buyram"])) {
+if (isset($_GET["buyram"])) {
     if ($usr_coins >= $ramprice) {
         $newcoins = $usr_coins - $ramprice;
         $newram = $usr_ram + "1024";
@@ -48,7 +48,7 @@ if (isset($_POST["buyram"])) {
     }
 }
 
-if (isset($_POST["buydisk"])) {
+if (isset($_GET["buydisk"])) {
     if ($usr_coins >= $diskprice) {
         $newcoins = $usr_coins - $diskprice;
         $newdisk = $usr_disk + "1024";
@@ -63,7 +63,7 @@ if (isset($_POST["buydisk"])) {
     }
 }
 
-if (isset($_POST["buysv"])) {
+if (isset($_GET["buysv"])) {
     if ($usr_coins >= $svprice) {
         $newcoins = $usr_coins - $svprice;
         $newsv = $usr_svlimit + "1";
@@ -78,7 +78,7 @@ if (isset($_POST["buysv"])) {
     }
 }
 
-if (isset($_POST["buyport"])) {
+if (isset($_GET["buyport"])) {
     if ($usr_coins >= $portsprice) {
         $newcoins = $usr_coins - $portsprice;
         $newport = $usr_ports + "1";
@@ -94,7 +94,7 @@ if (isset($_POST["buyport"])) {
 }
 
 
-if (isset($_POST['buydata'])) {
+if (isset($_GET['buydata'])) {
     if ($usr_coins >= $databaseprice) {
         $newcoins = $usr_coins - $databaseprice;
         $newdb = $usr_databases + "1";
@@ -109,7 +109,7 @@ if (isset($_POST['buydata'])) {
     }
 }
 
-if (isset($_POST['buyback'])) {
+if (isset($_GET['buyback'])) {
     if ($usr_coins >= $backupprice) {
         $newcoins = $usr_coins - $backupprice;
         $newbk = $usr_backup_limit + "1";
@@ -117,6 +117,9 @@ if (isset($_POST['buyback'])) {
         $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
         header("location: /store?s=Thank you for your purchase. We updated your resources!");
         $conn->close();
+        die();
+    } else {
+        header("location: /store?e=You need more coins to buy this!");
         die();
     }
 }
@@ -167,7 +170,7 @@ if (isset($_POST['buyback'])) {
                                                 <?= $settings['price_cpu'] ?> coins you get 1 CPU core to use on your
                                                 server.
                                             </p>
-                                            <a href="javascript:void(0)"
+                                            <a href="/store?buycpu"
                                                 class="btn btn-outline-primary waves-effect">Buy</a>
                                         </div>
                                     </center>
@@ -188,7 +191,7 @@ if (isset($_POST['buyback'])) {
                                                 <?= $settings['price_memory'] ?>
                                                 coins you get 1GB ram to use on your server.
                                             </p>
-                                            <a href="javascript:void(0)"
+                                            <a href="/store?buyram"
                                                 class="btn btn-outline-primary waves-effect">Buy</a>
                                         </div>
                                     </center>
@@ -209,7 +212,7 @@ if (isset($_POST['buyback'])) {
                                                 <?= $settings['price_disk_space'] ?> coins you get 1GB disk to use on
                                                 your server.
                                             </p>
-                                            <a href="javascript:void(0)"
+                                            <a href="/store?buydisk"
                                                 class="btn btn-outline-primary waves-effect">Buy</a>
                                         </div>
                                     </center>
@@ -230,7 +233,7 @@ if (isset($_POST['buyback'])) {
                                                 <?= $settings['price_server_limit'] ?> coins you get 1 server slot to
                                                 deploy your server.
                                             </p>
-                                            <a href="javascript:void(0)"
+                                            <a href="/store?buysv"
                                                 class="btn btn-outline-primary waves-effect">Buy</a>
                                         </div>
                                     </center>
@@ -251,7 +254,7 @@ if (isset($_POST['buyback'])) {
                                                 <?= $settings['price_backup'] ?> coins you get 1 backup slot to backup
                                                 your server.
                                             </p>
-                                            <a href="javascript:void(0)"
+                                            <a href="/store?buyback"
                                                 class="btn btn-outline-primary waves-effect">Buy</a>
                                         </div>
                                     </center>
@@ -272,7 +275,7 @@ if (isset($_POST['buyback'])) {
                                                 <?= $settings['price_allocation'] ?> coins you get 1 extra port to use
                                                 on your server.
                                             </p>
-                                            <a href="javascript:void(0)"
+                                            <a href="/store?buyport"
                                                 class="btn btn-outline-primary waves-effect">Buy</a>
                                         </div>
                                     </center>
@@ -293,7 +296,7 @@ if (isset($_POST['buyback'])) {
                                                 <?= $settings['price_database'] ?> coins you get 1 database to use on
                                                 your server.
                                             </p>
-                                            <a href="javascript:void(0)"
+                                            <a href="/store?buydata"
                                                 class="btn btn-outline-primary waves-effect">Buy</a>
                                         </div>
                                     </center>

@@ -202,10 +202,30 @@ else
         require("../view/earn/afk.php");
     });
 
+    $router->add("/earn/redeem",function () {
+        require("../include/main.php");
+        require("../view/earn/redeem.php");
+    });    
+
     $router->add("/admin/settings",function () {
         require("../include/main.php");
         require("../view/admin/settings/main.php");
     });
+
+    $router->add("/admin/redeem",function () {
+        require("../include/main.php");
+        require("../view/admin/redeem/main.php");
+    });   
+    
+    $router->add("/admin/redeem/create",function () {
+        require("../include/main.php");
+        require("../view/admin/redeem/create.php");
+    }); 
+
+    $router->add("/admin/redeem/delete",function () {
+        require("../include/main.php");
+        require("../view/admin/redeem/delete.php");
+    });        
 
     $router->add("/admin/settings/discord",function () {
         require("../include/main.php");

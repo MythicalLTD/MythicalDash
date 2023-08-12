@@ -22,12 +22,21 @@ else
     ini_set('display_errors', 0);
     ini_set('display_startup_errors', 0);
 }
-//DATA Encyption
-include('../functions/base64.php');
 //DATABASE CONNECTION
-include('dbconn.php');
+$dbsettings = $config['database'];
+$dbhost = $dbsettings['host'];
+$dbport = $dbsettings['port'];
+$dbusername = $dbsettings['username'];
+$dbpassword = $dbsettings['password'];
+$dbname = $dbsettings['database'];
+$conn = new mysqli($dbhost . ':' . $dbport, $dbusername, $dbpassword, $dbname);
+if ($conn->connect_error) {
+    throw new Exception('<script>
+    window.location.href = "/e/critical?e="'.$conn->connect_error.';
+</script>');
+}
 //SETTINGS TABLE
-include('settings.php');
+$settings = $conn->query("SELECT * FROM mythicaldash_settings")->fetch_array();
 //GET USER REAL IP
 include('../functions/getclientip.php');
 $ip_address = getclientip();    

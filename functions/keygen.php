@@ -13,6 +13,14 @@ function generate_keynoinfo() {
     $key = base64_encode("mythicaldash_".generatePassword(12).$encoded_timestamp.generatePassword(12));
     return $key;
 }
+
+function generate_key_redeem() {
+    $timestamp = time();
+    $formatted_timestamp = date("HisdmY", $timestamp);
+    $encoded_timestamp = base64_encode($formatted_timestamp);
+    $key = "mythicaldash_redeem_".base64_encode(generatePassword(12).$encoded_timestamp.generatePassword(12));
+    return $key;
+}
 function generateticket_key($tickeduuid) {
     $timestamp = time();
     $formatted_timestamp = date("HisdmY", $timestamp);
