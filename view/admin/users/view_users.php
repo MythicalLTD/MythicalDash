@@ -81,7 +81,7 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                                             <th>Username</th>
                                             <th>Email</th>
                                             <th>Role</th>
-                                            <th>Last login</th>
+                                            <th>Created</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -94,7 +94,7 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                                                 echo "<td>" . $row['username'] . "</td>";
                                                 echo "<td>" . $row['email'] . "</td>";
                                                 echo "<td>" . $row['role'] . "</td>";
-                                                echo "<td>" . $row['last_login'] . "</td>";
+                                                echo "<td>" . $row['registred'] . "</td>";
                                                 echo "<td><a href=\"/admin/users/edit?id=" . $row['id'] . "\" class=\"btn btn-primary\">Edit</a>&nbsp;<a href=\"/admin/users/delete?id=" . $row['id'] . "\" class=\"btn btn-danger\">Delete</a></td>";
                                                 echo "</tr>";
                                             }

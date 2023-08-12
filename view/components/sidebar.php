@@ -31,6 +31,24 @@ function is_active_page($page_urls)
         <div>Dashboard</div>
       </a>
     </li>
+    <li class="menu-item <?php echo is_active_page(['/earn', '/earn/afk', '/earn/redeem']) ? 'active' : ''; ?>">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons ti ti-currency-euro"></i>
+        <div>Earning</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item <?php echo is_active_page(['/earn/afk']) ? 'active' : ''; ?>">
+          <a href="/earn/afk" class="menu-link">
+            <div>Afk</div>
+          </a>
+        </li>
+        <li class="menu-item <?php echo is_active_page(['/earn/redeem']) ? 'active' : ''; ?>">
+          <a href="/earn/redeem" class="menu-link">
+            <div>Redeem</div>
+          </a>
+        </li>
+      </ul>
+    </li>
     <li class="menu-item <?php echo is_active_page(['/store']) ? 'active' : ''; ?>">
       <a href="/store" class="menu-link">
         <i class="menu-icon tf-icons ti ti-shopping-cart"></i>

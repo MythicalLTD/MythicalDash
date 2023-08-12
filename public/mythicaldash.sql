@@ -4,9 +4,10 @@
 DROP TABLE IF EXISTS `mythicaldash_apikeys`;
 CREATE TABLE `mythicaldash_apikeys` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
   `skey` text NOT NULL,
   `ownerkey` text NOT NULL,
-  `created` datetime NOT NULL,
+  `created` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -96,6 +97,8 @@ CREATE TABLE `mythicaldash_settings` (
   `price_allocation` text DEFAULT NULL,
   `price_database` text DEFAULT NULL,
   `price_backup` text DEFAULT NULL,
+  `afk_min` text NOT NULL DEFAULT '1',
+  `afk_coins_per_min` text NOT NULL DEFAULT '5',
   `discord_webhook` text NOT NULL,
   `version` text NOT NULL DEFAULT '0.0.0.1',
   PRIMARY KEY (`id`)
@@ -161,7 +164,8 @@ CREATE TABLE `mythicaldash_users` (
   `ports` text NOT NULL DEFAULT '0',
   `databases` text NOT NULL DEFAULT '0',
   `backups` text NOT NULL DEFAULT '0',
-  `last_login` datetime NOT NULL DEFAULT current_timestamp(),
+  `minutes_afk` text NOT NULL DEFAULT '0',
+  `last_seen` bigint(111) NOT NULL DEFAULT 0,
   `first_ip` text DEFAULT NULL,
   `banned` text NOT NULL DEFAULT '',
   `registred` datetime NOT NULL DEFAULT current_timestamp(),

@@ -197,6 +197,11 @@ else
         require("../view/store.php");
     });
     
+    $router->add("/earn/afk",function () {
+        require("../include/main.php");
+        require("../view/earn/afk.php");
+    });
+
     $router->add("/admin/settings",function () {
         require("../include/main.php");
         require("../view/admin/settings/main.php");
