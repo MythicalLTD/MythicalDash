@@ -14,9 +14,18 @@ $rsp = array(
         "last_name" => $userdb['last_name'],
         "avatar" => $userdb['avatar'],
         "role" => $userdb['role'],
-        "last_login" => $userdb['last_login'],
         "banned" => $userdb['banned'],
         "registred_at" => $userdb['registred']
+    ),
+    "resources" => array(
+        "coins" => $userdb['coins'],
+        "ram" => $userdb['ram'],
+        "disk" => $userdb['disk'],
+        "cpu" => $userdb['cpu'],
+        "server_limit" => $userdb['server_limit'],
+        "ports" => $userdb['ports'],
+        "databases" => $userdb['databases'],
+        "backups" => $userdb['backups'],
     ),
 );
 $conn->close();

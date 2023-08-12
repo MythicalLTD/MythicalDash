@@ -19,39 +19,50 @@ if (isset($_GET['email'])) {
                     "last_name" => $userdb['last_name'],
                     "avatar" => $userdb['avatar'],
                     "role" => $userdb['role'],
-                    "last_login" => $userdb['last_login'],
                     "banned" => $userdb['banned'],
                     "registred_at" => $userdb['registred']
+                ),
+                "resources" => array(
+                    "coins" => $userdb['coins'],
+                    "ram" => $userdb['ram'],
+                    "disk" => $userdb['disk'],
+                    "cpu" => $userdb['cpu'],
+                    "server_limit" => $userdb['server_limit'],
+                    "ports" => $userdb['ports'],
+                    "databases" => $userdb['databases'],
+                    "backups" => $userdb['backups'],
                 ),
             );
             $conn->close();
             http_response_code(200);
             die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         } else {
-            http_response_code(404);
             $rsp = array(
-                "code" => 404,
-                "error" => "We can't find this user in the database."
+                "code" => 403,
+                "error" => "The server understood the request, but it refuses to authorize it.",
+                "message" => "We can't find this user in our database!"
             );
-            $conn->close();
+            http_response_code(403);
             die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
 
     } else {
-        http_response_code(400);
         $rsp = array(
             "code" => 400,
-            "error" => "Email is required, but not provided."
+            "error" => "The server cannot understand the request due to a client error.",
+            "message" => "Email is required, but not provided."
         );
-        die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        http_response_code(400);
+        die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));      
     }
 } else {
-    http_response_code(400);
     $rsp = array(
         "code" => 400,
-        "error" => "Email is required, but not provided."
+        "error" => "The server cannot understand the request due to a client error.",
+        "message" => "Email is required, but not provided."
     );
-    die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    http_response_code(400);
+    die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));   
 }
 
 ?>

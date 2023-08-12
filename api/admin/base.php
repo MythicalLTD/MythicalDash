@@ -8,29 +8,31 @@ if (isset($_GET['api_key'])) {
             //CONTINUE CODE HERE
             
         } else {
-            http_response_code(401);
             $rsp = array(
-                "code" => 401,
-                "error" => "The authentication credentials are invalid"
+                "code" => 403,
+                "error" => "The server understood the request, but it refuses to authorize it.",
+                "message" => "Im sorry but the api key is wrong"
             );
-            $conn->close();
+            http_response_code(403);
             die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
     } else {
-        http_response_code(401);
         $rsp = array(
-            "code" => 401,
-            "error" => "The request requires authentication or the provided credentials"
+            "code" => 400,
+            "error" => "The server cannot understand the request due to a client error.",
+            "message" => "Please provide an api key"
         );
+        http_response_code(400);
         die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 }
 else {
-    http_response_code(401);
     $rsp = array(
-        "code" => 401,
-        "error" => "The request requires authentication or the provided credentials"
+        "code" => 400,
+        "error" => "The server cannot understand the request due to a client error.",
+        "message" => "Please provide an api key"
     );
+    http_response_code(400);
     die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 }
 ?>

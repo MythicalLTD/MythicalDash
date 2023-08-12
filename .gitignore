@@ -9,3 +9,5 @@ logs/*.log
 /config.yml
 /public/pma/
 mythicaldash.sql
+/bot/__pycache__
+/bot/config.py
