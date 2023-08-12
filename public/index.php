@@ -83,6 +83,11 @@ else
         require("../view/auth/login.php");
     });
 
+    $router->add('/auth/link/discord', function () {
+        require("../include/main.php");
+        require("../view/auth/discord.php");
+    });
+
     $router->add('/auth/register', function () {
         require("../include/main.php");
         require("../view/auth/register.php");

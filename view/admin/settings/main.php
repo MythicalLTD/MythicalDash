@@ -136,6 +136,17 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <input type="password" required="" class="form-control"
                                                 name="discord:webhook" value="<?= $settings['discord_webhook'] ?>">
                                         </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label for="discord:client_id" class="form-label">Discord Client ID</label>
+                                            <input class="form-control" type="text" id="discord:client_id"
+                                                name="discord:client_id" value="<?= $settings['discord_clientid'] ?>"
+                                                placeholder="000000000000">
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Discord Client Secret</label>
+                                            <input type="password" required="" class="form-control"
+                                                name="discord:client_secret" value="<?= $settings['discord_clientsecret'] ?>">
+                                        </div>
                                     </div>
                                     <div class="mt-2">
                                         <button type="submit" name="update_settings"
