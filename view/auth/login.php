@@ -143,6 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
+  <div id="preloader" class="discord-preloader">
+    <div class="spinner"></div>
+  </div>
   <div class="authentication-wrapper authentication-cover authentication-bg">
     <div class="authentication-inner row">
       <div class="d-none d-lg-flex col-lg-7 p-0">

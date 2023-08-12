@@ -20,4 +20,4 @@
 <script src="<?= $appURL ?>/assets/js/main.js"></script>
 <script src="<?= $appURL ?>/assets/vendor/libs/bs-stepper/bs-stepper.js"></script>
 <script src="<?= $appURL ?>/assets/js/MythicalGuard.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/perfect-scrollbar@1.5.5/dist/perfect-scrollbar.min.js"></script>
+<script src="<?= $appURL ?>/assets/js/preloader.js"></script>

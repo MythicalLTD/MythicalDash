@@ -8,10 +8,15 @@ include('requirements/page.php');
 
 <head>
   <?php include('requirements/head.php'); ?>
-  <title><?= $settings['name']?> | Dashboard</title>
+  <title>
+    <?= $settings['name'] ?> | Dashboard
+  </title>
 </head>
 
 <body>
+  <div id="preloader" class="discord-preloader">
+    <div class="spinner"></div>
+  </div>
   <div class="layout-wrapper layout-content-navbar">
     <div class="layout-container">
       <?php include('components/sidebar.php') ?>
@@ -30,7 +35,7 @@ include('requirements/page.php');
                   </div>
                 </div>
                 <div class="card-body">
-                <div class="row gy-3">
+                  <div class="row gy-3">
                     <div class="col-md-3 col-6">
                       <div class="d-flex align-items-center">
                         <div class="badge rounded-pill bg-label-primary me-3 p-2">

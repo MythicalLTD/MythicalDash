@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
-  data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
+    data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
 
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
@@ -51,6 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
+  <div id="preloader" class="discord-preloader">
+    <div class="spinner"></div>
+  </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../components/sidebar.php') ?>

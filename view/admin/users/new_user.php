@@ -8,21 +8,17 @@ if (isset($_POST['create_user'])) {
     $lastName = mysqli_real_escape_string($conn, $_POST['lastName']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $upassword = mysqli_real_escape_string($conn, $_POST['password']);
-    $password = password_hash($upassword,PASSWORD_DEFAULT);
-    $skey = generate_key($email,$password);
+    $password = password_hash($upassword, PASSWORD_DEFAULT);
+    $skey = generate_key($email, $password);
     if ($username == "" || $firstName == "" || $lastName == "" || $email == "" || $upassword == "") {
         header('location: /admin/users/new?e=Please fill in all info');
-    }
-    else
-    {
+    } else {
         $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
         $result = mysqli_query($conn, $check_query);
         if (mysqli_num_rows($result) > 0) {
             header('location: /admin/users/new?e=Username or email already exists. Please choose a different one');
-        }
-        else
-        {
-            $conn->query("INSERT INTO `mythicaldash_users` (`email`, `username`, `first_name`, `last_name`, `password`, `api_key`) VALUES ('".$email."', '".$username."', '".$firstName."', '".$lastName."', '".$password."', '".$skey."');");
+        } else {
+            $conn->query("INSERT INTO `mythicaldash_users` (`email`, `username`, `first_name`, `last_name`, `password`, `api_key`) VALUES ('" . $email . "', '" . $username . "', '" . $firstName . "', '" . $lastName . "', '" . $password . "', '" . $skey . "');");
             header('location: /admin/users/view');
         }
     }
@@ -30,7 +26,7 @@ if (isset($_POST['create_user'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
-  data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
+    data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
 
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
@@ -40,6 +36,9 @@ if (isset($_POST['create_user'])) {
 </head>
 
 <body>
+  <div id="preloader" class="discord-preloader">
+    <div class="spinner"></div>
+  </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../../components/sidebar.php') ?>
@@ -74,21 +73,22 @@ if (isset($_POST['create_user'])) {
                                                 <div class="mb-3 col-md-6">
                                                     <label for="firstName" class="form-label">First Name</label>
                                                     <input class="form-control" type="text" id="firstName"
-                                                        name="firstName" value="" autofocus placeholder="Jhon"/>
+                                                        name="firstName" value="" autofocus placeholder="Jhon" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="lastName" class="form-label">Last Name</label>
                                                     <input class="form-control" type="text" name="lastName"
-                                                        id="lastName" value="" placeholder="Doe"/>
+                                                        id="lastName" value="" placeholder="Doe" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="email" class="form-label">E-mail</label>
                                                     <input class="form-control" type="email" id="email" name="email"
                                                         value="" placeholder="john.doe@example.com" />
-                                                </div>                    
+                                                </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="password" class="form-label">Password</label>
-                                                    <input class="form-control" type="password" id="password" name="password" value="" />
+                                                    <input class="form-control" type="password" id="password"
+                                                        name="password" value="" />
                                                 </div>
                                             </div>
                                             <div class="mt-2">

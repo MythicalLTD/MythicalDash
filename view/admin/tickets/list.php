@@ -30,6 +30,9 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
 </head>
 
 <body>
+  <div id="preloader" class="discord-preloader">
+    <div class="spinner"></div>
+  </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../../components/sidebar.php') ?>
@@ -52,7 +55,8 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                         <div class="card">
                             <h5 class="card-header">
                                 Tickets
-                                <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#createticket">Create New Ticket</button>
+                                <button class="btn btn-primary float-end" data-bs-toggle="modal"
+                                    data-bs-target="#createticket">Create New Ticket</button>
                             </h5>
                             <div class="table-responsive text-nowrap">
                                 <table class="table">
@@ -80,7 +84,8 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                                                 echo "</tr>";
                                             }
                                         } else {
-                                            echo "<tr><br<center><td class='text-center'colspan='5'><br>No tickets found.<br><br>&nbsp;</td></center></tr>";                                        }
+                                            echo "<tr><br<center><td class='text-center'colspan='5'><br>No tickets found.<br><br>&nbsp;</td></center></tr>";
+                                        }
                                         ?>
                                     </tbody>
                                 </table>
@@ -98,7 +103,7 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                     </div>
                     <?php include(__DIR__ . '/../../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>
-                    <?php include(__DIR__.'/../../components/modals.php') ?>
+                    <?php include(__DIR__ . '/../../components/modals.php') ?>
                 </div>
             </div>
         </div>

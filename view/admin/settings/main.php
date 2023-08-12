@@ -19,6 +19,9 @@ include(__DIR__ . '/../../requirements/admin.php');
 </head>
 
 <body>
+  <div id="preloader" class="discord-preloader">
+    <div class="spinner"></div>
+  </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../../components/sidebar.php') ?>
@@ -62,13 +65,15 @@ include(__DIR__ . '/../../requirements/admin.php');
                                     <div class="row">
                                         <div class="mb-3 col-md-6">
                                             <label for="seo:description" class="form-label">Description</label>
-                                            <input class="form-control" type="text" id="seo:description" name="seo:description"
-                                                value="<?= $settings['seo_description'] ?>" placeholder="MythicalSystems">
+                                            <input class="form-control" type="text" id="seo:description"
+                                                name="seo:description" value="<?= $settings['seo_description'] ?>"
+                                                placeholder="MythicalSystems">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label for="seo:keywords" class="form-label">Keywords</label>
-                                            <input class="form-control" type="text" id="seo:keywords" name="seo:keywords"
-                                                value="<?= $settings['seo_keywords'] ?>" autofocus="">
+                                            <input class="form-control" type="text" id="seo:keywords"
+                                                name="seo:keywords" value="<?= $settings['seo_keywords'] ?>"
+                                                autofocus="">
                                         </div>
                                     </div>
                                     <div class="mt-2">
@@ -88,13 +93,15 @@ include(__DIR__ . '/../../requirements/admin.php');
                                     <div class="row">
                                         <div class="mb-3 col-md-6">
                                             <label for="pterodactyl:url" class="form-label">Panel URL</label>
-                                            <input class="form-control" type="text" id="pterodactyl:url" name="pterodactyl:url"
-                                                value="<?= $settings['PterodactylURL'] ?>" placeholder="https://panel.example.com">
+                                            <input class="form-control" type="text" id="pterodactyl:url"
+                                                name="pterodactyl:url" value="<?= $settings['PterodactylURL'] ?>"
+                                                placeholder="https://panel.example.com">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label for="pterodactyl:api_key" class="form-label">Panel API Key</label>
-                                            <input class="form-control" type="password" id="pterodactyl:api_key" name="pterodactyl:api_key"
-                                                value="<?= $settings['PterodactylAPIKey'] ?>" autofocus="">
+                                            <input class="form-control" type="password" id="pterodactyl:api_key"
+                                                name="pterodactyl:api_key" value="<?= $settings['PterodactylAPIKey'] ?>"
+                                                autofocus="">
                                         </div>
                                     </div>
                                     <div class="mt-2">
@@ -114,13 +121,15 @@ include(__DIR__ . '/../../requirements/admin.php');
                                     <div class="row">
                                         <div class="mb-3 col-md-6">
                                             <label for="discord:serverid" class="form-label">Discord Server ID</label>
-                                            <input class="form-control" type="text" id="discord:serverid" name="discord:serverid"
-                                                value="<?= $settings['discord_serverid'] ?>" placeholder="000000000000">
+                                            <input class="form-control" type="text" id="discord:serverid"
+                                                name="discord:serverid" value="<?= $settings['discord_serverid'] ?>"
+                                                placeholder="000000000000">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label for="discord:invite" class="form-label">Discord Invite</label>
-                                            <input class="form-control" type="text" id="discord:invite" name="discord:invite"
-                                                value="<?= $settings['discord_invite'] ?>" placeholder="MythicalSystems">
+                                            <input class="form-control" type="text" id="discord:invite"
+                                                name="discord:invite" value="<?= $settings['discord_invite'] ?>"
+                                                placeholder="MythicalSystems">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Discord Webhook</label>
@@ -145,45 +154,53 @@ include(__DIR__ . '/../../requirements/admin.php');
                                     <div class="row">
                                         <div class="mb-3 col-md-1">
                                             <label for="resources:coins" class="form-label">Coins</label>
-                                            <input class="form-control" type="text" id="resources:coins" name="resources:coins"
-                                                value="<?= $settings['def_coins'] ?>" placeholder="15">
+                                            <input class="form-control" type="text" id="resources:coins"
+                                                name="resources:coins" value="<?= $settings['def_coins'] ?>"
+                                                placeholder="15">
                                         </div>
                                         <div class="mb-3 col-md-1">
                                             <label for="resources:ram" class="form-label">Ram</label>
-                                            <input class="form-control" type="text" id="resources:ram" name="resources:ram"
-                                                value="<?= $settings['def_memory'] ?>" placeholder="1024">
+                                            <input class="form-control" type="text" id="resources:ram"
+                                                name="resources:ram" value="<?= $settings['def_memory'] ?>"
+                                                placeholder="1024">
                                         </div>
                                         <div class="mb-3 col-md-1">
                                             <label for="resources:disk" class="form-label">Disk</label>
-                                            <input class="form-control" type="text" id="resources:disk" name="resources:disk"
-                                                value="<?= $settings['def_disk_space'] ?>" placeholder="1024">
+                                            <input class="form-control" type="text" id="resources:disk"
+                                                name="resources:disk" value="<?= $settings['def_disk_space'] ?>"
+                                                placeholder="1024">
                                         </div>
                                         <div class="mb-3 col-md-1">
                                             <label for="resources:cpu" class="form-label">Cpu</label>
-                                            <input class="form-control" type="text" id="resources:cpu" name="resources:cpu"
-                                                value="<?= $settings['def_cpu'] ?>" placeholder="100">
+                                            <input class="form-control" type="text" id="resources:cpu"
+                                                name="resources:cpu" value="<?= $settings['def_cpu'] ?>"
+                                                placeholder="100">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="resources:svlimit" class="form-label">Server Limit</label>
-                                            <input class="form-control" type="text" id="resources:svlimit" name="resources:svlimit"
-                                                value="<?= $settings['def_server_limit'] ?>" placeholder="2">
+                                            <input class="form-control" type="text" id="resources:svlimit"
+                                                name="resources:svlimit" value="<?= $settings['def_server_limit'] ?>"
+                                                placeholder="2">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="resources:ports" class="form-label">Server Allocations</label>
-                                            <input class="form-control" type="text" id="resources:ports" name="resources:ports"
-                                                value="<?= $settings['def_port'] ?>" placeholder="2">
+                                            <input class="form-control" type="text" id="resources:ports"
+                                                name="resources:ports" value="<?= $settings['def_port'] ?>"
+                                                placeholder="2">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="resources:databases" class="form-label">Server Databases</label>
-                                            <input class="form-control" type="text" id="resources:databases" name="resources:databases"
-                                                value="<?= $settings['def_db'] ?>" placeholder="2">
+                                            <input class="form-control" type="text" id="resources:databases"
+                                                name="resources:databases" value="<?= $settings['def_db'] ?>"
+                                                placeholder="2">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="resources:backups" class="form-label">Server Backups</label>
-                                            <input class="form-control" type="text" id="resources:backups" name="resources:backups"
-                                                value="<?= $settings['def_backups'] ?>" placeholder="2">
+                                            <input class="form-control" type="text" id="resources:backups"
+                                                name="resources:backups" value="<?= $settings['def_backups'] ?>"
+                                                placeholder="2">
                                         </div>
-                                        
+
                                     </div>
                                     <div class="mt-2">
                                         <button type="submit" name="update_settings"
@@ -217,8 +234,9 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="store:svlimit" class="form-label">Server Slots</label>
-                                            <input class="form-control" type="text" id="store:svlimit" name="store:svlimit"
-                                                value="<?= $settings['price_server_limit'] ?>" placeholder="1200">
+                                            <input class="form-control" type="text" id="store:svlimit"
+                                                name="store:svlimit" value="<?= $settings['price_server_limit'] ?>"
+                                                placeholder="1200">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="store:ports" class="form-label">Server Allocations</label>
@@ -227,15 +245,17 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="store:databases" class="form-label">Server Databases</label>
-                                            <input class="form-control" type="text" id="store:databases" name="store:databases"
-                                                value="<?= $settings['price_database'] ?>" placeholder="150">
+                                            <input class="form-control" type="text" id="store:databases"
+                                                name="store:databases" value="<?= $settings['price_database'] ?>"
+                                                placeholder="150">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="store:backups" class="form-label">Server Backups</label>
-                                            <input class="form-control" type="text" id="store:backups" name="store:backups"
-                                                value="<?= $settings['price_backup'] ?>" placeholder="200">
+                                            <input class="form-control" type="text" id="store:backups"
+                                                name="store:backups" value="<?= $settings['price_backup'] ?>"
+                                                placeholder="200">
                                         </div>
-                                        
+
                                     </div>
                                     <div class="mt-2">
                                         <button type="submit" name="update_settings"

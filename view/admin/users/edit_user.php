@@ -77,7 +77,7 @@ if (isset($_GET['edit_user'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
-  data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
+    data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
 
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
@@ -87,6 +87,9 @@ if (isset($_GET['edit_user'])) {
 </head>
 
 <body>
+  <div id="preloader" class="discord-preloader">
+    <div class="spinner"></div>
+  </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../../components/sidebar.php') ?>
@@ -220,9 +223,12 @@ if (isset($_GET['edit_user'])) {
                                                     be certain.</p>
                                             </div>
                                         </div>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#resetPwd" class="btn btn-danger deactivate-account">Reset Password</button>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#resetKey" class="btn btn-danger deactivate-account">Reset Secret Key</button>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#deleteacc" class="btn btn-danger deactivate-account">Delete Account</button>
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#resetPwd"
+                                            class="btn btn-danger deactivate-account">Reset Password</button>
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#resetKey"
+                                            class="btn btn-danger deactivate-account">Reset Secret Key</button>
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#deleteacc"
+                                            class="btn btn-danger deactivate-account">Delete Account</button>
                                     </div>
                                 </div>
                             </div>
@@ -236,7 +242,9 @@ if (isset($_GET['edit_user'])) {
                                         aria-label="Close"></button>
                                     <div class="text-center mb-4">
                                         <h3 class="mb-2">Delete this user?</h3>
-                                        <p class="text-muted">When you choose to delete this user, please be aware that all associated user data will be permanently wiped. This action is irreversible, so proceed with caution!
+                                        <p class="text-muted">When you choose to delete this user, please be aware that
+                                            all associated user data will be permanently wiped. This action is
+                                            irreversible, so proceed with caution!
                                         </p>
                                     </div>
                                     <form method="GET" action="/admin/users/delete" class="row g-3">
@@ -287,7 +295,8 @@ if (isset($_GET['edit_user'])) {
                                     <form method="GET" action="/admin/users/security/resetpwd" class="row g-3">
                                         <div class="col-12">
                                             <label class="form-label" for="resetPwd">New Password</label>
-                                            <input type="password" id="pwd" name="pwd" class="form-control" placeholder="" required/>
+                                            <input type="password" id="pwd" name="pwd" class="form-control"
+                                                placeholder="" required />
                                         </div>
                                         <div class="col-12 text-center">
                                             <button type="submit" name="id" value="<?= $_GET['id'] ?>"

@@ -33,10 +33,10 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
         die();
     }
     if (isset($_GET['export']) && $_GET['export'] === "true") {
-        $filename = $settings['name'].'_ticket_export_' . $_GET['ticketuuid'] . '.txt';
+        $filename = $settings['name'] . '_ticket_export_' . $_GET['ticketuuid'] . '.txt';
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Content-Type: text/plain');
-        
+
         ob_start();
         echo "Ticket Subject: " . $ticket_db['subject'] . "\r\n";
         echo "Ticket Status: " . $ticket_db['status'] . "\r\n";
@@ -45,7 +45,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
         echo "Ticket Attachment: " . $ticket_db['attachment'] . "\r\n";
         echo "Ticket Creation Date: " . $ticket_db['created'] . "\r\n";
         echo "------------------------\r\n";
-        
+
         $query = "SELECT * FROM mythicaldash_tickets_messages WHERE ticketuuid=?";
         $stmt = mysqli_prepare($conn, $query);
         mysqli_stmt_bind_param($stmt, "s", $_GET['ticketuuid']);
@@ -53,16 +53,16 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
         $result = mysqli_stmt_get_result($stmt);
         while ($row = mysqli_fetch_assoc($result)) {
             $tickedusdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . $row['userkey'] . "'")->fetch_array();
-            echo "User: " . $tickedusdb['username'] . " ".$tickedusdb['role']." (" . $row['created'] . ")\r\n";
+            echo "User: " . $tickedusdb['username'] . " " . $tickedusdb['role'] . " (" . $row['created'] . ")\r\n";
             echo "Message: " . $row['message'] . "\r\n";
             if (!empty($row['attachment'])) {
                 echo "Attachment: " . $row['attachment'] . "\r\n";
             }
             echo "------------------------\r\n";
         }
-        echo "This is an archive of a ticket with the id: ".$_GET['ticketuuid']." created on ".$settings['name']."\r\n";
-        echo "Please do not edit the ticket because it's archived and signed by the server and can be viewed at: ".$appURL."/api/ticket?uuid=".$_GET['ticketuuid']."\r\n";
-        echo "Archived ticket signed key: ".generateticket_key($_GET['ticketuuid'])."\r\n";
+        echo "This is an archive of a ticket with the id: " . $_GET['ticketuuid'] . " created on " . $settings['name'] . "\r\n";
+        echo "Please do not edit the ticket because it's archived and signed by the server and can be viewed at: " . $appURL . "/api/ticket?uuid=" . $_GET['ticketuuid'] . "\r\n";
+        echo "Archived ticket signed key: " . generateticket_key($_GET['ticketuuid']) . "\r\n";
         $exportData = ob_get_clean();
         echo $exportData;
         exit();
@@ -94,6 +94,9 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
 </head>
 
 <body>
+  <div id="preloader" class="discord-preloader">
+    <div class="spinner"></div>
+  </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../components/sidebar.php') ?>
@@ -110,9 +113,13 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                             ?>
                             <div class="row">
                                 <div class="col-md-12 text-start">
-                                    <a class="btn btn-primary" href="/help-center/tickets/reopen?ticketuuid=<?= $_GET['ticketuuid']?>">Reopen ticket</a>
-                                    <a href="/help-center/tickets/delete?ticketuuid=<?= $_GET['ticketuuid']?>" class="btn btn-danger">Delete Ticket</a>
-                                    <a class="btn btn-secondary" href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true">Export Ticket</a>
+                                    <a class="btn btn-primary"
+                                        href="/help-center/tickets/reopen?ticketuuid=<?= $_GET['ticketuuid'] ?>">Reopen
+                                        ticket</a>
+                                    <a href="/help-center/tickets/delete?ticketuuid=<?= $_GET['ticketuuid'] ?>"
+                                        class="btn btn-danger">Delete Ticket</a>
+                                    <a class="btn btn-secondary"
+                                        href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true">Export Ticket</a>
                                 </div>
                             </div>
                             <?php
@@ -122,19 +129,22 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                     <div class="col-md-12 text-start">
                                         <button type="button" data-bs-toggle="modal" data-bs-target="#replyticket"
                                             class="btn btn-primary">Reply</button>
-                                        <a href="/help-center/tickets/close?ticketuuid=<?= $_GET['ticketuuid']?>" class="btn btn-danger">Close Ticket</a>
-                                        <a class="btn btn-secondary" href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true">Export Ticket</a>
+                                        <a href="/help-center/tickets/close?ticketuuid=<?= $_GET['ticketuuid'] ?>"
+                                            class="btn btn-danger">Close Ticket</a>
+                                        <a class="btn btn-secondary"
+                                            href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true">Export Ticket</a>
                                     </div>
                                 </div>
                             <?php
                         } else if ($ticket_db['status'] == "deleted") {
                             ?>
-                                <div class="row">
-                                    <div class="col-md-12 text-start">
-                                        <a href="/admin/tickets" class="btn btn-danger">Exit</a>
-                                        <a class="btn btn-secondary" href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true">Export Ticket</a>
+                                    <div class="row">
+                                        <div class="col-md-12 text-start">
+                                            <a href="/admin/tickets" class="btn btn-danger">Exit</a>
+                                            <a class="btn btn-secondary"
+                                                href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true">Export Ticket</a>
+                                        </div>
                                     </div>
-                                </div>
                             <?php
                         }
                         ?>
@@ -167,17 +177,23 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                             be respectful and make sure you read our terms of service and our rules.
                                             <br>If you feel like you need help quickly, make sure to join our community
                                             <a href="<?= $settings['discord_invite'] ?>"> here</a><br><br>
-                                            
+
                                         </p>
                                         <hr>
                                         <p>
-                                            Ticket Subject: <?= $ticket_db['subject']?><br>
-                                            Ticket Status: <?= $ticket_db['status']?><br>
-                                            Ticket Priority: <?= $ticket_db['priority']?><br>
-                                            Ticket Description: <?= $ticket_db['description']?><br>
-                                            Ticket Attachment: <?= $ticket_db['attachment'] ?><br>
-                                            Ticket Creation Date: <?= $ticket_db['created']?>
-                                            </p>
+                                            Ticket Subject:
+                                            <?= $ticket_db['subject'] ?><br>
+                                            Ticket Status:
+                                            <?= $ticket_db['status'] ?><br>
+                                            Ticket Priority:
+                                            <?= $ticket_db['priority'] ?><br>
+                                            Ticket Description:
+                                            <?= $ticket_db['description'] ?><br>
+                                            Ticket Attachment:
+                                            <?= $ticket_db['attachment'] ?><br>
+                                            Ticket Creation Date:
+                                            <?= $ticket_db['created'] ?>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -227,8 +243,8 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                         <hr>
                                         <p><small>
                                                 <?= $row['attachment'] ?>
-                                        </small></p>
-                                    <?php
+                                            </small></p>
+                                        <?php
                                     }
                                     ?>
                                 </div>

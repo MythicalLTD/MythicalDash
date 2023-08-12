@@ -43,3 +43,5 @@
 <script src="<?= $appURL ?>/assets/vendor/js/helpers.js"></script>
 <script src="<?= $appURL ?>/assets/vendor/js/template-customizer.js"></script>
 <script src="<?= $appURL ?>/assets/js/config.js"></script>
+<link rel="stylesheet" href="<?= $appURL ?>/assets/css/preloader.css" />
+<link rel="manifest" href="/manifest.webmanifest">

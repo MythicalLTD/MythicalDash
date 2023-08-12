@@ -20,7 +20,7 @@ $totalPages = ceil($totalUsers / $usersPerPage);
 
 <!DOCTYPE html>
 <html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
-  data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
+    data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
 
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
@@ -29,14 +29,19 @@ $totalPages = ceil($totalUsers / $usersPerPage);
     </title>
     <style>
         .avatar-image {
-            width: 30px; /* Adjust the size as needed */
-            height: 30px; /* Adjust the size as needed */
+            width: 30px;
+            /* Adjust the size as needed */
+            height: 30px;
+            /* Adjust the size as needed */
             border-radius: 50%;
         }
     </style>
 </head>
 
 <body>
+  <div id="preloader" class="discord-preloader">
+    <div class="spinner"></div>
+  </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../../components/sidebar.php') ?>

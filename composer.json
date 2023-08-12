@@ -15,6 +15,7 @@
         "symfony/yaml": "^6.3",
         "phpseclib/phpseclib": "^3.0",
         "phpmailer/phpmailer": "^6.8",
-        "livaco/easydiscordwebhook": "^2.0"
+        "livaco/easydiscordwebhook": "^2.0",
+        "mythicalsystems/aapanelapi": "^1.0"
     }
 }

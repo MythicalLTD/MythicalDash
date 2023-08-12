@@ -15,6 +15,9 @@ include('requirements/page.php');
 </head>
 
 <body>
+  <div id="preloader" class="discord-preloader">
+    <div class="spinner"></div>
+  </div>
   <div class="layout-wrapper layout-content-navbar">
     <div class="layout-container">
       <?php include('components/sidebar.php') ?>
