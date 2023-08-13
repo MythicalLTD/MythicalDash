@@ -67,22 +67,27 @@
       <li class="nav-item navbar-dropdown dropdown-user dropdown">
         <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
           <div class="avatar avatar-online">
-            <img src="<?=$userdb['avatar']?>" alt class="h-auto rounded-circle" />
+            <img src="<?= $userdb['avatar'] ?>" alt class="h-auto rounded-circle" />
           </div>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
           <li>
-            <a class="dropdown-item" href="pages-account-settings-account.html">
+            <a class="dropdown-item" href="/user/profile?id=<?= $userdb['id'] ?>">
               <div class="d-flex">
                 <div class="flex-shrink-0 me-3">
                   <div class="avatar avatar-online">
-                    <img src="<?=$userdb['avatar']?>" alt class="h-auto rounded-circle" />
+                    <img src="<?= $userdb['avatar'] ?>" alt class="h-auto rounded-circle" />
                   </div>
                 </div>
                 <div class="flex-grow-1">
-                  <span class="fw-semibold d-block"><?= $userdb['username'] ?></span>
-                  <!--<small class="text-muted"><?= $userdb['role']?></small><br>-->
-                  <small class="text-muted"><?= $userdb['coins']?> coins</small>
+                  <span class="fw-semibold d-block">
+                    <?= $userdb['username'] ?> (<?= $userdb['role'] ?>)
+                  </span> 
+                  
+                  <!--<small class="text-muted"><?= $userdb['role'] ?></small><br>-->
+                  <small class="text-muted">
+                    <?= $userdb['coins'] ?> coins
+                  </small>
                 </div>
               </div>
             </a>
@@ -91,9 +96,9 @@
             <div class="dropdown-divider"></div>
           </li>
           <li>
-            <a class="dropdown-item" href="/user/profile">
+            <a class="dropdown-item" href="/user/edit">
               <i class="ti ti-user-check me-2 ti-sm"></i>
-              <span class="align-middle">My Profile</span>
+              <span class="align-middle">Edit User</span>
             </a>
           </li>
           <!--<li>

@@ -84,13 +84,6 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
         <?= $settings['name'] ?> | Tickets
     </title>
     <link rel="stylesheet" href="../../assets/vendor/css/pages/app-chat.css" />
-    <style>
-        .badge.requestor-type {
-            font-size: 10px;
-            vertical-align: middle;
-            background-color: #28a745;
-        }
-    </style>
 </head>
 
 <body>

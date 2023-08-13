@@ -172,11 +172,26 @@ else
         require("../view/errors/404.php");
     });
     
+    $router->add("/user/edit",function () {
+        require("../include/main.php");
+        require("../view/user/edit.php");
+    });
+
     $router->add("/user/profile",function () {
         require("../include/main.php");
         require("../view/user/profile.php");
     });
     
+    $router->add("/user/gift",function () {
+        require("../include/main.php");
+        require("../view/user/gift.php");
+    });
+
+    $router->add("/users",function () {
+        require("../include/main.php");
+        require("../view/user/list.php");
+    });
+
     $router->add("/user/security/delete_account",function () {
         require("../include/main.php");
         require("../view/user/deleteacc.php");

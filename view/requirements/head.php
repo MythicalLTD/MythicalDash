@@ -45,3 +45,10 @@
 <script src="<?= $appURL ?>/assets/js/config.js"></script>
 <link rel="stylesheet" href="<?= $appURL ?>/assets/css/preloader.css" />
 <link rel="manifest" href="/manifest.webmanifest">
+<style>
+    .badge.requestor-type {
+        font-size: 10px;
+        vertical-align: middle;
+        background-color: #28a745;
+    }
+</style>

@@ -180,6 +180,7 @@ CREATE TABLE `mythicaldash_users` (
   `password` text NOT NULL,
   `api_key` text NOT NULL,
   `avatar` text NOT NULL DEFAULT 'https://cdn.discordapp.com/embed/avatars/0.png',
+  `banner` text NOT NULL DEFAULT 'https://c4.wallpaperflare.com/wallpaper/902/646/497/minecraft-shaders-hd-wallpaper-preview.jpg',
   `role` enum('Administrator','User') NOT NULL DEFAULT 'User',
   `coins` text DEFAULT '0',
   `ram` text NOT NULL DEFAULT '0',
