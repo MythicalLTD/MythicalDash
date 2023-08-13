@@ -51,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-  <div id="preloader" class="discord-preloader">
-    <div class="spinner"></div>
-  </div>
+    <div id="preloader" class="discord-preloader">
+        <div class="spinner"></div>
+    </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../components/sidebar.php') ?>
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="col-md-12">
                                 <ul class="nav nav-pills flex-column flex-md-row mb-4">
                                     <li class="nav-item">
-                                        <a href="/user/profile" class="nav-link active"><i
+                                        <a href="/user/edit" class="nav-link active"><i
                                                 class="ti-xs ti ti-users me-1"></i> Account</a>
                                     </li>
                                     <!--<li class="nav-item">
@@ -79,12 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       <a class="nav-link" href="pages-account-settings-notifications.html"
                         ><i class="ti-xs ti ti-bell me-1"></i> Notifications</a
                       >
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="pages-account-settings-connections.html"
-                        ><i class="ti-xs ti ti-link me-1"></i> Connections</a
-                      >
                     </li>-->
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/user/connections"><i
+                                                class="ti-xs ti ti-link me-1"></i> Connections</a>
+                                    </li>
                                 </ul>
                                 <div class="card mb-4">
                                     <h5 class="card-header">Profile Details</h5>
@@ -97,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                     <hr class="my-0" />
                                     <div class="card-body">
-                                        <form action="/user/profile" method="POST">
+                                        <form action="/user/edit" method="POST">
                                             <div class="row">
                                                 <div class="mb-3 col-md-6">
                                                     <label for="username" class="form-label">Username</label>

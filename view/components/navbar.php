@@ -96,17 +96,17 @@
             <div class="dropdown-divider"></div>
           </li>
           <li>
-            <a class="dropdown-item" href="/user/edit">
+            <a class="dropdown-item" href="/user/profile?id=<?= $userdb['id'] ?>">
               <i class="ti ti-user-check me-2 ti-sm"></i>
-              <span class="align-middle">Edit User</span>
+              <span class="align-middle">Profile</span>
             </a>
           </li>
-          <!--<li>
-            <a class="dropdown-item" href="/user/api">
-              <i class="ti ti-key me-2 ti-sm"></i>
-              <span class="align-middle">API Keys</span>
+          <li>
+            <a class="dropdown-item" href="/user/edit">
+              <i class="ti ti-settings me-2 ti-sm"></i>
+              <span class="align-middle">Settings</span>
             </a>
-          </li>-->
+          </li>
           <li>
             <div class="dropdown-divider"></div>
           </li>

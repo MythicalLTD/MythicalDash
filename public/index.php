@@ -187,6 +187,11 @@ else
         require("../view/user/gift.php");
     });
 
+    $router->add("/user/connections",function () {
+        require("../include/main.php");
+        require("../view/user/connections.php");
+    });
+
     $router->add("/users",function () {
         require("../include/main.php");
         require("../view/user/list.php");

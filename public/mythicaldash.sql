@@ -94,7 +94,7 @@ CREATE TABLE `mythicaldash_settings` (
   `reCAPTCHA_sitekey` text DEFAULT NULL,
   `reCAPTCHA_secretkey` text DEFAULT NULL,
   `discord_invite` text NOT NULL DEFAULT 'https://discord.gg/7BZTmSK2D8',
-  `enable_discord_link` text NOT NULL DEFAULT 'false',
+  `enable_discord_link` enum('false','true') NOT NULL DEFAULT 'false',
   `discord_serverid` text NOT NULL DEFAULT '1080933452091752448',
   `discord_clientid` text NOT NULL,
   `discord_clientsecret` text NOT NULL,
@@ -194,6 +194,11 @@ CREATE TABLE `mythicaldash_users` (
   `last_seen` bigint(111) NOT NULL DEFAULT 0,
   `first_ip` text DEFAULT NULL,
   `banned` text NOT NULL DEFAULT '',
+  `discord_linked` enum('false','true') NOT NULL DEFAULT 'false',
+  `discord_id` text DEFAULT NULL,
+  `discord_username` text DEFAULT NULL,
+  `discord_global_username` text DEFAULT NULL,
+  `discord_email` text DEFAULT NULL,
   `registred` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
