@@ -112,6 +112,16 @@ else
         require("../include/main.php");
         require("../view/dashboard.php");
     });
+
+    $router->add('/server/create', function () {
+        require("../include/main.php");
+        require("../view/server/create.php");
+    });
+
+    $router->add('/server/queue/delete', function () {
+        require("../include/main.php");
+        require("../view/server/queueDelete.php");
+    });
     
     $router->add('/help-center/tos', function () {
         require("../include/main.php");
