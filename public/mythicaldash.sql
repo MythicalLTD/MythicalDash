@@ -16,6 +16,38 @@ LOCK TABLES `mythicaldash_apikeys` WRITE;
 UNLOCK TABLES;
 
 
+DROP TABLE IF EXISTS `mythicaldash_eggs`;
+CREATE TABLE `mythicaldash_eggs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `egg` text NOT NULL,
+  `nest` text NOT NULL,
+  `category` text NOT NULL,
+  `date` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+LOCK TABLES `mythicaldash_eggs` WRITE;
+UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `mythicaldash_locations`;
+CREATE TABLE `mythicaldash_locations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `locationid` text NOT NULL,
+  `status` text NOT NULL,
+  `slots` text NOT NULL,
+  `created` date NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+LOCK TABLES `mythicaldash_locations` WRITE;
+UNLOCK TABLES;
+
+
 DROP TABLE IF EXISTS `mythicaldash_login_logs`;
 CREATE TABLE `mythicaldash_login_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -83,6 +115,45 @@ LOCK TABLES `mythicaldash_resetpasswords` WRITE;
 UNLOCK TABLES;
 
 
+DROP TABLE IF EXISTS `mythicaldash_servers`;
+CREATE TABLE `mythicaldash_servers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pid` text NOT NULL,
+  `uid` text NOT NULL,
+  `location` text NOT NULL,
+  `created` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+LOCK TABLES `mythicaldash_servers` WRITE;
+UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `mythicaldash_servers_queue`;
+CREATE TABLE `mythicaldash_servers_queue` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `ram` text NOT NULL,
+  `disk` text NOT NULL,
+  `cpu` text NOT NULL,
+  `xtra_ports` text NOT NULL,
+  `databases` text NOT NULL,
+  `backuplimit` text NOT NULL,
+  `location` text NOT NULL,
+  `ownerid` text NOT NULL,
+  `type` text NOT NULL,
+  `egg` text NOT NULL,
+  `puid` text NOT NULL,
+  `created` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+LOCK TABLES `mythicaldash_servers_queue` WRITE;
+UNLOCK TABLES;
+
+
 DROP TABLE IF EXISTS `mythicaldash_settings`;
 CREATE TABLE `mythicaldash_settings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -90,14 +161,14 @@ CREATE TABLE `mythicaldash_settings` (
   `logo` text NOT NULL DEFAULT 'https://avatars.githubusercontent.com/u/117385445',
   `seo_description` text NOT NULL DEFAULT '\'MythicalDash is a feature-rich and user-friendly client area for Pterodactyl, designed to simplify server management. With MythicalDash, you have unparalleled control over your hosting environment, effortlessly managing game servers, databases, files, and more. Experience seamless server administration, enhanced security, and optimized performance with MythicalDash, your ultimate solution for streamlined Pterodactyl server management.\'',
   `seo_keywords` text NOT NULL DEFAULT 'Pterodactyl client area, server management, game servers, MythicalDash, advanced features, server administration, streamlined management, hosting environment, database management, file management, efficient performance, enhanced security, optimized server management.',
-  `enable_rechapa2` enum('false','true') NOT NULL,
-  `reCAPTCHA_sitekey` text DEFAULT NULL,
-  `reCAPTCHA_secretkey` text DEFAULT NULL,
+  `enable_turnstile` enum('false','true') NOT NULL DEFAULT 'false',
+  `turnstile_sitekey` text DEFAULT NULL,
+  `turnstile_secretkey` text DEFAULT NULL,
   `discord_invite` text NOT NULL DEFAULT 'https://discord.gg/7BZTmSK2D8',
   `enable_discord_link` enum('false','true') NOT NULL DEFAULT 'false',
   `discord_serverid` text NOT NULL DEFAULT '1080933452091752448',
-  `discord_clientid` text NOT NULL,
-  `discord_clientsecret` text NOT NULL,
+  `discord_clientid` text DEFAULT NULL,
+  `discord_clientsecret` text DEFAULT NULL,
   `enable_smtp` enum('false','true') NOT NULL DEFAULT 'false',
   `smtpHost` text DEFAULT NULL,
   `smtpPort` text DEFAULT NULL,
@@ -107,14 +178,14 @@ CREATE TABLE `mythicaldash_settings` (
   `fromEmail` text DEFAULT NULL,
   `PterodactylURL` text DEFAULT NULL,
   `PterodactylAPIKey` text DEFAULT NULL,
-  `def_coins` text NOT NULL,
-  `def_memory` text NOT NULL,
-  `def_disk_space` text NOT NULL,
-  `def_cpu` text NOT NULL,
-  `def_server_limit` text NOT NULL,
-  `def_port` text NOT NULL,
-  `def_db` text NOT NULL,
-  `def_backups` text NOT NULL,
+  `def_coins` text DEFAULT NULL,
+  `def_memory` text DEFAULT NULL,
+  `def_disk_space` text DEFAULT NULL,
+  `def_cpu` text DEFAULT NULL,
+  `def_server_limit` text DEFAULT NULL,
+  `def_port` text DEFAULT NULL,
+  `def_db` text DEFAULT NULL,
+  `def_backups` text DEFAULT NULL,
   `price_memory` text DEFAULT NULL,
   `price_cpu` text DEFAULT NULL,
   `price_disk_space` text DEFAULT NULL,
@@ -124,8 +195,8 @@ CREATE TABLE `mythicaldash_settings` (
   `price_backup` text DEFAULT NULL,
   `afk_min` text NOT NULL DEFAULT '1',
   `afk_coins_per_min` text NOT NULL DEFAULT '5',
-  `discord_webhook` text NOT NULL,
-  `version` text NOT NULL DEFAULT '0.0.0.1',
+  `discord_webhook` text DEFAULT NULL,
+  `version` text NOT NULL DEFAULT '2.0.0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

@@ -4,6 +4,10 @@ $config = Yaml::parseFile('../config.yml');
 $appsettings = $config['app'];
 $cfg_debugmode = $appsettings['debug'];
 $cfg_ignoredebugmodemsg = $appsettings['silent_debug'];
+$ekey = $appsettings['encryptionkey'];
+if ($ekey == "") {
+    die("Faild to start MythicalDash: Please set a strong encryption key in config.yml");
+}
 if ($cfg_debugmode == true) {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
@@ -44,13 +48,15 @@ $ip_address = getclientip();
 $prot = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $svhost = $_SERVER['HTTP_HOST'];
 $appURL = $prot . '://' . $svhost;
-//LOGGER
-include('../functions/writelog.php');
 // GET CURRENT PATH
 $current_path = $_SERVER['REQUEST_URI'];
 //PASSWORD GENERATOR
 include('../functions/passwordgen.php');
 //KEY GENERATOR
 include('../functions/keygen.php');
+//Encryption
+include('../functions/encryption.php');
+//CloudFlare
+include('../functions/cloudflare.php');
 
 ?>

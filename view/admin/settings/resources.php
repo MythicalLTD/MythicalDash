@@ -11,6 +11,7 @@ if (isset($_GET['update_settings'])) {
     $r_ports = mysqli_real_escape_string($conn,$_GET['resources:ports']);
     $r_databases = mysqli_real_escape_string($conn,$_GET['resources:databases']);
     $r_backups = mysqli_real_escape_string($conn,$_GET['resources:backups']);
+    $afk_coins_per_m = mysqli_real_escape_string($conn,$_GET['afk:coins:per:min']);
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `def_coins` = '" . $r_coins . "' WHERE `mythicaldash_settings`.`id` = 1;");
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `def_memory` = '" . $r_ram . "' WHERE `mythicaldash_settings`.`id` = 1;");
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `def_disk_space` = '" . $r_disk . "' WHERE `mythicaldash_settings`.`id` = 1;");
@@ -19,6 +20,7 @@ if (isset($_GET['update_settings'])) {
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `def_port` = '" . $r_ports . "' WHERE `mythicaldash_settings`.`id` = 1;");
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `def_db` = '" . $r_databases . "' WHERE `mythicaldash_settings`.`id` = 1;");
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `def_backups` = '" . $r_backups . "' WHERE `mythicaldash_settings`.`id` = 1;");
+    mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `afk_coins_per_min` = '" . $afk_coins_per_m . "' WHERE `mythicaldash_settings`.`id` = 1;");
     header('location: /admin/settings');
     die();
 } else {

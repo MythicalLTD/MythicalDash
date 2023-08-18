@@ -211,6 +211,12 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 name="resources:backups" value="<?= $settings['def_backups'] ?>"
                                                 placeholder="2">
                                         </div>
+                                        <div class="mb-3 col-md-2">
+                                            <label for="afk:coins:per:min" class="form-label">Coins per minute afk</label>
+                                            <input class="form-control" type="text" id="afk:coins:per:min"
+                                                name="afk:coins:per:min" value="<?= $settings['afk_coins_per_min'] ?>"
+                                                placeholder="2">
+                                        </div>
 
                                     </div>
                                     <div class="mt-2">
@@ -385,26 +391,16 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">reCAPTCHA Settings</h5>
+                            <h5 class="card-header">Turnstile Settings</h5>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/recaptcha" method="GET">
-                                    <!--<div class="row">
-                                        <div class="form-group col-md-5">
-                                            <label class="control-label">App Domain</label>
-                                            <div>
-                                                <input type="text" required="" class="form-control"
-                                                    name="atoropics:settings:url" value="<?= $settings['app_url'] ?>">
-                                                <p class="text-muted small">The domain of the application!</p>
-                                            </div>
-                                        </div>
-                                    </div>-->
                                     <div class="row">
                                         <div class="form-group col-md-2">
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if ($settings['enable_rechapa2'] == "true") {
+                                                if ($settings['enable_turnstile'] == "true") {
                                                     ?>
                                                     <select class="form-control" name="recaptcha:enabled">
                                                         <option value="true">Enabled</option>
@@ -428,7 +424,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <input type="text" required="" class="form-control"
                                                     name="recaptcha:website_key"
-                                                    value="<?= $settings['reCAPTCHA_sitekey'] ?>">
+                                                    value="<?= $settings['turnstile_sitekey'] ?>">
                                             </div>
                                         </div>
                                         <div class="form-group col-md-5">
@@ -436,7 +432,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <input type="text" required="" class="form-control"
                                                     name="recaptcha:secret_key"
-                                                    value="<?= $settings['reCAPTCHA_secretkey'] ?>">
+                                                    value="<?= $settings['turnstile_secretkey'] ?>">
                                             </div>
                                         </div>
                                     </div>

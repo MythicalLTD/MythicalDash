@@ -4,7 +4,6 @@ $userdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '".$_CO
 $username = $userdb['username'];
 if (!$username == "")
 {
-    writeLog('auth','('.$userdb['username'].') logged out',$conn);
     if (isset($_SERVER['HTTP_COOKIE'])) {
         $cookies = explode(';', $_SERVER['HTTP_COOKIE']);
         foreach($cookies as $cookie) {

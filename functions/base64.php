@@ -1,10 +1,10 @@
 <?php
 
-function encrypt($data) {
+function encryptbase($data) {
     return base64_encode($data);
 }
 
-function decrypt($data) {
+function decryptbase($data) {
     return base64_decode($data);
 }
 

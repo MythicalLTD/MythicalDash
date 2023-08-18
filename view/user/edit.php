@@ -107,13 +107,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <div class="mb-3 col-md-6">
                                                     <label for="firstName" class="form-label">First Name</label>
                                                     <input class="form-control" type="text" id="firstName"
-                                                        name="firstName" value="<?= $userdb['first_name'] ?>"
+                                                        name="firstName" value="<?= decrypt($userdb['first_name'],$ekey) ?>"
                                                         autofocus />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="lastName" class="form-label">Last Name</label>
                                                     <input class="form-control" type="text" name="lastName"
-                                                        id="lastName" value="<?= $userdb['last_name'] ?>" />
+                                                        id="lastName" value="<?= decrypt($userdb['last_name'],$ekey) ?>" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="email" class="form-label">E-mail</label>

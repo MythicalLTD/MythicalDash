@@ -1,6 +1,7 @@
 app:
   debug: true # DEFAULT: false | Do not set to true if you are not a developer
   silent_debug: true # DEFAULT: false | Do not set to true if you are a developer and you know what it dose
+  encryptionkey: ''
 
 database:
   host: 127.0.0.1 # DEFAULT: 127.0.0.1 | MYSQL_IP

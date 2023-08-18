@@ -181,13 +181,13 @@ if (isset($_GET['edit_user'])) {
                                                 <div class="mb-3 col-md-6">
                                                     <label for="firstName" class="form-label">First Name</label>
                                                     <input class="form-control" type="text" id="firstName"
-                                                        name="firstName" value="<?= $user_info['first_name'] ?>"
+                                                        name="firstName" value="<?= decrypt($user_info['first_name'],$ekey) ?>"
                                                         autofocus />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="lastName" class="form-label">Last Name</label>
                                                     <input class="form-control" type="text" name="lastName"
-                                                        id="lastName" value="<?= $user_info['last_name'] ?>" />
+                                                        id="lastName" value="<?= decrypt($user_info['last_name'],$ekey) ?>" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="email" class="form-label">E-mail</label>

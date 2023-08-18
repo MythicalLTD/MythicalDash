@@ -31,6 +31,12 @@ function is_active_page($page_urls)
         <div>Dashboard</div>
       </a>
     </li>
+    <li class="menu-item <?php echo is_active_page(['/server/create']) ? 'active' : ''; ?>">
+      <a href="/server/create" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-server"></i>
+        <div>New server</div>
+      </a>
+    </li>
     <li class="menu-item <?php echo is_active_page(['/earn', '/earn/afk', '/earn/redeem']) ? 'active' : ''; ?>">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons ti ti-currency-euro"></i>

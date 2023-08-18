@@ -4,120 +4,97 @@ session_start();
 $csrf = new CSRF();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($csrf->validate('login-form')) {
-    if (!$settings['reCAPTCHA_sitekey'] == "") {
-      // CAPTCHA verification only if reCAPTCHA is enabled
-      $response = $_POST["g-recaptcha-response"];
-      $url = 'https://www.google.com/recaptcha/api/siteverify';
-      $data = array(
-        'secret' => $settings['reCAPTCHA_secretkey'],
-        'response' => $_POST["g-recaptcha-response"]
-      );
-      $options = array(
-        'http' => array(
-          'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-          'method' => 'POST',
-          'content' => http_build_query($data)
-        )
-      );
-      $context = stream_context_create($options);
-      $verify = file_get_contents($url, false, $context);
-      $captcha_success = json_decode($verify);
-
-      if ($captcha_success->success == false) {
-        writeLog("auth", "Failed to login: 'reCAPTCHA failed'", $conn);
-        header('location: /auth/login?e=reCAPTCHA Verification Failed');
-        exit; // Stop execution if CAPTCHA fails
-      }
-    }
-
-    // Rest of the login code
     if (isset($_POST['login'])) {
-      $email = mysqli_real_escape_string($conn, $_POST['email']);
-      $password = mysqli_real_escape_string($conn, $_POST['password']);
-      $ip_addres = getclientip();
-      if (!$email == "" || !$password == "") {
-        $query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
-        $result = mysqli_query($conn, $query);
-        if ($result) {
-          if (mysqli_num_rows($result) == 1) {
-            $row = mysqli_fetch_assoc($result);
-            $hashedPassword = $row['password'];
-            if (password_verify($password, $hashedPassword)) {
-              $token = $row['api_key'];
-              $email = $row['email'];
-              $banned = $row['banned'];
-              if (!$banned == "") {
-                writeLog("auth", "Failed to login: 'User banned'", $conn);
-                header('location: /auth/login?e=We are sorry but you are banned from using our system!');
-                exit; // Stop execution if user is banned
-              } else {
-                $usr_id = $row['api_key'];
-                if ($ip_address == "127.0.0.1") {
-                  $ip_address = "12.34.56.78";
-                }
-                $url = "http://ipinfo.io/$ip_address/json";
-                $data = json_decode(file_get_contents($url), true);
-
-                if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
-                  header('location: /auth/login?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
-                  die();
-                }
-                $userids = array();
-                $loginlogs = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE userkey = '$usr_id'");
-                foreach ($loginlogs as $login) {
-                  $ip = $login['ipaddr'];
-                  if ($ip == "12.34.56.78") {
-                    continue;
-                  }
-                  $saio = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '$ip'");
-                  foreach ($saio as $hello) {
-                    if (in_array($hello['userkey'], $userids)) {
-                      continue;
-                    }
-                    if ($hello['userkey'] == $usr_id) {
-                      continue;
-                    }
-                    array_push($userids, $hello['userkey']);
-                  }
-                }
-                if (count($userids) !== 0) {
-                  header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
-                  die();
-                }
-                $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('$ip_address', '$usr_id')");
-
-                $cookie_name = 'token';
-                $cookie_value = $token;
-                setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
-                writeLog('auth', "The user ($email) logged in.", $conn);
-                if (isset($_GET['r'])) {
-                  header('location: ' . $_GET['r']);
+      if ($settings['enable_turnstile'] == "false") {
+        $captcha_success = 1;
+      } else {
+        $captcha_success = validate_captcha($_POST["cf-turnstile-response"], $ip_address, $settings['turnstile_secretkey']);
+      }
+      if ($captcha_success) {
+        $email = mysqli_real_escape_string($conn, $_POST['email']);
+        $password = mysqli_real_escape_string($conn, $_POST['password']);
+        $ip_addres = getclientip();
+        if (!$email == "" || !$password == "") {
+          $query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
+          $result = mysqli_query($conn, $query);
+          if ($result) {
+            if (mysqli_num_rows($result) == 1) {
+              $row = mysqli_fetch_assoc($result);
+              $hashedPassword = $row['password'];
+              if (password_verify($password, $hashedPassword)) {
+                $token = $row['api_key'];
+                $email = $row['email'];
+                $banned = $row['banned'];
+                if (!$banned == "") {
+                  header('location: /auth/login?e=We are sorry but you are banned from using our system!');
+                  exit; // Stop execution if user is banned
                 } else {
-                  header('location: /dashboard');
+                  $usr_id = $row['api_key'];
+                  if ($ip_address == "127.0.0.1") {
+                    $ip_address = "12.34.56.78";
+                  }
+                  $url = "http://ipinfo.io/$ip_address/json";
+                  $data = json_decode(file_get_contents($url), true);
+
+                  if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
+                    header('location: /auth/login?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
+                    die();
+                  }
+                  $userids = array();
+                  $loginlogs = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE userkey = '$usr_id'");
+                  foreach ($loginlogs as $login) {
+                    $ip = $login['ipaddr'];
+                    if ($ip == "12.34.56.78") {
+                      continue;
+                    }
+                    $saio = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . decrypt($ip, $ekey) . "'");
+                    foreach ($saio as $hello) {
+                      if (in_array($hello['userkey'], $userids)) {
+                        continue;
+                      }
+                      if ($hello['userkey'] == $usr_id) {
+                        continue;
+                      }
+                      array_push($userids, $hello['userkey']);
+                    }
+                  }
+                  if (count($userids) !== 0) {
+                    header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
+                    die();
+                  }
+                  $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . encrypt($ip_address, $ekey) . "', '$usr_id')");
+
+                  $cookie_name = 'token';
+                  $cookie_value = $token;
+                  setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
+                  if (isset($_GET['r'])) {
+                    header('location: ' . $_GET['r']);
+                  } else {
+                    header('location: /dashboard');
+                  }
+                  // Stop execution after successful login
                 }
-                // Stop execution after successful login
+              } else {
+                header('location: /auth/login?e=Invalid Password');
+                exit; // Stop execution if password is invalid
               }
             } else {
-              writeLog("auth", "Failed to login: 'Invalid Password'", $conn);
-              header('location: /auth/login?e=Invalid Password');
-              exit; // Stop execution if password is invalid
+              header('location: /auth/login?e=Invalid email');
+              exit; // Stop execution if email is invalid
             }
           } else {
-            writeLog("auth", "Failed to login: 'Invalid email'", $conn);
-            header('location: /auth/login?e=Invalid email');
-            exit; // Stop execution if email is invalid
+            header('location: /auth/login?e=Failed to log user in');
+            exit; // Stop execution if login fails
           }
+          mysqli_free_result($result);
+          $conn->close();
+          exit;
         } else {
-          writeLog("error", "Failed to log user in", $conn);
-          header('location: /auth/login?e=Failed to log user in');
-          exit; // Stop execution if login fails
+          header("location: /auth/login?e=Captcha verification failed; please refresh!");
+          die();
         }
-        mysqli_free_result($result);
-        $conn->close();
-        exit;
       }
     } else {
-      writeLog("error", "Failed to log user in: 'Login failed'", $conn);
       header('location: /auth/login?e=Login failed');
       exit; // Stop execution if login button is not pressed
     }
@@ -125,7 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // CSRF validation failed
     setcookie('api_key', '', time() - (10 * 365 * 24 * 60 * 60 * 2), '/');
     setcookie('phpsessid', '', time() - (10 * 365 * 24 * 60 * 60 * 2), '/');
-    writeLog("error", "Failed to log user in: 'CSRF Verification Failed'", $conn);
     header('location: /auth/login?e=CSRF Verification Failed');
     exit; // Stop execution if CSRF validation fails
   }
@@ -140,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <title>
     <?= $settings['name'] ?> | Login
   </title>
+
 </head>
 
 <body>
@@ -192,10 +169,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               </div>
             </div>
             <?php
-            if (!$settings['reCAPTCHA_sitekey'] == "") {
+            if ($settings['enable_turnstile'] == "true") {
               ?>
               <center>
-                <div class="g-recaptcha" data-sitekey="<?= $settings['reCAPTCHA_sitekey'] ?>"></div>
+                <div class="cf-turnstile" data-sitekey="<?= $settings['turnstile_sitekey'] ?>"></div>
               </center>
               &nbsp;
               <?php
