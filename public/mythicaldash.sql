@@ -37,7 +37,7 @@ CREATE TABLE `mythicaldash_locations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
   `locationid` text NOT NULL,
-  `status` text NOT NULL,
+  `status` enum('ONLINE','OFFLINE','MAINTENANCE') NOT NULL DEFAULT 'ONLINE',
   `slots` text NOT NULL,
   `created` date NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)

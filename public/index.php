@@ -287,6 +287,16 @@ else
         require("../view/admin/settings/pterodactyl.php");
     });
 
+    $router->add("/admin/locations",function () {
+        require("../include/main.php");
+        require("../view/admin/locations/main.php");
+    });
+
+    $router->add("/admin/locations/create",function () {
+        require("../include/main.php");
+        require("../view/admin/locations/create.php");
+    });
+
     $router->add("/admin/settings/seo",function () {
         require("../include/main.php");
         require("../view/admin/settings/seo.php");

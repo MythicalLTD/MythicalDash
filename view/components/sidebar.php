@@ -132,6 +132,18 @@ function is_active_page($page_urls)
           <div>Redeem Keys</div>
         </a>
       </li>
+      <li class="menu-item <?php echo is_active_page(['/admin/locations']) ? 'active' : ''; ?>">
+        <a href="/admin/locations" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-flag"></i>
+          <div>Locations</div>
+        </a>
+      </li>
+      <li class="menu-item <?php echo is_active_page(['/admin/eggs']) ? 'active' : ''; ?>">
+        <a href="/admin/eggs" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-egg"></i>
+          <div>Eggs</div>
+        </a>
+      </li>
       <li class="menu-item <?php echo is_active_page(['/admin/tickets']) ? 'active' : ''; ?>">
         <a href="/admin/tickets" class="menu-link">
           <i class="menu-icon tf-icons ti ti-messages"></i>

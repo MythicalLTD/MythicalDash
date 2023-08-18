@@ -125,7 +125,7 @@ $totalPages = ceil($redeem_totalredeems / $redeemPages);
                                                 <?php
                                             }
                                         } else {
-                                            echo "<tr><br<center><td class='text-center'colspan='5'><br>No redeem keys found.<br><br>&nbsp;</td></center></tr>";
+                                            echo "<tr><br<center><td class='text-center'colspan='5'><br>No redeem key found.<br><br>&nbsp;</td></center></tr>";
                                         }
                                         ?>
                                     </tbody>
