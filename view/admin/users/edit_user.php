@@ -23,7 +23,8 @@ if (isset($_GET['edit_user'])) {
                     $result = mysqli_query($conn, $check_query);
                     if (mysqli_num_rows($result) > 0) {
                         header('location: /admin/users/edit?e=Username or email already exists. Please choose a different one&id=' . $_GET['id']);
-                        exit();
+                        $conn->close();
+                        die();
                     }
                 } else {
                     if ($role == "Admin") {
@@ -40,18 +41,21 @@ if (isset($_GET['edit_user'])) {
                     $conn->query("UPDATE `mythicaldash_users` SET `email` = '" . $email . "' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
                     $conn->close();
                     header('location: /admin/users/edit?id=' . $_GET['id'] . '&s=We updated the user settings in the database');
+                    die();
                 }
             } else {
                 header('location: /admin/users/edit?e=Please fill in all the info&id=' . $_GET['id']);
-                exit();
+                $conn->close();
+                die();
             }
         } else {
             header('location: /admin/users/view?e=Can`t find this user in the database');
-            exit();
+            $conn->close();
+            die();
         }
     } else {
         header('location: /admin/users/view?e=Can`t find this user in the database');
-        exit();
+        die();
     }
 } else if (isset($_GET['id'])) {
     if (!$_GET['id'] == "") {
@@ -64,15 +68,15 @@ if (isset($_GET['edit_user'])) {
             $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . $_GET['id'] . "'")->fetch_array();
         } else {
             header('location: /admin/users/view?e=Can`t find this user in the database');
-            exit();
+            die();
         }
     } else {
         header('location: /admin/users/view?e=Can`t find this user in the database');
-        exit();
+        die();
     }
 } else {
     header('location: /admin/users/view');
-    exit();
+    die();
 }
 ?>
 <!DOCTYPE html>

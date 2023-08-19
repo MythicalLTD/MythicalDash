@@ -14,6 +14,7 @@ if (isset($_GET['update_settings'])) {
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `discord_clientid` = '" . $discord_client_id . "' WHERE `mythicaldash_settings`.`id` = 1;");
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `discord_clientsecret` = '" . $discord_clientsecret . "' WHERE `mythicaldash_settings`.`id` = 1;");
     header('location: /admin/settings');
+    $conn->close();
     die();
 } else {
     header('location: /admin/settings');

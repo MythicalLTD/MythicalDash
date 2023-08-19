@@ -1,7 +1,8 @@
 app:
   debug: true # DEFAULT: false | Do not set to true if you are not a developer
   silent_debug: true # DEFAULT: false | Do not set to true if you are a developer and you know what it dose
-  encryptionkey: ''
+  encryptionkey: '' # Please use a strong encryptionkey to encrypt your user data
+  disable_console: false # This function disables the console and the inspect element from the website
 
 database:
   host: 127.0.0.1 # DEFAULT: 127.0.0.1 | MYSQL_IP

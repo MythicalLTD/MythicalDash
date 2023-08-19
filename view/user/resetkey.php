@@ -19,14 +19,14 @@ if (isset($_COOKIE['token']))
             header('location: /user/profile?s=We updated the user settings in the database');
         } else {
             header('location: /user/profile?e=Can`t find this user in the database');
-            exit();
+            die();
         }
     } else {
         header('location: /user/profile?e=Can`t find this user in the database');
-        exit();
+        die();
     }
 } else {
     header('location: /user/profile');
-    exit();
+    die();
 }
 ?>

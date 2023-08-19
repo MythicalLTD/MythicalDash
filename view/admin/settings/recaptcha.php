@@ -10,8 +10,8 @@ if (isset($_GET['update_settings'])) {
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `turnstile_sitekey` = '" . $rechapa_sitekey . "' WHERE `mythicaldash_settings`.`id` = 1;");
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `turnstile_secretkey` = '" . $rechapa_secretKey . "' WHERE `mythicaldash_settings`.`id` = 1;");
     header('location: /admin/settings');
-    die();
-    
+    $conn->close();
+    die();    
 } else {
     header('location: /admin/settings');
     die();

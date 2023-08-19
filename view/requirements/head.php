@@ -53,3 +53,10 @@
     }
 </style>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<?php 
+if ($cfg_is_console_on == 'true') {
+    ?>
+    <script src="<?= $appURL ?>/assets/js/disable-console.js"></script>
+    <?php
+}
+?>

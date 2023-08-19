@@ -71,7 +71,7 @@ $totalPages = ceil($totalLocations / $locationsPerPage);
                         <div class="card">
                             <h5 class="card-header">
                                 Locations
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#addLocation" class="btn btn-primary float-end">Create New Location</button>
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#addLocation" class="btn btn-primary float-end">Add a new Location</button>
                             </h5>
                             <div class="table-responsive text-nowrap">
                                 <table class="table">
@@ -93,7 +93,7 @@ $totalPages = ceil($totalLocations / $locationsPerPage);
                                                 echo "<td>" . $row['status'] . "</td>";
                                                 echo "<td>" . $row['locationid'] . "</td>";
                                                 echo "<td>" . $row['slots'] . "</td>";
-                                                echo "<td><a href=\"/admin/locations/edit?id=" . $row['id'] . "\" class=\"btn btn-primary\">Edit</a>&nbsp;<a href=\"/admin/locations/delete?id=" . $row['id'] . "\" class=\"btn btn-danger\">Delete</a></td>";
+                                                echo "<td><!--<a href=\"/admin/locations/edit?id=" . $row['id'] . "\" class=\"btn btn-primary\">Edit</a>-->&nbsp;<a href=\"/admin/locations/delete?id=" . $row['id'] . "\" class=\"btn btn-danger\">Delete</a></td>";
                                                 echo "</tr>";
                                             }
                                         } else {
@@ -145,7 +145,7 @@ $totalPages = ceil($totalLocations / $locationsPerPage);
                                         </div>
                                         <div class="col-12 text-center">
                                             <button type="submit" name="create_location" value="create_location"
-                                                class="btn btn-primary me-sm-3 me-1">Create Key</button>
+                                                class="btn btn-primary me-sm-3 me-1">Add location</button>
                                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
                                                 aria-label="Close">Cancel </button>
                                         </div>

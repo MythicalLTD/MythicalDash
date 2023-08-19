@@ -29,7 +29,7 @@ if (isset($_COOKIE['token'])) {
         }
       }
       echo '<script>window.location.replace("/auth/login?r='.$fullUrl.'");</script>';
-      exit();
+      die();
   }
 }
 else
@@ -44,6 +44,6 @@ else
     }
   }
   header('location: /auth/login?r='.$fullUrl);
-  exit();
+  die();
 }
 ?>

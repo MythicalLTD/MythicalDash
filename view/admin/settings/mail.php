@@ -18,6 +18,7 @@ if (isset($_GET['update_settings'])) {
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `smtpPassword` = '" . $mail_password . "' WHERE `mythicaldash_settings`.`id` = 1;");
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `fromEmail` = '" . $mail_from_address . "' WHERE `mythicaldash_settings`.`id` = 1;");
     header('location: /admin/settings');
+    $conn->close();
     die();
 } else {
     header('location: /admin/settings');

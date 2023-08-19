@@ -14,15 +14,16 @@ if (isset($_GET['code'])) {
             header('location: /admin/redeem?s=We deleted the coupon code from the database');
         } else {
             header("location: /admin/redeem?e=Can't find a coupon code in the database.");
-            exit();
+            die();
         }
     } else {
         header("location: /admin/redeem?e=Can't find a coupon code in the database.");
-        exit();
+        $conn->close();
+        die();
     }
 
 } else {
     header("location: /admin/redeem?e=Can't find a coupon code in the database.");
-    exit();
+    die();
 }
 ?>

@@ -16,18 +16,20 @@ if (isset($_GET['id']))
             $password = $user_info['password'];
             $skey = generate_key($email,$password);
             $conn->query("UPDATE `mythicaldash_users` SET `api_key` = '" . $skey . "' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
-            $conn->close();
             header('location: /admin/users/edit?id='.$_GET['id'].'&s=We updated the user settings in the database');
+            $conn->close();
+            die();
         } else {
             header('location: /admin/users/view?e=Can`t find this user in the database');
-            exit();
+            $conn->close();
+            die();
         }
     } else {
         header('location: /admin/users/view?e=Can`t find this user in the database');
-        exit();
+        die();
     }
 } else {
     header('location: /admin/users/view');
-    exit();
+    die();
 }
 ?>

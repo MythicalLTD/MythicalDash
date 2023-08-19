@@ -297,6 +297,11 @@ else
         require("../view/admin/locations/create.php");
     });
 
+    $router->add("/admin/locations/delete",function () {
+        require("../include/main.php");
+        require("../view/admin/locations/delete.php");
+    });
+
     $router->add("/admin/settings/seo",function () {
         require("../include/main.php");
         require("../view/admin/settings/seo.php");

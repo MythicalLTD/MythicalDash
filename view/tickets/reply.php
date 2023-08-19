@@ -13,6 +13,7 @@ if (isset($_GET['message']) && isset($_GET['ticketuuid']) && isset($_GET['userke
         die();
     } else {
         header('location: /help-center/tickets?e=We can\'t find this ticket in the database');
+        $conn->close();
         die();
     }
 } else {

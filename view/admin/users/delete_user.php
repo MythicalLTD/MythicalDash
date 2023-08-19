@@ -13,21 +13,24 @@ if (isset($_GET['id'])) {
             $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . $_GET['id'] . "'")->fetch_array();
             if ($user_info['api_key'] == $_COOKIE['token']) {
                 header('location: /admin/users/view?e=Can`t delete your own account');
-                exit();
+                die();
             }
             $conn->query('DELETE FROM `mythicaldash_users` WHERE `mythicaldash_users`.`id` = '.$_GET['id'].';');
+            $conn->close();
             header('location: /admin/users/view?s=We updated the user settings in the database');
+            die();
         } else {
             header('location: /admin/users/view?e=Can`t find this user in the database');
-            exit();
+            $conn->close();
+            die();
         }
     } else {
         header('location: /admin/users/view?e=Can`t find this user in the database');
-        exit();
+        die();
     }
 
 } else {
     header('location: /admin/users/view');
-    exit();
+    die();
 }
 ?>

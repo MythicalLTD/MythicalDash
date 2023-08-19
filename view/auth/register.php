@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $acount = mysqli_num_rows($aresult);
                             if ($acount >= 1) {
                                 header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use temporary accounts, which is not allowed.');
-                                exit();
+                                die();
                             } else {
                                 if ($ip_addres == "127.0.0.1") {
                                     $ip_addres = "12.34.56.78";
@@ -149,15 +149,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             }
                         } else {
                             header('location: /auth/register?e=Username or email already exists. Please choose a different one');
-                            exit();
+                            die();
                         }
                     } else {
                         header('location: /auth/register?e=Please fill in all the required info');
-                        exit();
+                        die();
                     }
                 } else {
                     header("location: /auth/register?e=I'm sorry, but it looks like the pterodactyl panel is not linked to the dash.");
-                    exit();
+                    die();
                 }
             } else {
                 header("location: /auth/register?e=Captcha verification failed; please refresh!");

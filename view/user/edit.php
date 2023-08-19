@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $result = mysqli_query($conn, $check_query);
                     if (mysqli_num_rows($result) > 0) {
                         header('location: /user/profile?e=Username or email already exists. Please choose a different one');
-                        exit();
+                        die();
                     }
                 } else {
                     $conn->query("UPDATE `mythicaldash_users` SET `username` = '" . $username . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             } else {
                 header('location: /user/profile?e=Please fill in all the info');
-                exit();
+                die();
             }
         }
     } else {

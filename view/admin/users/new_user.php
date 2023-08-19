@@ -17,9 +17,13 @@ if (isset($_POST['create_user'])) {
         $result = mysqli_query($conn, $check_query);
         if (mysqli_num_rows($result) > 0) {
             header('location: /admin/users/new?e=Username or email already exists. Please choose a different one');
+            $conn->close();
+            die();
         } else {
             $conn->query("INSERT INTO `mythicaldash_users` (`email`, `username`, `first_name`, `last_name`, `password`, `api_key`) VALUES ('" . $email . "', '" . $username . "', '" . $firstName . "', '" . $lastName . "', '" . $password . "', '" . $skey . "');");
             header('location: /admin/users/view');
+            $conn->close();
+            die();
         }
     }
 }

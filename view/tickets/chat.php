@@ -6,16 +6,18 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
     $stmt = mysqli_prepare($conn, $ticketquery_db);
 
     if (!$stmt) {
-        header('location: /help-center/tickets?e=Prepare failed: ' . mysqli_error($conn));
-        die('Prepare failed: ' . mysqli_error($conn));
+        header("location: /help-center/tickets?e=Sorry, but we can't talk with the backend at this moment, please try again!");
+        die();
     }
 
     mysqli_stmt_bind_param($stmt, "s", $_GET['ticketuuid']);
     mysqli_stmt_execute($stmt);
 
     if (mysqli_stmt_error($stmt)) {
-        header('location: /help-center/tickets?e=Execute failed: ' . mysqli_stmt_error($stmt));
-        die('Execute failed: ' . mysqli_stmt_error($stmt));
+        header("location: /help-center/tickets?e=Sorry, but we can't talk with the backend at this moment, please try again!");
+        mysqli_stmt_close($stmt);
+        $conn->close();
+        die();
     }
 
     $result = mysqli_stmt_get_result($stmt);
@@ -25,11 +27,14 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
         if ($ticket_db['status'] == "deleted") {
             if ($userdb['role'] == "User") {
                 header('location: /help-center/tickets?e=We are sorry, but this ticket is archived. You can\'t access it anymore!');
+                $conn->close();
                 die();
             }
         }
     } else {
         header('location: /help-center/tickets?e=We can\'t find this ticket in the database');
+        mysqli_stmt_close($stmt);
+        $conn->close();
         die();
     }
     if (isset($_GET['export']) && $_GET['export'] === "true") {
@@ -65,9 +70,10 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
         echo "Archived ticket signed key: " . generateticket_key($_GET['ticketuuid']) . "\r\n";
         $exportData = ob_get_clean();
         echo $exportData;
-        exit();
+        mysqli_stmt_close($stmt);
+        $conn->close();
+        die();
     }
-    mysqli_stmt_close($stmt);
 } else {
     header('location: /help-center/tickets?e=We can\'t find this ticket in the database');
     die();

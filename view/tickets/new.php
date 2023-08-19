@@ -29,6 +29,7 @@ if (isset($_GET['subject']) && isset($_GET['priority']) && isset($_GET['descript
         )
         ->execute();
         header('location: /help-center/tickets');
+        $conn->close();
         die();
     } else {
         header('location: /help-center?e=Missing the required information to create a ticket.');

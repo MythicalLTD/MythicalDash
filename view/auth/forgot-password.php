@@ -216,20 +216,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } catch (Exception $e) {
                         $error_message = "Email sending failed. Please try again later.";
                         header("location: /auth/forgot-password?error=" . urlencode($error_message));
-                        exit();
+                        die();
                     }
                 }
             } else {
                 header('location: /auth/forgot-password?e=Looks like the host that you are using dose not have a smtp server setup please contact support');
-                exit();
+                die();
             }
         } else {
             header('location: /auth/forgot-password?e=CSRF Verification Failed');
-            exit();
+            die();
         }
     } else {
         header('location: /auth/forgot-password?e=The request you sen`t dose not exist');
-        exit();
+        die();
     }
 }
 ?>

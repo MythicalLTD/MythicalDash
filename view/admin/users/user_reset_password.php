@@ -15,18 +15,20 @@ if (isset($_GET['id']))
             $upassword = mysqli_real_escape_string($conn,$_GET['pwd']);
             $pwd = password_hash($upassword, PASSWORD_DEFAULT);
             $conn->query("UPDATE `mythicaldash_users` SET `password` = '" . $pwd . "' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
-            $conn->close();
             header('location: /admin/users/edit?id='.$_GET['id'].'&s=We updated the user settings in the database');
+            $conn->close();
+            die();
         } else {
             header('location: /admin/users/view?e=Can`t find this user in the database');
-            exit();
+            $conn->close();
+            die();
         }
     } else {
         header('location: /admin/users/view?e=Can`t find this user in the database');
-        exit();
+        die();
     }
 } else {
     header('location: /admin/users/view');
-    exit();
+    die();
 }
 ?>

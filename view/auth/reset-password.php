@@ -18,10 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $conn->query("DELETE FROM mythicaldash_resetpasswords WHERE `mythicaldash_resetpasswords`.`id` = " . $ucode['id'] . "");
                         $conn->close();
                         header('location: /auth/login');
-                        exit();
+                        die();
                     } else {
                         header('location: /auth/forgot-password?e=CSRF Verification Failed');
-                        exit();
+                        die();
                     }
                 } else {
                     ?>
@@ -89,16 +89,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             } else {
                 header('location: /auth/forgot-password?e=The code for resetting your password is wrong. Please try again.');
-                exit();
+                die();
             }
         } else {
             header('location: /auth/forgot-password?e=The code for resetting your password is wrong. Please try again.');
-            exit();
+            die();
         }
 
     } else {
         header('location: /auth/forgot-password?e=The code for resetting your password is wrong. Please try again.');
-        exit();
+        die();
     }
 }
 ?>

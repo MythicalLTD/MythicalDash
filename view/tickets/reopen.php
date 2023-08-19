@@ -12,6 +12,7 @@ if (isset($_GET['ticketuuid']) && !$_GET['ticketuuid'] == "") {
         die();
     } else {
         header('location: /help-center/tickets?e=We can\'t find this ticket in the database');
+        $conn->close();
         die();
     }
 } else {

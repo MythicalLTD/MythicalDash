@@ -18,6 +18,7 @@ if (isset($_GET['update_settings'])) {
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `price_database` = '" . $r_databases . "' WHERE `mythicaldash_settings`.`id` = 1;");
     mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `price_backup` = '" . $r_backups . "' WHERE `mythicaldash_settings`.`id` = 1;");
     header('location: /admin/settings');
+    $conn->close();
     die();
 } else {
     header('location: /admin/settings');

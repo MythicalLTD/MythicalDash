@@ -11,18 +11,18 @@ if (isset($_COOKIE['token'])) {
         if (mysqli_num_rows($result) > 0) {
             $conn->query("DELETE FROM `mythicaldash_users` WHERE `mythicaldash_users`.`api_key` = '".$_COOKIE['token']."';");
             header('location: /auth/logout');
-            exit();
+            die();
         } else {
             header('location: /user/profile?e=Can`t find this user in the database');
-            exit();
+            die();
         }
     } else {
         header('location: /user/profile?e=Can`t find this user in the database');
-        exit();
+        die();
     }
 
 } else {
     header('location: /user/profile');
-    exit();
+    die();
 }
 ?>
