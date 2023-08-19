@@ -1,6 +1,6 @@
 {
-    "name": "MythicalSystems",
-    "short_name": "Mythical",
+    "name": "MythicalSystems Client Area",
+    "short_name": "MythicalSystems",
     "start_url": "/",
     "display": "standalone",
     "orientation": "portrait",
