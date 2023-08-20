@@ -26,7 +26,7 @@
           <a class="nav-link" href="https://discord.gg/7BZTmSK2D8">Support</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/MythicalLTD/mythicaldash#installation">Docs</a>
+          <a class="nav-link" href="https://docs.mythicalsystems.me">Docs</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="https://github.com/mythicalltd">GitHub</a>

@@ -44,7 +44,7 @@ if ($phpVersion >= '8.0' && $phpVersion <= '8.2') {
           <a class="nav-link" href="https://discord.gg/7BZTmSK2D8">Support</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/MythicalLTD/mythicaldash#installation">Docs</a>
+          <a class="nav-link" href="https://docs.mythicalsystems.me">Docs</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="https://github.com/mythicalltd">Github</a>
@@ -101,7 +101,7 @@ foreach ($requiredExtensions as $ext) {
             <a class="nav-link" href="https://discord.gg/7BZTmSK2D8">Support</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="https://github.com/MythicalLTD/mythicaldash#installation">Docs</a>
+            <a class="nav-link" href="https://docs.mythicalsystems.me">Docs</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="https://github.com/mythicalltd">Github</a>
@@ -154,7 +154,7 @@ if (!is_writable(__DIR__)) {
           <a class="nav-link" href="https://discord.gg/7BZTmSK2D8">Support</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/MythicalLTD/mythicaldash#installation">Docs</a>
+          <a class="nav-link" href="https://docs.mythicalsystems.me">Docs</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="https://github.com/mythicalltd">Github</a>
@@ -203,7 +203,7 @@ if (!is_writable(__DIR__)) {
           <a class="nav-link" href="https://discord.gg/7BZTmSK2D8">Support</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/MythicalLTD/mythicaldash#installation">Docs</a>
+          <a class="nav-link" href="https://docs.mythicalsystems.me">Docs</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="https://github.com/mythicalltd">Github</a>

@@ -63,8 +63,8 @@ if (isset($_GET['submit'])) {
     echo "Error inserting data: " . $iconn->error;
   }
   $hpwd = password_hash($s_passwd, PASSWORD_DEFAULT);
-  $token = generate_key($password, "admin@mythicalsystems.tech");
-  $sql_usr = "INSERT INTO `mythicaldash_users` (`email`, `username`, `first_name`, `last_name`, `password`, `api_key`, `role`) VALUES ('admin@mythicalsystems.tech', 'Administrator', 'MythicalSystems', 'MythicalSystems', '$hpwd', '$token', 'Administrator');";
+  $token = generate_key($password, "admin@mythicalsystems.me");
+  $sql_usr = "INSERT INTO `mythicaldash_users` (`email`, `username`, `first_name`, `last_name`, `password`, `api_key`, `role`) VALUES ('admin@mythicalsystems.me', 'Administrator', 'MythicalSystems', 'MythicalSystems', '$hpwd', '$token', 'Administrator');";
   if ($iconn->query($sql_usr) === TRUE) {
 
   } else {
@@ -91,7 +91,7 @@ if (isset($_GET['submit'])) {
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">mythicaldash Installer</a>
+    <a class="navbar-brand" href="#">MythicalDash Installer</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -102,7 +102,7 @@ if (isset($_GET['submit'])) {
           <a class="nav-link" href="https://discord.gg/7BZTmSK2D8">Support</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/MythicalLTD/mythicaldash#installation">Docs</a>
+          <a class="nav-link" href="https://docs.mythicalsystems.me">Docs</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="https://github.com/mythicalltd">Github</a>
@@ -129,7 +129,7 @@ if (isset($_GET['submit'])) {
       <p class="text-center">Here you can find the login info for the default MythicalDash account:</p>
       <div class="form-group">
         <label for="username">Email:</label>
-        <input type="email" class="form-control" id="username" name="username" value="admin@mythicalsystems.tech"
+        <input type="email" class="form-control" id="username" name="username" value="admin@mythicalsystems.me"
           readonly="true">
       </div>
       <div class="form-group">
