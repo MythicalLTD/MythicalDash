@@ -264,6 +264,7 @@ CREATE TABLE `mythicaldash_users` (
   `minutes_afk` text NOT NULL DEFAULT '0',
   `last_seen` bigint(111) NOT NULL DEFAULT 0,
   `first_ip` text DEFAULT NULL,
+  `last_ip` text DEFAULT NULL,
   `banned` text NOT NULL DEFAULT '',
   `discord_linked` enum('false','true') NOT NULL DEFAULT 'false',
   `discord_id` text DEFAULT NULL,

@@ -17,6 +17,15 @@ if (isset($_GET['edit_user'])) {
             $email = mysqli_real_escape_string($conn, $_GET['email']);
             $avatar = mysqli_real_escape_string($conn, $_GET['avatar']);
             $role = mysqli_real_escape_string($conn, $_GET['role']);
+            $coins = mysqli_real_escape_string($conn,$_GET['coins']);
+            $ram = mysqli_real_escape_string($conn, $_GET['ram']);
+            $disk = mysqli_real_escape_string($conn,$_GET['disk']);
+            $cpu = mysqli_real_escape_string($conn,$_GET['cpu']);
+            $server_limit = mysqli_real_escape_string($conn,$_GET['server_limit']);
+            $ports = mysqli_real_escape_string($conn,$_GET['ports']);
+            $databases = mysqli_real_escape_string($conn,$_GET['databases']);
+            $backups = mysqli_real_escape_string($conn,$_GET['backups']);
+            $banned = mysqli_real_escape_string($conn,$_GET['banned']);
             if (!$username == "" || $firstName == "" || $lastName == "" || $email == "" || $avatar == "" || $role == "") {
                 if (!$user_info['username'] == $username || !$email == $user_info['email']) {
                     $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
@@ -34,11 +43,20 @@ if (isset($_GET['edit_user'])) {
                     } else {
                         $conn->query("UPDATE `mythicaldash_users` SET `role` = 'User' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
                     }
-                    $conn->query("UPDATE `mythicaldash_users` SET `username` = '" . $username . "' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
-                    $conn->query("UPDATE `mythicaldash_users` SET `first_name` = '" . $firstName . "' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
-                    $conn->query("UPDATE `mythicaldash_users` SET `last_name` = '" . $lastName . "' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
-                    $conn->query("UPDATE `mythicaldash_users` SET `avatar` = '" . $avatar . "' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
-                    $conn->query("UPDATE `mythicaldash_users` SET `email` = '" . $email . "' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `username` = '" . $username . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `first_name` = '" . encrypt($firstName,$ekey) . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `last_name` = '" . encrypt($lastName,$ekey) . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `avatar` = '" . $avatar . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `email` = '" . $email . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $coins . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `ram` = '" . $ram . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `disk` = '" . $disk . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `cpu` = '" . $cpu . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `server_limit` = '" . $server_limit . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `ports` = '" . $ports . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `databases` = '" . $databases . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . $backups . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `banned` = '" . $banned . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
                     $conn->close();
                     header('location: /admin/users/edit?id=' . $_GET['id'] . '&s=We updated the user settings in the database');
                     die();
@@ -91,9 +109,9 @@ if (isset($_GET['edit_user'])) {
 </head>
 
 <body>
-  <div id="preloader" class="discord-preloader">
-    <div class="spinner"></div>
-  </div>
+    <div id="preloader" class="discord-preloader">
+        <div class="spinner"></div>
+    </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../../components/sidebar.php') ?>
@@ -185,13 +203,15 @@ if (isset($_GET['edit_user'])) {
                                                 <div class="mb-3 col-md-6">
                                                     <label for="firstName" class="form-label">First Name</label>
                                                     <input class="form-control" type="text" id="firstName"
-                                                        name="firstName" value="<?= decrypt($user_info['first_name'],$ekey) ?>"
+                                                        name="firstName"
+                                                        value="<?= decrypt($user_info['first_name'], $ekey) ?>"
                                                         autofocus />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="lastName" class="form-label">Last Name</label>
                                                     <input class="form-control" type="text" name="lastName"
-                                                        id="lastName" value="<?= decrypt($user_info['last_name'],$ekey) ?>" />
+                                                        id="lastName"
+                                                        value="<?= decrypt($user_info['last_name'], $ekey) ?>" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="email" class="form-label">E-mail</label>
@@ -203,6 +223,97 @@ if (isset($_GET['edit_user'])) {
                                                     <label for="avatar" class="form-label">Avatar</label>
                                                     <input class="form-control" type="text" id="avatar" name="avatar"
                                                         value="<?= $user_info['avatar'] ?>" />
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="banner" class="form-label">Banner</label>
+                                                    <input class="form-control" type="text" id="banner" name="banner"
+                                                        value="<?= $user_info['banner'] ?>" />
+                                                </div>
+                                                <input class="form-control" type="hidden" id="id" name="id"
+                                                    value="<?= $_GET['id'] ?>">
+
+                                            </div>
+                                    </div>
+                                    <hr class="my-0" />
+                                    <h5 class="card-header">User info</h5>
+                                    <div class="card-body">
+                                            <div class="row">
+                                                <div class="mb-3 col-md-3">
+                                                    <label for="banned" class="form-label">Banned</label>
+                                                    <input class="form-control" type="text" id="banned" name="banned"
+                                                        value="<?= $user_info['banned'] ?>" placeholder="User is not banned" />
+                                                </div>
+                                                <div class="mb-3 col-md-1">
+                                                    <label for="panel_id" class="form-label">Panel ID</label>
+                                                    <input class="form-control" type="text" id="panel_id" name="panel_id"
+                                                        value="<?= $user_info['panel_id'] ?>" disabled readonly/>
+                                                </div>
+                                                <div class="mb-3 col-md-1">
+                                                    <label for="minutes_afk" class="form-label">Minutes AFK</label>
+                                                    <input class="form-control" type="number" id="minutes_afk" name="minutes_afk"
+                                                        value="<?= $user_info['minutes_afk'] ?>" disabled readonly/>
+                                                </div>
+                                                <div class="mb-3 col-md-2">
+                                                    <label for="first_ip" class="form-label">First IP</label>
+                                                    <input class="form-control" type="text" id="first_ip" name="first_ip"
+                                                        value="<?= $user_info['first_ip'] ?>" disabled readonly/>
+                                                </div>
+                                                <div class="mb-3 col-md-2">
+                                                    <label for="last_ip" class="form-label">Last IP</label>
+                                                    <input class="form-control" type="text" id="last_ip" name="last_ip"
+                                                        value="<?= $user_info['last_ip'] ?>" disabled readonly/>
+                                                </div>
+                                                <div class="mb-3 col-md-2">
+                                                    <label for="registred" class="form-label">Registred at</label>
+                                                    <input class="form-control" type="text" id="registred" name="registred"
+                                                        value="<?= $user_info['registred'] ?>" disabled readonly/>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <hr class="my-0" />
+                                    <h5 class="card-header">Resources</h5>
+                                    <div class="card-body">
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="coins" class="form-label">Coins</label>
+                                                    <input class="form-control" type="number" id="coins" name="coins"
+                                                        value="<?= $user_info['coins'] ?>" placeholder="3" />
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="ram" class="form-label">Ram (MB)</label>
+                                                    <input class="form-control" type="number" id="ram" name="ram"
+                                                        value="<?= $user_info['ram'] ?>" autofocus />
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="disk" class="form-label">Disk (MB)</label>
+                                                    <input class="form-control" type="number" name="disk" id="disk"
+                                                        value="<?= $user_info['disk'] ?>" />
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="cpu" class="form-label">VCore (%)</label>
+                                                    <input class="form-control" type="number" id="cpu" name="cpu"
+                                                        value="<?= $user_info['cpu'] ?>" placeholder="100" />
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="server_limit" class="form-label">Server Limit</label>
+                                                    <input class="form-control" type="number" id="server_limit"
+                                                        name="server_limit" value="<?= $user_info['server_limit'] ?>" />
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="ports" class="form-label">Ports</label>
+                                                    <input class="form-control" type="number" id="ports" name="ports"
+                                                        value="<?= $user_info['ports'] ?>" />
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="databases" class="form-label">Databases</label>
+                                                    <input class="form-control" type="number" id="databases"
+                                                        name="databases" value="<?= $user_info['databases'] ?>" />
+                                                </div>
+
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="backups" class="form-label">Backups</label>
+                                                    <input class="form-control" type="number" id="backups"
+                                                        name="backups" value="<?= $user_info['backups'] ?>" />
                                                 </div>
                                                 <input class="form-control" type="hidden" id="id" name="id"
                                                     value="<?= $_GET['id'] ?>">
@@ -216,110 +327,112 @@ if (isset($_GET['edit_user'])) {
                                         </form>
                                     </div>
                                 </div>
-                                <div class="card">
-                                    <h5 class="card-header">Danger Zone</h5>
-                                    <div class="card-body">
-                                        <div class="mb-3 col-12 mb-0">
-                                            <div class="alert alert-warning">
-                                                <h5 class="alert-heading mb-1">Make sure you read what the button does!
-                                                </h5>
-                                                <p class="mb-0">Once you press a button, there is no going back. Please
-                                                    be certain.</p>
-                                            </div>
+                            </div>
+
+                            <div class="card">
+                                <h5 class="card-header">Danger Zone</h5>
+                                <div class="card-body">
+                                    <div class="mb-3 col-12 mb-0">
+                                        <div class="alert alert-warning">
+                                            <h5 class="alert-heading mb-1">Make sure you read what the button does!
+                                            </h5>
+                                            <p class="mb-0">Once you press a button, there is no going back. Please
+                                                be certain.</p>
                                         </div>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#resetPwd"
-                                            class="btn btn-danger deactivate-account">Reset Password</button>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#resetKey"
-                                            class="btn btn-danger deactivate-account">Reset Secret Key</button>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#deleteacc"
-                                            class="btn btn-danger deactivate-account">Delete Account</button>
                                     </div>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#resetPwd"
+                                        class="btn btn-danger deactivate-account">Reset Password</button>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#resetKey"
+                                        class="btn btn-danger deactivate-account">Reset Secret Key</button>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#deleteacc"
+                                        class="btn btn-danger deactivate-account">Delete Account</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="deleteacc" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-simple modal-edit-user">
-                            <div class="modal-content p-3 p-md-5">
-                                <div class="modal-body">
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                    <div class="text-center mb-4">
-                                        <h3 class="mb-2">Delete this user?</h3>
-                                        <p class="text-muted">When you choose to delete this user, please be aware that
-                                            all associated user data will be permanently wiped. This action is
-                                            irreversible, so proceed with caution!
-                                        </p>
-                                    </div>
-                                    <form method="GET" action="/admin/users/delete" class="row g-3">
-                                        <div class="col-12 text-center">
-                                            <button type="submit" name="id" value="<?= $_GET['id'] ?>"
-                                                class="btn btn-danger me-sm-3 me-1">Delete user</button>
-                                            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                                aria-label="Close">Cancel </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="resetKey" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-simple modal-edit-user">
-                            <div class="modal-content p-3 p-md-5">
-                                <div class="modal-body">
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                    <div class="text-center mb-4">
-                                        <h3 class="mb-2">Reset user secret key?</h3>
-                                        <p class="text-muted">After updating the key, the user will have to login again.
-                                        </p>
-                                    </div>
-                                    <form method="GET" action="/admin/users/security/resetkey" class="row g-3">
-                                        <div class="col-12 text-center">
-                                            <button type="submit" name="id" value="<?= $_GET['id'] ?>"
-                                                class="btn btn-danger me-sm-3 me-1">Reset key</button>
-                                            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                                aria-label="Close">Cancel </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="resetPwd" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-simple modal-edit-user">
-                            <div class="modal-content p-3 p-md-5">
-                                <div class="modal-body">
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                    <div class="text-center mb-4">
-                                        <h3 class="mb-2">Reset user password?</h3>
-                                        <p class="text-muted">After updating the key, the user will stay logged in!!</p>
-                                    </div>
-                                    <form method="GET" action="/admin/users/security/resetpwd" class="row g-3">
-                                        <div class="col-12">
-                                            <label class="form-label" for="resetPwd">New Password</label>
-                                            <input type="password" id="pwd" name="pwd" class="form-control"
-                                                placeholder="" required />
-                                        </div>
-                                        <div class="col-12 text-center">
-                                            <button type="submit" name="id" value="<?= $_GET['id'] ?>"
-                                                class="btn btn-danger me-sm-3 me-1">Reset password</button>
-                                            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                                aria-label="Close">Cancel </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <?php include(__DIR__ . '/../../components/footer.php') ?>
-                    <div class="content-backdrop fade"></div>
                 </div>
+                <div class="modal fade" id="deleteacc" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+                        <div class="modal-content p-3 p-md-5">
+                            <div class="modal-body">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                                <div class="text-center mb-4">
+                                    <h3 class="mb-2">Delete this user?</h3>
+                                    <p class="text-muted">When you choose to delete this user, please be aware that
+                                        all associated user data will be permanently wiped. This action is
+                                        irreversible, so proceed with caution!
+                                    </p>
+                                </div>
+                                <form method="GET" action="/admin/users/delete" class="row g-3">
+                                    <div class="col-12 text-center">
+                                        <button type="submit" name="id" value="<?= $_GET['id'] ?>"
+                                            class="btn btn-danger me-sm-3 me-1">Delete user</button>
+                                        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+                                            aria-label="Close">Cancel </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="resetKey" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+                        <div class="modal-content p-3 p-md-5">
+                            <div class="modal-body">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                                <div class="text-center mb-4">
+                                    <h3 class="mb-2">Reset user secret key?</h3>
+                                    <p class="text-muted">After updating the key, the user will have to login again.
+                                    </p>
+                                </div>
+                                <form method="GET" action="/admin/users/security/resetkey" class="row g-3">
+                                    <div class="col-12 text-center">
+                                        <button type="submit" name="id" value="<?= $_GET['id'] ?>"
+                                            class="btn btn-danger me-sm-3 me-1">Reset key</button>
+                                        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+                                            aria-label="Close">Cancel </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="resetPwd" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+                        <div class="modal-content p-3 p-md-5">
+                            <div class="modal-body">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                                <div class="text-center mb-4">
+                                    <h3 class="mb-2">Reset user password?</h3>
+                                    <p class="text-muted">After updating the key, the user will stay logged in!!</p>
+                                </div>
+                                <form method="GET" action="/admin/users/security/resetpwd" class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label" for="resetPwd">New Password</label>
+                                        <input type="password" id="pwd" name="pwd" class="form-control" placeholder=""
+                                            required />
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <button type="submit" name="id" value="<?= $_GET['id'] ?>"
+                                            class="btn btn-danger me-sm-3 me-1">Reset password</button>
+                                        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+                                            aria-label="Close">Cancel </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php include(__DIR__ . '/../../components/footer.php') ?>
+                <div class="content-backdrop fade"></div>
             </div>
         </div>
-        <div class="layout-overlay layout-menu-toggle"></div>
-        <div class="drag-target"></div>
+    </div>
+    <div class="layout-overlay layout-menu-toggle"></div>
+    <div class="drag-target"></div>
     </div>
     <?php include(__DIR__ . '/../../requirements/footer.php') ?>
     <!-- Page JS -->

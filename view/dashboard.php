@@ -222,7 +222,7 @@ foreach ($servers_in_queue as $server) {
                                           <img src="<?= $appURL?>/assets/img/empty.svg"
                                              height="150" />
                                              <br>
-                                          <h4 style="text-white">No servers yet. Why not create one?</h4>
+                                          <h4 style="">No servers yet. Why not create one?</h4>
                                           <a href="/server/create" class="btn btn-primary">Create a new
                                           server</a><br /><br />
                                        </div>
@@ -260,26 +260,26 @@ foreach ($servers_in_queue as $server) {
                                        <th scope="row">
                                           <div class="media align-items-center">
                                              <div class="media-body">
-                                                <span class="name mb-0 text-sm text-white"><?= $server["name"] ?></span>
+                                                <span class="name mb-0 text-sm "><?= $server["name"] ?></span>
                                              </div>
                                           </div>
                                        </th>
-                                       <td class="text-white">
+                                       <td class="">
                                           <?= $location["name"] ?>
                                        </td>
                                        <td>
                                         <code> In queue (Position <?= $serverpos . "/" . $currentnodequeue->num_rows ?>)</code>
                                        </td>
-                                       <td class="text-white">
+                                       <td class="">
                                           <?= $egg["name"] ?>
                                        </td>
-                                       <td class="text-white">
+                                       <td class="">
                                           <?= $server["cpu"] ?>%
                                        </td>
-                                       <td class="text-white">
+                                       <td class="">
                                           <?= $server["ram"] ?>MB
                                        </td>
-                                       <td class="text-white">
+                                       <td class="">
                                           <?= $server["disk"] ?>MB
                                        </td>
                                        <td>

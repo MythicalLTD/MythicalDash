@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       if ($captcha_success) {
         $email = mysqli_real_escape_string($conn, $_POST['email']);
         $password = mysqli_real_escape_string($conn, $_POST['password']);
-        $ip_addres = getclientip();
+        $ip_address = getclientip();
         if (!$email == "" || !$password == "") {
           $query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
           $result = mysqli_query($conn, $query);
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($ip == "12.34.56.78") {
                       continue;
                     }
-                    $saio = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . decrypt($ip, $ekey) . "'");
+                    $saio = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $ip . "'");
                     foreach ($saio as $hello) {
                       if (in_array($hello['userkey'], $userids)) {
                         continue;
@@ -62,11 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
                     die();
                   }
-                  $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . encrypt($ip_address, $ekey) . "', '$usr_id')");
+                  $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $ip_address . "', '$usr_id')");
 
                   $cookie_name = 'token';
                   $cookie_value = $token;
                   setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
+                  $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '".$ip_address."' WHERE `mythicaldash_users`.`api_key` = '".$usr_id."';");
                   if (isset($_GET['r'])) {
                     header('location: ' . $_GET['r']);
                   } else {

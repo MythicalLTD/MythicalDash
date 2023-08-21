@@ -6,14 +6,14 @@ $csrf = new CSRF();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($csrf->validate('register-form')) {
         if (isset($_POST['sign_up'])) {
+            $ip_addres = getclientip();
             if ($settings['enable_turnstile'] == "false") {
                 $captcha_success = 1;
             } else {
-                $captcha_success = validate_captcha($_POST["cf-turnstile-response"], $ip_address, $settings['turnstile_secretkey']);
+                $captcha_success = validate_captcha($_POST["cf-turnstile-response"], $ip_addres, $settings['turnstile_secretkey']);
             }
             if ($captcha_success) {
                 if (!$settings['PterodactylURL'] == "" && !$settings['PterodactylAPIKey'] == "") {
-                    $ip_addres = getclientip();
                     $username = mysqli_real_escape_string($conn, $_POST['username']);
                     $email = mysqli_real_escape_string($conn, $_POST['email']);
                     $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
                         $result = mysqli_query($conn, $check_query);
                         if (!mysqli_num_rows($result) > 0) {
-                            $aquery = "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . decrypt($ip_addres, $ekey) . "'";
+                            $aquery = "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $ip_addres . "'";
                             $aresult = mysqli_query($conn, $aquery);
                             $acount = mysqli_num_rows($aresult);
                             if ($acount >= 1) {
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 }
                                 curl_close($ch);
-                                $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . encrypt($ip_addres, $ekey) . "', '$skey')");
+                                $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $ip_addres . "', '$skey')");
                                 $default = "https://www.gravatar.com/avatar/00000000000000000000000000000000";
                                 $grav_url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default);
                                 $conn->query("INSERT INTO `mythicaldash_users` 
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 '" . $settings['def_port'] . "',
                                 '" . $settings['def_db'] . "',
                                 '" . $settings['def_backups'] . "',
-                                '" . encrypt($ip_addres, $ekey) . "'
+                                '" . $ip_addres . "'
                                 );");
                                 $conn->close();
                                 header('location: /auth/login');
