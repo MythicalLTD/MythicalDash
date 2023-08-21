@@ -15,7 +15,7 @@ namespace MythicalDash
          |___/                                                                                                                 
 ";
         public static string version = "1.0.0";
-        public static bool skiposcheck = true;
+        public static bool skiposcheck = false;
         public static Logger logger = new Logger();
         public static void Main(string[] args)
         {

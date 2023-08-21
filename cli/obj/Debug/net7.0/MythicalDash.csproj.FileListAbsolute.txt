@@ -1,0 +1,15 @@
+/var/www/client/cli/bin/Debug/net7.0/MythicalDash
+/var/www/client/cli/bin/Debug/net7.0/MythicalDash.deps.json
+/var/www/client/cli/bin/Debug/net7.0/MythicalDash.runtimeconfig.json
+/var/www/client/cli/bin/Debug/net7.0/MythicalDash.dll
+/var/www/client/cli/bin/Debug/net7.0/MythicalDash.pdb
+/var/www/client/cli/obj/Debug/net7.0/MythicalDash.GeneratedMSBuildEditorConfig.editorconfig
+/var/www/client/cli/obj/Debug/net7.0/MythicalDash.AssemblyInfoInputs.cache
+/var/www/client/cli/obj/Debug/net7.0/MythicalDash.AssemblyInfo.cs
+/var/www/client/cli/obj/Debug/net7.0/MythicalDash.csproj.CoreCompileInputs.cache
+/var/www/client/cli/obj/Debug/net7.0/MythicalDash.csproj.Fody.CopyLocal.cache
+/var/www/client/cli/obj/Debug/net7.0/MythicalDash.dll
+/var/www/client/cli/obj/Debug/net7.0/refint/MythicalDash.dll
+/var/www/client/cli/obj/Debug/net7.0/MythicalDash.pdb
+/var/www/client/cli/obj/Debug/net7.0/MythicalDash.genruntimeconfig.cache
+/var/www/client/cli/obj/Debug/net7.0/ref/MythicalDash.dll
