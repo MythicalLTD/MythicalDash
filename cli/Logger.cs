@@ -30,7 +30,7 @@
             switch (type)
             {
                 case LogType.Info:
-                    color = ConsoleColor.Blue;
+                    color = ConsoleColor.Green;
                     break;
                 case LogType.Warning:
                     color = ConsoleColor.Yellow;

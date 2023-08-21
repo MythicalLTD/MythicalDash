@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Text.RegularExpressions;
-using YamlDotNet.RepresentationModel;
+
 
 
 namespace MythicalDash
 {
+
     public class Program
     {
+        public static Logger logger = new Logger();
+
         public static string ascii = @" 
   __  __       _   _     _           _ _____            _     
  |  \/  |     | | | |   (_)         | |  __ \          | |    
@@ -19,7 +21,10 @@ namespace MythicalDash
 ";
         public static string version = "1.0.0";
         public static bool skiposcheck = false;
-        public static Logger logger = new Logger();
+        public static ConfigHandler cfg_handler = new ConfigHandler();
+        public static Debug dbg = new Debug();
+        public static Encryption encryption = new Encryption();
+        public static IConsole iconsole = new IConsole();
         public static void Main(string[] args)
         {
             Console.Clear();
@@ -35,59 +40,158 @@ namespace MythicalDash
             if (args.Contains("-generate-config"))
             {
                 try
-                {   string filePath = "config.yml";
-
-                    if (File.Exists(filePath))
-                    {
-                        logger.Log(LogType.Error,"Sorry, but it looks like you already have the conifg.yml file. We can not execute this command, or there is going to be a huge data loss!");
-                        Environment.Exit(0x0);
-                    }
-                    var configData = new YamlMappingNode
-                    {
-                        {"app", new YamlMappingNode
-                            {
-                                {"debug", "false"},
-                                {"silent_debug", "false"},
-                                {"encryptionkey", "<keyhere>"},
-                                {"disable_console", "false"}
-                            }
-                        },
-                        {"database", new YamlMappingNode
-                            {
-                                {"host", "127.0.0.1"},
-                                {"port", "3306"},
-                                {"username", "<usernamehere>"},
-                                {"password", "<passwordhere>"},
-                                {"database", "mythicaldash"}
-                            }
-                        }
-                    };
-
-                    var yaml = new YamlStream(new YamlDocument(configData));
-
-                    using (var writer = new StreamWriter(filePath))
-                    {
-                        yaml.Save(writer, false);
-                    }
-                    RemoveTrailingDots(filePath);
-                    static void RemoveTrailingDots(string filePath)
-                    {
-                        string yamlContent = File.ReadAllText(filePath);
-                        string pattern = @"(?<=\S)\s*\.\.\.\s*$";
-                        string replacement = string.Empty;
-            
-                        string newContent = Regex.Replace(yamlContent, pattern, replacement, RegexOptions.Multiline);
-                        File.WriteAllText(filePath, newContent);
-                    }
+                {
+                    cfg_handler.CreateConfig();
+                    Environment.Exit(0x0);
                 }
                 catch (Exception ex)
                 {
-                    logger.Log(LogType.Error, "Faild to create config: " + ex.Message);
+                    logger.Log(LogType.Error, "Failed to create config: " + ex.Message);
                 }
                 logger.Log(LogType.Info, "Configuration file generated.");
                 Environment.Exit(0x0);
             }
-            if (args.Contains("-version"))
+            else if (args.Contains("-delete-config"))
+            {
+                logger.Log(LogType.Info,"Wow, buddy, this command shall be run only if you know what it does.");
+                logger.Log(LogType.Info,"Are you sure you want to proceed? (yes/no)");
+                #pragma warning disable
+                string userResponse = Console.ReadLine().Trim().ToLower();
+                if (userResponse == "yes")
+                {
+                    try
+                    {
+                        cfg_handler.DeleteConfig();
+                        Environment.Exit(0x0);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Log(LogType.Error, "Failed to delete config: " + ex.Message);
+                        Environment.Exit(0x0);
+                    }
+                }
+                #pragma warning restore
+                else if (userResponse == "no")
+                {
+                    logger.Log(LogType.Info,"Action cancelled.");
+                    Environment.Exit(0x0);
+                }
+                else
+                {
+                    logger.Log(LogType.Info,"Invalid response. Please enter 'yes' or 'no'.");
+                    Environment.Exit(0x0);
+                }
+            }
+            else if (args.Contains("-key-generate"))
+            {
+                logger.Log(LogType.Info,"Wow, buddy, this command shall be run only once, and that's when you set up the dashboard. Please do not run this command if you don't know what it does or if you have users in your database.");
+                logger.Log(LogType.Info,"Are you sure you want to proceed? (yes/no)");
+                #pragma warning disable
+                string userResponse = Console.ReadLine().Trim().ToLower();
+                if (userResponse == "yes")
+                {
+                    try
+                    {
+                        encryption.generatekey();
+                        Environment.Exit(0x0);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Log(LogType.Error, "Failed to delete config: " + ex.Message);
+                        Environment.Exit(0x0);
+                    }
+                }
+                #pragma warning restore
+                else if (userResponse == "no")
+                {
+                    logger.Log(LogType.Info,"Action cancelled.");
+                    Environment.Exit(0x0);
+                }
+                else
+                {
+                    logger.Log(LogType.Info,"Invalid response. Please enter 'yes' or 'no'.");
+                    Environment.Exit(0x0);
+                }
+            }
+            else if (args.Contains("-enable-debug"))
+            {
+                try
+                {
+                    dbg.enable();
+                    Environment.Exit(0x0);
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(LogType.Error, "Failed to update config: " + ex.Message);
+                    Environment.Exit(0x0);
+                }
+            }
+            else if (args.Contains("-enable-console"))
+            {
+                try
+                {
+                    iconsole.enable();
+                    Environment.Exit(0x0);
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(LogType.Error, "Failed to update config: " + ex.Message);
+                    Environment.Exit(0x0);
+                }
+            }
+            else if (args.Contains("-disable-console"))
+            {
+                try
+                {
+                    iconsole.disable();
+                    Environment.Exit(0x0);
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(LogType.Error, "Failed to delete config: " + ex.Message);
+                    Environment.Exit(0x0);
+                }
+            }
+            else if (args.Contains("-disable-debug"))
+            {
+                try
+                {
+                    dbg.disable();
+                    Environment.Exit(0x0);
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(LogType.Error, "Failed to update config: " + ex.Message);
+                    Environment.Exit(0x0);
+                }
+            }
+            else if (args.Contains("-enable-silent-debug"))
+            {
+                try
+                {
+                    dbg.enable_silent();
+                    Environment.Exit(0x0);
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(LogType.Error, "Failed to update config: " + ex.Message);
+                    Environment.Exit(0x0);
+                }
+            }
+            else if (args.Contains("-disable-silent-debug"))
+            {
+                try
+                {
+                    dbg.disable_silent();
+                    Environment.Exit(0x0);
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(LogType.Error, "Failed to update config: " + ex.Message);
+                    Environment.Exit(0x0);
+                }
+            }
+            else if (args.Contains("-version"))
             {
                 logger.Log(LogType.Info, "You are running version: " + version);
                 Environment.Exit(0x0);

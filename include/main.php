@@ -7,7 +7,7 @@ $cfg_ignoredebugmodemsg = $appsettings['silent_debug'];
 $ekey = $appsettings['encryptionkey'];
 $cfg_is_console_on = $appsettings['disable_console'];
 if ($ekey == "") {
-    die("Faild to start MythicalDash: Please set a strong encryption key in config.yml");
+    die("Failed to start MythicalDash: Please set a strong encryption key in config.yml");
 }
 if ($cfg_debugmode == true) {
     ini_set('display_errors', 1);
