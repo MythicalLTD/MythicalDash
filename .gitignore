@@ -13,3 +13,4 @@ mythicaldash.sql
 /bot/config.py
 /cli/bin
 /cli/obj
+/cli/.vs
