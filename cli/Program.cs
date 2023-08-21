@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Text.RegularExpressions;
+using YamlDotNet.RepresentationModel;
+
 
 namespace MythicalDash
 {
@@ -21,12 +24,68 @@ namespace MythicalDash
         {
             Console.Clear();
             Console.WriteLine(ascii);
-            if (skiposcheck == false) {
+            if (skiposcheck == false)
+            {
                 if (!System.OperatingSystem.IsLinux())
                 {
                     logger.Log(LogType.Error, "Sorry but this app runs on linux!");
                     Environment.Exit(0x0);
                 }
+            }
+            if (args.Contains("-generate-config"))
+            {
+                try
+                {   string filePath = "config.yml";
+
+                    if (File.Exists(filePath))
+                    {
+                        logger.Log(LogType.Error,"Sorry, but it looks like you already have the conifg.yml file. We can not execute this command, or there is going to be a huge data loss!");
+                        Environment.Exit(0x0);
+                    }
+                    var configData = new YamlMappingNode
+                    {
+                        {"app", new YamlMappingNode
+                            {
+                                {"debug", "false"},
+                                {"silent_debug", "false"},
+                                {"encryptionkey", "<keyhere>"},
+                                {"disable_console", "false"}
+                            }
+                        },
+                        {"database", new YamlMappingNode
+                            {
+                                {"host", "127.0.0.1"},
+                                {"port", "3306"},
+                                {"username", "<usernamehere>"},
+                                {"password", "<passwordhere>"},
+                                {"database", "mythicaldash"}
+                            }
+                        }
+                    };
+
+                    var yaml = new YamlStream(new YamlDocument(configData));
+
+                    using (var writer = new StreamWriter(filePath))
+                    {
+                        yaml.Save(writer, false);
+                    }
+                    RemoveTrailingDots(filePath);
+                    static void RemoveTrailingDots(string filePath)
+                    {
+                        string yamlContent = File.ReadAllText(filePath);
+                        string pattern = @"(?<=\S)\s*\.\.\.\s*$";
+                        string replacement = string.Empty;
+            
+                        string newContent = Regex.Replace(yamlContent, pattern, replacement, RegexOptions.Multiline);
+                        File.WriteAllText(filePath, newContent);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(LogType.Error, "Faild to create config: " + ex.Message);
+                }
+                logger.Log(LogType.Info, "Configuration file generated.");
+                Environment.Exit(0x0);
             }
             if (args.Contains("-version"))
             {
@@ -37,12 +96,14 @@ namespace MythicalDash
             {
                 logger.Log(LogType.Error, "This is an invalid startup argument. Please use '-help' to get more information");
                 Environment.Exit(0x0);
-            } else
+            }
+            else
             {
                 logger.Log(LogType.Error, "This is an invalid startup argument. Please use '-help' to get more information");
                 Environment.Exit(0x0);
             }
         }
+
     }
 
 }

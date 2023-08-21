@@ -11,3 +11,5 @@ logs/*.log
 mythicaldash.sql
 /bot/__pycache__
 /bot/config.py
+/cli/bin
+/cli/obj
