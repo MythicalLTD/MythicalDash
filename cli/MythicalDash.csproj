@@ -15,11 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Costura.Fody" Version="5.7.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+  <PackageReference Include="Costura.Fody" Version="5.7.0">
+    <PrivateAssets>all</PrivateAssets>
+    <IncludeAssets>compile; runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+  </PackageReference>
+  <PackageReference Include="MySqlConnector" Version="2.2.7" />
     <PackageReference Include="YamlDotNet" Version="13.2.0" />
   </ItemGroup>
-
 </Project>
