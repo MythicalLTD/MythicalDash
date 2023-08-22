@@ -156,9 +156,9 @@
           <div class="container-xxl flex-grow-1 container-p-y">
             <br>
             <h1 class="text-center">MythicalDash</h1>
-            <p class="text-center">Hello and welcome to the automatic installer for MythicalDash! This installer is
+            <p class="text-center">Hello and welcome to the automated server checker MythicalDash! This checker is
               designed to
-              make your experience seamless by automatically configuring everything for you. Gain complete control
+              make your experience seamless by automatically check everything for you. <br>Gain complete control
               over your
               Pterodactyl game servers with ease and unlock a world of advanced features for effortless server
               management.</p>

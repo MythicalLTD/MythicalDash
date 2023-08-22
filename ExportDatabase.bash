@@ -2,7 +2,7 @@
 
 export_db() {
     if [[ -f mythicaldash.sql ]]; then
-        rm mythicaldash.sql
+        rm mythicaldashtmp.sql
     fi
     DB_NAME="mythicaldash"
     TEMP_DB_NAME="mythicaldash_temp"
@@ -14,7 +14,7 @@ export_db() {
     for TABLE in $TABLES; do
         /usr/bin/mariadb -u root -e "TRUNCATE TABLE $TEMP_DB_NAME.$TABLE;"
     done
-    /usr/bin/mariadb-dump -u root "$TEMP_DB_NAME" | sed '/^--/d; /^\/\*![0-9]\{5\}.*\*\//d; /^SET/d' > mythicaldash.sql
+    /usr/bin/mariadb-dump -u root "$TEMP_DB_NAME" | sed '/^--/d; /^\/\*![0-9]\{5\}.*\*\//d; /^SET/d' > mythicaldashtmp.sql
     /usr/bin/mariadb -u root -e "DROP DATABASE $TEMP_DB_NAME;"
 }
 

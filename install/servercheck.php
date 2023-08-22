@@ -1,4 +1,11 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+if (isset($_GET['rr'])) {
+  unlink("FIRST_INSTALL");
+  header('location: /');
+}
 /**
  * Parse the PHP version to x.x format.
  *
@@ -29,7 +36,7 @@ if ($phpVersion >= '8.0' && $phpVersion <= '8.3') {
     <meta charset="utf-8" />
     <meta name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>MythicalDash - Welcome</title>
+    <title>MythicalDash - Server Check</title>
     <meta name="description" content="" />
     <link rel="icon" type="image/x-icon" href="https://avatars.githubusercontent.com/u/117385445" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -717,7 +724,7 @@ if (!is_writable(__DIR__)) {
   <link
     href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
     rel="stylesheet" />
-  <meta http-equiv="refresh" content="6;url=/server/config">
+  <meta http-equiv="refresh" content="6;url=/server/check?rr">
 
   <link rel="stylesheet" href="/assets/vendor/fonts/fontawesome.css" />
   <link rel="stylesheet" href="/assets/vendor/fonts/tabler-icons.css" />

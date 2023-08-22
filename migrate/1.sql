@@ -1,84 +1,45 @@
-
-
-
-DROP TABLE IF EXISTS `mythicaldash_apikeys`;
 CREATE TABLE `mythicaldash_apikeys` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `name` text NOT NULL,
   `skey` text NOT NULL,
   `ownerkey` text NOT NULL,
-  `created` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  `created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-LOCK TABLES `mythicaldash_apikeys` WRITE;
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `mythicaldash_eggs`;
 CREATE TABLE `mythicaldash_eggs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `name` text NOT NULL,
   `egg` text NOT NULL,
   `nest` text NOT NULL,
   `category` text NOT NULL,
-  `date` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  `date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-LOCK TABLES `mythicaldash_eggs` WRITE;
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `mythicaldash_locations`;
 CREATE TABLE `mythicaldash_locations` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `name` text NOT NULL,
   `locationid` text NOT NULL,
   `status` enum('ONLINE','OFFLINE','MAINTENANCE') NOT NULL DEFAULT 'ONLINE',
   `slots` text NOT NULL,
-  `created` date NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  `created` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-LOCK TABLES `mythicaldash_locations` WRITE;
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `mythicaldash_login_logs`;
 CREATE TABLE `mythicaldash_login_logs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `ipaddr` text NOT NULL,
   `userkey` text NOT NULL,
-  `date` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  `date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-LOCK TABLES `mythicaldash_login_logs` WRITE;
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `mythicaldash_logs`;
 CREATE TABLE `mythicaldash_logs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `log` text NOT NULL,
   `date` datetime NOT NULL DEFAULT current_timestamp(),
-  `type` enum('auth','action','error') NOT NULL,
-  PRIMARY KEY (`id`)
+  `type` enum('auth','action','error') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-LOCK TABLES `mythicaldash_logs` WRITE;
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `mythicaldash_redeem`;
 CREATE TABLE `mythicaldash_redeem` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `code` text NOT NULL,
   `uses` text NOT NULL,
   `coins` text NOT NULL,
@@ -89,50 +50,29 @@ CREATE TABLE `mythicaldash_redeem` (
   `ports` text NOT NULL,
   `databases` text NOT NULL,
   `backups` text NOT NULL,
-  `created` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  `created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-LOCK TABLES `mythicaldash_redeem` WRITE;
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `mythicaldash_resetpasswords`;
 CREATE TABLE `mythicaldash_resetpasswords` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `email` text DEFAULT NULL,
   `user-apikey` text NOT NULL,
   `user-resetkeycode` text NOT NULL,
   `ip_addres` text NOT NULL,
   `status` enum('valid','unknown','expired') NOT NULL DEFAULT 'valid',
-  `dateinfo` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  `dateinfo` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-LOCK TABLES `mythicaldash_resetpasswords` WRITE;
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `mythicaldash_servers`;
 CREATE TABLE `mythicaldash_servers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `pid` text NOT NULL,
   `uid` text NOT NULL,
   `location` text NOT NULL,
-  `created` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  `created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-LOCK TABLES `mythicaldash_servers` WRITE;
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `mythicaldash_servers_queue`;
 CREATE TABLE `mythicaldash_servers_queue` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `name` text NOT NULL,
   `ram` text NOT NULL,
   `disk` text NOT NULL,
@@ -145,18 +85,11 @@ CREATE TABLE `mythicaldash_servers_queue` (
   `type` text NOT NULL,
   `egg` text NOT NULL,
   `puid` text NOT NULL,
-  `created` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  `created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-LOCK TABLES `mythicaldash_servers_queue` WRITE;
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `mythicaldash_settings`;
 CREATE TABLE `mythicaldash_settings` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `name` text NOT NULL DEFAULT '\'MythicalDash\'',
   `logo` text NOT NULL DEFAULT 'https://avatars.githubusercontent.com/u/117385445',
   `seo_description` text NOT NULL DEFAULT '\'MythicalDash is a feature-rich and user-friendly client area for Pterodactyl, designed to simplify server management. With MythicalDash, you have unparalleled control over your hosting environment, effortlessly managing game servers, databases, files, and more. Experience seamless server administration, enhanced security, and optimized performance with MythicalDash, your ultimate solution for streamlined Pterodactyl server management.\'',
@@ -196,18 +129,11 @@ CREATE TABLE `mythicaldash_settings` (
   `afk_min` text NOT NULL DEFAULT '1',
   `afk_coins_per_min` text NOT NULL DEFAULT '5',
   `discord_webhook` text DEFAULT NULL,
-  `version` text NOT NULL DEFAULT '2.0.0',
-  PRIMARY KEY (`id`)
+  `version` text NOT NULL DEFAULT '2.0.0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-LOCK TABLES `mythicaldash_settings` WRITE;
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `mythicaldash_tickets`;
 CREATE TABLE `mythicaldash_tickets` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `ownerkey` text NOT NULL,
   `ticketuuid` text NOT NULL,
   `subject` text NOT NULL,
@@ -215,34 +141,20 @@ CREATE TABLE `mythicaldash_tickets` (
   `description` text NOT NULL,
   `attachment` text NOT NULL,
   `status` enum('open','closed','deleted') NOT NULL DEFAULT 'open',
-  `created` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  `created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-LOCK TABLES `mythicaldash_tickets` WRITE;
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `mythicaldash_tickets_messages`;
 CREATE TABLE `mythicaldash_tickets_messages` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `ticketuuid` text NOT NULL,
   `userkey` text NOT NULL,
   `message` text NOT NULL,
   `attachment` text NOT NULL,
-  `created` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  `created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-LOCK TABLES `mythicaldash_tickets_messages` WRITE;
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `mythicaldash_users`;
 CREATE TABLE `mythicaldash_users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `panel_id` text NOT NULL,
   `email` text NOT NULL,
   `username` text NOT NULL,
@@ -271,12 +183,87 @@ CREATE TABLE `mythicaldash_users` (
   `discord_username` text DEFAULT NULL,
   `discord_global_username` text DEFAULT NULL,
   `discord_email` text DEFAULT NULL,
-  `registred` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  `registred` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-LOCK TABLES `mythicaldash_users` WRITE;
-UNLOCK TABLES;
+ALTER TABLE `mythicaldash_apikeys`
+  ADD PRIMARY KEY (`id`);
 
+ALTER TABLE `mythicaldash_eggs`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `mythicaldash_locations`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `mythicaldash_login_logs`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `mythicaldash_logs`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `mythicaldash_redeem`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `mythicaldash_resetpasswords`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `mythicaldash_servers`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `mythicaldash_servers_queue`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `mythicaldash_settings`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `mythicaldash_tickets`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `mythicaldash_tickets_messages`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `mythicaldash_users`
+  ADD PRIMARY KEY (`id`);
+
+
+ALTER TABLE `mythicaldash_apikeys`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `mythicaldash_eggs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `mythicaldash_locations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `mythicaldash_login_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `mythicaldash_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `mythicaldash_redeem`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `mythicaldash_resetpasswords`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `mythicaldash_servers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `mythicaldash_servers_queue`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `mythicaldash_settings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `mythicaldash_tickets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `mythicaldash_tickets_messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `mythicaldash_users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;
 

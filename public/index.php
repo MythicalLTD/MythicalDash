@@ -27,15 +27,7 @@ if (file_exists('FIRST_INSTALL')) {
     $router->add("/server/check", function() {
         require("../install/servercheck.php");
     });
-    $router->add("/server/mysql", function() {
-        require("../install/mysql.php");
-    });
-    $router->add("/server/config", function() {
-        require("../install/config.php");
-    });
-    $router->add("/api/mysql", function() {
-        require("../api/mysql.php");
-    });
+    
     $router->add("/(.*)", function() {
         header('location: /');
     });
