@@ -1,6 +1,8 @@
 <?php
 include(__DIR__ . '/requirements/page.php');
-
+if ($userdb['panel_id'] == "CLI") {
+    header('location: /admin/settings');
+}
 $cpuprice = $settings["price_cpu"];
 $ramprice = $settings["price_memory"];
 $diskprice = $settings["price_disk_space"];
@@ -142,9 +144,9 @@ if (isset($_GET['buyback'])) {
 </head>
 
 <body>
-  <div id="preloader" class="discord-preloader">
-    <div class="spinner"></div>
-  </div>
+    <div id="preloader" class="discord-preloader">
+        <div class="spinner"></div>
+    </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/components/sidebar.php') ?>
@@ -170,8 +172,7 @@ if (isset($_GET['buyback'])) {
                                                 <?= $settings['price_cpu'] ?> coins you get 1 CPU core to use on your
                                                 server.
                                             </p>
-                                            <a href="/store?buycpu"
-                                                class="btn btn-outline-primary waves-effect">Buy</a>
+                                            <a href="/store?buycpu" class="btn btn-outline-primary waves-effect">Buy</a>
                                         </div>
                                     </center>
                                 </div>
@@ -191,8 +192,7 @@ if (isset($_GET['buyback'])) {
                                                 <?= $settings['price_memory'] ?>
                                                 coins you get 1GB ram to use on your server.
                                             </p>
-                                            <a href="/store?buyram"
-                                                class="btn btn-outline-primary waves-effect">Buy</a>
+                                            <a href="/store?buyram" class="btn btn-outline-primary waves-effect">Buy</a>
                                         </div>
                                     </center>
                                 </div>
@@ -233,8 +233,7 @@ if (isset($_GET['buyback'])) {
                                                 <?= $settings['price_server_limit'] ?> coins you get 1 server slot to
                                                 deploy your server.
                                             </p>
-                                            <a href="/store?buysv"
-                                                class="btn btn-outline-primary waves-effect">Buy</a>
+                                            <a href="/store?buysv" class="btn btn-outline-primary waves-effect">Buy</a>
                                         </div>
                                     </center>
                                 </div>

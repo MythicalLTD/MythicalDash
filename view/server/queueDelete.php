@@ -1,6 +1,8 @@
 <?php
 include(__DIR__ . '/../requirements/page.php');
-
+if ($userdb['panel_id'] == "CLI") {
+    header('location: /admin/settings');
+}
 if (!is_numeric($_GET["server"])) {
     header("location: /dashboard?e=Server id is invalid.");
     die();

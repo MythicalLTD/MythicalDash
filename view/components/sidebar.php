@@ -107,24 +107,11 @@ function is_active_page($page_urls)
           <div>Application API</div>
         </a>
       </li>
-      <li
-        class="menu-item <?php echo is_active_page(['/admin/users/view', '/admin/users/edit', '/admin/users/new']) ? 'active' : ''; ?>">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
+      <li class="menu-item <?php echo is_active_page(['/admin/users/view', '/admin/users/edit', '/admin/users/new']) ? 'active' : ''; ?>">
+        <a href="/admin/users/view" class="menu-link">
           <i class="menu-icon tf-icons ti ti-users"></i>
           <div>Users</div>
         </a>
-        <ul class="menu-sub">
-          <li class="menu-item <?php echo is_active_page(['/admin/users/view']) ? 'active' : ''; ?>">
-            <a href="/admin/users/view" class="menu-link">
-              <div>List</div>
-            </a>
-          </li>
-          <li class="menu-item <?php echo is_active_page(['/admin/users/new']) ? 'active' : ''; ?>">
-            <a href="/admin/users/new" class="menu-link">
-              <div>New</div>
-            </a>
-          </li>
-        </ul>
       </li>
       <li class="menu-item <?php echo is_active_page(['/admin/redeem']) ? 'active' : ''; ?>">
         <a href="/admin/redeem" class="menu-link">

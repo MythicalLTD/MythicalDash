@@ -71,7 +71,7 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                         <div class="card">
                             <h5 class="card-header">
                                 Users
-                                <a href="/admin/users/new" class="btn btn-primary float-end">Create New User</a>
+                                <!--<a href="/admin/users/new" class="btn btn-primary float-end">Create New User</a>-->
                             </h5>
                             <div class="table-responsive text-nowrap">
                                 <table class="table">

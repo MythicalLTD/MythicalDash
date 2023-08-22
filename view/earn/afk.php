@@ -1,5 +1,8 @@
 <?php
 include(__DIR__ . '/../requirements/page.php');
+if ($userdb['panel_id'] == "CLI") {
+    header('location: /admin/settings');
+}
 if (isset($_GET['getcoins'])) {
     $coins = $userdb['coins'];
     $idlemins = $userdb['minutes_afk'];

@@ -1,5 +1,8 @@
 <?php
 include(__DIR__ . '/../requirements/page.php');
+if ($userdb['panel_id'] == "CLI") {
+  header('location: /admin/settings');
+}
 include(__DIR__ . '/../../include/php-csrf.php');
 $csrf = new CSRF();
 

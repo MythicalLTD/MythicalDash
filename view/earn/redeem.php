@@ -1,5 +1,8 @@
 <?php
 include(__DIR__ . '/../requirements/page.php');
+if ($userdb['panel_id'] == "CLI") {
+    header('location: /admin/settings');
+}
 if (isset($_GET['code']) && !$_GET['code'] == "") {
     $user_query = "SELECT * FROM mythicaldash_redeem WHERE code = ?";
     $stmt = mysqli_prepare($conn, $user_query);

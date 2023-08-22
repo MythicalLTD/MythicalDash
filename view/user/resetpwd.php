@@ -12,7 +12,7 @@ if (isset($_COOKIE['token']))
         if (mysqli_num_rows($result) > 0) {
             $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . $_COOKIE['token'] . "'")->fetch_array();
             $upassword = mysqli_real_escape_string($conn,$_GET['pwd']);
-            $pwd = password_hash($upassword,PASSWORD_DEFAULT);
+            $pwd = password_hash($upassword,PASSWORD_BCRYPT);
             $conn->query("UPDATE `mythicaldash_users` SET `password` = '" . $pwd . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
             $conn->close();
             header('location: /user/profile?s=We updated the user settings in the database');

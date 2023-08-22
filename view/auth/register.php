@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         header('location: /auth/register?e=Please only use characters from A-Z in your last name!');
                         die();
                     }
-                    $password = password_hash($upassword, PASSWORD_DEFAULT);
+                    $password = password_hash($upassword, PASSWORD_BCRYPT);
                     $skey = generate_key($email, $password);
                     if (!$username == "" || !$email == "" || !$first_name == "" || !$last_name == "" || !$upassword == "") {
                         $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
