@@ -1,5 +1,4 @@
 .vscode/
-.alcache/
 .mythicalide/
 .env
 core/storage/*
@@ -8,7 +7,6 @@ core/storage/*
 logs/*.log
 /config.yml
 /public/pma/
-mythicaldash.sql
 /bot/__pycache__
 /bot/config.py
 /cli/bin
