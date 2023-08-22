@@ -1,6 +1,5 @@
 ﻿using System;
-
-
+using YamlDotNet.Serialization;
 
 namespace MythicalDash
 {
@@ -27,6 +26,7 @@ namespace MythicalDash
         public static IConsole iconsole = new IConsole();
         public static Database db = new Database();
         public static Migrate mg = new Migrate();
+        public static SettingsHandler sh = new SettingsHandler();
         public static void Main(string[] args)
         {
             Console.Clear();
@@ -206,6 +206,10 @@ namespace MythicalDash
                 mg.Now();
                 Environment.Exit(0x0);
             }
+            else if (args.Contains("-config-setup")) {
+                sh.Setup();
+                Environment.Exit(0x0);
+            }
             else if (args.Contains("-help")) {
                 Console.Clear();
                 Console.WriteLine("--------------------------------------------MythicalDash CLI-------------------------------------------------");
@@ -222,6 +226,7 @@ namespace MythicalDash
                 Console.WriteLine("|    -disable-silent-debug | Shows the debug mode online status messages from being enabled.                |");
                 Console.WriteLine("|    -config-database | Add the database connection to your config file.                                    |");
                 Console.WriteLine("|    -migrate-database-now | Create and setup all tables in the database                                    |");
+                Console.WriteLine("|    -config-setup | This is a command to help you setup your dashboard!                                    |");
                 Console.WriteLine("|    -version | See the version / build version of the CLI.                                                 |");
                 Console.WriteLine("|                                                                                                           |");
                 Console.WriteLine("-------------------------------------------------------------------------------------------------------------");                
