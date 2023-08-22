@@ -54,6 +54,15 @@ Here is an example of the file:
   }
 ```
 
+## CLI 
+To compile the CLI you need to install dotnet core:
+```bash
+wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+chmod +x ./dotnet-install.sh
+./dotnet-install.sh --channel 7.0
+dotnet run --project /var/www/client/cli -help 
+```
+
 ### 🎧 Support
 
 You can join our support server:
