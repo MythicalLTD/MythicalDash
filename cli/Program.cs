@@ -26,7 +26,7 @@ namespace MythicalDash
         public static Encryption encryption = new Encryption();
         public static IConsole iconsole = new IConsole();
         public static Database db = new Database();
-
+        public static Migrate mg = new Migrate();
         public static void Main(string[] args)
         {
             Console.Clear();
@@ -201,24 +201,29 @@ namespace MythicalDash
             else if (args.Contains("-config-database")) {
                 db.Configurator();
                 Environment.Exit(0x0);
-            } 
+            }
+            else if (args.Contains("-migrate-database-now")) {
+                mg.Now();
+                Environment.Exit(0x0);
+            }
             else if (args.Contains("-help")) {
                 Console.Clear();
                 Console.WriteLine("--------------------------------------------MythicalDash CLI-------------------------------------------------");
-                Console.WriteLine("|                                                                                                            |");
-                Console.WriteLine("|    -help | Opens a help menu with the available commands.                                                  |");
-                Console.WriteLine("|    -generate-config | Generate a new config file for MythicalDash.                                         |");
-                Console.WriteLine("|    -delete-config | Delete the config file for MythicalDash.                                               |");
-                Console.WriteLine("|    -key-generate | Generate a new encryption key for MythicalDash.                                         |");
-                Console.WriteLine("|    -enable-debug | Enables the debug mode to display error messages for MythicalDash.                      |");
-                Console.WriteLine("|    -disable-console | Disables the browser's inspect element or console from being used on MythicalDash.   |");
-                Console.WriteLine("|    -enable-console | Enables the browser's inspect element or console on MythicalDash.                     |");
-                Console.WriteLine("|    -disable-debug | Disables the debug mode to hide error messages for MythicalDash.                       |");
-                Console.WriteLine("|    -enable-silent-debug | Hides the debug mode online status messages from being disabled.                 |");
-                Console.WriteLine("|    -disable-silent-debug | Shows the debug mode online status messages from being enabled.                 |");
-                Console.WriteLine("|    -config-database | Add the database connection to your config file.                                     |");
-                Console.WriteLine("|    -version | See the version / build version of the CLI.                                                  |");
-                Console.WriteLine("|                                                                                                            |");
+                Console.WriteLine("|                                                                                                           |");
+                Console.WriteLine("|    -help | Opens a help menu with the available commands.                                                 |");
+                Console.WriteLine("|    -generate-config | Generate a new config file for MythicalDash.                                        |");
+                Console.WriteLine("|    -delete-config | Delete the config file for MythicalDash.                                              |");
+                Console.WriteLine("|    -key-generate | Generate a new encryption key for MythicalDash.                                        |");
+                Console.WriteLine("|    -enable-debug | Enables the debug mode to display error messages for MythicalDash.                     |");
+                Console.WriteLine("|    -disable-console | Disables the browser's inspect element or console from being used on MythicalDash.  |");
+                Console.WriteLine("|    -enable-console | Enables the browser's inspect element or console on MythicalDash.                    |");
+                Console.WriteLine("|    -disable-debug | Disables the debug mode to hide error messages for MythicalDash.                      |");
+                Console.WriteLine("|    -enable-silent-debug | Hides the debug mode online status messages from being disabled.                |");
+                Console.WriteLine("|    -disable-silent-debug | Shows the debug mode online status messages from being enabled.                |");
+                Console.WriteLine("|    -config-database | Add the database connection to your config file.                                    |");
+                Console.WriteLine("|    -migrate-database-now | Create and setup all tables in the database                                    |");
+                Console.WriteLine("|    -version | See the version / build version of the CLI.                                                 |");
+                Console.WriteLine("|                                                                                                           |");
                 Console.WriteLine("-------------------------------------------------------------------------------------------------------------");                
                 Environment.Exit(0x0);
             }

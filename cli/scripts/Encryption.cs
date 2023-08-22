@@ -5,7 +5,7 @@ namespace MythicalDash
     public class Encryption {
         FileManager fm = new FileManager();
         public void generatekey() {
-            if (fm.Exist() == true)
+            if (fm.ConfigExists() == true)
             {
                 string filePath = "config.yml"; 
                 var yaml = new YamlStream();

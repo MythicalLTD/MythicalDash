@@ -117,7 +117,7 @@ namespace MythicalDash
         }
         public void UpdateConfig(string host, string port, string username, string password, string dbname)
         {
-            if (fm.Exist() == true)
+            if (fm.ConfigExists() == true)
             {
                 string filePath = "config.yml";
                 var yaml = new YamlStream();

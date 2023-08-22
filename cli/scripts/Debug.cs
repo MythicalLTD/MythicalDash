@@ -7,7 +7,7 @@ namespace MythicalDash
         FileManager fm = new FileManager();
         public void disable()
         {
-            if (fm.Exist() == true)
+            if (fm.ConfigExists() == true)
             {
                 string filePath = "config.yml"; 
                 var yaml = new YamlStream();
@@ -36,7 +36,7 @@ namespace MythicalDash
 
         public void disable_silent()
         {
-            if (fm.Exist() == true)
+            if (fm.ConfigExists() == true)
             {
                 string filePath = "config.yml"; 
                 var yaml = new YamlStream();
@@ -64,7 +64,7 @@ namespace MythicalDash
         }
         public void enable_silent()
         {
-           if (fm.Exist() == true)
+           if (fm.ConfigExists() == true)
             {
                 string filePath = "config.yml"; 
                 var yaml = new YamlStream();
@@ -93,7 +93,7 @@ namespace MythicalDash
 
         public void enable()
         {
-           if (fm.Exist() == true)
+           if (fm.ConfigExists() == true)
             {
                 string filePath = "config.yml"; 
                 var yaml = new YamlStream();
