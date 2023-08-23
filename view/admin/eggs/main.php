@@ -146,7 +146,7 @@ $totalPages = ceil($totalEggs / $eggsPerPage);
                                                 required value="1"/>
                                         </div>
                                         <div class="col-12">
-                                            <label class="form-label" for="nest_egg_id">Nest Egg ID</label>
+                                            <label class="form-label" for="nest_egg_id">Egg ID</label>
                                             <input type="number" id="nest_egg_id" name="nest_egg_id" class="form-control" placeholder=""
                                                 required value="3" />
                                         </div>
