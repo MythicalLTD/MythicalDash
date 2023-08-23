@@ -75,9 +75,9 @@ foreach ($servers_in_queue as $server) {
       </title>
    </head>
    <body>
-      <div id="preloader" class="discord-preloader">
+      <!--<div id="preloader" class="discord-preloader">
          <div class="spinner"></div>
-      </div>
+      </div>-->
       <div class="layout-wrapper layout-content-navbar">
          <div class="layout-container">
             <?php include('components/sidebar.php') ?>
@@ -294,7 +294,7 @@ foreach ($servers_in_queue as $server) {
                                        
                                        foreach ($uservers as $server) {
                                          $egg = mysqli_query($conn, "SELECT * FROM mythicaldash_eggs WHERE `mythicaldash_eggs`.`egg`='" . $server["egg"] . "'")->fetch_array();
-                                         $serverinfo = mysqli_query($conn, "SELECT * FROM servers WHERE `servers`.`pid`='" . $server["id"] . "'")->fetch_array();
+                                         $serverinfo = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE `mythicaldash_servers`.`pid`='" . $server["id"] . "'")->fetch_array();
                                          $location = mysqli_query($conn, "SELECT * FROM mythicaldash_locations WHERE `mythicaldash_locations`.`id`='" . $serverinfo["location"] . "'")->fetch_array();
                                          $uuid = substr($server['uuid'], 0, strpos($server['uuid'], "-"));
                                          ?>
@@ -312,11 +312,11 @@ foreach ($servers_in_queue as $server) {
                                        <td>
                                           <?php
                                              if ($server["container"]["installed"] != 1) {
-                                               echo '<span class="badge badge-dot mr-4"><i class="bg-warning"></i><span class="status">Installing</span></span>';
+                                               echo '<span class="badge badge-dot mr-4"><span class="status">Installing</span></span>';
                                              } elseif ($server["suspended"] == true) {
-                                               echo '<span class="badge badge-dot mr-4"><i class="bg-warning"></i><span class="status">Suspended</span></span>';
+                                               echo '<span class="badge badge-dot mr-4"><span class="status">Suspended</span></span>';
                                              } else {
-                                               echo '<span class="badge badge-dot mr-4"><i class="bg-success"></i><span class="status">Installed</span></span>';
+                                               echo '<span class="badge badge-dot mr-4"><span class="status">Installed</span></span>';
                                              }
                                              ?>
                                        </td>
@@ -333,14 +333,13 @@ foreach ($servers_in_queue as $server) {
                                           <?= $server["limits"]["disk"] ?>MB
                                        </td>
                                        <td>
-                                          <a href="<?= $getsettingsdb["ptero_url"] . "/server/" . $server["identifier"] ?>"
+                                          <a href="<?= $settings["PterodactylURL"] . "/server/" . $server["identifier"] ?>"
                                              class="btn btn-primary btn-sm" data-trigger="hover" data-container="body"
                                              data-toggle="popover" data-color="default" data-placement="left"
                                              data-content="Open in the game panel"><i class="fas fa-external-link-square-alt"></i></a>
-                                          <a href="/server/rename?id=<?= $server["id"] ?>" class="btn btn-primary btn-sm">Rename</a>
-                                          <a href="/server/manage?id=<?= $server["id"] ?>" class="btn btn-primary btn-sm">Edit</a>
+                                          <a href="/server/edit?id=<?= $server["id"] ?>" class="btn btn-primary btn-sm">Edit</a>
                                           <a href="/server/delete?server=<?= $server["id"] ?>"><button type="button"
-                                             class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</button></a>
+                                             class="btn btn-danger btn-sm">Delete</button></a>
                                        </td>
                                     </tr>
                                     <?php
