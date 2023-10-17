@@ -188,6 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '$queue', 
         '" . $s_egg . "', 
         '$userdb->panel_id')");
+        NewServer();
         header('location: /dashboard?s=Done thanks for using '.$settings['name']);
         die();
     } else {
