@@ -89,8 +89,8 @@ function is_active_page($page_urls)
         </li>
       </ul>
     </li>
-    <li class="menu-item <?php echo is_active_page(['/users']) ? 'active' : ''; ?>">
-      <a href="/users" class="menu-link">
+    <li class="menu-item <?php echo is_active_page(['/users/list']) ? 'active' : ''; ?>">
+      <a href="/users/list" class="menu-link">
         <i class="menu-icon tf-icons ti ti-users"></i>
         <div>Users</div>
       </a>

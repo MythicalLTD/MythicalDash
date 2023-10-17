@@ -204,7 +204,7 @@ else
         require("../view/user/connections.php");
     });
 
-    $router->add("/users",function () {
+    $router->add("/users/list",function () {
         require("../include/main.php");
         require("../view/user/list.php");
     });
