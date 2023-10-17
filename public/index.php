@@ -9,7 +9,6 @@ try {
     die('Hello, it looks like you did not run:  <code>composer install --no-dev --optimize-autoloader</code> Please run that and refresh');
 }
 require("../functions/https.php");
-require("../functions/report.php");
 
 if (!isHTTPS()) {
     header('HTTP/1.1 403 Forbidden');
