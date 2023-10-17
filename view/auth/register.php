@@ -108,6 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $ip_addres . "', '$skey')");
                                 $default = "https://www.gravatar.com/avatar/00000000000000000000000000000000";
                                 $grav_url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default);
+                                if (file_exists("FIRST_USER")) {
+                                    $role = "Administrator";
+                                } else {
+                                    $role = "User";
+                                }
                                 $conn->query("INSERT INTO `mythicaldash_users` 
                                 (`panel_id`,
                                 `email`,
@@ -117,6 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 `password`,
                                 `api_key`,
                                 `avatar`,
+                                `role`,
                                 `coins`,
                                 `ram`,
                                 `disk`,
@@ -135,6 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 '" . $password . "',
                                 '" . $skey . "',
                                 '" . $grav_url . "',
+                                '".$role."',
                                 '" . $settings['def_coins'] . "',
                                 '" . $settings['def_memory'] . "',
                                 '" . $settings['def_disk_space'] . "',
@@ -146,6 +153,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 '" . $ip_addres . "'
                                 );");
                                 $conn->close();
+                                if (file_exists("FIRST_USER")) { 
+                                    unlink("FIRST_USER");
+                                }
                                 NewUser();
                                 header('location: /auth/login');
                                 die();

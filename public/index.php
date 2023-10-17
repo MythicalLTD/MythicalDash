@@ -35,6 +35,7 @@ if (file_exists('FIRST_INSTALL')) {
     });
 
     $router->route();
+
 } else {
     $router->add('/', function () {
         require("../include/main.php");
