@@ -5,6 +5,15 @@
 Open-Source Client Area for Pterodactyl
 MythicalDash is currently in development by [@SnyderWillCode](https://github.com/SnyderWillCode) & [@NaysKutzu](https://github.com/nayskutzu).
 
+# Docs
+https://docs.mythicalsystems.me/docs/mythicaldash/intro
+
+### 🎧 Support
+
+You can join our support server:
+
+https://discord.gg/7BZTmSK2D8
+
 ### 🎨 Frontend
 We are using vuexy as a frontend.
 
@@ -63,8 +72,3 @@ chmod +x ./dotnet-install.sh
 dotnet run --project /var/www/client/cli -help 
 ```
 
-### 🎧 Support
-
-You can join our support server:
-
-https://discord.gg/7BZTmSK2D8
