@@ -21,387 +21,385 @@ if (!isHTTPS()) {
     die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 }
 
-try {
-    $router = new \Router\Router();
-    if (file_exists('FIRST_INSTALL')) {
-        $router->add("/", function () {
-            require("../install/welcome.php");
-        });
-        $router->add("/server/check", function () {
-            require("../install/servercheck.php");
-        });
-
-        $router->add("/(.*)", function () {
-            header('location: /');
-        });
-
-        $router->route();
-    } else {
-        $router->add('/', function () {
-            require("../include/main.php");
-            require("../view/index.php");
-        });
-
-        $router->add("/api/mysql", function () {
-            require("../api/mysql.php");
-        });
-
-        $router->add("/api/client/user/info", function () {
-            require("../include/main.php");
-            require("../api/client/user/info.php");
-        });
-
-        $router->add("/api/admin/user/info", function () {
-            require("../include/main.php");
-            require("../api/admin/user/info.php");
-        });
-
-        $router->add("/api/admin/showusers", function () {
-            require("../include/main.php");
-            require("../api/admin/users.php");
-        });
-
-        $router->add("/api/admin/statistics", function () {
-            require("../include/main.php");
-            require("../api/admin/statistics.php");
-        });
-
-        $router->add("/api/ticket", function () {
-            require("../include/main.php");
-            require("../api/ticket.php");
-        });
-
-        $router->add('/auth/login', function () {
-            require("../include/main.php");
-            require("../view/auth/login.php");
-        });
-
-        $router->add('/auth/link/discord', function () {
-            require("../include/main.php");
-            require("../view/auth/discord.php");
-        });
-
-        $router->add('/auth/register', function () {
-            require("../include/main.php");
-            require("../view/auth/register.php");
-        });
-
-        $router->add('/auth/logout', function () {
-            require("../include/main.php");
-            require("../functions/logout.php");
-        });
-
-        $router->add('/auth/forgot-password', function () {
-            require("../include/main.php");
-            require("../view/auth/forgot-password.php");
-        });
-
-        $router->add('/auth/reset-password', function () {
-            require("../include/main.php");
-            require("../view/auth/reset-password.php");
-        });
-
-        $router->add('/dashboard', function () {
-            require("../include/main.php");
-            require("../view/dashboard.php");
-        });
-
-        $router->add('/server/create', function () {
-            require("../include/main.php");
-            require("../view/server/create.php");
-        });
-
-        $router->add('/server/delete', function () {
-            require("../include/main.php");
-            require("../view/server/delete.php");
-        });
-
-        $router->add('/server/edit', function () {
-            require("../include/main.php");
-            require("../view/server/edit.php");
-        });
-
-        $router->add('/server/queue/delete', function () {
-            require("../include/main.php");
-            require("../view/server/queueDelete.php");
-        });
-
-        $router->add('/help-center/tos', function () {
-            require("../include/main.php");
-            require("../view/legal/termsofservice.php");
-        });
-
-        $router->add('/help-center/pp', function () {
-            require("../include/main.php");
-            require("../view/legal/privacypolicy.php");
-        });
-
-        $router->add('/help-center', function () {
-            require("../include/main.php");
-            require("../view/help-center.php");
-        });
-
-        $router->add('/help-center/tickets/new', function () {
-            require("../include/main.php");
-            require("../view/tickets/new.php");
-        });
-
-        $router->add('/help-center/tickets', function () {
-            require("../include/main.php");
-            require("../view/tickets/list.php");
-        });
-
-        $router->add('/help-center/tickets/view', function () {
-            require("../include/main.php");
-            require("../view/tickets/chat.php");
-        });
-
-        $router->add('/help-center/tickets/reply', function () {
-            require("../include/main.php");
-            require("../view/tickets/reply.php");
-        });
-
-        $router->add('/help-center/tickets/close', function () {
-            require("../include/main.php");
-            require("../view/tickets/close.php");
-        });
-
-        $router->add('/help-center/tickets/reopen', function () {
-            require("../include/main.php");
-            require("../view/tickets/reopen.php");
-        });
-
-        $router->add('/help-center/tickets/delete', function () {
-            require("../include/main.php");
-            require("../view/tickets/delete.php");
-        });
-
-        $router->add("/e/critical", function () {
-            require("../view/errors/critical.php");
-        });
-
-        $router->add("/e/404", function () {
-            require("../include/main.php");
-            require("../view/errors/404.php");
-        });
-
-        $router->add("/user/edit", function () {
-            require("../include/main.php");
-            require("../view/user/edit.php");
-        });
-
-        $router->add("/user/profile", function () {
-            require("../include/main.php");
-            require("../view/user/profile.php");
-        });
-
-        $router->add("/user/gift", function () {
-            require("../include/main.php");
-            require("../view/user/gift.php");
-        });
-
-        $router->add("/user/connections", function () {
-            require("../include/main.php");
-            require("../view/user/connections.php");
-        });
-
-        $router->add("/users/list", function () {
-            require("../include/main.php");
-            require("../view/user/list.php");
-        });
-
-        $router->add("/user/security/delete_account", function () {
-            require("../include/main.php");
-            require("../view/user/deleteacc.php");
-        });
-
-        $router->add("/user/security/resetkey", function () {
-            require("../include/main.php");
-            require("../view/user/resetkey.php");
-        });
-
-        $router->add("/user/security/resetpwd", function () {
-            require("../include/main.php");
-            require("../view/user/resetpwd.php");
-        });
-
-        $router->add("/blank", function () {
-            require("../include/main.php");
-            require("../view/blank.php");
-        });
-
-        $router->add("/store", function () {
-            require("../include/main.php");
-            require("../view/store.php");
-        });
-
-        $router->add("/earn/afk", function () {
-            require("../include/main.php");
-            require("../view/earn/afk.php");
-        });
-
-        $router->add("/earn/redeem", function () {
-            require("../include/main.php");
-            require("../view/earn/redeem.php");
-        });
-
-        $router->add("/admin/settings", function () {
-            require("../include/main.php");
-            require("../view/admin/settings/main.php");
-        });
-
-        $router->add("/admin/redeem", function () {
-            require("../include/main.php");
-            require("../view/admin/redeem/main.php");
-        });
-
-        $router->add("/admin/redeem/create", function () {
-            require("../include/main.php");
-            require("../view/admin/redeem/create.php");
-        });
-
-        $router->add("/admin/redeem/delete", function () {
-            require("../include/main.php");
-            require("../view/admin/redeem/delete.php");
-        });
-
-        $router->add("/admin/settings/discord", function () {
-            require("../include/main.php");
-            require("../view/admin/settings/discord.php");
-        });
-
-        $router->add("/admin/settings/mail", function () {
-            require("../include/main.php");
-            require("../view/admin/settings/mail.php");
-        });
-
-        $router->add("/admin/settings/general", function () {
-            require("../include/main.php");
-            require("../view/admin/settings/general.php");
-        });
-
-        $router->add("/admin/settings/recaptcha", function () {
-            require("../include/main.php");
-            require("../view/admin/settings/recaptcha.php");
-        });
-
-        $router->add("/admin/settings/pterodactyl", function () {
-            require("../include/main.php");
-            require("../view/admin/settings/pterodactyl.php");
-        });
-
-        $router->add("/admin/locations", function () {
-            require("../include/main.php");
-            require("../view/admin/locations/main.php");
-        });
-
-        $router->add("/admin/locations/create", function () {
-            require("../include/main.php");
-            require("../view/admin/locations/create.php");
-        });
-
-        $router->add("/admin/locations/delete", function () {
-            require("../include/main.php");
-            require("../view/admin/locations/delete.php");
-        });
-
-        $router->add("/admin/eggs/delete", function () {
-            require("../include/main.php");
-            require("../view/admin/eggs/delete.php");
-        });
-
-        $router->add("/admin/eggs/create", function () {
-            require("../include/main.php");
-            require("../view/admin/eggs/create.php");
-        });
-
-        $router->add("/admin/eggs", function () {
-            require("../include/main.php");
-            require("../view/admin/eggs/main.php");
-        });
-
-        $router->add("/admin/settings/seo", function () {
-            require("../include/main.php");
-            require("../view/admin/settings/seo.php");
-        });
-
-        $router->add("/admin/settings/store", function () {
-            require("../include/main.php");
-            require("../view/admin/settings/store.php");
-        });
-
-        $router->add("/admin/users/view", function () {
-            require("../include/main.php");
-            require("../view/admin/users/view_users.php");
-        });
-
-        $router->add("/admin/users/edit", function () {
-            require("../include/main.php");
-            require("../view/admin/users/edit_user.php");
-        });
-
-        $router->add("/admin/users/new", function () {
-            require("../include/main.php");
-            require("../view/admin/users/new_user.php");
-        });
-
-        $router->add("/admin/users/delete", function () {
-            require("../include/main.php");
-            require("../view/admin/users/delete_user.php");
-        });
-
-        $router->add("/admin/users/security/resetkey", function () {
-            require("../include/main.php");
-            require("../view/admin/users/user_reset_key.php");
-        });
-
-        $router->add("/admin/users/security/resetpwd", function () {
-            require("../include/main.php");
-            require("../view/admin/users/user_reset_password.php");
-        });
-
-        $router->add("/admin/tickets", function () {
-            require("../include/main.php");
-            require("../view/admin/tickets/list.php");
-        });
-
-        $router->add("/admin/api/create", function () {
-            require("../include/main.php");
-            require("../view/admin/api/create.php");
-        });
-
-        $router->add("/admin/api/delete", function () {
-            require("../include/main.php");
-            require("../view/admin/api/delete.php");
-        });
-
-        $router->add("/admin/api", function () {
-            require("../include/main.php");
-            require("../view/admin/api/main.php");
-        });
-
-        $router->add("/email/reset-password", function () {
-            require("../include/main.php");
-            require("../view/email/reset-password.php");
-        });
-
-        $router->add("/e/401", function () {
-            require("../include/main.php");
-            require("../view/errors/401.php");
-        });
-
-        $router->add("/e/maintenance", function () {
-            require("../include/main.php");
-            require("../view/errors/maintenance.php");
-        });
-
-        $router->add("/(.*)", function () {
-            require("../include/main.php");
-            require("../view/errors/404.php");
-        });
-        $router->route();
-    }
-} catch (Exception $e) {
-    Warning("", $e->getMessage());
+
+$router = new \Router\Router();
+if (file_exists('FIRST_INSTALL')) {
+    $router->add("/", function () {
+        require("../install/welcome.php");
+    });
+    $router->add("/server/check", function () {
+        require("../install/servercheck.php");
+    });
+
+    $router->add("/(.*)", function () {
+        header('location: /');
+    });
+
+    $router->route();
+} else {
+    $router->add('/', function () {
+        require("../include/main.php");
+        require("../view/index.php");
+    });
+
+    $router->add("/api/mysql", function () {
+        require("../api/mysql.php");
+    });
+
+    $router->add("/api/client/user/info", function () {
+        require("../include/main.php");
+        require("../api/client/user/info.php");
+    });
+
+    $router->add("/api/admin/user/info", function () {
+        require("../include/main.php");
+        require("../api/admin/user/info.php");
+    });
+
+    $router->add("/api/admin/showusers", function () {
+        require("../include/main.php");
+        require("../api/admin/users.php");
+    });
+
+    $router->add("/api/admin/statistics", function () {
+        require("../include/main.php");
+        require("../api/admin/statistics.php");
+    });
+
+    $router->add("/api/ticket", function () {
+        require("../include/main.php");
+        require("../api/ticket.php");
+    });
+
+    $router->add('/auth/login', function () {
+        require("../include/main.php");
+        require("../view/auth/login.php");
+    });
+
+    $router->add('/auth/link/discord', function () {
+        require("../include/main.php");
+        require("../view/auth/discord.php");
+    });
+
+    $router->add('/auth/register', function () {
+        require("../include/main.php");
+        require("../view/auth/register.php");
+    });
+
+    $router->add('/auth/logout', function () {
+        require("../include/main.php");
+        require("../functions/logout.php");
+    });
+
+    $router->add('/auth/forgot-password', function () {
+        require("../include/main.php");
+        require("../view/auth/forgot-password.php");
+    });
+
+    $router->add('/auth/reset-password', function () {
+        require("../include/main.php");
+        require("../view/auth/reset-password.php");
+    });
+
+    $router->add('/dashboard', function () {
+        require("../include/main.php");
+        require("../view/dashboard.php");
+    });
+
+    $router->add('/server/create', function () {
+        require("../include/main.php");
+        require("../view/server/create.php");
+    });
+
+    $router->add('/server/delete', function () {
+        require("../include/main.php");
+        require("../view/server/delete.php");
+    });
+
+    $router->add('/server/edit', function () {
+        require("../include/main.php");
+        require("../view/server/edit.php");
+    });
+
+    $router->add('/server/queue/delete', function () {
+        require("../include/main.php");
+        require("../view/server/queueDelete.php");
+    });
+
+    $router->add('/help-center/tos', function () {
+        require("../include/main.php");
+        require("../view/legal/termsofservice.php");
+    });
+
+    $router->add('/help-center/pp', function () {
+        require("../include/main.php");
+        require("../view/legal/privacypolicy.php");
+    });
+
+    $router->add('/help-center', function () {
+        require("../include/main.php");
+        require("../view/help-center.php");
+    });
+
+    $router->add('/help-center/tickets/new', function () {
+        require("../include/main.php");
+        require("../view/tickets/new.php");
+    });
+
+    $router->add('/help-center/tickets', function () {
+        require("../include/main.php");
+        require("../view/tickets/list.php");
+    });
+
+    $router->add('/help-center/tickets/view', function () {
+        require("../include/main.php");
+        require("../view/tickets/chat.php");
+    });
+
+    $router->add('/help-center/tickets/reply', function () {
+        require("../include/main.php");
+        require("../view/tickets/reply.php");
+    });
+
+    $router->add('/help-center/tickets/close', function () {
+        require("../include/main.php");
+        require("../view/tickets/close.php");
+    });
+
+    $router->add('/help-center/tickets/reopen', function () {
+        require("../include/main.php");
+        require("../view/tickets/reopen.php");
+    });
+
+    $router->add('/help-center/tickets/delete', function () {
+        require("../include/main.php");
+        require("../view/tickets/delete.php");
+    });
+
+    $router->add("/e/critical", function () {
+        require("../view/errors/critical.php");
+    });
+
+    $router->add("/e/404", function () {
+        require("../include/main.php");
+        require("../view/errors/404.php");
+    });
+
+    $router->add("/user/edit", function () {
+        require("../include/main.php");
+        require("../view/user/edit.php");
+    });
+
+    $router->add("/user/profile", function () {
+        require("../include/main.php");
+        require("../view/user/profile.php");
+    });
+
+    $router->add("/user/gift", function () {
+        require("../include/main.php");
+        require("../view/user/gift.php");
+    });
+
+    $router->add("/user/connections", function () {
+        require("../include/main.php");
+        require("../view/user/connections.php");
+    });
+
+    $router->add("/users/list", function () {
+        require("../include/main.php");
+        require("../view/user/list.php");
+    });
+
+    $router->add("/user/security/delete_account", function () {
+        require("../include/main.php");
+        require("../view/user/deleteacc.php");
+    });
+
+    $router->add("/user/security/resetkey", function () {
+        require("../include/main.php");
+        require("../view/user/resetkey.php");
+    });
+
+    $router->add("/user/security/resetpwd", function () {
+        require("../include/main.php");
+        require("../view/user/resetpwd.php");
+    });
+
+    $router->add("/blank", function () {
+        require("../include/main.php");
+        require("../view/blank.php");
+    });
+
+    $router->add("/store", function () {
+        require("../include/main.php");
+        require("../view/store.php");
+    });
+
+    $router->add("/earn/afk", function () {
+        require("../include/main.php");
+        require("../view/earn/afk.php");
+    });
+
+    $router->add("/earn/redeem", function () {
+        require("../include/main.php");
+        require("../view/earn/redeem.php");
+    });
+
+    $router->add("/admin/settings", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/main.php");
+    });
+
+    $router->add("/admin/redeem", function () {
+        require("../include/main.php");
+        require("../view/admin/redeem/main.php");
+    });
+
+    $router->add("/admin/redeem/create", function () {
+        require("../include/main.php");
+        require("../view/admin/redeem/create.php");
+    });
+
+    $router->add("/admin/redeem/delete", function () {
+        require("../include/main.php");
+        require("../view/admin/redeem/delete.php");
+    });
+
+    $router->add("/admin/settings/discord", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/discord.php");
+    });
+
+    $router->add("/admin/settings/mail", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/mail.php");
+    });
+
+    $router->add("/admin/settings/general", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/general.php");
+    });
+
+    $router->add("/admin/settings/recaptcha", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/recaptcha.php");
+    });
+
+    $router->add("/admin/settings/pterodactyl", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/pterodactyl.php");
+    });
+
+    $router->add("/admin/locations", function () {
+        require("../include/main.php");
+        require("../view/admin/locations/main.php");
+    });
+
+    $router->add("/admin/locations/create", function () {
+        require("../include/main.php");
+        require("../view/admin/locations/create.php");
+    });
+
+    $router->add("/admin/locations/delete", function () {
+        require("../include/main.php");
+        require("../view/admin/locations/delete.php");
+    });
+
+    $router->add("/admin/eggs/delete", function () {
+        require("../include/main.php");
+        require("../view/admin/eggs/delete.php");
+    });
+
+    $router->add("/admin/eggs/create", function () {
+        require("../include/main.php");
+        require("../view/admin/eggs/create.php");
+    });
+
+    $router->add("/admin/eggs", function () {
+        require("../include/main.php");
+        require("../view/admin/eggs/main.php");
+    });
+
+    $router->add("/admin/settings/seo", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/seo.php");
+    });
+
+    $router->add("/admin/settings/store", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/store.php");
+    });
+
+    $router->add("/admin/users/view", function () {
+        require("../include/main.php");
+        require("../view/admin/users/view_users.php");
+    });
+
+    $router->add("/admin/users/edit", function () {
+        require("../include/main.php");
+        require("../view/admin/users/edit_user.php");
+    });
+
+    $router->add("/admin/users/new", function () {
+        require("../include/main.php");
+        require("../view/admin/users/new_user.php");
+    });
+
+    $router->add("/admin/users/delete", function () {
+        require("../include/main.php");
+        require("../view/admin/users/delete_user.php");
+    });
+
+    $router->add("/admin/users/security/resetkey", function () {
+        require("../include/main.php");
+        require("../view/admin/users/user_reset_key.php");
+    });
+
+    $router->add("/admin/users/security/resetpwd", function () {
+        require("../include/main.php");
+        require("../view/admin/users/user_reset_password.php");
+    });
+
+    $router->add("/admin/tickets", function () {
+        require("../include/main.php");
+        require("../view/admin/tickets/list.php");
+    });
+
+    $router->add("/admin/api/create", function () {
+        require("../include/main.php");
+        require("../view/admin/api/create.php");
+    });
+
+    $router->add("/admin/api/delete", function () {
+        require("../include/main.php");
+        require("../view/admin/api/delete.php");
+    });
+
+    $router->add("/admin/api", function () {
+        require("../include/main.php");
+        require("../view/admin/api/main.php");
+    });
+
+    $router->add("/email/reset-password", function () {
+        require("../include/main.php");
+        require("../view/email/reset-password.php");
+    });
+
+    $router->add("/e/401", function () {
+        require("../include/main.php");
+        require("../view/errors/401.php");
+    });
+
+    $router->add("/e/maintenance", function () {
+        require("../include/main.php");
+        require("../view/errors/maintenance.php");
+    });
+
+    $router->add("/(.*)", function () {
+        require("../include/main.php");
+        require("../view/errors/404.php");
+    });
+    $router->route();
 }
+
 ?>
