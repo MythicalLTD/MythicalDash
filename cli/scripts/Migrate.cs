@@ -6,6 +6,8 @@ namespace MythicalDash
     public class Migrate
     {
         FileManager fm = new FileManager();
+        private static string MigrationConfigFilePath = "migrates.ini";
+
 #pragma warning disable
         public static string connectionString;
 #pragma warning restore
@@ -56,9 +58,12 @@ namespace MythicalDash
             try
             {
                 getConnection();
+
                 string[] scriptFiles = Directory.GetFiles("migrate/", "*.sql")
                     .OrderBy(scriptFile => Convert.ToInt32(Path.GetFileNameWithoutExtension(scriptFile)))
                     .ToArray();
+
+                HashSet<string> migratedScripts = ReadMigratedScripts();
 
                 using (var connection = new MySqlConnection(connectionString))
                 {
@@ -67,17 +72,58 @@ namespace MythicalDash
                     foreach (string scriptFile in scriptFiles)
                     {
                         string scriptContent = File.ReadAllText(scriptFile);
-                        Program.logger.Log(LogType.Info, "We executed: " + scriptFile);
+                        string scriptFileName = Path.GetFileName(scriptFile);
+
+                        if (migratedScripts.Contains(scriptFileName))
+                        {
+                            Program.logger.Log(LogType.Info, $"Script {scriptFileName} was already migrated. Skipping.");
+                            continue;
+                        }
+
+                        Program.logger.Log(LogType.Info, "Executing script: " + scriptFileName);
                         ExecuteScript(connection, scriptContent);
+
+                        migratedScripts.Add(scriptFileName);
+                        WriteMigratedScripts(migratedScripts);
                     }
 
                     connection.Close();
                 }
-
             }
             catch (Exception ex)
             {
-                Program.logger.Log(LogType.Error, "Sorry but the migration throws this error: " + ex.Message);
+                Program.logger.Log(LogType.Error, "Migration error: " + ex.Message);
+            }
+        }
+        private HashSet<string> ReadMigratedScripts()
+        {
+            HashSet<string> migratedScripts = new HashSet<string>();
+
+            if (File.Exists(MigrationConfigFilePath))
+            {
+                using (StreamReader reader = new StreamReader(MigrationConfigFilePath))
+                {
+                    string line;
+#pragma warning disable
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        migratedScripts.Add(line.Trim());
+                    }
+#pragma warning restore
+                }
+            }
+
+            return migratedScripts;
+        }
+
+        private void WriteMigratedScripts(HashSet<string> migratedScripts)
+        {
+            using (StreamWriter writer = new StreamWriter(MigrationConfigFilePath))
+            {
+                foreach (string scriptFileName in migratedScripts)
+                {
+                    writer.WriteLine(scriptFileName);
+                }
             }
         }
     }

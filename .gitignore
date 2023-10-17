@@ -12,3 +12,5 @@ logs/*.log
 /cli/bin
 /cli/obj
 /cli/.vs
+migrates.ini
+/logs/*.txt
