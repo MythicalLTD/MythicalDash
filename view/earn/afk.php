@@ -1,5 +1,8 @@
 <?php
 include(__DIR__ . '/../requirements/page.php');
+if ($settings['enable_afk'] == "false") { 
+    header('location: /');
+}
 if ($userdb['panel_id'] == "CLI") {
     header('location: /admin/settings');
 }

@@ -43,11 +43,16 @@ function is_active_page($page_urls)
         <div>Earning</div>
       </a>
       <ul class="menu-sub">
-        <li class="menu-item <?php echo is_active_page(['/earn/afk']) ? 'active' : ''; ?>">
-          <a href="/earn/afk" class="menu-link">
-            <div>Afk</div>
-          </a>
-        </li>
+        <?php if ($settings['enable_afk'] == "true") {
+          ?>
+          <li class="menu-item <?php echo is_active_page(['/earn/afk']) ? 'active' : ''; ?>">
+            <a href="/earn/afk" class="menu-link">
+              <div>Afk</div>
+            </a>
+          </li>
+          <?php
+        } ?>
+
         <li class="menu-item <?php echo is_active_page(['/earn/redeem']) ? 'active' : ''; ?>">
           <a href="/earn/redeem" class="menu-link">
             <div>Redeem</div>
@@ -107,7 +112,8 @@ function is_active_page($page_urls)
           <div>Application API</div>
         </a>
       </li>
-      <li class="menu-item <?php echo is_active_page(['/admin/users/view', '/admin/users/edit', '/admin/users/new']) ? 'active' : ''; ?>">
+      <li
+        class="menu-item <?php echo is_active_page(['/admin/users/view', '/admin/users/edit', '/admin/users/new']) ? 'active' : ''; ?>">
         <a href="/admin/users/view" class="menu-link">
           <i class="menu-icon tf-icons ti ti-users"></i>
           <div>Users</div>

@@ -325,6 +325,11 @@ if (file_exists('FIRST_INSTALL')) {
         require("../view/admin/settings/seo.php");
     });
 
+    $router->add("/admin/settings/resources", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/resources.php");
+    });
+
     $router->add("/admin/settings/store", function () {
         require("../include/main.php");
         require("../view/admin/settings/store.php");

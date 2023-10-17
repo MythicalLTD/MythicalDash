@@ -211,13 +211,42 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 name="resources:backups" value="<?= $settings['def_backups'] ?>"
                                                 placeholder="2">
                                         </div>
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Enable AFK</label>
+                                            <div>
+                                                <?php
+                                                if ($settings['enable_afk'] == "true") {
+                                                    ?>
+                                                    <select name="resources:eafk" class="form-control">
+                                                        <option value="true">True</option>
+                                                        <option value="false">False</option>
+                                                    </select>
+                                                    <?php
+                                                } else if ($settings['enable_afk'] == "false") {
+                                                    ?>
+                                                        <select name="resources:eafk" class="form-control">
+                                                            <option value="false">False</option>
+                                                            <option value="true">True</option>
+                                                        </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                        <select name="resources:eafk" class="form-control">
+                                                            <option value="false">True</option>
+                                                            <option value="false">False</option>
+                                                        </select>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="afk:coins:per:min" class="form-label">Coins per minute afk</label>
                                             <input class="form-control" type="text" id="afk:coins:per:min"
                                                 name="afk:coins:per:min" value="<?= $settings['afk_coins_per_min'] ?>"
                                                 placeholder="2">
                                         </div>
-
+                                        
                                     </div>
                                     <div class="mt-2">
                                         <button type="submit" name="update_settings"
