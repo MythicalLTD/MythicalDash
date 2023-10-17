@@ -21,6 +21,7 @@ if (isset($_POST['create_user'])) {
             die();
         } else {
             $conn->query("INSERT INTO `mythicaldash_users` (`email`, `username`, `first_name`, `last_name`, `password`, `api_key`) VALUES ('" . $email . "', '" . $username . "', '" . $firstName . "', '" . $lastName . "', '" . $password . "', '" . $skey . "');");
+            NewUser();
             header('location: /admin/users/view');
             $conn->close();
             die();

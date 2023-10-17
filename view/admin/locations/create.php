@@ -18,6 +18,7 @@ if (isset($_GET['create_location'])) {
 
         } else {
             $conn->query("INSERT INTO `mythicaldash_locations` (`name`, `locationid`, `slots`) VALUES ('" . $name . "', '" . $locationid . "', '" . $slots . "');");
+            NewNode();
             header('location: /admin/locations?s=Done we added a new location');
             $conn->close();
             die();

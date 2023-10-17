@@ -28,6 +28,7 @@ if (isset($_GET['subject']) && isset($_GET['priority']) && isset($_GET['descript
             ->setThumbnail($settings['logo'])
         )
         ->execute();
+        NewTicket();
         header('location: /help-center/tickets');
         $conn->close();
         die();
