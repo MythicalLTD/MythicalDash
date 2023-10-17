@@ -9,7 +9,7 @@ namespace MythicalDash
         {
             if (fm.ConfigExists() == true)
             {
-                string filePath = "config.yml"; 
+                string filePath = "config.yml";
                 var yaml = new YamlStream();
 
                 using (var reader = new StreamReader(filePath))
@@ -20,13 +20,15 @@ namespace MythicalDash
                 var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
                 var appSection = (YamlMappingNode)mapping["app"];
 
-                appSection.Children[new YamlScalarNode("debug")] = new YamlScalarNode("false"); 
+                appSection.Children[new YamlScalarNode("debug")] = new YamlScalarNode("false");
 
                 using (var writer = new StreamWriter(filePath))
                 {
                     yaml.Save(writer, false);
-                } 
-                Program.logger.Log(LogType.Info,"We updated the settings");
+                }
+                Program.RemoveTrailingDots();
+
+                Program.logger.Log(LogType.Info, "We updated the settings");
             }
             else
             {
@@ -38,7 +40,7 @@ namespace MythicalDash
         {
             if (fm.ConfigExists() == true)
             {
-                string filePath = "config.yml"; 
+                string filePath = "config.yml";
                 var yaml = new YamlStream();
 
                 using (var reader = new StreamReader(filePath))
@@ -49,13 +51,14 @@ namespace MythicalDash
                 var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
                 var appSection = (YamlMappingNode)mapping["app"];
 
-                appSection.Children[new YamlScalarNode("silent_debug")] = new YamlScalarNode("false"); 
+                appSection.Children[new YamlScalarNode("silent_debug")] = new YamlScalarNode("false");
 
                 using (var writer = new StreamWriter(filePath))
                 {
                     yaml.Save(writer, false);
-                } 
-                Program.logger.Log(LogType.Info,"We updated the settings");
+                }
+                Program.RemoveTrailingDots();
+                Program.logger.Log(LogType.Info, "We updated the settings");
             }
             else
             {
@@ -64,9 +67,9 @@ namespace MythicalDash
         }
         public void enable_silent()
         {
-           if (fm.ConfigExists() == true)
+            if (fm.ConfigExists() == true)
             {
-                string filePath = "config.yml"; 
+                string filePath = "config.yml";
                 var yaml = new YamlStream();
 
                 using (var reader = new StreamReader(filePath))
@@ -77,13 +80,15 @@ namespace MythicalDash
                 var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
                 var appSection = (YamlMappingNode)mapping["app"];
 
-                appSection.Children[new YamlScalarNode("silent_debug")] = new YamlScalarNode("true"); 
+                appSection.Children[new YamlScalarNode("silent_debug")] = new YamlScalarNode("true");
 
                 using (var writer = new StreamWriter(filePath))
                 {
                     yaml.Save(writer, false);
                 }
-                Program.logger.Log(LogType.Warning,"We updated the settings please make sure to not use this as a production environment");
+                Program.RemoveTrailingDots();
+
+                Program.logger.Log(LogType.Warning, "We updated the settings please make sure to not use this as a production environment");
             }
             else
             {
@@ -93,9 +98,9 @@ namespace MythicalDash
 
         public void enable()
         {
-           if (fm.ConfigExists() == true)
+            if (fm.ConfigExists() == true)
             {
-                string filePath = "config.yml"; 
+                string filePath = "config.yml";
                 var yaml = new YamlStream();
 
                 using (var reader = new StreamReader(filePath))
@@ -106,13 +111,15 @@ namespace MythicalDash
                 var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
                 var appSection = (YamlMappingNode)mapping["app"];
 
-                appSection.Children[new YamlScalarNode("debug")] = new YamlScalarNode("true"); 
+                appSection.Children[new YamlScalarNode("debug")] = new YamlScalarNode("true");
 
                 using (var writer = new StreamWriter(filePath))
                 {
                     yaml.Save(writer, false);
                 }
-                Program.logger.Log(LogType.Warning,"We updated the settings please make sure to not use this as a production environment");
+                Program.RemoveTrailingDots();
+
+                Program.logger.Log(LogType.Warning, "We updated the settings please make sure to not use this as a production environment");
             }
             else
             {

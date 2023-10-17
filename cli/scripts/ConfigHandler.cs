@@ -52,17 +52,9 @@ namespace MythicalDash
             {
                 yaml.Save(writer, false);
             }
-            RemoveTrailingDots(filePath);
+            Program.RemoveTrailingDots();
             Program.logger.Log(LogType.Info,"Done we created the config file");
-            static void RemoveTrailingDots(string filePath)
-            {
-                string yamlContent = File.ReadAllText(filePath);
-                string pattern = @"(?<=\S)\s*\.\.\.\s*$";
-                string replacement = string.Empty;
-
-                string newContent = Regex.Replace(yamlContent, pattern, replacement, RegexOptions.Multiline);
-                File.WriteAllText(filePath, newContent);
-            }
+            
         }
     }
 }

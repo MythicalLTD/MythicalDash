@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using YamlDotNet.Serialization;
 
 namespace MythicalDash
@@ -55,9 +56,9 @@ namespace MythicalDash
             }
             else if (args.Contains("-delete-config"))
             {
-                logger.Log(LogType.Info,"Wow, buddy, this command shall be run only if you know what it does.");
-                logger.Log(LogType.Info,"Are you sure you want to proceed? (yes/no)");
-                #pragma warning disable
+                logger.Log(LogType.Info, "Wow, buddy, this command shall be run only if you know what it does.");
+                logger.Log(LogType.Info, "Are you sure you want to proceed? (yes/no)");
+#pragma warning disable
                 string userResponse = Console.ReadLine().Trim().ToLower();
                 if (userResponse == "yes")
                 {
@@ -72,23 +73,23 @@ namespace MythicalDash
                         Environment.Exit(0x0);
                     }
                 }
-                #pragma warning restore
+#pragma warning restore
                 else if (userResponse == "no")
                 {
-                    logger.Log(LogType.Info,"Action cancelled.");
+                    logger.Log(LogType.Info, "Action cancelled.");
                     Environment.Exit(0x0);
                 }
                 else
                 {
-                    logger.Log(LogType.Info,"Invalid response. Please enter 'yes' or 'no'.");
+                    logger.Log(LogType.Info, "Invalid response. Please enter 'yes' or 'no'.");
                     Environment.Exit(0x0);
                 }
             }
             else if (args.Contains("-key-generate"))
             {
-                logger.Log(LogType.Info,"Wow, buddy, this command shall be run only once, and that's when you set up the dashboard. Please do not run this command if you don't know what it does or if you have users in your database.");
-                logger.Log(LogType.Info,"Are you sure you want to proceed? (yes/no)");
-                #pragma warning disable
+                logger.Log(LogType.Info, "Wow, buddy, this command shall be run only once, and that's when you set up the dashboard. Please do not run this command if you don't know what it does or if you have users in your database.");
+                logger.Log(LogType.Info, "Are you sure you want to proceed? (yes/no)");
+#pragma warning disable
                 string userResponse = Console.ReadLine().Trim().ToLower();
                 if (userResponse == "yes")
                 {
@@ -103,15 +104,15 @@ namespace MythicalDash
                         Environment.Exit(0x0);
                     }
                 }
-                #pragma warning restore
+#pragma warning restore
                 else if (userResponse == "no")
                 {
-                    logger.Log(LogType.Info,"Action cancelled.");
+                    logger.Log(LogType.Info, "Action cancelled.");
                     Environment.Exit(0x0);
                 }
                 else
                 {
-                    logger.Log(LogType.Info,"Invalid response. Please enter 'yes' or 'no'.");
+                    logger.Log(LogType.Info, "Invalid response. Please enter 'yes' or 'no'.");
                     Environment.Exit(0x0);
                 }
             }
@@ -153,7 +154,7 @@ namespace MythicalDash
                     logger.Log(LogType.Error, "Failed to delete config: " + ex.Message);
                     Environment.Exit(0x0);
                 }
-            } 
+            }
             else if (args.Contains("-disable-debug"))
             {
                 try
@@ -198,19 +199,23 @@ namespace MythicalDash
                 logger.Log(LogType.Info, "You are running version: " + version);
                 Environment.Exit(0x0);
             }
-            else if (args.Contains("-config-database")) {
+            else if (args.Contains("-config-database"))
+            {
                 db.Configurator();
                 Environment.Exit(0x0);
             }
-            else if (args.Contains("-migrate-database-now")) {
+            else if (args.Contains("-migrate-database-now"))
+            {
                 mg.Now();
                 Environment.Exit(0x0);
             }
-            else if (args.Contains("-config-setup")) {
+            else if (args.Contains("-config-setup"))
+            {
                 sh.Setup();
                 Environment.Exit(0x0);
             }
-            else if (args.Contains("-help")) {
+            else if (args.Contains("-help"))
+            {
                 Console.Clear();
                 Console.WriteLine("--------------------------------------------MythicalDash CLI-------------------------------------------------");
                 Console.WriteLine("|                                                                                                           |");
@@ -229,7 +234,7 @@ namespace MythicalDash
                 Console.WriteLine("|    -config-setup | This is a command to help you setup your dashboard!                                    |");
                 Console.WriteLine("|    -version | See the version / build version of the CLI.                                                 |");
                 Console.WriteLine("|                                                                                                           |");
-                Console.WriteLine("-------------------------------------------------------------------------------------------------------------");                
+                Console.WriteLine("-------------------------------------------------------------------------------------------------------------");
                 Environment.Exit(0x0);
             }
             else if (args.Length > 0)
@@ -242,6 +247,16 @@ namespace MythicalDash
                 logger.Log(LogType.Error, "This is an invalid startup argument. Please use '-help' to get more information");
                 Environment.Exit(0x0);
             }
+
+        }
+        public static void RemoveTrailingDots()
+        {
+            string yamlContent = File.ReadAllText("config.yml");
+            string pattern = @"(?<=\S)\s*\.\.\.\s*$";
+            string replacement = string.Empty;
+
+            string newContent = Regex.Replace(yamlContent, pattern, replacement, RegexOptions.Multiline);
+            File.WriteAllText("config.yml", newContent);
         }
 
     }

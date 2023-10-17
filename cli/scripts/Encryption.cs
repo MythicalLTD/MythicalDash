@@ -2,12 +2,14 @@ using YamlDotNet.RepresentationModel;
 
 namespace MythicalDash
 {
-    public class Encryption {
+    public class Encryption
+    {
         FileManager fm = new FileManager();
-        public void generatekey() {
+        public void generatekey()
+        {
             if (fm.ConfigExists() == true)
             {
-                string filePath = "config.yml"; 
+                string filePath = "config.yml";
                 var yaml = new YamlStream();
 
                 using (var reader = new StreamReader(filePath))
@@ -18,18 +20,19 @@ namespace MythicalDash
                 var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
                 var appSection = (YamlMappingNode)mapping["app"];
                 string key = KeyChecker.GenerateStrongKey();
-                appSection.Children[new YamlScalarNode("encryptionkey")] = new YamlScalarNode(key); 
+                appSection.Children[new YamlScalarNode("encryptionkey")] = new YamlScalarNode(key);
 
                 using (var writer = new StreamWriter(filePath))
                 {
                     yaml.Save(writer, false);
-                } 
-                Program.logger.Log(LogType.Info,"We updated the settings");
+                }
+                Program.RemoveTrailingDots();
+                Program.logger.Log(LogType.Info, "We updated the settings");
             }
             else
             {
                 Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
             }
-        } 
+        }
     }
 }

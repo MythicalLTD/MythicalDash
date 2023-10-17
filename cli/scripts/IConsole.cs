@@ -9,7 +9,7 @@ namespace MythicalDash
         {
             if (fm.ConfigExists() == true)
             {
-                string filePath = "config.yml"; 
+                string filePath = "config.yml";
                 var yaml = new YamlStream();
 
                 using (var reader = new StreamReader(filePath))
@@ -20,13 +20,15 @@ namespace MythicalDash
                 var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
                 var appSection = (YamlMappingNode)mapping["app"];
 
-                appSection.Children[new YamlScalarNode("disable_console")] = new YamlScalarNode("true"); 
+                appSection.Children[new YamlScalarNode("disable_console")] = new YamlScalarNode("true");
 
                 using (var writer = new StreamWriter(filePath))
                 {
                     yaml.Save(writer, false);
-                } 
-                Program.logger.Log(LogType.Info,"We updated the settings");
+                }
+                Program.RemoveTrailingDots();
+
+                Program.logger.Log(LogType.Info, "We updated the settings");
             }
             else
             {
@@ -37,7 +39,7 @@ namespace MythicalDash
         {
             if (fm.ConfigExists() == true)
             {
-                string filePath = "config.yml"; 
+                string filePath = "config.yml";
                 var yaml = new YamlStream();
 
                 using (var reader = new StreamReader(filePath))
@@ -48,13 +50,15 @@ namespace MythicalDash
                 var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
                 var appSection = (YamlMappingNode)mapping["app"];
 
-                appSection.Children[new YamlScalarNode("disable_console")] = new YamlScalarNode("false"); 
+                appSection.Children[new YamlScalarNode("disable_console")] = new YamlScalarNode("false");
 
                 using (var writer = new StreamWriter(filePath))
                 {
                     yaml.Save(writer, false);
-                } 
-                Program.logger.Log(LogType.Info,"We updated the settings");
+                }
+                Program.RemoveTrailingDots();
+
+                Program.logger.Log(LogType.Info, "We updated the settings");
             }
             else
             {

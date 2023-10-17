@@ -140,6 +140,7 @@ namespace MythicalDash
                 {
                     yaml.Save(writer, false);
                 }
+                Program.RemoveTrailingDots();
                 Program.logger.Log(LogType.Info, "We updated the settings");
             }
             else
