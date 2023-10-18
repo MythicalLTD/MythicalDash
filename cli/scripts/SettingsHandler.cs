@@ -65,7 +65,7 @@ namespace MythicalDash
                     using (var connection = new MySqlConnection(connectionString))
                     {
                         connection.Open();
-                        ExecuteSQLScript(connection, "INSERT INTO `mythicaldash_settings` (`name`, `logo`, `PterodactylURL`, `PterodactylAPIKey`) VALUES ('"+name+"', '"+logo+"', '"+panelkey+"','"+panelkey+"');");
+                        ExecuteSQLScript(connection, "INSERT INTO `mythicaldash_settings` (`name`, `logo`, `PterodactylURL`, `PterodactylAPIKey`) VALUES ('"+name+"', '"+logo+"', '"+panelurl+"','"+panelkey+"');");
                         connection.Close();
                     }
                 } catch (Exception ex) {
