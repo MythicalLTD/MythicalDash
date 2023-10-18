@@ -524,6 +524,104 @@ include(__DIR__ . '/../../requirements/admin.php');
                                 </form>
                             </div>
                         </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header">Custom CSS</h5>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/customcss" method="GET">
+                                    <div class="row">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Status</label>
+                                            <div>
+                                                <?php
+                                                if ($settings['customcss_enabled'] == "true") {
+                                                    ?>
+                                                    <select class="form-control" name="customcss:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="customcss:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group">
+                                            <label class="control-label">Style.css</label>
+                                            <div>
+                                                <textarea type="text" required="" class="form-control"
+                                                    name="customcss:code" rows="4"
+                                                    value=""><?= $settings['customcss_code'] ?></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="mt-2">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header">Custom Header Code</h5>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/customhead" method="GET">
+                                    <div class="row">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Status</label>
+                                            <div>
+                                                <?php
+                                                if ($settings['customhead_enabled'] == "true") {
+                                                    ?>
+                                                    <select class="form-control" name="customhead:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="customhead:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group">
+                                            <label class="control-label">Custom head code</label>
+                                            <div>
+                                                <textarea type="text" required="" class="form-control"
+                                                    name="customhead:code" rows="4"
+                                                    value=""><?= $settings['customhead_code'] ?></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="mt-2">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <?php include(__DIR__ . '/../../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>

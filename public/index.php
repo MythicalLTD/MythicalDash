@@ -290,6 +290,16 @@ if (file_exists('FIRST_INSTALL')) {
         require("../view/admin/settings/ads.php");
     });
 
+    $router->add("/admin/settings/customcss", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/customcss.php");
+    });
+
+    $router->add("/admin/settings/customhead", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/customhead.php");
+    });
+
     $router->add("/admin/settings/pterodactyl", function () {
         require("../include/main.php");
         require("../view/admin/settings/pterodactyl.php");

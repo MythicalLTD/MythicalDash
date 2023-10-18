@@ -44,7 +44,6 @@
 <script src="<?= $appURL ?>/assets/vendor/js/template-customizer.js"></script>
 <script src="<?= $appURL ?>/assets/js/config.js"></script>
 <link rel="stylesheet" href="<?= $appURL ?>/assets/css/preloader.css" />
-<link rel="manifest" href="/manifest.webmanifest">
 <style>
     .badge.requestor-type {
         font-size: 10px;
@@ -53,10 +52,24 @@
     }
 </style>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-<?php 
+<?php
 if ($cfg_is_console_on == 'true') {
     ?>
     <script src="<?= $appURL ?>/assets/js/disable-console.js"></script>
+    <?php
+}
+
+if ($settings['customcss_enabled'] == 'true') {
+    ?>
+    <style type="text/css">
+        <?= $settings['customcss_code'] ?>
+    </style>
+    <?php
+}
+
+if ($settings['customhead_enabled'] == 'true') {
+    ?>
+    <?= $settings['customhead_code'] ?>
     <?php
 }
 ?>
