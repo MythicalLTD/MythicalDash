@@ -41,9 +41,8 @@
 <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
 <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/libs/select2/select2.css" />
 <script src="<?= $appURL ?>/assets/vendor/js/helpers.js"></script>
-<?php if ($settings['customcss_enabled'] == "false") { ?>
-    <script src="<?= $appURL ?>/assets/vendor/js/template-customizer.js"></script>
-<?php } ?>
+<script src="<?= $appURL ?>/assets/vendor/js/template-customizer.js"></script>
+
 
 <script src="<?= $appURL ?>/assets/js/config.js"></script>
 <link rel="stylesheet" href="<?= $appURL ?>/assets/css/preloader.css" />
