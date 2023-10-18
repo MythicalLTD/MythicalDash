@@ -475,6 +475,55 @@ include(__DIR__ . '/../../requirements/admin.php');
                                 </form>
                             </div>
                         </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header">ADS</h5>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/ads" method="GET">
+                                    <div class="row">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Status</label>
+                                            <div>
+                                                <?php
+                                                if ($settings['enable_ads'] == "true") {
+                                                    ?>
+                                                    <select class="form-control" name="ads:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="ads:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group">
+                                            <label class="control-label">Ads Code</label>
+                                            <div>
+                                                <textarea type="text" required="" class="form-control"
+                                                    name="ads:code" rows="4"
+                                                    value=""><?= $settings['ads_code'] ?></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="mt-2">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <?php include(__DIR__ . '/../../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>

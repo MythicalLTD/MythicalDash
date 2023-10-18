@@ -30,9 +30,9 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
 </head>
 
 <body>
-  <div id="preloader" class="discord-preloader">
-    <div class="spinner"></div>
-  </div>
+    <div id="preloader" class="discord-preloader">
+        <div class="spinner"></div>
+    </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../components/sidebar.php') ?>
@@ -43,6 +43,13 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Help-Center / Tickets /</span>
                             List</h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
+                        <div id="ads">
+                            <?php
+                            if ($settings['enable_ads'] == "true") {
+                                echo $settings['ads_code'];
+                            }
+                            ?>
+                        </div>
                         <!-- Search Form -->
                         <form class="mt-4">
                             <div class="input-group mb-3">
@@ -100,6 +107,13 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                                 ?>
                             </ul>
                         </nav>
+                        <div id="ads">
+                            <?php
+                            if ($settings['enable_ads'] == "true") {
+                                echo $settings['ads_code'];
+                            }
+                            ?>
+                        </div>
                     </div>
                     <?php include(__DIR__ . '/../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>

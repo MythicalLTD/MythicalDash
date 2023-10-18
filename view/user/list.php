@@ -50,6 +50,15 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                     <div class="container-xxl flex-grow-1 container-p-y">
                         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users /</span> List</h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
+                        <br>
+                  <div id="ads">
+                     <?php 
+                     if ($settings['enable_ads'] == "true") {
+                        echo $settings['ads_code'];
+                     }
+                     ?>
+                  </div>
+                  <br>
                         <!-- Search Form -->
                         <form class="mt-4">
                             <div class="input-group mb-3">
@@ -102,7 +111,17 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                                 ?>
                             </ul>
                         </nav>
+                        <br>
+                  <div id="ads">
+                     <?php 
+                     if ($settings['enable_ads'] == "true") {
+                        echo $settings['ads_code'];
+                     }
+                     ?>
+                  </div>
+                  <br>
                     </div>
+                    
                     <?php include(__DIR__ . '/../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>
                 </div>

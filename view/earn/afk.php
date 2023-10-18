@@ -80,6 +80,14 @@ if (isset($_GET['getcoins'])) {
                     <div class="container-xxl flex-grow-1 container-p-y">
                         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Earn /</span> AFK</h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
+                        <div id="ads">
+                            <?php
+                            if ($settings['enable_ads'] == "true") {
+                                echo $settings['ads_code'];
+                            }
+                            ?>
+                        </div>
+                        <br>
                         <div class="row">
                             <div class="col-md-12 grid-margin stretch-card">
                                 <div class="card">
@@ -101,6 +109,23 @@ if (isset($_GET['getcoins'])) {
                                 </div>
                             </div>
                         </div>
+                        <br>
+                        <div id="ads">
+                            <?php
+                            if ($settings['enable_ads'] == "true") {
+                                echo $settings['ads_code'];
+                            }
+                            ?>
+                        </div>
+                        <br>
+                        <div id="ads">
+                            <?php
+                            if ($settings['enable_ads'] == "true") {
+                                echo $settings['ads_code'];
+                            }
+                            ?>
+                        </div>
+                        <br>
                     </div>
                     <?php include(__DIR__ . '/../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>
