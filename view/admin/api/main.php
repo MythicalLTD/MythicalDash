@@ -14,7 +14,7 @@ $totalPages = ceil($totalapikeys / $apiPage);
 ?>
 
 <!DOCTYPE html>
-<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
+<html lang="en" class="dark-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
     data-assets-path="/assets/" data-template="vertical-menu-template">
 
 <head>

@@ -7,8 +7,11 @@ $offset = ($page - 1) * $ticketsPerPage;
 
 $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
 $searchCondition = '';
+$ownerKeyCondition = " `ownerkey` = '".mysqli_real_escape_string($conn, $_COOKIE['token'])."'";
 if (!empty($searchKeyword)) {
-    $searchCondition = " WHERE (`subject` LIKE '%$searchKeyword%' OR `description` LIKE '%$searchKeyword%')";
+    $searchCondition = " WHERE (`subject` LIKE '%$searchKeyword%' OR `description` LIKE '%$searchKeyword%') AND" . $ownerKeyCondition;
+} else {
+    $searchCondition = " WHERE" . $ownerKeyCondition;
 }
 $statusCondition = " `status` IN ('open', 'closed')";
 $tickets_query = "SELECT * FROM mythicaldash_tickets" . $searchCondition . ($searchCondition ? ' AND ' : ' WHERE ') . $statusCondition . " ORDER BY `id` LIMIT $offset, $ticketsPerPage";
@@ -19,7 +22,7 @@ $totalTickets = $totalResult->fetch_assoc()['total_tickets'];
 $totalPages = ceil($totalTickets / $ticketsPerPage);
 ?>
 <!DOCTYPE html>
-<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
+<html lang="en" class="dark-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
     data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
 
 <head>

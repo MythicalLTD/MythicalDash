@@ -228,7 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             die();
         }
     } else {
-        header('location: /auth/forgot-password?e=The request you sen`t dose not exist');
+        header("location: /auth/forgot-password?e=The request you sen't dose not exist");
         die();
     }
 }
@@ -290,23 +290,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     }
                     ?>
-                    <form id="formAuthentication" class="mb-3" method="POST">
+                    <form class="mb-3" method="POST">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email" name="email"
                                 placeholder="Enter your email" autofocus />
                         </div>
                         <?= $csrf->input('forgot-password-form'); ?>
-                        <?php
-                        if (!$settings['reCAPTCHA_sitekey'] == "") {
-                            ?>
-                            <center>
-                                <div class="g-recaptcha" data-sitekey="<?= $settings['reCAPTCHA_sitekey'] ?>"></div>
-                            </center>
-                            &nbsp;
-                            <?php
-                        }
-                        ?>
                         <button name="reset_password" value="true" class="btn btn-primary d-grid w-100">Send Reset
                             Link</button>
                     </form>

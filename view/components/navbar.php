@@ -8,11 +8,13 @@
 
   <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
     <ul class="navbar-nav flex-row align-items-center ms-auto">
-      <li class="nav-item me-2 me-xl-0">
-        <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">
-          <i class="ti ti-md"></i>
-        </a>
-      </li>
+      <?php if ($settings['customcss_enabled'] == "false") { ?>
+        <li class="nav-item me-2 me-xl-0">
+          <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">
+            <i class="ti ti-md"></i>
+          </a>
+        </li>
+      <?php } ?>
       <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
         <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
           data-bs-auto-close="outside" aria-expanded="false">
@@ -81,9 +83,10 @@
                 </div>
                 <div class="flex-grow-1">
                   <span class="fw-semibold d-block">
-                    <?= $userdb['username'] ?> (<?= $userdb['role'] ?>)
-                  </span> 
-                  
+                    <?= $userdb['username'] ?> (
+                    <?= $userdb['role'] ?>)
+                  </span>
+
                   <!--<small class="text-muted"><?= $userdb['role'] ?></small><br>-->
                   <small class="text-muted">
                     <?= $userdb['coins'] ?> coins
