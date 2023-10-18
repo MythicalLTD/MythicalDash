@@ -1,11 +1,11 @@
 <?php echo "====== MythicalDash queue ======\n\n"; 
 echo "[INFO/loader] Loading files...\n"; 
-require('../vendor/autoload.php');
-include('../functions/passwordgen.php');
-include('../functions/keygen.php');
-include('../functions/encryption.php');
+include(__DIR__.'/../vendor/autoload.php');
+include(__DIR__.'/../functions/passwordgen.php');
+include(__DIR__.'/../functions/keygen.php');
+include(__DIR__.'/../functions/encryption.php');
 use Symfony\Component\Yaml\Yaml;
-$config = Yaml::parseFile('../config.yml');
+$config = Yaml::parseFile(__DIR__.'/../config.yml');
 $appsettings = $config['app'];
 $cfg_debugmode = $appsettings['debug'];
 $cfg_ignoredebugmodemsg = $appsettings['silent_debug'];

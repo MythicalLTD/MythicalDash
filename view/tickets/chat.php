@@ -93,9 +93,10 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
 </head>
 
 <body>
-  <div id="preloader" class="discord-preloader">
-    <div class="spinner"></div>
-  </div>
+    <div id="preloader" class="discord-preloader">
+        <div class="spinner"></div>
+    </div>
+
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../components/sidebar.php') ?>
@@ -107,6 +108,14 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                 /</span>
                             View</h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
+                        <div id="ads">
+                            <?php
+                            if ($settings['enable_ads'] == "true") {
+                                echo $settings['ads_code'];
+                            }
+                            ?>
+                        </div>
+                        <br>
                         <?php
                         if ($ticket_db['status'] == "closed") {
                             ?>

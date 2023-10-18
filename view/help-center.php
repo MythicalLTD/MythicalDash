@@ -33,6 +33,15 @@ include('requirements/page.php');
               <p class="text-center px-3 mb-0">Common topics: <a href="help-center/tos">Terms of Service</a>, <a
                   href="help-center/pp">Privacy Policy</a></p>
             </div>
+            <br>
+            <div id="ads">
+              <?php
+              if ($settings['enable_ads'] == "true") {
+                echo $settings['ads_code'];
+              }
+              ?>
+            </div>
+            <br>
             <div class="help-center-popular-articles bg-help-center py-5">
               <div class="container-xl">
                 <h3 class="text-center my-4">Popular Articles</h3>
@@ -99,6 +108,15 @@ include('requirements/page.php');
                 </div>
               </div>
             </div>
+            <br>
+            <div id="ads">
+              <?php
+              if ($settings['enable_ads'] == "true") {
+                echo $settings['ads_code'];
+              }
+              ?>
+            </div>
+            <br>
             <div class="help-center-contact-us help-center-bg-alt">
               <div class="container-xl">
                 <div class="row justify-content-center py-5">
@@ -117,6 +135,15 @@ include('requirements/page.php');
                 </div>
               </div>
             </div>
+              <br>
+              <div id="ads">
+                <?php
+                if ($settings['enable_ads'] == "true") {
+                  echo $settings['ads_code'];
+                }
+                ?>
+              </div>
+              <br>
           </div>
           <?php include('components/footer.php') ?>
           <div class="content-backdrop fade"></div>

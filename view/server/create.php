@@ -169,9 +169,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
       $doeseggexist = mysqli_query($conn, "SELECT * FROM mythicaldash_eggs where id = '" . mysqli_real_escape_string($conn, $s_egg) . "'");
       if ($doeseggexist->num_rows == 0) {
-          header("location: /server/create?e=That egg doesn't exist");
-          $conn->close();
-          die();
+        header("location: /server/create?e=That egg doesn't exist");
+        $conn->close();
+        die();
       }
       $egg = $doeseggexist->fetch_object();
       $conn->query("INSERT INTO mythicaldash_servers_queue (`name`, `ram`, `disk`, `cpu`, `xtra_ports`, `databases`, `backuplimit`, `location`, `ownerid`, `type`, `egg`, `puid`
@@ -184,13 +184,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '" . $s_databases . "', 
         '" . $s_backups . "', 
         '" . $s_location . "', 
-        '" . mysqli_real_escape_string($conn,$_COOKIE['token']) . "', 
+        '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "', 
         '$queue', 
         '" . $s_egg . "', 
         '$userdb->panel_id')");
-        NewServer();
-        header('location: /dashboard?s=Done thanks for using '.$settings['name']);
-        die();
+      NewServer();
+      header('location: /dashboard?s=Done thanks for using ' . $settings['name']);
+      die();
     } else {
       header("location: /server/create?e=CSRF Verification Failed");
       die();
@@ -228,6 +228,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="container-xxl flex-grow-1 container-p-y">
             <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Server /</span> Create</h4>
             <?php include(__DIR__ . '/../components/alert.php') ?>
+            <div id="ads">
+              <?php
+              if ($settings['enable_ads'] == "true") {
+                echo $settings['ads_code'];
+              }
+              ?>
+            </div>
+            <br>
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header">
@@ -251,7 +259,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $availableSlots = $location['slots'] - count($serversOnLoc) - count($serversInQueue);
                         ?>
                         <option value="<?= $location["id"] ?>">
-                          <?= $location["name"] ?> (<?= $availableSlots ?>/<?= $location["slots"] ?> slots) [<?= $location["status"] === "MAINTENANCE" ? "MAINTENANCE" : ($availableSlots > 0 ? "ONLINE" : "OFFLINE") ?>]
+                          <?= $location["name"] ?> (
+                          <?= $availableSlots ?>/
+                          <?= $location["slots"] ?> slots) [
+                          <?= $location["status"] === "MAINTENANCE" ? "MAINTENANCE" : ($availableSlots > 0 ? "ONLINE" : "OFFLINE") ?>]
                         </option>
                       <?php endforeach; ?>
                     </select>
@@ -308,7 +319,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </form>
               </div>
             </div>
+            <br>
+            <div id="ads">
+              <?php
+              if ($settings['enable_ads'] == "true") {
+                echo $settings['ads_code'];
+              }
+              ?>
+            </div>
+            <br>
           </div>
+
         </div>
         <?php include(__DIR__ . '/../components/footer.php') ?>
         <div class="content-backdrop fade"></div>

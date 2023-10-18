@@ -22,7 +22,7 @@ $currentName = $result['attributes']['name'];
 $currentMemory = $result['attributes']['limits']['memory'];
 $currentDisk = $result['attributes']['limits']['disk'];
 $currentCpu = $result['attributes']['limits']['cpu'];
-$currentPorts = $result['attributes']['feature_limits']['allocations']-1;
+$currentPorts = $result['attributes']['feature_limits']['allocations'] - 1;
 $currentDatabases = $result['attributes']['feature_limits']['databases'];
 $currentStartupCommand = $result['attributes']['container']['startup_command'];
 $currentBackups = $result['attributes']['feature_limits']['backups'];
@@ -37,8 +37,8 @@ $useddisk = 0;
 $usedports = 0;
 $useddatabases = 0;
 $usedbackup = 0;
-$servers = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '".mysqli_real_escape_string($conn,$_COOKIE['token']) ."'");
-foreach($servers as $server) {
+$servers = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
+foreach ($servers as $server) {
     $ch = curl_init($settings['PterodactylURL'] . "/api/application/servers/" . $server['pid']);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $headers = array(
@@ -53,15 +53,15 @@ foreach($servers as $server) {
     $result = json_decode($result, true);
     $usedram = $result['attributes']['limits']['memory'] + $usedram;
     $cpu = $result['attributes']['limits']['cpu'];
-    $usedcpu = $usedcpu+$cpu;
+    $usedcpu = $usedcpu + $cpu;
     $useddisk = $useddisk + $result['attributes']['limits']['disk'];
     $ports = $result['attributes']['feature_limits']['allocations'] - 1;
-    $usedports = $usedports+$ports;
-    $useddatabases = $useddatabases+$result['attributes']['feature_limits']['databases'];
+    $usedports = $usedports + $ports;
+    $useddatabases = $useddatabases + $result['attributes']['feature_limits']['databases'];
     $usedbackup = $result['attributes']['feature_limits']['backups'];
 }
-$serversinqueue = mysqli_query($conn, "SELECT * FROM mythicaldash_servers_queue WHERE ownerid = '".mysqli_real_escape_string($conn,$_COOKIE['token'])."'");
-foreach($serversinqueue as $server) {
+$serversinqueue = mysqli_query($conn, "SELECT * FROM mythicaldash_servers_queue WHERE ownerid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
+foreach ($serversinqueue as $server) {
     $usedram = $usedram + $server['ram'];
     $useddisk = $useddisk + $server['disk'];
     $usedports = $usedports + $server['xtra_ports'];
@@ -82,7 +82,7 @@ $freeports = $userdb["ports"] - $usedports;
 $freedatabases = $userdb["databases"] - $useddatabases;
 $freebackup = $userdb["backups"] - $usedbackup;
 // check server exist
-$server = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '".mysqli_real_escape_string($conn,$_COOKIE['token'])."' AND pid = '$serverid'");
+$server = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "' AND pid = '$serverid'");
 if ($server->num_rows == 0) {
     header("location: /dashboard?e=This server doesn't exist or you don't have access to it.");
     $conn->close();
@@ -153,8 +153,7 @@ if (isset($_POST['submit'])) {
                     $conn->close();
                     die();
                 }
-            }
-            else {
+            } else {
                 header("location: /dashboard?e=You don't have enough disk.");
                 $conn->close();
                 die();
@@ -174,7 +173,7 @@ if (isset($_POST['submit'])) {
                 die();
             }
         }
-        
+
         if ($_POST['databases'] > $freedatabases) {
             if ($useddatabases > $userdb["databases"]) {
                 if ($_POST['databases'] > $currentDatabases || $_POST['databases'] == $currentDatabases) {
@@ -188,7 +187,7 @@ if (isset($_POST['submit'])) {
                 die();
             }
         }
-        
+
         if ($_POST['backups'] > $freebackup) {
             if ($usedbackup > $userdb["backups"]) {
                 if ($_POST['backups'] > $currentBackups || $_POST['backups'] == $currentBackups) {
@@ -208,23 +207,26 @@ if (isset($_POST['submit'])) {
             'Accept: application/json',
             'Content-Type: application/json',
             'Authorization: Bearer ' . $settings['PterodactylAPIKey']
-        ));
+        )
+        );
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array(
-            'allocation' => $currentAllocation,
-            'memory' => $_POST['memory'],
-            'swap' => $_POST['memory'],
-            'disk' => $_POST['disk'],
-            'io' => 500,
-            'cpu' => $_POST['cores'],
-            'threads' => null,
-            'feature_limits' => array(
-                'databases' => $_POST['databases'],
-                'allocations' => $_POST['ports']+1,
-                'backups' => $_POST['backups']
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(
+            array(
+                'allocation' => $currentAllocation,
+                'memory' => $_POST['memory'],
+                'swap' => $_POST['memory'],
+                'disk' => $_POST['disk'],
+                'io' => 500,
+                'cpu' => $_POST['cores'],
+                'threads' => null,
+                'feature_limits' => array(
+                    'databases' => $_POST['databases'],
+                    'allocations' => $_POST['ports'] + 1,
+                    'backups' => $_POST['backups']
+                )
             )
-        )));
+        ));
         $result = curl_exec($ch);
         curl_close($ch);
         unset($ch);
@@ -233,8 +235,7 @@ if (isset($_POST['submit'])) {
             header("location: /dashboard?e=There was an unexpected error while editing your server's limits.");
             $conn->close();
             die();
-        }
-        else {
+        } else {
             header("location: /dashboard?s=Done we updated your server limits.");
             $conn->close();
             die();
@@ -272,6 +273,15 @@ if (isset($_POST['submit'])) {
                     <div class="container-xxl flex-grow-1 container-p-y">
                         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Edit /</span> Create</h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
+                        <br>
+                        <div id="ads">
+                            <?php
+                            if ($settings['enable_ads'] == "true") {
+                                echo $settings['ads_code'];
+                            }
+                            ?>
+                        </div>
+                        <br>
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
@@ -298,6 +308,15 @@ if (isset($_POST['submit'])) {
                                 </div>
                             </div>
                         </div>
+                        <br>
+                        <div id="ads">
+                            <?php
+                            if ($settings['enable_ads'] == "true") {
+                                echo $settings['ads_code'];
+                            }
+                            ?>
+                        </div>
+                        <br>
                     </div>
                     <?php include(__DIR__ . '/../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>

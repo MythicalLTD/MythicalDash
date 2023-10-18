@@ -285,6 +285,11 @@ if (file_exists('FIRST_INSTALL')) {
         require("../view/admin/settings/recaptcha.php");
     });
 
+    $router->add("/admin/settings/ads", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/ads.php");
+    });
+
     $router->add("/admin/settings/pterodactyl", function () {
         require("../include/main.php");
         require("../view/admin/settings/pterodactyl.php");
