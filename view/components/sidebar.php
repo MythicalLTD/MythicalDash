@@ -58,6 +58,15 @@ function is_active_page($page_urls)
             <div>Redeem</div>
           </a>
         </li>
+        <?php if ($settings['linkvertise_enabled'] == "true") {
+          ?>
+          <li class="menu-item <?php echo is_active_page(['/earn/linkvertise']) ? 'active' : ''; ?>">
+            <a href="/earn/linkvertise" class="menu-link">
+              <div>Linkvertise</div>
+            </a>
+          </li>
+          <?php
+        } ?>
       </ul>
     </li>
     <li class="menu-item <?php echo is_active_page(['/store']) ? 'active' : ''; ?>">

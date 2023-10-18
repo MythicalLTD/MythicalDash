@@ -1,0 +1,1 @@
+CREATE TABLE `mythicaldash`.`mythicaldash_linkvertise` (`id` INT NOT NULL AUTO_INCREMENT , `skey` TEXT NOT NULL , `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
