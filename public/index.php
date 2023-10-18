@@ -240,6 +240,11 @@ if (file_exists('FIRST_INSTALL')) {
         require("../view/earn/afk.php");
     });
 
+    $router->add("/earn/linkvertise", function () {
+        require("../include/main.php");
+        require("../view/earn/linkvertise.php");
+    });
+
     $router->add("/earn/redeem", function () {
         require("../include/main.php");
         require("../view/earn/redeem.php");
@@ -268,6 +273,11 @@ if (file_exists('FIRST_INSTALL')) {
     $router->add("/admin/settings/discord", function () {
         require("../include/main.php");
         require("../view/admin/settings/discord.php");
+    });
+
+    $router->add("/admin/settings/linkvertise", function () {
+        require("../include/main.php");
+        require("../view/admin/settings/linkvertise.php");
     });
 
     $router->add("/admin/settings/mail", function () {

@@ -19,9 +19,9 @@ include(__DIR__ . '/../../requirements/admin.php');
 </head>
 
 <body>
-  <div id="preloader" class="discord-preloader">
-    <div class="spinner"></div>
-  </div>
+    <div id="preloader" class="discord-preloader">
+        <div class="spinner"></div>
+    </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../../components/sidebar.php') ?>
@@ -145,7 +145,8 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Discord Client Secret</label>
                                             <input type="password" required="" class="form-control"
-                                                name="discord:client_secret" value="<?= $settings['discord_clientsecret'] ?>">
+                                                name="discord:client_secret"
+                                                value="<?= $settings['discord_clientsecret'] ?>">
                                         </div>
                                     </div>
                                     <div class="mt-2">
@@ -241,12 +242,13 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             </div>
                                         </div>
                                         <div class="mb-3 col-md-2">
-                                            <label for="afk:coins:per:min" class="form-label">Coins per minute afk</label>
+                                            <label for="afk:coins:per:min" class="form-label">Coins per minute
+                                                afk</label>
                                             <input class="form-control" type="text" id="afk:coins:per:min"
                                                 name="afk:coins:per:min" value="<?= $settings['afk_coins_per_min'] ?>"
                                                 placeholder="2">
                                         </div>
-                                        
+
                                     </div>
                                     <div class="mt-2">
                                         <button type="submit" name="update_settings"
@@ -476,7 +478,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">ADS</h5>
+                            <h5 class="card-header">Ads</h5>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/ads" method="GET">
@@ -508,11 +510,59 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         <div class="form-group">
                                             <label class="control-label">Ads Code</label>
                                             <div>
-                                                <textarea type="text" required="" class="form-control"
-                                                    name="ads:code" rows="4"
-                                                    value=""><?= $settings['ads_code'] ?></textarea>
+                                                <textarea type="text" required="" class="form-control" name="ads:code"
+                                                    rows="4" value=""><?= $settings['ads_code'] ?></textarea>
                                             </div>
                                         </div>
+                                    </div>
+                                    <br>
+                                    <div class="mt-2">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header">Linkvertise</h5>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/linkvertise" method="GET">
+                                    <div class="row">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Status</label>
+                                            <div>
+                                                <?php
+                                                if ($settings['linkvertise_enabled'] == "true") {
+                                                    ?>
+                                                    <select class="form-control" name="ads:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="ads:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-5">
+                                            <label class="control-label">Key</label>
+                                            <div>
+                                                <input type="text" required="" class="form-control" name="ads:code"
+                                                    value="<?= $settings['linkvertise_code'] ?>">
+                                            </div>
+                                        </div>
+                                        <br>
+
                                     </div>
                                     <br>
                                     <div class="mt-2">

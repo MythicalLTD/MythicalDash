@@ -77,9 +77,9 @@ foreach ($servers_in_queue as $server) {
 </head>
 
 <body>
-   <!--<div id="preloader" class="discord-preloader">
-         <div class="spinner"></div>
-      </div>-->
+   <div id="preloader" class="discord-preloader">
+      <div class="spinner"></div>
+   </div>
    <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
          <?php include('components/sidebar.php') ?>
@@ -152,7 +152,7 @@ foreach ($servers_in_queue as $server) {
                                  </div>
                               </div>
                            </div>
-                           
+
                            <div class="row gy-3">
                               <div class="col-md-3 col-6">
                                  <div class="d-flex align-items-center">
@@ -212,7 +212,7 @@ foreach ($servers_in_queue as $server) {
                   </div>
                   <br>
                   <div id="ads">
-                     <?php 
+                     <?php
                      if ($settings['enable_ads'] == "true") {
                         echo $settings['ads_code'];
                      }
@@ -369,7 +369,7 @@ foreach ($servers_in_queue as $server) {
                   </div>
                   <br>
                   <div id="ads">
-                     <?php 
+                     <?php
                      if ($settings['enable_ads'] == "true") {
                         echo $settings['ads_code'];
                      }
