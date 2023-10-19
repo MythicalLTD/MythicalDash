@@ -1,42 +1,9 @@
 <?php
 include(__DIR__ . '/../requirements/page.php');
-include(__DIR__ . '/../../include/php-csrf.php');
-$csrf = new CSRF();
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($csrf->validate('profile-form')) {
-        if (isset($_POST['edit_user'])) {
-            $userdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . $_COOKIE['token'] . "'")->fetch_array();
-            $username = mysqli_real_escape_string($conn, $_POST['username']);
-            $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
-            $lastName = mysqli_real_escape_string($conn, $_POST['lastName']);
-            $email = mysqli_real_escape_string($conn, $_POST['email']);
-            $avatar = mysqli_real_escape_string($conn, $_POST['avatar']);
-            if (!$username == "" || $firstName == "" || $lastName == "" || $email == "" || $avatar == "") {
-                if (!$userdb['username'] == $username || !$email == $userdb['email']) {
-                    $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
-                    $result = mysqli_query($conn, $check_query);
-                    if (mysqli_num_rows($result) > 0) {
-                        header('location: /user/profile?e=Username or email already exists. Please choose a different one');
-                        die();
-                    }
-                } else {
-                    $conn->query("UPDATE `mythicaldash_users` SET `username` = '" . $username . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-                    $conn->query("UPDATE `mythicaldash_users` SET `first_name` = '" . $firstName . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-                    $conn->query("UPDATE `mythicaldash_users` SET `last_name` = '" . $lastName . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-                    $conn->query("UPDATE `mythicaldash_users` SET `avatar` = '" . $avatar . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-                    $conn->query("UPDATE `mythicaldash_users` SET `email` = '" . $email . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-                    $conn->close();
-                    header('location: /user/profile?s=We updated the user settings in the database');
-                }
-            } else {
-                header('location: /user/profile?e=Please fill in all the info');
-                die();
-            }
-        }
-    } else {
-        header('location: /user/profile?e=CSRF Verification Failed');
-    }
+if (isset($_GET['unlink_discord'])) {
+    $conn->query("UPDATE `mythicaldash_users` SET `discord_linked` = 'false' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+    $conn->close();
+    header('location: /user/connections');
 }
 ?>
 <!DOCTYPE html>
@@ -101,13 +68,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                         <?php
 
                                                         if ($userdb['discord_linked'] == "true") {
-                                                            ?> 
-                                                                <small class="text-muted"><?= $userdb['discord_username']?></small>
+                                                            ?>
+                                                            <small class="text-muted">
+                                                                <?= $userdb['discord_username'] ?>
+                                                            </small>
                                                             <?php
                                                         } else {
                                                             ?>
                                                             <small class="text-muted">Not Connected</small>
-                                                        <?php
+                                                            <?php
                                                         }
                                                         ?>
 
@@ -117,18 +86,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     if ($userdb['discord_linked'] == "true") {
                                                         ?>
                                                         <div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
-                                                            <button class="btn btn-label-danger btn-icon waves-effect"><i
-                                                                    class="ti ti-trash ti-sm"></i></button>
+                                                            <a href="/user/connections?unlink_discord=yes" class="btn btn-label-danger btn-icon waves-effect"><i
+                                                                    class="ti ti-trash ti-sm"></i></a>
                                                         </div>
-                                                    <?php
+                                                        <?php
                                                     } else {
                                                         ?>
                                                         <div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
-                                                            <button class="btn btn-label-secondary btn-icon waves-effect">
+                                                            <a href="/auth/link/discord"
+                                                                class="btn btn-label-secondary btn-icon waves-effect">
                                                                 <i class="ti ti-link ti-sm"></i>
-                                                            </button>
+                                                            </a>
                                                         </div>
-                                                    <?php
+                                                        <?php
                                                     }
                                                     ?>
 
@@ -142,24 +112,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <div class="flex-grow-1 row">
                                                     <div class="col-sm-7">
                                                         <h6 class="mb-0">GitHub</h6>
-                                                        <?php
-
-                                                        if ($userdb['discord_linked'] == "true") {
-
-                                                        } else {
-                                                            ?>
-                                                            <small class="text-muted">Not Connected</small>
-                                                        <?php
-                                                        }
-                                                        ?>
-
+                                                        <small class="text-muted">Soon</small>
                                                     </div>
 
-                                                    <div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
+                                                    <!--<div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
                                                         <button class="btn btn-label-secondary btn-icon waves-effect">
                                                             <i class="ti ti-link ti-sm"></i>
                                                         </button>
-                                                    </div>
+                                                    </div>-->
                                                 </div>
                                             </div>
                                             <div class="d-flex mb-3">
@@ -170,52 +130,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <div class="flex-grow-1 row">
                                                     <div class="col-sm-7">
                                                         <h6 class="mb-0">Google</h6>
-                                                        <?php
-
-                                                        if ($userdb['discord_linked'] == "true") {
-
-                                                        } else {
-                                                            ?>
-                                                            <small class="text-muted">Not Connected</small>
-                                                        <?php
-                                                        }
-                                                        ?>
-
+                                                        <small class="text-muted">Soon</small>
                                                     </div>
 
-                                                    <div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
+                                                    <!--<div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
                                                         <button class="btn btn-label-secondary btn-icon waves-effect">
                                                             <i class="ti ti-link ti-sm"></i>
                                                         </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex mb-3">
-                                                <div class="flex-shrink-0">
-                                                    <img src="https://avatars.githubusercontent.com/u/117385445"
-                                                        alt="mythicalsystems" class="me-3" height="55">
-                                                </div>
-                                                <div class="flex-grow-1 row">
-                                                    <div class="col-sm-7">
-                                                        <h6 class="mb-0">MythicalSystems</h6>
-                                                        <?php
-
-                                                        if ($userdb['discord_linked'] == "true") {
-
-                                                        } else {
-                                                            ?>
-                                                            <small class="text-muted">Not Connected</small>
-                                                        <?php
-                                                        }
-                                                        ?>
-
-                                                    </div>
-
-                                                    <div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
-                                                        <button class="btn btn-label-secondary btn-icon waves-effect">
-                                                            <i class="ti ti-link ti-sm"></i>
-                                                        </button>
-                                                    </div>
+                                                    </div>-->
                                                 </div>
                                             </div>
                                         </div>

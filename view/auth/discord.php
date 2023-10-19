@@ -1,4 +1,5 @@
-<?php 
+<?php
+include(__DIR__ . '/../requirements/page.php');
 if ($settings['enable_discord_link'] == "true") {
     if (isset($_GET['code'])) {
         $tokenUrl = 'https://discord.com/api/oauth2/token';
@@ -19,11 +20,11 @@ if ($settings['enable_discord_link'] == "true") {
         );
         $context = stream_context_create($options);
         $result = file_get_contents($tokenUrl, false, $context);
-    
+
         $accessToken = json_decode($result, true)['access_token'];
-    
+
         $userUrl = 'https://discord.com/api/users/@me';
-    
+
         $options = array(
             'http' => array(
                 'header' => "Authorization: Bearer $accessToken\r\n",
@@ -32,13 +33,22 @@ if ($settings['enable_discord_link'] == "true") {
         );
         $context = stream_context_create($options);
         $result = file_get_contents($userUrl, false, $context);
+
         $userInfo = json_decode($result, true);
         echo $result;
-        if (isset($userInfo)) { 
-    
+        if (isset($userInfo)) {
+            $conn->query("UPDATE `mythicaldash_users` SET `discord_linked` = 'true' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+            $conn->query("UPDATE `mythicaldash_users` SET `discord_id` = '" . $userInfo['id'] . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+            $conn->query("UPDATE `mythicaldash_users` SET `discord_username` = '" . $userInfo['username'] . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+            $conn->query("UPDATE `mythicaldash_users` SET `discord_global_username` = '" . $userInfo['global_name'] . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+            $conn->query("UPDATE `mythicaldash_users` SET `discord_email` = '" . $userInfo['email'] . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+            $conn->close();
+            header("location: /user/connections");
+        } else {
+            header('location: /auth/link/discord');
         }
     } else {
-        $authorizeUrl = 'https://discord.com/api/oauth2/authorize?client_id=' . $settings["discord_clientid"] . '&redirect_uri=' . urlencode($appURL. '/auth/link/discord') . '&response_type=code&scope=' . urlencode('identify guilds email guilds.join');
+        $authorizeUrl = 'https://discord.com/api/oauth2/authorize?client_id=' . $settings["discord_clientid"] . '&redirect_uri=' . urlencode($appURL . '/auth/link/discord') . '&response_type=code&scope=' . urlencode('identify guilds email guilds.join');
         header('Location: ' . $authorizeUrl);
     }
 } else {

@@ -42,8 +42,6 @@
 <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/libs/select2/select2.css" />
 <script src="<?= $appURL ?>/assets/vendor/js/helpers.js"></script>
 <script src="<?= $appURL ?>/assets/vendor/js/template-customizer.js"></script>
-
-
 <script src="<?= $appURL ?>/assets/js/config.js"></script>
 <link rel="stylesheet" href="<?= $appURL ?>/assets/css/preloader.css" />
 <style>
@@ -64,6 +62,9 @@ if ($cfg_is_console_on == 'true') {
 if ($settings['customcss_enabled'] == 'true') {
     ?>
     <style type="text/css">
+        #template-customizer .template-customizer-open-btn  {
+            visibility: hidden;
+        }
         <?= $settings['customcss_code'] ?>
     </style>
     <?php
