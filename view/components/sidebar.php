@@ -122,8 +122,8 @@ function is_active_page($page_urls)
         </a>
       </li>
       <li
-        class="menu-item <?php echo is_active_page(['/admin/users/view', '/admin/users/edit', '/admin/users/new']) ? 'active' : ''; ?>">
-        <a href="/admin/users/view" class="menu-link">
+        class="menu-item <?php echo is_active_page(['/admin/users', '/admin/users/edit', '/admin/users/new']) ? 'active' : ''; ?>">
+        <a href="/admin/users" class="menu-link">
           <i class="menu-icon tf-icons ti ti-users"></i>
           <div>Users</div>
         </a>

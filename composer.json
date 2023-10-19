@@ -18,7 +18,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=8.0.0",
-        "ecoal95/php-router": "^1.0",
+        "mythicalsystems/php-router": "^1.0",
         "symfony/yaml": "^6.3",
         "phpseclib/phpseclib": "^3.0",
         "phpmailer/phpmailer": "^6.8",

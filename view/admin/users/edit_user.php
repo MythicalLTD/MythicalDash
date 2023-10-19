@@ -67,12 +67,12 @@ if (isset($_GET['edit_user'])) {
                 die();
             }
         } else {
-            header('location: /admin/users/view?e=Can`t find this user in the database');
+            header('location: /admin/users?e=Can`t find this user in the database');
             $conn->close();
             die();
         }
     } else {
-        header('location: /admin/users/view?e=Can`t find this user in the database');
+        header('location: /admin/users?e=Can`t find this user in the database');
         die();
     }
 } else if (isset($_GET['id'])) {
@@ -85,15 +85,15 @@ if (isset($_GET['edit_user'])) {
         if (mysqli_num_rows($result) > 0) {
             $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . $_GET['id'] . "'")->fetch_array();
         } else {
-            header('location: /admin/users/view?e=Can`t find this user in the database');
+            header('location: /admin/users?e=Can`t find this user in the database');
             die();
         }
     } else {
-        header('location: /admin/users/view?e=Can`t find this user in the database');
+        header('location: /admin/users?e=Can`t find this user in the database');
         die();
     }
 } else {
-    header('location: /admin/users/view');
+    header('location: /admin/users');
     die();
 }
 ?>
@@ -322,7 +322,7 @@ if (isset($_GET['edit_user'])) {
                                             <div class="mt-2">
                                                 <button type="submit" name="edit_user" class="btn btn-primary me-2"
                                                     value="true">Save changes</button>
-                                                <a href="/admin/users/view" class="btn btn-label-secondary">Cancel</a>
+                                                <a href="/admin/users" class="btn btn-label-secondary">Cancel</a>
                                             </div>
                                         </form>
                                     </div>

@@ -4,65 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "45ffe18930956a3d0104a401dd8cf5d0",
+    "content-hash": "f138f7bf8d8527a2f12614d8e5574aed",
     "packages": [
-        {
-            "name": "ecoal95/php-router",
-            "version": "v1.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ecoal95/php-router.git",
-                "reference": "55ae2f3a6417a2327715402edb7b404001c5a04f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ecoal95/php-router/zipball/55ae2f3a6417a2327715402edb7b404001c5a04f",
-                "reference": "55ae2f3a6417a2327715402edb7b404001c5a04f",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "ext-xdebug": "*",
-                "phpdocumentor/phpdocumentor": "2.8.*",
-                "phpunit/phpunit": "4.8.*",
-                "squizlabs/php_codesniffer": "2.*"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/php-5.3-support.php"
-                ],
-                "psr-0": {
-                    "Router": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Emilio Cobos Álvarez",
-                    "email": "emiliocobos@usal.es",
-                    "homepage": "http://emiliocobos.net",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Minimal routing library",
-            "homepage": "https://github.com/ecoal95/php-router",
-            "keywords": [
-                "route",
-                "router",
-                "routing"
-            ],
-            "support": {
-                "issues": "https://github.com/ecoal95/php-router/issues",
-                "source": "https://github.com/ecoal95/php-router/tree/master"
-            },
-            "time": "2015-08-23T22:20:07+00:00"
-        },
         {
             "name": "livaco/easydiscordwebhook",
             "version": "2.0.0",
@@ -165,6 +108,63 @@
                 }
             ],
             "time": "2023-08-12T10:21:16+00:00"
+        },
+        {
+            "name": "mythicalsystems/php-router",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/MythicalLTD/php-router.git",
+                "reference": "8190321cf094124e92eebf4945e001820858e10c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/MythicalLTD/php-router/zipball/8190321cf094124e92eebf4945e001820858e10c",
+                "reference": "8190321cf094124e92eebf4945e001820858e10c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=6.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/php-6.0-support.php"
+                ],
+                "psr-0": {
+                    "Router": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "NaysKutzu",
+                    "email": "nayskutzu@mythicalsystems.me",
+                    "homepage": "https://nayskutzu.xyz",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Emilio Cobos Álvarez",
+                    "email": "emiliocobos@usal.es",
+                    "homepage": "http://emiliocobos.net",
+                    "role": "Old Developer"
+                }
+            ],
+            "description": "Minimal routing library",
+            "homepage": "https://github.com/MythicalLTD/php-router",
+            "keywords": [
+                "mythicalsystems",
+                "nayskutzu",
+                "php-router",
+                "router"
+            ],
+            "support": {
+                "source": "https://github.com/MythicalLTD/php-router/tree/1.0.3"
+            },
+            "time": "2023-08-27T16:23:31+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",

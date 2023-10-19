@@ -19,16 +19,16 @@ if (isset($_GET['id']))
             $conn->close();
             die();
         } else {
-            header('location: /admin/users/view?e=Can`t find this user in the database');
+            header('location: /admin/users?e=Can`t find this user in the database');
             $conn->close();
             die();
         }
     } else {
-        header('location: /admin/users/view?e=Can`t find this user in the database');
+        header('location: /admin/users?e=Can`t find this user in the database');
         die();
     }
 } else {
-    header('location: /admin/users/view');
+    header('location: /admin/users');
     die();
 }
 ?>
