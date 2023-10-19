@@ -22,7 +22,7 @@ if (isset($_POST['create_user'])) {
         } else {
             $conn->query("INSERT INTO `mythicaldash_users` (`email`, `username`, `first_name`, `last_name`, `password`, `api_key`) VALUES ('" . $email . "', '" . $username . "', '" . $firstName . "', '" . $lastName . "', '" . $password . "', '" . $skey . "');");
             NewUser();
-            header('location: /admin/users/view');
+            header('location: /admin/users');
             $conn->close();
             die();
         }
@@ -99,7 +99,7 @@ if (isset($_POST['create_user'])) {
                                             <div class="mt-2">
                                                 <button type="submit" name="create_user" class="btn btn-primary me-2"
                                                     value="true">Create user</button>
-                                                <a href="/admin/users/view" class="btn btn-label-secondary">Cancel</a>
+                                                <a href="/admin/users" class="btn btn-label-secondary">Cancel</a>
                                             </div>
                                         </form>
                                     </div>
