@@ -66,42 +66,49 @@ if (isset($_GET['unlink_discord'])) {
                                                     <div class="col-sm-7">
                                                         <h6 class="mb-0">Discord</h6>
                                                         <?php
-
-                                                        if ($userdb['discord_linked'] == "true") {
-                                                            ?>
-                                                            <small class="text-muted">
-                                                                <?= $userdb['discord_username'] ?>
-                                                            </small>
-                                                            <?php
+                                                        if (!$settings['discord_clientid'] == "" && !$settings['discord_clientsecret'] == "") {
+                                                            if ($userdb['discord_linked'] == "true") {
+                                                                ?>
+                                                                <small class="text-muted">
+                                                                    <?= $userdb['discord_username'] ?>
+                                                                </small>
+                                                                <?php
+                                                            } else {
+                                                                ?>
+                                                                <small class="text-muted">Not Connected</small>
+                                                                <?php
+                                                            }
                                                         } else {
                                                             ?>
-                                                            <small class="text-muted">Not Connected</small>
+                                                            <small class="text-muted">Disabled by host</small>
                                                             <?php
                                                         }
                                                         ?>
-
                                                     </div>
                                                     <?php
-
-                                                    if ($userdb['discord_linked'] == "true") {
-                                                        ?>
-                                                        <div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
-                                                            <a href="/user/connections?unlink_discord=yes" class="btn btn-label-danger btn-icon waves-effect"><i
-                                                                    class="ti ti-trash ti-sm"></i></a>
-                                                        </div>
-                                                        <?php
+                                                    if (!$settings['discord_clientid'] == "" && !$settings['discord_clientsecret'] == "") {
+                                                        if ($userdb['discord_linked'] == "true") {
+                                                            ?>
+                                                            <div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
+                                                                <a href="/user/connections?unlink_discord=yes"
+                                                                    class="btn btn-label-danger btn-icon waves-effect"><i
+                                                                        class="ti ti-trash ti-sm"></i></a>
+                                                            </div>
+                                                            <?php
+                                                        } else {
+                                                            ?>
+                                                            <div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
+                                                                <a href="/auth/link/discord"
+                                                                    class="btn btn-label-secondary btn-icon waves-effect">
+                                                                    <i class="ti ti-link ti-sm"></i>
+                                                                </a>
+                                                            </div>
+                                                            <?php
+                                                        }
                                                     } else {
-                                                        ?>
-                                                        <div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
-                                                            <a href="/auth/link/discord"
-                                                                class="btn btn-label-secondary btn-icon waves-effect">
-                                                                <i class="ti ti-link ti-sm"></i>
-                                                            </a>
-                                                        </div>
-                                                        <?php
+
                                                     }
                                                     ?>
-
                                                 </div>
                                             </div>
                                             <div class="d-flex mb-3">

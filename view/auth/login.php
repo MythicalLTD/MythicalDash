@@ -206,9 +206,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="divider-text"> or </div>
           </div>
           <div class="auth-footer-btn d-flex justify-content-center">
-            <a href="/auth/discord" target="_self" class="btn btn-primary">
-              <img width="18px" height="18px" src="/assets/img/discord-mark-white.svg" alt="Discord Logo">
-            </a>
+            <?php
+            if (!$settings['discord_clientid'] == "" && !$settings['discord_clientsecret'] == "") {
+              ?>
+              <a href="/auth/discord" target="_self" class="btn btn-primary">
+                <img width="18px" height="18px" src="/assets/img/discord-mark-white.svg" alt="Discord Logo">
+              </a>
+              <?php
+            }
+            ?>
+
           </div>
           <br>
           </p>
