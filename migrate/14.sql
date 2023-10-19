@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_resetpasswords` CHANGE `dateinfo` `dateinfo` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;

@@ -9,5 +9,38 @@ $router->add("/api/admin/statistics", function () {
     require("../api/admin/statistics.php");
 });
 
+$router->add("/api/admin/user/list", function () {
+    require("../include/main.php");
+    require("../api/admin/user/list.php");
+});
 
+$router->add("/api/admin/user/info", function () {
+    require("../include/main.php");
+    require("../api/admin/user/info.php");
+});
+
+$router->add("/api/admin/user/ban", function () {
+    require("../include/main.php");
+    require("../api/admin/user/ban.php");
+});
+
+$router->add("/api/admin/user/unban", function () {
+    require("../include/main.php");
+    require("../api/admin/user/unban.php");
+});
+
+$router->add("/api/admin/user/resources/set", function () {
+    require("../include/main.php");
+    require("../api/admin/user/resources/set.php");
+});
+
+$router->add("/api/admin/user/resources/add", function () {
+    require("../include/main.php");
+    require("../api/admin/user/resources/add.php");
+});
+
+$router->add("/api/admin/user/reset-password", function () {
+    require("../include/main.php");
+    require("../api/admin/user/reset-password.php");
+});
 ?>
