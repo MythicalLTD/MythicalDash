@@ -1,7 +1,7 @@
 <?php
-include(__DIR__.'/../../include/php-csrf.php');
-include(__DIR__.'/../../functions/telemetry.php');
-include(__DIR__.'/../../functions/report.php');
+include(__DIR__ . '/../../include/php-csrf.php');
+include(__DIR__ . '/../../functions/telemetry.php');
+include(__DIR__ . '/../../functions/report.php');
 session_start();
 $csrf = new CSRF();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   $cookie_name = 'token';
                   $cookie_value = $token;
                   setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
-                  $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '".$ip_address."' WHERE `mythicaldash_users`.`api_key` = '".$usr_id."';");
+                  $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . $ip_address . "' WHERE `mythicaldash_users`.`api_key` = '" . $usr_id . "';");
                   if (isset($_GET['r'])) {
                     header('location: ' . $_GET['r']);
                   } else {
@@ -145,6 +145,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?= $settings['name'] ?>!
           </h3>
           <p class="mb-4">Please sign-in to your account and start the adventure</p>
+          <?php
+          if (isset($_GET['e'])) {
+            ?>
+            <div class="text-center alert alert-danger" role="alert">
+              <?= $_GET['e'] ?>
+            </div>
+            <?php
+          } else {
+
+          }
+          ?>
           <form method="POST">
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>
@@ -191,17 +202,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <span>Create an account</span>
             </a>
           </p>
-          <?php
-          if (isset($_GET['e'])) {
-            ?>
-            <div class="text-center alert alert-danger" role="alert">
-              <?= $_GET['e'] ?>
-            </div>
-            <?php
-          } else {
-
-          }
-          ?>
+          <div class="divider my-2">
+            <div class="divider-text"> or </div>
+          </div>
+          <div class="auth-footer-btn d-flex justify-content-center">
+            <a href="/auth/discord" target="_self" class="btn btn-primary">
+              <img width="18px" height="18px" src="/assets/img/discord-mark-white.svg" alt="Discord Logo">
+            </a>
+          </div>
+          <br>
           </p>
         </div>
       </div>

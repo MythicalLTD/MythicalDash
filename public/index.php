@@ -78,6 +78,11 @@ if (file_exists('FIRST_INSTALL')) {
 
     $router->add('/auth/link/discord', function () {
         require("../include/main.php");
+        require("../view/auth/link/discord.php");
+    });
+
+    $router->add('/auth/discord', function () {
+        require("../include/main.php");
         require("../view/auth/discord.php");
     });
 
