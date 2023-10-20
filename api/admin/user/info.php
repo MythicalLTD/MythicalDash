@@ -11,41 +11,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $rsp = array(
                     "code" => 200,
                     "error" => null,
-                    "info" => array(
-                        "database_id" => $userdb['id'],
-                        "pterodactyl_id" => $userdb["panel_id"],
-                        "username" => $userdb['username'],
-                        "email" => $userdb['email'],
-                        "first_name" => decrypt($userdb['first_name'], $ekey),
-                        "last_name" => decrypt($userdb['last_name'], $ekey),
-                        "role" => $userdb['role'],
-                        "banned" => $userdb['banned'],
-                        "last_ip" => $userdb["last_ip"],
-                        "first_ip" => $userdb["first_ip"],
-                        "registred_at" => $userdb['registred']
+                    "message" => null,
+                    "data" => array(
+                        "info" => array(
+                            "database_id" => $userdb['id'],
+                            "pterodactyl_id" => $userdb["panel_id"],
+                            "username" => $userdb['username'],
+                            "email" => $userdb['email'],
+                            "first_name" => decrypt($userdb['first_name'], $ekey),
+                            "last_name" => decrypt($userdb['last_name'], $ekey),
+                            "role" => $userdb['role'],
+                            "banned" => $userdb['banned'],
+                            "last_ip" => $userdb["last_ip"],
+                            "first_ip" => $userdb["first_ip"],
+                            "registred_at" => $userdb['registred']
+                        ),
+                        "resources" => array(
+                            "coins" => $userdb['coins'],
+                            "ram" => $userdb['ram'],
+                            "disk" => $userdb['disk'],
+                            "cpu" => $userdb['cpu'],
+                            "server_limit" => $userdb['server_limit'],
+                            "ports" => $userdb['ports'],
+                            "databases" => $userdb['databases'],
+                            "backups" => $userdb['backups'],
+                            "minutes_afk" => $userdb["minutes_afk"],
+                        ),
+                        "discord" => array(
+                            "linked" => $userdb["discord_linked"],
+                            "discord_id" => $userdb["discord_id"],
+                            "discord_username" => $userdb["discord_username"],
+                            "discord_global_username" => $userdb["discord_global_username"],
+                            "discord_email" => $userdb["discord_email"],
+                        ),
+                        "profile" => array(
+                            "avatar" => $userdb['avatar'],
+                            "banner" => $userdb['banner'],
+                        ),
                     ),
-                    "resources" => array(
-                        "coins" => $userdb['coins'],
-                        "ram" => $userdb['ram'],
-                        "disk" => $userdb['disk'],
-                        "cpu" => $userdb['cpu'],
-                        "server_limit" => $userdb['server_limit'],
-                        "ports" => $userdb['ports'],
-                        "databases" => $userdb['databases'],
-                        "backups" => $userdb['backups'],
-                        "minutes_afk" => $userdb["minutes_afk"],
-                    ),
-                    "discord" => array(
-                        "linked" => $userdb["discord_linked"],
-                        "discord_id" => $userdb["discord_id"],
-                        "discord_username" => $userdb["discord_username"],
-                        "discord_global_username" => $userdb["discord_global_username"],
-                        "discord_email" => $userdb["discord_email"],
-                    ),
-                    "profile" => array(
-                        "avatar" => $userdb['avatar'],
-                        "banner" => $userdb['banner'],
-                    ),
+
                 );
                 $conn->close();
                 http_response_code(200);

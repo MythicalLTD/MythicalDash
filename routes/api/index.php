@@ -43,4 +43,24 @@ $router->add("/api/admin/user/reset-password", function () {
     require("../include/main.php");
     require("../api/admin/user/reset-password.php");
 });
+
+$router->add("/api/admin/settings/get", function () {
+    require("../include/main.php");
+    require("../api/admin/settings/get.php");
+});
+
+$router->add("/api/admin/redeem/create", function () {
+    require("../include/main.php");
+    require("../api/admin/redeem/create.php");
+});
+
+$router->add("/api/admin/redeem/info", function () {
+    require("../include/main.php");
+    require("../api/admin/redeem/info.php");
+});
+
+$router->add("/api/admin/redeem/delete", function () {
+    require("../include/main.php");
+    require("../api/admin/redeem/delete.php");
+});
 ?>
