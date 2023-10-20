@@ -15,7 +15,7 @@
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="priority">Priority</label>
-                        <select id="priority" name="priority" class="select2 form-select" placeholder="Select priority" required data-allow-clear="true">
+                        <select id="priority" name="priority" class="form-select" required data-allow-clear="true">
                             <option value="">Select</option>
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>

@@ -8,17 +8,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = mysqli_query($conn, $query);
             if (mysqli_num_rows($result) > 0) {
                 $userdb = $conn->query("SELECT * FROM mythicaldash_users WHERE email = '" . $email . "'")->fetch_array();
-                if ($userdb['banned'] == "") {
-                    if (isset($_POST['reason'])) {
-                        $reason  = mysqli_real_escape_string($conn, $_POST['reason']);
-                    } else {
-                        $reason = 'Unknown';
-                    }
-                    $conn->query("UPDATE `mythicaldash_users` SET `banned` = '$reason' WHERE `mythicaldash_users`.`email` = '$email';");
+                if (!$userdb["banned"] == "") {
+                    $conn->query("UPDATE `mythicaldash_users` SET `banned` = '' WHERE `mythicaldash_users`.`email` = '$email';");
                     $rsp = array(
                         "code" => 200,
                         "error" => null,
-                        "message" => "We banned ".$userdb['username'],
+                        "message" => "We unbanned " . $userdb['username'],
                     );
                     http_response_code(200);
                     die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
@@ -26,12 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $rsp = array(
                         "code" => 403,
                         "error" => "The server understood the request, but it refuses to authorize it.",
-                        "message" => "User is already banned!"
+                        "message" => "User is not banned"
                     );
                     http_response_code(403);
                     die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
                 }
-                
             } else {
                 $rsp = array(
                     "code" => 403,

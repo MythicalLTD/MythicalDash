@@ -8,30 +8,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = mysqli_query($conn, $query);
             if (mysqli_num_rows($result) > 0) {
                 $userdb = $conn->query("SELECT * FROM mythicaldash_users WHERE email = '" . $email . "'")->fetch_array();
-                if ($userdb['banned'] == "") {
-                    if (isset($_POST['reason'])) {
-                        $reason  = mysqli_real_escape_string($conn, $_POST['reason']);
-                    } else {
-                        $reason = 'Unknown';
-                    }
-                    $conn->query("UPDATE `mythicaldash_users` SET `banned` = '$reason' WHERE `mythicaldash_users`.`email` = '$email';");
-                    $rsp = array(
-                        "code" => 200,
-                        "error" => null,
-                        "message" => "We banned ".$userdb['username'],
-                    );
-                    http_response_code(200);
-                    die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-                } else {
-                    $rsp = array(
-                        "code" => 403,
-                        "error" => "The server understood the request, but it refuses to authorize it.",
-                        "message" => "User is already banned!"
-                    );
-                    http_response_code(403);
-                    die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-                }
-                
+                $skey = generate_keynoinfo();
+                $conn->query("INSERT INTO `mythicaldash_resetpasswords` (`email`, `user-apikey`, `user-resetkeycode`, `ip_addres`) VALUES ('".$email."', '".$userdb['api_key']."', '".$skey."', '127.0.0.7');");
+                $rsp = array(
+                    "code" => 200,
+                    "error" => null,
+                    "message" => "We created a reset password key for the user ".$userbd['username']."!",
+                    "data" => array( 
+                        "code" => $skey,
+                        "link" => $appURL."/auth/reset-password?code=".$skey,
+                    )
+                );
+                http_response_code(200);
+                die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
             } else {
                 $rsp = array(
                     "code" => 403,
