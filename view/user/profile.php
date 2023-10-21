@@ -43,7 +43,7 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
                     <div class="container-xxl flex-grow-1 container-p-y">
                         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users /</span> Profile</h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
-                        
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="card mb-4">
@@ -87,15 +87,17 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
                                 </div>
                             </div>
                         </div>
-                        <br>
                         <div id="ads">
                             <?php
                             if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                                ?>
+                                <br>
+                                <?= $settings['ads_code'] ?>
+                                <br>
+                                <?php
                             }
                             ?>
                         </div>
-                        <br>
                     </div>
                     <?php include(__DIR__ . '/../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>
@@ -107,14 +109,16 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
                                         aria-label="Close"></button>
                                     <div class="text-center mb-4">
                                         <h3 class="mb-2">Gift user coins!</h3>
-                                        <p class="text-muted">Remember, once you send a user coins, you can't take this action back! Please do not open a ticket to get your coins back! We won't help you!!!</p>
+                                        <p class="text-muted">Remember, once you send a user coins, you can't take this
+                                            action back! Please do not open a ticket to get your coins back! We won't
+                                            help you!!!</p>
                                     </div>
                                     <form method="GET" action="/user/gift" class="row g-3">
-                                    <input type="hidden" name="userid" value="<?= $_GET['id']?>">
+                                        <input type="hidden" name="userid" value="<?= $_GET['id'] ?>">
                                         <div class="col-12">
                                             <label class="form-label" for="coins">Coins</label>
-                                            <input type="number" id="coins" name="coins" class="form-control" placeholder=""
-                                                required />
+                                            <input type="number" id="coins" name="coins" class="form-control"
+                                                placeholder="" required />
                                         </div>
                                         <div class="col-12 text-center">
                                             <button type="submit" name="key" value="<?= $_COOKIE['token'] ?>"

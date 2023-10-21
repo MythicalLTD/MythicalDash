@@ -156,15 +156,17 @@ if (isset($_GET['buyback'])) {
                     <div class="container-xxl flex-grow-1 container-p-y">
                         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Dashboard /</span> Store</h4>
                         <?php include(__DIR__ . '/components/alert.php') ?>
-                        <br>
                         <div id="ads">
                             <?php
                             if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                                ?>
+                                <br>
+                                <?= $settings['ads_code'] ?>
+                                <br>
+                                <?php
                             }
                             ?>
                         </div>
-                        <br>
                         <div class="row mb-5">
                             <div class="col-md-6 col-lg-4 mb-3">
                                 <div class="card h-100">
@@ -311,15 +313,17 @@ if (isset($_GET['buyback'])) {
                                     </center>
                                 </div>
                             </div>
-                            <br>
                             <div id="ads">
                                 <?php
                                 if ($settings['enable_ads'] == "true") {
-                                    echo $settings['ads_code'];
+                                    ?>
+                                    <br>
+                                    <?= $settings['ads_code'] ?>
+                                    <br>
+                                    <?php
                                 }
                                 ?>
                             </div>
-                            <br>
                         </div>
                     </div>
                     <?php include(__DIR__ . '/components/footer.php') ?>

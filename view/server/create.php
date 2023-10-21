@@ -231,11 +231,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div id="ads">
               <?php
               if ($settings['enable_ads'] == "true") {
-                echo $settings['ads_code'];
+                ?>
+                <br>
+                <?= $settings['ads_code'] ?>
+                <br>
+                <?php
               }
               ?>
             </div>
-            <br>
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header">
@@ -249,7 +252,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php
                     $locations = mysqli_query($conn, "SELECT * FROM mythicaldash_locations")->fetch_all(MYSQLI_ASSOC);
                     ?>
-
                     <label for="location">Location:</label>
                     <select class="form-control" name="location" id="location">
                       <?php foreach ($locations as $location): ?>
@@ -319,17 +321,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </form>
               </div>
             </div>
-            <br>
             <div id="ads">
               <?php
               if ($settings['enable_ads'] == "true") {
-                echo $settings['ads_code'];
+                ?>
+                <br>
+                <?= $settings['ads_code'] ?>
+                <br>
+                <?php
               }
               ?>
             </div>
-            <br>
           </div>
-
         </div>
         <?php include(__DIR__ . '/../components/footer.php') ?>
         <div class="content-backdrop fade"></div>

@@ -209,15 +209,17 @@ foreach ($servers_in_queue as $server) {
                         </div>
                      </div>
                   </div>
-                  <br>
                   <div id="ads">
                      <?php
                      if ($settings['enable_ads'] == "true") {
-                        echo $settings['ads_code'];
+                        ?>
+                        <br>
+                        <?= $settings['ads_code'] ?>
+                        <br>
+                        <?php
                      }
                      ?>
                   </div>
-                  <br>
                   <div class="row">
                      <div class="col">
                         <div class="card bg-default shadow">
@@ -366,15 +368,17 @@ foreach ($servers_in_queue as $server) {
                         </div>
                      </div>
                   </div>
-                  <br>
                   <div id="ads">
                      <?php
                      if ($settings['enable_ads'] == "true") {
-                        echo $settings['ads_code'];
+                        ?>
+                        <br>
+                        <?= $settings['ads_code'] ?>
+                        <br>
+                        <?php
                      }
                      ?>
                   </div>
-                  <br>
                </div>
                <?php include('components/footer.php') ?>
                <div class="content-backdrop fade"></div>

@@ -63,15 +63,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="container-xxl flex-grow-1 container-p-y">
                         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users /</span> Edit</h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
-                        <br>
                         <div id="ads">
                             <?php
                             if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                                ?>
+                                <br>
+                                <?= $settings['ads_code'] ?>
+                                <br>
+                                <?php
                             }
                             ?>
                         </div>
-                        <br>
                         <div class="row">
                             <div class="col-md-12">
                                 <ul class="nav nav-pills flex-column flex-md-row mb-4">
@@ -116,13 +118,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <div class="mb-3 col-md-6">
                                                     <label for="firstName" class="form-label">First Name</label>
                                                     <input class="form-control" type="text" id="firstName"
-                                                        name="firstName" value="<?= decrypt($userdb['first_name'],$ekey) ?>"
+                                                        name="firstName"
+                                                        value="<?= decrypt($userdb['first_name'], $ekey) ?>"
                                                         autofocus />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="lastName" class="form-label">Last Name</label>
                                                     <input class="form-control" type="text" name="lastName"
-                                                        id="lastName" value="<?= decrypt($userdb['last_name'],$ekey) ?>" />
+                                                        id="lastName"
+                                                        value="<?= decrypt($userdb['last_name'], $ekey) ?>" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="email" class="form-label">E-mail</label>
@@ -155,11 +159,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div id="ads">
                                     <?php
                                     if ($settings['enable_ads'] == "true") {
-                                        echo $settings['ads_code'];
+                                        ?>
+                                        <?= $settings['ads_code'] ?>
+                                        <br>
+                                        <?php
                                     }
                                     ?>
                                 </div>
-                                <br>
                                 <div class="card">
                                     <h5 class="card-header">Danger Zone</h5>
                                     <div class="card-body">

@@ -1,6 +1,6 @@
 <?php
 include(__DIR__ . '/../requirements/page.php');
-if ($settings['enable_afk'] == "false") { 
+if ($settings['enable_afk'] == "false") {
     header('location: /');
 }
 if ($userdb['panel_id'] == "CLI") {
@@ -17,12 +17,12 @@ if (isset($_GET['getcoins'])) {
     }
     $minutes = $settings['afk_min'];
     $seconds = minutesToSeconds($minutes);
+    $nseconds = $seconds + 1; // Initialize $nseconds after defining $seconds
 
     $idlecheck = $lastseen + $seconds;
 
     $currenttime = new DateTime();
     $currenttimestamp = $currenttime->getTimestamp();
-
 
     if ($idlecheck <= $currenttimestamp) {
         $data1 = $coins + $settings['afk_coins_per_min'];
@@ -35,7 +35,6 @@ if (isset($_GET['getcoins'])) {
         } catch (Exception $e) {
             echo $e;
         }
-
     } else {
         header('location: /earn/afk?e=Please do not abuse');
         die();
@@ -83,11 +82,13 @@ if (isset($_GET['getcoins'])) {
                         <div id="ads">
                             <?php
                             if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                                ?>
+                                <?= $settings['ads_code'] ?>
+                                <br>
+                                <?php
                             }
                             ?>
                         </div>
-                        <br>
                         <div class="row">
                             <div class="col-md-12 grid-margin stretch-card">
                                 <div class="card">
@@ -109,23 +110,28 @@ if (isset($_GET['getcoins'])) {
                                 </div>
                             </div>
                         </div>
-                        <br>
                         <div id="ads">
                             <?php
                             if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                                ?>
+                                <br>
+                                <?= $settings['ads_code'] ?>
+                                <br>
+                                <?php
                             }
                             ?>
                         </div>
-                        <br>
                         <div id="ads">
                             <?php
                             if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                                ?>
+                                <br>
+                                <?= $settings['ads_code'] ?>
+                                <br>
+                                <?php
                             }
                             ?>
                         </div>
-                        <br>
                     </div>
                     <?php include(__DIR__ . '/../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>
@@ -137,7 +143,7 @@ if (isset($_GET['getcoins'])) {
     </div>
     <?php include(__DIR__ . '/../requirements/footer.php') ?>
     <script src="<?= $appURL ?>/assets/js/dashboards-ecommerce.js"></script>
-    
+
     <?php
     function secondsToMilliseconds($s)
     {
@@ -157,7 +163,7 @@ if (isset($_GET['getcoins'])) {
         var Timer = setInterval(function () {
             if (timeleft <= 0) {
                 timeleft = <?= $seconds ?>
-        } else {
+            } else {
                 document.getElementById("timer").innerHTML = timeleft + " second(s)";
             }
             timeleft -= 1;

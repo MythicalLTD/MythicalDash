@@ -83,11 +83,15 @@
                 </div>
                 <div class="flex-grow-1">
                   <span class="fw-semibold d-block">
-                    <?= $userdb['username'] ?> (
-                    <?= $userdb['role'] ?>)
+                    <?= $userdb['username'] ?>
+                    <span class="badge bg-<?php if ($userdb['role'] == "Administrator") {
+                      echo 'danger';
+                    } else {
+                      echo 'success';
+                    } ?> requestor-type ms-2">
+                      <?= $userdb['role'] ?>
+                    </span>
                   </span>
-
-                  <!--<small class="text-muted"><?= $userdb['role'] ?></small><br>-->
                   <small class="text-muted">
                     <?= $userdb['coins'] ?> coins
                   </small>

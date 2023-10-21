@@ -248,7 +248,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 name="afk:coins:per:min" value="<?= $settings['afk_coins_per_min'] ?>"
                                                 placeholder="2">
                                         </div>
-
+                                                
                                     </div>
                                     <div class="mt-2">
                                         <button type="submit" name="update_settings"
@@ -578,7 +578,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                             <h5 class="card-header">Custom CSS</h5>
                             <hr class="my-0">
                             <div class="card-body">
-                                <form action="/admin/settings/customcss" method="GET">
+                                <form action="/admin/settings/customcss" method="POST">
                                     <div class="row">
                                         <div class="form-group col-md-2">
                                             <label class="control-label">Status</label>
@@ -627,7 +627,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                             <h5 class="card-header">Custom Header Code</h5>
                             <hr class="my-0">
                             <div class="card-body">
-                                <form action="/admin/settings/customhead" method="GET">
+                                <form action="/admin/settings/customhead" method="POST">
                                     <div class="row">
                                         <div class="form-group col-md-2">
                                             <label class="control-label">Status</label>

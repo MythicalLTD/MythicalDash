@@ -10,8 +10,8 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     if (mysqli_num_rows($result) > 0) {
-        $code = mysqli_real_escape_string($conn,$_GET['code']);
-        $ticketdb = $conn->query("SELECT * FROM `mythicaldash_redeem` WHERE `mythicaldash_redeem`.`code` = '".$code."'")->fetch_array();
+        $code = mysqli_real_escape_string($conn, $_GET['code']);
+        $ticketdb = $conn->query("SELECT * FROM `mythicaldash_redeem` WHERE `mythicaldash_redeem`.`code` = '" . $code . "'")->fetch_array();
         $newcoins = $userdb['coins'] + $ticketdb['coins'];
         $newram = $userdb['ram'] + $ticketdb['ram'];
         $newdisk = $userdb['disk'] + $ticketdb['disk'];
@@ -20,19 +20,19 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
         $newports = $userdb['ports'] + $ticketdb['ports'];
         $newdatabases = $userdb['databases'] + $ticketdb['databases'];
         $newbackups = $userdb['backups'] + $ticketdb['backups'];
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '".$newcoins."' WHERE `mythicaldash_users`.`api_key` = '".$_COOKIE['token']."';");
-        $conn->query("UPDATE `mythicaldash_users` SET `ram` = '".$newram."' WHERE `mythicaldash_users`.`api_key` = '".$_COOKIE['token']."';");
-        $conn->query("UPDATE `mythicaldash_users` SET `disk` = '".$newdisk."' WHERE `mythicaldash_users`.`api_key` = '".$_COOKIE['token']."';");
-        $conn->query("UPDATE `mythicaldash_users` SET `cpu` = '".$newcpu."' WHERE `mythicaldash_users`.`api_key` = '".$_COOKIE['token']."';");
-        $conn->query("UPDATE `mythicaldash_users` SET `server_limit` = '".$new_server_limit."' WHERE `mythicaldash_users`.`api_key` = '".$_COOKIE['token']."';");
-        $conn->query("UPDATE `mythicaldash_users` SET `ports` = '".$newports."' WHERE `mythicaldash_users`.`api_key` = '".$_COOKIE['token']."';");
-        $conn->query("UPDATE `mythicaldash_users` SET `databases` = '".$newdatabases."' WHERE `mythicaldash_users`.`api_key` = '".$_COOKIE['token']."';");
-        $conn->query("UPDATE `mythicaldash_users` SET `backups` = '".$newbackups."' WHERE `mythicaldash_users`.`api_key` = '".$_COOKIE['token']."';");
-        if ($ticketdb['uses'] > 1) { 
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `ram` = '" . $newram . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `disk` = '" . $newdisk . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `cpu` = '" . $newcpu . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `server_limit` = '" . $new_server_limit . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `ports` = '" . $newports . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `databases` = '" . $newdatabases . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . $newbackups . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        if ($ticketdb['uses'] > 1) {
             $newuses = $ticketdb['uses'] - 1;
-            $conn->query("UPDATE `mythicaldash_redeem` SET `uses` = '".$newuses."' WHERE `mythicaldash_redeem`.`code` = '".$code."';");
+            $conn->query("UPDATE `mythicaldash_redeem` SET `uses` = '" . $newuses . "' WHERE `mythicaldash_redeem`.`code` = '" . $code . "';");
         } else {
-            $conn->query("DELETE FROM mythicaldash_redeem WHERE `mythicaldash_redeem`.`code` = '".$code."'");
+            $conn->query("DELETE FROM mythicaldash_redeem WHERE `mythicaldash_redeem`.`code` = '" . $code . "'");
         }
         header('location: /earn/redeem?s=We updated your resources!');
     } else {
@@ -74,11 +74,13 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
                         <div id="ads">
                             <?php
                             if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                                ?>
+                                <?= $settings['ads_code'] ?>
+                                <br>
+                                <?php
                             }
                             ?>
                         </div>
-                        <br>
                         <div class="row">
                             <div class="col-md-12 grid-margin stretch-card">
                                 <div class="card">
@@ -88,11 +90,9 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
                                     <div class="card-body text-center">
                                         <form method='GET'>
                                             <h4>Please enter the coupon code you would like to redeem below!</h4>
-                                            <input type="text" class="form-control mb-4" placeholder="DO2NMNd02"
-                                                value="<?php if (isset($_GET['code'])) {
-                                                    echo $_GET['code'];
-                                                } ?>"
-                                                name="code">
+                                            <input type="text" class="form-control mb-4" placeholder="DO2NMNd02" value="<?php if (isset($_GET['code'])) {
+                                                echo $_GET['code'];
+                                            } ?>" name="code">
                                             <br>
                                             <button name="submit" class="btn btn-primary">Redeem</button>
                                         </form>
@@ -100,15 +100,17 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
                                 </div>
                             </div>
                         </div>
-                        <br>
                         <div id="ads">
                             <?php
                             if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                                ?>
+                                <br>
+                                <?= $settings['ads_code'] ?>
+                                <br>
+                                <?php
                             }
                             ?>
                         </div>
-                        <br>
                     </div>
                 </div>
                 <?php include(__DIR__ . '/../components/footer.php') ?>

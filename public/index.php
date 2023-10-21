@@ -41,10 +41,6 @@ if (file_exists('FIRST_INSTALL')) {
     include(__DIR__ . '/../routes/index.php');
     //Default api routes and static routes 
     include(__DIR__ . '/../routes/api/index.php');
-    //Default api routes and static routes 
-    include(__DIR__ . '/../routes/api/admin/index.php');
-    //Default api routes and static routes 
-    include(__DIR__ . '/../routes/api/client/index.php');
     //Default admin routes and static routes 
     include(__DIR__ . '/../routes/admin/index.php');
     //Routes for /auth/
@@ -59,8 +55,6 @@ if (file_exists('FIRST_INSTALL')) {
     include(__DIR__ . '/../routes/earn.php');
     //Routes for /admin/api/
     include(__DIR__ . '/../routes/admin/api.php');
-    //Routes for /admin/api/
-    include(__DIR__ . '/../routes/admin/api.php');
     //Routes for /admin/settings/
     include(__DIR__ . '/../routes/admin/settings.php');
     //Routes for /admin/redeem/
@@ -71,10 +65,6 @@ if (file_exists('FIRST_INSTALL')) {
     include(__DIR__ . '/../routes/admin/eggs.php');
     //Routes for /admin/locations/
     include(__DIR__ . '/../routes/admin/locations.php');
-    //Routes for /api/client/user/
-    include(__DIR__ . '/../routes/api/client/user.php');
-    //Routes for /api/client/user/
-    include(__DIR__ . '/../routes/api/admin/user.php');
 
     $router->add("/(.*)", function () {
         require("../include/main.php");

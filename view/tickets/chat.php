@@ -111,11 +111,13 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                         <div id="ads">
                             <?php
                             if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                                ?>
+                                <?= $settings['ads_code'] ?>
+                                <br>
+                                <?php
                             }
                             ?>
                         </div>
-                        <br>
                         <?php
                         if ($ticket_db['status'] == "closed") {
                             ?>

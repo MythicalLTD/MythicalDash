@@ -30,7 +30,17 @@ include(__DIR__ . '/requirements/page.php');
           <div class="container-xxl flex-grow-1 container-p-y">
             <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Dashboard /</span> Blank</h4>
             <?php include(__DIR__ . '/components/alert.php') ?>
-
+            <div id="ads">
+              <?php
+              if ($settings['enable_ads'] == "true") {
+                ?>
+                <br>
+                <?= $settings['ads_code'] ?>
+                <br>
+                <?php
+              }
+              ?>
+            </div>
           </div>
           <?php include(__DIR__ . '/components/footer.php') ?>
           <div class="content-backdrop fade"></div>

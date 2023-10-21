@@ -7,7 +7,7 @@ $offset = ($page - 1) * $ticketsPerPage;
 
 $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
 $searchCondition = '';
-$ownerKeyCondition = " `ownerkey` = '".mysqli_real_escape_string($conn, $_COOKIE['token'])."'";
+$ownerKeyCondition = " `ownerkey` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'";
 if (!empty($searchKeyword)) {
     $searchCondition = " WHERE (`subject` LIKE '%$searchKeyword%' OR `description` LIKE '%$searchKeyword%') AND" . $ownerKeyCondition;
 } else {
@@ -49,7 +49,9 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                         <div id="ads">
                             <?php
                             if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                                ?>
+                                <?= $settings['ads_code'] ?>
+                                <?php
                             }
                             ?>
                         </div>
@@ -113,7 +115,10 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                         <div id="ads">
                             <?php
                             if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                                ?>
+                                <?= $settings['ads_code'] ?>
+                                <br>
+                                <?php
                             }
                             ?>
                         </div>
