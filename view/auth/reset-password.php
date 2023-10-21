@@ -6,15 +6,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['code'])) {
         if (!$_GET['code'] == "") {
             $code = mysqli_real_escape_string($conn, $_GET['code']);
-            $query = "SELECT * FROM mythicaldash_resetpasswords WHERE `user-resetkeycode` = '$code'";
+            $query = "SELECT * FROM mythicaldash_resetpasswords WHERE `resetkeycode` = '$code'";
             $result = mysqli_query($conn, $query);
             if (mysqli_num_rows($result) > 0) {
                 if (isset($_GET['password'])) {
                     if ($csrf->validate('reset-password-form')) {
-                        $ucode = $conn->query("SELECT * FROM mythicaldash_resetpasswords WHERE `user-resetkeycode` = '" . $code . "'")->fetch_array();
+                        $ucode = $conn->query("SELECT * FROM mythicaldash_resetpasswords WHERE `resetkeycode` = '" . $code . "'")->fetch_array();
                         $upassword = mysqli_real_escape_string($conn, $_GET['password']);
                         $password = password_hash($upassword, PASSWORD_BCRYPT);
-                        $conn->query("UPDATE `mythicaldash_users` SET `password` = '" . $password . "' WHERE `mythicaldash_users`.`api_key` = '" . $ucode['user-apikey'] . "';");
+                        $conn->query("UPDATE `mythicaldash_users` SET `password` = '" . $password . "' WHERE `mythicaldash_users`.`api_key` = '" . $ucode['ownerkey'] . "';");
                         $conn->query("DELETE FROM mythicaldash_resetpasswords WHERE `mythicaldash_resetpasswords`.`id` = " . $ucode['id'] . "");
                         $conn->close();
                         header('location: /auth/login');
