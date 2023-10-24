@@ -1,6 +1,7 @@
 <?php
 use MythicalDash\Encryption;
 use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../requirements/page.php');
 
 if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
@@ -182,12 +183,14 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                 <div class="row mt-3">
                                     <div class="col-md-12 message">
                                         <p>Hi, and welcome to
-                                            <?= SettingsManager::getSetting("name") ?>.<br>This is an automated message from the
+                                            <?= SettingsManager::getSetting("name") ?>.<br>This is an automated message
+                                            from the
                                             system to inform you that your ticket is now open.<br>Please do not spam any
                                             staff member by any chance; this will not help you get support, and please
                                             be respectful and make sure you read our terms of service and our rules.
                                             <br>If you feel like you need help quickly, make sure to join our community
-                                            <a href="<?= SettingsManager::getSetting("discord_invite") ?>"> here</a><br><br>
+                                            <a href="<?= SettingsManager::getSetting("discord_invite") ?>">
+                                                here</a><br><br>
 
                                         </p>
                                         <hr>
@@ -268,6 +271,51 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                     <?php include(__DIR__ . '/../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>
                     <?php include(__DIR__ . '/../components/modals.php') ?>
+                    <!-- START OF #replyticket -->
+                    <div class="modal fade" id="replyticket" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+                            <div class="modal-content p-3 p-md-5">
+                                <div class="modal-body">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                    <div class="text-center mb-4">
+                                        <h3 class="mb-2">Reply</h3>
+                                        <p class="text-muted">Reply to the user inside the ticket!</p>
+                                    </div>
+                                    <form method="GET" action="/help-center/tickets/reply" class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label" for="username">Name</label>
+                                            <input type="text" id="username" name="username" class="form-control"
+                                                value="<?= $session->getUserInfo("username") ?>" disabled="" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="message">Message</label>
+                                            <textarea required class="form-control" name="message" id="message" rows="3"
+                                                placeholder="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."></textarea>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="attachment">Attachment</label>
+                                            <input type="text" id="attachment" name="attachment" class="form-control"
+                                                placeholder="https://i.imgur.com/yed5Zfk.gif" />
+                                        </div>
+                                        <input type="hidden" name="ticketuuid"
+                                            value="<?= mysqli_real_escape_string($conn, $_GET['ticketuuid']) ?>">
+                                        <input type="hidden" name="userkey"
+                                            value="<?= $session->getUserInfo("api_key") ?>">
+
+                                        <div class="col-12 text-center">
+                                            <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+                                                aria-label="Close">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END OF #replyticket -->
                 </div>
             </div>
         </div>
