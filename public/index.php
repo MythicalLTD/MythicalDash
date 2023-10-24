@@ -22,6 +22,7 @@ if (!is_writable(__DIR__)) {
 }
 
 $router = new \Router\Router();
+
 if (file_exists('FIRST_INSTALL')) {
     $router->add("/", function () {
         require("../install/welcome.php");

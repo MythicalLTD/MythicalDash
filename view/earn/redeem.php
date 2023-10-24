@@ -1,9 +1,6 @@
 <?php
 use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
-if ($userdb['panel_id'] == "CLI") {
-    header('location: /admin/settings');
-}
 if (isset($_GET['code']) && !$_GET['code'] == "") {
     $user_query = "SELECT * FROM mythicaldash_redeem WHERE code = ?";
     $stmt = mysqli_prepare($conn, $user_query);
@@ -12,15 +9,15 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
     $result = mysqli_stmt_get_result($stmt);
     if (mysqli_num_rows($result) > 0) {
         $code = mysqli_real_escape_string($conn, $_GET['code']);
-        $ticketdb = $conn->query("SELECT * FROM `mythicaldash_redeem` WHERE `mythicaldash_redeem`.`code` = '" . $code . "'")->fetch_array();
-        $newcoins = $userdb['coins'] + $ticketdb['coins'];
-        $newram = $userdb['ram'] + $ticketdb['ram'];
-        $newdisk = $userdb['disk'] + $ticketdb['disk'];
-        $newcpu = $userdb['cpu'] + $ticketdb['cpu'];
-        $new_server_limit = $userdb['server_limit'] + $ticketdb['server_limit'];
-        $newports = $userdb['ports'] + $ticketdb['ports'];
-        $newdatabases = $userdb['databases'] + $ticketdb['databases'];
-        $newbackups = $userdb['backups'] + $ticketdb['backups'];
+        $redeemdb = $conn->query("SELECT * FROM `mythicaldash_redeem` WHERE `mythicaldash_redeem`.`code` = '" . $code . "'")->fetch_array();
+        $newcoins = $session->getUserInfo("coins") + $redeemdb['coins'];
+        $newram = $session->getUserInfo("ram") + $redeemdb['ram'];
+        $newdisk = $session->getUserInfo("disk") + $redeemdb['disk'];
+        $newcpu = $session->getUserInfo("cpu") + $redeemdb['cpu'];
+        $new_server_limit = $session->getUserInfo("server_limit")+ $redeemdb['server_limit'];
+        $newports = $session->getUserInfo("ports") + $redeemdb['ports'];
+        $newdatabases = $session->getUserInfo("databases") + $redeemdb['databases'];
+        $newbackups = $session->getUserInfo("backups") + $redeemdb['backups'];
         $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
         $conn->query("UPDATE `mythicaldash_users` SET `ram` = '" . $newram . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
         $conn->query("UPDATE `mythicaldash_users` SET `disk` = '" . $newdisk . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
@@ -29,8 +26,8 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
         $conn->query("UPDATE `mythicaldash_users` SET `ports` = '" . $newports . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
         $conn->query("UPDATE `mythicaldash_users` SET `databases` = '" . $newdatabases . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
         $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . $newbackups . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        if ($ticketdb['uses'] > 1) {
-            $newuses = $ticketdb['uses'] - 1;
+        if ($redeemdb['uses'] > 1) {
+            $newuses = $redeemdb['uses'] - 1;
             $conn->query("UPDATE `mythicaldash_redeem` SET `uses` = '" . $newuses . "' WHERE `mythicaldash_redeem`.`code` = '" . $code . "';");
         } else {
             $conn->query("DELETE FROM mythicaldash_redeem WHERE `mythicaldash_redeem`.`code` = '" . $code . "'");

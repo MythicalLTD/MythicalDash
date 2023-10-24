@@ -1,9 +1,7 @@
 <?php
 use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/requirements/page.php');
-if ($userdb['panel_id'] == "CLI") {
-    header('location: /admin/settings');
-}
 $cpuprice = SettingsManager::getSetting("price_cpu");
 $ramprice = SettingsManager::getSetting("price_memory");
 $diskprice = SettingsManager::getSetting("price_disk_space");
@@ -12,14 +10,14 @@ $portsprice = SettingsManager::getSetting("price_allocation");
 $databaseprice = SettingsManager::getSetting("price_database");
 $backupprice = SettingsManager::getSetting("price_backup");
 
-$usr_coins = $userdb['coins'];
-$usr_cpu = $userdb["cpu"];
-$usr_ram = $userdb["ram"];
-$usr_disk = $userdb["disk"];
-$usr_svlimit = $userdb["server_limit"];
-$usr_ports = $userdb["ports"];
-$usr_databases = $userdb["databases"];
-$usr_backup_limit = $userdb["backups"];
+$usr_coins = $session->getUserInfo("coins");
+$usr_cpu = $session->getUserInfo("cpu");
+$usr_ram = $session->getUserInfo("ram");
+$usr_disk = $session->getUserInfo("disk");
+$usr_svlimit = $session->getUserInfo("server_limit");
+$usr_ports = $session->getUserInfo("ports");
+$usr_databases = $session->getUserInfo("databases");
+$usr_backup_limit = $session->getUserInfo("backups");
 
 if (isset($_GET["buycpu"])) {
     if ($usr_coins >= $cpuprice) {

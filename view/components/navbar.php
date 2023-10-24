@@ -73,31 +73,31 @@ use MythicalDash\SettingsManager;
       <li class="nav-item navbar-dropdown dropdown-user dropdown">
         <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
           <div class="avatar avatar-online">
-            <img src="<?= $userdb['avatar'] ?>" alt class="h-auto rounded-circle" />
+            <img src="<?= $session->getUserInfo("avatar") ?>" alt class="h-auto rounded-circle" />
           </div>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
           <li>
-            <a class="dropdown-item" href="/user/profile?id=<?= $userdb['id'] ?>">
+            <a class="dropdown-item" href="/user/profile?id=<?= $session->getUserInfo("id") ?>">
               <div class="d-flex">
                 <div class="flex-shrink-0 me-3">
                   <div class="avatar avatar-online">
-                    <img src="<?= $userdb['avatar'] ?>" alt class="h-auto rounded-circle" />
+                    <img src="<?= $session->getUserInfo("avatar") ?>" alt class="h-auto rounded-circle" />
                   </div>
                 </div>
                 <div class="flex-grow-1">
                   <span class="fw-semibold d-block">
-                    <?= $userdb['username'] ?>
-                    <span class="badge bg-<?php if ($userdb['role'] == "Administrator") {
+                    <?= $session->getUserInfo("username") ?>
+                    <span class="badge bg-<?php if ($session->getUserInfo("role") == "Administrator") {
                       echo 'danger';
                     } else {
                       echo 'success';
                     } ?> requestor-type ms-2">
-                      <?= $userdb['role'] ?>
+                      <?= $session->getUserInfo("role") ?>
                     </span>
                   </span>
                   <small class="text-muted">
-                    <?= $userdb['coins'] ?> coins
+                    <?= $session->getUserInfo("coins") ?> coins
                   </small>
                 </div>
               </div>
@@ -107,7 +107,7 @@ use MythicalDash\SettingsManager;
             <div class="dropdown-divider"></div>
           </li>
           <li>
-            <a class="dropdown-item" href="/user/profile?id=<?= $userdb['id'] ?>">
+            <a class="dropdown-item" href="/user/profile?id=<?= $session->getUserInfo("id") ?>">
               <i class="ti ti-user-check me-2 ti-sm"></i>
               <span class="align-middle">Profile</span>
             </a>

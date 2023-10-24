@@ -1,5 +1,10 @@
 <?php
 use MythicalDash\SettingsManager;
+use MythicalDash\SessionManager;
+$session = new SessionManager();
+use MythicalDash\Database\Connect;
+$conn = new Connect();
+$conn = $conn->connectToDatabase();
 if (SettingsManager::getSetting("enable_discord_link") == "true") {
     if (isset($_GET['code'])) {
         $tokenUrl = 'https://discord.com/api/oauth2/token';
@@ -51,10 +56,10 @@ if (SettingsManager::getSetting("enable_discord_link") == "true") {
                         die();
                     } else {
                         $usr_id = $row['api_key'];
-                        if ($ip_address == "127.0.0.1") {
-                            $ip_address = "12.34.56.78";
+                        if ($session->getIP() == "127.0.0.1") {
+                            $session->getIP() = "12.34.56.78";
                         }
-                        $url = "http://ipinfo.io/$ip_address/json";
+                        $url = "http://ipinfo.io/".$session->getIP()."/json";
                         $data = json_decode(file_get_contents($url), true);
 
                         if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
@@ -83,12 +88,12 @@ if (SettingsManager::getSetting("enable_discord_link") == "true") {
                             header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
                             die();
                         }
-                        $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $ip_address . "', '$usr_id')");
+                        $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$usr_id')");
 
                         $cookie_name = 'token';
                         $cookie_value = $token;
                         setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
-                        $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . $ip_address . "' WHERE `mythicaldash_users`.`api_key` = '" . $usr_id . "';");
+                        $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . $session->getIP() . "' WHERE `mythicaldash_users`.`api_key` = '" . $usr_id . "';");
                         header('location: /dashboard');
                     }
                 } else {

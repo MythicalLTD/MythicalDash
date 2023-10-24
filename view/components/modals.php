@@ -56,7 +56,7 @@
                 <form method="GET" action="/help-center/tickets/reply" class="row g-3">
                     <div class="col-12">
                         <label class="form-label" for="username">Name</label>
-                        <input type="text" id="username" name="username" class="form-control" value="<?= $userdb['username']?>" disabled=""/>
+                        <input type="text" id="username" name="username" class="form-control" value="<?= $session->getUserInfo("username")?>" disabled=""/>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="message">Message</label>
@@ -68,7 +68,7 @@
                         <input type="text" id="attachment" name="attachment" class="form-control" placeholder="https://i.imgur.com/yed5Zfk.gif"/>
                     </div>
                     <input type="hidden" name="ticketuuid" value="<?= $_GET['ticketuuid'] ?>">
-                    <input type="hidden" name="userkey" value="<?= $userdb['api_key'] ?>">
+                    <input type="hidden" name="userkey" value="<?= $session->getUserInfo("api_key") ?>">
                     
                     <div class="col-12 text-center">
                         <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>

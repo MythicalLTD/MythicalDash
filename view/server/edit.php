@@ -77,11 +77,11 @@ $usedram = $usedram - $currentMemory;
 $useddisk = $useddisk - $currentDisk;
 $usedports = $usedports - $currentPorts;
 $useddatabases = $useddatabases - $currentDatabases;
-$freeram = $userdb["ram"] - $usedram;
-$freedisk = $userdb["disk"] - $useddisk;
-$freeports = $userdb["ports"] - $usedports;
-$freedatabases = $userdb["databases"] - $useddatabases;
-$freebackup = $userdb["backups"] - $usedbackup;
+$freeram = $session->getUserInfo("ram") - $usedram;
+$freedisk = $session->getUserInfo("disk") - $useddisk;
+$freeports = $session->getUserInfo("ports") - $usedports;
+$freedatabases = $session->getUserInfo("databases") - $useddatabases;
+$freebackup = $session->getUserInfo("backups") - $usedbackup;
 // check server exist
 $server = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "' AND pid = '$serverid'");
 if ($server->num_rows == 0) {
@@ -137,13 +137,13 @@ if (isset($_POST['submit'])) {
             $conn->close();
             die();
         }
-        if ($_POST['cores'] > ($userdb["cpu"] - $usedcpu) + $currentCpu) {
+        if ($_POST['cores'] > ($session->getUserInfo("cpu") - $usedcpu) + $currentCpu) {
             header("location: /dashboard?e=You don't have enough cpu.");
             $conn->close();
             die();
         }
         if ($_POST['disk'] > $freedisk) {
-            if ($useddisk1 > $userdb["disk_space"]) {
+            if ($useddisk1 > $session->getUserInfo("disk_space")) {
                 if ($_POST['disk'] > $currentDisk) {
                     header("location: /dashboard?e=Your in debt, you cannot increase disk.");
                     $conn->close();
@@ -162,7 +162,7 @@ if (isset($_POST['submit'])) {
 
         }
         if ($_POST['ports'] > $freeports) {
-            if ($usedports1 > $userdb["ports"]) {
+            if ($usedports1 > $session->getUserInfo("ports")) {
                 if ($_POST['ports'] > $currentPorts || $_POST['ports'] == $currentPorts) {
                     header("Location: /dashboard?e=You're in debt, you cannot increase ports.");
                     $conn->close();
@@ -176,7 +176,7 @@ if (isset($_POST['submit'])) {
         }
 
         if ($_POST['databases'] > $freedatabases) {
-            if ($useddatabases > $userdb["databases"]) {
+            if ($useddatabases > $session->getUserInfo("databases")) {
                 if ($_POST['databases'] > $currentDatabases || $_POST['databases'] == $currentDatabases) {
                     header("Location: /dashboard?e=You're in debt, you cannot increase databases.");
                     $conn->close();
@@ -190,7 +190,7 @@ if (isset($_POST['submit'])) {
         }
 
         if ($_POST['backups'] > $freebackup) {
-            if ($usedbackup > $userdb["backups"]) {
+            if ($usedbackup > $session->getUserInfo("backups")) {
                 if ($_POST['backups'] > $currentBackups || $_POST['backups'] == $currentBackups) {
                     header("Location: /dashboard?e=You're in debt, you cannot increase backups.");
                     $conn->close();

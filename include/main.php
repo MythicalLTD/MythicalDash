@@ -1,4 +1,5 @@
 <?php 
+use MythicalDash\ErrorHandler;
 use Symfony\Component\Yaml\Yaml;
 $config = Yaml::parseFile('../config.yml');
 $appsettings = $config['app'];
@@ -7,7 +8,7 @@ $cfg_ignoredebugmodemsg = $appsettings['silent_debug'];
 $ekey = $appsettings['encryptionkey'];
 $cfg_is_console_on = $appsettings['disable_console'];
 if ($ekey == "") {
-    die("Failed to start MythicalDash: Please set a strong encryption key in config.yml");
+    ErrorHandler::ShowCritical("Failed to start MythicalDash: Please set a strong encryption key in config.yml");
 }
 if ($cfg_debugmode == true) {
     ini_set('display_errors', 1);
@@ -27,20 +28,6 @@ else
     ini_set('display_errors', 0);
     ini_set('display_startup_errors', 0);
 }
-//DATABASE CONNECTION
-$dbsettings = $config['database'];
-$dbhost = $dbsettings['host'];
-$dbport = $dbsettings['port'];
-$dbusername = $dbsettings['username'];
-$dbpassword = $dbsettings['password'];
-$dbname = $dbsettings['database'];
-$conn = new mysqli($dbhost . ':' . $dbport, $dbusername, $dbpassword, $dbname);
-if ($conn->connect_error) {
-    \MythicalDash\ErrorHandler::ShowCritical("Can't connect to the database: ".$conn->connect_error);
-}
-//GET USER REAL IP
-include('../functions/getclientip.php');
-$ip_address = getclientip();    
 //APP URL
 $prot = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $svhost = $_SERVER['HTTP_HOST'];

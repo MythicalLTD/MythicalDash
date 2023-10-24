@@ -3,7 +3,7 @@
 # MythicalDash
 
 Open-Source Client Area for Pterodactyl
-MythicalDash is currently in development by [@SnyderWillCode](https://github.com/SnyderWillCode) & [@NaysKutzu](https://github.com/nayskutzu).
+MythicalDash is currently in development by [@NaysKutzu](https://github.com/nayskutzu).
 
 # Docs
 https://docs.mythicalsystems.me/docs/mythicaldash/intro

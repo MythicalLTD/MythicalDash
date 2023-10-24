@@ -3,17 +3,21 @@ use MythicalDash\CloudFlare\Captcha;
 use MythicalDash\SettingsManager;
 use MythicalDash\Encryption;
 use MythicalDash\Telemetry;
+use MythicalDash\SessionManager;
+use MythicalDash\Database\Connect;
+$conn = new Connect();
+$conn = $conn->connectToDatabase();
+$session = new SessionManager();
 session_start();
 $csrf = new MythicalDash\CSRF();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($csrf->validate('register-form')) {
         if (isset($_POST['sign_up'])) {
-            $ip_addres = getclientip();
             if (SettingsManager::getSetting("enable_turnstile") == "false") {
                 $captcha_success = 1;
             } else {
-                $captcha_success = Captcha::validate_captcha($_POST["cf-turnstile-response"], $ip_addres, SettingsManager::getSetting("turnstile_secretkey"));
+                $captcha_success = Captcha::validate_captcha($_POST["cf-turnstile-response"], $session->getIP(), SettingsManager::getSetting("turnstile_secretkey"));
             }
             if ($captcha_success) {
                 if (!SettingsManager::getSetting("PterodactylURL") == "" && !SettingsManager::getSetting("PterodactylAPIKey") == "") {
@@ -50,18 +54,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
                         $result = mysqli_query($conn, $check_query);
                         if (!mysqli_num_rows($result) > 0) {
-                            $aquery = "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $ip_addres . "'";
+                            $aquery = "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $session->getIP() . "'";
                             $aresult = mysqli_query($conn, $aquery);
                             $acount = mysqli_num_rows($aresult);
                             if ($acount >= 1) {
                                 header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use temporary accounts, which is not allowed.');
                                 die();
                             } else {
-                                if ($ip_addres == "127.0.0.1") {
-                                    $ip_addres = "12.34.56.78";
+                                if ($session->getIP() == "127.0.0.1") {
+                                    $session->getIP() = "12.34.56.78";
                                 }
                                 $vpn = false;
-                                $response = file_get_contents("http://ip-api.com/json/" . $ip_addres . "?fields=status,message,country,regionName,city,timezone,isp,org,as,mobile,proxy,hosting,query");
+                                $response = file_get_contents("http://ip-api.com/json/" . $session->getIP() . "?fields=status,message,country,regionName,city,timezone,isp,org,as,mobile,proxy,hosting,query");
                                 $response = json_decode($response, true);
                                 if (isset($response['proxy'])) {
                                     if ($response['proxy'] == true || $response['hosting'] == true) {
@@ -71,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 if ($response['type'] = !"Residential") {
                                     $vpn = true;
                                 }
-                                if ($ip_addres == "51.161.152.218" || $ip_addres == "66.220.20.165") {
+                                if ($session->getIP() == "51.161.152.218" || $session->getIP() == "66.220.20.165") {
                                     $vpn = false;
                                 }
                                 if ($vpn == true) {
@@ -106,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 }
                                 curl_close($ch);
-                                $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $ip_addres . "', '$skey')");
+                                $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$skey')");
                                 $default = "https://www.gravatar.com/avatar/00000000000000000000000000000000";
                                 $grav_url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default);
                                 if (file_exists("FIRST_USER")) {
@@ -151,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 '" . SettingsManager::getSetting("def_port") . "',
                                 '" . SettingsManager::getSetting("def_db") . "',
                                 '" . SettingsManager::getSetting("def_backups") . "',
-                                '" . $ip_addres . "'
+                                '" . $session->getIP() . "'
                                 );");
                                 $conn->close();
                                 if (file_exists("FIRST_USER")) { 

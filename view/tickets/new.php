@@ -8,7 +8,7 @@ if (isset($_GET['subject']) && isset($_GET['priority']) && isset($_GET['descript
         $priority = mysqli_real_escape_string($conn, $_GET['priority']);
         $description = mysqli_real_escape_string($conn, $_GET['description']);
         $attachment = mysqli_real_escape_string($conn, $_GET['attachment']);
-        $api_key = $userdb['api_key'];
+        $api_key = mysqli_real_escape_string($conn, $_COOKIE['token']);
         $conn->query("INSERT INTO `mythicaldash_tickets` (`ownerkey`, `ticketuuid`, `subject`, `priority`, `description`, `attachment`) VALUES ('" . $api_key . "', '" . Encryption::generate_keynoinfo() . "', '" . $subject . "', '" . $priority . "', '" . $description . "', '" . $attachment . "');");
         $conn->close();
         header('location: /help-center/tickets');

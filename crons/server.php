@@ -123,7 +123,9 @@ foreach($queue as $server) {
             'LIT_PACKAGES' => '',
             'JS_FILE' => 'index.js',
             'JARFILE' => 'app.jar',  
-            'MAIN_FILE' => 'index.js'
+            'MAIN_FILE' => 'index.js',
+            'PROJECT_FILE' => 'MyProject.sln',
+            'PROJECT_DIR' => '/home/container'
         ),
         'limits' => array(
             'memory' => $server['ram'],

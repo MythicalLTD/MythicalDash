@@ -1,5 +1,5 @@
 <?php 
-if ($userdb['role'] == "User") {
+if ($session->getUserInfo("role") == "User") {
     header('location: /e/401');
 }
 ?>

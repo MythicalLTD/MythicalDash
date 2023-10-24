@@ -10,7 +10,7 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     if (mysqli_num_rows($result) > 0) {
-        $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . $_GET['id'] . "'")->fetch_array();
+        $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . mysqli_real_escape_string($conn, $_GET['id']) . "'")->fetch_array();
         deleteUserServers($conn, $user_info['api_key'], SettingsManager::getSetting("PterodactylURL"), SettingsManager::getSetting("PterodactylAPIKey"));
         deleteUserServersInQueue($conn, $user_info['api_key'], SettingsManager::getSetting("PterodactylURL"), SettingsManager::getSetting("PterodactylAPIKey"));
         deleteApiKeys($conn, $user_info['api_key']);

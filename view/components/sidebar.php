@@ -117,7 +117,7 @@ function is_active_page($page_urls)
       </a>
     </li>
     <?php
-    if ($userdb['role'] == "Administrator") {
+    if ($session->getUserInfo("role") == "Administrator") {
       ?>
       <li class="menu-header small text-uppercase">
         <span class="menu-header-text">Administration Tools</span>

@@ -27,7 +27,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
     if (mysqli_num_rows($result) > 0) {
         $ticket_db = mysqli_fetch_assoc($result);
         if ($ticket_db['status'] == "deleted") {
-            if ($userdb['role'] == "User") {
+            if ($session->getUserInfo("role") == "User" || $session->getUserInfo("role") == "Support") {
                 header('location: /help-center/tickets?e=We are sorry, but this ticket is archived. You can\'t access it anymore!');
                 $conn->close();
                 die();

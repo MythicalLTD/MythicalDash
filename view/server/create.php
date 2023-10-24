@@ -1,12 +1,8 @@
 <?php
 use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
-if ($userdb['panel_id'] == "CLI") {
-  header('location: /admin/settings');
-}
 $csrf = new MythicalDash\CSRF();
 use MythicalDash\Telemetry;
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['createsv'])) {
     if ($csrf->validate('create-server-form')) {

@@ -1,5 +1,8 @@
 <?php
 use MythicalDash\SettingsManager;
+use MythicalDash\Database\Connect;
+$conn = new Connect();
+$conn = $conn->connectToDatabase();
 session_start();
 $csrf = new MythicalDash\CSRF();
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

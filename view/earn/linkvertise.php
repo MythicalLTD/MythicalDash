@@ -8,7 +8,7 @@ if (isset($_GET['key'])) {
     $key = mysqli_escape_string($conn, $_GET['key']);
     $result = mysqli_query($conn, "SELECT * FROM mythicaldash_linkvertise WHERE skey='$key'");
     if (mysqli_num_rows($result) > 0) {
-        $usr_coins = $userdb['coins'];
+        $usr_coins = $session->getUserInfo("coins");
         $newcoins = $usr_coins + SettingsManager::getSetting("linkvertise_coins");
         $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE["token"])."'");
         $conn->query("DELETE FROM mythicaldash_linkvertise WHERE skey='$key'");

@@ -1,4 +1,6 @@
 <?php
+include(__DIR__ . '/../requirements/page.php');
+
 if (isset($_GET['ticketuuid']) && !$_GET['ticketuuid'] == "") {
     $user_query = "SELECT * FROM mythicaldash_tickets WHERE ticketuuid = ?";
     $stmt = mysqli_prepare($conn, $user_query);

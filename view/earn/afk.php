@@ -4,13 +4,10 @@ include(__DIR__ . '/../requirements/page.php');
 if (SettingsManager::getSetting("enable_afk") == "false") {
     header('location: /');
 }
-if ($userdb['panel_id'] == "CLI") {
-    header('location: /admin/settings');
-}
 if (isset($_GET['getcoins'])) {
-    $coins = $userdb['coins'];
-    $idlemins = $userdb['minutes_afk'];
-    $lastseen = $userdb['last_seen'];
+    $coins = $session->getUserInfo("coins");
+    $idlemins = $session->getUserInfo("minutes_afk");
+    $lastseen = $session->getUserInfo("last_seen");
 
     function minutesToSeconds($minutes)
     {
@@ -101,10 +98,10 @@ if (isset($_GET['getcoins'])) {
                                             earn,
                                             you can purchase things from the shop. </p>
                                         <p>You currently have
-                                            <?= $userdb['coins'] ?> coin(s)!
+                                            <?= $session->getUserInfo("coins") ?> coin(s)!
                                         </p>
                                         <p>You have been idling for
-                                            <?= $userdb['minutes_afk'] ?> minute(s)!
+                                            <?= $session->getUserInfo("minutes_afk") ?> minute(s)!
                                         </p>
                                         <p>You will get more coins in <span id="timer"></span>!</p>
                                     </div>

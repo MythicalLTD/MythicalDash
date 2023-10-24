@@ -82,7 +82,7 @@ use MythicalDash\SettingsManager;
                                                 <a href="mailto:%email%" class="hover-underline"
                                                     style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; color: #7367f0; text-decoration: none;">%email%</a>
                                                  from the IP - <span
-                                                    style="font-weight: 600;"><?= $ip_address ?></span> .
+                                                    style="font-weight: 600;">127.0.0.1</span> .
                                             </p>
                                             <p
                                                 style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; margin: 0; margin-bottom: 24px;">

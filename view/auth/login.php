@@ -1,7 +1,11 @@
 <?php
 use MythicalDash\CloudFlare\Captcha;
 use MythicalDash\SettingsManager;
-
+use MythicalDash\SessionManager;
+use MythicalDash\Database\Connect;
+$conn = new Connect();
+$conn = $conn->connectToDatabase();
+$session = new SessionManager();
 session_start();
 $csrf = new MythicalDash\CSRF();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -10,12 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       if (SettingsManager::getSetting("enable_turnstile") == "false") {
         $captcha_success = 1;
       } else {
-        $captcha_success = Captcha::validate_captcha($_POST["cf-turnstile-response"], $ip_address, SettingsManager::getSetting("turnstile_secretkey"));
+        $captcha_success = Captcha::validate_captcha($_POST["cf-turnstile-response"], $session->getIP(), SettingsManager::getSetting("turnstile_secretkey"));
       }
       if ($captcha_success) {
         $email = mysqli_real_escape_string($conn, $_POST['email']);
         $password = mysqli_real_escape_string($conn, $_POST['password']);
-        $ip_address = getclientip();
         if (!$email == "" || !$password == "") {
           $query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
           $result = mysqli_query($conn, $query);
@@ -32,10 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   exit; // Stop execution if user is banned
                 } else {
                   $usr_id = $row['api_key'];
-                  if ($ip_address == "127.0.0.1") {
-                    $ip_address = "12.34.56.78";
+                  if ($$session->getIP() == "127.0.0.1") {
+                    $$session->getIP() = "12.34.56.78";
                   }
-                  $url = "http://ipinfo.io/$ip_address/json";
+                  $url = "http://ipinfo.io/".$session->getIP()."/json";
                   $data = json_decode(file_get_contents($url), true);
 
                   if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
@@ -64,12 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
                     die();
                   }
-                  $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $ip_address . "', '$usr_id')");
+                  $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$usr_id')");
 
                   $cookie_name = 'token';
                   $cookie_value = $token;
                   setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
-                  $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . $ip_address . "' WHERE `mythicaldash_users`.`api_key` = '" . $usr_id . "';");
+                  $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . $session->getIP() . "' WHERE `mythicaldash_users`.`api_key` = '" . $usr_id . "';");
                   if (isset($_GET['r'])) {
                     header('location: ' . $_GET['r']);
                   } else {

@@ -71,10 +71,10 @@ if (isset($_GET['unlink_discord'])) {
                                                         <h6 class="mb-0">Discord</h6>
                                                         <?php
                                                         if (SettingsManager::getSetting("enable_discord_link") == "true") {
-                                                            if ($userdb['discord_linked'] == "true") {
+                                                            if ($session->getUserInfo("discord_linked") == "true") {
                                                                 ?>
                                                                 <small class="text-muted">
-                                                                    <?= $userdb['discord_username'] ?>
+                                                                    <?= $session->getUserInfo("discord_username") ?>
                                                                 </small>
                                                                 <?php
                                                             } else {
@@ -91,7 +91,7 @@ if (isset($_GET['unlink_discord'])) {
                                                     </div>
                                                     <?php
                                                     if (SettingsManager::getSetting("enable_discord_link") == "true") {
-                                                        if ($userdb['discord_linked'] == "true") {
+                                                        if ($session->getUserInfo("discord_linked") == "true") {
                                                             ?>
                                                             <div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
                                                                 <a href="/user/connections?unlink_discord=yes"

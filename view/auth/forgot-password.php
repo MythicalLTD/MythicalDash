@@ -3,7 +3,11 @@ use MythicalDash\Encryption;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use MythicalDash\SettingsManager;
-
+use MythicalDash\SessionManager;
+use MythicalDash\Database\Connect;
+$conn = new Connect();
+$conn = $conn->connectToDatabase();
+$session = new SessionManager();
 $csrf = new MythicalDash\CSRF();
 if (SettingsManager::getSetting("enable_smtp") == "false") {
     header('location: /auth/login?e=We are sorry but this host dose not have a SMTP server setup');
@@ -115,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <a href="mailto:' . $email . '" class="hover-underline"
                                                     style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly; color: #7367f0; text-decoration: none;">' . $email . '</a>
                                                  from the IP - <span
-                                                    style="font-weight: 600;">' . $ip_address . '</span> .
+                                                    style="font-weight: 600;">' . $session->getIP() . '</span> .
                                             </p>
                                             <p
                                                 style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly; margin: 0; margin-bottom: 24px;">
@@ -207,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     try {
                         $mail->send();
                         //LOG TO DATABASE
-                        $conn->query("INSERT INTO `mythicaldash_resetpasswords` (`email`, `ownerkey`, `resetkeycode`, `ip_addres`) VALUES ('" . $email . "', '" . $userdb['api_key'] . "', '" . $skey . "', '" . $ip_address . "');");
+                        $conn->query("INSERT INTO `mythicaldash_resetpasswords` (`email`, `ownerkey`, `resetkeycode`, `ip_addres`) VALUES ('" . $email . "', '" . $userdb['api_key'] . "', '" . $skey . "', '" . $session->getIP() . "');");
                         //SOME Functions
                         $domain = substr(strrchr($email, "@"), 1);
                         $redirections = array('gmail.com' => 'https://mail.google.com', 'yahoo.com' => 'https://mail.yahoo.com', 'hotmail.com' => 'https://outlook.live.com', 'outlook.com' => "https://outlook.live.com", 'gmx.net' => "https://gmx.net", 'icloud.com' => "https://www.icloud.com/mail", 'me.com' => "https://www.icloud.com/mail", 'mac.com' => "https://www.icloud.com/mail", );
