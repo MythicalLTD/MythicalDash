@@ -61,9 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use temporary accounts, which is not allowed.');
                                 die();
                             } else {
-                                if ($session->getIP() == "127.0.0.1") {
-                                    $session->getIP() = "12.34.56.78";
-                                }
                                 $vpn = false;
                                 $response = file_get_contents("http://ip-api.com/json/" . $session->getIP() . "?fields=status,message,country,regionName,city,timezone,isp,org,as,mobile,proxy,hosting,query");
                                 $response = json_decode($response, true);

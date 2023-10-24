@@ -67,7 +67,7 @@
                         <label class="form-label" for="attachment">Attachment</label>
                         <input type="text" id="attachment" name="attachment" class="form-control" placeholder="https://i.imgur.com/yed5Zfk.gif"/>
                     </div>
-                    <input type="hidden" name="ticketuuid" value="<?= $_GET['ticketuuid'] ?>">
+                    <input type="hidden" name="ticketuuid" value="<?= mysqli_real_escape_string($conn, $_GET['ticketuuid']) ?>">
                     <input type="hidden" name="userkey" value="<?= $session->getUserInfo("api_key") ?>">
                     
                     <div class="col-12 text-center">

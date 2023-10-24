@@ -12,7 +12,6 @@ if (isset($_GET['subject']) && isset($_GET['priority']) && isset($_GET['descript
         $conn->query("INSERT INTO `mythicaldash_tickets` (`ownerkey`, `ticketuuid`, `subject`, `priority`, `description`, `attachment`) VALUES ('" . $api_key . "', '" . Encryption::generate_keynoinfo() . "', '" . $subject . "', '" . $priority . "', '" . $description . "', '" . $attachment . "');");
         $conn->close();
         header('location: /help-center/tickets');
-        $conn->close();
         die();
     } else {
         header('location: /help-center?e=Missing the required information to create a ticket.');

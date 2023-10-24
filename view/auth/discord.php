@@ -56,9 +56,6 @@ if (SettingsManager::getSetting("enable_discord_link") == "true") {
                         die();
                     } else {
                         $usr_id = $row['api_key'];
-                        if ($session->getIP() == "127.0.0.1") {
-                            $session->getIP() = "12.34.56.78";
-                        }
                         $url = "http://ipinfo.io/".$session->getIP()."/json";
                         $data = json_decode(file_get_contents($url), true);
 
