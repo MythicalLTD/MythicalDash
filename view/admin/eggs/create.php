@@ -22,7 +22,6 @@ if (isset($_GET['create_egg'])) {
             header('location: /admin/eggs?s=Done we added a new egg');
             $conn->close();
             die();
-            
         }
     }
 } else {

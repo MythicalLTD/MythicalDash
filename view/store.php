@@ -1,15 +1,16 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/requirements/page.php');
 if ($userdb['panel_id'] == "CLI") {
     header('location: /admin/settings');
 }
-$cpuprice = $settings["price_cpu"];
-$ramprice = $settings["price_memory"];
-$diskprice = $settings["price_disk_space"];
-$svprice = $settings["price_server_limit"];
-$portsprice = $settings["price_allocation"];
-$databaseprice = $settings["price_database"];
-$backupprice = $settings["price_backup"];
+$cpuprice = SettingsManager::getSetting("price_cpu");
+$ramprice = SettingsManager::getSetting("price_memory");
+$diskprice = SettingsManager::getSetting("price_disk_space");
+$svprice = SettingsManager::getSetting("price_server_limit");
+$portsprice = SettingsManager::getSetting("price_allocation");
+$databaseprice = SettingsManager::getSetting("price_database");
+$backupprice = SettingsManager::getSetting("price_backup");
 
 $usr_coins = $userdb['coins'];
 $usr_cpu = $userdb["cpu"];
@@ -24,8 +25,8 @@ if (isset($_GET["buycpu"])) {
     if ($usr_coins >= $cpuprice) {
         $newcoins = $usr_coins - $cpuprice;
         $newcpu = $usr_cpu + "100";
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `cpu` = '" . $newcpu . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `cpu` = '" . $newcpu . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
         header("location: /store?s=Thank you for your purchase. We updated your resources!");
         $conn->close();
         die();
@@ -39,8 +40,8 @@ if (isset($_GET["buyram"])) {
     if ($usr_coins >= $ramprice) {
         $newcoins = $usr_coins - $ramprice;
         $newram = $usr_ram + "1024";
-        $conn->query("UPDATE `mythicaldash_users` SET `ram` = '" . $newram . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `ram` = '" . $newram . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
         header("location: /store?s=Thank you for your purchase. We updated your resources!");
         $conn->close();
         die();
@@ -54,8 +55,8 @@ if (isset($_GET["buydisk"])) {
     if ($usr_coins >= $diskprice) {
         $newcoins = $usr_coins - $diskprice;
         $newdisk = $usr_disk + "1024";
-        $conn->query("UPDATE `mythicaldash_users` SET `disk` = '" . $newdisk . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `disk` = '" . $newdisk . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
         header("location: /store?s=Thank you for your purchase. We updated your resources!");
         $conn->close();
         die();
@@ -69,8 +70,8 @@ if (isset($_GET["buysv"])) {
     if ($usr_coins >= $svprice) {
         $newcoins = $usr_coins - $svprice;
         $newsv = $usr_svlimit + "1";
-        $conn->query("UPDATE `mythicaldash_users` SET `server_limit` = '" . $newsv . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `server_limit` = '" . $newsv . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
         header("location: /store?s=Thank you for your purchase. We updated your resources!");
         $conn->close();
         die();
@@ -84,8 +85,8 @@ if (isset($_GET["buyport"])) {
     if ($usr_coins >= $portsprice) {
         $newcoins = $usr_coins - $portsprice;
         $newport = $usr_ports + "1";
-        $conn->query("UPDATE `mythicaldash_users` SET `ports` = '" . $newport . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `ports` = '" . $newport . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
         header("location: /store?s=Thank you for your purchase. We updated your resources!");
         $conn->close();
         die();
@@ -100,8 +101,8 @@ if (isset($_GET['buydata'])) {
     if ($usr_coins >= $databaseprice) {
         $newcoins = $usr_coins - $databaseprice;
         $newdb = $usr_databases + "1";
-        $conn->query("UPDATE `mythicaldash_users` SET `databases` = '" . $newdb . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `databases` = '" . $newdb . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
         header("location: /store?s=Thank you for your purchase. We updated your resources!");
         $conn->close();
         die();
@@ -115,8 +116,8 @@ if (isset($_GET['buyback'])) {
     if ($usr_coins >= $backupprice) {
         $newcoins = $usr_coins - $backupprice;
         $newbk = $usr_backup_limit + "1";
-        $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . $newbk . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . $newbk . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
         header("location: /store?s=Thank you for your purchase. We updated your resources!");
         $conn->close();
         die();
@@ -138,7 +139,7 @@ if (isset($_GET['buyback'])) {
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <?php include(__DIR__ . '/requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> - Store
+        <?= SettingsManager::getSetting("name") ?> - Store
     </title>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
@@ -158,10 +159,10 @@ if (isset($_GET['buyback'])) {
                         <?php include(__DIR__ . '/components/alert.php') ?>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
                                 <br>
-                                <?= $settings['ads_code'] ?>
+                                <?= SettingsManager::getSetting("ads_code") ?>
                                 <br>
                                 <?php
                             }
@@ -176,11 +177,11 @@ if (isset($_GET['buyback'])) {
                                         <div class="card-body">
                                             <h5 class="card-title">Cpu</h5>
                                             <small class="text-muted">
-                                                <code><?= $settings['price_cpu'] ?> Coins</code>
+                                                <code><?= $cpuprice ?> Coins</code>
                                             </small>
                                             <p class="card-text">
                                                 For every
-                                                <?= $settings['price_cpu'] ?> coins you get 1 CPU core to use on your
+                                                <?= $cpuprice ?> coins you get 1 CPU core to use on your
                                                 server.
                                             </p>
                                             <a href="/store?buycpu" class="btn btn-outline-primary waves-effect">Buy</a>
@@ -196,11 +197,11 @@ if (isset($_GET['buyback'])) {
                                         <div class="card-body">
                                             <h5 class="card-title">Ram</h5>
                                             <small class="text-muted">
-                                                <code><?= $settings['price_memory'] ?> Coins</code>
+                                                <code><?= $ramprice ?> Coins</code>
                                             </small>
                                             <p class="card-text">
                                                 For every
-                                                <?= $settings['price_memory'] ?>
+                                                <?= $ramprice ?>
                                                 coins you get 1GB ram to use on your server.
                                             </p>
                                             <a href="/store?buyram" class="btn btn-outline-primary waves-effect">Buy</a>
@@ -216,11 +217,11 @@ if (isset($_GET['buyback'])) {
                                         <div class="card-body">
                                             <h5 class="card-title">Disk</h5>
                                             <small class="text-muted">
-                                                <code><?= $settings['price_disk_space'] ?> Coins</code>
+                                                <code><?= $diskprice ?> Coins</code>
                                             </small>
                                             <p class="card-text">
                                                 For every
-                                                <?= $settings['price_disk_space'] ?> coins you get 1GB disk to use on
+                                                <?= $diskprice ?> coins you get 1GB disk to use on
                                                 your server.
                                             </p>
                                             <a href="/store?buydisk"
@@ -238,11 +239,11 @@ if (isset($_GET['buyback'])) {
                                         <div class="card-body">
                                             <h5 class="card-title">Server Slot</h5>
                                             <small class="text-muted">
-                                                <code><?= $settings['price_server_limit'] ?> Coins</code>
+                                                <code><?= $svprice ?> Coins</code>
                                             </small>
                                             <p class="card-text">
                                                 For every
-                                                <?= $settings['price_server_limit'] ?> coins you get 1 server slot to
+                                                <?= $svprice ?> coins you get 1 server slot to
                                                 deploy your server.
                                             </p>
                                             <a href="/store?buysv" class="btn btn-outline-primary waves-effect">Buy</a>
@@ -258,11 +259,11 @@ if (isset($_GET['buyback'])) {
                                         <div class="card-body">
                                             <h5 class="card-title">Server Backup</h5>
                                             <small class="text-muted">
-                                                <code><?= $settings['price_backup'] ?> Coins</code>
+                                                <code><?= $backupprice ?> Coins</code>
                                             </small>
                                             <p class="card-text">
                                                 For every
-                                                <?= $settings['price_backup'] ?> coins you get 1 backup slot to backup
+                                                <?= $backupprice ?> coins you get 1 backup slot to backup
                                                 your server.
                                             </p>
                                             <a href="/store?buyback"
@@ -279,11 +280,11 @@ if (isset($_GET['buyback'])) {
                                         <div class="card-body">
                                             <h5 class="card-title">Server Allocation</h5>
                                             <small class="text-muted">
-                                                <code><?= $settings['price_allocation'] ?> Coins</code>
+                                                <code><?= $portsprice ?> Coins</code>
                                             </small>
                                             <p class="card-text">
                                                 For every
-                                                <?= $settings['price_allocation'] ?> coins you get 1 extra port to use
+                                                <?= $portsprice ?> coins you get 1 extra port to use
                                                 on your server.
                                             </p>
                                             <a href="/store?buyport"
@@ -300,11 +301,11 @@ if (isset($_GET['buyback'])) {
                                         <div class="card-body">
                                             <h5 class="card-title">Server Database</h5>
                                             <small class="text-muted">
-                                                <code><?= $settings['price_database'] ?> Coins</code>
+                                                <code><?= $databaseprice ?> Coins</code>
                                             </small>
                                             <p class="card-text">
                                                 For every
-                                                <?= $settings['price_database'] ?> coins you get 1 database to use on
+                                                <?= $databaseprice ?> coins you get 1 database to use on
                                                 your server.
                                             </p>
                                             <a href="/store?buydata"
@@ -315,10 +316,10 @@ if (isset($_GET['buyback'])) {
                             </div>
                             <div id="ads">
                                 <?php
-                                if ($settings['enable_ads'] == "true") {
+                                if (SettingsManager::getSetting("enable_ads") == "true") {
                                     ?>
                                     <br>
-                                    <?= $settings['ads_code'] ?>
+                                    <?= SettingsManager::getSetting("ads_code") ?>
                                     <br>
                                     <?php
                                 }

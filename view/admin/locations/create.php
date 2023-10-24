@@ -23,7 +23,6 @@ if (isset($_GET['create_location'])) {
             header('location: /admin/locations?s=Done we added a new location');
             $conn->close();
             die();
-            
         }
     }
 } else {

@@ -1,4 +1,6 @@
 <?php
+use MythicalDash\Encryption;
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
 
 if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
@@ -38,7 +40,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
         die();
     }
     if (isset($_GET['export']) && $_GET['export'] === "true") {
-        $filename = $settings['name'] . '_ticket_export_' . $_GET['ticketuuid'] . '.txt';
+        $filename = SettingsManager::getSetting("name") . '_ticket_export_' . $_GET['ticketuuid'] . '.txt';
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Content-Type: text/plain');
 
@@ -65,9 +67,8 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
             }
             echo "------------------------\r\n";
         }
-        echo "This is an archive of a ticket with the id: " . $_GET['ticketuuid'] . " created on " . $settings['name'] . "\r\n";
-        echo "Please do not edit the ticket because it's archived and signed by the server and can be viewed at: " . $appURL . "/api/ticket?uuid=" . $_GET['ticketuuid'] . "\r\n";
-        echo "Archived ticket signed key: " . generateticket_key($_GET['ticketuuid']) . "\r\n";
+        echo "This is an archive of a ticket with the id: " . $_GET['ticketuuid'] . " created on " . SettingsManager::getSetting("name") . "\r\n";
+        echo "Archived ticket signed key: " . Encryption::generateticket_key($_GET['ticketuuid']) . "\r\n";
         $exportData = ob_get_clean();
         echo $exportData;
         mysqli_stmt_close($stmt);
@@ -87,7 +88,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> - Tickets
+        <?= SettingsManager::getSetting("name") ?> - Tickets
     </title>
     <link rel="stylesheet" href="../../assets/vendor/css/pages/app-chat.css" />
 </head>
@@ -110,9 +111,9 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
-                                <?= $settings['ads_code'] ?>
+                                <?= SettingsManager::getSetting("ads_code") ?>
                                 <br>
                                 <?php
                             }
@@ -181,12 +182,12 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                 <div class="row mt-3">
                                     <div class="col-md-12 message">
                                         <p>Hi, and welcome to
-                                            <?= $settings['name'] ?>.<br>This is an automated message from the
+                                            <?= SettingsManager::getSetting("name") ?>.<br>This is an automated message from the
                                             system to inform you that your ticket is now open.<br>Please do not spam any
                                             staff member by any chance; this will not help you get support, and please
                                             be respectful and make sure you read our terms of service and our rules.
                                             <br>If you feel like you need help quickly, make sure to join our community
-                                            <a href="<?= $settings['discord_invite'] ?>"> here</a><br><br>
+                                            <a href="<?= SettingsManager::getSetting("discord_invite") ?>"> here</a><br><br>
 
                                         </p>
                                         <hr>

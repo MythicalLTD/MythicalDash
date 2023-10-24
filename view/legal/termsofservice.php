@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
 ?>
 <!DOCTYPE html>
@@ -12,7 +13,7 @@ include(__DIR__ . '/../requirements/page.php');
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <title>
-    <?= $settings['name'] ?> - Terms of Service
+    <?= SettingsManager::getSetting("name") ?> - Terms of Service
   </title>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
@@ -62,7 +63,7 @@ include(__DIR__ . '/../requirements/page.php');
                       </span>
                       Terms of Service
                     </h4>
-                    <?= $settings['terms_of_service'] ?>
+                    <?= SettingsManager::getSetting("terms_of_service") ?>
 
                     <hr class="container-m-nx my-4" />
                     <div class="d-flex justify-content-between flex-wrap gap-3 mb-3">

@@ -1,19 +1,11 @@
-<?php echo "====== MythicalDash queue ======\n\n"; 
+<?php echo "====== MythicalDash queue ======\n\n";
+use MythicalDash\SettingsManager; 
 echo "[INFO/loader] Loading files...\n"; 
 include(__DIR__.'/../vendor/autoload.php');
-include(__DIR__.'/../functions/passwordgen.php');
-include(__DIR__.'/../functions/keygen.php');
-include(__DIR__.'/../functions/encryption.php');
 use Symfony\Component\Yaml\Yaml;
 $config = Yaml::parseFile(__DIR__.'/../config.yml');
 $appsettings = $config['app'];
 $cfg_debugmode = $appsettings['debug'];
-$cfg_ignoredebugmodemsg = $appsettings['silent_debug'];
-$ekey = $appsettings['encryptionkey'];
-$cfg_is_console_on = $appsettings['disable_console'];
-if ($ekey == "") {
-    die("[INFO/loader] Failed to start MythicalDash: Please set a strong encryption key in config.yml");
-}
 if ($cfg_debugmode == true) {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
@@ -33,10 +25,8 @@ $dbpassword = $dbsettings['password'];
 $dbname = $dbsettings['database'];
 $conn = new mysqli($dbhost . ':' . $dbport, $dbusername, $dbpassword, $dbname);
 if ($conn->connect_error) {
-    echo '';
+    echo "[WARNING] We can't connect to the MySQL server.";
 }
-//SETTINGS TABLE
-$settings = $conn->query("SELECT * FROM mythicaldash_settings")->fetch_array();
 $timeAtStart = time();
 $i = 0;
 $nodesFull = 0;
@@ -77,11 +67,11 @@ foreach($queue as $server) {
         continue;
     }
     $egg = $eggd->fetch_object();
-    $egginfocurl = curl_init($settings['PterodactylURL'] . "/api/application/nests/" . $egg->nest . "/eggs/" . $egg->egg);
+    $egginfocurl = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/nests/" . $egg->nest . "/eggs/" . $egg->egg);
     $httpheader = array(
         'Accept: application/json',
         'Content-Type: application/json',
-        'Authorization: Bearer ' . $settings['PterodactylAPIKey']
+        'Authorization: Bearer ' . SettingsManager::getSetting("PterodactylAPIKey")
     );
     curl_setopt($egginfocurl, CURLOPT_HTTPHEADER, $httpheader);
     curl_setopt($egginfocurl, CURLOPT_RETURNTRANSFER, 1);
@@ -91,7 +81,7 @@ foreach($queue as $server) {
     $docker_image = $response['attributes']['docker_image'];
     $startup = $response['attributes']['startup'];
     $ports = $server['xtra_ports'] + 1;
-    $panelcurl = curl_init($settings['PterodactylURL'] . "/api/application/servers");
+    $panelcurl = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers");
     $postfields = array(
         'name' => $server['name'],
         'user' => $server['puid'],
@@ -159,7 +149,7 @@ foreach($queue as $server) {
     curl_setopt($panelcurl, CURLOPT_HTTPHEADER, array(
         'Accept: application/json',
         'Content-Type: application/json',
-        'Authorization: Bearer ' . $settings["PterodactylAPIKey"]
+        'Authorization: Bearer ' . SettingsManager::getSetting("PterodactylAPIKey")
     ));
     $result = curl_exec($panelcurl);
     curl_close($panelcurl);

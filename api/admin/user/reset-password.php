@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\Encryption;
 include(__DIR__ . "/../base.php");
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -8,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = mysqli_query($conn, $query);
             if (mysqli_num_rows($result) > 0) {
                 $userdb = $conn->query("SELECT * FROM mythicaldash_users WHERE email = '" . $email . "'")->fetch_array();
-                $skey = generate_keynoinfo();
+                $skey = Encryption::generate_keynoinfo();
                 $conn->query("INSERT INTO `mythicaldash_resetpasswords` (`email`, `ownerkey`, `resetkeycode`, `ip_addres`) VALUES ('".$email."', '".$userdb['api_key']."', '".$skey."', '127.0.0.7');");
                 $rsp = array(
                     "code" => 200,

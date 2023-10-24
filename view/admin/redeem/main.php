@@ -1,4 +1,6 @@
 <?php
+use MythicalDash\Encryption;
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
 
@@ -21,7 +23,7 @@ $totalPages = ceil($redeem_totalredeems / $redeemPages);
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> - Redeem Keys
+        <?= SettingsManager::getSetting("name") ?> - Redeem Keys
     </title>
     <style>
         .avatar-image {
@@ -157,8 +159,8 @@ $totalPages = ceil($redeem_totalredeems / $redeemPages);
                                             <div class="col-12">
                                                 <label class="form-label" for="code">Code</label>
                                                 <input type="text" id="code" name="code" class="form-control"
-                                                    placeholder="<?= generate_key_redeem() ?>" required
-                                                    value="<?= generate_key_redeem() ?>" />
+                                                    placeholder="<?= Encryption::generate_key_redeem() ?>" required
+                                                    value="<?= Encryption::generate_key_redeem() ?>" />
                                             </div>
                                             <div class="col-12">
                                                 <label class="form-label" for="uses">Uses</label>

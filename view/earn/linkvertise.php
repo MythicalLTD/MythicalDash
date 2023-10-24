@@ -1,6 +1,7 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
-if ($settings['linkvertise_enabled'] == "false") {
+if (SettingsManager::getSetting("linkvertise_enabled") == "false") {
     header('location: /');
 }
 if (isset($_GET['key'])) {
@@ -8,7 +9,7 @@ if (isset($_GET['key'])) {
     $result = mysqli_query($conn, "SELECT * FROM mythicaldash_linkvertise WHERE skey='$key'");
     if (mysqli_num_rows($result) > 0) {
         $usr_coins = $userdb['coins'];
-        $newcoins = $usr_coins + $settings['linkvertise_coins'];
+        $newcoins = $usr_coins + SettingsManager::getSetting("linkvertise_coins");
         $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE["token"])."'");
         $conn->query("DELETE FROM mythicaldash_linkvertise WHERE skey='$key'");
         header('location: /');
@@ -24,9 +25,9 @@ if (isset($_GET['key'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <?= $settings['name'] ?> - Linkvertise
+        <?= SettingsManager::getSetting("name") ?> - Linkvertise
     </title>
-    <link rel="icon" href="<?= $settings['logo'] ?>" type="image/png">
+    <link rel="icon" href="<?= SettingsManager::getSetting("logo") ?>" type="image/png">
     <style>
         * {
             font-family: Google sans, Arial;
@@ -156,4 +157,4 @@ if (isset($_GET['key'])) {
 
 </html>
 <script src="https://publisher.linkvertise.com/cdn/linkvertise.js"></script>
-<script>linkvertise(<?= $settings['linkvertise_code'] ?>, { whitelist: ["<?= $appURL ?>"], blacklist: [] });</script>
+<script>linkvertise(<?= SettingsManager::getSetting("linkvertise_code") ?>, { whitelist: ["<?= $appURL ?>"], blacklist: [] });</script>

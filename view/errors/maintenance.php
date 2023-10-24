@@ -1,3 +1,7 @@
+<?php
+use MythicalDash\SettingsManager;
+
+?>
 <!DOCTYPE html>
 
 <html lang="en" class="dark-style customizer-hide" dir="ltr" data-theme="theme-semi-dark"
@@ -8,7 +12,7 @@
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <title>
-    <?= $settings['name'] ?> - Not Authorized
+    <?= SettingsManager::getSetting("name") ?> - Not Authorized
   </title>
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-misc.css" />

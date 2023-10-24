@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . "/../base.php");
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
@@ -6,40 +7,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             "code" => 200,
             "error" => null,
             "data" => array(
-                "name" => $settings['name'],
-                "logo" => $settings["logo"],
+                "name" => SettingsManager::getSetting("name"),
+                "logo" => SettingsManager::getSetting("logo"),
                 "seo" => array(
-                    "description" => $settings["seo_description"],
-                    "keywords" => $settings["seo_keywords"],
+                    "description" => SettingsManager::getSetting("seo_description"),
+                    "keywords" => SettingsManager::getSetting("seo_keywords"),
                 ),
                 "turnstile" => array(
-                    "enabled" => $settings["enable_turnstile"],
-                    "sitekey" => $settings["turnstile_sitekey"],
-                    "secretkey" => $settings["turnstile_secretkey"],
+                    "enabled" => SettingsManager::getSetting("enable_turnstile"),
+                    "sitekey" => SettingsManager::getSetting("turnstile_sitekey"),
+                    "secretkey" => SettingsManager::getSetting("turnstile_secretkey"),
                 ),
                 "discord" => array(
-                    "enabled" => $settings["enable_discord_link"],
-                    "invite" => $settings["discord_invite"],
-                    "serverid" => $settings["discord_serverid"],
-                    "clientid" => $settings["discord_clientid"],
-                    "clientsecret" => $settings["discord_clientsecret"],
-                    "webhook" => $settings["discord_webhook"],
+                    "enabled" => SettingsManager::getSetting("enable_discord_link"),
+                    "invite" => SettingsManager::getSetting("discord_invite"),
+                    "serverid" => SettingsManager::getSetting("discord_serverid"),
+                    "clientid" => SettingsManager::getSetting("discord_clientid"),
+                    "clientsecret" => SettingsManager::getSetting("discord_clientsecret"),
+                    "webhook" => SettingsManager::getSetting("discord_webhook"),
                 ),
                 "mailserver" => array(
-                    "enabled" => $settings["enable_smtp"],
-                    "host" => $settings["smtpHost"],
-                    "port" => $settings["smtpPort"],
-                    "encryption" => $settings["smtpSecure"],
-                    "username" => $settings["smtpUsername"],
-                    "password" => $settings["smtpPassword"],
-                    "email" => $settings["fromEmail"],
+                    "enabled" => SettingsManager::getSetting("enable_smtp"),
+                    "host" => SettingsManager::getSetting("smtpHost"),
+                    "port" => SettingsManager::getSetting("smtpPort"),
+                    "encryption" => SettingsManager::getSetting("smtpSecure"),
+                    "username" => SettingsManager::getSetting("smtpUsername"),
+                    "password" => SettingsManager::getSetting("smtpPassword"),
+                    "email" => SettingsManager::getSetting("fromEmail"),
                 ),
                 "pterodactyl" => array(
-                    "url" => $settings["PterodactylURL"],
-                    "key" => $settings["PterodactylAPIKey"],
+                    "url" => SettingsManager::getSetting("PterodactylURL"),
+                    "key" => SettingsManager::getSetting("PterodactylAPIKey"),
                 ),
                 "mythicaldash" => array(
-                    "version" => $settings["version"],
+                    "version" => SettingsManager::getSetting("version"),
                 )
             ),
         );

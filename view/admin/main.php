@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
 include(__DIR__ . '/../requirements/admin.php');
 
@@ -33,7 +34,7 @@ $TotalServers = $serverCount+ $serverQueueCount;
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <title>
-    <?= $settings['name'] ?> - Admin
+    <?= SettingsManager::getSetting("name") ?> - Admin
   </title>
 </head>
 

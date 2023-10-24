@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 function is_active_page($page_urls)
 {
   foreach ($page_urls as $page_url) {
@@ -14,7 +15,7 @@ function is_active_page($page_urls)
   <div class="app-brand demo">
     <a href="/" class="app-brand-link">
       <span class="app-brand-text demo menu-text fw-bold">
-        <?= $settings['name'] ?>
+        <?= SettingsManager::getSetting("name") ?>
       </span>
     </a>
   </div>
@@ -43,7 +44,7 @@ function is_active_page($page_urls)
         <div>Earning</div>
       </a>
       <ul class="menu-sub">
-        <?php if ($settings['enable_afk'] == "true") {
+        <?php if (SettingsManager::getSetting("enable_afk") == "true") {
           ?>
           <li class="menu-item <?php echo is_active_page(['/earn/afk']) ? 'active' : ''; ?>">
             <a href="/earn/afk" class="menu-link">
@@ -58,7 +59,7 @@ function is_active_page($page_urls)
             <div>Redeem</div>
           </a>
         </li>
-        <?php if ($settings['linkvertise_enabled'] == "true") {
+        <?php if (SettingsManager::getSetting("linkvertise_enabled") == "true") {
           ?>
           <li class="menu-item <?php echo is_active_page(['/earn/linkvertise']) ? 'active' : ''; ?>">
             <a href="/earn/linkvertise" class="menu-link">

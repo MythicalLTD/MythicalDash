@@ -1,3 +1,6 @@
+<?php
+use MythicalDash\SettingsManager;
+?>
 <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
   id="layout-navbar">
   <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
@@ -8,7 +11,8 @@
 
   <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
     <ul class="navbar-nav flex-row align-items-center ms-auto">
-      <?php if ($settings['customcss_enabled'] == "false") { ?>
+      <?php if (SettingsManager::getSetting("customcss_enabled") == "false") { 
+      ?>
         <li class="nav-item me-2 me-xl-0">
           <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">
             <i class="ti ti-md"></i>

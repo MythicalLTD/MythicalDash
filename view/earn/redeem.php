@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
 if ($userdb['panel_id'] == "CLI") {
     header('location: /admin/settings');
@@ -53,7 +54,7 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> - Redeem
+        <?= SettingsManager::getSetting("name") ?> - Redeem
     </title>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
@@ -73,9 +74,9 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
-                                <?= $settings['ads_code'] ?>
+                                <?= SettingsManager::getSetting("ads_code") ?>
                                 <br>
                                 <?php
                             }
@@ -102,10 +103,10 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
                         </div>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
                                 <br>
-                                <?= $settings['ads_code'] ?>
+                                <?= SettingsManager::getSetting("ads_code") ?>
                                 <br>
                                 <?php
                             }

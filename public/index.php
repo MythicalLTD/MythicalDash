@@ -8,18 +8,18 @@ try {
 } catch (Exception $e) {
     die('Hello, it looks like you did not run:  <code>composer install --no-dev --optimize-autoloader</code> Please run that and refresh');
 }
-require("../functions/https.php");
+use MythicalDash\Main;
+use MythicalDash\ErrorHandler;
 
-if (!isHTTPS()) {
-    header('HTTP/1.1 403 Forbidden');
-    http_response_code(403);
-    $rsp = array(
-        "code" => 403,
-        "error" => "This application only runs on https"
-    );
-    die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+if (!Main::isHTTPS()) {
+    ErrorHandler::ShowCritical("We are sorry, but the dash can only run on HTTPS, not HTTP.");
+    die();
 }
 
+if (!is_writable(__DIR__)) {
+    ErrorHandler::ShowCritical("We have no access to our client directory. Open the terminal and run: chown -R www-data:www-data /var/www/client/*");
+    die();
+}
 
 $router = new \Router\Router();
 if (file_exists('FIRST_INSTALL')) {

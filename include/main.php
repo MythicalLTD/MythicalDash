@@ -36,12 +36,8 @@ $dbpassword = $dbsettings['password'];
 $dbname = $dbsettings['database'];
 $conn = new mysqli($dbhost . ':' . $dbport, $dbusername, $dbpassword, $dbname);
 if ($conn->connect_error) {
-    throw new Exception('<script>
-    window.location.href = "/e/critical?e="'.$conn->connect_error.';
-</script>');
+    \MythicalDash\ErrorHandler::ShowCritical("Can't connect to the database: ".$conn->connect_error);
 }
-//SETTINGS TABLE
-$settings = $conn->query("SELECT * FROM mythicaldash_settings")->fetch_array();
 //GET USER REAL IP
 include('../functions/getclientip.php');
 $ip_address = getclientip();    
@@ -49,15 +45,4 @@ $ip_address = getclientip();
 $prot = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $svhost = $_SERVER['HTTP_HOST'];
 $appURL = $prot . '://' . $svhost;
-// GET CURRENT PATH
-$current_path = $_SERVER['REQUEST_URI'];
-//PASSWORD GENERATOR
-include('../functions/passwordgen.php');
-//KEY GENERATOR
-include('../functions/keygen.php');
-//Encryption
-include('../functions/encryption.php');
-//CloudFlare
-include('../functions/cloudflare.php');
-
 ?>

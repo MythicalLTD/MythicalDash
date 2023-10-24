@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\Encryption;
 include(__DIR__ . "/../base.php");
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
@@ -18,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             "pterodactyl_id" => $userdb["panel_id"],
                             "username" => $userdb['username'],
                             "email" => $userdb['email'],
-                            "first_name" => decrypt($userdb['first_name'], $ekey),
-                            "last_name" => decrypt($userdb['last_name'], $ekey),
+                            "first_name" => Encryption::decrypt($userdb['first_name'], $ekey),
+                            "last_name" => Encryption::decrypt($userdb['last_name'], $ekey),
                             "role" => $userdb['role'],
                             "banned" => $userdb['banned'],
                             "last_ip" => $userdb["last_ip"],

@@ -1,3 +1,6 @@
+<?php
+use MythicalDash\SettingsManager;
+?>
 <!DOCTYPE html>
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
@@ -40,7 +43,7 @@
 <body
     style="margin: 0; width: 100%; padding: 0; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #eceff1;">
     <div style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; display: none;">A request to reset
-        password was received from your <?= $settings['name']?></div>
+        password was received from your <?= SettingsManager::getSetting("name")?></div>
     <div role="article" aria-roledescription="email" aria-label="Reset your Password" lang="en"
         style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly;">
         <table style="width: 100%; font-family: Montserrat, -apple-system, 'Segoe UI', sans-serif;" cellpadding="0"
@@ -54,7 +57,7 @@
                                 style="mso-line-height-rule: exactly; padding: 48px; text-align: center; font-family: Montserrat, -apple-system, 'Segoe UI', sans-serif;">
                                 <a href="<?= $appURL ?>"
                                     style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly;">
-                                    <img src="<?= $settings['logo']?>" width="155" alt="<?= $settings['name']?>"
+                                    <img src="<?= SettingsManager::getSetting("logo") ?>" width="155" alt="<?= SettingsManager::getSetting("name")?>"
                                         style="max-width: 100%; vertical-align: middle; line-height: 100%; border: 0;">
                                 </a>
                             </td>
@@ -75,7 +78,7 @@
                                             <p
                                                 style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; margin: 0; margin-bottom: 24px;">
                                                 A request to reset password was received from your
-                                                <span style="font-weight: 600;"><?= $settings['name']?></span> Account -
+                                                <span style="font-weight: 600;"><?= SettingsManager::getSetting("name")?></span> Account -
                                                 <a href="mailto:%email%" class="hover-underline"
                                                     style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; color: #7367f0; text-decoration: none;">%email%</a>
                                                  from the IP - <span
@@ -107,8 +110,8 @@
                                                 If you did not intend to deactivate your account or need our help
                                                 keeping the account, please
                                                 contact us at
-                                                <a href="mailto:<?= $settings['fromEmail']?>" class="hover-underline"
-                                                    style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; color: #7367f0; text-decoration: none;"><?= $settings['fromEmail']?></a>
+                                                <a href="mailto:<?= SettingsManager::getSetting("fromEmail") ?>" class="hover-underline"
+                                                    style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; color: #7367f0; text-decoration: none;"><?= SettingsManager::getSetting("fromEmail")?></a>
                                             </p>
                                             <table style="width: 100%;" cellpadding="0" cellspacing="0"
                                                 role="presentation">
@@ -124,13 +127,13 @@
                                             <p
                                                 style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; margin: 0; margin-bottom: 16px;">
                                                 Not sure why you received this email? Please
-                                                <a href="mailto:<?= $settings['fromEmail']?>" class="hover-underline"
+                                                <a href="mailto:<?= SettingsManager::getSetting("fromEmail") ?>" class="hover-underline"
                                                     style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; color: #7367f0; text-decoration: none;">let
                                                     us know</a>.
                                             </p>
                                             <p
                                                 style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; margin: 0; margin-bottom: 16px;">
-                                                Thanks, <br>The <?= $settings['name']?> Team</p>
+                                                Thanks, <br>The <?= SettingsManager::getSetting("name")?> Team</p>
                                         </td>
                                     </tr>
                                     <tr>

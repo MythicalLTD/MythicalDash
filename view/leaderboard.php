@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
    include(__DIR__ . '/requirements/page.php');
    ?>
 <!DOCTYPE html>
@@ -10,7 +11,7 @@
          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
       <?php include(__DIR__ . '/requirements/head.php'); ?>
       <title>
-         <?= $settings['name'] ?> - Leaderboard
+         <?= SettingsManager::getSetting("name") ?> - Leaderboard
       </title>
       <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
    </head>
@@ -29,9 +30,9 @@
                      <?php include(__DIR__ . '/components/alert.php') ?>
                      <div id="ads">
                         <?php
-                           if ($settings['enable_ads'] == "true") {
+                           if (SettingsManager::getSetting("enable_ads") == "true") {
                              ?>
-                        <?= $settings['ads_code'] ?>
+                        <?= SettingsManager::getSetting("ads_code") ?>
                         <br>
                         <?php
                            }

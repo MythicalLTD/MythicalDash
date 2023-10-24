@@ -1,14 +1,19 @@
 <?php
+use MythicalDash\Encryption;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use MythicalDash\SettingsManager;
 
-include('../include/php-csrf.php');
+$csrf = new MythicalDash\CSRF();
+if (SettingsManager::getSetting("enable_smtp") == "false") {
+    header('location: /auth/login?e=We are sorry but this host dose not have a SMTP server setup');
+    die();
+}
 session_start();
-$csrf = new CSRF();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['reset_password'])) {
         if ($csrf->validate('forgot-password-form')) {
-            if (!$settings['smtpHost'] == "" || !$settings['smtpPort'] == "" || !$settings['smtpSecure'] == "" || !$settings['smtpUsername'] == "" || !$settings['smtpPassword'] == "" || !$settings['fromEmail'] == "") {
+            if (SettingsManager::getSetting("enable_smtp") == "true") {
                 $email = mysqli_real_escape_string($conn, $_POST['email']);
                 $check_query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
                 $result = mysqli_query($conn, $check_query);
@@ -16,18 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     //GET USER INFO
                     $userdb = $conn->query("SELECT * FROM mythicaldash_users WHERE email = '" . $email . "'")->fetch_array();
                     //GENERATE A CODE TO RESET THE PASSWORD
-                    $skey = generate_keynoinfo();
+                    $skey = Encryption::generate_keynoinfo();
                     //EMAIL SERVER STUFF
-                    $smtpHost = $settings['smtpHost'];
-                    $smtpPort = $settings['smtpPort'];
-                    $smtpSecure = $settings['smtpSecure'];
-                    $smtpUsername = $settings['smtpUsername'];
-                    $smtpPassword = $settings['smtpPassword'];
-                    $fromEmail = $settings['fromEmail'];
+                    $smtpHost = SettingsManager::getSetting("smtpHost");
+                    $smtpPort = SettingsManager::getSetting("smtpPort");
+                    $smtpSecure = SettingsManager::getSetting("smtpSecure");
+                    $smtpUsername = SettingsManager::getSetting("smtpUsername");
+                    $smtpPassword = SettingsManager::getSetting("smtpPassword");
+                    $fromEmail = SettingsManager::getSetting("fromEmail");
                     $toEmail = $email;
                     $first_name = $userdb['first_name'];
                     $last_name = $userdb['last_name'];
-                    $subject = $settings['name'] . " password reset!";
+                    $subject = SettingsManager::getSetting("name") . " password reset!";
                     $message = '
                     <!DOCTYPE html>
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -71,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body
     style="margin: 0; width: 100%; padding: 0; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #eceff1;">
     <div style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly; display: none;">A request to reset
-        password was received from your ' . $settings["name"] . '</div>
+        password was received from your ' .SettingsManager::getSetting("name"). '</div>
     <div role="article" aria-roledescription="email" aria-label="Reset your Password" lang="en"
         style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly;">
         <table style="width: 100%; font-family: Montserrat, -apple-system, Segoe UI, sans-serif;" cellpadding="0"
@@ -85,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 style="mso-line-height-rule: exactly; padding: 48px; text-align: center; font-family: Montserrat, -apple-system, Segoe UI, sans-serif;">
                                 <a href="' . $appURL . '"
                                     style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly;">
-                                    <img src="' . $settings["logo"] . '" width="155" alt="' . $settings["name"] . '"
+                                    <img src="' . SettingsManager::getSetting("logo") . '" width="155" alt="' . SettingsManager::getSetting("name") . '"
                                         style="max-width: 100%; vertical-align: middle; line-height: 100%; border: 0;">
                                 </a>
                             </td>
@@ -106,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <p
                                                 style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly; margin: 0; margin-bottom: 24px;">
                                                 A request to reset password was received from your
-                                                <span style="font-weight: 600;">' . $settings["name"] . '</span> Account -
+                                                <span style="font-weight: 600;">' . SettingsManager::getSetting("name") . '</span> Account -
                                                 <a href="mailto:' . $email . '" class="hover-underline"
                                                     style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly; color: #7367f0; text-decoration: none;">' . $email . '</a>
                                                  from the IP - <span
@@ -138,8 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 If you did not intend to deactivate your account or need our help
                                                 keeping the account, please
                                                 contact us at
-                                                <a href="mailto:' . $settings["fromEmail"] . '" class="hover-underline"
-                                                    style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly; color: #7367f0; text-decoration: none;">' . $settings["fromEmail"] . '</a>
+                                                <a href="mailto:' . SettingsManager::getSetting("fromEmail") . '" class="hover-underline"
+                                                    style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly; color: #7367f0; text-decoration: none;">' . SettingsManager::getSetting("fromEmail") . '</a>
                                             </p>
                                             <table style="width: 100%;" cellpadding="0" cellspacing="0"
                                                 role="presentation">
@@ -155,13 +160,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <p
                                                 style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly; margin: 0; margin-bottom: 16px;">
                                                 Not sure why you received this email? Please
-                                                <a href="mailto:' . $settings["fromEmail"] . '" class="hover-underline"
+                                                <a href="mailto:' . SettingsManager::getSetting("fromEmail") . '" class="hover-underline"
                                                     style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly; color: #7367f0; text-decoration: none;">let
                                                     us know</a>.
                                             </p>
                                             <p
                                                 style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly; margin: 0; margin-bottom: 16px;">
-                                                Thanks, <br>The ' . $settings["name"] . ' Team</p>
+                                                Thanks, <br>The ' . SettingsManager::getSetting("name") . ' Team</p>
                                         </td>
                                     </tr>
                                     <tr>
@@ -241,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-auth.css" />
     <title>
-        <?= $settings['name'] ?> - Forgot Password
+        <?= SettingsManager::getSetting("name") ?> - Forgot Password
     </title>
 </head>
 

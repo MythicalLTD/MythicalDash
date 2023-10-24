@@ -1,5 +1,7 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
+
 ?>
 <!DOCTYPE html>
 
@@ -12,7 +14,7 @@ include(__DIR__ . '/../requirements/page.php');
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <title>
-    <?= $settings['name'] ?> - Privacy Policy
+    <?= SettingsManager::getSetting("name") ?> - Privacy Policy
   </title>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
@@ -62,7 +64,7 @@ include(__DIR__ . '/../requirements/page.php');
                       </span>
                       Privacy Policy
                     </h4>
-                    <?= $settings['privacy_policy'] ?>
+                    <?= SettingsManager::getSetting("privacy_policy") ?>
 
                     <hr class="container-m-nx my-4" />
                     <div class="d-flex justify-content-between flex-wrap gap-3 mb-3">

@@ -1,10 +1,10 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
 if ($userdb['panel_id'] == "CLI") {
   header('location: /admin/settings');
 }
-include(__DIR__ . '/../../include/php-csrf.php');
-$csrf = new CSRF();
+$csrf = new MythicalDash\CSRF();
 use MythicalDash\Telemetry;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -31,13 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
       foreach ($servers as $serv) {
         $ptid = $serv["pid"];
-        $ch = curl_init($settings['PterodactylURL'] . "/api/application/servers/" . $ptid);
+        $ch = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers/" . $ptid);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt(
           $ch,
           CURLOPT_HTTPHEADER,
           array(
-            "Authorization: Bearer " . $settings['PterodactylAPIKey'],
+            "Authorization: Bearer " . SettingsManager::getSetting("PterodactylAPIKey"),
             "Content-Type: application/json",
             "Accept: application/json"
           )
@@ -190,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '" . $s_egg . "', 
         '$userdb->panel_id')");
       Telemetry::NewServer();
-      header('location: /dashboard?s=Done thanks for using ' . $settings['name']);
+      header('location: /dashboard?s=Done thanks for using ' . SettingsManager::getSetting("name"));
       die();
     } else {
       header("location: /server/create?e=CSRF Verification Failed");
@@ -211,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <title>
-    <?= $settings['name'] ?> - Create Server
+    <?= SettingsManager::getSetting("name") ?> - Create Server
   </title>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
@@ -231,10 +231,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php include(__DIR__ . '/../components/alert.php') ?>
             <div id="ads">
               <?php
-              if ($settings['enable_ads'] == "true") {
+              if (SettingsManager::getSetting("enable_ads") == "true") {
                 ?>
                 <br>
-                <?= $settings['ads_code'] ?>
+                <?= SettingsManager::getSetting("ads_code") ?>
                 <br>
                 <?php
               }
@@ -324,10 +324,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div id="ads">
               <?php
-              if ($settings['enable_ads'] == "true") {
+              if (SettingsManager::getSetting("enable_ads") == "true") {
                 ?>
                 <br>
-                <?= $settings['ads_code'] ?>
+                <?= SettingsManager::getSetting("ads_code") ?>
                 <br>
                 <?php
               }

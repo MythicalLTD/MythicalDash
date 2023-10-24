@@ -21,7 +21,7 @@ $router->add('/auth/register', function () {
 
 $router->add('/auth/logout', function () {
     require("../include/main.php");
-    require("../functions/logout.php");
+    require("../view/auth/logout.php");
 });
 
 $router->add('/auth/forgot-password', function () {

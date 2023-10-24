@@ -1,20 +1,22 @@
 <?php
+use MythicalDash\CloudFlare\Captcha;
+use MythicalDash\SettingsManager;
+use MythicalDash\Encryption;
 use MythicalDash\Telemetry;
-include('../include/php-csrf.php');
 session_start();
-$csrf = new CSRF();
+$csrf = new MythicalDash\CSRF();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($csrf->validate('register-form')) {
         if (isset($_POST['sign_up'])) {
             $ip_addres = getclientip();
-            if ($settings['enable_turnstile'] == "false") {
+            if (SettingsManager::getSetting("enable_turnstile") == "false") {
                 $captcha_success = 1;
             } else {
-                $captcha_success = validate_captcha($_POST["cf-turnstile-response"], $ip_addres, $settings['turnstile_secretkey']);
+                $captcha_success = Captcha::validate_captcha($_POST["cf-turnstile-response"], $ip_addres, SettingsManager::getSetting("turnstile_secretkey"));
             }
             if ($captcha_success) {
-                if (!$settings['PterodactylURL'] == "" && !$settings['PterodactylAPIKey'] == "") {
+                if (!SettingsManager::getSetting("PterodactylURL") == "" && !SettingsManager::getSetting("PterodactylAPIKey") == "") {
                     $username = mysqli_real_escape_string($conn, $_POST['username']);
                     $email = mysqli_real_escape_string($conn, $_POST['email']);
                     $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
@@ -43,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         die();
                     }
                     $password = password_hash($upassword, PASSWORD_BCRYPT);
-                    $skey = generate_key($email, $password);
+                    $skey = Encryption::generate_key($email, $password);
                     if (!$username == "" || !$email == "" || !$first_name == "" || !$last_name == "" || !$upassword == "") {
                         $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
                         $result = mysqli_query($conn, $check_query);
@@ -77,11 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     die();
                                 }
                                 $ch = curl_init();
-                                curl_setopt($ch, CURLOPT_URL, $settings["PterodactylURL"] . '/api/application/users');
+                                curl_setopt($ch, CURLOPT_URL, SettingsManager::getSetting("PterodactylURL") . '/api/application/users');
                                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                                 curl_setopt($ch, CURLOPT_HTTPHEADER, [
                                     'Accept: application/json',
-                                    'Authorization: Bearer ' . $settings["PterodactylAPIKey"],
+                                    'Authorization: Bearer ' . SettingsManager::getSetting("PterodactylAPIKey"),
                                     'Content-Type: application/json',
                                 ]);
                                 curl_setopt($ch, CURLOPT_POST, true);
@@ -135,20 +137,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 '" . $panelId . "',
                                 '" . $email . "', 
                                 '" . $username . "',
-                                '" . encrypt($first_name, $ekey) . "',
-                                '" . encrypt($last_name, $ekey) . "',
+                                '" . Encryption::encrypt($first_name, $ekey) . "',
+                                '" . Encryption::encrypt($last_name, $ekey) . "',
                                 '" . $password . "',
                                 '" . $skey . "',
                                 '" . $grav_url . "',
                                 '".$role."',
-                                '" . $settings['def_coins'] . "',
-                                '" . $settings['def_memory'] . "',
-                                '" . $settings['def_disk_space'] . "',
-                                '" . $settings['def_cpu'] . "',
-                                '" . $settings['def_server_limit'] . "',
-                                '" . $settings['def_port'] . "',
-                                '" . $settings['def_db'] . "',
-                                '" . $settings['def_backups'] . "',
+                                '" . SettingsManager::getSetting("def_coins") . "',
+                                '" . SettingsManager::getSetting("def_memory") . "',
+                                '" . SettingsManager::getSetting("def_disk_space"). "',
+                                '" . SettingsManager::getSetting("def_cpu") . "',
+                                '" . SettingsManager::getSetting("def_server_limit") . "',
+                                '" . SettingsManager::getSetting("def_port") . "',
+                                '" . SettingsManager::getSetting("def_db") . "',
+                                '" . SettingsManager::getSetting("def_backups") . "',
                                 '" . $ip_addres . "'
                                 );");
                                 $conn->close();
@@ -189,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> - Register
+        <?= SettingsManager::getSetting("name") ?> - Register
     </title>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-auth.css" />
 </head>
@@ -215,7 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4">
                 <div class="w-px-400 mx-auto">
                     <h3 class="mb-1 fw-bold">Welcome to
-                        <?= $settings['name'] ?>!
+                        <?= SettingsManager::getSetting("name") ?>!
                     </h3>
                     <p class="mb-4">Please create an account and embark on your adventure!</p>
                     <form id="formAuthentication" class="mb-3" method="POST">
@@ -260,10 +262,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                         </div>
                         <?php
-                        if ($settings['enable_turnstile'] == "true") {
+                        if (SettingsManager::getSetting("enable_turnstile") == "true") {
                             ?>
                             <center>
-                                <div class="cf-turnstile" data-sitekey="<?= $settings['turnstile_sitekey'] ?>"></div>
+                                <div class="cf-turnstile" data-sitekey="<?= SettingsManager::getSetting("turnstile_sitekey") ?>"></div>
                             </center>
                             &nbsp;
                             <?php
@@ -301,92 +303,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="text-center mb-4">
                             <h3 class="mb-2">Terms of service</h3>
                             <p>
-                            <p class="text-big">Legal Agreements:</p>
-
-                            When we refer to "
-                            <?= $settings['name'] ?>" or use pronouns such as "we", "us" or "our", we mean
-                            <?= $settings['name'] ?>
-                            When we refer to "User", we are talking about you and we will also use words like "you" and
-                            "your" to refer to you.
-                            By registering/purchasing services or any activity on our site, you should agree to the
-                            <?= $settings['name'] ?> Terms and Conditions
-                            We reserve the rights to terminate any of your services without notice if they breach any of
-                            our
-                            Terms And Conditions.
-                            </p>
-                            <p>
-                            <p class="text-big"> Accounts:</p>
-
-                            The minimum age to create an account or any activity that requires your personal data is 13
-                            years old! If you are under 13, please contact us and request account deletion.
-                            Your personal data must be real. If not, your services may be suspended and your account
-                            banned.
-                            We reserve the right to request your identity card/passport/any document proving your
-                            details to
-                            verify your account details. If you do not provide it when we ask, your services will be
-                            suspended without refund and your account will be banned.
-                            We are not responsible for the security of your account. We recommend that you use a strong
-                            password and do not give it to anyone. If your account gets hacked/lost, we can only help
-                            you
-                            recover it.
-                            We will never sell your personal data.
-                            </p>
-                            <p>
-                            <p class="text-big"> Support:</p>
-
-                            We are under no obligation to install software / help you code on your site or any service
-                            got
-                            from
-                            <?= $settings['name'] ?> / other host! We only provide the service, you have to work on it.
-                            We are not responsible for your files.
-                            You are not allowed to SPAM / make jokes / offend our staff or any activity that wastes our
-                            time. We may suspend your services and ban your account.
-                            We are not offering support in Discord DM / any other social media, support is only offered
-                            through our Website. Any contact in Discord DM or any other social media will be ignored,
-                            further insistence will get you banned and your services suspended.
-                            You may not lie or slander
-                            <?= $settings['name'] ?>! You risk having our services suspended.
-                            </p>
-                            <p>
-                            <p class="text-big"> Service Activity:</p>
-
-                            You are not allowed to use our servers for illegal purposes like DDoS, mining etc. Your
-                            server
-                            will be suspended!
-                            We are not required to install software (Pterodactyl, GameCP, etc.) on your server. We only
-                            offer you the service. You have to work at it.
-                            You may not use our web hosting services or any hosting services to sell
-                            people/children/weapons/copyrighted content or any illegal activity. You will get your
-                            services
-                            suspended!
-                            We are under no obligation to help you code your site!
-                            Resource intensive users will not be supported in any form (eg: p2p communities - torrent
-                            trackers, file hosting sites, image hosting sites, site statistics installations (above),
-                            game
-                            statistics, installations external counters (redirecting players, etc.) will be suspended
-                            without refund!
-                            You may not disrupt the services of other customers. You risk having your services suspended
-                            and
-                            your account banned!
-                            We are not responsible for your website downtime. We will always let you know if there is a
-                            problem.
-                            We reserve the right to adapt the hardware and software used to provide the services to the
-                            current state of the art and to inform you in good time of any additional requirements that
-                            may
-                            arise from this for the content you have stored on our servers. We undertake to make such
-                            adjustments only to a reasonable extent and taking your interests into account.
-                            You are not allowed to resell our products, if you do so your service will be suspended
-                            without
-                            refund.
-                            </p>
-                            <p>
-                            <p class="text-big"> Data:</p>
-
-                            We are not responsible for any backup/file or any data loss. You are responsible for backups
-                            and
-                            expired, suspended, canceled, refunded, prohibited services.
-                            We will never sell your personal data.
-                            </p>
+                            <?= SettingsManager::getSetting("terms_of_service") ?>
                         </div>
                         <div class="col-12 text-center">
                             <button type="button" data-bs-toggle="modal" data-bs-target="#pp"
@@ -407,32 +324,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="text-center mb-4">
                             <h3 class="mb-2">Privacy Policy</h3>
                             <p>
-                            <p>
-                            <p class="text-big">The type of personal information we collect:</p>
-
-                            We collect certain personal information about visitors and users of our Sites.
-                            The most common types of information we collect include things like: user-names, member
-                            names,
-                            email addresses, IP addresses, other contact details, survey responses, blogs, photos,
-                            payment
-                            information such as payment agent details, transactional details, tax information, support
-                            queries, forum comments, content you direct us to make available on our Sites (such as item
-                            descriptions) and web analytics data. We will also collect personal information from job
-                            applications (such as, your CV, the application form itself, cover letter and interview
-                            notes).
-                            </p>
-                            <p>
-                            <p class="text-big">How we collect personal information:</p>
-
-                            We collect personal information directly when you provide it to us, automatically as you
-                            navigate through the Sites, or through other people when you use services associated with
-                            the
-                            Sites.
-                            We collect your personal information when you provide it to us when you complete membership
-                            registration and buy or provide items or services on our Sites, subscribe to a newsletter,
-                            email
-                            list, submit feedback, enter a contest, fill out a survey, or send us a communication.
-                            </p>
+                            <?= SettingsManager::getSetting("privacy_policy") ?>
                         </div>
                         <div class="col-12 text-center">
                             <button type="button" data-bs-toggle="modal" data-bs-target="#tos" name="id" value=""

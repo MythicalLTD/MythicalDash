@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
 
@@ -25,7 +26,7 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> - Tickets
+        <?= SettingsManager::getSetting("name") ?> - Tickets
     </title>
 </head>
 

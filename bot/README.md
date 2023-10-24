@@ -1,5 +1,5 @@
-# MythicalDash : Bot
-The bot used for MythicalDash
+# MythicalDash EOL : Bot
+The old bot used for MythicalDash
 
 To use it you have to download pycord: 
 ```bash

@@ -10,11 +10,11 @@ if (isset($_GET['userid']) && isset($_GET['coins']) && is_numeric($_GET['coins']
 
     if (mysqli_num_rows($userResult) > 0) {
         if ($userdb['id'] == $_GET['userid']) {
-            header("location: /user/profile?e=You can't send coins to yourself!&id=".$_GET['userid']);
+            header("location: /user/profile?e=You can't send coins to yourself!&id=" . $_GET['userid']);
             die();
         }
         if ($coins <= 0) {
-            header("location: /user/profile?e=Please enter a valid number of coins to send&id=".$_GET['userid']);
+            header("location: /user/profile?e=Please enter a valid number of coins to send&id=" . $_GET['userid']);
             die();
         }
         if ($coins <= $userdb['coins']) {

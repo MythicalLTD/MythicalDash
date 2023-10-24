@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
 if (isset($_GET['server'])) {
     $ownsServer = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE pid = '" . mysqli_real_escape_string($conn, $_GET["server"]) . "' AND uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
@@ -8,12 +9,12 @@ if (isset($_GET['server'])) {
         die();
     }
 
-    $delete_server = curl_init($settings['PterodactylURL'] . "/api/application/servers/" . $_GET["server"] . "/force");
+    $delete_server = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers/" . $_GET["server"] . "/force");
     curl_setopt($delete_server, CURLOPT_CUSTOMREQUEST, "DELETE");
     $headers = array(
         'Accept: application/json',
         'Content-Type: application/json',
-        "Authorization: Bearer " . $settings['PterodactylAPIKey']
+        "Authorization: Bearer " . SettingsManager::getSetting("PterodactylAPIKey")
     );
     curl_setopt($delete_server, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($delete_server, CURLOPT_RETURNTRANSFER, 1);

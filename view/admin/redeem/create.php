@@ -16,7 +16,7 @@ if (isset($_GET['key']) && !$_GET['key'] == "") {
     $conn->query("INSERT INTO `mythicaldash_redeem` (
     `code`, 
     `uses`, 
-    `coins`, 
+    `coins`,  
     `ram`, 
     `disk`, 
     `cpu`, 

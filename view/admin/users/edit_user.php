@@ -1,4 +1,6 @@
 <?php
+use MythicalDash\Encryption;
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
 
@@ -44,8 +46,8 @@ if (isset($_GET['edit_user'])) {
                         $conn->query("UPDATE `mythicaldash_users` SET `role` = 'User' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
                     }
                     $conn->query("UPDATE `mythicaldash_users` SET `username` = '" . $username . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
-                    $conn->query("UPDATE `mythicaldash_users` SET `first_name` = '" . encrypt($firstName,$ekey) . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
-                    $conn->query("UPDATE `mythicaldash_users` SET `last_name` = '" . encrypt($lastName,$ekey) . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `first_name` = '" . Encryption::encrypt($firstName,$ekey) . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `last_name` = '" . Encryption::encrypt($lastName,$ekey) . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
                     $conn->query("UPDATE `mythicaldash_users` SET `avatar` = '" . $avatar . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
                     $conn->query("UPDATE `mythicaldash_users` SET `email` = '" . $email . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
                     $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $coins . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
@@ -104,7 +106,7 @@ if (isset($_GET['edit_user'])) {
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> - Users
+        <?= SettingsManager::getSetting("name") ?> - Users
     </title>
 </head>
 
@@ -185,14 +187,14 @@ if (isset($_GET['edit_user'])) {
                                                     <label for="firstName" class="form-label">First Name</label>
                                                     <input class="form-control" type="text" id="firstName"
                                                         name="firstName"
-                                                        value="<?= decrypt($user_info['first_name'], $ekey) ?>"
+                                                        value="<?= Encryption::decrypt($user_info['first_name'], $ekey) ?>"
                                                         autofocus />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="lastName" class="form-label">Last Name</label>
                                                     <input class="form-control" type="text" name="lastName"
                                                         id="lastName"
-                                                        value="<?= decrypt($user_info['last_name'], $ekey) ?>" />
+                                                        value="<?= Encryption::decrypt($user_info['last_name'], $ekey) ?>" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="email" class="form-label">E-mail</label>

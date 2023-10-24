@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include (__DIR__ . '/../../requirements/page.php');
 include (__DIR__ . '/../../requirements/admin.php');
 $usersPerPage = 20;
@@ -25,7 +26,7 @@ $totalPages = ceil($totalUsers / $usersPerPage);
 <head>
     <?php include (__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> - Users
+        <?= SettingsManager::getSetting("name") ?> - Users
     </title>
     <style>
         .avatar-image {

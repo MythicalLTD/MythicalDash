@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
 $eggsPerPage = 20;
@@ -25,7 +26,7 @@ $totalPages = ceil($totalEggs / $eggsPerPage);
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> - Eggs
+        <?= SettingsManager::getSetting("name") ?> - Eggs
     </title>
     <style>
         .avatar-image {

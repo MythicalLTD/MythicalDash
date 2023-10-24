@@ -1,11 +1,12 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../../requirements/page.php');
-if ($settings['enable_discord_link'] == "true") {
+if (SettingsManager::getSetting("enable_discord_link") == "true") {
     if (isset($_GET['code'])) {
         $tokenUrl = 'https://discord.com/api/oauth2/token';
         $data = array(
-            'client_id' => $settings["discord_clientid"],
-            'client_secret' => $settings["discord_clientsecret"],
+            'client_id' => SettingsManager::getSetting("discord_clientid"),
+            'client_secret' => SettingsManager::getSetting("discord_clientsecret"),
             'grant_type' => 'authorization_code',
             'code' => $_GET['code'],
             'redirect_uri' => $appURL . '/auth/link/discord',
@@ -48,7 +49,7 @@ if ($settings['enable_discord_link'] == "true") {
             header('location: /auth/link/discord');
         }
     } else {
-        $authorizeUrl = 'https://discord.com/api/oauth2/authorize?client_id=' . $settings["discord_clientid"] . '&redirect_uri=' . urlencode($appURL . '/auth/link/discord') . '&response_type=code&scope=' . urlencode('identify guilds email guilds.join');
+        $authorizeUrl = 'https://discord.com/api/oauth2/authorize?client_id=' . SettingsManager::getSetting("discord_clientid") . '&redirect_uri=' . urlencode($appURL . '/auth/link/discord') . '&response_type=code&scope=' . urlencode('identify guilds email guilds.join');
         header('Location: ' . $authorizeUrl);
     }
 } else {
