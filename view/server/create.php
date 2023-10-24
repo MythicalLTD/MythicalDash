@@ -5,6 +5,7 @@ if ($userdb['panel_id'] == "CLI") {
 }
 include(__DIR__ . '/../../include/php-csrf.php');
 $csrf = new CSRF();
+use MythicalDash\Telemetry;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['createsv'])) {
@@ -188,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '$queue', 
         '" . $s_egg . "', 
         '$userdb->panel_id')");
-      NewServer();
+      Telemetry::NewServer();
       header('location: /dashboard?s=Done thanks for using ' . $settings['name']);
       die();
     } else {

@@ -1,7 +1,6 @@
 <?php
+use MythicalDash\Telemetry;
 include('../include/php-csrf.php');
-include(__DIR__.'/../../functions/telemetry.php');
-include(__DIR__.'/../../functions/report.php');
 session_start();
 $csrf = new CSRF();
 
@@ -156,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 if (file_exists("FIRST_USER")) { 
                                     unlink("FIRST_USER");
                                 }
-                                NewUser();
+                                Telemetry::NewUser();
                                 header('location: /auth/login');
                                 die();
                             }

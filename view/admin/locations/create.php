@@ -1,6 +1,7 @@
 <?php 
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
+use MythicalDash\Telemetry;
 if (isset($_GET['create_location'])) {
     $name = mysqli_real_escape_string($conn, $_GET['name']);
     $locationid = mysqli_real_escape_string($conn, $_GET['locationid']);
@@ -18,7 +19,7 @@ if (isset($_GET['create_location'])) {
 
         } else {
             $conn->query("INSERT INTO `mythicaldash_locations` (`name`, `locationid`, `slots`) VALUES ('" . $name . "', '" . $locationid . "', '" . $slots . "');");
-            NewNode();
+            Telemetry::NewNode();
             header('location: /admin/locations?s=Done we added a new location');
             $conn->close();
             die();
