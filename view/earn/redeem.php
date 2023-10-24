@@ -53,7 +53,7 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Redeem
+        <?= $settings['name'] ?> - Redeem
     </title>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>

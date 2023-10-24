@@ -103,6 +103,12 @@ function is_active_page($page_urls)
         </li>
       </ul>
     </li>
+    <li class="menu-item <?php echo is_active_page(['/leaderboard']) ? 'active' : ''; ?>">
+      <a href="/leaderboard" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-star"></i>
+        <div>Leaderboard</div>
+      </a>
+    </li>
     <li class="menu-item <?php echo is_active_page(['/users/list']) ? 'active' : ''; ?>">
       <a href="/users/list" class="menu-link">
         <i class="menu-icon tf-icons ti ti-users"></i>
@@ -115,10 +121,23 @@ function is_active_page($page_urls)
       <li class="menu-header small text-uppercase">
         <span class="menu-header-text">Administration Tools</span>
       </li>
+      <li class="menu-item <?php echo is_active_page(['/admin/overview']) ? 'active' : ''; ?>">
+      <a href="/admin/overview" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-home"></i>
+        <div>Overview</div>
+      </a>
+    </li>
       <li class="menu-item <?php echo is_active_page(['/admin/api']) ? 'active' : ''; ?>">
         <a href="/admin/api" class="menu-link">
           <i class="menu-icon tf-icons ti ti-device-gamepad-2"></i>
           <div>Application API</div>
+        </a>
+      </li>
+      <li
+        class="menu-item <?php echo is_active_page(['/admin/servers', '/admin/server/delete']) ? 'active' : ''; ?>">
+        <a href="/admin/servers" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-server"></i>
+          <div>Servers</div>
         </a>
       </li>
       <li

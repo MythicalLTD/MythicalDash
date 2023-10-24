@@ -4,111 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f138f7bf8d8527a2f12614d8e5574aed",
+    "content-hash": "af2ba694868bd74ee4aaab3ed5276e31",
     "packages": [
-        {
-            "name": "livaco/easydiscordwebhook",
-            "version": "2.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/LivacoNew/EasyDiscordWebhook.git",
-                "reference": "0c9ff91f7eef4994632b92a65ce772aefbd1f70c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/LivacoNew/EasyDiscordWebhook/zipball/0c9ff91f7eef4994632b92a65ce772aefbd1f70c",
-                "reference": "0c9ff91f7eef4994632b92a65ce772aefbd1f70c",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Livaco\\EasyDiscordWebhook\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Livaco",
-                    "homepage": "https://www.livaco.dev/"
-                }
-            ],
-            "description": "An simple, lightweight, easy to use library to allow you to create and send discord webhooks in PHP.",
-            "homepage": "https://github.com/LivacoNew/EasyDiscordWebhook",
-            "keywords": [
-                "discord",
-                "php",
-                "webhook"
-            ],
-            "support": {
-                "issues": "https://github.com/LivacoNew/EasyDiscordWebhook/issues",
-                "source": "https://github.com/LivacoNew/EasyDiscordWebhook/tree/2.0.0"
-            },
-            "time": "2023-01-16T19:23:43+00:00"
-        },
-        {
-            "name": "mythicalsystems/aapanelapi",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/MythicalLTD/AAPanel-API.git",
-                "reference": "a25739b9370fa4ff5c1ca597f4abc36d322e1f37"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/MythicalLTD/AAPanel-API/zipball/a25739b9370fa4ff5c1ca597f4abc36d322e1f37",
-                "reference": "a25739b9370fa4ff5c1ca597f4abc36d322e1f37",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Mythicalsystems\\AaPanelApi\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "NaysKutzu",
-                    "email": "ghermancassian2008@gmail.com"
-                }
-            ],
-            "description": "AAPanel-PHP is a library that allows you to interact with your AAPanel account using PHP. It provides a simple and easy-to-use API that you can use to manage your AAPanel account, such as creating and managing users, domains, and websites.",
-            "keywords": [
-                "AAPanel",
-                "aapanel-api",
-                "mythicalsystems",
-                "nayskutzu"
-            ],
-            "support": {
-                "issues": "https://github.com/MythicalLTD/AAPanel-API/issues",
-                "source": "https://github.com/MythicalLTD/AAPanel-API/tree/1.0.1"
-            },
-            "funding": [
-                {
-                    "url": "https://paypal.me/mythicalsystems",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/nayskutzu",
-                    "type": "github"
-                },
-                {
-                    "url": "https://ko-fi.com/nayskutzu",
-                    "type": "ko_fi"
-                }
-            ],
-            "time": "2023-08-12T10:21:16+00:00"
-        },
         {
             "name": "mythicalsystems/php-router",
             "version": "1.0.3",
@@ -365,16 +262,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "3.0.23",
+            "version": "3.0.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "866cc78fbd82462ffd880e3f65692afe928bed50"
+                "reference": "33fa69b2514a61138dd48e7a49f99445711e0ad0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/866cc78fbd82462ffd880e3f65692afe928bed50",
-                "reference": "866cc78fbd82462ffd880e3f65692afe928bed50",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/33fa69b2514a61138dd48e7a49f99445711e0ad0",
+                "reference": "33fa69b2514a61138dd48e7a49f99445711e0ad0",
                 "shasum": ""
             },
             "require": {
@@ -455,7 +352,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpseclib/phpseclib/issues",
-                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.23"
+                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.33"
             },
             "funding": [
                 {
@@ -471,7 +368,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-09-18T17:22:01+00:00"
+            "time": "2023-10-21T14:00:39+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",

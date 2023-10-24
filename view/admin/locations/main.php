@@ -25,7 +25,7 @@ $totalPages = ceil($totalLocations / $locationsPerPage);
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Locations
+        <?= $settings['name'] ?> - Locations
     </title>
     <style>
         .avatar-image {

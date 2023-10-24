@@ -25,7 +25,7 @@ $totalPages = ceil($totalEggs / $eggsPerPage);
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Eggs
+        <?= $settings['name'] ?> - Eggs
     </title>
     <style>
         .avatar-image {

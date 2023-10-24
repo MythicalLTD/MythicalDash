@@ -28,7 +28,7 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Tickets
+        <?= $settings['name'] ?> - Tickets
     </title>
 </head>
 

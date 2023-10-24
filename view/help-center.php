@@ -10,7 +10,7 @@ include('requirements/page.php');
   <?php include('requirements/head.php'); ?>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
   <title>
-    <?= $settings['name'] ?> | Help-Center
+    <?= $settings['name'] ?> - Help-Center
   </title>
 </head>
 

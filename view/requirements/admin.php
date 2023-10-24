@@ -1,5 +1,5 @@
 <?php 
 if ($userdb['role'] == "User") {
-    header('location: /');
+    header('location: /e/401');
 }
 ?>

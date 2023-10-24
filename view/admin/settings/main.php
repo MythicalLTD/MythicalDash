@@ -1,6 +1,6 @@
 <?php
-include(__DIR__ . '/../../requirements/page.php');
-include(__DIR__ . '/../../requirements/admin.php');
+include (__DIR__ . '/../../requirements/page.php');
+include (__DIR__ . '/../../requirements/admin.php');
 
 ?>
 <!DOCTYPE html>
@@ -12,9 +12,9 @@ include(__DIR__ . '/../../requirements/admin.php');
     <meta charset="utf-8" />
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <?php include(__DIR__ . '/../../requirements/head.php'); ?>
+    <?php include (__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Settings
+        <?= $settings['name'] ?> - Settings
     </title>
 </head>
 
@@ -24,13 +24,13 @@ include(__DIR__ . '/../../requirements/admin.php');
     </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
-            <?php include(__DIR__ . '/../../components/sidebar.php') ?>
+            <?php include (__DIR__ . '/../../components/sidebar.php') ?>
             <div class="layout-page">
-                <?php include(__DIR__ . '/../../components/navbar.php') ?>
+                <?php include (__DIR__ . '/../../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><a
-                                    href="/admin/settings">Settings</a> /</span> Main</h4>
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Settings</h4>
+                     <?php include (__DIR__ . '/../../components/alert.php') ?>
                         <div class="card mb-4">
                             <h5 class="card-header">General</h5>
                             <hr class="my-0">
@@ -216,29 +216,29 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Enable AFK</label>
                                             <div>
                                                 <?php
-                                                if ($settings['enable_afk'] == "true") {
-                                                    ?>
+                                                    if ($settings['enable_afk'] == 'true') {
+                                                ?>
                                                     <select name="resources:eafk" class="form-control">
                                                         <option value="true">True</option>
                                                         <option value="false">False</option>
                                                     </select>
                                                     <?php
-                                                } else if ($settings['enable_afk'] == "false") {
-                                                    ?>
+                                                    } else if ($settings['enable_afk'] == 'false') {
+                                                        ?>
                                                         <select name="resources:eafk" class="form-control">
                                                             <option value="false">False</option>
                                                             <option value="true">True</option>
                                                         </select>
                                                     <?php
-                                                } else {
-                                                    ?>
+                                                    } else {
+                                                        ?>
                                                         <select name="resources:eafk" class="form-control">
                                                             <option value="false">True</option>
                                                             <option value="false">False</option>
                                                         </select>
                                                     <?php
-                                                }
-                                                ?>
+                                                    }
+                                                                                                        ?>
                                             </div>
                                         </div>
                                         <div class="mb-3 col-md-2">
@@ -324,22 +324,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">SMTP</label>
                                             <div>
                                                 <?php
-                                                if ($settings['enable_smtp'] == "true") {
-                                                    ?>
-                                                    <select name="mail:enable" class="form-control">
-                                                        <option value="true">Enable</option>
-                                                        <option value="false">Disable</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select name="mail:enable" class="form-control">
-                                                        <option value="false">Disable</option>
-                                                        <option value="true">Enable</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if ($settings['enable_smtp'] == 'true') {
                                                 ?>
+                                                    <select name="mail:enable" class="form-control">
+                                                        <option value="true">Enable</option>
+                                                        <option value="false">Disable</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select name="mail:enable" class="form-control">
+                                                        <option value="false">Disable</option>
+                                                        <option value="true">Enable</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -347,29 +347,29 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Encryption</label>
                                             <div>
                                                 <?php
-                                                if ($settings['enable_smtp'] == "ssl") {
-                                                    ?>
+                                                    if ($settings['enable_smtp'] == 'ssl') {
+                                                ?>
                                                     <select name="mail:encryption" class="form-control">
                                                         <option value="ssl">SSL</option>
                                                         <option value="tls">TLS</option>
                                                     </select>
                                                     <?php
-                                                } else if ($settings['enable_smtp'] == "tls") {
-                                                    ?>
+                                                    } else if ($settings['enable_smtp'] == 'tls') {
+                                                        ?>
                                                         <select name="mail:encryption" class="form-control">
                                                             <option value="tls">TLS</option>
                                                             <option value="ssl">SSL</option>
                                                         </select>
                                                     <?php
-                                                } else {
-                                                    ?>
+                                                    } else {
+                                                        ?>
                                                         <select name="mail:encryption" class="form-control">
                                                             <option value="ssl">SSL</option>
                                                             <option value="tls">TLS</option>
                                                         </select>
                                                     <?php
-                                                }
-                                                ?>
+                                                    }
+                                                                                                        ?>
                                             </div>
                                         </div>
                                         <div class="form-group col-md-4">
@@ -431,22 +431,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if ($settings['enable_turnstile'] == "true") {
-                                                    ?>
-                                                    <select class="form-control" name="recaptcha:enabled">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="recaptcha:enabled">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if ($settings['enable_turnstile'] == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="recaptcha:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="recaptcha:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -487,22 +487,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if ($settings['enable_ads'] == "true") {
-                                                    ?>
-                                                    <select class="form-control" name="ads:enabled">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="ads:enabled">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if ($settings['enable_ads'] == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="ads:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="ads:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -535,22 +535,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if ($settings['linkvertise_enabled'] == "true") {
-                                                    ?>
-                                                    <select class="form-control" name="ads:enabled">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="ads:enabled">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if ($settings['linkvertise_enabled'] == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="ads:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="ads:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -584,22 +584,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if ($settings['customcss_enabled'] == "true") {
-                                                    ?>
-                                                    <select class="form-control" name="customcss:enabled">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="customcss:enabled">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if ($settings['customcss_enabled'] == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="customcss:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="customcss:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -633,22 +633,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if ($settings['customhead_enabled'] == "true") {
-                                                    ?>
-                                                    <select class="form-control" name="customhead:enabled">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="customhead:enabled">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if ($settings['customhead_enabled'] == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="customhead:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="customhead:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -672,15 +672,67 @@ include(__DIR__ . '/../../requirements/admin.php');
                                 </form>
                             </div>
                         </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header">Terms of Service</h5>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/tos" method="POST">
+                                    <div class="row">
+                                        <br>
+                                        <div class="form-group">
+                                            <label class="control-label">Custom head code (HTML SUPPORTED)</label>
+                                            <div>
+                                                <textarea type="text" required="" class="form-control"
+                                                    name="text" rows="4"
+                                                    value=""><?= $settings['terms_of_service'] ?></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="mt-2">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header">Privacy Policy</h5>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/pp" method="POST">
+                                    <div class="row">
+                                        <br>
+                                        <div class="form-group">
+                                            <label class="control-label">Text (HTML SUPPORTED)</label>
+                                            <div>
+                                                <textarea type="text" required="" class="form-control"
+                                                    name="text" rows="4"
+                                                    value=""><?= $settings['privacy_policy'] ?></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="mt-2">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <?php include(__DIR__ . '/../../components/footer.php') ?>
+                    <?php include (__DIR__ . '/../../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>
                 </div>
             </div>
         </div>
         <div class="layout-overlay layout-menu-toggle"></div>
         <div class="drag-target"></div>
-        <?php include(__DIR__ . '/../../requirements/footer.php') ?>
+        <?php include (__DIR__ . '/../../requirements/footer.php') ?>
     </div>
 </body>
 

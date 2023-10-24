@@ -87,7 +87,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Tickets
+        <?= $settings['name'] ?> - Tickets
     </title>
     <link rel="stylesheet" href="../../assets/vendor/css/pages/app-chat.css" />
 </head>

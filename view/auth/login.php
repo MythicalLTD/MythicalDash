@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-auth.css" />
   <title>
-    <?= $settings['name'] ?> | Login
+    <?= $settings['name'] ?> - Login
   </title>
 
 </head>

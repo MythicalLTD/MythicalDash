@@ -1,4 +1,7 @@
 <?php
+include(__DIR__ . '/../../requirements/page.php');
+include(__DIR__ . '/../../requirements/admin.php');
+
 if (isset($_GET['key']) && !$_GET['key'] == "") {
     $code = mysqli_real_escape_string($conn, $_GET['code']);
     $uses = mysqli_real_escape_string($conn, $_GET['uses']);

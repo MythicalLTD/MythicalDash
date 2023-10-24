@@ -241,7 +241,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-auth.css" />
     <title>
-        <?= $settings['name'] ?> | Forgot Password
+        <?= $settings['name'] ?> - Forgot Password
     </title>
 </head>
 

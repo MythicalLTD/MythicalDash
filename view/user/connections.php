@@ -13,7 +13,7 @@ if (isset($_GET['unlink_discord'])) {
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Edit
+        <?= $settings['name'] ?> - Edit
     </title>
 </head>
 

@@ -64,4 +64,14 @@ $router->add("/admin/settings/store", function () {
     require("../include/main.php");
     require("../view/admin/settings/store.php");
 });
+
+$router->add("/admin/settings/pp", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/pp.php");
+});
+
+$router->add("/admin/settings/tos", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/tos.php");
+});
 ?>

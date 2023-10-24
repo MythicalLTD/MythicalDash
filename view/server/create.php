@@ -210,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <title>
-    <?= $settings['name'] ?> | Create Server
+    <?= $settings['name'] ?> - Create Server
   </title>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>

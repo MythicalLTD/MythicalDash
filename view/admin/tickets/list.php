@@ -25,7 +25,7 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Tickets
+        <?= $settings['name'] ?> - Tickets
     </title>
 </head>
 
@@ -40,8 +40,7 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                 <?php include(__DIR__ . '/../../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Help-Center / Tickets /</span>
-                            List</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Help-Center / </span>List</h4>
                         <?php include(__DIR__ . '/../../components/alert.php') ?>
                         <!-- Search Form -->
                         <form class="mt-4">

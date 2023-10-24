@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Edit
+        <?= $settings['name'] ?> - Edit
     </title>
 </head>
 

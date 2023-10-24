@@ -13,7 +13,7 @@ http_response_code(404);
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-misc.css" />
   <title>
-    <?= $settings['name'] ?> | Not found
+    <?= $settings['name'] ?> - Not found
   </title>
 
 </head>

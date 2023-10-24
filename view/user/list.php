@@ -24,7 +24,7 @@ $totalPages = ceil($totalUsers / $usersPerPage);
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Users
+        <?= $settings['name'] ?> - Users
     </title>
     <style>
         .avatar-image {

@@ -71,7 +71,7 @@ foreach ($servers_in_queue as $server) {
 <head>
    <?php include('requirements/head.php'); ?>
    <title>
-      <?= $settings['name'] ?> | Dashboard
+      <?= $settings['name'] ?> - Dashboard
    </title>
 </head>
 

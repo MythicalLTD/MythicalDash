@@ -25,7 +25,7 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Profile
+        <?= $settings['name'] ?> - Profile
     </title>
     <link rel="stylesheet" href="/assets/vendor/css/pages/page-profile.css" />
 </head>
