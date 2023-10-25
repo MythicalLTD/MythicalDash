@@ -1,7 +1,13 @@
 <?php
 use MythicalDash\SettingsManager;
 include(__DIR__ . '/../../requirements/page.php');
-include(__DIR__ . '/../../requirements/admin.php');
+if ($session->getUserInfo("role") == "Administrator" || $session->getUserInfo("role") == "Support") {
+    
+} else {
+    header('location: /e/401');
+    die();
+}
+
 
 $ticketsPerPage = 20;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;

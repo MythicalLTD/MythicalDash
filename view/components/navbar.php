@@ -90,7 +90,10 @@ use MythicalDash\SettingsManager;
                     <?= $session->getUserInfo("username") ?>
                     <span class="badge bg-<?php if ($session->getUserInfo("role") == "Administrator") {
                       echo 'danger';
-                    } else {
+                    } else if ($session->getUserInfo("role") == "Support") {
+                      echo "warning";
+                    } 
+                    else {
                       echo 'success';
                     } ?> requestor-type ms-2">
                       <?= $session->getUserInfo("role") ?>

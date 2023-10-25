@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\SettingsManager;
+
 function is_active_page($page_urls)
 {
   foreach ($page_urls as $page_url) {
@@ -123,19 +124,18 @@ function is_active_page($page_urls)
         <span class="menu-header-text">Administration Tools</span>
       </li>
       <li class="menu-item <?php echo is_active_page(['/admin/overview']) ? 'active' : ''; ?>">
-      <a href="/admin/overview" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-home"></i>
-        <div>Overview</div>
-      </a>
-    </li>
+        <a href="/admin/overview" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-home"></i>
+          <div>Overview</div>
+        </a>
+      </li>
       <li class="menu-item <?php echo is_active_page(['/admin/api']) ? 'active' : ''; ?>">
         <a href="/admin/api" class="menu-link">
           <i class="menu-icon tf-icons ti ti-device-gamepad-2"></i>
           <div>Application API</div>
         </a>
       </li>
-      <li
-        class="menu-item <?php echo is_active_page(['/admin/servers', '/admin/server/delete']) ? 'active' : ''; ?>">
+      <li class="menu-item <?php echo is_active_page(['/admin/servers', '/admin/server/delete']) ? 'active' : ''; ?>">
         <a href="/admin/servers" class="menu-link">
           <i class="menu-icon tf-icons ti ti-server"></i>
           <div>Servers</div>
@@ -176,6 +176,21 @@ function is_active_page($page_urls)
         <a href="/admin/settings" class="menu-link">
           <i class="menu-icon tf-icons ti ti-settings"></i>
           <div>Settings</div>
+        </a>
+      </li>
+      <?php
+    }
+    ?>
+    <?php
+    if ($session->getUserInfo("role") == "Support") {
+      ?>
+      <li class="menu-header small text-uppercase">
+        <span class="menu-header-text">Support Tools</span>
+      </li>
+      <li class="menu-item <?php echo is_active_page(['/admin/tickets']) ? 'active' : ''; ?>">
+        <a href="/admin/tickets" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-messages"></i>
+          <div>Tickets</div>
         </a>
       </li>
       <?php
