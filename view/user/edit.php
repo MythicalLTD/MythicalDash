@@ -29,7 +29,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $conn->query("UPDATE `mythicaldash_users` SET `avatar` = '" . $avatar . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
                     $conn->query("UPDATE `mythicaldash_users` SET `email` = '" . $email . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
                     $conn->close();
-                    header('location: /user/edit?s=We updated the user settings in the database');
+                    $api_url = SettingsManager::getSetting("PterodactylURL") . "/api/application/users/" . $user_info['panel_id'] . "";
+                    $data = [
+                        "email" => $_GET['email'],
+                        "username" => $_GET['username'],
+                        "first_name" => $_GET['firstName'],
+                        "last_name" => $_GET['lastName'],
+                        "language" => "en"
+                    ];
+
+                    $data_json = json_encode($data);
+
+                    $ch = curl_init($api_url);
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        "Accept: application/json",
+                        "Content-Type: application/json",
+                        "Authorization: Bearer " . SettingsManager::getSetting("PterodactylAPIKey")
+                    ]);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_json);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                    $response = curl_exec($ch);
+                    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+                    if ($http_code == 200) {
+                        $api_response = json_decode($response, true);
+                        header('location: /user/edit?s=We updated the user settings in the database');
+                        curl_close($ch);
+                        die();
+                    } else {
+                        header("location: /user/edit?e=Failed to update the user settings inside the panel");
+                        curl_close($ch);
+                        die();
+                    }
                 }
             } else {
                 header('location: /user/edit?e=Please fill in all the info');
@@ -103,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <!-- Account -->
                                     <div class="card-body">
                                         <div class="d-flex align-items-start align-items-sm-center gap-4">
-                                            <img src="<?= $userdb['avatar'] ?>" alt="user-avatar"
+                                            <img src="<?= $session->getUserInfo("avatar") ?>" alt="user-avatar"
                                                 class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
                                         </div>
                                     </div>
@@ -114,32 +147,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <div class="mb-3 col-md-6">
                                                     <label for="username" class="form-label">Username</label>
                                                     <input class="form-control" type="text" id="username"
-                                                        name="username" value="<?= $userdb['username'] ?>"
+                                                        name="username" value="<?= $session->getUserInfo("username") ?>"
                                                         placeholder="jhondoe" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="firstName" class="form-label">First Name</label>
                                                     <input class="form-control" type="text" id="firstName"
                                                         name="firstName"
-                                                        value="<?= Encryption::decrypt($userdb['first_name'], $ekey) ?>"
+                                                        value="<?= Encryption::decrypt($session->getUserInfo('first_name'), $ekey) ?>"
                                                         autofocus />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="lastName" class="form-label">Last Name</label>
                                                     <input class="form-control" type="text" name="lastName"
                                                         id="lastName"
-                                                        value="<?= Encryption::decrypt($userdb['last_name'], $ekey) ?>" />
+                                                        value="<?= Encryption::decrypt($session->getUserInfo('last_name'), $ekey) ?>" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="email" class="form-label">E-mail</label>
                                                     <input class="form-control" type="email" id="email" name="email"
-                                                        value="<?= $userdb['email'] ?>"
+                                                        value="<?= $session->getUserInfo("email") ?>"
                                                         placeholder="john.doe@example.com" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="avatar" class="form-label">Avatar</label>
                                                     <input class="form-control" type="text" id="avatar" name="avatar"
-                                                        value="<?= $userdb['avatar'] ?>" />
+                                                        value="<?= $session->getUserInfo("avatar") ?>" />
                                                 </div>
 
                                                 <div class="mb-3 col-md-6">

@@ -11,11 +11,11 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     if (mysqli_num_rows($result) > 0) {
-        $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . $_GET['id'] . "'")->fetch_array();
+        $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . mysqli_real_escape_string($conn, $_GET['id']) . "'")->fetch_array();
         $email = $user_info['email'];
         $password = $user_info['password'];
         $skey = Encryption::generate_key($email, $password);
-        $conn->query("UPDATE `mythicaldash_users` SET `api_key` = '" . $skey . "' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
+        $conn->query("UPDATE `mythicaldash_users` SET `api_key` = '" . $skey . "' WHERE `mythicaldash_users`.`id` = " .mysqli_real_escape_string($conn, $_GET['id'])  . ";");
         header('location: /admin/users/edit?id=' . $_GET['id'] . '&s=We updated the user settings in the database');
         $conn->close();
         die();
