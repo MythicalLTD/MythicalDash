@@ -21,3 +21,53 @@
 <script src="<?= $appURL ?>/assets/vendor/libs/bs-stepper/bs-stepper.js"></script>
 <script src="<?= $appURL ?>/assets/js/MythicalGuard.js"></script>
 <script src="<?= $appURL ?>/assets/js/preloader.js"></script>
+<?php
+function fis_active_page($page_urls)
+{
+    foreach ($page_urls as $page_url) {
+        if (strpos($_SERVER['REQUEST_URI'], $page_url) !== false) {
+            return true;
+        }
+    }
+    return false;
+}
+use MythicalDash\SettingsManager;
+
+if (!fis_active_page(['/e/adblock'])) {
+    if (SettingsManager::getSetting("enable_adblocker_detection") == "true") {
+        if (isset($_COOKIE['token']) && !$_COOKIE['token'] == "") {
+            if (!$session->getUserInfo('role') == "Administrator") {
+                ?>
+                <script>
+                    let fakeAd = document.createElement("div");
+                    fakeAd.className =
+                        "textads banner-ads banner_ads ad-unit ad-zone ad-space adsbox"
+
+                    fakeAd.style.height = "1px"
+
+                    document.body.appendChild(fakeAd)
+
+                    let x_width = fakeAd.offsetHeight;
+                    let msg = document.getElementById("msg")
+
+
+                    if (x_width) {
+
+                    } else {
+                        window.location.replace("/e/adblock");
+                    }
+
+                </script>
+                <?php
+            } else {
+                ?>
+                <script>
+                    console.warn("You bypassed the Anti-AdBlock protection");   
+                </script>
+                <?php
+            }
+        }
+    }
+}
+
+?>

@@ -24,6 +24,11 @@ $router->add("/e/404", function () {
     require("../view/errors/404.php");
 });
 
+$router->add("/e/adblock", function () {
+    require("../include/main.php");
+    require("../view/errors/adblock.php");
+});
+
 $router->add("/e/401", function () {
     require("../include/main.php");
     require("../view/errors/401.php");

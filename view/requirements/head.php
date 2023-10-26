@@ -1,5 +1,6 @@
-<?php 
+<?php
 use MythicalDash\SettingsManager;
+
 ?>
 <meta charset="utf-8">
 <meta name="viewport"
@@ -14,7 +15,7 @@ use MythicalDash\SettingsManager;
 <meta name="twitter:description" content="<?= SettingsManager::getSetting("seo_description") ?>">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="<?= SettingsManager::getSetting("logo") ?>">
-<meta property="og:image" content="<?=SettingsManager::getSetting("logo") ?>">
+<meta property="og:image" content="<?= SettingsManager::getSetting("logo") ?>">
 <meta name="description" content="<?= SettingsManager::getSetting("seo_description") ?>">
 <meta property="og:type" content="website">
 <meta name="twitter:title" content="<?= SettingsManager::getSetting("name") ?>">
@@ -65,9 +66,10 @@ if ($cfg_is_console_on == 'true') {
 if (SettingsManager::getSetting("customcss_enabled") == 'true') {
     ?>
     <style type="text/css">
-        #template-customizer .template-customizer-open-btn  {
+        #template-customizer .template-customizer-open-btn {
             visibility: hidden;
         }
+
         <?= SettingsManager::getSetting("customcss_code") ?>
     </style>
     <?php
@@ -78,4 +80,5 @@ if (SettingsManager::getSetting("customhead_enabled") == 'true') {
     <?= SettingsManager::getSetting("customhead_code") ?>
     <?php
 }
+
 ?>

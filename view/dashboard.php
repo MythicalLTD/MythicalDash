@@ -66,12 +66,12 @@ foreach ($servers_in_queue as $server) {
 <!DOCTYPE html>
 <html lang="en" class="dark-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
    data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
-
 <head>
    <?php include('requirements/head.php'); ?>
    <title>
       <?= SettingsManager::getSetting("name") ?> - Dashboard
    </title>
+   
 </head>
 
 <body>
