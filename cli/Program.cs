@@ -21,7 +21,6 @@ namespace MythicalDash
 ";
         public static string version = "1.0.0";
         public static bool skiposcheck = false;
-        public static ConfigHandler cfg_handler = new ConfigHandler();
         public static Debug dbg = new Debug();
         public static Encryption encryption = new Encryption();
         public static IConsole iconsole = new IConsole();
@@ -34,17 +33,17 @@ namespace MythicalDash
             Console.WriteLine(ascii);
             if (skiposcheck == false)
             {
-                if (!System.OperatingSystem.IsLinux())
+                if (!OperatingSystem.IsLinux())
                 {
                     logger.Log(LogType.Error, "Sorry but this app runs on linux!");
                     Environment.Exit(0x0);
                 }
             }
-            if (args.Contains("-generate-config"))
+            if (args.Contains("-environment:newconfig"))
             {
                 try
                 {
-                    cfg_handler.CreateConfig();
+                    ConfigHandler.CreateConfig();
                     Environment.Exit(0x0);
                 }
                 catch (Exception ex)
@@ -54,7 +53,7 @@ namespace MythicalDash
                 logger.Log(LogType.Info, "Configuration file generated.");
                 Environment.Exit(0x0);
             }
-            else if (args.Contains("-delete-config"))
+            else if (args.Contains("-environment:delconfig"))
             {
                 logger.Log(LogType.Info, "Wow, buddy, this command shall be run only if you know what it does.");
                 logger.Log(LogType.Info, "Are you sure you want to proceed? (yes/no)");
@@ -64,7 +63,7 @@ namespace MythicalDash
                 {
                     try
                     {
-                        cfg_handler.DeleteConfig();
+                        ConfigHandler.DeleteConfig();
                         Environment.Exit(0x0);
                     }
                     catch (Exception ex)
@@ -85,7 +84,7 @@ namespace MythicalDash
                     Environment.Exit(0x0);
                 }
             }
-            else if (args.Contains("-key-generate"))
+            else if (args.Contains("-key:generate"))
             {
                 logger.Log(LogType.Info, "Wow, buddy, this command shall be run only once, and that's when you set up the dashboard. Please do not run this command if you don't know what it does or if you have users in your database.");
                 logger.Log(LogType.Info, "Are you sure you want to proceed? (yes/no)");
@@ -116,7 +115,7 @@ namespace MythicalDash
                     Environment.Exit(0x0);
                 }
             }
-            else if (args.Contains("-enable-debug"))
+            else if (args.Contains("-debug:enable"))
             {
                 try
                 {
@@ -129,7 +128,7 @@ namespace MythicalDash
                     Environment.Exit(0x0);
                 }
             }
-            else if (args.Contains("-enable-console"))
+            else if (args.Contains("-console:enable"))
             {
                 try
                 {
@@ -142,7 +141,7 @@ namespace MythicalDash
                     Environment.Exit(0x0);
                 }
             }
-            else if (args.Contains("-disable-console"))
+            else if (args.Contains("-console:disable"))
             {
                 try
                 {
@@ -155,7 +154,7 @@ namespace MythicalDash
                     Environment.Exit(0x0);
                 }
             }
-            else if (args.Contains("-disable-debug"))
+            else if (args.Contains("-debug:disable"))
             {
                 try
                 {
@@ -168,7 +167,7 @@ namespace MythicalDash
                     Environment.Exit(0x0);
                 }
             }
-            else if (args.Contains("-enable-silent-debug"))
+            else if (args.Contains("-debug:silent:on"))
             {
                 try
                 {
@@ -181,7 +180,7 @@ namespace MythicalDash
                     Environment.Exit(0x0);
                 }
             }
-            else if (args.Contains("-disable-silent-debug"))
+            else if (args.Contains("-debug:silent:off"))
             {
                 try
                 {
@@ -199,17 +198,17 @@ namespace MythicalDash
                 logger.Log(LogType.Info, "You are running version: " + version);
                 Environment.Exit(0x0);
             }
-            else if (args.Contains("-config-database"))
+            else if (args.Contains("-environment:database"))
             {
                 db.Configurator();
                 Environment.Exit(0x0);
             }
-            else if (args.Contains("-migrate-database-now"))
+            else if (args.Contains("-migrate"))
             {
                 mg.Now();
                 Environment.Exit(0x0);
             }
-            else if (args.Contains("-config-setup"))
+            else if (args.Contains("-environment:setup"))
             {
                 sh.Setup();
                 Environment.Exit(0x0);
@@ -217,24 +216,24 @@ namespace MythicalDash
             else if (args.Contains("-help"))
             {
                 Console.Clear();
-                Console.WriteLine("--------------------------------------------MythicalDash CLI-------------------------------------------------");
-                Console.WriteLine("|                                                                                                           |");
-                Console.WriteLine("|    -help | Opens a help menu with the available commands.                                                 |");
-                Console.WriteLine("|    -generate-config | Generate a new config file for MythicalDash.                                        |");
-                Console.WriteLine("|    -delete-config | Delete the config file for MythicalDash.                                              |");
-                Console.WriteLine("|    -key-generate | Generate a new encryption key for MythicalDash.                                        |");
-                Console.WriteLine("|    -enable-debug | Enables the debug mode to display error messages for MythicalDash.                     |");
-                Console.WriteLine("|    -disable-console | Disables the browser's inspect element or console from being used on MythicalDash.  |");
-                Console.WriteLine("|    -enable-console | Enables the browser's inspect element or console on MythicalDash.                    |");
-                Console.WriteLine("|    -disable-debug | Disables the debug mode to hide error messages for MythicalDash.                      |");
-                Console.WriteLine("|    -enable-silent-debug | Hides the debug mode online status messages from being disabled.                |");
-                Console.WriteLine("|    -disable-silent-debug | Shows the debug mode online status messages from being enabled.                |");
-                Console.WriteLine("|    -config-database | Add the database connection to your config file.                                    |");
-                Console.WriteLine("|    -migrate-database-now | Create and setup all tables in the database                                    |");
-                Console.WriteLine("|    -config-setup | This is a command to help you setup your dashboard!                                    |");
-                Console.WriteLine("|    -version | See the version / build version of the CLI.                                                 |");
-                Console.WriteLine("|                                                                                                           |");
-                Console.WriteLine("-------------------------------------------------------------------------------------------------------------");
+                Console.WriteLine("╔≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡⊳ MythicalDash CLI ⊲≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡╗");
+                Console.WriteLine("‖                                                                                                                        ‖");
+                Console.WriteLine("‖    -help                      ‖ Opens a help menu with the available commands.                                         ‖");
+                Console.WriteLine("‖    -environment:newconfig     ‖ Generate a new config file for MythicalDash.                                           ‖");
+                Console.WriteLine("‖    -environment:delconfig     ‖ Delete the config file for MythicalDash.                                               ‖");
+                Console.WriteLine("‖    -environment:database      ‖ Add the database connection to your config file.                                       ‖");
+                Console.WriteLine("‖    -environment:setup         ‖ This is a command to help you setup your dashboard!                                    ‖");
+                Console.WriteLine("‖    -key:generate              ‖ Generate a new encryption key for MythicalDash.                                        ‖");
+                Console.WriteLine("‖    -debug:enable              ‖ Enables the debug mode to display error messages for MythicalDash.                     ‖");
+                Console.WriteLine("‖    -console:disable           ‖ Disables the browser's inspect element or console from being used on MythicalDash.     ‖");
+                Console.WriteLine("‖    -console:enable            ‖ Enables the browser's inspect element or console on MythicalDash.                      ‖");
+                Console.WriteLine("‖    -debug:disable             ‖ Disables the debug mode to hide error messages for MythicalDash.                       ‖");
+                Console.WriteLine("‖    -debug:silent:on           ‖ Hides the debug mode online status messages from being disabled.                       ‖");
+                Console.WriteLine("‖    -debug:silent:off          ‖ Shows the debug mode online status messages from being enabled.                        ‖");
+                Console.WriteLine("‖    -migrate                   ‖ Create and setup all tables in the database                                            ‖");
+                Console.WriteLine("‖    -version                   ‖ See the version / build version of the CLI.                                            ‖");
+                Console.WriteLine("‖                                                                                                                        ‖");
+                Console.WriteLine("╚≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡⊳ Copyright 2023 MythicalSystems ⊲≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡╝");
                 Environment.Exit(0x0);
             }
             else if (args.Length > 0)
