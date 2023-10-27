@@ -1,74 +1,105 @@
-![Logo](https://camo.githubusercontent.com/4cf45904e67161611071520974b92a39ef49544ad2c03c027a4e07bf7f44d871/68747470733a2f2f692e696d6775722e636f6d2f784933474c46632e6a706567)
+# MythicalDash V3 
 
-# MythicalDash
-
-Open-Source Client Area for Pterodactyl
-MythicalDash is currently in development by [@NaysKutzu](https://github.com/nayskutzu).
-
-# Docs
-https://docs.mythicalsystems.me/docs/mythicaldash/intro
-
-### 🎧 Support
-
-You can join our support server:
-
-https://discord.gg/7BZTmSK2D8
-
-### 🎨 Frontend
-We are using vuexy as a frontend.
-
-### 👔 Contributing
-I'm open to all contributions! Feel free to help! :) 
-
-### 💸 Financial support
-Do you want to support our hard work?
-
-MythicalSystems
-https://paypal.me/mythicalsystems
+MythicalDash is a client area/dashboard for the Pterodactyl Game Panel with features for managing client servers and much more.
 
 
-## Desktop Application
-Hi, if you want to setup this right, you will have to go inside the `public/manifest.webmanifest`
-Here is an example of the file: 
-```json
-{
-    "name": "MyAwsomeDash",
-    "short_name": "Dash",
-    "start_url": "/",
-    "display": "standalone",
-    "orientation": "portrait",
-    "background_color": "#161931",
-    "theme_color": "#161931",
-    "icons": [
-      {
-        "src": "https://mydash.dev/assets/img/logo.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src": "https://mydash.dev/assets/img/logo.png",
-        "sizes": "192x192",
-        "type": "image/png",
-        "purpose": "maskable"
-      },
-      {
-        "src": "https://mydash.dev/assets/img/logo.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-    ],
-    "description": "MythicalDash is a feature-rich and user-friendly client area for Pterodactyl, designed to simplify server management. With MythicalDash, you have unparalleled control over your hosting environment, effortlessly managing game servers, databases, files, and more. Experience seamless server administration, enhanced security, and optimized performance with MythicalDash, your ultimate solution for streamlined Pterodactyl server management.",
-    "lang": "en",
-    "categories": ["hosting", "news"]
-  }
-```
 
-## CLI 
-To compile the CLI you need to install dotnet core:
-```bash
-wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
-chmod +x ./dotnet-install.sh
-./dotnet-install.sh --channel 7.0
-dotnet run --project /var/www/client/cli -help 
-```
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+## Documentation
 
+Do you want MythicalDash?
+
+You can find a step-by-step installation documentation over here: 
+
+https://docs.mythicalsystems.me
+## Support
+
+For support, discord server: [discord.gg/freehost](https://discord.gg/freehost)
+
+
+## Optimizations
+
+MythicalDash is one of the fastest dashboards out there. It has lightning-fast loading speeds! 
+
+
+## FAQ
+
+#### Why is MythicalDash really the best?
+
+Well, we created a table to compare the most commonly used pterodactyl clients, so you can see it for yourself!
+
+| Feature | MythicalDash | Dashactyl | Heliactyl | NorthClient  | HolaClient |
+| :---:   | :---: | :---: | :--: | :--: | :--: | 
+| Essentials Options | ✅|✅|✅|✅|✅|
+| Payment Options | 🔄|🔄|✅|✅|✅|
+| J4R | 🔄|✅|✅|✅|✅|
+| Referrals |🔄|✅|✅|✅|✅|
+| Linkvertise | ✅|❌|✅|✅|✅|
+| Custom Ads | ✅|❌|❌|✅|✅|
+| Purge System | ✅|❌|❌|❌|✅|
+| Legal |✅|❌|❌|❌|✅|
+|Telemetry|✅|❌|❌|❌|⚠️|
+| Safe | ✅ |❌|❌|❌|⚠️|
+| Leaderboards |✅|❌|❌|❌|❌|
+| Support System | ✅|❌|❌|❌|❌|
+| Easy Customizations | ✅|❌|❌|❌|❌|
+| Anti CSRF |✅|❌|❌|❌|❌|
+| Anti Bot |✅|❌|❌|❌|❌|
+| Custom (CSS/Header/HTML) |✅|❌|❌|❌|❌|
+| Leaderboards |✅|❌|❌|❌|❌|
+| Runs everywhere |✅|❌|❌|❌|❌|
+| CLI |✅|❌|❌|❌|❌|
+| API (Client/Admin) |🔄|❌|❌|❌|❌|
+
+
+## Demo
+
+You can find a live deployment copy of MythicalDash here:
+- https://devclient.mythicalsystems.me
+
+## Roadmap
+
+You can find the roadmap at: https://github.com/orgs/MythicalLTD/projects/5
+
+
+## Contributing
+
+Contributions are always welcome!
+
+
+## Used By
+
+This project is used by the following companies:
+
+- MythicalSystems
+- NyxHost
+
+
+## Screenshots
+
+- ![App Screenshot1](https://i.imgur.com/fLIYnqK.png)
+- ![App Screenshot1](https://i.imgur.com/k3hBOut.png)
+- ![App Screenshot1](https://i.imgur.com/QDr6jk5.png)
+- ![App Screenshot1](https://i.imgur.com/1o5WNHo.png)
+- ![App Screenshot1](https://i.imgur.com/YcEb4YE.png)
+- ![App Screenshot1](https://i.imgur.com/KuJMgZk.png)
+- ![App Screenshot1](https://i.imgur.com/Nf0aFAt.png)
+- ![App Screenshot1](https://i.imgur.com/GwVkHbT.png)
+- ![App Screenshot1](https://i.imgur.com/mVBrtV5.png)
+- ![App Screenshot1](https://i.imgur.com/70rXiHt.png)
+- ![App Screenshot1](https://i.imgur.com/WrroKW3.png)
+
+## API Reference
+
+We did not write specific API documentation, but you can use [Insomnia](https://insomnia.rest/download) to see more info on what requests you can execute with our API. Here you can download the JSON for the Insomnia client: https://raw.githubusercontent.com/MythicalLTD/MythicalDash/v3/Insomnia.json
+
+## Tech Stack
+
+Here is a list of the core components that MythicalDash uses to run!
+
+**Client:** [Composer](https://getcomposer.org/), [DotNet](https://dot.net)
+
+**Server:** [PHP](https://php.net), [Pterodactyl](https://pterodactyl.io), [MariaDB](https://mariadb.com)/[MySQL](https://mysql.com)
+
+**Packages:**
+[PHP-Router](https://packagist.org/packages/mythicalsystems/php-router), [Yaml](https://packagist.org/packages/symfony/yaml), [PHPMailer](https://packagist.org/packages/phpmailer/phpmailer), [Fody](https://www.nuget.org/packages/Costura.Fody/), [MySqlConnector](https://www.nuget.org/packages/MySqlConnector/), [YamlDotNet](https://www.nuget.org/packages/YamlDotNet)

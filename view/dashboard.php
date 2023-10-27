@@ -219,6 +219,7 @@ foreach ($servers_in_queue as $server) {
                      }
                      ?>
                   </div>
+                  <br>
                   <div class="row">
                      <div class="col">
                         <div class="card bg-default shadow">
