@@ -352,6 +352,15 @@ foreach ($servers_in_queue as $server) {
                                                 data-toggle="popover" data-color="default" data-placement="left"
                                                 data-content="Open in the game panel"><i
                                                    class="fas fa-external-link-square-alt"></i></a>
+                                             <?php 
+                                             if (SettingsManager::getSetting("server_purge") == "true") {
+                                                if ($serverinfo["purge"] == "true") {
+                                                   ?>
+                                                   <a href="/server/active?id=<?= $serverinfo["id"] ?>" class="btn btn-warning btn-sm">Active</a>
+                                                   <?php 
+                                                }
+                                             }
+                                             ?>
                                              <a href="/server/edit?id=<?= $server["id"] ?>"
                                                 class="btn btn-primary btn-sm">Edit</a>
                                              <a href="/server/delete?server=<?= $server["id"] ?>"><button type="button"

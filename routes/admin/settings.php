@@ -49,6 +49,10 @@ $router->add("/admin/settings/pterodactyl", function () {
     require("../view/admin/settings/pterodactyl.php");
 });
 
+$router->add("/admin/settings/purge", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/purge.php");
+});
 
 $router->add("/admin/settings/seo", function () {
     require("../include/main.php");

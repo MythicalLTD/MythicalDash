@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         header('location: /auth/register?e=Password is not secure. Please choose a different one');
                         die();
                     }
-                    $blocked_usernames = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy", "plexed", "badsk", "username", "sex", "porn", "nudes", "nude", "ass", "hacker", "bigdick");
+                    $blocked_usernames = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy", "plexed", "badsk", "username", "Username", "Admin", "sex", "porn", "nudes", "nude", "ass", "hacker", "bigdick");
                     if (in_array($username, $blocked_usernames)) {
                         header('location: /auth/register?e=It looks like we blocked this username from being used. Please choose another username.');
                         die();
@@ -225,7 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="mb-3">
                             <label for="first_name" class="form-label">First name</label>
                             <input type="text" class="form-control" id="first_name" required name="first_name"
-                                placeholder="Jhon" autofocus />
+                                placeholder="John" autofocus />
                         </div>
                         <div class="mb-3">
                             <label for="last_name" class="form-label">Last name</label>
@@ -235,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" id="username" required name="username"
-                                placeholder="jhondoe" autofocus />
+                                placeholder="johndoe" autofocus />
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>

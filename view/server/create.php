@@ -244,13 +244,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="card-body">
                   <form method="POST">
                     <label for="name">Name:</label>
-                    <input type="text" name="name" class="form-control" id="name" placeholder="Name">
+                    <input type="text" name="name" class="form-control" id="name" required placeholder="Name">
                     <br>
                     <?php
                     $locations = mysqli_query($conn, "SELECT * FROM mythicaldash_locations")->fetch_all(MYSQLI_ASSOC);
                     ?>
                     <label for="location">Location:</label>
-                    <select class="form-control" name="location" id="location">
+                    <select class="form-control" name="location" required id="location">
                       <?php foreach ($locations as $location): ?>
                         <?php
                         $serversOnLoc = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE location='" . $location["id"] . "'")->fetch_all(MYSQLI_ASSOC);
@@ -271,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endif; ?>
                     <br>
                     <label for="egg">Egg:</label>
-                    <select class="form-control" name="egg" id="egg">
+                    <select class="form-control" name="egg" required id="egg">
                       <?php
                       $alrCategories = array();
                       $eggs = mysqli_query($conn, "SELECT * FROM mythicaldash_eggs")->fetch_all(MYSQLI_ASSOC);
@@ -294,22 +294,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </select>
                     <br>
                     <label for="memory">RAM:</label>
-                    <input type="number" name="memory" class="form-control" id="ram" value="" placeholder="RAM">
+                    <input type="number" name="memory" class="form-control" id="ram" value="" required placeholder="RAM">
                     <br>
                     <label for="disk">DISK:</label>
-                    <input type="number" name="disk" class="form-control" id="disk" placeholder="DISK">
+                    <input type="number" name="disk" class="form-control" id="disk" required placeholder="DISK">
                     <br>
                     <label for="cpu">CPU:</label>
-                    <input type="number" name="cores" class="form-control" id="cpu" placeholder="CPU">
+                    <input type="number" name="cores" class="form-control" id="cpu" required placeholder="CPU">
                     <br>
                     <label for="allocations">PORTS:</label>
-                    <input type="number" name="ports" class="form-control" id="allocations" placeholder="PORTS">
+                    <input type="number" name="ports" class="form-control" id="allocations" required placeholder="PORTS">
                     <br>
                     <label for="databases">DATABASES:</label>
-                    <input type="number" name="databases" class="form-control" id="databases" placeholder="DATABASES">
+                    <input type="number" name="databases" class="form-control" id="databases" required placeholder="DATABASES">
                     <br>
                     <label for="backups">BACKUPS:</label>
-                    <input type="number" name="backups" class="form-control" id="backups" placeholder="BACKUPS">
+                    <input type="number" name="backups" class="form-control" id="backups" required placeholder="BACKUPS">
                     <br>
                     <?= $csrf->input('create-server-form'); ?>
                     <button action="submit" name="createsv" class="btn btn-primary">Create</button>

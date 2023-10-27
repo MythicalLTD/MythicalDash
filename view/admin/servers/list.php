@@ -69,6 +69,7 @@ $totalPages = ceil($totalServers / $serversPerPage);
                       <th>Panel ID</th>
                       <th>Location ID</th>
                       <th>Egg ID</th>
+                      <th>Purge</th>
                       <th>Created</th>
                       <th>Action</th>
                     </tr>
@@ -82,6 +83,7 @@ $totalPages = ceil($totalServers / $serversPerPage);
                         echo '<td>' . $row['pid'] . '</td>';
                         echo '<td>' . $row['location'] . '</td>';
                         echo '<td>' . $row['egg_id'] . '</td>';
+                        echo '<td>' . $row['purge'] . '</td>';
                         echo '<td>' . $row['created'] . '</td>';
                         echo '<td><a href="' . SettingsManager::getSetting("PterodactylURL") . '/admin/servers/view/' . $row['pid'] . '" target="blank" class="btn btn-primary">View</a>&nbsp;<a href="/admin/server/delete?pid=' . $row['pid'] . '" class="btn btn-danger">Delete</a></td>';
                         echo '</tr>';

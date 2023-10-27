@@ -773,6 +773,95 @@ include(__DIR__ . '/../../requirements/admin.php');
                                 </form>
                             </div>
                         </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header">Server Purge</h5>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/purge" method="GET">
+                                    <div class="row">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Status</label>
+                                            <div>
+                                                <?php
+                                                if (SettingsManager::getSetting("server_purge") == 'true') {
+                                                    ?>
+                                                    <select class="form-control" name="purge:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="purge:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+
+                                            </div>
+                                        </div>
+                                        <?php
+                                        if (SettingsManager::getSetting("server_purge") == 'true') {
+                                            ?>
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label">Execute Purge</label><br>
+                                                <button type="button" type="button" data-bs-toggle="modal"
+                                                    data-bs-target="#runpurge"
+                                                    class="btn btn-danger waves-effect waves-light">Execute changes</a>
+                                            </div>
+                                        <?php } ?>
+                                    </div>
+                                    <br>
+                                    <div class="mt-2">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="runpurge" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+                            <div class="modal-content p-3 p-md-5">
+                                <div class="modal-body">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                    <div class="text-center mb-4">
+                                        <h3 class="mb-2">Woah, buddy, are you sure you want to run this?</h3>
+                                        <p class="form-check-label">If you chose to continue, we are going to delete
+                                            %servers% from
+                                            your dashboard and panel. Because they did not click the active button on
+                                            the server list from inside the dash. Please keep in mind that this function
+                                            will be executed after you give your users some time to mark their server as
+                                            active. This action can not be undone. Mythical systems do not take any
+                                            responsibility for you not being able to read and understand how those
+                                            functions work or how to use them! If you want to continue, please press
+                                            continue. MAKE SURE YOU READ THIS BEFORE DOING ANYTHING.
+                                        </p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" required type="checkbox" id="ikwhatidoing"
+                                                name="ikwhatidoing" />
+                                            <label class="form-check-label" for="ikwhatidoing">
+                                                I know what this function does, and I have read the text!
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <form method="POST" action="/admin/servers/purge" class="row g-3">
+                                        <div class="col-12 text-center">
+                                            <button type="submit" class="btn btn-danger me-sm-3 me-1">Continue</button>
+                                            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+                                                aria-label="Close">Cancel </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <?php include(__DIR__ . '/../../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>

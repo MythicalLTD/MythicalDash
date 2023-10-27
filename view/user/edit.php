@@ -236,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             client API and this is your login security token, so make sure not to share
                                             it!
                                         </p>
-                                        <code><?= $userdb['api_key'] ?></code>
+                                        <code><?= $session->getUserInfo("api_key") ?></code>
                                     </div>
                                     <div class="col-12 text-center">
                                         <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
