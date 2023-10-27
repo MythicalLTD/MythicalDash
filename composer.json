@@ -20,9 +20,11 @@
         "php": ">=8.0.0",
         "mythicalsystems/php-router": "^1.0",
         "symfony/yaml": "^6.3",
-        "phpseclib/phpseclib": "^3.0",
-        "phpmailer/phpmailer": "^6.8",
-        "livaco/easydiscordwebhook": "^2.0",
-        "mythicalsystems/aapanelapi": "^1.0"
+        "phpmailer/phpmailer": "^6.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "MythicalDash\\": "app/"
+        }
     }
 }

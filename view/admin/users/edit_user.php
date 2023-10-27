@@ -1,31 +1,34 @@
 <?php
+use MythicalDash\Encryption;
+use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
 
 if (isset($_GET['edit_user'])) {
-    if (!$_GET['id'] == "") {
+    if (isset($_GET['id']) && !$_GET['id'] == "") {
         $user_query = "SELECT * FROM mythicaldash_users WHERE id = ?";
         $stmt = mysqli_prepare($conn, $user_query);
         mysqli_stmt_bind_param($stmt, "s", $_GET['id']);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         if (mysqli_num_rows($result) > 0) {
-            $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . $_GET['id'] . "'")->fetch_array();
+            $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . mysqli_real_escape_string($conn, $_GET['id']) . "'")->fetch_array();
             $username = mysqli_real_escape_string($conn, $_GET['username']);
             $firstName = mysqli_real_escape_string($conn, $_GET['firstName']);
             $lastName = mysqli_real_escape_string($conn, $_GET['lastName']);
             $email = mysqli_real_escape_string($conn, $_GET['email']);
             $avatar = mysqli_real_escape_string($conn, $_GET['avatar']);
             $role = mysqli_real_escape_string($conn, $_GET['role']);
-            $coins = mysqli_real_escape_string($conn,$_GET['coins']);
+            $coins = mysqli_real_escape_string($conn, $_GET['coins']);
             $ram = mysqli_real_escape_string($conn, $_GET['ram']);
-            $disk = mysqli_real_escape_string($conn,$_GET['disk']);
-            $cpu = mysqli_real_escape_string($conn,$_GET['cpu']);
-            $server_limit = mysqli_real_escape_string($conn,$_GET['server_limit']);
-            $ports = mysqli_real_escape_string($conn,$_GET['ports']);
-            $databases = mysqli_real_escape_string($conn,$_GET['databases']);
-            $backups = mysqli_real_escape_string($conn,$_GET['backups']);
-            $banned = mysqli_real_escape_string($conn,$_GET['banned']);
+            $disk = mysqli_real_escape_string($conn, $_GET['disk']);
+            $cpu = mysqli_real_escape_string($conn, $_GET['cpu']);
+            $server_limit = mysqli_real_escape_string($conn, $_GET['server_limit']);
+            $ports = mysqli_real_escape_string($conn, $_GET['ports']);
+            $databases = mysqli_real_escape_string($conn, $_GET['databases']);
+            $backups = mysqli_real_escape_string($conn, $_GET['backups']);
+            $banned = mysqli_real_escape_string($conn, $_GET['banned']);
             if (!$username == "" || $firstName == "" || $lastName == "" || $email == "" || $avatar == "" || $role == "") {
                 if (!$user_info['username'] == $username || !$email == $user_info['email']) {
                     $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
@@ -44,8 +47,8 @@ if (isset($_GET['edit_user'])) {
                         $conn->query("UPDATE `mythicaldash_users` SET `role` = 'User' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
                     }
                     $conn->query("UPDATE `mythicaldash_users` SET `username` = '" . $username . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
-                    $conn->query("UPDATE `mythicaldash_users` SET `first_name` = '" . encrypt($firstName,$ekey) . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
-                    $conn->query("UPDATE `mythicaldash_users` SET `last_name` = '" . encrypt($lastName,$ekey) . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `first_name` = '" . Encryption::encrypt($firstName, $ekey) . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
+                    $conn->query("UPDATE `mythicaldash_users` SET `last_name` = '" . Encryption::encrypt($lastName, $ekey) . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
                     $conn->query("UPDATE `mythicaldash_users` SET `avatar` = '" . $avatar . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
                     $conn->query("UPDATE `mythicaldash_users` SET `email` = '" . $email . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
                     $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $coins . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
@@ -58,8 +61,40 @@ if (isset($_GET['edit_user'])) {
                     $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . $backups . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
                     $conn->query("UPDATE `mythicaldash_users` SET `banned` = '" . $banned . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
                     $conn->close();
-                    header('location: /admin/users/edit?id=' . $_GET['id'] . '&s=We updated the user settings in the database');
-                    die();
+                    $api_url = SettingsManager::getSetting("PterodactylURL")."/api/application/users/".$user_info['panel_id']."";
+                    $data = [
+                        "email" => $_GET['email'],
+                        "username" => $_GET['username'],
+                        "first_name" => $_GET['firstName'],
+                        "last_name" => $_GET['lastName'],
+                        "language" => "en"
+                    ];
+
+                    $data_json = json_encode($data);
+
+                    $ch = curl_init($api_url);
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        "Accept: application/json",
+                        "Content-Type: application/json",
+                        "Authorization: Bearer ".SettingsManager::getSetting("PterodactylAPIKey")
+                    ]);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_json);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                    $response = curl_exec($ch);
+                    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+                    if ($http_code == 200) {
+                        $api_response = json_decode($response, true);
+                        header('location: /admin/users/edit?id=' . $_GET['id'] . '&s=We updated the user settings in the database');
+                        curl_close($ch);
+                        die();
+                    } else {
+                        header("location: /admin/users/edit?id=".$_GET["id"]."&e=Failed to update the user settings inside the panel");
+                        curl_close($ch);
+                        die();
+                    }
                 }
             } else {
                 header('location: /admin/users/edit?e=Please fill in all the info&id=' . $_GET['id']);
@@ -75,19 +110,14 @@ if (isset($_GET['edit_user'])) {
         header('location: /admin/users?e=Can`t find this user in the database');
         die();
     }
-} else if (isset($_GET['id'])) {
-    if (!$_GET['id'] == "") {
-        $user_query = "SELECT * FROM mythicaldash_users WHERE id = ?";
-        $stmt = mysqli_prepare($conn, $user_query);
-        mysqli_stmt_bind_param($stmt, "s", $_GET['id']);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        if (mysqli_num_rows($result) > 0) {
-            $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . $_GET['id'] . "'")->fetch_array();
-        } else {
-            header('location: /admin/users?e=Can`t find this user in the database');
-            die();
-        }
+} else if (isset($_GET['id']) && !$_GET['id'] == "") {
+    $user_query = "SELECT * FROM mythicaldash_users WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $user_query);
+    mysqli_stmt_bind_param($stmt, "s", $_GET['id']);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if (mysqli_num_rows($result) > 0) {
+        $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . mysqli_real_escape_string($conn, $_GET['id']) . "'")->fetch_array();
     } else {
         header('location: /admin/users?e=Can`t find this user in the database');
         die();
@@ -104,7 +134,7 @@ if (isset($_GET['edit_user'])) {
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Users
+        <?= SettingsManager::getSetting("name") ?> - Users
     </title>
 </head>
 
@@ -119,27 +149,8 @@ if (isset($_GET['edit_user'])) {
                 <?php include(__DIR__ . '/../../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin / Users /</span> Edit</h4>
-                        <?php
-                        if (isset($_GET['e'])) {
-                            ?>
-                            <div class="alert alert-danger alert-dismissible" role="alert">
-                                <?= $_GET['e'] ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <?php
-                        }
-                        ?>
-                        <?php
-                        if (isset($_GET['s'])) {
-                            ?>
-                            <div class="alert alert-success alert-dismissible" role="alert">
-                                <?= $_GET['s'] ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <?php
-                        }
-                        ?>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin / User / </span>Edit </h4>
+                        <?php include(__DIR__ . '/../../components/alert.php') ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <ul class="nav nav-pills flex-column flex-md-row mb-4">
@@ -204,14 +215,14 @@ if (isset($_GET['edit_user'])) {
                                                     <label for="firstName" class="form-label">First Name</label>
                                                     <input class="form-control" type="text" id="firstName"
                                                         name="firstName"
-                                                        value="<?= decrypt($user_info['first_name'], $ekey) ?>"
+                                                        value="<?= Encryption::decrypt($user_info['first_name'], $ekey) ?>"
                                                         autofocus />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="lastName" class="form-label">Last Name</label>
                                                     <input class="form-control" type="text" name="lastName"
                                                         id="lastName"
-                                                        value="<?= decrypt($user_info['last_name'], $ekey) ?>" />
+                                                        value="<?= Encryption::decrypt($user_info['last_name'], $ekey) ?>" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="email" class="form-label">E-mail</label>
@@ -237,93 +248,95 @@ if (isset($_GET['edit_user'])) {
                                     <hr class="my-0" />
                                     <h5 class="card-header">User info</h5>
                                     <div class="card-body">
-                                            <div class="row">
-                                                <div class="mb-3 col-md-3">
-                                                    <label for="banned" class="form-label">Banned</label>
-                                                    <input class="form-control" type="text" id="banned" name="banned"
-                                                        value="<?= $user_info['banned'] ?>" placeholder="User is not banned" />
-                                                </div>
-                                                <div class="mb-3 col-md-1">
-                                                    <label for="panel_id" class="form-label">Panel ID</label>
-                                                    <input class="form-control" type="text" id="panel_id" name="panel_id"
-                                                        value="<?= $user_info['panel_id'] ?>" disabled readonly/>
-                                                </div>
-                                                <div class="mb-3 col-md-1">
-                                                    <label for="minutes_afk" class="form-label">Minutes AFK</label>
-                                                    <input class="form-control" type="number" id="minutes_afk" name="minutes_afk"
-                                                        value="<?= $user_info['minutes_afk'] ?>" disabled readonly/>
-                                                </div>
-                                                <div class="mb-3 col-md-2">
-                                                    <label for="first_ip" class="form-label">First IP</label>
-                                                    <input class="form-control" type="text" id="first_ip" name="first_ip"
-                                                        value="<?= $user_info['first_ip'] ?>" disabled readonly/>
-                                                </div>
-                                                <div class="mb-3 col-md-2">
-                                                    <label for="last_ip" class="form-label">Last IP</label>
-                                                    <input class="form-control" type="text" id="last_ip" name="last_ip"
-                                                        value="<?= $user_info['last_ip'] ?>" disabled readonly/>
-                                                </div>
-                                                <div class="mb-3 col-md-2">
-                                                    <label for="registred" class="form-label">Registred at</label>
-                                                    <input class="form-control" type="text" id="registred" name="registred"
-                                                        value="<?= $user_info['registred'] ?>" disabled readonly/>
-                                                </div>
+                                        <div class="row">
+                                            <div class="mb-3 col-md-3">
+                                                <label for="banned" class="form-label">Banned</label>
+                                                <input class="form-control" type="text" id="banned" name="banned"
+                                                    value="<?= $user_info['banned'] ?>"
+                                                    placeholder="User is not banned" />
                                             </div>
+                                            <div class="mb-3 col-md-1">
+                                                <label for="panel_id" class="form-label">Panel ID</label>
+                                                <input class="form-control" type="text" id="panel_id" name="panel_id"
+                                                    value="<?= $user_info['panel_id'] ?>" disabled readonly />
+                                            </div>
+                                            <div class="mb-3 col-md-1">
+                                                <label for="minutes_afk" class="form-label">Minutes AFK</label>
+                                                <input class="form-control" type="number" id="minutes_afk"
+                                                    name="minutes_afk" value="<?= $user_info['minutes_afk'] ?>" disabled
+                                                    readonly />
+                                            </div>
+                                            <div class="mb-3 col-md-2">
+                                                <label for="first_ip" class="form-label">First IP</label>
+                                                <input class="form-control" type="text" id="first_ip" name="first_ip"
+                                                    value="<?= $user_info['first_ip'] ?>" disabled readonly />
+                                            </div>
+                                            <div class="mb-3 col-md-2">
+                                                <label for="last_ip" class="form-label">Last IP</label>
+                                                <input class="form-control" type="text" id="last_ip" name="last_ip"
+                                                    value="<?= $user_info['last_ip'] ?>" disabled readonly />
+                                            </div>
+                                            <div class="mb-3 col-md-2">
+                                                <label for="registred" class="form-label">Registred at</label>
+                                                <input class="form-control" type="text" id="registred" name="registred"
+                                                    value="<?= $user_info['registred'] ?>" disabled readonly />
+                                            </div>
+                                        </div>
                                     </div>
                                     <hr class="my-0" />
                                     <h5 class="card-header">Resources</h5>
                                     <div class="card-body">
-                                            <div class="row">
-                                                <div class="mb-3 col-md-6">
-                                                    <label for="coins" class="form-label">Coins</label>
-                                                    <input class="form-control" type="number" id="coins" name="coins"
-                                                        value="<?= $user_info['coins'] ?>" placeholder="3" />
-                                                </div>
-                                                <div class="mb-3 col-md-6">
-                                                    <label for="ram" class="form-label">Ram (MB)</label>
-                                                    <input class="form-control" type="number" id="ram" name="ram"
-                                                        value="<?= $user_info['ram'] ?>" autofocus />
-                                                </div>
-                                                <div class="mb-3 col-md-6">
-                                                    <label for="disk" class="form-label">Disk (MB)</label>
-                                                    <input class="form-control" type="number" name="disk" id="disk"
-                                                        value="<?= $user_info['disk'] ?>" />
-                                                </div>
-                                                <div class="mb-3 col-md-6">
-                                                    <label for="cpu" class="form-label">VCore (%)</label>
-                                                    <input class="form-control" type="number" id="cpu" name="cpu"
-                                                        value="<?= $user_info['cpu'] ?>" placeholder="100" />
-                                                </div>
-                                                <div class="mb-3 col-md-6">
-                                                    <label for="server_limit" class="form-label">Server Limit</label>
-                                                    <input class="form-control" type="number" id="server_limit"
-                                                        name="server_limit" value="<?= $user_info['server_limit'] ?>" />
-                                                </div>
-                                                <div class="mb-3 col-md-6">
-                                                    <label for="ports" class="form-label">Ports</label>
-                                                    <input class="form-control" type="number" id="ports" name="ports"
-                                                        value="<?= $user_info['ports'] ?>" />
-                                                </div>
-                                                <div class="mb-3 col-md-6">
-                                                    <label for="databases" class="form-label">Databases</label>
-                                                    <input class="form-control" type="number" id="databases"
-                                                        name="databases" value="<?= $user_info['databases'] ?>" />
-                                                </div>
-
-                                                <div class="mb-3 col-md-6">
-                                                    <label for="backups" class="form-label">Backups</label>
-                                                    <input class="form-control" type="number" id="backups"
-                                                        name="backups" value="<?= $user_info['backups'] ?>" />
-                                                </div>
-                                                <input class="form-control" type="hidden" id="id" name="id"
-                                                    value="<?= $_GET['id'] ?>">
-
+                                        <div class="row">
+                                            <div class="mb-3 col-md-6">
+                                                <label for="coins" class="form-label">Coins</label>
+                                                <input class="form-control" type="number" id="coins" name="coins"
+                                                    value="<?= $user_info['coins'] ?>" placeholder="3" />
                                             </div>
-                                            <div class="mt-2">
-                                                <button type="submit" name="edit_user" class="btn btn-primary me-2"
-                                                    value="true">Save changes</button>
-                                                <a href="/admin/users" class="btn btn-label-secondary">Cancel</a>
+                                            <div class="mb-3 col-md-6">
+                                                <label for="ram" class="form-label">Ram (MB)</label>
+                                                <input class="form-control" type="number" id="ram" name="ram"
+                                                    value="<?= $user_info['ram'] ?>" autofocus />
                                             </div>
+                                            <div class="mb-3 col-md-6">
+                                                <label for="disk" class="form-label">Disk (MB)</label>
+                                                <input class="form-control" type="number" name="disk" id="disk"
+                                                    value="<?= $user_info['disk'] ?>" />
+                                            </div>
+                                            <div class="mb-3 col-md-6">
+                                                <label for="cpu" class="form-label">VCore (%)</label>
+                                                <input class="form-control" type="number" id="cpu" name="cpu"
+                                                    value="<?= $user_info['cpu'] ?>" placeholder="100" />
+                                            </div>
+                                            <div class="mb-3 col-md-6">
+                                                <label for="server_limit" class="form-label">Server Limit</label>
+                                                <input class="form-control" type="number" id="server_limit"
+                                                    name="server_limit" value="<?= $user_info['server_limit'] ?>" />
+                                            </div>
+                                            <div class="mb-3 col-md-6">
+                                                <label for="ports" class="form-label">Ports</label>
+                                                <input class="form-control" type="number" id="ports" name="ports"
+                                                    value="<?= $user_info['ports'] ?>" />
+                                            </div>
+                                            <div class="mb-3 col-md-6">
+                                                <label for="databases" class="form-label">Databases</label>
+                                                <input class="form-control" type="number" id="databases"
+                                                    name="databases" value="<?= $user_info['databases'] ?>" />
+                                            </div>
+
+                                            <div class="mb-3 col-md-6">
+                                                <label for="backups" class="form-label">Backups</label>
+                                                <input class="form-control" type="number" id="backups" name="backups"
+                                                    value="<?= $user_info['backups'] ?>" />
+                                            </div>
+                                            <input class="form-control" type="hidden" id="id" name="id"
+                                                value="<?= $_GET['id'] ?>">
+
+                                        </div>
+                                        <div class="mt-2">
+                                            <button type="submit" name="edit_user" class="btn btn-primary me-2"
+                                                value="true">Save changes</button>
+                                            <a href="/admin/users" class="btn btn-label-secondary">Cancel</a>
+                                        </div>
                                         </form>
                                     </div>
                                 </div>

@@ -14,6 +14,11 @@ $router->add('/server/edit', function () {
     require("../view/server/edit.php");
 });
 
+$router->add('/server/active', function () {
+    require("../include/main.php");
+    require("../view/server/active.php");
+});
+
 $router->add('/server/queue/delete', function () {
     require("../include/main.php");
     require("../view/server/queueDelete.php");

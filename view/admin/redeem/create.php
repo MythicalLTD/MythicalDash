@@ -1,4 +1,7 @@
 <?php
+include(__DIR__ . '/../../requirements/page.php');
+include(__DIR__ . '/../../requirements/admin.php');
+
 if (isset($_GET['key']) && !$_GET['key'] == "") {
     $code = mysqli_real_escape_string($conn, $_GET['code']);
     $uses = mysqli_real_escape_string($conn, $_GET['uses']);
@@ -13,7 +16,7 @@ if (isset($_GET['key']) && !$_GET['key'] == "") {
     $conn->query("INSERT INTO `mythicaldash_redeem` (
     `code`, 
     `uses`, 
-    `coins`, 
+    `coins`,  
     `ram`, 
     `disk`, 
     `cpu`, 

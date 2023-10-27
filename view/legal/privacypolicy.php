@@ -1,5 +1,7 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
+
 ?>
 <!DOCTYPE html>
 
@@ -12,7 +14,7 @@ include(__DIR__ . '/../requirements/page.php');
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <title>
-    <?= $settings['name'] ?> | Privacy Policy
+    <?= SettingsManager::getSetting("name") ?> - Privacy Policy
   </title>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
@@ -62,26 +64,8 @@ include(__DIR__ . '/../requirements/page.php');
                       </span>
                       Privacy Policy
                     </h4>
-                    <p>
-                    <p class="text-big">The type of personal information we collect:</p>
+                    <?= SettingsManager::getSetting("privacy_policy") ?>
 
-                    We collect certain personal information about visitors and users of our Sites.
-                    The most common types of information we collect include things like: user-names, member names, email
-                    addresses, IP addresses, other contact details, survey responses, blogs, photos, payment information
-                    such as payment agent details, transactional details, tax information, support queries, forum
-                    comments, content you direct us to make available on our Sites (such as item descriptions) and web
-                    analytics data. We will also collect personal information from job applications (such as, your CV,
-                    the application form itself, cover letter and interview notes).
-                    </p>
-                    <p>
-                    <p class="text-big">How we collect personal information:</p>
-
-                    We collect personal information directly when you provide it to us, automatically as you navigate
-                    through the Sites, or through other people when you use services associated with the Sites.
-                    We collect your personal information when you provide it to us when you complete membership
-                    registration and buy or provide items or services on our Sites, subscribe to a newsletter, email
-                    list, submit feedback, enter a contest, fill out a survey, or send us a communication.
-                    </p>
                     <hr class="container-m-nx my-4" />
                     <div class="d-flex justify-content-between flex-wrap gap-3 mb-3">
                       <h5>Still need help? <a href="/help-center/tickets">Contact us?</a></h5>

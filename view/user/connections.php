@@ -1,4 +1,6 @@
 <?php
+use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../requirements/page.php');
 if (isset($_GET['unlink_discord'])) {
     $conn->query("UPDATE `mythicaldash_users` SET `discord_linked` = 'false' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
@@ -13,7 +15,7 @@ if (isset($_GET['unlink_discord'])) {
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Edit
+        <?= SettingsManager::getSetting("name") ?> - Edit
     </title>
 </head>
 
@@ -32,10 +34,10 @@ if (isset($_GET['unlink_discord'])) {
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
                                 <br>
-                                <?= $settings['ads_code'] ?>
+                                <?= SettingsManager::getSetting("ads_code") ?>
                                 <br>
                                 <?php
                             }
@@ -68,11 +70,11 @@ if (isset($_GET['unlink_discord'])) {
                                                     <div class="col-sm-7">
                                                         <h6 class="mb-0">Discord</h6>
                                                         <?php
-                                                        if (!$settings['discord_clientid'] == "" && !$settings['discord_clientsecret'] == "") {
-                                                            if ($userdb['discord_linked'] == "true") {
+                                                        if (SettingsManager::getSetting("enable_discord_link") == "true") {
+                                                            if ($session->getUserInfo("discord_linked") == "true") {
                                                                 ?>
                                                                 <small class="text-muted">
-                                                                    <?= $userdb['discord_username'] ?>
+                                                                    <?= $session->getUserInfo("discord_username") ?>
                                                                 </small>
                                                                 <?php
                                                             } else {
@@ -88,8 +90,8 @@ if (isset($_GET['unlink_discord'])) {
                                                         ?>
                                                     </div>
                                                     <?php
-                                                    if (!$settings['discord_clientid'] == "" && !$settings['discord_clientsecret'] == "") {
-                                                        if ($userdb['discord_linked'] == "true") {
+                                                    if (SettingsManager::getSetting("enable_discord_link") == "true") {
+                                                        if ($session->getUserInfo("discord_linked") == "true") {
                                                             ?>
                                                             <div class="col-sm-5 text-sm-end mt-sm-0 mt-2">
                                                                 <a href="/user/connections?unlink_discord=yes"

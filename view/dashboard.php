@@ -1,8 +1,7 @@
 <?php
+use MythicalDash\ErrorHandler;
+use MythicalDash\SettingsManager;
 include('requirements/page.php');
-if ($userdb['panel_id'] == "CLI") {
-   header('location: /admin/settings');
-}
 $nuserdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'")->fetch_array();
 $servers = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
 $servers_in_queue = mysqli_query($conn, "SELECT * FROM mythicaldash_servers_queue WHERE ownerid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
@@ -21,13 +20,13 @@ $usedBackup = 0;
 $uservers = array();
 foreach ($servers as $serv) {
    $ptid = $serv["pid"];
-   $ch = curl_init($settings['PterodactylURL'] . "/api/application/servers/" . $ptid);
+   $ch = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers/" . $ptid);
    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
    curl_setopt(
       $ch,
       CURLOPT_HTTPHEADER,
       array(
-         "Authorization: Bearer " . $settings['PterodactylAPIKey'],
+         "Authorization: Bearer " . SettingsManager::getSetting("PterodactylAPIKey"),
          "Content-Type: application/json",
          "Accept: Application/vnd.pterodactyl.v1+json"
       )
@@ -35,7 +34,7 @@ foreach ($servers as $serv) {
    $result1 = curl_exec($ch);
    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
    if ($httpcode != 200) {
-      die('<script>window.location.href = "/e/critical?e=Unable to connect to the game panel! Please contact one of the server administrators.";</script>');
+      ErrorHandler::ShowCritical("Unable to connect to the game panel! Please contact one of the server administrators.");
    }
    curl_close($ch);
    $result = json_decode($result1, true);
@@ -67,12 +66,12 @@ foreach ($servers_in_queue as $server) {
 <!DOCTYPE html>
 <html lang="en" class="dark-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
    data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
-
 <head>
    <?php include('requirements/head.php'); ?>
    <title>
-      <?= $settings['name'] ?> | Dashboard
+      <?= SettingsManager::getSetting("name") ?> - Dashboard
    </title>
+   
 </head>
 
 <body>
@@ -211,15 +210,16 @@ foreach ($servers_in_queue as $server) {
                   </div>
                   <div id="ads">
                      <?php
-                     if ($settings['enable_ads'] == "true") {
+                     if (SettingsManager::getSetting("enable_ads") == "true") {
                         ?>
                         <br>
-                        <?= $settings['ads_code'] ?>
+                        <?= SettingsManager::getSetting("ads_code") ?>
                         <br>
                         <?php
                      }
                      ?>
                   </div>
+                  <br>
                   <div class="row">
                      <div class="col">
                         <div class="card bg-default shadow">
@@ -348,11 +348,20 @@ foreach ($servers_in_queue as $server) {
                                              <?= $server["limits"]["disk"] ?>MB
                                           </td>
                                           <td>
-                                             <a href="<?= $settings["PterodactylURL"] . "/server/" . $server["identifier"] ?>"
+                                             <a href="<?= SettingsManager::getSetting("PterodactylURL") . "/server/" . $server["identifier"] ?>"
                                                 class="btn btn-primary btn-sm" data-trigger="hover" data-container="body"
                                                 data-toggle="popover" data-color="default" data-placement="left"
                                                 data-content="Open in the game panel"><i
                                                    class="fas fa-external-link-square-alt"></i></a>
+                                             <?php 
+                                             if (SettingsManager::getSetting("server_purge") == "true") {
+                                                if ($serverinfo["purge"] == "true") {
+                                                   ?>
+                                                   <a href="/server/active?id=<?= $serverinfo["id"] ?>" class="btn btn-warning btn-sm">Active</a>
+                                                   <?php 
+                                                }
+                                             }
+                                             ?>
                                              <a href="/server/edit?id=<?= $server["id"] ?>"
                                                 class="btn btn-primary btn-sm">Edit</a>
                                              <a href="/server/delete?server=<?= $server["id"] ?>"><button type="button"
@@ -370,10 +379,10 @@ foreach ($servers_in_queue as $server) {
                   </div>
                   <div id="ads">
                      <?php
-                     if ($settings['enable_ads'] == "true") {
+                     if (SettingsManager::getSetting("enable_ads") == "true") {
                         ?>
                         <br>
-                        <?= $settings['ads_code'] ?>
+                        <?= SettingsManager::getSetting("ads_code") ?>
                         <br>
                         <?php
                      }

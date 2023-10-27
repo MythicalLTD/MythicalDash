@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
 
@@ -9,15 +10,15 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     if (mysqli_num_rows($result) > 0) {
-        $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . $_GET['id'] . "'")->fetch_array();
-        deleteUserServers($conn, $user_info['api_key'], $settings['PterodactylURL'], $settings['PterodactylAPIKey']);
-        deleteUserServersInQueue($conn, $user_info['api_key'], $settings['PterodactylURL'], $settings['PterodactylAPIKey']);
+        $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . mysqli_real_escape_string($conn, $_GET['id']) . "'")->fetch_array();
+        deleteUserServers($conn, $user_info['api_key'], SettingsManager::getSetting("PterodactylURL"), SettingsManager::getSetting("PterodactylAPIKey"));
+        deleteUserServersInQueue($conn, $user_info['api_key'], SettingsManager::getSetting("PterodactylURL"), SettingsManager::getSetting("PterodactylAPIKey"));
         deleteApiKeys($conn, $user_info['api_key']);
         deleteLoginLogs($conn, $user_info['api_key']);
         deleteTickets($conn, $user_info['api_key']);
         deleteTicketsMsgs($conn, $user_info['api_key']);
         deletePasswordsReset($conn, $user_info['api_key']);
-        deleteUserFromPterodactyl($settings['PterodactylURL'], $user_info['panel_id'], $settings['PterodactylAPIKey']);
+        deleteUserFromPterodactyl(SettingsManager::getSetting("PterodactylURL"), $user_info['panel_id'], SettingsManager::getSetting("PterodactylAPIKey"));
         deleteUserFromDb($conn, $user_info['api_key']);
         header('location: /admin/users?s=We removed the user');
         $conn->close();

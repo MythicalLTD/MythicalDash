@@ -1,0 +1,1 @@
+DROP TABLE `mythicaldash`.`mythicaldash_logs`;

@@ -19,13 +19,14 @@ $router->add("/store", function () {
     require("../view/store.php");
 });
 
-$router->add("/e/critical", function () {
-    require("../view/errors/critical.php");
-});
-
 $router->add("/e/404", function () {
     require("../include/main.php");
     require("../view/errors/404.php");
+});
+
+$router->add("/e/adblock", function () {
+    require("../include/main.php");
+    require("../view/errors/adblock.php");
 });
 
 $router->add("/e/401", function () {
@@ -41,6 +42,11 @@ $router->add("/e/maintenance", function () {
 $router->add("/blank", function () {
     require("../include/main.php");
     require("../view/blank.php");
+});
+
+$router->add("/leaderboard", function () {
+    require("../include/main.php");
+    require("../view/leaderboard.php");
 });
 
 ?>

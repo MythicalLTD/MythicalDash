@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
 
 $ticketsPerPage = 20;
@@ -28,7 +29,7 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Tickets
+        <?= SettingsManager::getSetting("name") ?> - Tickets
     </title>
 </head>
 
@@ -48,9 +49,9 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
-                                <?= $settings['ads_code'] ?>
+                                <?= SettingsManager::getSetting("ads_code") ?>
                                 <?php
                             }
                             ?>
@@ -114,9 +115,9 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                         </nav>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
-                                <?= $settings['ads_code'] ?>
+                                <?= SettingsManager::getSetting("ads_code") ?>
                                 <br>
                                 <?php
                             }

@@ -1,11 +1,8 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
-if ($userdb['panel_id'] == "CLI") {
-  header('location: /admin/settings');
-}
-include(__DIR__ . '/../../include/php-csrf.php');
-$csrf = new CSRF();
-
+$csrf = new MythicalDash\CSRF();
+use MythicalDash\Telemetry;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['createsv'])) {
     if ($csrf->validate('create-server-form')) {
@@ -30,13 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
       foreach ($servers as $serv) {
         $ptid = $serv["pid"];
-        $ch = curl_init($settings['PterodactylURL'] . "/api/application/servers/" . $ptid);
+        $ch = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers/" . $ptid);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt(
           $ch,
           CURLOPT_HTTPHEADER,
           array(
-            "Authorization: Bearer " . $settings['PterodactylAPIKey'],
+            "Authorization: Bearer " . SettingsManager::getSetting("PterodactylAPIKey"),
             "Content-Type: application/json",
             "Accept: application/json"
           )
@@ -188,8 +185,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '$queue', 
         '" . $s_egg . "', 
         '$userdb->panel_id')");
-      NewServer();
-      header('location: /dashboard?s=Done thanks for using ' . $settings['name']);
+      Telemetry::NewServer();
+      header('location: /dashboard?s=Done thanks for using ' . SettingsManager::getSetting("name"));
       die();
     } else {
       header("location: /server/create?e=CSRF Verification Failed");
@@ -210,7 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <title>
-    <?= $settings['name'] ?> | Create Server
+    <?= SettingsManager::getSetting("name") ?> - Create Server
   </title>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
@@ -230,10 +227,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php include(__DIR__ . '/../components/alert.php') ?>
             <div id="ads">
               <?php
-              if ($settings['enable_ads'] == "true") {
+              if (SettingsManager::getSetting("enable_ads") == "true") {
                 ?>
                 <br>
-                <?= $settings['ads_code'] ?>
+                <?= SettingsManager::getSetting("ads_code") ?>
                 <br>
                 <?php
               }
@@ -247,13 +244,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="card-body">
                   <form method="POST">
                     <label for="name">Name:</label>
-                    <input type="text" name="name" class="form-control" id="name" placeholder="Name">
+                    <input type="text" name="name" class="form-control" id="name" required placeholder="Name">
                     <br>
                     <?php
                     $locations = mysqli_query($conn, "SELECT * FROM mythicaldash_locations")->fetch_all(MYSQLI_ASSOC);
                     ?>
                     <label for="location">Location:</label>
-                    <select class="form-control" name="location" id="location">
+                    <select class="form-control" name="location" required id="location">
                       <?php foreach ($locations as $location): ?>
                         <?php
                         $serversOnLoc = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE location='" . $location["id"] . "'")->fetch_all(MYSQLI_ASSOC);
@@ -274,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endif; ?>
                     <br>
                     <label for="egg">Egg:</label>
-                    <select class="form-control" name="egg" id="egg">
+                    <select class="form-control" name="egg" required id="egg">
                       <?php
                       $alrCategories = array();
                       $eggs = mysqli_query($conn, "SELECT * FROM mythicaldash_eggs")->fetch_all(MYSQLI_ASSOC);
@@ -297,22 +294,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </select>
                     <br>
                     <label for="memory">RAM:</label>
-                    <input type="number" name="memory" class="form-control" id="ram" value="" placeholder="RAM">
+                    <input type="number" name="memory" class="form-control" id="ram" value="" required placeholder="RAM">
                     <br>
                     <label for="disk">DISK:</label>
-                    <input type="number" name="disk" class="form-control" id="disk" placeholder="DISK">
+                    <input type="number" name="disk" class="form-control" id="disk" required placeholder="DISK">
                     <br>
                     <label for="cpu">CPU:</label>
-                    <input type="number" name="cores" class="form-control" id="cpu" placeholder="CPU">
+                    <input type="number" name="cores" class="form-control" id="cpu" required placeholder="CPU">
                     <br>
                     <label for="allocations">PORTS:</label>
-                    <input type="number" name="ports" class="form-control" id="allocations" placeholder="PORTS">
+                    <input type="number" name="ports" class="form-control" id="allocations" required placeholder="PORTS">
                     <br>
                     <label for="databases">DATABASES:</label>
-                    <input type="number" name="databases" class="form-control" id="databases" placeholder="DATABASES">
+                    <input type="number" name="databases" class="form-control" id="databases" required placeholder="DATABASES">
                     <br>
                     <label for="backups">BACKUPS:</label>
-                    <input type="number" name="backups" class="form-control" id="backups" placeholder="BACKUPS">
+                    <input type="number" name="backups" class="form-control" id="backups" required placeholder="BACKUPS">
                     <br>
                     <?= $csrf->input('create-server-form'); ?>
                     <button action="submit" name="createsv" class="btn btn-primary">Create</button>
@@ -323,10 +320,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div id="ads">
               <?php
-              if ($settings['enable_ads'] == "true") {
+              if (SettingsManager::getSetting("enable_ads") == "true") {
                 ?>
                 <br>
-                <?= $settings['ads_code'] ?>
+                <?= SettingsManager::getSetting("ads_code") ?>
                 <br>
                 <?php
               }

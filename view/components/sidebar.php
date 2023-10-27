@@ -1,4 +1,6 @@
 <?php
+use MythicalDash\SettingsManager;
+
 function is_active_page($page_urls)
 {
   foreach ($page_urls as $page_url) {
@@ -14,7 +16,7 @@ function is_active_page($page_urls)
   <div class="app-brand demo">
     <a href="/" class="app-brand-link">
       <span class="app-brand-text demo menu-text fw-bold">
-        <?= $settings['name'] ?>
+        <?= SettingsManager::getSetting("name") ?>
       </span>
     </a>
   </div>
@@ -43,7 +45,7 @@ function is_active_page($page_urls)
         <div>Earning</div>
       </a>
       <ul class="menu-sub">
-        <?php if ($settings['enable_afk'] == "true") {
+        <?php if (SettingsManager::getSetting("enable_afk") == "true") {
           ?>
           <li class="menu-item <?php echo is_active_page(['/earn/afk']) ? 'active' : ''; ?>">
             <a href="/earn/afk" class="menu-link">
@@ -58,7 +60,7 @@ function is_active_page($page_urls)
             <div>Redeem</div>
           </a>
         </li>
-        <?php if ($settings['linkvertise_enabled'] == "true") {
+        <?php if (SettingsManager::getSetting("linkvertise_enabled") == "true") {
           ?>
           <li class="menu-item <?php echo is_active_page(['/earn/linkvertise']) ? 'active' : ''; ?>">
             <a href="/earn/linkvertise" class="menu-link">
@@ -103,6 +105,12 @@ function is_active_page($page_urls)
         </li>
       </ul>
     </li>
+    <li class="menu-item <?php echo is_active_page(['/leaderboard']) ? 'active' : ''; ?>">
+      <a href="/leaderboard" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-star"></i>
+        <div>Leaderboard</div>
+      </a>
+    </li>
     <li class="menu-item <?php echo is_active_page(['/users/list']) ? 'active' : ''; ?>">
       <a href="/users/list" class="menu-link">
         <i class="menu-icon tf-icons ti ti-users"></i>
@@ -110,15 +118,27 @@ function is_active_page($page_urls)
       </a>
     </li>
     <?php
-    if ($userdb['role'] == "Administrator") {
+    if ($session->getUserInfo("role") == "Administrator") {
       ?>
       <li class="menu-header small text-uppercase">
         <span class="menu-header-text">Administration Tools</span>
+      </li>
+      <li class="menu-item <?php echo is_active_page(['/admin/overview']) ? 'active' : ''; ?>">
+        <a href="/admin/overview" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-home"></i>
+          <div>Overview</div>
+        </a>
       </li>
       <li class="menu-item <?php echo is_active_page(['/admin/api']) ? 'active' : ''; ?>">
         <a href="/admin/api" class="menu-link">
           <i class="menu-icon tf-icons ti ti-device-gamepad-2"></i>
           <div>Application API</div>
+        </a>
+      </li>
+      <li class="menu-item <?php echo is_active_page(['/admin/servers', '/admin/server/delete']) ? 'active' : ''; ?>">
+        <a href="/admin/servers" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-server"></i>
+          <div>Servers</div>
         </a>
       </li>
       <li
@@ -156,6 +176,21 @@ function is_active_page($page_urls)
         <a href="/admin/settings" class="menu-link">
           <i class="menu-icon tf-icons ti ti-settings"></i>
           <div>Settings</div>
+        </a>
+      </li>
+      <?php
+    }
+    ?>
+    <?php
+    if ($session->getUserInfo("role") == "Support") {
+      ?>
+      <li class="menu-header small text-uppercase">
+        <span class="menu-header-text">Support Tools</span>
+      </li>
+      <li class="menu-item <?php echo is_active_page(['/admin/tickets']) ? 'active' : ''; ?>">
+        <a href="/admin/tickets" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-messages"></i>
+          <div>Tickets</div>
         </a>
       </li>
       <?php

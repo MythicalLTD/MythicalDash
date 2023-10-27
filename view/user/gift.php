@@ -9,24 +9,24 @@ if (isset($_GET['userid']) && isset($_GET['coins']) && is_numeric($_GET['coins']
     $userResult = mysqli_query($conn, $userQuery);
 
     if (mysqli_num_rows($userResult) > 0) {
-        if ($userdb['id'] == $_GET['userid']) {
-            header("location: /user/profile?e=You can't send coins to yourself!&id=".$_GET['userid']);
+        if ($session->getUserInfo("id") == $_GET['userid']) {
+            header("location: /user/profile?e=You can't send coins to yourself!&id=" . $_GET['userid']);
             die();
         }
         if ($coins <= 0) {
-            header("location: /user/profile?e=Please enter a valid number of coins to send&id=".$_GET['userid']);
+            header("location: /user/profile?e=Please enter a valid number of coins to send&id=" . $_GET['userid']);
             die();
         }
-        if ($coins <= $userdb['coins']) {
+        if ($coins <= $session->getUserInfo("coins")) {
             $giftUserQuery = "SELECT * FROM mythicaldash_users WHERE id = '$userid'";
             $giftUserResult = mysqli_query($conn, $giftUserQuery);
             $giftUser = mysqli_fetch_assoc($giftUserResult);
 
-            $u_new_coins = $userdb['coins'] - $coins;
+            $u_new_coins = $session->getUserInfo("coins") - $coins;
             $g_new_coins = $giftUser['coins'] + $coins;
 
             $updateGiftUserQuery = "UPDATE `mythicaldash_users` SET `coins` = '$g_new_coins' WHERE `id` = {$giftUser['id']}";
-            $updateSenderQuery = "UPDATE `mythicaldash_users` SET `coins` = '$u_new_coins' WHERE `id` = {$userdb['id']}";
+            $updateSenderQuery = "UPDATE `mythicaldash_users` SET `coins` = '$u_new_coins' WHERE `id` = {$session->getUserInfo("id")}";
 
             mysqli_query($conn, $updateSenderQuery);
             mysqli_query($conn, $updateGiftUserQuery);

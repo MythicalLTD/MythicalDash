@@ -1,5 +1,8 @@
 <?php 
-if ($userdb['role'] == "User") {
-    header('location: /');
+if ($session->getUserInfo("role") == "Administrator") {
+    
+} else {
+    header('location: /e/401');
+    die();
 }
 ?>

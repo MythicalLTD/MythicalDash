@@ -1,7 +1,10 @@
 <?php
-include('../include/php-csrf.php');
+use MythicalDash\SettingsManager;
+use MythicalDash\Database\Connect;
+$conn = new Connect();
+$conn = $conn->connectToDatabase();
 session_start();
-$csrf = new CSRF();
+$csrf = new MythicalDash\CSRF();
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['code'])) {
         if (!$_GET['code'] == "") {
@@ -33,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         <?php include(__DIR__ . '/../requirements/head.php'); ?>
                         <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-auth.css" />
                         <title>
-                            <?= $settings['name'] ?> | Reset Password
+                            <?= SettingsManager::getSetting("name") ?> - Reset Password
                         </title>
                     </head>
 

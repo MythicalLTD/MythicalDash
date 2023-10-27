@@ -1,7 +1,7 @@
 <?php
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
-if (isset($_GET['id'])) {
+if (isset($_GET['id']) && !$_GET['id'] == "") {
     $user_query = "SELECT * FROM mythicaldash_eggs WHERE id = ?";
     $stmt = mysqli_prepare($conn, $user_query);
     mysqli_stmt_bind_param($stmt, "s", $_GET['id']);

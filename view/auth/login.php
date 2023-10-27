@@ -1,21 +1,24 @@
 <?php
-include(__DIR__ . '/../../include/php-csrf.php');
-include(__DIR__ . '/../../functions/telemetry.php');
-include(__DIR__ . '/../../functions/report.php');
+use MythicalDash\CloudFlare\Captcha;
+use MythicalDash\SettingsManager;
+use MythicalDash\SessionManager;
+use MythicalDash\Database\Connect;
+$conn = new Connect();
+$conn = $conn->connectToDatabase();
+$session = new SessionManager();
 session_start();
-$csrf = new CSRF();
+$csrf = new MythicalDash\CSRF();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($csrf->validate('login-form')) {
     if (isset($_POST['login'])) {
-      if ($settings['enable_turnstile'] == "false") {
+      if (SettingsManager::getSetting("enable_turnstile") == "false") {
         $captcha_success = 1;
       } else {
-        $captcha_success = validate_captcha($_POST["cf-turnstile-response"], $ip_address, $settings['turnstile_secretkey']);
+        $captcha_success = Captcha::validate_captcha($_POST["cf-turnstile-response"], $session->getIP(), SettingsManager::getSetting("turnstile_secretkey"));
       }
       if ($captcha_success) {
         $email = mysqli_real_escape_string($conn, $_POST['email']);
         $password = mysqli_real_escape_string($conn, $_POST['password']);
-        $ip_address = getclientip();
         if (!$email == "" || !$password == "") {
           $query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
           $result = mysqli_query($conn, $query);
@@ -32,10 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   exit; // Stop execution if user is banned
                 } else {
                   $usr_id = $row['api_key'];
-                  if ($ip_address == "127.0.0.1") {
-                    $ip_address = "12.34.56.78";
-                  }
-                  $url = "http://ipinfo.io/$ip_address/json";
+                  $url = "http://ipinfo.io/".$session->getIP()."/json";
                   $data = json_decode(file_get_contents($url), true);
 
                   if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
@@ -64,12 +64,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
                     die();
                   }
-                  $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $ip_address . "', '$usr_id')");
+                  $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$usr_id')");
 
                   $cookie_name = 'token';
                   $cookie_value = $token;
                   setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
-                  $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . $ip_address . "' WHERE `mythicaldash_users`.`api_key` = '" . $usr_id . "';");
+                  $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . $session->getIP() . "' WHERE `mythicaldash_users`.`api_key` = '" . $usr_id . "';");
                   if (isset($_GET['r'])) {
                     header('location: ' . $_GET['r']);
                   } else {
@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-auth.css" />
   <title>
-    <?= $settings['name'] ?> | Login
+    <?= SettingsManager::getSetting("name") ?> - Login
   </title>
 
 </head>
@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4">
         <div class="w-px-400 mx-auto">
           <h3 class="mb-1 fw-bold">Welcome to
-            <?= $settings['name'] ?>!
+            <?= SettingsManager::getSetting("name") ?>!
           </h3>
           <p class="mb-4">Please sign-in to your account and start the adventure</p>
           <?php
@@ -163,12 +163,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 autofocus />
             </div>
             <div class="mb-3 form-password-toggle">
-              <div class="d-flex justify-content-between">
-                <label class="form-label" for="password">Password</label>
-                <a href="/auth/forgot-password">
-                  <small>Forgot Password?</small>
-                </a>
-              </div>
+              <?php if (SettingsManager::getSetting("enable_smtp") == "ture") {
+                ?>
+                <div class="d-flex justify-content-between">
+                  <label class="form-label" for="password">Password</label>
+                  <a href="/auth/forgot-password">
+                    <small>Forgot Password?</small>
+                  </a>
+                </div>
+                <?php
+              } ?>
               <div class="input-group input-group-merge">
                 <input type="password" id="password" class="form-control" name="password"
                   placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
@@ -183,10 +187,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               </div>
             </div>
             <?php
-            if ($settings['enable_turnstile'] == "true") {
+            if (SettingsManager::getSetting("enable_turnstile") == "true") {
               ?>
               <center>
-                <div class="cf-turnstile" data-sitekey="<?= $settings['turnstile_sitekey'] ?>"></div>
+                <div class="cf-turnstile" data-sitekey="<?= SettingsManager::getSetting("turnstile_sitekey") ?>"></div>
               </center>
               &nbsp;
               <?php
@@ -207,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
           <div class="auth-footer-btn d-flex justify-content-center">
             <?php
-            if (!$settings['discord_clientid'] == "" && !$settings['discord_clientsecret'] == "") {
+            if (SettingsManager::getSetting("enable_discord_link") == "true") {
               ?>
               <a href="/auth/discord" target="_self" class="btn btn-primary">
                 <img width="18px" height="18px" src="/assets/img/discord-mark-white.svg" alt="Discord Logo">

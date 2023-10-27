@@ -49,6 +49,10 @@ $router->add("/admin/settings/pterodactyl", function () {
     require("../view/admin/settings/pterodactyl.php");
 });
 
+$router->add("/admin/settings/purge", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/purge.php");
+});
 
 $router->add("/admin/settings/seo", function () {
     require("../include/main.php");
@@ -63,5 +67,15 @@ $router->add("/admin/settings/resources", function () {
 $router->add("/admin/settings/store", function () {
     require("../include/main.php");
     require("../view/admin/settings/store.php");
+});
+
+$router->add("/admin/settings/pp", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/pp.php");
+});
+
+$router->add("/admin/settings/tos", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/tos.php");
 });
 ?>

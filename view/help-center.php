@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include('requirements/page.php');
 ?>
 <!DOCTYPE html>
@@ -10,7 +11,7 @@ include('requirements/page.php');
   <?php include('requirements/head.php'); ?>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
   <title>
-    <?= $settings['name'] ?> | Help-Center
+    <?= SettingsManager::getSetting("name") ?> - Help-Center
   </title>
 </head>
 
@@ -35,10 +36,10 @@ include('requirements/page.php');
             </div>
             <div id="ads">
               <?php
-              if ($settings['enable_ads'] == "true") {
+              if (SettingsManager::getSetting("enable_ads") == "true") {
                 ?>
                 <br>
-                <?= $settings['ads_code'] ?>
+                <?= SettingsManager::getSetting("ads_code") ?>
                 <br>
                 <?php
               }
@@ -112,10 +113,10 @@ include('requirements/page.php');
             </div>
             <div id="ads">
               <?php
-              if ($settings['enable_ads'] == "true") {
+              if (SettingsManager::getSetting("enable_ads") == "true") {
                 ?>
                 <br>
-                <?= $settings['ads_code'] ?>
+                <?= SettingsManager::getSetting("ads_code") ?>
                 <br>
                 <?php
               }
@@ -131,7 +132,7 @@ include('requirements/page.php');
                       24/7 and we'll get back to you.
                     </p>
                     <div class="d-flex justify-content-center flex-wrap gap-4">
-                      <a href="<?= $settings['discord_invite'] ?>" class="btn btn-primary">Visit our community</a>
+                      <a href="<?= SettingsManager::getSetting("discord_invite") ?>" class="btn btn-primary">Visit our community</a>
                       <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#createticket">Open a ticket</button>
                     </div>
@@ -141,10 +142,10 @@ include('requirements/page.php');
             </div>
             <div id="ads">
               <?php
-              if ($settings['enable_ads'] == "true") {
+              if (SettingsManager::getSetting("enable_ads") == "true") {
                 ?>
                 <br>
-                <?= $settings['ads_code'] ?>
+                <?= SettingsManager::getSetting("ads_code") ?>
                 <br>
                 <?php
               }

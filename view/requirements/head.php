@@ -1,3 +1,7 @@
+<?php
+use MythicalDash\SettingsManager;
+
+?>
 <meta charset="utf-8">
 <meta name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
@@ -7,17 +11,17 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="HandheldFriendly" content="True" />
 <meta name="MobileOptimized" content="320" />
-<link rel="apple-touch-icon" href="<?= $settings['logo'] ?>">
-<meta name="twitter:description" content="<?= $settings['seo_description'] ?>">
+<link rel="apple-touch-icon" href="<?= SettingsManager::getSetting("logo") ?>">
+<meta name="twitter:description" content="<?= SettingsManager::getSetting("seo_description") ?>">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="<?= $settings['logo'] ?>">
-<meta property="og:image" content="<?= $settings['logo'] ?>">
-<meta name="description" content="<?= $settings['seo_description'] ?>">
+<meta name="twitter:image" content="<?= SettingsManager::getSetting("logo") ?>">
+<meta property="og:image" content="<?= SettingsManager::getSetting("logo") ?>">
+<meta name="description" content="<?= SettingsManager::getSetting("seo_description") ?>">
 <meta property="og:type" content="website">
-<meta name="twitter:title" content="<?= $settings['name'] ?>">
-<meta name="og:title" content="<?= $settings['name'] ?>">
-<meta name="keywords" content="<?= $settings['seo_keywords'] ?>" />
-<link rel="shortcut icon" type="image/x-icon" href="<?= $settings['logo'] ?>">
+<meta name="twitter:title" content="<?= SettingsManager::getSetting("name") ?>">
+<meta name="og:title" content="<?= SettingsManager::getSetting("name") ?>">
+<meta name="keywords" content="<?= SettingsManager::getSetting("seo_keywords") ?>" />
+<link rel="shortcut icon" type="image/x-icon" href="<?= SettingsManager::getSetting("logo") ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
@@ -59,20 +63,22 @@ if ($cfg_is_console_on == 'true') {
     <?php
 }
 
-if ($settings['customcss_enabled'] == 'true') {
+if (SettingsManager::getSetting("customcss_enabled") == 'true') {
     ?>
     <style type="text/css">
-        #template-customizer .template-customizer-open-btn  {
+        #template-customizer .template-customizer-open-btn {
             visibility: hidden;
         }
-        <?= $settings['customcss_code'] ?>
+
+        <?= SettingsManager::getSetting("customcss_code") ?>
     </style>
     <?php
 }
 
-if ($settings['customhead_enabled'] == 'true') {
+if (SettingsManager::getSetting("customhead_enabled") == 'true') {
     ?>
-    <?= $settings['customhead_code'] ?>
+    <?= SettingsManager::getSetting("customhead_code") ?>
     <?php
 }
+
 ?>

@@ -14,3 +14,4 @@ logs/*.log
 /cli/.vs
 migrates.ini
 /logs/*.txt
+/cli/logs

@@ -1,3 +1,6 @@
+<?php
+use MythicalDash\SettingsManager;
+?>
 <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
   id="layout-navbar">
   <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
@@ -8,7 +11,8 @@
 
   <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
     <ul class="navbar-nav flex-row align-items-center ms-auto">
-      <?php if ($settings['customcss_enabled'] == "false") { ?>
+      <?php if (SettingsManager::getSetting("customcss_enabled") == "false") { 
+      ?>
         <li class="nav-item me-2 me-xl-0">
           <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">
             <i class="ti ti-md"></i>
@@ -69,31 +73,34 @@
       <li class="nav-item navbar-dropdown dropdown-user dropdown">
         <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
           <div class="avatar avatar-online">
-            <img src="<?= $userdb['avatar'] ?>" alt class="h-auto rounded-circle" />
+            <img src="<?= $session->getUserInfo("avatar") ?>" alt class="h-auto rounded-circle" />
           </div>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
           <li>
-            <a class="dropdown-item" href="/user/profile?id=<?= $userdb['id'] ?>">
+            <a class="dropdown-item" href="/user/profile?id=<?= $session->getUserInfo("id") ?>">
               <div class="d-flex">
                 <div class="flex-shrink-0 me-3">
                   <div class="avatar avatar-online">
-                    <img src="<?= $userdb['avatar'] ?>" alt class="h-auto rounded-circle" />
+                    <img src="<?= $session->getUserInfo("avatar") ?>" alt class="h-auto rounded-circle" />
                   </div>
                 </div>
                 <div class="flex-grow-1">
                   <span class="fw-semibold d-block">
-                    <?= $userdb['username'] ?>
-                    <span class="badge bg-<?php if ($userdb['role'] == "Administrator") {
+                    <?= $session->getUserInfo("username") ?>
+                    <span class="badge bg-<?php if ($session->getUserInfo("role") == "Administrator") {
                       echo 'danger';
-                    } else {
+                    } else if ($session->getUserInfo("role") == "Support") {
+                      echo "warning";
+                    } 
+                    else {
                       echo 'success';
                     } ?> requestor-type ms-2">
-                      <?= $userdb['role'] ?>
+                      <?= $session->getUserInfo("role") ?>
                     </span>
                   </span>
                   <small class="text-muted">
-                    <?= $userdb['coins'] ?> coins
+                    <?= $session->getUserInfo("coins") ?> coins
                   </small>
                 </div>
               </div>
@@ -103,7 +110,7 @@
             <div class="dropdown-divider"></div>
           </li>
           <li>
-            <a class="dropdown-item" href="/user/profile?id=<?= $userdb['id'] ?>">
+            <a class="dropdown-item" href="/user/profile?id=<?= $session->getUserInfo("id") ?>">
               <i class="ti ti-user-check me-2 ti-sm"></i>
               <span class="align-middle">Profile</span>
             </a>

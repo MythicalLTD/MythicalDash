@@ -6,7 +6,7 @@ namespace MythicalDash
 {
     public class ConfigHandler
     {
-        public void DeleteConfig() {
+        public static void DeleteConfig() {
             string filePath = "config.yml"; 
             if (File.Exists(filePath)) {
                 File.Delete(filePath);
@@ -16,7 +16,7 @@ namespace MythicalDash
                 Environment.Exit(0x0);
             }
         }
-        public void CreateConfig()
+        public static void CreateConfig()
         {
             string filePath = "config.yml";
 

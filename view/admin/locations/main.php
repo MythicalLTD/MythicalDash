@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
 $locationsPerPage = 20;
@@ -25,7 +26,7 @@ $totalPages = ceil($totalLocations / $locationsPerPage);
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Locations
+        <?= SettingsManager::getSetting("name") ?> - Locations
     </title>
     <style>
         .avatar-image {

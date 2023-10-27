@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_settings` ADD `enable_adblocker_detection` ENUM('true','false') NOT NULL AFTER `enable_ads`;

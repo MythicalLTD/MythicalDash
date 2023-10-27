@@ -1,12 +1,14 @@
 <?php
+use MythicalDash\Encryption;
+use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../requirements/page.php');
-include(__DIR__ . '/../../include/php-csrf.php');
-$csrf = new CSRF();
+$csrf = new MythicalDash\CSRF();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($csrf->validate('profile-form')) {
         if (isset($_POST['edit_user'])) {
-            $userdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . $_COOKIE['token'] . "'")->fetch_array();
+            $userdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'")->fetch_array();
             $username = mysqli_real_escape_string($conn, $_POST['username']);
             $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
             $lastName = mysqli_real_escape_string($conn, $_POST['lastName']);
@@ -17,20 +19,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
                     $result = mysqli_query($conn, $check_query);
                     if (mysqli_num_rows($result) > 0) {
-                        header('location: /user/profile?e=Username or email already exists. Please choose a different one');
+                        header('location: /user/edit?e=Username or email already exists. Please choose a different one');
                         die();
                     }
                 } else {
-                    $conn->query("UPDATE `mythicaldash_users` SET `username` = '" . $username . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-                    $conn->query("UPDATE `mythicaldash_users` SET `first_name` = '" . $firstName . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-                    $conn->query("UPDATE `mythicaldash_users` SET `last_name` = '" . $lastName . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-                    $conn->query("UPDATE `mythicaldash_users` SET `avatar` = '" . $avatar . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-                    $conn->query("UPDATE `mythicaldash_users` SET `email` = '" . $email . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+                    $conn->query("UPDATE `mythicaldash_users` SET `username` = '" . $username . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+                    $conn->query("UPDATE `mythicaldash_users` SET `first_name` = '" . Encryption::encrypt($firstName, $ekey) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+                    $conn->query("UPDATE `mythicaldash_users` SET `last_name` = '" . Encryption::encrypt($lastName, $ekey) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+                    $conn->query("UPDATE `mythicaldash_users` SET `avatar` = '" . $avatar . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+                    $conn->query("UPDATE `mythicaldash_users` SET `email` = '" . $email . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
                     $conn->close();
-                    header('location: /user/profile?s=We updated the user settings in the database');
+                    $api_url = SettingsManager::getSetting("PterodactylURL") . "/api/application/users/" . $user_info['panel_id'] . "";
+                    $data = [
+                        "email" => $_GET['email'],
+                        "username" => $_GET['username'],
+                        "first_name" => $_GET['firstName'],
+                        "last_name" => $_GET['lastName'],
+                        "language" => "en"
+                    ];
+
+                    $data_json = json_encode($data);
+
+                    $ch = curl_init($api_url);
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        "Accept: application/json",
+                        "Content-Type: application/json",
+                        "Authorization: Bearer " . SettingsManager::getSetting("PterodactylAPIKey")
+                    ]);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_json);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                    $response = curl_exec($ch);
+                    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+                    if ($http_code == 200) {
+                        $api_response = json_decode($response, true);
+                        header('location: /user/edit?s=We updated the user settings in the database');
+                        curl_close($ch);
+                        die();
+                    } else {
+                        header("location: /user/edit?e=Failed to update the user settings inside the panel");
+                        curl_close($ch);
+                        die();
+                    }
                 }
             } else {
-                header('location: /user/profile?e=Please fill in all the info');
+                header('location: /user/edit?e=Please fill in all the info');
                 die();
             }
         }
@@ -46,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Edit
+        <?= SettingsManager::getSetting("name") ?> - Edit
     </title>
 </head>
 
@@ -65,10 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
                                 <br>
-                                <?= $settings['ads_code'] ?>
+                                <?= SettingsManager::getSetting("ads_code") ?>
                                 <br>
                                 <?php
                             }
@@ -101,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <!-- Account -->
                                     <div class="card-body">
                                         <div class="d-flex align-items-start align-items-sm-center gap-4">
-                                            <img src="<?= $userdb['avatar'] ?>" alt="user-avatar"
+                                            <img src="<?= $session->getUserInfo("avatar") ?>" alt="user-avatar"
                                                 class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
                                         </div>
                                     </div>
@@ -112,32 +147,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <div class="mb-3 col-md-6">
                                                     <label for="username" class="form-label">Username</label>
                                                     <input class="form-control" type="text" id="username"
-                                                        name="username" value="<?= $userdb['username'] ?>"
+                                                        name="username" value="<?= $session->getUserInfo("username") ?>"
                                                         placeholder="jhondoe" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="firstName" class="form-label">First Name</label>
                                                     <input class="form-control" type="text" id="firstName"
                                                         name="firstName"
-                                                        value="<?= decrypt($userdb['first_name'], $ekey) ?>"
+                                                        value="<?= Encryption::decrypt($session->getUserInfo('first_name'), $ekey) ?>"
                                                         autofocus />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="lastName" class="form-label">Last Name</label>
                                                     <input class="form-control" type="text" name="lastName"
                                                         id="lastName"
-                                                        value="<?= decrypt($userdb['last_name'], $ekey) ?>" />
+                                                        value="<?= Encryption::decrypt($session->getUserInfo('last_name'), $ekey) ?>" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="email" class="form-label">E-mail</label>
                                                     <input class="form-control" type="email" id="email" name="email"
-                                                        value="<?= $userdb['email'] ?>"
+                                                        value="<?= $session->getUserInfo("email") ?>"
                                                         placeholder="john.doe@example.com" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="avatar" class="form-label">Avatar</label>
                                                     <input class="form-control" type="text" id="avatar" name="avatar"
-                                                        value="<?= $userdb['avatar'] ?>" />
+                                                        value="<?= $session->getUserInfo("avatar") ?>" />
                                                 </div>
 
                                                 <div class="mb-3 col-md-6">
@@ -158,9 +193,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                                 <div id="ads">
                                     <?php
-                                    if ($settings['enable_ads'] == "true") {
+                                    if (SettingsManager::getSetting("enable_ads") == "true") {
                                         ?>
-                                        <?= $settings['ads_code'] ?>
+                                        <?= SettingsManager::getSetting("ads_code") ?>
                                         <br>
                                         <?php
                                     }
@@ -201,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             client API and this is your login security token, so make sure not to share
                                             it!
                                         </p>
-                                        <code><?= $userdb['api_key'] ?></code>
+                                        <code><?= $session->getUserInfo("api_key") ?></code>
                                     </div>
                                     <div class="col-12 text-center">
                                         <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
@@ -226,7 +261,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                     <form method="GET" action="/user/security/delete_account" class="row g-3">
                                         <div class="col-12 text-center">
-                                            <button type="submit" name="key" value="<?= $_COOKIE['token'] ?>"
+                                            <button type="submit" name="key"
+                                                value="<?= mysqli_real_escape_string($conn, $_COOKIE['token']) ?>"
                                                 class="btn btn-danger me-sm-3 me-1">Delete user</button>
                                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
                                                 aria-label="Close">Cancel </button>
@@ -249,7 +285,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                     <form method="GET" action="/user/security/resetkey" class="row g-3">
                                         <div class="col-12 text-center">
-                                            <button type="submit" name="key" value="<?= $_COOKIE['token'] ?>"
+                                            <button type="submit" name="key"
+                                                value="<?= mysqli_real_escape_string($conn, $_COOKIE['token']) ?>"
                                                 class="btn btn-danger me-sm-3 me-1">Reset key</button>
                                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
                                                 aria-label="Close">Cancel </button>
@@ -276,7 +313,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 placeholder="" required />
                                         </div>
                                         <div class="col-12 text-center">
-                                            <button type="submit" name="key" value="<?= $_COOKIE['token'] ?>"
+                                            <button type="submit" name="key"
+                                                value="<?= mysqli_real_escape_string($conn, $_COOKIE['token']) ?>"
                                                 class="btn btn-danger me-sm-3 me-1">Reset password</button>
                                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
                                                 aria-label="Close">Cancel </button>

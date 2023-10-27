@@ -1,5 +1,7 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../../requirements/page.php');
+include(__DIR__ . '/../../requirements/admin.php');
 
 $apiPage = 20;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -20,7 +22,7 @@ $totalPages = ceil($totalapikeys / $apiPage);
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | API Keys
+        <?= SettingsManager::getSetting("name") ?> - API Keys
     </title>
     <style>
         .avatar-image {

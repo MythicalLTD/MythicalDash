@@ -1,15 +1,16 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
 $serverid = $_GET["id"];
 if (!is_numeric($serverid)) {
     header("location: /dashboard?=This server doesn't exist.");
 }
 // get current server info
-$ch = curl_init($settings['PterodactylURL'] . "/api/application/servers/$serverid");
+$ch = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers/$serverid");
 $headers = array(
     'Content-Type: application/json',
     'Accept: application/json',
-    'Authorization: Bearer ' . $settings['PterodactylAPIKey']
+    'Authorization: Bearer ' . SettingsManager::getSetting("PterodactylAPIKey")
 );
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -39,12 +40,12 @@ $useddatabases = 0;
 $usedbackup = 0;
 $servers = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
 foreach ($servers as $server) {
-    $ch = curl_init($settings['PterodactylURL'] . "/api/application/servers/" . $server['pid']);
+    $ch = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers/" . $server['pid']);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $headers = array(
         'Content-Type: application/json',
         'Accept: application/json',
-        'Authorization: Bearer ' . $settings['PterodactylAPIKey']
+        'Authorization: Bearer ' . SettingsManager::getSetting("PterodactylAPIKey")
     );
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     $result = curl_exec($ch);
@@ -76,11 +77,11 @@ $usedram = $usedram - $currentMemory;
 $useddisk = $useddisk - $currentDisk;
 $usedports = $usedports - $currentPorts;
 $useddatabases = $useddatabases - $currentDatabases;
-$freeram = $userdb["ram"] - $usedram;
-$freedisk = $userdb["disk"] - $useddisk;
-$freeports = $userdb["ports"] - $usedports;
-$freedatabases = $userdb["databases"] - $useddatabases;
-$freebackup = $userdb["backups"] - $usedbackup;
+$freeram = $session->getUserInfo("ram") - $usedram;
+$freedisk = $session->getUserInfo("disk") - $useddisk;
+$freeports = $session->getUserInfo("ports") - $usedports;
+$freedatabases = $session->getUserInfo("databases") - $useddatabases;
+$freebackup = $session->getUserInfo("backups") - $usedbackup;
 // check server exist
 $server = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "' AND pid = '$serverid'");
 if ($server->num_rows == 0) {
@@ -136,13 +137,13 @@ if (isset($_POST['submit'])) {
             $conn->close();
             die();
         }
-        if ($_POST['cores'] > ($userdb["cpu"] - $usedcpu) + $currentCpu) {
+        if ($_POST['cores'] > ($session->getUserInfo("cpu") - $usedcpu) + $currentCpu) {
             header("location: /dashboard?e=You don't have enough cpu.");
             $conn->close();
             die();
         }
         if ($_POST['disk'] > $freedisk) {
-            if ($useddisk1 > $userdb["disk_space"]) {
+            if ($useddisk1 > $session->getUserInfo("disk_space")) {
                 if ($_POST['disk'] > $currentDisk) {
                     header("location: /dashboard?e=Your in debt, you cannot increase disk.");
                     $conn->close();
@@ -161,7 +162,7 @@ if (isset($_POST['submit'])) {
 
         }
         if ($_POST['ports'] > $freeports) {
-            if ($usedports1 > $userdb["ports"]) {
+            if ($usedports1 > $session->getUserInfo("ports")) {
                 if ($_POST['ports'] > $currentPorts || $_POST['ports'] == $currentPorts) {
                     header("Location: /dashboard?e=You're in debt, you cannot increase ports.");
                     $conn->close();
@@ -175,7 +176,7 @@ if (isset($_POST['submit'])) {
         }
 
         if ($_POST['databases'] > $freedatabases) {
-            if ($useddatabases > $userdb["databases"]) {
+            if ($useddatabases > $session->getUserInfo("databases")) {
                 if ($_POST['databases'] > $currentDatabases || $_POST['databases'] == $currentDatabases) {
                     header("Location: /dashboard?e=You're in debt, you cannot increase databases.");
                     $conn->close();
@@ -189,7 +190,7 @@ if (isset($_POST['submit'])) {
         }
 
         if ($_POST['backups'] > $freebackup) {
-            if ($usedbackup > $userdb["backups"]) {
+            if ($usedbackup > $session->getUserInfo("backups")) {
                 if ($_POST['backups'] > $currentBackups || $_POST['backups'] == $currentBackups) {
                     header("Location: /dashboard?e=You're in debt, you cannot increase backups.");
                     $conn->close();
@@ -202,11 +203,11 @@ if (isset($_POST['submit'])) {
             }
         }
         // change server resources
-        $ch = curl_init($settings['PterodactylURL'] . "/api/application/servers/" . $serverid . "/build");
+        $ch = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers/" . $serverid . "/build");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Accept: application/json',
             'Content-Type: application/json',
-            'Authorization: Bearer ' . $settings['PterodactylAPIKey']
+            'Authorization: Bearer ' . SettingsManager::getSetting("PterodactylAPIKey")
         )
         );
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -255,7 +256,7 @@ if (isset($_POST['submit'])) {
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Edit Server
+        <?= SettingsManager::getSetting("name") ?> - Edit Server
     </title>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
@@ -276,8 +277,8 @@ if (isset($_POST['submit'])) {
                         <br>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
+                                echo SettingsManager::getSetting("ads_code");
                             }
                             ?>
                         </div>
@@ -311,8 +312,8 @@ if (isset($_POST['submit'])) {
                         <br>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
-                                echo $settings['ads_code'];
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
+                                echo SettingsManager::getSetting("ads_code");
                             }
                             ?>
                         </div>

@@ -1,21 +1,19 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
-if ($settings['enable_afk'] == "false") {
+if (SettingsManager::getSetting("enable_afk") == "false") {
     header('location: /');
 }
-if ($userdb['panel_id'] == "CLI") {
-    header('location: /admin/settings');
-}
 if (isset($_GET['getcoins'])) {
-    $coins = $userdb['coins'];
-    $idlemins = $userdb['minutes_afk'];
-    $lastseen = $userdb['last_seen'];
+    $coins = $session->getUserInfo("coins");
+    $idlemins = $session->getUserInfo("minutes_afk");
+    $lastseen = $session->getUserInfo("last_seen");
 
     function minutesToSeconds($minutes)
     {
         return $minutes * 60;
     }
-    $minutes = $settings['afk_min'];
+    $minutes = SettingsManager::getSetting("afk_min");
     $seconds = minutesToSeconds($minutes);
     $nseconds = $seconds + 1; // Initialize $nseconds after defining $seconds
 
@@ -25,8 +23,8 @@ if (isset($_GET['getcoins'])) {
     $currenttimestamp = $currenttime->getTimestamp();
 
     if ($idlecheck <= $currenttimestamp) {
-        $data1 = $coins + $settings['afk_coins_per_min'];
-        $data2 = $idlemins + $settings['afk_min'];
+        $data1 = $coins + SettingsManager::getSetting("afk_coins_per_min");
+        $data2 = $idlemins + SettingsManager::getSetting("afk_min");
         try {
             $conn->query("UPDATE `mythicaldash_users` SET `coins` = '$data1' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
             $conn->query("UPDATE `mythicaldash_users` SET `minutes_afk` = '$data2' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
@@ -44,7 +42,7 @@ if (isset($_GET['getcoins'])) {
     {
         return $minutes * 60;
     }
-    $minutes = $settings['afk_min'];
+    $minutes = SettingsManager::getSetting("afk_min");
     $seconds = minutesToSeconds($minutes);
     $nseconds = $seconds + 1;
 }
@@ -60,7 +58,7 @@ if (isset($_GET['getcoins'])) {
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | AFK
+        <?= SettingsManager::getSetting("name") ?> - AFK
     </title>
     <meta http-equiv="refresh" content="<?= $nseconds ?>;" />
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
@@ -81,9 +79,9 @@ if (isset($_GET['getcoins'])) {
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
-                                <?= $settings['ads_code'] ?>
+                                <?= SettingsManager::getSetting("ads_code") ?>
                                 <br>
                                 <?php
                             }
@@ -100,10 +98,10 @@ if (isset($_GET['getcoins'])) {
                                             earn,
                                             you can purchase things from the shop. </p>
                                         <p>You currently have
-                                            <?= $userdb['coins'] ?> coin(s)!
+                                            <?= $session->getUserInfo("coins") ?> coin(s)!
                                         </p>
                                         <p>You have been idling for
-                                            <?= $userdb['minutes_afk'] ?> minute(s)!
+                                            <?= $session->getUserInfo("minutes_afk") ?> minute(s)!
                                         </p>
                                         <p>You will get more coins in <span id="timer"></span>!</p>
                                     </div>
@@ -112,10 +110,10 @@ if (isset($_GET['getcoins'])) {
                         </div>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
                                 <br>
-                                <?= $settings['ads_code'] ?>
+                                <?= SettingsManager::getSetting("ads_code") ?>
                                 <br>
                                 <?php
                             }
@@ -123,10 +121,10 @@ if (isset($_GET['getcoins'])) {
                         </div>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
                                 <br>
-                                <?= $settings['ads_code'] ?>
+                                <?= SettingsManager::getSetting("ads_code") ?>
                                 <br>
                                 <?php
                             }

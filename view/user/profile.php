@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
 if (isset($_GET['id']) && !$_GET['id'] == "") {
     $user_query = "SELECT * FROM mythicaldash_users WHERE id = ?";
@@ -25,7 +26,7 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= $settings['name'] ?> | Profile
+        <?= SettingsManager::getSetting("name") ?> - Profile
     </title>
     <link rel="stylesheet" href="/assets/vendor/css/pages/page-profile.css" />
 </head>
@@ -89,10 +90,10 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
                         </div>
                         <div id="ads">
                             <?php
-                            if ($settings['enable_ads'] == "true") {
+                            if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
                                 <br>
-                                <?= $settings['ads_code'] ?>
+                                <?= SettingsManager::getSetting("ads_code") ?>
                                 <br>
                                 <?php
                             }
