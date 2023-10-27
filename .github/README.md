@@ -28,28 +28,27 @@ MythicalDash is one of the fastest dashboards out there. It has lightning-fast l
 
 Well, we created a table to compare the most commonly used pterodactyl clients, so you can see it for yourself!
 
-| Feature | MythicalDash | Dashactyl | Heliactyl | NorthClient  | HolaClient |
-| :---:   | :---: | :---: | :--: | :--: | :--: | 
-| Essentials Options | ✅|✅|✅|✅|✅|
-| Payment Options | 🔄|🔄|✅|✅|✅|
-| J4R | 🔄|✅|✅|✅|✅|
-| Referrals |🔄|✅|✅|✅|✅|
-| Linkvertise | ✅|❌|✅|✅|✅|
-| Custom Ads | ✅|❌|❌|✅|✅|
-| Purge System | ✅|❌|❌|❌|✅|
-| Legal |✅|❌|❌|❌|✅|
-|Telemetry|✅|❌|❌|❌|⚠️|
-| Safe | ✅ |❌|❌|❌|⚠️|
-| Leaderboards |✅|❌|❌|❌|❌|
-| Support System | ✅|❌|❌|❌|❌|
-| Easy Customizations | ✅|❌|❌|❌|❌|
-| Anti CSRF |✅|❌|❌|❌|❌|
-| Anti Bot |✅|❌|❌|❌|❌|
-| Custom (CSS/Header/HTML) |✅|❌|❌|❌|❌|
-| Leaderboards |✅|❌|❌|❌|❌|
-| Runs everywhere |✅|❌|❌|❌|❌|
-| CLI |✅|❌|❌|❌|❌|
-| API (Client/Admin) |🔄|❌|❌|❌|❌|
+| Feature | MythicalDash | Dashactyl | Heliactyl | NorthClient  | HolaClient | Meteor | 
+| :---:   | :---: | :---: | :--: | :--: | :--: | :--: |
+| Essentials Options | ✅|✅|✅|✅|✅|✅|
+| API (Client/Admin) |✅|❌|✅|✅|✅| ✅|
+| Payment Options | 🔄|🔄|✅|✅|✅|✅|
+| J4R | 🔄|✅|✅|✅|✅|✅|
+| Referrals |🔄|✅|✅|✅|✅|✅|
+| Linkvertise | ✅|❌|✅|✅|✅|✅|
+| Custom Ads | ✅|❌|❌|✅|✅|✅|
+| Purge System | ✅|⚠️|⚠️|⚠️|✅|✅|
+| Anti CSRF |✅|✅|✅|❌|✅|✅|
+| Anti Bot |✅|✅|✅|❌|✅|✅|
+|Telemetry|✅|⚠️|⚠️|⚠️|⚠️|✅|
+| Legal (Terms / Privacy)|✅|❌|❌|❌|✅|✅|
+| Leaderboards |✅|❌|❌|❌|❌|✅|
+| Support System | ✅|❌|❌|❌|❌|✅|
+| Easy Customizations | ✅|❌|❌|❌|❌|⚠️|
+| Custom (CSS/Header/HTML) |✅|❌|❌|❌|❌|✅|
+| Leaderboards |✅|❌|❌|❌|❌|✅|
+| Runs everywhere |✅|❌|❌|❌|❌|⚠️|
+| CLI |✅|❌|❌|❌|❌|✅|
 
 
 ## Demo
