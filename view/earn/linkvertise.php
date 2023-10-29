@@ -5,7 +5,7 @@ if (SettingsManager::getSetting("linkvertise_enabled") == "false") {
     header('location: /');
 }
 if (isset($_GET['key'])) {
-    $key = mysqli_escape_string($conn, $_GET['key']);
+    $key = mysqli_real_escape_string($conn, $_GET['key']);
     $result = mysqli_query($conn, "SELECT * FROM mythicaldash_linkvertise WHERE skey='$key'");
     if (mysqli_num_rows($result) > 0) {
         $usr_coins = $session->getUserInfo("coins");

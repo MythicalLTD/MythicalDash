@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../requirements/page.php');
 if (isset($_GET['code']) && !$_GET['code'] == "") {
     $user_query = "SELECT * FROM mythicaldash_redeem WHERE code = ?";
@@ -14,18 +15,18 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
         $newram = $session->getUserInfo("ram") + $redeemdb['ram'];
         $newdisk = $session->getUserInfo("disk") + $redeemdb['disk'];
         $newcpu = $session->getUserInfo("cpu") + $redeemdb['cpu'];
-        $new_server_limit = $session->getUserInfo("server_limit")+ $redeemdb['server_limit'];
+        $new_server_limit = $session->getUserInfo("server_limit") + $redeemdb['server_limit'];
         $newports = $session->getUserInfo("ports") + $redeemdb['ports'];
         $newdatabases = $session->getUserInfo("databases") + $redeemdb['databases'];
         $newbackups = $session->getUserInfo("backups") + $redeemdb['backups'];
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `ram` = '" . $newram . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `disk` = '" . $newdisk . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `cpu` = '" . $newcpu . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `server_limit` = '" . $new_server_limit . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `ports` = '" . $newports . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `databases` = '" . $newdatabases . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . $newbackups . "' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `ram` = '" . $newram . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `disk` = '" . $newdisk . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `cpu` = '" . $newcpu . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `server_limit` = '" . $new_server_limit . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `ports` = '" . $newports . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `databases` = '" . $newdatabases . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . $newbackups . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
         if ($redeemdb['uses'] > 1) {
             $newuses = $redeemdb['uses'] - 1;
             $conn->query("UPDATE `mythicaldash_redeem` SET `uses` = '" . $newuses . "' WHERE `mythicaldash_redeem`.`code` = '" . $code . "';");

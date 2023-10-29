@@ -26,9 +26,9 @@ if (isset($_GET['getcoins'])) {
         $data1 = $coins + SettingsManager::getSetting("afk_coins_per_min");
         $data2 = $idlemins + SettingsManager::getSetting("afk_min");
         try {
-            $conn->query("UPDATE `mythicaldash_users` SET `coins` = '$data1' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-            $conn->query("UPDATE `mythicaldash_users` SET `minutes_afk` = '$data2' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
-            $conn->query("UPDATE `mythicaldash_users` SET `last_seen` = '$currenttimestamp' WHERE `mythicaldash_users`.`api_key` = '" . $_COOKIE['token'] . "';");
+            $conn->query("UPDATE `mythicaldash_users` SET `coins` = '$data1' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+            $conn->query("UPDATE `mythicaldash_users` SET `minutes_afk` = '$data2' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+            $conn->query("UPDATE `mythicaldash_users` SET `last_seen` = '$currenttimestamp' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
             echo '<script>window.location.replace("/earn/afk");</script>';
         } catch (Exception $e) {
             echo $e;
