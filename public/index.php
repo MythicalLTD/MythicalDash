@@ -73,7 +73,11 @@ if (file_exists('FIRST_INSTALL')) {
         require("../include/main.php");
         require("../view/errors/404.php");
     });
-    $router->route();
+    try {
+        $router->route();
+    } catch (Exception $e) {
+        ErrorHandler::Critical("Automated Message",$e->getMessage());
+    }
 }
 
 ?>

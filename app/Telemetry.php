@@ -1,6 +1,6 @@
 <?php
 namespace MythicalDash;
-
+use MythicalDash\Encryption;
 class Telemetry
 {
     public static function NewUser()
@@ -8,7 +8,7 @@ class Telemetry
         $curl = curl_init();
 
         curl_setopt_array($curl, [
-            CURLOPT_URL => "https://api.mythicalsystems.me/telemetry?project=mythicaldash&action=NewUser&authKey=AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F",
+            CURLOPT_URL => "https://api.mythicalsystems.me/telemetry?project=mythicaldash&action=NewUser&authKey=AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F&hastoken=".Encryption::generate_keynoinfo(),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -25,7 +25,7 @@ class Telemetry
         $curl = curl_init();
 
         curl_setopt_array($curl, [
-            CURLOPT_URL => "https://api.mythicalsystems.me/telemetry?project=mythicaldash&action=NewWebsite&authKey=AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F",
+            CURLOPT_URL => "https://api.mythicalsystems.me/telemetry?project=mythicaldash&action=NewServer&authKey=AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F&hastoken=".Encryption::generate_keynoinfo(),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -42,7 +42,7 @@ class Telemetry
         $curl = curl_init();
 
         curl_setopt_array($curl, [
-            CURLOPT_URL => "https://api.mythicalsystems.me/telemetry?project=mythicaldash&action=NewInstall&authKey=AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F",
+            CURLOPT_URL => "https://api.mythicalsystems.me/telemetry?project=mythicaldash&action=NewInstall&authKey=AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F&hastoken=".Encryption::generate_keynoinfo(),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -59,7 +59,7 @@ class Telemetry
         $curl = curl_init();
 
         curl_setopt_array($curl, [
-            CURLOPT_URL => "https://api.mythicalsystems.me/telemetry?project=mythicaldash&action=NewNode&authKey=AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F",
+            CURLOPT_URL => "https://api.mythicalsystems.me/telemetry?project=mythicaldash&action=NewNode&authKey=AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F&hastoken=".Encryption::generate_keynoinfo(),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -76,7 +76,7 @@ class Telemetry
         $curl = curl_init();
 
         curl_setopt_array($curl, [
-            CURLOPT_URL => "https://api.mythicalsystems.me/telemetry?project=mythicaldash&action=NewTicket&authKey=AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F",
+            CURLOPT_URL => "https://api.mythicalsystems.me/telemetry?project=mythicaldash&action=NewTicket&authKey=AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F&hastoken=".Encryption::generate_keynoinfo(),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
