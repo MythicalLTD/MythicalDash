@@ -35,38 +35,28 @@ use MythicalDash\SettingsManager;
 
 if (!fis_active_page(['/e/adblock'])) {
     if (SettingsManager::getSetting("enable_adblocker_detection") == "true") {
-        if (isset($_COOKIE['token']) && !$_COOKIE['token'] == "") {
-            if (!$session->getUserInfo('role') == "Administrator") {
-                ?>
-                <script>
-                    let fakeAd = document.createElement("div");
-                    fakeAd.className =
-                        "textads banner-ads banner_ads ad-unit ad-zone ad-space adsbox"
+        ?>
+        <script>
+            let fakeAd = document.createElement("div");
+            fakeAd.className =
+                "textads banner-ads banner_ads ad-unit ad-zone ad-space adsbox"
 
-                    fakeAd.style.height = "1px"
+            fakeAd.style.height = "1px"
 
-                    document.body.appendChild(fakeAd)
+            document.body.appendChild(fakeAd)
 
-                    let x_width = fakeAd.offsetHeight;
-                    let msg = document.getElementById("msg")
+            let x_width = fakeAd.offsetHeight;
+            let msg = document.getElementById("msg")
 
 
-                    if (x_width) {
+            if (x_width) {
 
-                    } else {
-                        window.location.replace("/e/adblock");
-                    }
-
-                </script>
-                <?php
             } else {
-                ?>
-                <script>
-                    console.warn("You bypassed the Anti-AdBlock protection");   
-                </script>
-                <?php
+                window.location.replace("/e/adblock");
             }
-        }
+
+        </script>
+        <?php
     }
 }
 
