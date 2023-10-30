@@ -144,12 +144,6 @@
                         <div data-i18n="Sponsor on Github">Sponsor on Github</div>
                       </a>
                     </li>
-                    <li class="menu-item">
-                      <a href="layouts-container.html" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-cup"></i>
-                        <div data-i18n="Buy Me A Coffee">Buy Me A Coffee</div>
-                      </a>
-                    </li>
                   </ul>
                 </li>
           </aside>

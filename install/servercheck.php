@@ -177,12 +177,6 @@ if ($phpVersion >= '8.0' && $phpVersion <= '8.3') {
                           <div data-i18n="Sponsor on Github">Sponsor on Github</div>
                         </a>
                       </li>
-                      <li class="menu-item">
-                        <a href="layouts-container.html" class="menu-link">
-                          <i class="menu-icon tf-icons ti ti-cup"></i>
-                          <div data-i18n="Buy Me A Coffee">Buy Me A Coffee</div>
-                        </a>
-                      </li>
                     </ul>
                   </li>
             </aside>
@@ -409,12 +403,6 @@ foreach ($requiredExtensions as $ext) {
                             <div data-i18n="Sponsor on Github">Sponsor on Github</div>
                           </a>
                         </li>
-                        <li class="menu-item">
-                          <a href="layouts-container.html" class="menu-link">
-                            <i class="menu-icon tf-icons ti ti-cup"></i>
-                            <div data-i18n="Buy Me A Coffee">Buy Me A Coffee</div>
-                          </a>
-                        </li>
                       </ul>
                     </li>
               </aside>
@@ -637,12 +625,6 @@ if (!is_writable(__DIR__)) {
                           <div data-i18n="Sponsor on Github">Sponsor on Github</div>
                         </a>
                       </li>
-                      <li class="menu-item">
-                        <a href="layouts-container.html" class="menu-link">
-                          <i class="menu-icon tf-icons ti ti-cup"></i>
-                          <div data-i18n="Buy Me A Coffee">Buy Me A Coffee</div>
-                        </a>
-                      </li>
                     </ul>
                   </li>
             </aside>
@@ -857,12 +839,6 @@ if (!is_writable(__DIR__)) {
                       <a href="https://github.com/sponsors/NaysKutzu" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-brand-github"></i>
                         <div data-i18n="Sponsor on Github">Sponsor on Github</div>
-                      </a>
-                    </li>
-                    <li class="menu-item">
-                      <a href="layouts-container.html" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-cup"></i>
-                        <div data-i18n="Buy Me A Coffee">Buy Me A Coffee</div>
                       </a>
                     </li>
                   </ul>
