@@ -61,7 +61,7 @@ if (isset($_GET['edit_user'])) {
                     $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . $backups . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
                     $conn->query("UPDATE `mythicaldash_users` SET `banned` = '" . $banned . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
                     $conn->close();
-                    $api_url = SettingsManager::getSetting("PterodactylURL")."/api/application/users/".$user_info['panel_id']."";
+                    $api_url = SettingsManager::getSetting("PterodactylURL") . "/api/application/users/" . $user_info['panel_id'] . "";
                     $data = [
                         "email" => $_GET['email'],
                         "username" => $_GET['username'],
@@ -77,7 +77,7 @@ if (isset($_GET['edit_user'])) {
                     curl_setopt($ch, CURLOPT_HTTPHEADER, [
                         "Accept: application/json",
                         "Content-Type: application/json",
-                        "Authorization: Bearer ".SettingsManager::getSetting("PterodactylAPIKey")
+                        "Authorization: Bearer " . SettingsManager::getSetting("PterodactylAPIKey")
                     ]);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $data_json);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -91,7 +91,7 @@ if (isset($_GET['edit_user'])) {
                         curl_close($ch);
                         die();
                     } else {
-                        header("location: /admin/users/edit?id=".$_GET["id"]."&e=Failed to update the user settings inside the panel");
+                        header("location: /admin/users/edit?id=" . $_GET["id"] . "&e=Failed to update the user settings inside the panel");
                         curl_close($ch);
                         die();
                     }

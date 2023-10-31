@@ -15,7 +15,7 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
         $email = $user_info['email'];
         $password = $user_info['password'];
         $skey = Encryption::generate_key($email, $password);
-        $conn->query("UPDATE `mythicaldash_users` SET `api_key` = '" . $skey . "' WHERE `mythicaldash_users`.`id` = " .mysqli_real_escape_string($conn, $_GET['id'])  . ";");
+        $conn->query("UPDATE `mythicaldash_users` SET `api_key` = '" . $skey . "' WHERE `mythicaldash_users`.`id` = " . mysqli_real_escape_string($conn, $_GET['id']) . ";");
         header('location: /admin/users/edit?id=' . $_GET['id'] . '&s=We updated the user settings in the database');
         $conn->close();
         die();

@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\ErrorHandler;
 include (__DIR__ . '/../../requirements/page.php');
 include (__DIR__ . '/../../requirements/admin.php');
 try {
@@ -15,6 +16,7 @@ try {
         die ();
     }
 } catch (Exception $ex) {
+    ErrorHandler::Critical("Failed to update settings ",$e);
     header('location: /admin/settings?e=Failed to update the settings inside the database');
     die ();
 }

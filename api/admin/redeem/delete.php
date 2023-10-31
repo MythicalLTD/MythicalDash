@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\ErrorHandler;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if (isset($_POST['code']) && !$_POST['code'] == "") {
@@ -36,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
     } catch (Exception $e) {
+        ErrorHandler::Critical("Redeem Delete ",$e);
         $rsp = array(
             "code" => 500,
             "error" => "The server encountered a situation it doesn't know how to handle.",

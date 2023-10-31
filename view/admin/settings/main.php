@@ -125,6 +125,35 @@ include(__DIR__ . '/../../requirements/admin.php');
                             <div class="card-body">
                                 <form action="/admin/settings/discord" method="GET">
                                     <div class="row">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Enable Oath2</label>
+                                            <div>
+                                                <?php
+                                                if (SettingsManager::getSetting("enable_discord_link") == 'true') {
+                                                    ?>
+                                                    <select name="discord:enable" class="form-control">
+                                                        <option value="true">True</option>
+                                                        <option value="false">False</option>
+                                                    </select>
+                                                    <?php
+                                                } else if (SettingsManager::getSetting("enable_discord_link") == 'false') {
+                                                    ?>
+                                                        <select name="discord:enable" class="form-control">
+                                                            <option value="false">False</option>
+                                                            <option value="true">True</option>
+                                                        </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                        <select name="discord:enable" class="form-control">
+                                                            <option value="false">True</option>
+                                                            <option value="false">False</option>
+                                                        </select>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
                                         <div class="mb-3 col-md-6">
                                             <label for="discord:serverid" class="form-label">Discord Server ID</label>
                                             <input class="form-control" type="text" id="discord:serverid"
@@ -370,14 +399,14 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Encryption</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("enable_smtp") == 'ssl') {
+                                                if (SettingsManager::getSetting("smtpSecure") == 'ssl') {
                                                     ?>
                                                     <select name="mail:encryption" class="form-control">
                                                         <option value="ssl">SSL</option>
                                                         <option value="tls">TLS</option>
                                                     </select>
                                                     <?php
-                                                } else if (SettingsManager::getSetting("enable_smtp") == 'tls') {
+                                                } else if (SettingsManager::getSetting("smtpSecure") == 'tls') {
                                                     ?>
                                                         <select name="mail:encryption" class="form-control">
                                                             <option value="tls">TLS</option>
@@ -606,8 +635,15 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         <div class="form-group col-md-5">
                                             <label class="control-label">Key</label>
                                             <div>
-                                                <input type="text" required="" class="form-control" name="ads:code"
+                                                <input type="number" required="" class="form-control" name="ads:code"
                                                     value="<?= SettingsManager::getSetting("linkvertise_code") ?>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-5">
+                                            <label class="control-label">Coins</label>
+                                            <div>
+                                                <input type="number" required="" class="form-control" name="ads:coins"
+                                                    value="<?= SettingsManager::getSetting("linkvertise_coins") ?>">
                                             </div>
                                         </div>
                                         <br>

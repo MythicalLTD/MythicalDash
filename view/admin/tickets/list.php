@@ -1,8 +1,9 @@
 <?php
 use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../../requirements/page.php');
 if ($session->getUserInfo("role") == "Administrator" || $session->getUserInfo("role") == "Support") {
-    
+
 } else {
     header('location: /e/401');
     die();
@@ -37,9 +38,9 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
 </head>
 
 <body>
-  <div id="preloader" class="discord-preloader">
-    <div class="spinner"></div>
-  </div>
+    <div id="preloader" class="discord-preloader">
+        <div class="spinner"></div>
+    </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../../components/sidebar.php') ?>

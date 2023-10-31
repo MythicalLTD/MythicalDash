@@ -1,121 +1,124 @@
 <?php
 use MythicalDash\CloudFlare\Captcha;
+use MythicalDash\ErrorHandler;
 use MythicalDash\SettingsManager;
 use MythicalDash\Encryption;
 use MythicalDash\Telemetry;
 use MythicalDash\SessionManager;
 use MythicalDash\Database\Connect;
-$conn = new Connect();
-$conn = $conn->connectToDatabase();
-$session = new SessionManager();
-session_start();
-$csrf = new MythicalDash\CSRF();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($csrf->validate('register-form')) {
-        if (isset($_POST['sign_up'])) {
-            if (SettingsManager::getSetting("enable_turnstile") == "false") {
-                $captcha_success = 1;
-            } else {
-                $captcha_success = Captcha::validate_captcha($_POST["cf-turnstile-response"], $session->getIP(), SettingsManager::getSetting("turnstile_secretkey"));
-            }
-            if ($captcha_success) {
-                if (!SettingsManager::getSetting("PterodactylURL") == "" && !SettingsManager::getSetting("PterodactylAPIKey") == "") {
-                    $username = mysqli_real_escape_string($conn, $_POST['username']);
-                    $email = mysqli_real_escape_string($conn, $_POST['email']);
-                    $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
-                    $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
-                    $upassword = mysqli_real_escape_string($conn, $_POST['password']);
-                    $insecure_passwords = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy");
-                    if (in_array($upassword, $insecure_passwords)) {
-                        header('location: /auth/register?e=Password is not secure. Please choose a different one');
-                        die();
-                    }
-                    $blocked_usernames = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy", "plexed", "badsk", "username", "Username", "Admin", "sex", "porn", "nudes", "nude", "ass", "hacker", "bigdick");
-                    if (in_array($username, $blocked_usernames)) {
-                        header('location: /auth/register?e=It looks like we blocked this username from being used. Please choose another username.');
-                        die();
-                    }
-                    if (preg_match("/[^a-zA-Z]+/", $username)) {
-                        header('location: /auth/register?e=Please only use characters from A-Z in your username!');
-                        die();
-                    }
-                    if (preg_match("/[^a-zA-Z]+/", $first_name)) {
-                        header('location: /auth/register?e=Please only use characters from A-Z in your first name!');
-                        die();
-                    }
-                    if (preg_match("/[^a-zA-Z]+/", $last_name)) {
-                        header('location: /auth/register?e=Please only use characters from A-Z in your last name!');
-                        die();
-                    }
-                    $password = password_hash($upassword, PASSWORD_BCRYPT);
-                    $skey = Encryption::generate_key($email, $password);
-                    if (!$username == "" || !$email == "" || !$first_name == "" || !$last_name == "" || !$upassword == "") {
-                        $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
-                        $result = mysqli_query($conn, $check_query);
-                        if (!mysqli_num_rows($result) > 0) {
-                            $aquery = "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $session->getIP() . "'";
-                            $aresult = mysqli_query($conn, $aquery);
-                            $acount = mysqli_num_rows($aresult);
-                            if ($acount >= 1) {
-                                header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use temporary accounts, which is not allowed.');
-                                die();
-                            } else {
-                                $vpn = false;
-                                $response = file_get_contents("http://ip-api.com/json/" . $session->getIP() . "?fields=status,message,country,regionName,city,timezone,isp,org,as,mobile,proxy,hosting,query");
-                                $response = json_decode($response, true);
-                                if (isset($response['proxy'])) {
-                                    if ($response['proxy'] == true || $response['hosting'] == true) {
+try {
+    $conn = new Connect();
+    $conn = $conn->connectToDatabase();
+    $session = new SessionManager();
+    session_start();
+    $csrf = new MythicalDash\CSRF();
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($csrf->validate('register-form')) {
+            if (isset($_POST['sign_up'])) {
+                if (SettingsManager::getSetting("enable_turnstile") == "false") {
+                    $captcha_success = 1;
+                } else {
+                    $captcha_success = Captcha::validate_captcha($_POST["cf-turnstile-response"], $session->getIP(), SettingsManager::getSetting("turnstile_secretkey"));
+                }
+                if ($captcha_success) {
+                    if (!SettingsManager::getSetting("PterodactylURL") == "" && !SettingsManager::getSetting("PterodactylAPIKey") == "") {
+                        $username = mysqli_real_escape_string($conn, $_POST['username']);
+                        $email = mysqli_real_escape_string($conn, $_POST['email']);
+                        $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
+                        $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
+                        $upassword = mysqli_real_escape_string($conn, $_POST['password']);
+                        $insecure_passwords = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy");
+                        if (in_array($upassword, $insecure_passwords)) {
+                            header('location: /auth/register?e=Password is not secure. Please choose a different one');
+                            die();
+                        }
+                        $blocked_usernames = array("password", "1234", "qwerty", "letmein", "admin", "pass", "123456789", "dad", "mom", "kek", "fuck", "pussy", "plexed", "badsk", "username", "Username", "Admin", "sex", "porn", "nudes", "nude", "ass", "hacker", "bigdick");
+                        if (in_array($username, $blocked_usernames)) {
+                            header('location: /auth/register?e=It looks like we blocked this username from being used. Please choose another username.');
+                            die();
+                        }
+                        if (preg_match("/[^a-zA-Z]+/", $username)) {
+                            header('location: /auth/register?e=Please only use characters from A-Z in your username!');
+                            die();
+                        }
+                        if (preg_match("/[^a-zA-Z]+/", $first_name)) {
+                            header('location: /auth/register?e=Please only use characters from A-Z in your first name!');
+                            die();
+                        }
+                        if (preg_match("/[^a-zA-Z]+/", $last_name)) {
+                            header('location: /auth/register?e=Please only use characters from A-Z in your last name!');
+                            die();
+                        }
+                        $password = password_hash($upassword, PASSWORD_BCRYPT);
+                        $skey = Encryption::generate_key($email, $password);
+                        if (!$username == "" || !$email == "" || !$first_name == "" || !$last_name == "" || !$upassword == "") {
+                            $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
+                            $result = mysqli_query($conn, $check_query);
+                            if (!mysqli_num_rows($result) > 0) {
+                                $aquery = "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $session->getIP() . "'";
+                                $aresult = mysqli_query($conn, $aquery);
+                                $acount = mysqli_num_rows($aresult);
+                                if ($acount >= 1) {
+                                    header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use temporary accounts, which is not allowed.');
+                                    die();
+                                } else {
+                                    $vpn = false;
+                                    $response = file_get_contents("http://ip-api.com/json/" . $session->getIP() . "?fields=status,message,country,regionName,city,timezone,isp,org,as,mobile,proxy,hosting,query");
+                                    $response = json_decode($response, true);
+                                    if (isset($response['proxy'])) {
+                                        if ($response['proxy'] == true || $response['hosting'] == true) {
+                                            $vpn = true;
+                                        }
+                                    }
+                                    if ($response['type'] = !"Residential") {
                                         $vpn = true;
                                     }
-                                }
-                                if ($response['type'] = !"Residential") {
-                                    $vpn = true;
-                                }
-                                if ($session->getIP() == "51.161.152.218" || $session->getIP() == "66.220.20.165") {
-                                    $vpn = false;
-                                }
-                                if ($vpn == true) {
-                                    header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
-                                    die();
-                                }
-                                $ch = curl_init();
-                                curl_setopt($ch, CURLOPT_URL, SettingsManager::getSetting("PterodactylURL") . '/api/application/users');
-                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                                curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                                    'Accept: application/json',
-                                    'Authorization: Bearer ' . SettingsManager::getSetting("PterodactylAPIKey"),
-                                    'Content-Type: application/json',
-                                ]);
-                                curl_setopt($ch, CURLOPT_POST, true);
-                                $data = [
-                                    'email' => $email,
-                                    'username' => $username,
-                                    'first_name' => $first_name,
-                                    'last_name' => $last_name,
-                                    'password' => $upassword,
-                                    'language' => 'en',
-                                ];
-                                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-                                $response = curl_exec($ch);
-                                $responseData = json_decode($response, true);
-                                $panelId = $responseData['attributes']['id'];
-                                $panel_username = $responseData['attributes']['username'];
-                                if (curl_errno($ch)) {
+                                    if ($session->getIP() == "51.161.152.218" || $session->getIP() == "66.220.20.165") {
+                                        $vpn = false;
+                                    }
+                                    if ($vpn == true) {
+                                        header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
+                                        die();
+                                    }
+                                    $ch = curl_init();
+                                    curl_setopt($ch, CURLOPT_URL, SettingsManager::getSetting("PterodactylURL") . '/api/application/users');
+                                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                                        'Accept: application/json',
+                                        'Authorization: Bearer ' . SettingsManager::getSetting("PterodactylAPIKey"),
+                                        'Content-Type: application/json',
+                                    ]);
+                                    curl_setopt($ch, CURLOPT_POST, true);
+                                    $data = [
+                                        'email' => $email,
+                                        'username' => $username,
+                                        'first_name' => $first_name,
+                                        'last_name' => $last_name,
+                                        'password' => $upassword,
+                                        'language' => 'en',
+                                    ];
+                                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+                                    $response = curl_exec($ch);
+                                    $responseData = json_decode($response, true);
+                                    $panelId = $responseData['attributes']['id'];
+                                    $panel_username = $responseData['attributes']['username'];
+                                    if (curl_errno($ch)) {
 
-                                } else {
+                                    } else {
 
-                                }
-                                curl_close($ch);
-                                $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$skey')");
-                                $default = "https://www.gravatar.com/avatar/00000000000000000000000000000000";
-                                $grav_url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default);
-                                if (file_exists("FIRST_USER")) {
-                                    $role = "Administrator";
-                                } else {
-                                    $role = "User";
-                                }
-                                $conn->query("INSERT INTO `mythicaldash_users` 
+                                    }
+                                    curl_close($ch);
+                                    $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$skey')");
+                                    $default = "https://www.gravatar.com/avatar/00000000000000000000000000000000";
+                                    $grav_url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default);
+                                    if (file_exists("FIRST_USER")) {
+                                        $role = "Administrator";
+                                    } else {
+                                        $role = "User";
+                                    }
+                                    $conn->query("INSERT INTO `mythicaldash_users` 
                                 (`panel_id`,
                                 `email`,
                                 `username`,
@@ -143,10 +146,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 '" . $password . "',
                                 '" . $skey . "',
                                 '" . $grav_url . "',
-                                '".$role."',
+                                '" . $role . "',
                                 '" . SettingsManager::getSetting("def_coins") . "',
                                 '" . SettingsManager::getSetting("def_memory") . "',
-                                '" . SettingsManager::getSetting("def_disk_space"). "',
+                                '" . SettingsManager::getSetting("def_disk_space") . "',
                                 '" . SettingsManager::getSetting("def_cpu") . "',
                                 '" . SettingsManager::getSetting("def_server_limit") . "',
                                 '" . SettingsManager::getSetting("def_port") . "',
@@ -154,32 +157,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 '" . SettingsManager::getSetting("def_backups") . "',
                                 '" . $session->getIP() . "'
                                 );");
-                                $conn->close();
-                                if (file_exists("FIRST_USER")) { 
-                                    unlink("FIRST_USER");
+                                    $conn->close();
+                                    if (file_exists("FIRST_USER")) {
+                                        unlink("FIRST_USER");
+                                    }
+                                    Telemetry::NewUser();
+                                    header('location: /auth/login');
+                                    die();
                                 }
-                                Telemetry::NewUser();
-                                header('location: /auth/login');
+                            } else {
+                                header('location: /auth/register?e=Username or email already exists. Please choose a different one');
                                 die();
                             }
                         } else {
-                            header('location: /auth/register?e=Username or email already exists. Please choose a different one');
+                            header('location: /auth/register?e=Please fill in all the required info');
                             die();
                         }
                     } else {
-                        header('location: /auth/register?e=Please fill in all the required info');
+                        header("location: /auth/register?e=I'm sorry, but it looks like the pterodactyl panel is not linked to the dash.");
                         die();
                     }
                 } else {
-                    header("location: /auth/register?e=I'm sorry, but it looks like the pterodactyl panel is not linked to the dash.");
+                    header("location: /auth/register?e=Captcha verification failed; please refresh!");
                     die();
                 }
-            } else {
-                header("location: /auth/register?e=Captcha verification failed; please refresh!");
-                die();
             }
         }
     }
+} catch (Exception $e) {
+    header("location: /auth/register?e=An unexpected error occurred!");
+    ErrorHandler::Error("Register ", $e);
+    die();
 }
 ?>
 <!DOCTYPE html>
@@ -266,7 +274,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if (SettingsManager::getSetting("enable_turnstile") == "true") {
                             ?>
                             <center>
-                                <div class="cf-turnstile" data-sitekey="<?= SettingsManager::getSetting("turnstile_sitekey") ?>"></div>
+                                <div class="cf-turnstile"
+                                    data-sitekey="<?= SettingsManager::getSetting("turnstile_sitekey") ?>"></div>
                             </center>
                             &nbsp;
                             <?php
@@ -304,7 +313,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="text-center mb-4">
                             <h3 class="mb-2">Terms of service</h3>
                             <p>
-                            <?= SettingsManager::getSetting("terms_of_service") ?>
+                                <?= SettingsManager::getSetting("terms_of_service") ?>
                         </div>
                         <div class="col-12 text-center">
                             <button type="button" data-bs-toggle="modal" data-bs-target="#pp"
@@ -325,7 +334,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="text-center mb-4">
                             <h3 class="mb-2">Privacy Policy</h3>
                             <p>
-                            <?= SettingsManager::getSetting("privacy_policy") ?>
+                                <?= SettingsManager::getSetting("privacy_policy") ?>
                         </div>
                         <div class="col-12 text-center">
                             <button type="button" data-bs-toggle="modal" data-bs-target="#tos" name="id" value=""

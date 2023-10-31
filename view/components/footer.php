@@ -1,3 +1,7 @@
+<?php 
+use MythicalDash\SettingsManager;
+
+?>
 <footer class="content-footer footer bg-footer-theme">
   <div class="container-xxl">
     <div
@@ -11,8 +15,7 @@
         made with ❤️ by <a href="https://github.com/mythicalltd" target="_blank" class="fw-semibold">MythicalSystems</a>
       </div>
       <div>
-        <a href="https://github.com/sponsors/nayskutzu" class="footer-link me-4" target="_blank">Support us</a>
-        <a href="https://docs.mythicalsystems.me" target="_blank" class="footer-link me-4">Documentation</a>
+        <a href="<?= SettingsManager::getSetting("PterodactylURL")?>" target="_blank" class="footer-link me-4">Pterodactyl</a>
         <a href="/help-center/tos" target="_blank" class="footer-link me-4" >Terms of Service</a>
         <a href="/help-center/pp" target="_blank" class="footer-link d-none d-sm-inline-block" >Privacy Policy</a>
       </div>

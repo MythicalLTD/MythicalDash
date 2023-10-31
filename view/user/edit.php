@@ -29,12 +29,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $conn->query("UPDATE `mythicaldash_users` SET `avatar` = '" . $avatar . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
                     $conn->query("UPDATE `mythicaldash_users` SET `email` = '" . $email . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
                     $conn->close();
-                    $api_url = SettingsManager::getSetting("PterodactylURL") . "/api/application/users/" . $user_info['panel_id'] . "";
+                    $api_url = SettingsManager::getSetting("PterodactylURL") . "/api/application/users/" . $userdb['panel_id'] . "";
                     $data = [
-                        "email" => $_GET['email'],
-                        "username" => $_GET['username'],
-                        "first_name" => $_GET['firstName'],
-                        "last_name" => $_GET['lastName'],
+                        "email" => $_POST['email'],
+                        "username" => $_POST['username'],
+                        "first_name" => $_POST['firstName'],
+                        "last_name" => $_POST['lastName'],
                         "language" => "en"
                     ];
 

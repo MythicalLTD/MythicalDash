@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../requirements/page.php');
 if (isset($_GET['id']) && !$_GET['id'] == "") {
     $user_query = "SELECT * FROM mythicaldash_users WHERE id = ?";

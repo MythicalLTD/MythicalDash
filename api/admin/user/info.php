@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\Encryption;
+use MythicalDash\ErrorHandler;
 include(__DIR__ . "/../base.php");
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
@@ -75,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
     } catch (Exception $e) {
+        ErrorHandler::Critical("User Info ",$e);
         $rsp = array(
             "code" => 500,
             "error" => "The server encountered a situation it doesn't know how to handle.",

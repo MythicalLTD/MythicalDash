@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\ErrorHandler;
 include(__DIR__ . "/../base.php");
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -146,6 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
     } catch (Exception $e) {
+        ErrorHandler::Critical("Redeem Create ",$e);
         $rsp = array(
             "code" => 500,
             "error" => "The server encountered a situation it doesn't know how to handle.",

@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\ErrorHandler;
 include("base.php");
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
@@ -47,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             "message" => "We are sorry, but our server can't handle this request. Please do not try again!"
         );
         http_response_code(500);
+        ErrorHandler::Critical("Statistics ",$e);
         die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 } else {

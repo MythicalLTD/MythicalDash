@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\ErrorHandler;
 include (__DIR__ . '/../../requirements/page.php');
 include (__DIR__ . '/../../requirements/admin.php');
 try {
@@ -11,7 +12,7 @@ try {
         $mail_password = mysqli_real_escape_string($conn, $_GET['mail:password']);
         $mail_from_address = mysqli_real_escape_string($conn, $_GET['mail:from:address']);
         mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `enable_smtp` = '" . $mail_enable . "' WHERE `mythicaldash_settings`.`id` = 1;");
-        mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `smtpHost` = '" . $mail_encrytion . "' WHERE `mythicaldash_settings`.`id` = 1;");
+        mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `smtpSecure` = '" . $mail_encrytion . "' WHERE `mythicaldash_settings`.`id` = 1;");
         mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `smtpHost` = '" . $mail_host . "' WHERE `mythicaldash_settings`.`id` = 1;");
         mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `smtpPort` = '" . $mail_port . "' WHERE `mythicaldash_settings`.`id` = 1;");
         mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `smtpUsername` = '" . $mail_username . "' WHERE `mythicaldash_settings`.`id` = 1;");
@@ -25,6 +26,7 @@ try {
         die ();
     }
 } catch (Exception $ex) {
+    ErrorHandler::Critical("Failed to update settings ",$e);
     header('location: /admin/settings?e=Failed to update the settings inside the database');
     die ();
 }

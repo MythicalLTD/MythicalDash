@@ -1,7 +1,8 @@
 <?php
 use MythicalDash\SettingsManager;
-include (__DIR__ . '/../../requirements/page.php');
-include (__DIR__ . '/../../requirements/admin.php');
+
+include(__DIR__ . '/../../requirements/page.php');
+include(__DIR__ . '/../../requirements/admin.php');
 $usersPerPage = 20;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
 $offset = ($page - 1) * $usersPerPage;
@@ -24,7 +25,7 @@ $totalPages = ceil($totalUsers / $usersPerPage);
     data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
 
 <head>
-    <?php include (__DIR__ . '/../../requirements/head.php'); ?>
+    <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
         <?= SettingsManager::getSetting("name") ?> - Users
     </title>
@@ -40,18 +41,18 @@ $totalPages = ceil($totalUsers / $usersPerPage);
 </head>
 
 <body>
-  <div id="preloader" class="discord-preloader">
-    <div class="spinner"></div>
-  </div>
+    <div id="preloader" class="discord-preloader">
+        <div class="spinner"></div>
+    </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
-            <?php include (__DIR__ . '/../../components/sidebar.php') ?>
+            <?php include(__DIR__ . '/../../components/sidebar.php') ?>
             <div class="layout-page">
-                <?php include (__DIR__ . '/../../components/navbar.php') ?>
+                <?php include(__DIR__ . '/../../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Users</h4>
-                    <?php include (__DIR__ . '/../../components/alert.php') ?>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Users</h4>
+                        <?php include(__DIR__ . '/../../components/alert.php') ?>
                         <!-- Search Form -->
                         <form class="mt-4">
                             <div class="input-group mb-3">
@@ -80,20 +81,20 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                                     </thead>
                                     <tbody class="table-border-bottom-0">
                                         <?php
-                                            if ($result->num_rows > 0) {
-                                                while ($row = $result->fetch_assoc()) {
-                                                    echo '<tr>';
-                                                    echo "<td><img src='" . $row['avatar'] . "' alt='Avatar' class='rounded-circle avatar-image'></td>";
-                                                    echo '<td>' . $row['username'] . '</td>';
-                                                    echo '<td>' . $row['email'] . '</td>';
-                                                    echo '<td>' . $row['role'] . '</td>';
-                                                    echo '<td>' . $row['registred'] . '</td>';
-                                                    echo '<td><a href="/admin/users/edit?id=' . $row['id'] . '" class="btn btn-primary">Edit</a>&nbsp;<a href="/admin/users/delete?id=' . $row['id'] . '" class="btn btn-danger">Delete</a></td>';
-                                                    echo '</tr>';
-                                                }
-                                            } else {
-                                                echo "<tr><td colspan='5'>No users found.</td></tr>";
+                                        if ($result->num_rows > 0) {
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo '<tr>';
+                                                echo "<td><img src='" . $row['avatar'] . "' alt='Avatar' class='rounded-circle avatar-image'></td>";
+                                                echo '<td>' . $row['username'] . '</td>';
+                                                echo '<td>' . $row['email'] . '</td>';
+                                                echo '<td>' . $row['role'] . '</td>';
+                                                echo '<td>' . $row['registred'] . '</td>';
+                                                echo '<td><a href="/admin/users/edit?id=' . $row['id'] . '" class="btn btn-primary">Edit</a>&nbsp;<a href="/admin/users/delete?id=' . $row['id'] . '" class="btn btn-danger">Delete</a></td>';
+                                                echo '</tr>';
                                             }
+                                        } else {
+                                            echo "<tr><td colspan='5'>No users found.</td></tr>";
+                                        }
                                         ?>
                                     </tbody>
                                 </table>
@@ -102,14 +103,14 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                         <nav aria-label="Page navigation">
                             <ul class="pagination justify-content-center mt-4">
                                 <?php
-                                    for ($i = 1; $i <= $totalPages; $i++) {
-                                        echo '<li class="page-item ' . ($i == $page ? 'active' : '') . '"><a class="page-link" href="?page=' . $i . '&search=' . $searchKeyword . '">' . $i . '</a></li>';
-                                    }
+                                for ($i = 1; $i <= $totalPages; $i++) {
+                                    echo '<li class="page-item ' . ($i == $page ? 'active' : '') . '"><a class="page-link" href="?page=' . $i . '&search=' . $searchKeyword . '">' . $i . '</a></li>';
+                                }
                                 ?>
                             </ul>
                         </nav>
                     </div>
-                    <?php include (__DIR__ . '/../../components/footer.php') ?>
+                    <?php include(__DIR__ . '/../../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>
                 </div>
             </div>
@@ -117,7 +118,7 @@ $totalPages = ceil($totalUsers / $usersPerPage);
         <div class="layout-overlay layout-menu-toggle"></div>
         <div class="drag-target"></div>
     </div>
-    <?php include (__DIR__ . '/../../requirements/footer.php') ?>
+    <?php include(__DIR__ . '/../../requirements/footer.php') ?>
     <script src="<?= $appURL ?>/assets/js/app-user-list.js"></script>
 </body>
 

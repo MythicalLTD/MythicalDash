@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../requirements/page.php');
 $usersPerPage = 20;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;

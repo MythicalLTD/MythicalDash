@@ -1,43 +1,46 @@
 <?php
 use MythicalDash\Encryption;
+use MythicalDash\ErrorHandler;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use MythicalDash\SettingsManager;
 use MythicalDash\SessionManager;
 use MythicalDash\Database\Connect;
-$conn = new Connect();
-$conn = $conn->connectToDatabase();
-$session = new SessionManager();
-$csrf = new MythicalDash\CSRF();
-if (SettingsManager::getSetting("enable_smtp") == "false") {
-    header('location: /auth/login?e=We are sorry but this host dose not have a SMTP server setup');
-    die();
-}
-session_start();
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['reset_password'])) {
-        if ($csrf->validate('forgot-password-form')) {
-            if (SettingsManager::getSetting("enable_smtp") == "true") {
-                $email = mysqli_real_escape_string($conn, $_POST['email']);
-                $check_query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
-                $result = mysqli_query($conn, $check_query);
-                if (!mysqli_num_rows($result) > 0) {
-                    //GET USER INFO
-                    $userdb = $conn->query("SELECT * FROM mythicaldash_users WHERE email = '" . $email . "'")->fetch_array();
-                    //GENERATE A CODE TO RESET THE PASSWORD
-                    $skey = Encryption::generate_keynoinfo();
-                    //EMAIL SERVER STUFF
-                    $smtpHost = SettingsManager::getSetting("smtpHost");
-                    $smtpPort = SettingsManager::getSetting("smtpPort");
-                    $smtpSecure = SettingsManager::getSetting("smtpSecure");
-                    $smtpUsername = SettingsManager::getSetting("smtpUsername");
-                    $smtpPassword = SettingsManager::getSetting("smtpPassword");
-                    $fromEmail = SettingsManager::getSetting("fromEmail");
-                    $toEmail = $email;
-                    $first_name = $userdb['first_name'];
-                    $last_name = $userdb['last_name'];
-                    $subject = SettingsManager::getSetting("name") . " password reset!";
-                    $message = '
+
+try {
+    $conn = new Connect();
+    $conn = $conn->connectToDatabase();
+    $session = new SessionManager();
+    $csrf = new MythicalDash\CSRF();
+    if (SettingsManager::getSetting("enable_smtp") == "false") {
+        header('location: /auth/login?e=We are sorry but this host dose not have a SMTP server setup');
+        die();
+    }
+    session_start();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['reset_password'])) {
+            if ($csrf->validate('forgot-password-form')) {
+                if (SettingsManager::getSetting("enable_smtp") == "true") {
+                    $email = mysqli_real_escape_string($conn, $_POST['email']);
+                    $check_query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
+                    $result = mysqli_query($conn, $check_query);
+                    if (!mysqli_num_rows($result) > 0) {
+                        //GET USER INFO
+                        $userdb = $conn->query("SELECT * FROM mythicaldash_users WHERE email = '" . $email . "'")->fetch_array();
+                        //GENERATE A CODE TO RESET THE PASSWORD
+                        $skey = Encryption::generate_keynoinfo();
+                        //EMAIL SERVER STUFF
+                        $smtpHost = SettingsManager::getSetting("smtpHost");
+                        $smtpPort = SettingsManager::getSetting("smtpPort");
+                        $smtpSecure = SettingsManager::getSetting("smtpSecure");
+                        $smtpUsername = SettingsManager::getSetting("smtpUsername");
+                        $smtpPassword = SettingsManager::getSetting("smtpPassword");
+                        $fromEmail = SettingsManager::getSetting("fromEmail");
+                        $toEmail = $email;
+                        $first_name = $userdb['first_name'];
+                        $last_name = $userdb['last_name'];
+                        $subject = SettingsManager::getSetting("name") . " password reset!";
+                        $message = '
                     <!DOCTYPE html>
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
@@ -80,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body
     style="margin: 0; width: 100%; padding: 0; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #eceff1;">
     <div style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly; display: none;">A request to reset
-        password was received from your ' .SettingsManager::getSetting("name"). '</div>
+        password was received from your ' . SettingsManager::getSetting("name") . '</div>
     <div role="article" aria-roledescription="email" aria-label="Reset your Password" lang="en"
         style="font-family: Montserrat, sans-serif; mso-line-height-rule: exactly;">
         <table style="width: 100%; font-family: Montserrat, -apple-system, Segoe UI, sans-serif;" cellpadding="0"
@@ -195,52 +198,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </html>
                     ';
-                    $mail = new PHPMailer(true);
-                    $mail->isSMTP();
-                    $mail->Host = $smtpHost;
-                    $mail->Port = $smtpPort;
-                    $mail->SMTPAuth = true;
-                    $mail->Username = $smtpUsername;
-                    $mail->Password = $smtpPassword;
-                    $mail->SMTPSecure = $smtpSecure;
-                    $mail->setFrom($fromEmail);
-                    $mail->addAddress($toEmail);
-                    $mail->isHTML(true);
-                    $mail->Subject = $subject;
-                    $mail->Body = $message;
-                    try {
-                        $mail->send();
-                        //LOG TO DATABASE
-                        $conn->query("INSERT INTO `mythicaldash_resetpasswords` (`email`, `ownerkey`, `resetkeycode`, `ip_addres`) VALUES ('" . $email . "', '" . $userdb['api_key'] . "', '" . $skey . "', '" . $session->getIP() . "');");
-                        //SOME Functions
-                        $domain = substr(strrchr($email, "@"), 1);
-                        $redirections = array('gmail.com' => 'https://mail.google.com', 'yahoo.com' => 'https://mail.yahoo.com', 'hotmail.com' => 'https://outlook.live.com', 'outlook.com' => "https://outlook.live.com", 'gmx.net' => "https://gmx.net", 'icloud.com' => "https://www.icloud.com/mail", 'me.com' => "https://www.icloud.com/mail", 'mac.com' => "https://www.icloud.com/mail", );
-                        if (isset($redirections[$domain])) {
-                            header("location: " . $redirections[$domain]);
-                            exit;
-                        } else {
-                            header("location: /auth/login");
-                            exit;
+                        $mail = new PHPMailer(true);
+                        $mail->isSMTP();
+                        $mail->Host = $smtpHost;
+                        $mail->Port = $smtpPort;
+                        $mail->SMTPAuth = true;
+                        $mail->Username = $smtpUsername;
+                        $mail->Password = $smtpPassword;
+                        $mail->SMTPSecure = $smtpSecure;
+                        $mail->setFrom($fromEmail);
+                        $mail->addAddress($toEmail);
+                        $mail->isHTML(true);
+                        $mail->Subject = $subject;
+                        $mail->Body = $message;
+                        try {
+                            $mail->send();
+                            //LOG TO DATABASE
+                            $conn->query("INSERT INTO `mythicaldash_resetpasswords` (`email`, `ownerkey`, `resetkeycode`, `ip_addres`) VALUES ('" . $email . "', '" . $userdb['api_key'] . "', '" . $skey . "', '" . $session->getIP() . "');");
+                            //SOME Functions
+                            $domain = substr(strrchr($email, "@"), 1);
+                            $redirections = array('gmail.com' => 'https://mail.google.com', 'yahoo.com' => 'https://mail.yahoo.com', 'hotmail.com' => 'https://outlook.live.com', 'outlook.com' => "https://outlook.live.com", 'gmx.net' => "https://gmx.net", 'icloud.com' => "https://www.icloud.com/mail", 'me.com' => "https://www.icloud.com/mail", 'mac.com' => "https://www.icloud.com/mail", );
+                            if (isset($redirections[$domain])) {
+                                header("location: " . $redirections[$domain]);
+                                exit;
+                            } else {
+                                header("location: /auth/login");
+                                exit;
+                            }
+                        } catch (Exception $e) {
+                            ErrorHandler::Critical("Failed to update settings ", $e);
+                            $error_message = "Email sending failed. Please try again later.";
+                            header("location: /auth/forgot-password?error=" . urlencode($error_message));
+                            die();
                         }
-                    } catch (Exception $e) {
-                        $error_message = "Email sending failed. Please try again later.";
-                        header("location: /auth/forgot-password?error=" . urlencode($error_message));
-                        die();
                     }
+                } else {
+                    header('location: /auth/forgot-password?e=Looks like the host that you are using dose not have a smtp server setup please contact support');
+                    die();
                 }
             } else {
-                header('location: /auth/forgot-password?e=Looks like the host that you are using dose not have a smtp server setup please contact support');
+                header('location: /auth/forgot-password?e=CSRF Verification Failed');
                 die();
             }
         } else {
-            header('location: /auth/forgot-password?e=CSRF Verification Failed');
+            header("location: /auth/forgot-password?e=The request you sen't dose not exist");
             die();
         }
-    } else {
-        header("location: /auth/forgot-password?e=The request you sen't dose not exist");
-        die();
     }
+} catch (Exception $e) { 
+    header("location: /auth/forgot-password?e=An unexpected error occurred!");
+    ErrorHandler::Error("Forgot-Password ", $e);
+    die();
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en" class="dark-style customizer-hide" dir="ltr" data-theme="theme-semi-dark"
@@ -255,9 +266,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-  <div id="preloader" class="discord-preloader">
-    <div class="spinner"></div>
-  </div>
+    <div id="preloader" class="discord-preloader">
+        <div class="spinner"></div>
+    </div>
     <div class="authentication-wrapper authentication-cover authentication-bg">
         <div class="authentication-inner row">
             <div class="d-none d-lg-flex col-lg-7 p-0">

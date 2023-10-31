@@ -1,6 +1,8 @@
 <?php
+use MythicalDash\Encryption;
 use MythicalDash\SettingsManager;
 use MythicalDash\Database\Connect;
+
 $conn = new Connect();
 $conn = $conn->connectToDatabase();
 session_start();
@@ -17,11 +19,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $ucode = $conn->query("SELECT * FROM mythicaldash_resetpasswords WHERE `resetkeycode` = '" . $code . "'")->fetch_array();
                         $upassword = mysqli_real_escape_string($conn, $_GET['password']);
                         $password = password_hash($upassword, PASSWORD_BCRYPT);
-                        $conn->query("UPDATE `mythicaldash_users` SET `password` = '" . $password . "' WHERE `mythicaldash_users`.`api_key` = '" . $ucode['ownerkey'] . "';");
-                        $conn->query("DELETE FROM mythicaldash_resetpasswords WHERE `mythicaldash_resetpasswords`.`id` = " . $ucode['id'] . "");
+                        $conn->query("UPDATE `mythicaldash_users` SET `password` = '" . $password . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $ucode['ownerkey']) . "';");
+                        $conn->query("DELETE FROM mythicaldash_resetpasswords WHERE `mythicaldash_resetpasswords`.`id` = " . mysqli_real_escape_string($conn, $ucode['id']) . "");
+                        $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . mysqli_real_escape_string($conn, $ucode['ownerkey']) . "'")->fetch_array();
                         $conn->close();
-                        header('location: /auth/login');
-                        die();
+                        $api_url = SettingsManager::getSetting("PterodactylURL") . "/api/application/users/" . $user_info['panel_id'] . "";
+                        $data = [
+                            "email" => $user_info['email'],
+                            "username" => $user_info['username'],
+                            "first_name" => Encryption::decrypt($user_info['first_name'], $ekey),
+                            "last_name" => Encryption::decrypt($user_info['last_name'], $ekey),
+                            "language" => "en",
+                            "password" => $_GET['password']
+                        ];
+
+                        $data_json = json_encode($data);
+
+                        $ch = curl_init($api_url);
+                        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                            "Accept: application/json",
+                            "Content-Type: application/json",
+                            "Authorization: Bearer " . SettingsManager::getSetting("PterodactylAPIKey")
+                        ]);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_json);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                        $response = curl_exec($ch);
+                        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+                        if ($http_code == 200) {
+                            $api_response = json_decode($response, true);
+                            header('location: /auth/login');
+                            curl_close($ch);
+                            die();
+                        } else {
+                            header("location: /auth/login?e=Failed to update the user settings inside the panel");
+                            curl_close($ch);
+                            die();
+                        }
                     } else {
                         header('location: /auth/forgot-password?e=CSRF Verification Failed');
                         die();

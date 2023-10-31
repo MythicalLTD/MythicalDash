@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\ErrorHandler;
 use MythicalDash\SettingsManager;
 include(__DIR__ . "/../base.php");
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -48,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         http_response_code(200);
         die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     } catch (Exception $e) {
+        ErrorHandler::Critical("Settings DB ",$e);
         $rsp = array(
             "code" => 500,
             "error" => "The server encountered a situation it doesn't know how to handle.",

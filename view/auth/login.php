@@ -1,113 +1,121 @@
 <?php
 use MythicalDash\CloudFlare\Captcha;
+use MythicalDash\ErrorHandler;
 use MythicalDash\SettingsManager;
 use MythicalDash\SessionManager;
 use MythicalDash\Database\Connect;
-$conn = new Connect();
-$conn = $conn->connectToDatabase();
-$session = new SessionManager();
-session_start();
-$csrf = new MythicalDash\CSRF();
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  if ($csrf->validate('login-form')) {
-    if (isset($_POST['login'])) {
-      if (SettingsManager::getSetting("enable_turnstile") == "false") {
-        $captcha_success = 1;
-      } else {
-        $captcha_success = Captcha::validate_captcha($_POST["cf-turnstile-response"], $session->getIP(), SettingsManager::getSetting("turnstile_secretkey"));
-      }
-      if ($captcha_success) {
-        $email = mysqli_real_escape_string($conn, $_POST['email']);
-        $password = mysqli_real_escape_string($conn, $_POST['password']);
-        if (!$email == "" || !$password == "") {
-          $query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
-          $result = mysqli_query($conn, $query);
-          if ($result) {
-            if (mysqli_num_rows($result) == 1) {
-              $row = mysqli_fetch_assoc($result);
-              $hashedPassword = $row['password'];
-              if (password_verify($password, $hashedPassword)) {
-                $token = $row['api_key'];
-                $email = $row['email'];
-                $banned = $row['banned'];
-                if (!$banned == "") {
-                  header('location: /auth/login?e=We are sorry but you are banned from using our system!');
-                  exit; // Stop execution if user is banned
-                } else {
-                  $usr_id = $row['api_key'];
-                  $url = "http://ipinfo.io/".$session->getIP()."/json";
-                  $data = json_decode(file_get_contents($url), true);
 
-                  if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
-                    header('location: /auth/login?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
-                    die();
-                  }
-                  $userids = array();
-                  $loginlogs = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE userkey = '$usr_id'");
-                  foreach ($loginlogs as $login) {
-                    $ip = $login['ipaddr'];
-                    if ($ip == "12.34.56.78") {
-                      continue;
-                    }
-                    $saio = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $ip . "'");
-                    foreach ($saio as $hello) {
-                      if (in_array($hello['userkey'], $userids)) {
-                        continue;
-                      }
-                      if ($hello['userkey'] == $usr_id) {
-                        continue;
-                      }
-                      array_push($userids, $hello['userkey']);
-                    }
-                  }
-                  if (count($userids) !== 0) {
-                    header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
-                    die();
-                  }
-                  $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$usr_id')");
-
-                  $cookie_name = 'token';
-                  $cookie_value = $token;
-                  setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
-                  $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . $session->getIP() . "' WHERE `mythicaldash_users`.`api_key` = '" . $usr_id . "';");
-                  if (isset($_GET['r'])) {
-                    header('location: ' . $_GET['r']);
+try {
+  $conn = new Connect();
+  $conn = $conn->connectToDatabase();
+  $session = new SessionManager();
+  session_start();
+  $csrf = new MythicalDash\CSRF();
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($csrf->validate('login-form')) {
+      if (isset($_POST['login'])) {
+        if (SettingsManager::getSetting("enable_turnstile") == "false") {
+          $captcha_success = 1;
+        } else {
+          $captcha_success = Captcha::validate_captcha($_POST["cf-turnstile-response"], $session->getIP(), SettingsManager::getSetting("turnstile_secretkey"));
+        }
+        if ($captcha_success) {
+          $email = mysqli_real_escape_string($conn, $_POST['email']);
+          $password = mysqli_real_escape_string($conn, $_POST['password']);
+          if (!$email == "" || !$password == "") {
+            $query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
+            $result = mysqli_query($conn, $query);
+            if ($result) {
+              if (mysqli_num_rows($result) == 1) {
+                $row = mysqli_fetch_assoc($result);
+                $hashedPassword = $row['password'];
+                if (password_verify($password, $hashedPassword)) {
+                  $token = $row['api_key'];
+                  $email = $row['email'];
+                  $banned = $row['banned'];
+                  if (!$banned == "") {
+                    header('location: /auth/login?e=We are sorry but you are banned from using our system!');
+                    exit; // Stop execution if user is banned
                   } else {
-                    header('location: /dashboard');
+                    $usr_id = $row['api_key'];
+                    $url = "http://ipinfo.io/" . $session->getIP() . "/json";
+                    $data = json_decode(file_get_contents($url), true);
+
+                    if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
+                      header('location: /auth/login?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
+                      die();
+                    }
+                    $userids = array();
+                    $loginlogs = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE userkey = '$usr_id'");
+                    foreach ($loginlogs as $login) {
+                      $ip = $login['ipaddr'];
+                      if ($ip == "12.34.56.78") {
+                        continue;
+                      }
+                      $saio = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $ip . "'");
+                      foreach ($saio as $hello) {
+                        if (in_array($hello['userkey'], $userids)) {
+                          continue;
+                        }
+                        if ($hello['userkey'] == $usr_id) {
+                          continue;
+                        }
+                        array_push($userids, $hello['userkey']);
+                      }
+                    }
+                    if (count($userids) !== 0) {
+                      header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
+                      die();
+                    }
+                    $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$usr_id')");
+
+                    $cookie_name = 'token';
+                    $cookie_value = $token;
+                    setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
+                    $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . $session->getIP() . "' WHERE `mythicaldash_users`.`api_key` = '" . $usr_id . "';");
+                    if (isset($_GET['r'])) {
+                      header('location: ' . $_GET['r']);
+                    } else {
+                      header('location: /dashboard');
+                    }
+                    // Stop execution after successful login
                   }
-                  // Stop execution after successful login
+                } else {
+                  header('location: /auth/login?e=Invalid Password');
+                  exit; // Stop execution if password is invalid
                 }
               } else {
-                header('location: /auth/login?e=Invalid Password');
-                exit; // Stop execution if password is invalid
+                header('location: /auth/login?e=Invalid email');
+                exit; // Stop execution if email is invalid
               }
             } else {
-              header('location: /auth/login?e=Invalid email');
-              exit; // Stop execution if email is invalid
+              header('location: /auth/login?e=Failed to log user in');
+              exit; // Stop execution if login fails
             }
+            mysqli_free_result($result);
+            $conn->close();
+            exit;
           } else {
-            header('location: /auth/login?e=Failed to log user in');
-            exit; // Stop execution if login fails
+            header("location: /auth/login?e=Captcha verification failed; please refresh!");
+            die();
           }
-          mysqli_free_result($result);
-          $conn->close();
-          exit;
-        } else {
-          header("location: /auth/login?e=Captcha verification failed; please refresh!");
-          die();
         }
+      } else {
+        header('location: /auth/login?e=Login failed');
+        exit; // Stop execution if login button is not pressed
       }
     } else {
-      header('location: /auth/login?e=Login failed');
-      exit; // Stop execution if login button is not pressed
+      // CSRF validation failed
+      setcookie('api_key', '', time() - (10 * 365 * 24 * 60 * 60 * 2), '/');
+      setcookie('phpsessid', '', time() - (10 * 365 * 24 * 60 * 60 * 2), '/');
+      header('location: /auth/login?e=CSRF Verification Failed');
+      exit; // Stop execution if CSRF validation fails
     }
-  } else {
-    // CSRF validation failed
-    setcookie('api_key', '', time() - (10 * 365 * 24 * 60 * 60 * 2), '/');
-    setcookie('phpsessid', '', time() - (10 * 365 * 24 * 60 * 60 * 2), '/');
-    header('location: /auth/login?e=CSRF Verification Failed');
-    exit; // Stop execution if CSRF validation fails
   }
+} catch (Exception $e) {
+  header("location: /auth/login?e=An unexpected error occurred!");
+  ErrorHandler::Error("Login ", $e);
+  die();
 }
 ?>
 <html lang="en" class="dark-style customizer-hide" dir="ltr" data-theme="theme-semi-dark"

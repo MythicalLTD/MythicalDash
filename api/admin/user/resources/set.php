@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\ErrorHandler;
 include(__DIR__ . "/../../base.php");
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -132,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
     } catch (Exception $e) {
+        ErrorHandler::Critical("User Resources Set ",$e);
         $rsp = array(
             "code" => 500,
             "error" => "The server encountered a situation it doesn't know how to handle.",

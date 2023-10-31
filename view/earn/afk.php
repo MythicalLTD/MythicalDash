@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\ErrorHandler;
 use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
 if (SettingsManager::getSetting("enable_afk") == "false") {
@@ -31,7 +32,10 @@ if (isset($_GET['getcoins'])) {
             $conn->query("UPDATE `mythicaldash_users` SET `last_seen` = '$currenttimestamp' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
             echo '<script>window.location.replace("/earn/afk");</script>';
         } catch (Exception $e) {
-            echo $e;
+            header('location: /earn/afk?Failed to update your coins due to some db error');
+            $conn->close();
+            ErrorHandler::Critical("Failed to update coins ",$e);
+            die();
         }
     } else {
         header('location: /earn/afk?e=Please do not abuse');
