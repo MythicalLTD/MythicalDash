@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_settings` CHANGE `version` `version` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '3.0.2';

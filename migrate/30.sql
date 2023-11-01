@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_settings` ADD `stripe_coin_per_balance` TEXT NOT NULL DEFAULT '0.25' AFTER `stripe_secret_key`;

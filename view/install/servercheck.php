@@ -632,7 +632,7 @@ if (!is_writable(__DIR__)) {
               <br>
               <h1 class="text-center">No write permission</h1>
               <p class="text-center">We don't have access to the folder, make sure to give us permission by:</p>
-              <div class="alert alert-danger text-center">chown -R www-data:www-data /var/www/client/*</div>
+              <div class="alert alert-danger text-center">chown -R www-data:www-data /var/www/mythicaldash/*</div>
               <div class="text-center">
                 <br>
                 <a href="/server/check" class="btn btn-primary">&nbsp; Reload &nbsp;</a>

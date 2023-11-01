@@ -120,6 +120,69 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
+                            <h5 class="card-header">Stripe</h5>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/stripe" method="GET">
+                                    <div class="row">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Status</label>
+                                            <div>
+                                                <?php
+                                                if (SettingsManager::getSetting("enable_stripe") == 'true') {
+                                                    ?>
+                                                    <select class="form-control" name="stripe:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="stripe:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label">Currency ISO (ALL LOWERCASE) <a href="https://stripe.com/docs/currencies#presentment-currencies" target="_blank">list</a></label>
+                                            <div>
+                                                <input type="text" required="" class="form-control" name="stripe:stripe_currency"
+                                                    value="<?= SettingsManager::getSetting("stripe_currency") ?>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label">Public Key</label>
+                                            <div>
+                                                <input type="text" required="" class="form-control" name="stripe:public_key"
+                                                    value="<?= SettingsManager::getSetting("stripe_publishable_key") ?>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label">Secret Key</label>
+                                            <div>
+                                                <input type="password" required="" class="form-control" name="stripe:private_key"
+                                                    value="<?= SettingsManager::getSetting("stripe_secret_key") ?>">
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                    </div>
+                                    <br>
+                                    <div class="mt-2">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
                             <h5 class="card-header">Discord Settings</h5>
                             <hr class="my-0">
                             <div class="card-body">
@@ -514,7 +577,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         <div class="form-group col-md-5">
                                             <label class="control-label">Secret Key</label>
                                             <div>
-                                                <input type="text" required="" class="form-control"
+                                                <input type="password" required="" class="form-control"
                                                     name="recaptcha:secret_key"
                                                     value="<?= SettingsManager::getSetting("turnstile_secretkey") ?>">
                                             </div>
