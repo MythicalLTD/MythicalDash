@@ -64,9 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <div id="preloader" class="discord-preloader">
-        <div class="spinner"></div>
-    </div>
+
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../components/sidebar.php') ?>
@@ -98,12 +96,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <p>Welcome to our billing system. Here you can buy coins, so you can use
                                                 them inside our dashboard</p>
                                             <p>The prices are "
-                                                <?= number_format(SettingsManager::getSetting('stripe_coin_per_balance') / 100, 2) ?>
-                                                cents in
+                                                <?= number_format(intval(SettingsManager::getSetting('stripe_coin_per_balance')) / 100, 2) ?>
+                                                in
                                                 <?= strtoupper(SettingsManager::getSetting('stripe_currency')) ?> " for
                                                 1
                                                 coin
                                             </p>
+
                                             <input type="number" class="form-control mb-2" placeholder="50" value="25"
                                                 name="coins">
                                             <br>

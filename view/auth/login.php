@@ -40,10 +40,11 @@ try {
                     $usr_id = $row['api_key'];
                     $url = "http://ipinfo.io/" . $session->getIP() . "/json";
                     $data = json_decode(file_get_contents($url), true);
-
-                    if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
-                      header('location: /auth/login?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
-                      die();
+                    if (SettingsManager::getSetting('enable_anti_vpn') == "true") {
+                      if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
+                        header('location: /auth/login?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
+                        die();
+                      }
                     }
                     $userids = array();
                     $loginlogs = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE userkey = '$usr_id'");
@@ -63,9 +64,11 @@ try {
                         array_push($userids, $hello['userkey']);
                       }
                     }
-                    if (count($userids) !== 0) {
-                      header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
-                      die();
+                    if (SettingsManager::getSetting('enable_alting') == "true") {
+                      if (count($userids) !== 0) {
+                        header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
+                        die();
+                      }
                     }
                     $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$usr_id')");
 

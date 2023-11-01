@@ -60,65 +60,69 @@ try {
                                 $aquery = "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $session->getIP() . "'";
                                 $aresult = mysqli_query($conn, $aquery);
                                 $acount = mysqli_num_rows($aresult);
-                                if ($acount >= 1) {
-                                    header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use temporary accounts, which is not allowed.');
-                                    die();
-                                } else {
-                                    $vpn = false;
-                                    $response = file_get_contents("http://ip-api.com/json/" . $session->getIP() . "?fields=status,message,country,regionName,city,timezone,isp,org,as,mobile,proxy,hosting,query");
-                                    $response = json_decode($response, true);
-                                    if (isset($response['proxy'])) {
-                                        if ($response['proxy'] == true || $response['hosting'] == true) {
-                                            $vpn = true;
-                                        }
+                                if (SettingsManager::getSetting("enable_alting") == "true") { 
+                                    if ($acount >= 1) {
+                                        header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use temporary accounts, which is not allowed.');
+                                        die();
                                     }
-                                    if ($response['type'] = !"Residential") {
+                                }
+                                $vpn = false;
+                                $response = file_get_contents("http://ip-api.com/json/" . $session->getIP() . "?fields=status,message,country,regionName,city,timezone,isp,org,as,mobile,proxy,hosting,query");
+                                $response = json_decode($response, true);
+                                if (isset($response['proxy'])) {
+                                    if ($response['proxy'] == true || $response['hosting'] == true) {
                                         $vpn = true;
                                     }
-                                    if ($session->getIP() == "51.161.152.218" || $session->getIP() == "66.220.20.165") {
-                                        $vpn = false;
-                                    }
+                                }
+                                if ($response['type'] = !"Residential") {
+                                    $vpn = true;
+                                }
+                                if ($session->getIP() == "51.161.152.218" || $session->getIP() == "66.220.20.165") {
+                                    $vpn = false;
+                                }
+                                if (SettingsManager::getSetting("enable_anti_vpn") == "true") {
                                     if ($vpn == true) {
                                         header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
                                         die();
                                     }
-                                    $ch = curl_init();
-                                    curl_setopt($ch, CURLOPT_URL, SettingsManager::getSetting("PterodactylURL") . '/api/application/users');
-                                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                                        'Accept: application/json',
-                                        'Authorization: Bearer ' . SettingsManager::getSetting("PterodactylAPIKey"),
-                                        'Content-Type: application/json',
-                                    ]);
-                                    curl_setopt($ch, CURLOPT_POST, true);
-                                    $data = [
-                                        'email' => $email,
-                                        'username' => $username,
-                                        'first_name' => $first_name,
-                                        'last_name' => $last_name,
-                                        'password' => $upassword,
-                                        'language' => 'en',
-                                    ];
-                                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-                                    $response = curl_exec($ch);
-                                    $responseData = json_decode($response, true);
-                                    $panelId = $responseData['attributes']['id'];
-                                    $panel_username = $responseData['attributes']['username'];
-                                    if (curl_errno($ch)) {
+                                }
+                                $ch = curl_init();
+                                curl_setopt($ch, CURLOPT_URL, SettingsManager::getSetting("PterodactylURL") . '/api/application/users');
+                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                                    'Accept: application/json',
+                                    'Authorization: Bearer ' . SettingsManager::getSetting("PterodactylAPIKey"),
+                                    'Content-Type: application/json',
+                                ]);
+                                curl_setopt($ch, CURLOPT_POST, true);
+                                $data = [
+                                    'email' => $email,
+                                    'username' => $username,
+                                    'first_name' => $first_name,
+                                    'last_name' => $last_name,
+                                    'password' => $upassword,
+                                    'language' => 'en',
+                                ];
+                                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+                                $response = curl_exec($ch);
+                                $responseData = json_decode($response, true);
+                                $panelId = $responseData['attributes']['id'];
+                                $panel_username = $responseData['attributes']['username'];
+                                if (curl_errno($ch)) {
 
-                                    } else {
+                                } else {
 
-                                    }
-                                    curl_close($ch);
-                                    $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$skey')");
-                                    $default = "https://www.gravatar.com/avatar/00000000000000000000000000000000";
-                                    $grav_url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default);
-                                    if (file_exists("FIRST_USER")) {
-                                        $role = "Administrator";
-                                    } else {
-                                        $role = "User";
-                                    }
-                                    $conn->query("INSERT INTO `mythicaldash_users` 
+                                }
+                                curl_close($ch);
+                                $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$skey')");
+                                $default = "https://www.gravatar.com/avatar/00000000000000000000000000000000";
+                                $grav_url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default);
+                                if (file_exists("FIRST_USER")) {
+                                    $role = "Administrator";
+                                } else {
+                                    $role = "User";
+                                }
+                                $conn->query("INSERT INTO `mythicaldash_users` 
                                 (`panel_id`,
                                 `email`,
                                 `username`,
@@ -157,14 +161,14 @@ try {
                                 '" . SettingsManager::getSetting("def_backups") . "',
                                 '" . $session->getIP() . "'
                                 );");
-                                    $conn->close();
-                                    if (file_exists("FIRST_USER")) {
-                                        unlink("FIRST_USER");
-                                    }
-                                    Telemetry::NewUser();
-                                    header('location: /auth/login');
-                                    die();
+                                $conn->close();
+                                if (file_exists("FIRST_USER")) {
+                                    unlink("FIRST_USER");
                                 }
+                                Telemetry::NewUser();
+                                header('location: /auth/login');
+                                die();
+
                             } else {
                                 header('location: /auth/register?e=Username or email already exists. Please choose a different one');
                                 die();
