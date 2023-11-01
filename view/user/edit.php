@@ -130,6 +130,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <a class="nav-link" href="/user/connections"><i
                                                 class="ti-xs ti ti-link me-1"></i> Connections</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/user/payments"><i
+                                                class="ti-xs ti ti-currency-euro me-1"></i> Payments</a>
+                                    </li>
                                 </ul>
                                 <div class="card mb-4">
                                     <h5 class="card-header">Profile Details</h5>

@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_payments` CHANGE `status` `status` ENUM('pending','paid','canceled') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending';
