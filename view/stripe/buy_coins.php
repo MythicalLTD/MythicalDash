@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\Encryption;
 use MythicalDash\ErrorHandler;
 use MythicalDash\SettingsManager;
 
@@ -10,25 +11,27 @@ if (SettingsManager::getSetting("enable_stripe") == "false") {
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['pay'])) {
+        $mypaymentkey = Encryption::generate_keynoinfo();
+        $conn->query("INSERT INTO `mythicaldash_payments` (`code`, `coins`, `ownerkey`, `getaway`, `status`) VALUES ('".$mypaymentkey."', '".mysqli_real_escape_string($conn, $_POST['coins'])."', '".mysqli_real_escape_string($conn, $_COOKIE['token'])."', 'stripe', 'pending');");
         try {
             //stripe_secret_key
             \Stripe\Stripe::setApiKey(SettingsManager::getSetting('stripe_secret_key'));
             $checkout_session = \Stripe\Checkout\Session::create([
                 "mode" => "payment",
                 'customer_email' => $session->getUserInfo('email'),
-                "success_url" => "" . $appURL . "/earn/buy/get/coins",
+                "success_url" => "" . $appURL . "/store/get/stripe/coins?code=".$mypaymentkey,
                 "cancel_url" => "" . $appURL . "/dashboard?e=We canceled your payment!",
                 "line_items" => [
                     [
                         "quantity" => 1,
                         "price_data" => [
-                            "currency" => "eur",
-                            "unit_amount" => SettingsManager::getSetting('stripe_coin_per_balance') * $_POST['coins'],
+                            "currency" => strtolower(SettingsManager::getSetting('stripe_currency')),
+                            "unit_amount" => intval(SettingsManager::getSetting('stripe_coin_per_balance')) * intval($_POST['coins']),
                             "product_data" => [
                                 "images" => [
                                     $appURL . "/assets/img/illustrations/page-pricing-standard.png"
                                 ],
-                                "name" => "Payment of " . $_POST['coins'] . " on " . SettingsManager::getSetting("name"),
+                                "name" => "Payment of " . $_POST['coins'] . " coins on " . SettingsManager::getSetting("name"),
                                 "description" => "Upon successful payment, you'll be acquiring " . $_POST['coins'] . " on " . SettingsManager::getSetting("name") . "! Rest assured, our system is fully secure and powered by Stripe for end-to-end protection."
                             ]
                         ]
@@ -39,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("location: " . $checkout_session->url);
             die();
         } catch (Exception $e) {
-            header("location: /store/buy/stripe/coins?e=Stripe Error ");
+            header("location: /store/buy/stripe/coins?e=Stripe Error".$e);
             ErrorHandler::Error("Stripe Error ", $e);
             die();
         }
