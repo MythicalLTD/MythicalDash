@@ -9,7 +9,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
     $stmt = mysqli_prepare($conn, $ticketquery_db);
 
     if (!$stmt) {
-        header("location: /help-center/tickets?e=Sorry, but we can't talk with the backend at this moment, please try again!");
+        header("location: /help-center/tickets?e=Sorry, but we cannot talk with the backend at this moment, please try again!");
         die();
     }
 
@@ -17,7 +17,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
     mysqli_stmt_execute($stmt);
 
     if (mysqli_stmt_error($stmt)) {
-        header("location: /help-center/tickets?e=Sorry, but we can't talk with the backend at this moment, please try again!");
+        header("location: /help-center/tickets?e=Sorry, but we cannot talk with the backend at this moment, please try again!");
         mysqli_stmt_close($stmt);
         $conn->close();
         die();

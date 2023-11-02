@@ -27,7 +27,7 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
         $conn->close();
         die();
     } else {
-        header("location: /admin/locations?e=Can't find a location in the database.");
+        header("location: /admin/locations?e=Cannot find the location in the database.");
         $conn->close();
         die();
     }

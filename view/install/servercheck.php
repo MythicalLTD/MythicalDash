@@ -408,8 +408,8 @@ foreach ($requiredExtensions as $ext) {
               </aside>
               <div class="container-xxl flex-grow-1 container-p-y">
                 <br>
-                <h1 class="text-center">This server can't run MythicalDash yet.</h1>
-                <p class="text-center">The extension: <code><?= $ext ?></code> can't be found on your server, make sure to
+                <h1 class="text-center">This server cannot run MythicalDash yet.</h1>
+                <p class="text-center">The extension: <code><?= $ext ?></code> cannot be found on your server, make sure to
                   install all
                   extension by: </p>
                 <div class="alert alert-danger text-center">

@@ -12,11 +12,11 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
         $udb = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . mysqli_real_escape_string($conn, $_GET['id']) . "'")->fetch_array();
 
     } else {
-        header("location: /dashboard?e=We can't find this user in the database");
+        header("location: /dashboard?e=We cannot find this user in the database");
         die();
     }
 } else {
-    header("location: /dashboard?e=We can't find this user in the database");
+    header("location: /dashboard?e=We cannot find this user in the database");
     die();
 }
 ?>
@@ -111,7 +111,7 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
                                         aria-label="Close"></button>
                                     <div class="text-center mb-4">
                                         <h3 class="mb-2">Gift user coins!</h3>
-                                        <p class="text-muted">Remember, once you send a user coins, you can't take this
+                                        <p class="text-muted">Remember, once you send a user coins, you cannot take this
                                             action back! Please do not open a ticket to get your coins back! We won't
                                             help you!!!</p>
                                     </div>

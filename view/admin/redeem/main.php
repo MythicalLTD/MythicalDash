@@ -1,6 +1,7 @@
 <?php
 use MythicalDash\Encryption;
 use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
 
@@ -42,26 +43,7 @@ $totalPages = ceil($redeem_totalredeems / $redeemPages);
                 <?php include(__DIR__ . '/../../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <?php
-                        if (isset($_GET['e'])) {
-                            ?>
-                            <div class="alert alert-danger alert-dismissible" role="alert">
-                                <?= $_GET['e'] ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <?php
-                        }
-                        ?>
-                        <?php
-                        if (isset($_GET['s'])) {
-                            ?>
-                            <div class="alert alert-success alert-dismissible" role="alert">
-                                <?= $_GET['s'] ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <?php
-                        }
-                        ?>
+                        <?php include(__DIR__ . '/../../components/alert.php') ?>
                         <div class="card">
                             <h5 class="card-header">
                                 Redeem Keys
@@ -121,9 +103,12 @@ $totalPages = ceil($redeem_totalredeems / $redeemPages);
                                                     <td>
                                                         <?= $row['created'] ?>
                                                     </td>
-                                                    <td><button onclick="copyToClipboard('<?= $row['code'] ?>');" class="btn btn-primary">Copy</button>
-                                                    &nbsp;
-                                                    <a href="/admin/redeem/delete?code=<?= $row['code'] ?>" class="btn btn-danger">Delete</a></td>
+                                                    <td><button onclick="copyToClipboard('<?= $row['code'] ?>');"
+                                                            class="btn btn-primary">Copy</button>
+                                                        &nbsp;
+                                                        <a href="/admin/redeem/delete?code=<?= $row['code'] ?>"
+                                                            class="btn btn-danger">Delete</a>
+                                                    </td>
                                                 </tr>
                                                 <?php
                                             }
@@ -153,7 +138,9 @@ $totalPages = ceil($redeem_totalredeems / $redeemPages);
                                         <div class="text-center mb-4">
                                             <h3 class="mb-2">Create new redeem Key!</h3>
                                             <p class="text-muted">This redeem key can be claimed at: <a
-                                                    href="<?= $appURL ?>/earn/redeem"><?= $appURL ?>/earn/redeem</a></p>
+                                                    href="<?= $appURL ?>/earn/redeem">
+                                                    <?= $appURL ?>/earn/redeem
+                                                </a></p>
                                         </div>
                                         <form method="GET" action="/admin/redeem/create" class="row g-3">
                                             <div class="col-12">

@@ -11,28 +11,28 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
         $check_query = "SELECT * FROM mythicaldash_servers WHERE egg_id = '".mysqli_real_escape_string($conn,$_GET['id'])."'";
         $resultl = mysqli_query($conn, $check_query);
         if (mysqli_num_rows($resultl) > 0) {
-            header("location: /admin/eggs?e=Sorry but there are some servers on this egg please delete them first!");
+            header("location: /admin/eggs/list?e=Sorry but there are some servers on this egg please delete them first!");
             $conn->close();
             die();
         }
         $check_query2 = "SELECT * FROM mythicaldash_servers_queue WHERE egg = '".mysqli_real_escape_string($conn,$_GET['id'])."'";
         $result2 = mysqli_query($conn, $check_query2);
         if (mysqli_num_rows($result2) > 0) {
-            header("location: /admin/eggs?e=Sorry but there are some servers on this egg please delete them first!");
+            header("location: /admin/eggs/list?e=Sorry but there are some servers on this egg please delete them first!");
             $conn->close();
             die();
         }
         $conn->query("DELETE FROM `mythicaldash_eggs` WHERE `mythicaldash_eggs`.`id` = '".mysqli_real_escape_string($conn,$_GET['id'])."'");
-        header("location: /admin/eggs?s=Done");
+        header("location: /admin/eggs/list?s=Done");
         $conn->close();
         die();
     } else {
-        header("location: /admin/eggs?e=Can't find a location in the database.");
+        header("location: /admin/eggs/list?e=Cannot find the egg in the database.");
         $conn->close();
         die();
     }
 } else {
-    header('location: /admin/eggs');
+    header('location: /admin/eggs/list');
     die();
 }
 ?>

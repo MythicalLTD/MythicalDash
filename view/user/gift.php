@@ -10,7 +10,7 @@ if (isset($_GET['userid']) && isset($_GET['coins']) && is_numeric($_GET['coins']
 
     if (mysqli_num_rows($userResult) > 0) {
         if ($session->getUserInfo("id") == $_GET['userid']) {
-            header("location: /user/profile?e=You can't send coins to yourself!&id=" . $_GET['userid']);
+            header("location: /user/profile?e=You cannot send coins to yourself!&id=" . $_GET['userid']);
             die();
         }
         if ($coins <= 0) {
@@ -38,7 +38,7 @@ if (isset($_GET['userid']) && isset($_GET['coins']) && is_numeric($_GET['coins']
             die();
         }
     } else {
-        header("location: /dashboard?e=We can't find this user in our database");
+        header("location: /dashboard?e=We cannot find this user in our database");
         die();
     }
 } else {

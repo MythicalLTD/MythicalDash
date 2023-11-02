@@ -10,11 +10,11 @@ $offset = ($page - 1) * $eggsPerPage;
 $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
 $searchCondition = '';
 if (!empty($searchKeyword)) {
-    $searchCondition = " WHERE `name` LIKE '%$searchKeyword%' OR `category` LIKE '%$searchKeyword%'";
+    $searchCondition = " WHERE `setting_name` LIKE '%$searchKeyword%' OR `setting_value` LIKE '%$searchKeyword%'";
 }
-$egg_query = "SELECT * FROM mythicaldash_eggs" . $searchCondition . " ORDER BY `id` LIMIT $offset, $eggsPerPage";
+$egg_query = "SELECT * FROM mythicaldash_eggs_config" . $searchCondition . " ORDER BY `id` LIMIT $offset, $eggsPerPage";
 $result = $conn->query($egg_query);
-$totalEggsQuery = "SELECT COUNT(*) AS total_eggs FROM mythicaldash_eggs" . $searchCondition;
+$totalEggsQuery = "SELECT COUNT(*) AS total_eggs FROM mythicaldash_eggs_config" . $searchCondition;
 $totalResult = $conn->query($totalEggsQuery);
 $totalEggs = $totalResult->fetch_assoc()['total_eggs'];
 $totalPages = ceil($totalEggs / $eggsPerPage);
@@ -27,7 +27,7 @@ $totalPages = ceil($totalEggs / $eggsPerPage);
 <head>
     <?php include(__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Eggs
+        <?= SettingsManager::getSetting("name") ?> - Eggs Config
     </title>
     <style>
         .avatar-image {
@@ -55,27 +55,25 @@ $totalPages = ceil($totalEggs / $eggsPerPage);
                         <!-- Search Form -->
                         <form class="mt-4">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Search in eggs..." name="search"
-                                    value="<?= $searchKeyword ?>">
+                                <input type="text" class="form-control" placeholder="Search in eggs config..."
+                                    name="search" value="<?= $searchKeyword ?>">
                                 <button class="btn btn-outline-secondary" type="submit">Search</button>
                             </div>
                         </form>
                         <!-- Users List Table -->
                         <div class="card">
                             <h5 class="card-header">
-                                Eggs
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#addegg"
-                                    class="btn btn-primary float-end">Add a new egg</button>
+                                Eggs Configuration
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#addeggcfg"
+                                    class="btn btn-primary float-end">Add a new egg config</button>
                             </h5>
                             <div class="table-responsive text-nowrap">
                                 <table class="table">
                                     <thead>
                                         <tr>
+                                            <th>ID</th>
                                             <th>Name</th>
-                                            <th>Category</th>
-                                            <th>Egg id</th>
-                                            <th>Nest id</th>
-                                            <th>Created</th>
+                                            <th>Value</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -84,12 +82,10 @@ $totalPages = ceil($totalEggs / $eggsPerPage);
                                         if ($result->num_rows > 0) {
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
-                                                echo "<td>" . $row['name'] . "</td>";
-                                                echo "<td>" . $row['category'] . "</td>";
-                                                echo "<td>" . $row['egg'] . "</td>";
-                                                echo "<td>" . $row['nest'] . "</td>";
-                                                echo "<td><code>" . $row['date'] . "</code></td>";
-                                                echo "<td><!--<a href=\"/admin/eggs/edit?id=" . $row['id'] . "\" class=\"btn btn-primary\">Edit</a>-->&nbsp;<a href=\"/admin/eggs/delete?id=" . $row['id'] . "\" class=\"btn btn-danger\">Delete</a></td>";
+                                                echo "<td>#" . $row['id'] . "</td>";
+                                                echo "<td>" . $row['setting_name'] . "</td>";
+                                                echo "<td>" . $row['setting_value'] . "</td>";
+                                                echo "<td><!--<a href=\"/admin/eggs/edit?id=" . $row['id'] . "\" class=\"btn btn-primary\">Edit</a>-->&nbsp;<a href=\"/admin/eggs/config/delete?name=" . $row['setting_name'] . "\" class=\"btn btn-danger\">Delete</a></td>";
                                                 echo "</tr>";
                                             }
                                         } else {
@@ -113,37 +109,27 @@ $totalPages = ceil($totalEggs / $eggsPerPage);
                     <?php include(__DIR__ . '/../../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>
                 </div>
-                <div class="modal fade" id="addegg" tabindex="-1" aria-hidden="true">
+                <div class="modal fade" id="addeggcfg" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-simple modal-edit-user">
                         <div class="modal-content p-3 p-md-5">
                             <div class="modal-body">
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                                 <div class="text-center mb-4">
-                                    <h3 class="mb-2">Add a new egg!</h3>
+                                    <h3 class="mb-2">Add a new egg config!</h3>
                                     <p class="text-muted">Remember you have to test if the server queue works with this
-                                        egg id / nest id we have no system for checking that when you add the egg</p>
+                                        config we have no system for checking that.</p>
                                 </div>
-                                <form method="GET" action="/admin/eggs/create" class="row g-3">
+                                <form method="GET" action="/admin/eggs/config/create" class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label" for="name">Name</label>
                                         <input type="text" id="name" name="name" class="form-control"
-                                            placeholder="Paper" required />
+                                            placeholder="SERVER_NAME" required />
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label" for="category">Category</label>
-                                        <input type="text" id="category" name="category" class="form-control"
+                                        <label class="form-label" for="value">Value</label>
+                                        <input type="text" id="value" name="value" class="form-control"
                                             placeholder="Minecraft" required />
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label" for="nest_id">Nest id</label>
-                                        <input type="number" id="nest_id" name="nest_id" class="form-control"
-                                            placeholder="" required value="1" />
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label" for="nest_egg_id">Egg ID</label>
-                                        <input type="number" id="nest_egg_id" name="nest_egg_id" class="form-control"
-                                            placeholder="" required value="3" />
                                     </div>
                                     <div class="col-12 text-center">
                                         <button type="submit" name="create_egg" value="create_egg"

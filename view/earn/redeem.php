@@ -35,7 +35,7 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
         }
         header('location: /earn/redeem?s=We updated your resources!');
     } else {
-        header("location: /earn/redeem?e=We can't find this code in the database");
+        header("location: /earn/redeem?e=We cannot find this code in the database");
         $conn->close();
         die();
     }

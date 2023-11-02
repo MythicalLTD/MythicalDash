@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $rsp = array(
                     "code" => 403,
                     "error" => "The server understood the request, but it refuses to authorize it.",
-                    "message" => "We can't find this user in our database!"
+                    "message" => "We cannot find this user in our database!"
                 );
                 http_response_code(403);
                 die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $rsp = array(
             "code" => 500,
             "error" => "The server encountered a situation it doesn't know how to handle.",
-            "message" => "We are sorry, but our server can't handle this request. Please do not try again!"
+            "message" => "We are sorry, but our server cannot handle this request. Please do not try again!"
         );
         http_response_code(500);
         die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
