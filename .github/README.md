@@ -32,7 +32,7 @@ Well, we created a table to compare the most commonly used pterodactyl clients, 
 | :---:   | :---: | :---: | :--: | :--: | :--: | :--: |
 | Essentials Options | ✅|✅|✅|✅|✅|✅|
 | API (Client/Admin) |✅|✅|✅|✅|✅| ✅|
-| Payment Options | 🔄|🔄|✅|✅|✅|✅|
+| Payment Options | ✅|🔄|✅|✅|✅|✅|
 | J4R | 🔄|✅|✅|✅|✅|✅|
 | Referrals |🔄|✅|✅|✅|✅|✅|
 | Linkvertise | ✅|❌|✅|✅|✅|✅|
@@ -48,6 +48,7 @@ Well, we created a table to compare the most commonly used pterodactyl clients, 
 | Anti CSRF |✅|❌|❌|❌|❌|❌|
 | Custom (CSS/Header/HTML) |✅|❌|❌|❌|❌|❌|
 | Leaderboards |✅|❌|❌|❌|❌|❌|
+| Custom Search |✅|❌|❌|❌|❌|❌|
 
 ## Demo
 

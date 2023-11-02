@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\SettingsManager;
+
 ?>
 <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
   id="layout-navbar">
@@ -10,9 +11,17 @@ use MythicalDash\SettingsManager;
   </div>
 
   <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+    <div class="navbar-nav align-items-center">
+      <div class="nav-item navbar-search-wrapper mb-0">
+        <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
+          <i class="ti ti-search ti-md me-2"></i>
+          <span class="d-none d-md-inline-block text-muted">Search (Ctrl+/)</span>
+        </a>
+      </div>
+    </div>
     <ul class="navbar-nav flex-row align-items-center ms-auto">
-      <?php if (SettingsManager::getSetting("customcss_enabled") == "false") { 
-      ?>
+      <?php if (SettingsManager::getSetting("customcss_enabled") == "false") {
+        ?>
         <li class="nav-item me-2 me-xl-0">
           <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">
             <i class="ti ti-md"></i>
@@ -92,8 +101,7 @@ use MythicalDash\SettingsManager;
                       echo 'danger';
                     } else if ($session->getUserInfo("role") == "Support") {
                       echo "warning";
-                    } 
-                    else {
+                    } else {
                       echo 'success';
                     } ?> requestor-type ms-2">
                       <?= $session->getUserInfo("role") ?>
@@ -143,5 +151,10 @@ use MythicalDash\SettingsManager;
       </li>
       <!--/ User -->
     </ul>
+  </div>
+  <div class="navbar-search-wrapper search-input-wrapper d-none">
+    <input type="text" class="form-control search-input container-xxl border-0" placeholder="Search..."
+      aria-label="Search..." />
+    <i class="ti ti-x ti-sm search-toggler cursor-pointer"></i>
   </div>
 </nav>
