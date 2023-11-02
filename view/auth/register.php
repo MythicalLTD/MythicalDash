@@ -60,7 +60,7 @@ try {
                                 $aquery = "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $session->getIP() . "'";
                                 $aresult = mysqli_query($conn, $aquery);
                                 $acount = mysqli_num_rows($aresult);
-                                if (SettingsManager::getSetting("enable_alting") == "true") { 
+                                if (SettingsManager::getSetting("enable_alting") == "true") {
                                     if ($acount >= 1) {
                                         header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use temporary accounts, which is not allowed.');
                                         die();
@@ -105,15 +105,31 @@ try {
                                 ];
                                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
                                 $response = curl_exec($ch);
-                                $responseData = json_decode($response, true);
-                                $panelId = $responseData['attributes']['id'];
-                                $panel_username = $responseData['attributes']['username'];
+
                                 if (curl_errno($ch)) {
-
+                                    $error_message = curl_error($ch);
+                                    header('location: /auth/register?e=We are sorry but our panel is down!');
+                                    die();
                                 } else {
+                                    $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
+                                    if ($http_status === 200) {
+                                        $responseData = json_decode($response, true);
+                                        if (isset($responseData['attributes']['id']) && isset($responseData['attributes']['username'])) {
+                                            $panelId = $responseData['attributes']['id'];
+                                            $panel_username = $responseData['attributes']['username'];
+                                        } else {
+                                            header('location: /auth/register?e=We are sorry but our panel is down!');
+                                            die();
+                                        }
+                                    } else {
+                                        header('location: /auth/register?e=We are sorry but our panel is down!');
+                                        die();
+                                    }
                                 }
+
                                 curl_close($ch);
+
                                 $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$skey')");
                                 $default = "https://www.gravatar.com/avatar/00000000000000000000000000000000";
                                 $grav_url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default);
