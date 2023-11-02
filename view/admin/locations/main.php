@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
 $locationsPerPage = 20;
@@ -50,16 +51,7 @@ $totalPages = ceil($totalLocations / $locationsPerPage);
                 <?php include(__DIR__ . '/../../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <?php
-                        if (isset($_GET['e'])) {
-                            ?>
-                            <div class="alert alert-danger alert-dismissible" role="alert">
-                                <?= $_GET['e'] ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <?php
-                        }
-                        ?>
+                        <?php include(__DIR__ . '/../../components/alert.php') ?>
                         <!-- Search Form -->
                         <form class="mt-4">
                             <div class="input-group mb-3">
@@ -72,7 +64,8 @@ $totalPages = ceil($totalLocations / $locationsPerPage);
                         <div class="card">
                             <h5 class="card-header">
                                 Locations
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#addLocation" class="btn btn-primary float-end">Add a new Location</button>
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#addLocation"
+                                    class="btn btn-primary float-end">Add a new Location</button>
                             </h5>
                             <div class="table-responsive text-nowrap">
                                 <table class="table">
@@ -119,42 +112,43 @@ $totalPages = ceil($totalLocations / $locationsPerPage);
                     <div class="content-backdrop fade"></div>
                 </div>
                 <div class="modal fade" id="addLocation" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-simple modal-edit-user">
-                            <div class="modal-content p-3 p-md-5">
-                                <div class="modal-body">
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                    <div class="text-center mb-4">
-                                        <h3 class="mb-2">Add a new location!</h3>
-                                        <p class="text-muted">Remember you have to test if the server queue works with this location id we have no system for checking that when you add the location</p>
-                                    </div>
-                                    <form method="GET" action="/admin/locations/create" class="row g-3">
-                                        <div class="col-12">
-                                            <label class="form-label" for="name">Name</label>
-                                            <input type="text" id="name" name="name" class="form-control" placeholder=""
-                                                required />
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label" for="locationid">Location id</label>
-                                            <input type="number" id="locationid" name="locationid" class="form-control" placeholder=""
-                                                required value="1"/>
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label" for="slots">Slots</label>
-                                            <input type="number" id="slots" name="slots" class="form-control" placeholder=""
-                                                required value="50" />
-                                        </div>
-                                        <div class="col-12 text-center">
-                                            <button type="submit" name="create_location" value="create_location"
-                                                class="btn btn-primary me-sm-3 me-1">Add location</button>
-                                            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                                aria-label="Close">Cancel </button>
-                                        </div>
-                                    </form>
+                    <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+                        <div class="modal-content p-3 p-md-5">
+                            <div class="modal-body">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                                <div class="text-center mb-4">
+                                    <h3 class="mb-2">Add a new location!</h3>
+                                    <p class="text-muted">Remember you have to test if the server queue works with this
+                                        location id we have no system for checking that when you add the location</p>
                                 </div>
+                                <form method="GET" action="/admin/locations/create" class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label" for="name">Name</label>
+                                        <input type="text" id="name" name="name" class="form-control" placeholder=""
+                                            required />
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label" for="locationid">Location id</label>
+                                        <input type="number" id="locationid" name="locationid" class="form-control"
+                                            placeholder="" required value="1" />
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label" for="slots">Slots</label>
+                                        <input type="number" id="slots" name="slots" class="form-control" placeholder=""
+                                            required value="50" />
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <button type="submit" name="create_location" value="create_location"
+                                            class="btn btn-primary me-sm-3 me-1">Add location</button>
+                                        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+                                            aria-label="Close">Cancel </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
         <div class="layout-overlay layout-menu-toggle"></div>

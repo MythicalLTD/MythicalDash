@@ -160,12 +160,24 @@ function is_active_page($page_urls)
           <div>Locations</div>
         </a>
       </li>
-      <li class="menu-item <?php echo is_active_page(['/admin/eggs']) ? 'active' : ''; ?>">
-        <a href="/admin/eggs" class="menu-link">
-          <i class="menu-icon tf-icons ti ti-egg"></i>
-          <div>Eggs</div>
-        </a>
-      </li>
+      <li class="menu-item  <?php echo is_active_page(['/admin/eggs']) ? 'active' : ''; ?>">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons ti ti-egg"></i>
+        <div data-i18n="Eggs">Eggs</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item <?php echo is_active_page(['/admin/eggs/list']) ? 'active' : ''; ?>">
+          <a href="/admin/eggs/list" class="menu-link">
+            <div data-i18n="Eggs List">Eggs List</div>
+          </a>
+        </li>
+        <li class="menu-item <?php echo is_active_page(['/admin/eggs/config']) ? 'active' : ''; ?>">
+          <a href="/admin/eggs/config" class="menu-link">
+            <div data-i18n="Config List">Config List</div>
+          </a>
+        </li>
+      </ul>
+    </li>
       <li class="menu-item <?php echo is_active_page(['/admin/tickets']) ? 'active' : ''; ?>">
         <a href="/admin/tickets" class="menu-link">
           <i class="menu-icon tf-icons ti ti-messages"></i>

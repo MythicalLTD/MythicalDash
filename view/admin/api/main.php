@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
 
@@ -41,16 +42,7 @@ $totalPages = ceil($totalapikeys / $apiPage);
                 <?php include(__DIR__ . '/../../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <?php
-                        if (isset($_GET['e'])) {
-                            ?>
-                            <div class="alert alert-danger alert-dismissible" role="alert">
-                                <?= $_GET['e'] ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <?php
-                        }
-                        ?>
+                        <?php include(__DIR__ . '/../../components/alert.php') ?>
                         <div class="card">
                             <h5 class="card-header">
                                 API Keys
@@ -110,7 +102,8 @@ $totalPages = ceil($totalapikeys / $apiPage);
                                             aria-label="Close"></button>
                                         <div class="text-center mb-4">
                                             <h3 class="mb-2">Create new API Key!</h3>
-                                            <p class="text-muted">Remember, this is an admin API key and can't be used for the client API endpoint.</p>
+                                            <p class="text-muted">Remember, this is an admin API key and cannot be used
+                                                for the client API endpoint.</p>
                                         </div>
                                         <form method="GET" action="/admin/api/create" class="row g-3">
                                             <div class="col-12">

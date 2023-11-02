@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $rsp = array(
             "code" => 500,
             "error" => "The server encountered a situation it doesn't know how to handle.",
-            "message" => "We are sorry, but our server can't handle this request. Please do not try again!"
+            "message" => "We are sorry, but our server cannot handle this request. Please do not try again!"
         );
         http_response_code(500);
         ErrorHandler::Critical("Statistics ",$e);

@@ -22,4 +22,21 @@ class SettingsManager {
             return null; 
         }
     }
+    public static function updateSetting($settingName, $settingValue) {
+        $connect = new Connect();
+        $conn = $connect->connectToDatabase();
+        $safeSettingName = $conn->real_escape_string($settingName);
+        $safeSettingValue = $conn->real_escape_string($settingValue);
+    
+        $query = "UPDATE mythicaldash_settings SET `$safeSettingName` = '$safeSettingValue'";
+    
+        if ($conn->query($query)) {
+            $conn->close();
+            return true; 
+        } else {
+            $conn->close();
+            return false; 
+        }
+    }
+    
 }

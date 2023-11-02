@@ -12,11 +12,11 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
         $conn->query("DELETE FROM `mythicaldash_redeem` WHERE `mythicaldash_redeem`.`code` = '" . mysqli_real_escape_string($conn, $_GET['code']) . "';");
         header('location: /admin/redeem?s=We deleted the coupon code from the database');
     } else {
-        header("location: /admin/redeem?e=Can't find a coupon code in the database.");
+        header("location: /admin/redeem?e=Cannot find the coupon code in the database.");
         die();
     }
 } else {
-    header("location: /admin/redeem?e=Can't find a coupon code in the database.");
+    header("location: /admin/redeem?e=Cannot find the coupon code in the database.");
     die();
 }
 ?>

@@ -12,12 +12,12 @@ if (isset($_GET['message']) && isset($_GET['ticketuuid']) && isset($_GET['userke
         header('location: /help-center/tickets/view?ticketuuid=' . $_GET['ticketuuid']);
         die();
     } else {
-        header("location: /help-center/tickets?e=We can't find this ticket in the database");
+        header("location: /help-center/tickets?e=We cannot find this ticket in the database");
         $conn->close();
         die();
     }
 } else {
-    header("location: /help-center/tickets?e=Can't find the ticket in the database");
+    header("location: /help-center/tickets?e=cannot find the ticket in the database");
     die();
 }
 ?>
