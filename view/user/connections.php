@@ -54,6 +54,10 @@ if (isset($_GET['unlink_discord'])) {
                                         <a class="nav-link active" href="/user/connections"><i
                                                 class="ti-xs ti ti-link me-1"></i> Connections</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/user/payments"><i
+                                                class="ti-xs ti ti-currency-euro me-1"></i> Payments</a>
+                                    </li>
                                 </ul>
 
                                 <div class="col-md-6 col-12">

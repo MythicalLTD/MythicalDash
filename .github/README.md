@@ -31,25 +31,23 @@ Well, we created a table to compare the most commonly used pterodactyl clients, 
 | Feature | MythicalDash | Dashactyl | Heliactyl | NorthClient  | HolaClient | Meteor | 
 | :---:   | :---: | :---: | :--: | :--: | :--: | :--: |
 | Essentials Options | ✅|✅|✅|✅|✅|✅|
-| API (Client/Admin) |✅|❌|✅|✅|✅| ✅|
+| API (Client/Admin) |✅|✅|✅|✅|✅| ✅|
 | Payment Options | 🔄|🔄|✅|✅|✅|✅|
 | J4R | 🔄|✅|✅|✅|✅|✅|
 | Referrals |🔄|✅|✅|✅|✅|✅|
 | Linkvertise | ✅|❌|✅|✅|✅|✅|
 | Custom Ads | ✅|❌|❌|✅|✅|✅|
-| Purge System | ✅|⚠️|⚠️|⚠️|✅|✅|
-| Anti CSRF |✅|✅|✅|❌|✅|✅|
-| Anti Bot |✅|✅|✅|❌|✅|✅|
-|Telemetry|✅|⚠️|⚠️|⚠️|⚠️|✅|
+| Purge System | ✅|❌|❌|❌|✅|✅|
 | Legal (Terms / Privacy)|✅|❌|❌|❌|✅|✅|
-| Leaderboards |✅|❌|❌|❌|❌|✅|
-| Support System | ✅|❌|❌|❌|❌|✅|
-| Easy Customizations | ✅|❌|❌|❌|❌|⚠️|
-| Custom (CSS/Header/HTML) |✅|❌|❌|❌|❌|✅|
-| Leaderboards |✅|❌|❌|❌|❌|✅|
-| Runs everywhere |✅|❌|❌|❌|❌|⚠️|
+| Anti Bot |✅|❌|❌|❌|❌|✅|
+|Telemetry|✅|❌|❌|❌|❌|✅|
 | CLI |✅|❌|❌|❌|❌|✅|
-
+| Support System | ✅|❌|❌|❌|❌|⚠️|
+| Easy Customizations | ✅|❌|❌|❌|❌|⚠️|
+| Runs everywhere |✅|❌|❌|❌|❌|⚠️|
+| Anti CSRF |✅|❌|❌|❌|❌|❌|
+| Custom (CSS/Header/HTML) |✅|❌|❌|❌|❌|❌|
+| Leaderboards |✅|❌|❌|❌|❌|❌|
 
 ## Demo
 

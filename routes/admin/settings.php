@@ -39,6 +39,16 @@ $router->add("/admin/settings/customcss", function () {
     require("../view/admin/settings/customcss.php");
 });
 
+$router->add("/admin/settings/stripe", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/stripe.php");
+});
+
+$router->add("/admin/settings/security", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/security.php");
+});
+
 $router->add("/admin/settings/customhead", function () {
     require("../include/main.php");
     require("../view/admin/settings/customhead.php");

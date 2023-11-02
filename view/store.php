@@ -166,6 +166,17 @@ if (isset($_GET['buyback'])) {
                             }
                             ?>
                         </div>
+                        <?php
+                        if (SettingsManager::getSetting("enable_stripe") == "true") {
+                            ?>
+                            <div class="alert alert-warning" role="alert">
+                                You don't have enough coins. <a href="/store/buy/stripe/coins">Would you like to buy more
+                                    coins?</a>
+                            </div>
+                            <?php
+                        }
+                        ?>
+
                         <div class="row mb-5">
                             <div class="col-md-6 col-lg-4 mb-3">
                                 <div class="card h-100">

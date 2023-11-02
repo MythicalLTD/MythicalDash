@@ -34,7 +34,10 @@ include(__DIR__ . '/../../requirements/admin.php');
                         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Settings</h4>
                         <?php include(__DIR__ . '/../../components/alert.php') ?>
                         <div class="card mb-4">
-                            <h5 class="card-header">General</h5>
+                            <h5 class="card-header text-center">General</h5>
+                            <div class="card-text text-center">
+                                <p>Customize your general settings here.</p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/general" method="GET">
@@ -51,7 +54,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 value="<?= SettingsManager::getSetting("logo") ?>" autofocus="">
                                         </div>
                                     </div>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -61,7 +64,12 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Seo Settings</h5>
+                            <h5 class="card-header text-center">Seo Settings</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your seo settings here. &NewLine;</label><br>
+                                <label>SEO settings are the settings from Google Search or from the embed!</label>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/seo" method="GET">
@@ -80,7 +88,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 value="<?= SettingsManager::getSetting("seo_keywords") ?>" autofocus="">
                                         </div>
                                     </div>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -90,7 +98,15 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Pterodactyl Settings</h5>
+                            <h5 class="card-header text-center">Pterodactyl Settings</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your pterodactyl settings here. &NewLine;</label><br>
+                                <label>Panel URL: This shall be your pterodactyl panel URL (no / at the end,
+                                    please).</label><br>
+                                <label>Panel API Key: This shall be your pterodactyl admin API key (with full permission
+                                    to read/write).</label>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/pterodactyl" method="GET">
@@ -110,7 +126,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 autofocus="">
                                         </div>
                                     </div>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -120,7 +136,109 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Discord Settings</h5>
+                            <h5 class="card-header text-center">Stripe</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your stripe settings here. &NewLine;</label><br>
+                                <label>Currency: This shall be your currency ISO (<a
+                                        href="https://stripe.com/docs/currencies#presentment-currencies">Here you can
+                                        find a list</a>).</label><br>
+                                <label>Price: This shall be the price per 1 coin (This shall be cents EX 1000 = 1
+                                    <?= strtoupper(SettingsManager::getSetting("stripe_currency")) ?>).
+                                </label><br>
+                                <label>Public Key: This shall be the publishable key that you can get from <a
+                                        href="https://dashboard.stripe.com/apikeys">here</a>.</label><br>
+                                <label>Secret Key: This shall be the secret key that you can get from <a
+                                        href="https://dashboard.stripe.com/apikeys">here</a>.</label>
+                                <p></p>
+                            </div>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/stripe" method="GET">
+                                    <div class="row">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Status</label>
+                                            <div>
+                                                <?php
+                                                if (SettingsManager::getSetting("enable_stripe") == 'true') {
+                                                    ?>
+                                                    <select class="form-control" name="stripe:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="stripe:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-1">
+                                            <label class="control-label">Currency</label>
+                                            <div>
+                                                <input type="text" required="" class="form-control"
+                                                    name="stripe:stripe_currency"
+                                                    value="<?= strtoupper(SettingsManager::getSetting("stripe_currency")) ?>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-1">
+                                            <label class="control-label">Price</label>
+                                            <div>
+                                                <input type="text" required="" class="form-control"
+                                                    name="stripe:stripe_coin_per_balance"
+                                                    value="<?= SettingsManager::getSetting("stripe_coin_per_balance") ?>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label">Public Key</label>
+                                            <div>
+                                                <input type="text" required="" class="form-control"
+                                                    name="stripe:public_key"
+                                                    value="<?= SettingsManager::getSetting("stripe_publishable_key") ?>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label">Secret Key</label>
+                                            <div>
+                                                <input type="password" required="" class="form-control"
+                                                    name="stripe:private_key"
+                                                    value="<?= SettingsManager::getSetting("stripe_secret_key") ?>">
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                    </div>
+                                    <br>
+                                    <div class="mt-2 text-center">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header text-center">Discord Settings</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your discord settings here. &NewLine;</label><br>
+                                <label>Discord Client ID: This shall be your Discord Client ID (<a
+                                        href="https://discord.com/developers/applications">Here you can the discord
+                                        developer portal</a>).</label><br>
+                                <label>Discord Client ID: This shall be your Discord Client Secret (<a
+                                        href="https://discord.com/developers/applications">Here you can the discord
+                                        developer portal</a>).</label><br>
+                                <p></p>
+                                <label>Discord Oath2 Redirect #1: <code><?= $appURL ?>/auth/discord</code></label><br>
+                                <label>Discord Oath2 Redirect #2:
+                                    <code><?= $appURL ?>/auth/link/discord</code></label><br>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/discord" method="GET">
@@ -154,21 +272,21 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 ?>
                                             </div>
                                         </div>
-                                        <div class="mb-3 col-md-6">
+                                        <div class="mb-3 col-md-2">
                                             <label for="discord:serverid" class="form-label">Discord Server ID</label>
                                             <input class="form-control" type="text" id="discord:serverid"
                                                 name="discord:serverid"
                                                 value="<?= SettingsManager::getSetting("discord_serverid") ?>"
                                                 placeholder="000000000000">
                                         </div>
-                                        <div class="mb-3 col-md-6">
+                                        <div class="mb-3 col-md-3">
                                             <label for="discord:invite" class="form-label">Discord Invite</label>
                                             <input class="form-control" type="text" id="discord:invite"
                                                 name="discord:invite"
                                                 value="<?= SettingsManager::getSetting("discord_invite") ?>"
                                                 placeholder="MythicalSystems">
                                         </div>
-                                        <div class="mb-3 col-md-6">
+                                        <div class="mb-3 col-md-5">
                                             <label class="form-label">Discord Webhook</label>
                                             <input type="password" required="" class="form-control"
                                                 name="discord:webhook"
@@ -188,7 +306,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 value="<?= SettingsManager::getSetting("discord_clientsecret") ?>">
                                         </div>
                                     </div>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -198,7 +316,11 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Default Resources Settings</h5>
+                            <h5 class="card-header text-center">Default Resources Settings</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your default resources here. &NewLine;</label><br>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/resources" method="GET">
@@ -211,21 +333,21 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 placeholder="15">
                                         </div>
                                         <div class="mb-3 col-md-1">
-                                            <label for="resources:ram" class="form-label">Ram</label>
+                                            <label for="resources:ram" class="form-label">Ram (MB)</label>
                                             <input class="form-control" type="text" id="resources:ram"
                                                 name="resources:ram"
                                                 value="<?= SettingsManager::getSetting("def_memory") ?>"
                                                 placeholder="1024">
                                         </div>
                                         <div class="mb-3 col-md-1">
-                                            <label for="resources:disk" class="form-label">Disk</label>
+                                            <label for="resources:disk" class="form-label">Disk (MB)</label>
                                             <input class="form-control" type="text" id="resources:disk"
                                                 name="resources:disk"
                                                 value="<?= SettingsManager::getSetting("def_disk_space") ?>"
                                                 placeholder="1024">
                                         </div>
                                         <div class="mb-3 col-md-1">
-                                            <label for="resources:cpu" class="form-label">Cpu</label>
+                                            <label for="resources:cpu" class="form-label">Cpu (%)</label>
                                             <input class="form-control" type="text" id="resources:cpu"
                                                 name="resources:cpu"
                                                 value="<?= SettingsManager::getSetting("def_cpu") ?>" placeholder="100">
@@ -286,8 +408,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             </div>
                                         </div>
                                         <div class="mb-3 col-md-2">
-                                            <label for="afk:coins:per:min" class="form-label">Coins per minute
-                                                afk</label>
+                                            <label for="afk:coins:per:min" class="form-label">Coins per minute</label>
                                             <input class="form-control" type="text" id="afk:coins:per:min"
                                                 name="afk:coins:per:min"
                                                 value="<?= SettingsManager::getSetting("afk_coins_per_min") ?>"
@@ -295,7 +416,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         </div>
 
                                     </div>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -305,7 +426,12 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Store Resources Price Settings</h5>
+                            <h5 class="card-header text-center">Store Resources Price Settings</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your default resources here. &NewLine;</label><br>
+                                <label>Those values are set per GB or value.. &NewLine;</label><br>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/store" method="GET">
@@ -357,7 +483,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         </div>
 
                                     </div>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -367,7 +493,11 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Mail</h5>
+                            <h5 class="card-header text-center">Mail</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your mail settings here. &NewLine;</label><br>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/mail" method="GET">
@@ -465,7 +595,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -475,7 +605,16 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Turnstile Settings</h5>
+                            <h5 class="card-header text-center">Turnstile Settings</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your turnstile settings here. &NewLine;</label><br>
+                                <label>You can configure turnstile only if you have a cloudflare account and a
+                                    website.</label><br>
+                                <label>Here you can get started. <a
+                                        href="https://www.cloudflare.com/en-gb/products/turnstile/">Get
+                                        Started</a></label><br>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/recaptcha" method="GET">
@@ -514,14 +653,14 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         <div class="form-group col-md-5">
                                             <label class="control-label">Secret Key</label>
                                             <div>
-                                                <input type="text" required="" class="form-control"
+                                                <input type="password" required="" class="form-control"
                                                     name="recaptcha:secret_key"
                                                     value="<?= SettingsManager::getSetting("turnstile_secretkey") ?>">
                                             </div>
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -531,7 +670,14 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Ads</h5>
+                            <h5 class="card-header text-center">Ads</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your ads settings here. &NewLine;</label><br>
+                                <label>You can code your own ad design that will be displayed on all the
+                                    pages</label><br>
+                                <label>This does support PHP/HTML CODE.</label><br>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/ads" method="GET">
@@ -560,30 +706,6 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             </div>
                                         </div>
                                         <br>
-                                        <div class="form-group col-md-2">
-                                            <label class="control-label">Anti AdBlocker Status</label>
-                                            <div>
-                                                <?php
-                                                if (SettingsManager::getSetting("enable_adblocker_detection") == 'true') {
-                                                    ?>
-                                                    <select class="form-control" name="ads:adblocker">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="ads:adblocker">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
-                                                ?>
-
-                                            </div>
-                                        </div>
-                                        <br>
                                         <div class="form-group">
                                             <label class="control-label">Ads Code</label>
                                             <div>
@@ -594,7 +716,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -604,7 +726,14 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Linkvertise</h5>
+                            <h5 class="card-header text-center">Linkvertise</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your linkvertise settings here. &NewLine;</label><br>
+                                <label>You can get your linkvertise code <a
+                                        href="https://publisher.linkvertise.com/dashboard#dynamic">here</a>.</label><br>
+                                <label>Please only paste in the numbers from the full script code..</label><br>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/linkvertise" method="GET">
@@ -650,7 +779,7 @@ include(__DIR__ . '/../../requirements/admin.php');
 
                                     </div>
                                     <br>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -660,7 +789,14 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Custom CSS</h5>
+                            <h5 class="card-header text-center">Custom CSS</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your css settings here. &NewLine;</label><br>
+                                <label>You can get a list of custom css themes <a
+                                        href="https://github.com/MythicalLTD/MythicalDash-Themes">here</a>.</label><br>
+                                <label>Please only paste in the css.</label><br>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/customcss" method="POST">
@@ -699,7 +835,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -709,7 +845,12 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Custom Header Code</h5>
+                            <h5 class="card-header text-center">Custom Header Code</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your header code here. &NewLine;</label><br>
+                                <label>This code will be placed inside your header.</label><br>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/customhead" method="POST">
@@ -748,7 +889,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -758,14 +899,20 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Terms of Service</h5>
+                            <h5 class="card-header text-center">Terms of Service</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your terms of serice text here. &NewLine;</label><br>
+                                <label>This code will be placed inside your terms of service page.</label><br>
+                                <label>This code supports HTML/PHP.</label><br>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/tos" method="POST">
                                     <div class="row">
                                         <br>
                                         <div class="form-group">
-                                            <label class="control-label">Custom head code (HTML SUPPORTED)</label>
+                                            <label class="control-label">Text</label>
                                             <div>
                                                 <textarea type="text" required="" class="form-control" name="text"
                                                     rows="4"
@@ -774,7 +921,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -784,14 +931,110 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Privacy Policy</h5>
+                            <h5 class="card-header text-center">Security Options</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your security options text here. &NewLine;</label><br>
+                                <p></p>
+                            </div>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/security" method="POST">
+                                    <div class="row">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Anti AdBlocker Status</label>
+                                            <div>
+                                                <?php
+                                                if (SettingsManager::getSetting("enable_adblocker_detection") == 'true') {
+                                                    ?>
+                                                    <select class="form-control" name="ads:adblocker">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="ads:adblocker">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Anti VPN Status</label>
+                                            <div>
+                                                <?php
+                                                if (SettingsManager::getSetting("enable_anti_vpn") == 'true') {
+                                                    ?>
+                                                    <select class="form-control" name="enable_anti_vpn">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="enable_anti_vpn">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Anti Alting Status</label>
+                                            <div>
+                                                <?php
+                                                if (SettingsManager::getSetting("enable_alting") == 'true') {
+                                                    ?>
+                                                    <select class="form-control" name="enable_alting">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="enable_alting">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <br>
+                                    </div>
+                                    <br>
+                                    <div class="mt-2 text-center">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header text-center">Privacy Policy</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your privacy policy text here. &NewLine;</label><br>
+                                <label>This code will be placed inside your privacy policy page.</label><br>
+                                <label>This code supports HTML/PHP.</label><br>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/pp" method="POST">
                                     <div class="row">
                                         <br>
                                         <div class="form-group">
-                                            <label class="control-label">Text (HTML SUPPORTED)</label>
+                                            <label class="control-label">Text</label>
                                             <div>
                                                 <textarea type="text" required="" class="form-control" name="text"
                                                     rows="4"
@@ -800,7 +1043,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>
@@ -810,7 +1053,11 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                         <div class="card mb-4">
-                            <h5 class="card-header">Server Purge</h5>
+                            <h5 class="card-header text-center">Server Purge</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your server purge options here. &NewLine;</label><br>
+                                <p></p>
+                            </div>
                             <hr class="my-0">
                             <div class="card-body">
                                 <form action="/admin/settings/purge" method="GET">
@@ -850,7 +1097,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         <?php } ?>
                                     </div>
                                     <br>
-                                    <div class="mt-2">
+                                    <div class="mt-2 text-center">
                                         <button type="submit" name="update_settings"
                                             class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
                                             changes</button>

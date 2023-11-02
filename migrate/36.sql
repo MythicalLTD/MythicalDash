@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_payments` ADD `coins` TEXT NOT NULL AFTER `code`, ADD `ownerkey` TEXT NOT NULL AFTER `coins`;

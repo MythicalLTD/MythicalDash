@@ -16,5 +16,3 @@ migrates.ini
 /logs/*.txt
 /cli/logs
 /public/pma.zip
-/public/FIRST_INSTALL
-/public/FIRST_USER

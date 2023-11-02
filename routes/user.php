@@ -39,4 +39,8 @@ $router->add("/user/security/resetpwd", function () {
     require("../view/user/resetpwd.php");
 });
 
+$router->add("/user/payments", function () {
+    require("../include/main.php");
+    require("../view/user/payments.php");
+});
 ?>

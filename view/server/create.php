@@ -1,8 +1,10 @@
 <?php
 use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../requirements/page.php');
 $csrf = new MythicalDash\CSRF();
 use MythicalDash\Telemetry;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['createsv'])) {
     if ($csrf->validate('create-server-form')) {
@@ -192,7 +194,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       header("location: /server/create?e=CSRF Verification Failed");
       die();
     }
-
   }
 }
 ?>
@@ -294,7 +295,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </select>
                     <br>
                     <label for="memory">RAM:</label>
-                    <input type="number" name="memory" class="form-control" id="ram" value="" required placeholder="RAM">
+                    <input type="number" name="memory" class="form-control" id="ram" value="" required
+                      placeholder="RAM">
                     <br>
                     <label for="disk">DISK:</label>
                     <input type="number" name="disk" class="form-control" id="disk" required placeholder="DISK">
@@ -303,13 +305,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="number" name="cores" class="form-control" id="cpu" required placeholder="CPU">
                     <br>
                     <label for="allocations">PORTS:</label>
-                    <input type="number" name="ports" class="form-control" id="allocations" required placeholder="PORTS">
+                    <input type="number" name="ports" class="form-control" id="allocations" required
+                      placeholder="PORTS">
                     <br>
                     <label for="databases">DATABASES:</label>
-                    <input type="number" name="databases" class="form-control" id="databases" required placeholder="DATABASES">
+                    <input type="number" name="databases" class="form-control" id="databases" required
+                      placeholder="DATABASES">
                     <br>
                     <label for="backups">BACKUPS:</label>
-                    <input type="number" name="backups" class="form-control" id="backups" required placeholder="BACKUPS">
+                    <input type="number" name="backups" class="form-control" id="backups" required
+                      placeholder="BACKUPS">
                     <br>
                     <?= $csrf->input('create-server-form'); ?>
                     <button action="submit" name="createsv" class="btn btn-primary">Create</button>

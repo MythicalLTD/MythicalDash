@@ -17,7 +17,7 @@ if (!Main::isHTTPS()) {
 }
 
 if (!is_writable(__DIR__)) {
-    ErrorHandler::ShowCritical("We have no access to our client directory. Open the terminal and run: chown -R www-data:www-data /var/www/client/*");
+    ErrorHandler::ShowCritical("We have no access to our client directory. Open the terminal and run: chown -R www-data:www-data /var/www/mythicaldash/*");
     die();
 }
 
@@ -25,10 +25,10 @@ $router = new \Router\Router();
 
 if (file_exists('FIRST_INSTALL')) {
     $router->add("/", function () {
-        require("../install/welcome.php");
+        require("../view/install/welcome.php");
     });
     $router->add("/server/check", function () {
-        require("../install/servercheck.php");
+        require("../view/install/servercheck.php");
     });
 
     $router->add("/(.*)", function () {
@@ -54,6 +54,8 @@ if (file_exists('FIRST_INSTALL')) {
     include(__DIR__ . '/../routes/user.php');
     //Routes for /earn/
     include(__DIR__ . '/../routes/earn.php');
+    //Routes for /store/buy/
+    include(__DIR__ . '/../routes/payments.php');
     //Routes for /admin/api/
     include(__DIR__ . '/../routes/admin/api.php');
     //Routes for /admin/servers/
