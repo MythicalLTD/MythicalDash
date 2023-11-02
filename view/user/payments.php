@@ -114,7 +114,7 @@ $totalPages = ceil($totalPayments / $paymentsPerPage);
                                                         if ($row['status'] == "paid") {
                                                             echo '<td><a href="/store/buy/stripe/coins" class="btn btn-primary">Buy Again</a></td>';
                                                         } else {
-                                                            echo '<td><a href="/user/payments/cancel?id=' . $row['id'] . '" class="btn btn-primary">Pay</a>&nbsp;<a href="/user/payments/cancel/?id=' . $row['id'] . '" class="btn btn-danger">Cancle</a></td>';
+                                                            echo '<td><a href="/store/buy/stripe/coins" class="btn btn-primary">Buy Again</a>&nbsp;<a href="/user/payments/cancel/?id=' . $row['code'] . '" class="btn btn-danger">Cancel</a></td>';
                                                         }
                                                         echo '</tr>';
                                                     }

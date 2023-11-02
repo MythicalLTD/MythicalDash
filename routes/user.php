@@ -43,4 +43,9 @@ $router->add("/user/payments", function () {
     require("../include/main.php");
     require("../view/user/payments.php");
 });
+
+$router->add("/user/payments/cancel", function () {
+    require("../include/main.php");
+    require("../view/stripe/cancel.php");
+});
 ?>

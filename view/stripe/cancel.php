@@ -8,40 +8,39 @@ if (SettingsManager::getSetting("enable_stripe") == "false") {
     header('location: /');
 }
 try {
-    if (isset($_GET['code']) && !$_GET['code'] == "") {
+    if (isset($_GET['id']) && !$_GET['id'] == "") {
         $user_query = "SELECT * FROM mythicaldash_payments WHERE code = ?";
         $stmt = mysqli_prepare($conn, $user_query);
-        mysqli_stmt_bind_param($stmt, "s", $_GET['code']);
+        mysqli_stmt_bind_param($stmt, "s", $_GET['id']);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         if (mysqli_num_rows($result) > 0) {
-            $paymentsdb = $conn->query("SELECT * FROM mythicaldash_payments WHERE code = '" . mysqli_real_escape_string($conn, $_GET['code']) . "'")->fetch_array();
+            $paymentsdb = $conn->query("SELECT * FROM mythicaldash_payments WHERE code = '" . mysqli_real_escape_string($conn, $_GET['id']) . "'")->fetch_array();
             if ($paymentsdb['status'] == "pending") {
                 if ($paymentsdb['ownerkey'] == $_COOKIE['token']) {
-                    $code = mysqli_real_escape_string($conn, $_GET['code']);
+                    $code = mysqli_real_escape_string($conn, $_GET['id']);
                     $conn->query("UPDATE `mythicaldash_payments` SET `status` = 'paid' WHERE `code` = '$code'");
-                    $coins = $session->getUserInfo('coins') + $paymentsdb['coins'];
-                    $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $coins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
-                    header('location: /user/payments?s=Thanks for buying from ' . SettingsManager::getSetting("name"));
+                    $conn->close();
+                    header('location: /user/payments?s=We canceld the payment code');
                     $conn->close();
                     die();
                 } else {
-                    header('location: /user/payments?e=Sorry but you did not pay for this!');
+                    header('location: /user/payments?e=This is not your payment code');
                     $conn->close();
                     die();
                 }
             } else {
-                header('location: /user/payments?e=The user already got his coins!');
+                header('location: /user/payments?e=This code is not valid');
                 $conn->close();
                 die();
             }
         } else {
-            header('location: /user/payments?e=We cant find this payment in the database!');
+            header('location: /user/payments?e=This code is not valid!');
             $conn->close();
             die();
         }
     } else {
-        header('location: /user/payments?e=What are you doing on this page?');
+        header('location: /user/payments?e=This code is not valid!');
         die();
     }
 } catch (Exception $e) {

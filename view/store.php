@@ -176,7 +176,6 @@ if (isset($_GET['buyback'])) {
                             <?php
                         }
                         ?>
-
                         <div class="row mb-5">
                             <div class="col-md-6 col-lg-4 mb-3">
                                 <div class="card h-100">

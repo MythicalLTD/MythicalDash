@@ -54,8 +54,6 @@ if (file_exists('FIRST_INSTALL')) {
     include(__DIR__ . '/../routes/user.php');
     //Routes for /earn/
     include(__DIR__ . '/../routes/earn.php');
-    //Routes for /store/buy/
-    include(__DIR__ . '/../routes/payments.php');
     //Routes for /admin/api/
     include(__DIR__ . '/../routes/admin/api.php');
     //Routes for /admin/servers/
