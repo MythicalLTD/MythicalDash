@@ -113,11 +113,10 @@ try {
                                 } else {
                                     $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-                                    if ($http_status === 200) {
+                                    if ($http_status === 201) {
                                         $responseData = json_decode($response, true);
-                                        if (isset($responseData['attributes']['id']) && isset($responseData['attributes']['username'])) {
+                                        if (isset($responseData['attributes']['id'])) {
                                             $panelId = $responseData['attributes']['id'];
-                                            $panel_username = $responseData['attributes']['username'];
                                         } else {
                                             header('location: /auth/register?e=We are sorry but our panel is down!');
                                             die();

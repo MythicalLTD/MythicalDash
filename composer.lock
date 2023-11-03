@@ -4,8 +4,57 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0ad983bd673dffc8c6a1069c5facd12b",
+    "content-hash": "80d228c308e33c061c14076d485c247c",
     "packages": [
+        {
+            "name": "atakde/discord-webhook-php",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/atakde/discord-webhook-php.git",
+                "reference": "e32d2a6e7069766c68fc18ccc8372968c99a85a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/atakde/discord-webhook-php/zipball/e32d2a6e7069766c68fc18ccc8372968c99a85a9",
+                "reference": "e32d2a6e7069766c68fc18ccc8372968c99a85a9",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=8.0.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Atakde\\DiscordWebhook\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Atakan Demircioğlu",
+                    "homepage": "https://atakann.com/"
+                }
+            ],
+            "description": "discord webhook php",
+            "keywords": [
+                "discord",
+                "php",
+                "webhook"
+            ],
+            "support": {
+                "issues": "https://github.com/atakde/discord-webhook-php/issues",
+                "source": "https://github.com/atakde/discord-webhook-php/tree/2.0.0"
+            },
+            "time": "2023-08-12T12:04:20+00:00"
+        },
         {
             "name": "mythicalsystems/php-router",
             "version": "1.0.3",
