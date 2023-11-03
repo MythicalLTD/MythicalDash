@@ -89,7 +89,7 @@ $totalPages = ceil($totalEggs / $eggsPerPage);
                                                 echo "</tr>";
                                             }
                                         } else {
-                                            echo "<tr><br<center><td class='text-center'colspan='5'><br>No eggs found.<br><br>&nbsp;</td></center></tr>";
+                                            echo "<tr><br<center><td class='text-center'colspan='5'><br>No users found.<br><br>&nbsp;</td></center></tr>";
                                         }
                                         ?>
                                     </tbody>

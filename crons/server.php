@@ -43,6 +43,7 @@ foreach ($queue as $server) {
     $location = $server['location'];
     $locationd = mysqli_query($conn, "SELECT * FROM mythicaldash_locations WHERE id = '" . mysqli_real_escape_string($conn, $location) . "'");
     if ($locationd->num_rows == 0) {
+        $conn->query("INSERT INTO `mythicaldash_servers_logs` (`type`, `title`, `text`) VALUES ('error', 'Location Error', '{" . $server['name'] . "} This location does not exist.');");
         echo "\033[31m[WARNING] Location does not exist." . PHP_EOL;
         echo "[$i/" . $queue->num_rows . "] There was an error while creating the server ``" . $server['name'] . "``! The location provided in the queue table doesn't exist!";
         continue;
@@ -53,6 +54,7 @@ foreach ($queue as $server) {
     if ($slots_used >= $slots_all) {
         if ($server['type'] != "2") {
             echo "\033[31m[INFO] No slots available to create server " . $server['name'] . PHP_EOL;
+            $conn->query("INSERT INTO `mythicaldash_servers_logs` (`type`, `title`, `text`) VALUES ('error', 'Creation Error', '{" . $server['name'] . "} Failed to create server due to the server slots being full.');");
             $nodesFull++;
             continue;
         }
@@ -64,6 +66,7 @@ foreach ($queue as $server) {
     $eggd = mysqli_query($conn, "SELECT * FROM mythicaldash_eggs WHERE id = '" . mysqli_real_escape_string($conn, $egg) . "'");
     if ($eggd->num_rows == 0) {
         echo "\033[33m[WARNING $date] Egg does not exist." . PHP_EOL;
+        $conn->query("INSERT INTO `mythicaldash_servers_logs` (`type`, `title`, `text`) VALUES ('error', 'Eggs Error', '{" . $server['name'] . "} This egg does not exist.');");
         continue;
     }
     $egg = $eggd->fetch_object();
@@ -83,12 +86,10 @@ foreach ($queue as $server) {
     $ports = $server['xtra_ports'] + 1;
     $sql = "SELECT setting_name, setting_value FROM mythicaldash_eggs_config";
     $result = $conn->query($sql);
-
-    $environment = array(); // Initialize an empty environment array
+    $environment = array();
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            // Populate the 'environment' array with settings from the database
             $settingName = $row["setting_name"];
             $settingValue = $row["setting_value"];
             $environment[$settingName] = $settingValue;
@@ -104,7 +105,6 @@ foreach ($queue as $server) {
         'docker_image' => $docker_image,
         'startup' => $startup,
         'environment' => $environment,
-        // Include the 'environment' array here
         'limits' => array(
             'memory' => $server['ram'],
             'swap' => $server['ram'],
@@ -141,8 +141,8 @@ foreach ($queue as $server) {
     curl_close($panelcurl);
     $ee = json_decode($result, true);
     if (!isset($ee['object'])) {
+        $conn->query("INSERT INTO `mythicaldash_servers_logs` (`type`, `title`, `text`) VALUES ('error', 'Pterodactyl Error', '{" . $server['name'] . "} Server failed to create, error details are as follows: " . $ee['errors'][0]['detail'] . "');");
         echo "\033[31m[ERROR $date] Server failed to create, error details are as follows.\nCode: " . $ee['errors'][0]['code'] . "\nDetail: " . $ee['errors'][0]['detail'] . PHP_EOL;
-        //logClient("[$i/" . $queue->num_rows . "] There was an error while creating the server ``" . $server['name'] . "``! ```" . $ee['errors'][0]['detail'] . "```");
         continue;
     }
     $identifier = $ee['attributes']['identifier'];
@@ -159,6 +159,7 @@ foreach ($queue as $server) {
         die();
     } else {
         echo "\033[31m[INFO] Error inserting server into db." . PHP_EOL;
+        $conn->query("INSERT INTO `mythicaldash_servers_logs` (`type`, `title`, `text`) VALUES ('error', 'Eggs Error', '{" . $server['name'] . "} Failed to add the server to the database: " . mysqli_error($conn) . "');");
         echo mysqli_error($conn);
         $conn->close();
         die();

@@ -135,12 +135,6 @@ function is_active_page($page_urls)
           <div>Application API</div>
         </a>
       </li>
-      <li class="menu-item <?php echo is_active_page(['/admin/servers', '/admin/server/delete']) ? 'active' : ''; ?>">
-        <a href="/admin/servers" class="menu-link">
-          <i class="menu-icon tf-icons ti ti-server"></i>
-          <div>Servers</div>
-        </a>
-      </li>
       <li
         class="menu-item <?php echo is_active_page(['/admin/users', '/admin/users/edit', '/admin/users/new']) ? 'active' : ''; ?>">
         <a href="/admin/users" class="menu-link">
@@ -148,6 +142,28 @@ function is_active_page($page_urls)
           <div>Users</div>
         </a>
       </li>
+      <li class="menu-item  <?php echo is_active_page(['/admin/servers', '/admin/servers/logs', '/admin/servers/queue']) ? 'active' : ''; ?>">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons ti ti-server"></i>
+          <div data-i18n="Servers">Servers</div>
+        </a>
+        <ul class="menu-sub">
+          <li class="menu-item <?php echo is_active_page(['/admin/servers/list']) ? 'active' : ''; ?>">
+            <a href="/admin/servers/list" class="menu-link">
+              <div data-i18n="Servers List">Server List</div>
+            </a>
+          </li>
+          <li class="menu-item <?php echo is_active_page(['/admin/servers/queue/list']) ? 'active' : ''; ?>">
+            <a href="/admin/servers/queue/list" class="menu-link">
+              <div data-i18n="Queue List">Queue List</div>
+            </a>
+          </li>
+          <li class="menu-item <?php echo is_active_page(['/admin/servers/queue/logs']) ? 'active' : ''; ?>">
+            <a href="/admin/servers/queue/logs" class="menu-link">
+              <div data-i18n="Queue Logs">Queue Logs</div>
+            </a>
+          </li>
+        </ul>
       <li class="menu-item <?php echo is_active_page(['/admin/redeem']) ? 'active' : ''; ?>">
         <a href="/admin/redeem" class="menu-link">
           <i class="menu-icon tf-icons ti ti-key"></i>
@@ -161,23 +177,23 @@ function is_active_page($page_urls)
         </a>
       </li>
       <li class="menu-item  <?php echo is_active_page(['/admin/eggs']) ? 'active' : ''; ?>">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons ti ti-egg"></i>
-        <div data-i18n="Eggs">Eggs</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item <?php echo is_active_page(['/admin/eggs/list']) ? 'active' : ''; ?>">
-          <a href="/admin/eggs/list" class="menu-link">
-            <div data-i18n="Eggs List">Eggs List</div>
-          </a>
-        </li>
-        <li class="menu-item <?php echo is_active_page(['/admin/eggs/config']) ? 'active' : ''; ?>">
-          <a href="/admin/eggs/config" class="menu-link">
-            <div data-i18n="Config List">Config List</div>
-          </a>
-        </li>
-      </ul>
-    </li>
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons ti ti-egg"></i>
+          <div data-i18n="Eggs">Eggs</div>
+        </a>
+        <ul class="menu-sub">
+          <li class="menu-item <?php echo is_active_page(['/admin/eggs/list']) ? 'active' : ''; ?>">
+            <a href="/admin/eggs/list" class="menu-link">
+              <div data-i18n="Eggs List">Eggs List</div>
+            </a>
+          </li>
+          <li class="menu-item <?php echo is_active_page(['/admin/eggs/config']) ? 'active' : ''; ?>">
+            <a href="/admin/eggs/config" class="menu-link">
+              <div data-i18n="Config List">Config List</div>
+            </a>
+          </li>
+        </ul>
+      </li>
       <li class="menu-item <?php echo is_active_page(['/admin/tickets']) ? 'active' : ''; ?>">
         <a href="/admin/tickets" class="menu-link">
           <i class="menu-icon tf-icons ti ti-messages"></i>

@@ -10,13 +10,13 @@ $offset = ($page - 1) * $serversPerPage;
 $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
 $searchCondition = '';
 if (!empty($searchKeyword)) {
-  $searchCondition = " WHERE `pid` LIKE '%$searchKeyword%' OR `uid` LIKE '%$searchKeyword%'";
+  $searchCondition = " WHERE `title` LIKE '%$searchKeyword%' OR `type` LIKE '%$searchKeyword%'";
 }
-$server_query = 'SELECT * FROM mythicaldash_servers' . $searchCondition . " ORDER BY `id` LIMIT $offset, $serversPerPage";
+$server_query = 'SELECT * FROM mythicaldash_servers_logs' . $searchCondition . " ORDER BY `id` LIMIT $offset, $serversPerPage";
 $result = $conn->query($server_query);
-$totalServersQuery = 'SELECT COUNT(*) AS total_servers FROM mythicaldash_servers' . $searchCondition;
+$totalServersQuery = 'SELECT COUNT(*) AS total_logs FROM mythicaldash_servers_logs' . $searchCondition;
 $totalResult = $conn->query($totalServersQuery);
-$totalServers = $totalResult->fetch_assoc()['total_servers'];
+$totalServers = $totalResult->fetch_assoc()['total_logs'];
 $totalPages = ceil($totalServers / $serversPerPage);
 ?>
 <!DOCTYPE html>
@@ -30,7 +30,7 @@ $totalPages = ceil($totalServers / $serversPerPage);
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <?php include(__DIR__ . '/../../requirements/head.php'); ?>
   <title>
-    <?= SettingsManager::getSetting("name") ?> - Servers
+    <?= SettingsManager::getSetting("name") ?> - Logs
   </title>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
@@ -46,12 +46,12 @@ $totalPages = ceil($totalServers / $serversPerPage);
         <?php include(__DIR__ . '/../../components/navbar.php') ?>
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
-            <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Servers</h4>
+            <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin / Servers Queue / </span> Logs </h4>
             <?php include(__DIR__ . '/../../components/alert.php') ?>
             <!-- Search Form -->
             <form class="mt-4">
               <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Search servers..." name="search"
+                <input type="text" class="form-control" placeholder="Search logs..." name="search"
                   value="<?= $searchKeyword ?>">
                 <button class="btn btn-outline-secondary" type="submit">Search</button>
               </div>
@@ -59,19 +59,17 @@ $totalPages = ceil($totalServers / $serversPerPage);
             <!-- Servers List Table -->
             <div class="card">
               <h5 class="card-header">
-                Servers
+                Logs
               </h5>
               <div class="table-responsive text-nowrap">
                 <table class="table">
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>Panel ID</th>
-                      <th>Location ID</th>
-                      <th>Egg ID</th>
-                      <th>Purge</th>
+                      <th>Title</th>
+                      <th>Type</th>
+                      <th>Text</th>
                       <th>Created</th>
-                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody class="table-border-bottom-0">
@@ -79,17 +77,15 @@ $totalPages = ceil($totalServers / $serversPerPage);
                     if ($result->num_rows > 0) {
                       while ($row = $result->fetch_assoc()) {
                         echo '<tr>';
-                        echo '<td>' . $row['id'] . '</td>';
-                        echo '<td>' . $row['pid'] . '</td>';
-                        echo '<td>' . $row['location'] . '</td>';
-                        echo '<td>' . $row['egg_id'] . '</td>';
-                        echo '<td>' . $row['purge'] . '</td>';
-                        echo '<td>' . $row['created'] . '</td>';
-                        echo '<td><a href="' . SettingsManager::getSetting("PterodactylURL") . '/admin/servers/view/' . $row['pid'] . '" target="blank" class="btn btn-primary">View</a>&nbsp;<a href="/admin/server/delete?pid=' . $row['pid'] . '" class="btn btn-danger">Delete</a></td>';
+                        echo '<td>#' . $row['id'] . '</td>';
+                        echo '<td>' . $row['title'] . '</td>';
+                        echo '<td>' . $row['type'] . '</td>';
+                        echo '<td>' . $row['text'] . '</td>';
+                        echo '<td>' . $row['date'] . '</td>';
                         echo '</tr>';
                       }
                     } else {
-                      echo "<tr><br<center><td class='text-center'colspan='5'><br>No servers found.<br><br>&nbsp;</td></center></tr>";
+                        echo "<tr><br<center><td class='text-center'colspan='5'><br>No logs found.<br><br>&nbsp;</td></center></tr>";
                     }
                     ?>
                   </tbody>
