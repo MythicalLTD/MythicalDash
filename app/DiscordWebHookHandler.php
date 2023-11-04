@@ -4,7 +4,7 @@ namespace MythicalDash;
 use Atakde\DiscordWebhook\DiscordWebhook;
 use Atakde\DiscordWebhook\Message\MessageFactory;
 
-class DiscordWebhookHandler
+class DiscordWebHookHandler
 {
     public static function NewAccount($appURL, $username, $avatar, $first_name, $last_name, $email, $ip)
     {

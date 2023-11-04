@@ -1,5 +1,4 @@
 <?php echo "====== MythicalDash queue ======\n\n";
-use MythicalDash\DiscordWebhookHandler;
 use MythicalDash\SettingsManager;
 
 echo "[INFO/loader] Loading files...\n";
@@ -96,7 +95,6 @@ foreach ($queue as $server) {
             $environment[$settingName] = $settingValue;
         }
     }
-    DiscordWebhookHandler::NewServer($appURL,$server['name']);
     $panelcurl = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers");
     $postfields = array(
         'name' => $server['name'],

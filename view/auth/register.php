@@ -1,6 +1,5 @@
 <?php
 use MythicalDash\CloudFlare\Captcha;
-use MythicalDash\DiscordWebhookHandler;
 use MythicalDash\ErrorHandler;
 use MythicalDash\SettingsManager;
 use MythicalDash\Encryption;
@@ -182,7 +181,6 @@ try {
                                     unlink("FIRST_USER");
                                 }
                                 Telemetry::NewUser();
-                                DiscordWebhookHandler::NewAccount($appURL, $grav_url ,$username, $first_name, $last_name, $email, $session->getIP());
                                 header('location: /auth/login');
                                 die();
                             } else {
