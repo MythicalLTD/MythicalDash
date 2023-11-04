@@ -22,7 +22,13 @@ class Main
         
         return $password;
     }
-
+    public static function getAppUrl() {
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'];
+        $url = $protocol . $host . $_SERVER['REQUEST_URI'];
+        return $url;
+    }
+    
     
 }
 ?>

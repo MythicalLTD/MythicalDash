@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\CloudFlare\Captcha;
+use MythicalDash\DiscordWebhookHandler;
 use MythicalDash\ErrorHandler;
 use MythicalDash\SettingsManager;
 use MythicalDash\SessionManager;
@@ -75,6 +76,7 @@ try {
                     $cookie_name = 'token';
                     $cookie_value = $token;
                     setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
+                    DiscordWebhookHandler::NewLogin($appURL,$row['username'],$row['email'], $row['avatar'],$session->getIP());
                     $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . $session->getIP() . "' WHERE `mythicaldash_users`.`api_key` = '" . $usr_id . "';");
                     if (isset($_GET['r'])) {
                       header('location: ' . $_GET['r']);

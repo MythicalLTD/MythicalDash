@@ -1,4 +1,5 @@
 <?php
+use MythicalDash\DiscordWebhookHandler;
 use MythicalDash\Encryption;
 
 include(__DIR__ . '/../requirements/page.php');
@@ -9,6 +10,7 @@ if (isset($_GET['subject']) && isset($_GET['priority']) && isset($_GET['descript
         $description = mysqli_real_escape_string($conn, $_GET['description']);
         $attachment = mysqli_real_escape_string($conn, $_GET['attachment']);
         $api_key = mysqli_real_escape_string($conn, $_COOKIE['token']);
+        DiscordWebhookHandler::NewTicket($appURL, $subject, $priority, $description, $attachment);
         $conn->query("INSERT INTO `mythicaldash_tickets` (`ownerkey`, `ticketuuid`, `subject`, `priority`, `description`, `attachment`) VALUES ('" . $api_key . "', '" . Encryption::generate_keynoinfo() . "', '" . $subject . "', '" . $priority . "', '" . $description . "', '" . $attachment . "');");
         $conn->close();
         header('location: /help-center/tickets');
