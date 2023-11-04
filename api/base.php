@@ -14,5 +14,4 @@ if (!is_writable(__DIR__)) {
     );
     die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 }
-
 ?>
