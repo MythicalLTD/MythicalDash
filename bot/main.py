@@ -27,7 +27,9 @@ if sys.platform != "linux":
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(prefix), activity=discord.Game(name=activityname), intents=discord.Intents.all())
 admin = discord.SlashCommandGroup("admin", "Admin commands")
-bot.remove_command('help')
+redeem = discord.SlashCommandGroup("redeem", "Redeem commands")
+
+#bot.remove_command('help')
 
 @bot.event
 async def on_ready():
@@ -48,98 +50,115 @@ async def ping(ctx):
     latency = round(latency)
     await ctx.respond(":ping_pong: Pong! My ping is: " + "**{}ms**!".format(latency))
 
+
 @bot.slash_command(description="Get status from client", guild_ids=[dscserver])
 async def status(ctx):
-    response = requests.get(url+"/api/admin/statistics?api_key="+api_key)
+    headers = {
+        "Authorization": f"{api_key}",
+    }
+    
+    response = requests.get(f"{url}/api/admin/statistics", headers=headers)
+    
+    embed = discord.Embed(title="Status about the host", color=discord.Color.green())
+    embed.set_thumbnail(url=logo)
+
     if response.status_code == 200:
         data = response.json()
-        client_users = data['statistics']['users']
-        client_tickets = data['statistics']['tickets']
-        embed = discord.Embed(title="Status about the host", color=discord.Color.green())
-        embed.set_thumbnail(url=logo)
+        client_users = data.get("data", {}).get("users", "Unknown")
+        client_tickets = data.get("data", {}).get("tickets", "Unknown")
+        client_svs = data.get("data", {}).get("servers", "Unknown")
+        client_locs = data.get("data", {}).get("locations", "Unknown")
+        client_eggs = data.get("data", {}).get("eggs", "Unknown")
+        
         embed.add_field(name="Total users", value=client_users, inline=False)
         embed.add_field(name="Total tickets", value=client_tickets, inline=False)
+        embed.add_field(name="Total servers", value=client_svs, inline=False)
+        embed.add_field(name="Total locations", value=client_locs, inline=False)
+        embed.add_field(name="Total eggs", value=client_eggs, inline=False)
+        
+        
     elif response.status_code == 403:
-        embed.add_field(name="Error", value="We can't find this user in the database", inline=False)
+        embed.add_field(name="Error", value="Access Denied. Check your permissions.", inline=False)
     elif response.status_code == 500:
         embed.add_field(name="Error", value="Failed to get connection info from API.", inline=False)
     else:
         embed = discord.Embed(title="Connection Info", color=discord.Color.red())
         embed.set_thumbnail(url=logo)
-        embed.add_field(name="Error", value="Failed to get connection info from API.", inline=False)
+        embed.add_field(name="Error", value=f"An error occurred. Status Code: {response.status_code}", inline=False)
+
     embed.set_footer(text=f"© Copyright 2021-2023 MythicalSystems")
     await ctx.respond(embed=embed)
 
 @bot.slash_command(description="Get information about a user", guild_ids=[dscserver])
 async def userinfo(ctx, email_address: str):
-    #if str(ctx.author.id) not in allowed_users:
-    #    await ctx.respond("Sorry, you are not allowed to use this command.")
-    #    return
-
-    response = requests.get(url + "/api/admin/user/info?api_key=" + api_key + "&email=" + email_address)
+    headers = {
+        "Authorization": f"{api_key}",  
+    }
+    response = requests.get(f"{url}/api/admin/user/info?email={email_address}", headers=headers)
+    
     embed = discord.Embed(title="User Info", color=discord.Color.red())
 
     if response.status_code == 200:
         data = response.json()
-        client_username = data['info']['username']
-        client_avatar = data['info']['avatar']
-        client_email = data['info']['email']
-        client_role = data['info']['role']
-        client_registred = data['info']['registred_at']
-        client_banned = data['info']['banned']
+        user_info = data.get("data", {}).get("info", {})
+
+        username = user_info.get("username", "Unknown")
+        email = user_info.get("email", "Unknown")
+        role = user_info.get("role", "Unknown")
+        registred_at = user_info.get("registred_at", "Unknown")
+        banned = user_info.get("banned", "")
 
         embed = discord.Embed(
-            title=client_username + " | User Info",
-            description=f"Here is everything we know about {client_username}",
-            color=discord.Color.green())
-        embed.set_author(name=client_username, icon_url=client_avatar)
-        embed.set_thumbnail(url=client_avatar)
-        embed.add_field(name="Username", value=f"```{client_username}```", inline=False)
-        embed.add_field(name="Email", value=f"```{client_email}```", inline=False)
-        embed.add_field(name="Role", value=f"```{client_role}```", inline=False)
-        embed.add_field(name="Registred", value=f"```{client_registred}```", inline=False)
+            title=f"{username} | User Info",
+            description=f"Here is everything we know about {username}",
+            color=discord.Color.green()
+        )
+        embed.set_thumbnail(url=user_info.get("avatar", logo))
+        embed.add_field(name="Username", value=f"```{username}```", inline=False)
+        embed.add_field(name="Email", value=f"```{email}```", inline=False)
+        embed.add_field(name="Role", value=f"```{role}```", inline=False)
+        embed.add_field(name="Registered", value=f"```{registred_at}```", inline=False)
         
-        if client_banned:
-            embed.add_field(name="This user is banned for:", value=f"```{client_banned}```", inline=False)
-        
-    elif response.status_code == 403:
-        embed.add_field(name="Error", value="We can't find this user in the database", inline=False)
-    elif response.status_code == 500:
-        embed.add_field(name="Error", value="Failed to get connection info from API.", inline=False)
+        if banned:
+            embed.add_field(name="Banned for", value=f"```{banned}```", inline=False)
     else:
         embed.add_field(name="Error", value=f"An error occurred. Status Code: {response.status_code}", inline=False)
-    
+
     embed.set_thumbnail(url=logo)
     embed.set_footer(text="© Copyright 2021-2023 MythicalSystems")
     await ctx.respond(embed=embed)
 
-@bot.slash_command(description="Get information about a user", guild_ids=[dscserver])
+@bot.slash_command(description="Get information about a user resources", guild_ids=[dscserver])
 async def resources(ctx, email_address: str):
-    #if str(ctx.author.id) not in allowed_users:
-    #    await ctx.respond("Sorry, you are not allowed to use this command.")
-    #    return
+    headers = {
+        "Authorization": f"{api_key}",  # Replace with your actual authorization token
+    }
 
-    response = requests.get(url + "/api/admin/user/info?api_key=" + api_key + "&email=" + email_address)
+    response = requests.get(f"{url}/api/admin/user/info?email={email_address}", headers=headers)
     embed = discord.Embed(title="User Info", color=discord.Color.red())
 
     if response.status_code == 200:
         data = response.json()
-        client_username = data['info']['username']
-        client_avatar = data['info']['avatar']
-        client_banned = data['info']['banned']
-        client_coins = data['resources']['coins']
-        client_ram = data['resources']['ram']
-        client_disk = data['resources']['disk']
-        client_cpu = data['resources']['cpu']
-        client_server_limit = data['resources']['server_limit']
-        client_ports = data['resources']['ports']
-        client_databases = data['resources']['databases']
-        client_backups = data['resources']['backups']
+        user_info = data.get("data", {}).get("info", {})
+        resources = data.get("data", {}).get("resources", {})
         
+        client_username = user_info.get("username", "Unknown")
+        client_avatar = user_info.get("avatar", logo)
+        client_banned = user_info.get("banned", "")
+        client_coins = resources.get("coins", "Unknown")
+        client_ram = resources.get("ram", "Unknown")
+        client_disk = resources.get("disk", "Unknown")
+        client_cpu = resources.get("cpu", "Unknown")
+        client_server_limit = resources.get("server_limit", "Unknown")
+        client_ports = resources.get("ports", "Unknown")
+        client_databases = resources.get("databases", "Unknown")
+        client_backups = resources.get("backups", "Unknown")
+
         embed = discord.Embed(
-            title=client_username + " | User Info",
+            title=f"{client_username} | User Info",
             description=f"Here is everything we know about {client_username}",
-            color=discord.Color.green())
+            color=discord.Color.green()
+        )
         embed.set_author(name=client_username, icon_url=client_avatar)
         embed.set_thumbnail(url=client_avatar)
         embed.add_field(name="Username", value=f"```{client_username}```", inline=False)
@@ -151,19 +170,22 @@ async def resources(ctx, email_address: str):
         embed.add_field(name="Allocations", value=f"```{client_ports}```", inline=True)
         embed.add_field(name="Databases", value=f"```{client_databases}```", inline=True)
         embed.add_field(name="Backups", value=f"```{client_backups}```", inline=True)
+        
         if client_banned:
             embed.add_field(name="This user is banned for:", value=f"```{client_banned}```", inline=False)
         
     elif response.status_code == 403:
-        embed.add_field(name="Error", value="We can't find this user in the database", inline=False)
+        embed.add_field(name="Error", value="Access Denied. Check your permissions.", inline=False)
     elif response.status_code == 500:
         embed.add_field(name="Error", value="Failed to get connection info from API.", inline=False)
     else:
         embed.add_field(name="Error", value=f"An error occurred. Status Code: {response.status_code}", inline=False)
     
     embed.set_thumbnail(url=logo)
-    embed.set_footer(text="© Copyright 2021-2023 MythicalSystems")
+    embed.set_footer(text=f"© Copyright 2021-2023 MythicalSystems")
     await ctx.respond(embed=embed)
 
 bot.add_application_command(admin)
+bot.add_application_command(redeem)
+
 bot.run(token)
