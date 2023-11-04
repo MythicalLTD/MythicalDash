@@ -49,6 +49,9 @@ Well, we created a table to compare the most commonly used pterodactyl clients, 
 | Custom (CSS/Header/HTML) |✅|❌|❌|❌|❌|❌|
 | Leaderboards |✅|❌|❌|❌|❌|❌|
 | Custom Search |✅|❌|❌|❌|❌|❌|
+| Server Queue |✅|❌|❌|❌|❌|❌|
+| Web Logs |✅|❌|❌|❌|❌|❌|
+
 
 ## Demo
 
