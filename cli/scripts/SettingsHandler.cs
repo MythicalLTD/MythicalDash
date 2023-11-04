@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using MySqlConnector;
 using YamlDotNet.Serialization;
 
@@ -6,13 +7,15 @@ namespace MythicalDash
     public class SettingsHandler
     {
         FileManager fm = new FileManager();
-        #pragma warning disable
+#pragma warning disable
         public static string connectionString;
-        
-        public void Setup() {
-            if (fm.ConfigExists() == true) { 
-                Program.logger.Log(LogType.Info,"Hi, and welcome to the automated installer for MythicalDash.");
-                Program.logger.Log(LogType.Info,"This installer will help you set up your dashboard with no problem and is easy to follow. \n");
+
+        public void Setup()
+        {
+            if (fm.ConfigExists() == true)
+            {
+                Program.logger.Log(LogType.Info, "Hi, and welcome to the automated installer for MythicalDash.");
+                Program.logger.Log(LogType.Info, "This installer will help you set up your dashboard with no problem and is easy to follow. \n");
                 Console.Write("Name [");
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write($"MythicalSystems");
@@ -60,20 +63,59 @@ namespace MythicalDash
                 {
                     panelkey = "ptla_000000000000000000000000000000000000000000";
                 }
-                try {
+                try
+                {
+                    TestPterodactylConnection(panelurl, panelkey);
                     getConnection();
                     using (var connection = new MySqlConnection(connectionString))
                     {
                         connection.Open();
-                        ExecuteSQLScript(connection, "INSERT INTO `mythicaldash_settings` (`name`, `logo`, `PterodactylURL`, `PterodactylAPIKey`) VALUES ('"+name+"', '"+logo+"', '"+panelurl+"','"+panelkey+"');");
+                        ExecuteSQLScript(connection, "INSERT INTO `mythicaldash_settings` (`name`, `logo`, `PterodactylURL`, `PterodactylAPIKey`) VALUES ('" + name + "', '" + logo + "', '" + panelurl + "','" + panelkey + "');");
                         connection.Close();
                     }
-                } catch (Exception ex) {
-                    Program.logger.Log(LogType.Error , "Sorry but the auto settings throws this error: "+ex.Message);
                 }
-                
-            } else {
+                catch (Exception ex)
+                {
+                    Program.logger.Log(LogType.Error, "Sorry but the auto settings throws this error: " + ex.Message);
+                }
+
+            }
+            else
+            {
                 Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
+            }
+        }
+
+        private static bool TestPterodactylConnection(string panelUrl, string panelApiKey)
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    string usersEndpoint = "/api/application/users";
+
+                    httpClient.BaseAddress = new Uri(panelUrl);
+                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", panelApiKey);
+
+                    HttpResponseMessage response = httpClient.GetAsync(usersEndpoint).Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Program.logger.Log(LogType.Info, "Pterodactyl panel connection test successful.");
+                        return true;
+                    }
+                    else
+                    {
+                        Program.logger.Log(LogType.Error, "Pterodactyl panel connection test failed. Status code: " + response.StatusCode);
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Program.logger.Log(LogType.Error, "Pterodactyl panel connection test failed with an exception: " + ex.Message);
+                return false;
             }
         }
 
@@ -93,9 +135,9 @@ namespace MythicalDash
 
                 var deserializer = new DeserializerBuilder().Build();
                 var yamlObject = deserializer.Deserialize(new StringReader(yamlContent));
-                #pragma warning disable
+#pragma warning disable
                 var databaseSettings = (yamlObject as dynamic)["database"];
-                #pragma warning restore
+#pragma warning restore
                 string dbHost = databaseSettings["host"];
                 string dbPort = databaseSettings["port"];
                 string dbUsername = databaseSettings["username"];
@@ -108,6 +150,6 @@ namespace MythicalDash
                 Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
             }
         }
-        #pragma warning restore
+#pragma warning restore
     }
 }
