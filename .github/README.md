@@ -104,3 +104,9 @@ Here is a list of the core components that MythicalDash uses to run!
 
 **Packages:**
 [PHP-Router](https://packagist.org/packages/mythicalsystems/php-router), [Yaml](https://packagist.org/packages/symfony/yaml), [PHPMailer](https://packagist.org/packages/phpmailer/phpmailer), [Fody](https://www.nuget.org/packages/Costura.Fody/), [MySqlConnector](https://www.nuget.org/packages/MySqlConnector/), [YamlDotNet](https://www.nuget.org/packages/YamlDotNet)
+
+
+## Serial Code:
+```bash
+1 393 868 068
+```
