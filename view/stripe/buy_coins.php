@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                             <br>
                                             <?= $csrf->input('pay-form'); ?>
                                             <button name="pay" type="subbmit" class="btn btn-primary">Purchase
-                                                Coins (DO NOT PAY!! U WON'T GET COINS FUNCTION IS NOT DONE)</button>
+                                                Coins</button>
                                         </form>
                                     </div>
                                 </div>
