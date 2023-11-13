@@ -85,6 +85,7 @@ foreach ($servers_in_queue as $server) {
             <?php include('components/navbar.php') ?>
             <div class="content-wrapper">
                <div class="container-xxl flex-grow-1 container-p-y">
+               <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Dashboard /</span> Home</h4>
                   <?php include(__DIR__ . '/components/alert.php') ?>
                   <div class="">
                      <!-- Statistics -->

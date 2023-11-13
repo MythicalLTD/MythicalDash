@@ -15,7 +15,9 @@ $offset = ($page - 1) * $paymentsPerPage;
 $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
 $searchCondition = '';
 if (!empty($searchKeyword)) {
-    $searchCondition = " WHERE `code` LIKE '%$searchKeyword%' OR `getaway` LIKE '%$searchKeyword%'";
+    $searchCondition = " WHERE (`code` LIKE '%$searchKeyword%' OR `getaway` LIKE '%$searchKeyword%') AND `ownerkey` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'";
+} else {
+    $searchCondition = " WHERE `ownerkey` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'";
 }
 $payments_query = 'SELECT * FROM mythicaldash_payments' . $searchCondition . " ORDER BY `id` LIMIT $offset, $paymentsPerPage";
 $result = $conn->query($payments_query);
@@ -46,13 +48,12 @@ $totalPages = ceil($totalPayments / $paymentsPerPage);
                 <?php include(__DIR__ . '/../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users /</span> Edit</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users /</span> Payments</h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
                             if (SettingsManager::getSetting("enable_ads") == "true") {
                                 ?>
-                                <br>
                                 <?= SettingsManager::getSetting("ads_code") ?>
                                 <br>
                                 <?php

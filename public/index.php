@@ -10,6 +10,7 @@ try {
 }
 use MythicalDash\Main;
 use MythicalDash\ErrorHandler;
+use MythicalDash\AddonsManager;
 
 if (!Main::isHTTPS()) {
     ErrorHandler::ShowCritical("We are sorry, but the dash can only run on HTTPS, not HTTP.");
@@ -22,6 +23,8 @@ if (!is_writable(__DIR__)) {
 }
 
 $router = new \Router\Router();
+$addonsManager = new AddonsManager();
+$loadedAddons = $addonsManager->loadAddons();
 
 if (file_exists('FIRST_INSTALL')) {
     $router->add("/", function () {
@@ -68,6 +71,7 @@ if (file_exists('FIRST_INSTALL')) {
     include(__DIR__ . '/../routes/admin/eggs.php');
     //Routes for /admin/locations/
     include(__DIR__ . '/../routes/admin/locations.php');
+    $addonsManager->processAddonRoutes($router);
 
     $router->add("/(.*)", function () {
         require("../include/main.php");
@@ -76,7 +80,7 @@ if (file_exists('FIRST_INSTALL')) {
     try {
         $router->route();
     } catch (Exception $e) {
-        ErrorHandler::Critical("Automated Message",$e->getMessage());
+        ErrorHandler::Critical("Automated Message", $e->getMessage());
     }
 }
 

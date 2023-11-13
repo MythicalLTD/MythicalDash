@@ -51,6 +51,7 @@ $totalPages = ceil($totalEggs / $eggsPerPage);
                 <?php include(__DIR__ . '/../../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin / Eggs / </span> List</h4>
                         <?php include(__DIR__ . '/../../components/alert.php') ?>
                         <!-- Search Form -->
                         <form class="mt-4">
