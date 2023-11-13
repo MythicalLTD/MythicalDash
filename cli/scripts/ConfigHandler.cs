@@ -1,6 +1,4 @@
-using System.Text.RegularExpressions;
 using YamlDotNet.RepresentationModel;
-using System;
 
 namespace MythicalDash
 {

@@ -27,31 +27,31 @@ MythicalDash is one of the fastest dashboards out there. It has lightning-fast l
 #### Why is MythicalDash really the best?
 
 Well, we created a table to compare the most commonly used pterodactyl clients, so you can see it for yourself!
-
-| Feature | MythicalDash | Dashactyl | Heliactyl | NorthClient  | HolaClient | Meteor | 
-| :---:   | :---: | :---: | :--: | :--: | :--: | :--: |
-| Essentials Options | ✅|✅|✅|✅|✅|✅|
-| API (Client/Admin) |✅|✅|✅|✅|✅| ✅|
-| Payment Options | ✅|🔄|✅|✅|✅|✅|
-| J4R | 🔄|✅|✅|✅|✅|✅|
-| Referrals |🔄|✅|✅|✅|✅|✅|
-| Linkvertise | ✅|❌|✅|✅|✅|✅|
-| Custom Ads | ✅|❌|❌|✅|✅|✅|
-| Purge System | ✅|❌|❌|❌|✅|✅|
-| Legal (Terms / Privacy)|✅|❌|❌|❌|✅|✅|
-| Anti Bot |✅|❌|❌|❌|❌|✅|
-|Telemetry|✅|❌|❌|❌|❌|✅|
-| CLI |✅|❌|❌|❌|❌|✅|
-| Support System | ✅|❌|❌|❌|❌|⚠️|
-| Easy Customizations | ✅|❌|❌|❌|❌|⚠️|
-| Runs everywhere |✅|❌|❌|❌|❌|⚠️|
-| Anti CSRF |✅|❌|❌|❌|❌|❌|
-| Custom (CSS/Header/HTML) |✅|❌|❌|❌|❌|❌|
-| Leaderboards |✅|❌|❌|❌|❌|❌|
-| Custom Search |✅|❌|❌|❌|❌|❌|
-| Server Queue |✅|❌|❌|❌|❌|❌|
-| Web Logs |✅|❌|❌|❌|❌|❌|
-
+ ---------------------------------------------------------------------------------------------------
+| Feature                  |  MythicalDash |  Meteor   |   NorthClient |  HolaClient  |  Dashactyl  |
+| :----------------------: | :-----------: | :-------: | :-----------: | :----------: | :---------: |
+| Essentials Options       |      ✅       |    ✅    |      ✅      |      ✅      |     ✅     |
+| API (Client/Admin)       |      ✅       |    ✅    |      ✅      |      ✅      |     ✅     |
+| Payment Options          |      ✅       |    ✅    |      ✅      |      🔄      |     ✅     |
+| J4R                      |      ⚠️       |    ✅    |      ✅      |      ✅      |     ✅     |
+| Referrals                |      ✅       |    ✅    |      ✅      |      ✅      |     ✅     |
+| Linkvertise              |      ✅       |    ✅    |      ✅      |      ✅      |     ❌     |
+| Custom Ads               |      ✅       |    ✅    |      ✅      |      ❌      |     ❌     |
+| Purge System             |      ✅       |    ✅    |      ❌      |      ❌      |     ❌     |
+| Legal (Terms / Privacy)  |      ✅       |    ✅    |      ❌      |      ❌      |     ❌     |
+| Anti Bot                 |      ✅       |    ✅    |      ❌      |      ❌      |     ❌     |
+| Telemetry                |      ✅       |    ✅    |      ❌      |      ❌      |     ❌     |
+| CLI                      |      ✅       |    ✅    |      ❌      |      ❌      |     ❌     |
+| Support System           |      ✅       |    ⚠️    |      ❌      |      ❌      |     ❌     |
+| Easy Customizations      |      ✅       |    ⚠️    |      ❌      |      ❌      |     ❌     |
+| Runs everywhere          |      ✅       |    ⚠️    |      ❌      |      ❌      |     ❌     |
+| Anti CSRF                |      ✅       |    ⚠️    |      ❌      |      ❌      |     ❌     |
+| Custom (CSS/Header/HTML) |      ✅       |    ❌    |      ❌      |      ❌      |     ❌     |
+| Leaderboards             |      ✅       |    ❌    |      ❌      |      ❌      |     ❌     |
+| Custom Search            |      ✅       |    ❌    |      ❌      |      ❌      |     ❌     |
+| Server Queue             |      ✅       |    ❌    |      ❌      |      ❌      |     ❌     |
+| Web Logs                 |      ✅       |    ❌    |      ❌      |      ❌      |     ❌     |
+ ---------------------------------------------------------------------------------------------------
 
 ## Demo
 
@@ -79,20 +79,20 @@ This project is used by the following companies:
 ## Screenshots
 
 - ![App Screenshot1](https://i.imgur.com/fLIYnqK.png)
-- ![App Screenshot1](https://i.imgur.com/k3hBOut.png)
-- ![App Screenshot1](https://i.imgur.com/QDr6jk5.png)
-- ![App Screenshot1](https://i.imgur.com/1o5WNHo.png)
-- ![App Screenshot1](https://i.imgur.com/YcEb4YE.png)
-- ![App Screenshot1](https://i.imgur.com/KuJMgZk.png)
-- ![App Screenshot1](https://i.imgur.com/Nf0aFAt.png)
-- ![App Screenshot1](https://i.imgur.com/GwVkHbT.png)
-- ![App Screenshot1](https://i.imgur.com/mVBrtV5.png)
-- ![App Screenshot1](https://i.imgur.com/70rXiHt.png)
-- ![App Screenshot1](https://i.imgur.com/WrroKW3.png)
+- ![App Screenshot2](https://i.imgur.com/k3hBOut.png)
+- ![App Screenshot3](https://i.imgur.com/QDr6jk5.png)
+- ![App Screenshot4](https://i.imgur.com/1o5WNHo.png)
+- ![App Screenshot5](https://i.imgur.com/YcEb4YE.png)
+- ![App Screenshot6](https://i.imgur.com/KuJMgZk.png)
+- ![App Screenshot7](https://i.imgur.com/Nf0aFAt.png)
+- ![App Screenshot8](https://i.imgur.com/GwVkHbT.png)
+- ![App Screenshot9](https://i.imgur.com/mVBrtV5.png)
+- ![App Screenshot10](https://i.imgur.com/70rXiHt.png)
+- ![App Screenshot11](https://i.imgur.com/WrroKW3.png)
 
 ## API Reference
 
-We did not write specific API documentation, but you can use [Insomnia](https://insomnia.rest/download) to see more info on what requests you can execute with our API. Here you can download the JSON for the Insomnia client: https://raw.githubusercontent.com/MythicalLTD/MythicalDash/v3/Insomnia.json
+We did not write specific API documentation, but you can use [Insomnia](https://insomnia.rest/download) to see more info on what requests you can execute with our API. Here you can download the JSON for the Insomnia client: https://raw.githubusercontent.com/MythicalLTD/MythicalDash/develop/Insomnia.json
 
 ## Tech Stack
 
@@ -108,5 +108,5 @@ Here is a list of the core components that MythicalDash uses to run!
 
 ## Serial Code:
 ```bash
-1 393 868 068
+1 740 704 993
 ```

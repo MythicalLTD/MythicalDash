@@ -16,3 +16,4 @@ migrates.ini
 /logs/*.txt
 /cli/logs
 /public/pma.zip
+/cli/*.yml

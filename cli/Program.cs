@@ -213,6 +213,11 @@ namespace MythicalDash
                 sh.Setup();
                 Environment.Exit(0x0);
             }
+            else if (args.Contains("-cache:purge"))
+            {
+                sh.PurgeCache();
+                Environment.Exit(0x0);
+            }
             else if (args.Contains("-help"))
             {
                 Console.Clear();
@@ -230,6 +235,7 @@ namespace MythicalDash
                 Console.WriteLine("‖    -debug:disable             ‖ Disables the debug mode to hide error messages for MythicalDash.                       ‖");
                 Console.WriteLine("‖    -debug:silent:on           ‖ Hides the debug mode online status messages from being disabled.                       ‖");
                 Console.WriteLine("‖    -debug:silent:off          ‖ Shows the debug mode online status messages from being enabled.                        ‖");
+                Console.WriteLine("‖    -cache:purge               ‖ Delete the cache from the dashboard like (Server / Login / Error) LOGS                 ‖");
                 Console.WriteLine("‖    -migrate                   ‖ Create and setup all tables in the database                                            ‖");
                 Console.WriteLine("‖    -version                   ‖ See the version / build version of the CLI.                                            ‖");
                 Console.WriteLine("‖                                                                                                                        ‖");

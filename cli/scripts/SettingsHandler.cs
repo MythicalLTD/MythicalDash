@@ -86,6 +86,41 @@ namespace MythicalDash
             }
         }
 
+        public void PurgeCache()
+        {
+            if (fm.ConfigExists() == true)
+            {
+                try
+                {
+                    getConnection();
+                    using (var connection = new MySqlConnection(connectionString))
+                    {
+                        connection.Open();
+                        ExecuteSQLScript(connection, "TRUNCATE `mythicaldash_servers_logs`");
+                        ExecuteSQLScript(connection, "TRUNCATE `mythicaldash_resetpasswords`");
+                        ExecuteSQLScript(connection, "TRUNCATE `mythicaldash_login_logs`");
+                        connection.Close();
+                    }
+                    string logDirectory = "logs";
+                    string[] logFiles = Directory.GetFiles(logDirectory);
+                    foreach (string logFile in logFiles)
+                    {
+                        File.Delete(logFile);
+                    }
+                    Program.logger.Log(LogType.Info,"Done");
+                }
+                catch (Exception ex)
+                {
+                    Program.logger.Log(LogType.Error, "Sorry but the auto settings throws this error: " + ex.Message);
+                }
+            }
+            else
+            {
+                Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
+            }
+
+        }
+
         private static bool TestPterodactylConnection(string panelUrl, string panelApiKey)
         {
             try
