@@ -10,7 +10,7 @@ if (!is_writable(__DIR__)) {
     $rsp = array(
         "code" => 500,
         "error" => "The server is not ready to handle the request.",
-        "message" => "We have no write permission for our home directory. Please update the permission by executing this in the server shell: chown -R www-data:www-data /var/www/client/ && chown -R www-data:www-data /var/www/client/*"
+        "message" => "We have no write permission for our home directory. Please update the permission by executing this in the server shell: chown -R www-data:www-data /var/www/mythicaldash/ && chown -R www-data:www-data /var/www/mythicaldash/*"
     );
     die(json_encode($rsp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 }

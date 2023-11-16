@@ -154,6 +154,32 @@ namespace MythicalDash
                     Environment.Exit(0x0);
                 }
             }
+            else if (args.Contains("-environment:down"))
+            {
+                try
+                {
+                    sh.SetMaintenance(true);
+                    Environment.Exit(0x0);
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(LogType.Error, "Failed to update config: " + ex.Message);
+                    Environment.Exit(0x0);
+                }
+            }
+            else if (args.Contains("-environment:up"))
+            {
+                try
+                {
+                    sh.SetMaintenance(false);
+                    Environment.Exit(0x0);
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(LogType.Error, "Failed to update config: " + ex.Message);
+                    Environment.Exit(0x0);
+                }
+            }
             else if (args.Contains("-debug:disable"))
             {
                 try

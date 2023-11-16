@@ -3,7 +3,7 @@ use MythicalDash\ErrorHandler;
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
 try {
-    if (isset($_GET['update_settings'])) {
+    if (isset($_GET[' '])) {
         $enable_adblocker_detection = mysqli_real_escape_string($conn, $_GET['ads:adblocker']);
         $enable_alting = mysqli_real_escape_string($conn, $_GET['enable_alting']);
         $enable_anti_vpn = mysqli_real_escape_string($conn, $_GET['enable_anti_vpn']);
@@ -14,7 +14,7 @@ try {
         $conn->close();
         die();
     } else {
-        header('location: /admin/settings');
+        header('location: /admin/settings?e=Failed to update the settings inside the database');
         die();
     }
 } catch (Exception $ex) {

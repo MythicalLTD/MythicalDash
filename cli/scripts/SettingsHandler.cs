@@ -86,6 +86,25 @@ namespace MythicalDash
             }
         }
 
+        public void SetMaintenance(bool status)
+        {
+            try
+            {
+                if (status == true)
+                {
+
+                }
+                else if (status == false)
+                {
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Program.logger.Log(LogType.Error, "Sorry but the auto settings throws this error: " + ex.Message);
+            }
+        }
+
         public void PurgeCache()
         {
             if (fm.ConfigExists() == true)
@@ -107,7 +126,7 @@ namespace MythicalDash
                     {
                         File.Delete(logFile);
                     }
-                    Program.logger.Log(LogType.Info,"Done");
+                    Program.logger.Log(LogType.Info, "Done");
                 }
                 catch (Exception ex)
                 {

@@ -938,7 +938,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                             <hr class="my-0">
                             <div class="card-body">
-                                <form action="/admin/settings/security" method="POST">
+                                <form action="/admin/settings/security" method="GET">
                                     <div class="row">
                                         <div class="form-group col-md-2">
                                             <label class="control-label">Anti AdBlocker Status</label>
