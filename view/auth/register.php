@@ -86,48 +86,87 @@ try {
                                         die();
                                     }
                                 }
-                                $ch = curl_init();
-                                curl_setopt($ch, CURLOPT_URL, SettingsManager::getSetting("PterodactylURL") . '/api/application/users');
-                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                                $pterodactyl_url = SettingsManager::getSetting("PterodactylURL");
+                                $pterodactyl_api = SettingsManager::getSetting("PterodactylAPIKey");
+
+                                $panelapi = curl_init($pterodactyl_url . "/api/application/users");
+                                $headers = array(
                                     'Accept: application/json',
-                                    'Authorization: Bearer ' . SettingsManager::getSetting("PterodactylAPIKey"),
                                     'Content-Type: application/json',
-                                ]);
-                                curl_setopt($ch, CURLOPT_POST, true);
-                                $data = [
-                                    'email' => $email,
+                                    'Authorization: Bearer ' . $pterodactyl_api
+                                );
+                                $postfields = array(
                                     'username' => $username,
                                     'first_name' => $first_name,
                                     'last_name' => $last_name,
-                                    'password' => $upassword,
-                                    'language' => 'en',
-                                ];
-                                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-                                $response = curl_exec($ch);
+                                    'email' => $email,
+                                    'password' => $upassword
+                                );
+                                curl_setopt($panelapi, CURLOPT_HTTPHEADER, $headers);
+                                curl_setopt($panelapi, CURLOPT_POST, 1);
+                                curl_setopt($panelapi, CURLOPT_RETURNTRANSFER, 1);
+                                curl_setopt($panelapi, CURLOPT_POSTFIELDS, json_encode($postfields));
+                                $result = curl_exec($panelapi);
+                                curl_close($panelapi);
+                                $result = json_decode($result, true);
+                                $panel_id = null;
 
-                                if (curl_errno($ch)) {
-                                    $error_message = curl_error($ch);
-                                    header('location: /auth/register?e=We are sorry but our panel is down!');
-                                    die();
-                                } else {
-                                    $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-                                    if ($http_status === 201) {
-                                        $responseData = json_decode($response, true);
-                                        if (isset($responseData['attributes']['id'])) {
-                                            $panelId = $responseData['attributes']['id'];
-                                        } else {
-                                            header('location: /auth/register?e=We are sorry but our panel is down!');
+                                if (!isset($result['object'])) {
+                                    $error = $result['errors'][0]['detail'];
+                                    if ($error == "The email has already been taken.") {
+                                        $ch = curl_init($pterodactyl_url . "/api/application/users?filter%5Bemail%5D=$email");
+                                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                                        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                                            'Authorization: Bearer ' . $pterodactyl_api,
+                                            'Content-Type: application/json',
+                                            'Accept: application/json'
+                                        )
+                                        );
+                                        $result12 = curl_exec($ch);
+                                        curl_close($ch);
+                                        $result13 = json_decode($result12, true);
+                                        if (!isset($result13['object'])) {
+                                            header("location: /auth/login?e=There was an unexpected error while attempting to link your panel account to the client portal.");
+                                            $conn->close();
+                                            die();
+                                        }
+                                        $panel_id = $result13['data'][0]['attributes']['id'];
+                                        $ch = curl_init($pterodactyl_url . "/api/application/users/$panel_id");
+                                        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+                                        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                                            'Authorization: Bearer ' . $pterodactyl_api,
+                                            'Content-Type: application/json',
+                                            'Accept: application/json'
+                                        )
+                                        );
+                                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                                        curl_setopt($ch, CURLOPT_POST, 1);
+                                        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(
+                                            array(
+                                                'username' => $username,
+                                                'first_name' => $first_name,
+                                                'last_name' => $last_name,
+                                                'email' => $email,
+                                                'password' => $upassword,
+                                                'language' => 'en'
+                                            )
+                                        ));
+                                        $updateUserResult = curl_exec($ch);
+                                        curl_close($ch);
+                                        $updateUserResult = json_decode($updateUserResult, true);
+                                        if (!isset($updateUserResult['object'])) {
+                                            header('location: /auth/login?e=There was an error while updating your panel information on sign-up');
+                                            $conn->close();
                                             die();
                                         }
                                     } else {
-                                        header('location: /auth/register?e=We are sorry but our panel is down!');
+                                        header("location: /auth/login?e=There was an error while signing up. Is our game panel down?");
                                         die();
                                     }
-                                }
 
-                                curl_close($ch);
+                                } else {
+                                    $panel_id = $result['attributes']['id'];
+                                }
 
                                 $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$skey')");
                                 $default = "https://www.gravatar.com/avatar/00000000000000000000000000000000";
@@ -157,7 +196,7 @@ try {
                                 `backups`,
                                 `first_ip`
                                 ) VALUES (
-                                '" . $panelId . "',
+                                '" . $panel_id . "',
                                 '" . $email . "', 
                                 '" . $username . "',
                                 '" . Encryption::encrypt($first_name, $ekey) . "',
@@ -185,18 +224,22 @@ try {
                                 die();
                             } else {
                                 header('location: /auth/register?e=Username or email already exists. Please choose a different one');
+                                $conn->close();
                                 die();
                             }
                         } else {
                             header('location: /auth/register?e=Please fill in all the required info');
+                            $conn->close();
                             die();
                         }
                     } else {
                         header("location: /auth/register?e=I'm sorry, but it looks like the pterodactyl panel is not linked to the dash.");
+                        $conn->close();
                         die();
                     }
                 } else {
                     header("location: /auth/register?e=Captcha verification failed; please refresh!");
+                    $conn->close();
                     die();
                 }
             }
