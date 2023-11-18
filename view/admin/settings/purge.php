@@ -16,11 +16,11 @@ try {
         header('location: /admin/settings?s=We updated the settings inside the database');
         die();
     } else {
-        header('location: /admin/settings');
+        header('location: /admin/settings?e=Failed to update the settings inside the database');
         die();
     }
 } catch (Exception $ex) {
-    ErrorHandler::Critical("Failed to update settings ",$e);
+    ErrorHandler::Critical("Failed to update settings ",$ex);
     header('location: /admin/settings?e=Failed to update the settings inside the database');
     die();
 }
