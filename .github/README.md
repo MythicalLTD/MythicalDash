@@ -14,7 +14,7 @@ You can find a step-by-step installation documentation over here: 
 https://docs.mythicalsystems.me
 ## Support
 
-For support, discord server: [discord.gg/freehost](https://discord.gg/freehost)
+For support, discord server: [discord.gg/freehost](https://discord.gg/3FWyugpznc)
 
 
 ## Optimizations
