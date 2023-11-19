@@ -2,30 +2,41 @@
 use MythicalDash\SettingsManager;
 
 include(__DIR__ . '/../requirements/page.php');
+
 if (isset($_GET['unlink_discord'])) {
-    $conn->query("UPDATE `mythicaldash_users` SET `discord_linked` = 'false' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+    $token = mysqli_real_escape_string($conn, $_COOKIE['token']);
+    $unlinkQuery = "UPDATE `mythicaldash_users` SET `discord_linked` = 'false' WHERE `mythicaldash_users`.`api_key` = '$token';";
+    $conn->query($unlinkQuery);
+    
     $conn->close();
     header('location: /user/connections');
 }
 
 $paymentsPerPage = 20;
-$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $paymentsPerPage;
 
-$searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
+$searchKeyword = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+$token = mysqli_real_escape_string($conn, $_COOKIE['token']);
 $searchCondition = '';
+
 if (!empty($searchKeyword)) {
-    $searchCondition = " WHERE (`code` LIKE '%$searchKeyword%' OR `getaway` LIKE '%$searchKeyword%') AND `ownerkey` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'";
+    $searchKeyword = '%' . $searchKeyword . '%';
+    $searchCondition = " WHERE (`code` LIKE '$searchKeyword' OR `getaway` LIKE '$searchKeyword') AND `ownerkey` = '$token'";
 } else {
-    $searchCondition = " WHERE `ownerkey` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'";
+    $searchCondition = " WHERE `ownerkey` = '$token'";
 }
-$payments_query = 'SELECT * FROM mythicaldash_payments' . $searchCondition . " ORDER BY `id` LIMIT $offset, $paymentsPerPage";
+
+$payments_query = "SELECT * FROM mythicaldash_payments" . $searchCondition . " ORDER BY `id` LIMIT $offset, $paymentsPerPage";
 $result = $conn->query($payments_query);
-$totalPaymentsQuery = 'SELECT COUNT(*) AS total_payments FROM mythicaldash_payments' . $searchCondition;
+
+$totalPaymentsQuery = "SELECT COUNT(*) AS total_payments FROM mythicaldash_payments" . $searchCondition;
 $totalResult = $conn->query($totalPaymentsQuery);
 $totalPayments = $totalResult->fetch_assoc()['total_payments'];
 $totalPages = ceil($totalPayments / $paymentsPerPage);
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en" class="dark-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
     data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
@@ -81,7 +92,9 @@ $totalPages = ceil($totalPayments / $paymentsPerPage);
                                 <form class="mt-4">
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Search users..."
-                                            name="search" value="<?= $searchKeyword ?>">
+                                        <?php $displaySearchKeyword = str_replace("%", "", $searchKeyword);?>
+
+                                            name="search" value="<?= $displaySearchKeyword  ?>">
                                         <button class="btn btn-outline-secondary" type="submit">Search</button>
                                     </div>
                                 </form>

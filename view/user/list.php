@@ -1,22 +1,27 @@
 <?php
 use MythicalDash\SettingsManager;
-
 include(__DIR__ . '/../requirements/page.php');
+
 $usersPerPage = 20;
-$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $usersPerPage;
 
-$searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
+$searchKeyword = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
 $searchCondition = '';
+
 if (!empty($searchKeyword)) {
-    $searchCondition = " WHERE `username` LIKE '%$searchKeyword%' OR `email` LIKE '%$searchKeyword%'";
+    $searchKeyword = '%' . $searchKeyword . '%';
+    $searchCondition = " WHERE `username` LIKE '$searchKeyword' OR `email` LIKE '$searchKeyword'";
 }
+
 $user_query = "SELECT * FROM mythicaldash_users" . $searchCondition . " ORDER BY `id` LIMIT $offset, $usersPerPage";
 $result = $conn->query($user_query);
+
 $totalUsersQuery = "SELECT COUNT(*) AS total_users FROM mythicaldash_users" . $searchCondition;
 $totalResult = $conn->query($totalUsersQuery);
 $totalUsers = $totalResult->fetch_assoc()['total_users'];
 $totalPages = ceil($totalUsers / $usersPerPage);
+
 ?>
 
 <!DOCTYPE html>
@@ -66,8 +71,9 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                         <!-- Search Form -->
                         <form class="mt-4">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Search users..." name="search"
-                                    value="<?= $searchKeyword ?>">
+                                <input type="text" class="form-control" placeholder="Search users..."                                         <?php $displaySearchKeyword = str_replace("%", "", $searchKeyword);?>
+
+name="search" value="<?= $displaySearchKeyword  ?>">
                                 <button class="btn btn-outline-secondary" type="submit">Search</button>
                             </div>
                         </form>

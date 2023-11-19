@@ -1,12 +1,12 @@
-<?php
+<?php 
 use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
 
 $ticketsPerPage = 20;
-$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $ticketsPerPage;
 
-$searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
+$searchKeyword = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
 $searchCondition = '';
 $ownerKeyCondition = " `ownerkey` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'";
 if (!empty($searchKeyword)) {
@@ -22,6 +22,8 @@ $totalResult = $conn->query($totalTicketsQuery);
 $totalTickets = $totalResult->fetch_assoc()['total_tickets'];
 $totalPages = ceil($totalTickets / $ticketsPerPage);
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en" class="dark-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
     data-assets-path="<?= $appURL ?>/assets/" data-template="vertical-menu-template">
@@ -60,7 +62,9 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                         <form class="mt-4">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" placeholder="Search tickets..." name="search"
-                                    value="<?= $searchKeyword ?>">
+                                <?php $displaySearchKeyword = str_replace("%", "", $searchKeyword);?>
+
+                                    value="<?= $displaySearchKeyword ?>">
                                 <button class="btn btn-outline-secondary" type="submit">Search</button>
                             </div>
                         </form>
