@@ -41,7 +41,7 @@ Well, we created a table to compare the most commonly used pterodactyl clients, 
 | Legal (Terms / Privacy)  |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
 | Anti Bot                 |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
 | Telemetry                |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
-| CLI                      |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
+| CLI                      |      ✅       |    ⚠️      |      ✅      |      ❌      |     ❌     |
 | Support System           |      ✅       |    ⚠️      |      ⚠️      |      ❌      |     ❌     |
 | Easy Customizations      |      ✅       |    ✅      |      ⚠️      |      ❌      |     ❌     |
 | Runs everywhere          |      ✅       |    ⚠️      |      ⚠️      |      ❌      |     ❌     |
