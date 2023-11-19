@@ -28,29 +28,29 @@ MythicalDash is one of the fastest dashboards out there. It has lightning-fast l
 
 Well, we created a table to compare the most commonly used pterodactyl clients, so you can see it for yourself!
  ---------------------------------------------------------------------------------------------------
-| Feature                  |  MythicalDash |  Meteor   |   NorthClient |  HolaClient  |  Dashactyl  |
-| :----------------------: | :-----------: | :-------: | :-----------: | :----------: | :---------: |
-| Essentials Options       |      ✅       |    ✅    |      ✅      |      ✅      |     ✅     |
-| API (Client/Admin)       |      ✅       |    ✅    |      ✅      |      ✅      |     ✅     |
-| Payment Options          |      ✅       |    ✅    |      ✅      |      🔄      |     ✅     |
-| J4R                      |      ⚠️       |    ✅    |      ✅      |      ✅      |     ✅     |
-| Referrals                |      ✅       |    ✅    |      ✅      |      ✅      |     ✅     |
-| Linkvertise              |      ✅       |    ✅    |      ✅      |      ✅      |     ❌     |
-| Custom Ads               |      ✅       |    ✅    |      ✅      |      ❌      |     ❌     |
-| Purge System             |      ✅       |    ✅    |      ❌      |      ❌      |     ❌     |
-| Legal (Terms / Privacy)  |      ✅       |    ✅    |      ❌      |      ❌      |     ❌     |
-| Anti Bot                 |      ✅       |    ✅    |      ❌      |      ❌      |     ❌     |
-| Telemetry                |      ✅       |    ✅    |      ❌      |      ❌      |     ❌     |
-| CLI                      |      ✅       |    ✅    |      ❌      |      ❌      |     ❌     |
-| Support System           |      ✅       |    ⚠️    |      ❌      |      ❌      |     ❌     |
-| Easy Customizations      |      ✅       |    ⚠️    |      ❌      |      ❌      |     ❌     |
-| Runs everywhere          |      ✅       |    ⚠️    |      ❌      |      ❌      |     ❌     |
-| Anti CSRF                |      ✅       |    ⚠️    |      ❌      |      ❌      |     ❌     |
-| Custom (CSS/Header/HTML) |      ✅       |    ❌    |      ❌      |      ❌      |     ❌     |
-| Leaderboards             |      ✅       |    ❌    |      ❌      |      ❌      |     ❌     |
-| Custom Search            |      ✅       |    ❌    |      ❌      |      ❌      |     ❌     |
-| Server Queue             |      ✅       |    ❌    |      ❌      |      ❌      |     ❌     |
-| Web Logs                 |      ✅       |    ❌    |      ❌      |      ❌      |     ❌     |
+| Feature                  |  MythicalDash |  HolaClient |   Meteor      |  NorthClient |  Dashactyl  |
+| :----------------------: | :-----------: | :---------: | :-----------: | :----------: | :---------: |
+| Essentials Options       |      ✅       |    ✅      |      ✅      |      ✅      |     ✅     |
+| API (Client/Admin)       |      ✅       |    ✅      |      ✅      |      ✅      |     ✅     |
+| Payment Options          |      ✅       |    ✅      |      ✅      |      ✅      |     ✅     |
+| J4R                      |      ⚠️       |    ✅      |      ✅      |      ✅      |     ✅     |
+| Referrals                |      ✅       |    ✅      |      ✅      |      ✅      |     ✅     |
+| Linkvertise              |      ✅       |    ✅      |      ✅      |      ✅      |     ❌     |
+| Custom Ads               |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
+| Purge System             |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
+| Legal (Terms / Privacy)  |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
+| Anti Bot                 |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
+| Telemetry                |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
+| CLI                      |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
+| Support System           |      ✅       |    ⚠️      |      ⚠️      |      ❌      |     ❌     |
+| Easy Customizations      |      ✅       |    ✅      |      ⚠️      |      ❌      |     ❌     |
+| Runs everywhere          |      ✅       |    ⚠️      |      ⚠️      |      ❌      |     ❌     |
+| Anti CSRF                |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
+| Custom (CSS/Header/HTML) |      ✅       |    ✅      |      ❌      |      ❌      |     ❌     |
+| Web Logs                 |      ✅       |    ✅      |      ❌      |      ❌      |     ❌     |
+| Server Queue             |      ✅       |    ✅      |      ❌      |      ❌      |     ❌     |
+| Custom Search            |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
+| Leaderboards             |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
  ---------------------------------------------------------------------------------------------------
 
 ## Demo
