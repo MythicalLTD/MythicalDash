@@ -2,8 +2,6 @@
 
 MythicalDash is a client area/dashboard for the Pterodactyl Game Panel with features for managing client servers and much more.
 
-
-
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 ## Documentation
 
@@ -53,6 +51,15 @@ Well, we created a table to compare the most commonly used pterodactyl clients, 
 | Leaderboards             |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
  ---------------------------------------------------------------------------------------------------
 
+#### Do I need to agree to any TOS when installing this?
+
+Yes, if you choose to install MythicalDash you agree with:
+
+- [Github Security Policy](https://github.com/MythicalLTD/MythicalDash/blob/develop/.github/SECURITY.md)
+- [Github MIT License](https://github.com/MythicalLTD/MythicalDash/blob/develop/LICENSE)
+- [MythicalGuard TOS](https://github.com/MythicalLTD/mythicalguard?tab=readme-ov-file#usage-restrictions-and-guidelines)
+
+
 ## Demo
 
 You can find a live deployment copy of MythicalDash here:
@@ -62,18 +69,16 @@ You can find a live deployment copy of MythicalDash here:
 
 You can find the roadmap at: https://github.com/orgs/MythicalLTD/projects/5
 
-
 ## Contributing
 
 Contributions are always welcome!
-
 
 ## Used By
 
 This project is used by the following companies:
 
 - MythicalSystems
-- NyxHost
+- Free2Host
 
 
 ## Screenshots
