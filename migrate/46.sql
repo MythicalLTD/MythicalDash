@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_settings` ADD `maintenance` ENUM('false','true') NOT NULL DEFAULT 'false' AFTER `enable_anti_vpn`;

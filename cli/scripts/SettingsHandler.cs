@@ -92,11 +92,65 @@ namespace MythicalDash
             {
                 if (status == true)
                 {
-
+                    if (fm.ConfigExists() == true)
+                    {
+                        try
+                        {
+                            getConnection();
+                            using (var connection = new MySqlConnection(connectionString))
+                            {
+                                connection.Open();
+                                ExecuteSQLScript(connection, "UPDATE `mythicaldash_settings` SET `maintenance` = 'true' WHERE `mythicaldash_settings`.`id` = 1;");
+                                connection.Close();
+                            }
+                            string logDirectory = "logs";
+                            string[] logFiles = Directory.GetFiles(logDirectory);
+                            foreach (string logFile in logFiles)
+                            {
+                                File.Delete(logFile);
+                            }
+                            Program.logger.Log(LogType.Info, "Done");
+                        }
+                        catch (Exception ex)
+                        {
+                            Program.logger.Log(LogType.Error, "Sorry but the auto settings throws this error: " + ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
+                    }
                 }
                 else if (status == false)
                 {
-
+                    if (fm.ConfigExists() == true)
+                    {
+                        try
+                        {
+                            getConnection();
+                            using (var connection = new MySqlConnection(connectionString))
+                            {
+                                connection.Open();
+                                ExecuteSQLScript(connection, "UPDATE `mythicaldash_settings` SET `maintenance` = 'false' WHERE `mythicaldash_settings`.`id` = 1;");
+                                connection.Close();
+                            }
+                            string logDirectory = "logs";
+                            string[] logFiles = Directory.GetFiles(logDirectory);
+                            foreach (string logFile in logFiles)
+                            {
+                                File.Delete(logFile);
+                            }
+                            Program.logger.Log(LogType.Info, "Done");
+                        }
+                        catch (Exception ex)
+                        {
+                            Program.logger.Log(LogType.Error, "Sorry but the auto settings throws this error: " + ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
+                    }
                 }
             }
             catch (Exception ex)
@@ -139,7 +193,70 @@ namespace MythicalDash
             }
 
         }
+        public void DisableAntiVPN()
+        {
+            if (fm.ConfigExists() == true)
+            {
+                try
+                {
+                    getConnection();
+                    using (var connection = new MySqlConnection(connectionString))
+                    {
+                        connection.Open();
+                        ExecuteSQLScript(connection, "UPDATE `mythicaldash_settings` SET `enable_anti_vpn` = 'false' WHERE `mythicaldash_settings`.`id` = 1;");
+                        connection.Close();
+                    }
+                    string logDirectory = "logs";
+                    string[] logFiles = Directory.GetFiles(logDirectory);
+                    foreach (string logFile in logFiles)
+                    {
+                        File.Delete(logFile);
+                    }
+                    Program.logger.Log(LogType.Info, "Done");
+                }
+                catch (Exception ex)
+                {
+                    Program.logger.Log(LogType.Error, "Sorry but the auto settings throws this error: " + ex.Message);
+                }
+            }
+            else
+            {
+                Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
+            }
 
+        }
+        public void DisableTurnstile()
+        {
+            if (fm.ConfigExists() == true)
+            {
+                try
+                {
+                    getConnection();
+                    using (var connection = new MySqlConnection(connectionString))
+                    {
+                        connection.Open();
+                        ExecuteSQLScript(connection, "UPDATE `mythicaldash_settings` SET `enable_turnstile` = 'false' WHERE `mythicaldash_settings`.`id` = 1;");
+                        connection.Close();
+                    }
+                    string logDirectory = "logs";
+                    string[] logFiles = Directory.GetFiles(logDirectory);
+                    foreach (string logFile in logFiles)
+                    {
+                        File.Delete(logFile);
+                    }
+                    Program.logger.Log(LogType.Info, "Done");
+                }
+                catch (Exception ex)
+                {
+                    Program.logger.Log(LogType.Error, "Sorry but the auto settings throws this error: " + ex.Message);
+                }
+            }
+            else
+            {
+                Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
+            }
+
+        }
         private static bool TestPterodactylConnection(string panelUrl, string panelApiKey)
         {
             try

@@ -244,6 +244,16 @@ namespace MythicalDash
                 sh.PurgeCache();
                 Environment.Exit(0x0);
             }
+            else if (args.Contains("-vpn:disable"))
+            {
+                sh.DisableAntiVPN();
+                Environment.Exit(0x0);
+            }
+            else if (args.Contains("-turnstile:disable"))
+            {
+                sh.DisableTurnstile();
+                Environment.Exit(0x0);
+            }
             else if (args.Contains("-help"))
             {
                 Console.Clear();
@@ -253,7 +263,11 @@ namespace MythicalDash
                 Console.WriteLine("‖    -environment:newconfig     ‖ Generate a new config file for MythicalDash.                                           ‖");
                 Console.WriteLine("‖    -environment:delconfig     ‖ Delete the config file for MythicalDash.                                               ‖");
                 Console.WriteLine("‖    -environment:database      ‖ Add the database connection to your config file.                                       ‖");
+                Console.WriteLine("‖    -environment:down          ‖ Enter maintenance mode.                                                                ‖");
+                Console.WriteLine("‖    -environment:up            ‖ Exit maintenance mode.                                                                 ‖");
                 Console.WriteLine("‖    -environment:setup         ‖ This is a command to help you setup your dashboard!                                    ‖");
+                Console.WriteLine("‖    -turnstile:disable         ‖ Stops turnstile from running!                                                          ‖");
+                Console.WriteLine("‖    -vpn:disable               ‖ Stops anti vpn from running!                                                           ‖");
                 Console.WriteLine("‖    -key:generate              ‖ Generate a new encryption key for MythicalDash.                                        ‖");
                 Console.WriteLine("‖    -debug:enable              ‖ Enables the debug mode to display error messages for MythicalDash.                     ‖");
                 Console.WriteLine("‖    -console:disable           ‖ Disables the browser's inspect element or console from being used on MythicalDash.     ‖");
