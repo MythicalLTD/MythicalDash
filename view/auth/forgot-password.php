@@ -213,7 +213,7 @@ try {
                         $mail->Body = $message;
                         try {
                             $mail->send();
-                            $conn->query("INSERT INTO `mythicaldash_resetpasswords` (`email`, `ownerkey`, `resetkeycode`, `ip_addres`) VALUES ('" . $email . "', '" . $userdb['api_key'] . "', '" . $skey . "', '" . $session->getIP() . "');");
+                            $conn->query("INSERT INTO `mythicaldash_resetpasswords` (`email`, `ownerkey`, `resetkeycode`, `ip_addres`) VALUES ('" . mysqli_real_escape_string($conn,$email) . "', '" . mysqli_real_escape_string($conn,$userdb['api_key']) . "', '" . mysqli_real_escape_string($conn, $skey) . "', '" . mysqli_real_escape_string($conn, $session->getIP()) . "');");
                             $domain = substr(strrchr($email, "@"), 1);
                             $redirections = array('gmail.com' => 'https://mail.google.com', 'yahoo.com' => 'https://mail.yahoo.com', 'hotmail.com' => 'https://outlook.live.com', 'outlook.com' => "https://outlook.live.com", 'gmx.net' => "https://gmx.net", 'icloud.com' => "https://www.icloud.com/mail", 'me.com' => "https://www.icloud.com/mail", 'mac.com' => "https://www.icloud.com/mail", );
                             if (isset($redirections[$domain])) {

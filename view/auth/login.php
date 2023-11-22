@@ -30,30 +30,30 @@ try {
                 $row = mysqli_fetch_assoc($result);
                 $hashedPassword = $row['password'];
                 if (password_verify($password, $hashedPassword)) {
-                  $token = $row['api_key'];
-                  $email = $row['email'];
-                  $banned = $row['banned'];
+                  $token =  mysqli_real_escape_string($conn, $row['api_key']);
+                  $email =  mysqli_real_escape_string($conn, $row['email']);
+                  $banned =  mysqli_real_escape_string($conn, $row['banned']);
                   if (!$banned == "") {
                     header('location: /auth/login?e=We are sorry but you are banned from using our system!');
                     exit; // Stop execution if user is banned
                   } else {
-                    $usr_id = $row['api_key'];
+                    $usr_id = mysqli_real_escape_string($conn, $row['api_key']);
                     $url = "http://ipinfo.io/" . $session->getIP() . "/json";
                     $data = json_decode(file_get_contents($url), true);
-                    if (SettingsManager::getSetting('enable_anti_vpn') == "true") {
-                      if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
+                      if (SettingsManager::getSetting('enable_anti_vpn') == "true") {
+                        if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
                         header('location: /auth/login?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
                         die();
                       }
                     }
                     $userids = array();
-                    $loginlogs = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE userkey = '$usr_id'");
+                    $loginlogs = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE userkey = '".mysqli_real_escape_string($conn, $usr_id)."'");
                     foreach ($loginlogs as $login) {
                       $ip = $login['ipaddr'];
                       if ($ip == "12.34.56.78") {
                         continue;
                       }
-                      $saio = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $ip . "'");
+                      $saio = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . mysqli_real_escape_string($conn,$ip) . "'");
                       foreach ($saio as $hello) {
                         if (in_array($hello['userkey'], $userids)) {
                           continue;
@@ -70,12 +70,12 @@ try {
                         die();
                       }
                     }
-                    $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$usr_id')");
+                    $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . mysqli_real_escape_string($conn,$session->getIP()) . "', '".mysqli_real_escape_string($conn,$usr_id)."')");
 
                     $cookie_name = 'token';
                     $cookie_value = $token;
                     setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
-                    $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . $session->getIP() . "' WHERE `mythicaldash_users`.`api_key` = '" . $usr_id . "';");
+                    $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . mysqli_real_escape_string($conn, $session->getIP()) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn,$usr_id) . "';");
                     if (isset($_GET['r'])) {
                       header('location: ' . $_GET['r']);
                     } else {

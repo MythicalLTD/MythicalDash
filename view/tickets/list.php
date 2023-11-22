@@ -15,9 +15,9 @@ if (!empty($searchKeyword)) {
     $searchCondition = " WHERE" . $ownerKeyCondition;
 }
 $statusCondition = " `status` IN ('open', 'closed')";
-$tickets_query = "SELECT * FROM mythicaldash_tickets" . $searchCondition . ($searchCondition ? ' AND ' : ' WHERE ') . $statusCondition . " ORDER BY `id` LIMIT $offset, $ticketsPerPage";
+$tickets_query = "SELECT * FROM mythicaldash_tickets" . mysqli_real_escape_string($conn,$searchCondition) . (mysqli_real_escape_string($conn,$searchCondition) ? ' AND ' : ' WHERE ') . mysqli_real_escape_string($conn,$statusCondition) . " ORDER BY `id` LIMIT ".mysqli_real_escape_string($conn,$offset).", ".mysqli_real_escape_string($conn,$ticketsPerPage)."";
 $result = $conn->query($tickets_query);
-$totalTicketsQuery = "SELECT COUNT(*) AS total_tickets FROM mythicaldash_tickets" . $searchCondition . ($searchCondition ? ' AND ' : ' WHERE ') . $statusCondition;
+$totalTicketsQuery = "SELECT COUNT(*) AS total_tickets FROM mythicaldash_tickets" . mysqli_real_escape_string($conn,$searchCondition) . (mysqli_real_escape_string($conn,$searchCondition) ? ' AND ' : ' WHERE ') . mysqli_real_escape_string($conn,$statusCondition);
 $totalResult = $conn->query($totalTicketsQuery);
 $totalTickets = $totalResult->fetch_assoc()['total_tickets'];
 $totalPages = ceil($totalTickets / $ticketsPerPage);

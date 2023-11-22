@@ -42,10 +42,10 @@ try {
             echo $result;
             if (isset($userInfo)) {
                 $conn->query("UPDATE `mythicaldash_users` SET `discord_linked` = 'true' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-                $conn->query("UPDATE `mythicaldash_users` SET `discord_id` = '" . $userInfo['id'] . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-                $conn->query("UPDATE `mythicaldash_users` SET `discord_username` = '" . $userInfo['username'] . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-                $conn->query("UPDATE `mythicaldash_users` SET `discord_global_username` = '" . $userInfo['global_name'] . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-                $conn->query("UPDATE `mythicaldash_users` SET `discord_email` = '" . $userInfo['email'] . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+                $conn->query("UPDATE `mythicaldash_users` SET `discord_id` = '" . mysqli_real_escape_string($conn,$userInfo['id']) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+                $conn->query("UPDATE `mythicaldash_users` SET `discord_username` = '" . mysqli_real_escape_string($conn,$userInfo['username']) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+                $conn->query("UPDATE `mythicaldash_users` SET `discord_global_username` = '" . mysqli_real_escape_string($conn,$userInfo['global_name']) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+                $conn->query("UPDATE `mythicaldash_users` SET `discord_email` = '" . mysqli_real_escape_string($conn,$userInfo['email']) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
                 $conn->close();
                 header("location: /user/connections");
             } else {

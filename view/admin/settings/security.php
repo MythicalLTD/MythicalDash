@@ -3,7 +3,7 @@ use MythicalDash\ErrorHandler;
 include(__DIR__ . '/../../requirements/page.php');
 include(__DIR__ . '/../../requirements/admin.php');
 try {
-    if (isset($_GET[' '])) {
+    if (isset($_GET['update_settings'])) {
         $enable_adblocker_detection = mysqli_real_escape_string($conn, $_GET['ads:adblocker']);
         $enable_alting = mysqli_real_escape_string($conn, $_GET['enable_alting']);
         $enable_anti_vpn = mysqli_real_escape_string($conn, $_GET['enable_anti_vpn']);

@@ -10,7 +10,7 @@ if (isset($_GET['key'])) {
     if (mysqli_num_rows($result) > 0) {
         $usr_coins = $session->getUserInfo("coins");
         $newcoins = $usr_coins + SettingsManager::getSetting("linkvertise_coins");
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $newcoins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE["token"])."'");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn,$newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE["token"])."'");
         $conn->query("DELETE FROM mythicaldash_linkvertise WHERE skey='$key'");
         header('location: /');
     } else {

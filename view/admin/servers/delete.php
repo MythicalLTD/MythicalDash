@@ -16,21 +16,21 @@ if (isset($_GET['pid']) && !$_GET['pid'] == "") {
     $result = curl_exec($delete_server);
     curl_close($delete_server);
     if (!empty($result)) {
-        header('location: /admin/servers?e=There was an error while deleting your server.');
+        header('location: /admin/servers/list?e=There was an error while deleting your server.');
         $conn->close();
         die();
     }
     if (mysqli_query($conn, "DELETE FROM mythicaldash_servers WHERE pid = '" . mysqli_real_escape_string($conn, $_GET["pid"]) . "'")) {
-        header('location: /admin/servers?s=We removed this server!');
+        header('location: /admin/servers/list?s=We removed this server!');
         $conn->close();
         die();
     } else {
-        header('location: /admin/servers?e=There was an error while deleting your server.');
+        header('location: /admin/servers/list?e=There was an error while deleting your server.');
         $conn->close();
         die();
     }
 } else {
-    header('location: /admin/servers?e=You did not provide any server id');
+    header('location: /admin/servers/list?e=You did not provide any server id');
     die();
 }
 ?>

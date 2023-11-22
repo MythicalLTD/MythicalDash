@@ -47,7 +47,7 @@ try {
             if (isset($userInfo)) {
                 $discord_email = $userInfo['email'];
                 $discord_id = $userInfo['id'];
-                $query = "SELECT * FROM mythicaldash_users WHERE discord_id = '$discord_id'";
+                $query = "SELECT * FROM mythicaldash_users WHERE discord_id = '".mysqli_real_escape_string($conn,$discord_id)."'";
                 $result = mysqli_query($conn, $query);
                 if ($result) {
                     if (mysqli_num_rows($result) == 1) {
@@ -68,13 +68,13 @@ try {
                                 die();
                             }
                             $userids = array();
-                            $loginlogs = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE userkey = '$usr_id'");
+                            $loginlogs = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE userkey = '".mysqli_real_escape_string($conn,$usr_id)."'");
                             foreach ($loginlogs as $login) {
                                 $ip = $login['ipaddr'];
                                 if ($ip == "12.34.56.78") {
                                     continue;
                                 }
-                                $saio = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $ip . "'");
+                                $saio = mysqli_query($conn, "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" .mysqli_real_escape_string($conn, $ip) . "'");
                                 foreach ($saio as $hello) {
                                     if (in_array($hello['userkey'], $userids)) {
                                         continue;
@@ -89,12 +89,12 @@ try {
                                 header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
                                 die();
                             }
-                            $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$usr_id')");
+                            $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . mysqli_real_escape_string($conn,$session->getIP()) . "', '".mysqli_real_escape_string($conn,$usr_id)."')");
 
                             $cookie_name = 'token';
                             $cookie_value = $token;
                             setcookie($cookie_name, $cookie_value, time() + (10 * 365 * 24 * 60 * 60), '/');
-                            $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . $session->getIP() . "' WHERE `mythicaldash_users`.`api_key` = '" . $usr_id . "';");
+                            $conn->query("UPDATE `mythicaldash_users` SET `last_ip` = '" . mysqli_real_escape_string($conn,$session->getIP()) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn,$usr_id) . "';");
                             header('location: /dashboard');
                         }
                     } else {

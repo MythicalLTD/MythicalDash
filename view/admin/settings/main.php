@@ -582,7 +582,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                     connecting to the SMTP server.</p>
                                             </div>
                                         </div>
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-3">
                                             <label class="control-label">Password <span
                                                     class="field-optional"></span></label>
                                             <div>
@@ -592,6 +592,15 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 <p class="text-muted small">The password to use in
                                                     conjunction with the SMTP username.
                                                 </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label">Mail From <span
+                                                    class="field-optional"></span></label>
+                                            <div>
+                                                <input type="text" class="form-control" name="mail:from:address"
+                                                    value="<?= SettingsManager::getSetting("fromEmail") ?>">
+                                                <p class="text-muted small">The email address where you send emails from.</p>
                                             </div>
                                         </div>
                                     </div>

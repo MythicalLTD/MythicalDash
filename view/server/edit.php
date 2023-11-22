@@ -83,7 +83,7 @@ $freeports = $session->getUserInfo("ports") - $usedports;
 $freedatabases = $session->getUserInfo("databases") - $useddatabases;
 $freebackup = $session->getUserInfo("backups") - $usedbackup;
 // check server exist
-$server = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "' AND pid = '$serverid'");
+$server = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "' AND pid = '".mysqli_real_escape_string($conn,$serverid)."'");
 if ($server->num_rows == 0) {
     header("location: /dashboard?e=This server doesn't exist or you don't have access to it.");
     $conn->close();

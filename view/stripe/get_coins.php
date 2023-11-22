@@ -19,9 +19,9 @@ try {
             if ($paymentsdb['status'] == "pending") {
                 if ($paymentsdb['ownerkey'] == $_COOKIE['token']) {
                     $code = mysqli_real_escape_string($conn, $_GET['code']);
-                    $conn->query("UPDATE `mythicaldash_payments` SET `status` = 'paid' WHERE `code` = '$code'");
+                    $conn->query("UPDATE `mythicaldash_payments` SET `status` = 'paid' WHERE `code` = '".mysqli_real_escape_string($conn,$code)."'");
                     $coins = $session->getUserInfo('coins') + $paymentsdb['coins'];
-                    $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . $coins . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
+                    $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn,$coins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
                     header('location: /user/payments?s=Thanks for buying from ' . SettingsManager::getSetting("name"));
                     $conn->close();
                     die();

@@ -97,7 +97,7 @@ CREATE TABLE `mythicaldash_settings` (
   `enable_turnstile` enum('false','true') NOT NULL DEFAULT 'false',
   `turnstile_sitekey` text DEFAULT NULL,
   `turnstile_secretkey` text DEFAULT NULL,
-  `discord_invite` text NOT NULL DEFAULT 'https://discord.gg/7BZTmSK2D8',
+  `discord_invite` text NOT NULL DEFAULT 'https://discord.gg/xUGNwePZmY',
   `enable_discord_link` enum('false','true') NOT NULL DEFAULT 'false',
   `discord_serverid` text NOT NULL DEFAULT '1080933452091752448',
   `discord_clientid` text DEFAULT NULL,

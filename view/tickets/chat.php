@@ -60,7 +60,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         while ($row = mysqli_fetch_assoc($result)) {
-            $tickedusdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . $row['userkey'] . "'")->fetch_array();
+            $tickedusdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . mysqli_real_escape_string($conn,$row['userkey']) . "'")->fetch_array();
             echo "User: " . $tickedusdb['username'] . " " . $tickedusdb['role'] . " (" . $row['created'] . ")\r\n";
             echo "Message: " . $row['message'] . "\r\n";
             if (!empty($row['attachment'])) {
@@ -214,10 +214,10 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                         </div>
                         <?php
                         $ticket_id = mysqli_real_escape_string($conn, $_GET['ticketuuid']);
-                        $query = "SELECT * FROM mythicaldash_tickets_messages WHERE ticketuuid='$ticket_id' ORDER BY created ASC";
+                        $query = "SELECT * FROM mythicaldash_tickets_messages WHERE ticketuuid='".mysqli_real_escape_string($conn,$ticket_id)."' ORDER BY created ASC";
                         $result = mysqli_query($conn, $query);
                         while ($row = mysqli_fetch_array($result)) {
-                            $tickedusdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . $row['userkey'] . "'")->fetch_array();
+                            $tickedusdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . mysqli_real_escape_string($conn,$row['userkey']) . "'")->fetch_array();
 
                             ?>
                             <br>

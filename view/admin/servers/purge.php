@@ -23,9 +23,7 @@ function PurgeServers($dbconn)
             $result = curl_exec($delete_server);
             curl_close($delete_server);
             if (!empty($result)) {
-                header('location: /admin/settings?e=There was an error while deleting a server.');
-                $dbconn->close();
-                die();
+                $dbconn->query("DELETE FROM mythicaldash_servers WHERE pid = '" . mysqli_real_escape_string($dbconn, $row['pid']) . "'");
             }
             if (mysqli_query($dbconn, "DELETE FROM mythicaldash_servers WHERE pid = '" . mysqli_real_escape_string($dbconn, $row['pid']) . "'")) {
                 

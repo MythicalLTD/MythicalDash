@@ -86,7 +86,7 @@ class SessionManager
             $ip = $remote;
         }
 
-        return $ip;
+        return mysqli_real_escape_string($this->dbConnection, $ip);
     }
     private function getFullUrl()
     {

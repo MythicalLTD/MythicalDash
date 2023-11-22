@@ -57,7 +57,7 @@ try {
                             $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
                             $result = mysqli_query($conn, $check_query);
                             if (!mysqli_num_rows($result) > 0) {
-                                $aquery = "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . $session->getIP() . "'";
+                                $aquery = "SELECT * FROM mythicaldash_login_logs WHERE ipaddr = '" . mysqli_real_escape_string($conn,$session->getIP()) . "'";
                                 $aresult = mysqli_query($conn, $aquery);
                                 $acount = mysqli_num_rows($aresult);
                                 if (SettingsManager::getSetting("enable_alting") == "true") {
@@ -168,7 +168,7 @@ try {
                                     $panel_id = $result['attributes']['id'];
                                 }
 
-                                $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . $session->getIP() . "', '$skey')");
+                                $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . mysqli_real_escape_string($conn,$session->getIP()) . "', '".mysqli_real_escape_string($conn,$skey)."')");
                                 $default = "https://www.gravatar.com/avatar/00000000000000000000000000000000";
                                 $grav_url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default);
                                 if (file_exists("FIRST_USER")) {
@@ -196,24 +196,24 @@ try {
                                 `backups`,
                                 `first_ip`
                                 ) VALUES (
-                                '" . $panel_id . "',
-                                '" . $email . "', 
-                                '" . $username . "',
-                                '" . Encryption::encrypt($first_name, $ekey) . "',
-                                '" . Encryption::encrypt($last_name, $ekey) . "',
-                                '" . $password . "',
-                                '" . $skey . "',
-                                '" . $grav_url . "',
-                                '" . $role . "',
-                                '" . SettingsManager::getSetting("def_coins") . "',
-                                '" . SettingsManager::getSetting("def_memory") . "',
-                                '" . SettingsManager::getSetting("def_disk_space") . "',
-                                '" . SettingsManager::getSetting("def_cpu") . "',
-                                '" . SettingsManager::getSetting("def_server_limit") . "',
-                                '" . SettingsManager::getSetting("def_port") . "',
-                                '" . SettingsManager::getSetting("def_db") . "',
-                                '" . SettingsManager::getSetting("def_backups") . "',
-                                '" . $session->getIP() . "'
+                                '" . mysqli_real_escape_string($conn,$panel_id) . "',
+                                '" . mysqli_real_escape_string($conn,$email) . "', 
+                                '" . mysqli_real_escape_string($conn,$username) . "',
+                                '" . mysqli_real_escape_string($conn,Encryption::encrypt($first_name, $ekey)) . "',
+                                '" . mysqli_real_escape_string($conn,Encryption::encrypt($last_name, $ekey)) . "',
+                                '" . mysqli_real_escape_string($conn,$password) . "',
+                                '" . mysqli_real_escape_string($conn,$skey) . "',
+                                '" . mysqli_real_escape_string($conn,$grav_url) . "',
+                                '" . mysqli_real_escape_string($conn,$role) . "',
+                                '" . mysqli_real_escape_string($conn,SettingsManager::getSetting("def_coins")) . "',
+                                '" . mysqli_real_escape_string($conn,SettingsManager::getSetting("def_memory")) . "',
+                                '" . mysqli_real_escape_string($conn,SettingsManager::getSetting("def_disk_space")) . "',
+                                '" . mysqli_real_escape_string($conn,SettingsManager::getSetting("def_cpu")). "',
+                                '" . mysqli_real_escape_string($conn,SettingsManager::getSetting("def_server_limit")) . "',
+                                '" . mysqli_real_escape_string($conn,SettingsManager::getSetting("def_port")) . "',
+                                '" . mysqli_real_escape_string($conn,SettingsManager::getSetting("def_db")) . "',
+                                '" . mysqli_real_escape_string($conn,SettingsManager::getSetting("def_backups")) . "',
+                                '" . mysqli_real_escape_string($conn,$session->getIP()) . "'
                                 );");
                                 $conn->close();
                                 if (file_exists("FIRST_USER")) {

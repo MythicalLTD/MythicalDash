@@ -9,16 +9,16 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
     $result = mysqli_stmt_get_result($stmt);
     if (mysqli_num_rows($result) > 0) {
         $conn->query("DELETE FROM `mythicaldash_servers_queue` WHERE `mythicaldash_servers_queue`.`id` = '".mysqli_real_escape_string($conn,$_GET['id'])."'");
-        header("location: /admin/servers/queue?s=Done we removed the server.");
+        header("location: /admin/servers/queue/list?s=Done we removed the server.");
         $conn->close();
         die();
     } else {
-        header("location: /admin/servers/queue?e=Cannot find the location in the database.");
+        header("location: /admin/servers/queue/list?e=Cannot find the location in the database.");
         $conn->close();
         die();
     }
 } else {
-    header('location: /admin/servers/queue');
+    header('location: /admin/servers/queue/list');
     die();
 }
 ?>

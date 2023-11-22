@@ -101,7 +101,7 @@
                   </a>
                   <ul class="menu-sub">
                     <li class="menu-item">
-                      <a href="https://discord.gg/7BZTmSK2D8" class="menu-link">
+                      <a href="https://discord.gg/xUGNwePZmY" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-brand-discord"></i>
                         <div data-i18n="Discord">Discord</div>
                       </a>
@@ -180,7 +180,7 @@
                     target="_blank">License</a>
                   <a href="https://github.com/mythicalltd" target="_blank" class="footer-link me-4">More Projects</a>
                   <a href="https://docs.mythicalsystems.me/" target="_blank" class="footer-link me-4">Documentation</a>
-                  <a href="https://discord.gg/7BZTmSK2D8" target="_blank"
+                  <a href="https://discord.gg/xUGNwePZmY" target="_blank"
                     class="footer-link d-none d-sm-inline-block">Support</a>
                 </div>
               </div>

@@ -175,14 +175,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $egg = $doeseggexist->fetch_object();
       $conn->query("INSERT INTO mythicaldash_servers_queue (`name`, `ram`, `disk`, `cpu`, `xtra_ports`, `databases`, `backuplimit`, `location`, `ownerid`, `type`, `egg`, `puid`
       ) VALUES (
-        '" . $s_name . "',
-        '" . $s_memory . "', 
-        '" . $s_disk . "', 
-        '" . $s_cores . "', 
-        '" . $s_ports . "', 
-        '" . $s_databases . "', 
-        '" . $s_backups . "', 
-        '" . $s_location . "', 
+        '" . mysqli_real_escape_string($conn,$s_name) . "',
+        '" . mysqli_real_escape_string($conn,$s_memory) . "', 
+        '" . mysqli_real_escape_string($conn,$s_disk) . "', 
+        '" . mysqli_real_escape_string($conn,$s_cores) . "', 
+        '" . mysqli_real_escape_string($conn,$s_ports) . "', 
+        '" . mysqli_real_escape_string($conn,$s_databases) . "', 
+        '" . mysqli_real_escape_string($conn,$s_backups) . "', 
+        '" . mysqli_real_escape_string($conn,$s_location) . "', 
         '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "', 
         '$queue', 
         '" . $s_egg . "', 
@@ -254,8 +254,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <select class="form-control" name="location" required id="location">
                       <?php foreach ($locations as $location): ?>
                         <?php
-                        $serversOnLoc = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE location='" . $location["id"] . "'")->fetch_all(MYSQLI_ASSOC);
-                        $serversInQueue = mysqli_query($conn, "SELECT * FROM mythicaldash_servers_queue WHERE location='" . $location["id"] . "'")->fetch_all(MYSQLI_ASSOC);
+                        $serversOnLoc = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE location='" . mysqli_real_escape_string($conn,$location["id"]) . "'")->fetch_all(MYSQLI_ASSOC);
+                        $serversInQueue = mysqli_query($conn, "SELECT * FROM mythicaldash_servers_queue WHERE location='" . mysqli_real_escape_string($conn,$location["id"]) . "'")->fetch_all(MYSQLI_ASSOC);
                         $availableSlots = $location['slots'] - count($serversOnLoc) - count($serversInQueue);
                         ?>
                         <option value="<?= $location["id"] ?>">

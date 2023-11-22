@@ -74,7 +74,7 @@ include(__DIR__ . '/requirements/page.php');
                                        <?php echo $i + 1; ?>
                                     </td>
                                     <td><a href="/user/profile?id=<?php echo $user['id']; ?>">
-                                          <?php echo $user['username']; ?>
+                                          <?php echo mysqli_real_escape_string($conn ,$user['username']); ?>
                                        </a></td>
                                     <td>
                                        <?php echo $user['role']; ?>

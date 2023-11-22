@@ -12,7 +12,7 @@ if (SettingsManager::getSetting("enable_stripe") == "false") {
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['pay'])) {
         $mypaymentkey = Encryption::generate_keynoinfo();
-        $conn->query("INSERT INTO `mythicaldash_payments` (`code`, `coins`, `ownerkey`, `getaway`, `status`) VALUES ('".$mypaymentkey."', '".mysqli_real_escape_string($conn, $_GET['coins'])."', '".mysqli_real_escape_string($conn, $_COOKIE['token'])."', 'stripe', 'pending');");
+        $conn->query("INSERT INTO `mythicaldash_payments` (`code`, `coins`, `ownerkey`, `getaway`, `status`) VALUES ('".mysqli_real_escape_string($conn,$mypaymentkey)."', '".mysqli_real_escape_string($conn, $_GET['coins'])."', '".mysqli_real_escape_string($conn, $_COOKIE['token'])."', 'stripe', 'pending');");
         try {
             //stripe_secret_key
             \Stripe\Stripe::setApiKey(SettingsManager::getSetting('stripe_secret_key'));

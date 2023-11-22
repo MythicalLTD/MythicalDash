@@ -14,7 +14,7 @@ if (isset($_COOKIE['token']) && !$_COOKIE['token'] == "") {
         $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'")->fetch_array();
         $upassword = mysqli_real_escape_string($conn, $_GET['pwd']);
         $pwd = password_hash($upassword, PASSWORD_BCRYPT);
-        $conn->query("UPDATE `mythicaldash_users` SET `password` = '" . $pwd . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `password` = '" . mysqli_real_escape_string($conn, $pwd) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
         $conn->close();
         $api_url = SettingsManager::getSetting("PterodactylURL") . "/api/application/users/" . $user_info['panel_id'] . "";
         $data = [

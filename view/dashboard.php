@@ -6,11 +6,6 @@ $nuserdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . m
 $servers = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
 $servers_in_queue = mysqli_query($conn, "SELECT * FROM mythicaldash_servers_queue WHERE ownerid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
 $serversnumber = $servers->num_rows + $servers_in_queue->num_rows;
-function percentage($number, $total, $outof)
-{
-   $result = ($number / $total) * $outof;
-   return round($result);
-}
 $usedRam = 0;
 $usedDisk = 0;
 $usedCpu = 0;
