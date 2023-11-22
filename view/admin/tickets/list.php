@@ -9,22 +9,25 @@ if ($session->getUserInfo("role") == "Administrator" || $session->getUserInfo("r
     die();
 }
 
-
 $ticketsPerPage = 20;
-$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $ticketsPerPage;
 
-$searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
+$searchKeyword = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
 $searchCondition = '';
 if (!empty($searchKeyword)) {
-    $searchCondition = " WHERE `subject` LIKE '%$searchKeyword%' OR `description` LIKE '%$searchKeyword%'";
+    $searchKeyword = '%' . $searchKeyword . '%';
+    $searchCondition = " WHERE `subject` LIKE '$searchKeyword' OR `description` LIKE '$searchKeyword'";
 }
+
 $tickets_query = "SELECT * FROM mythicaldash_tickets" . $searchCondition . " ORDER BY `id` LIMIT $offset, $ticketsPerPage";
 $result = $conn->query($tickets_query);
+
 $totalTicketsQuery = "SELECT COUNT(*) AS total_tickets FROM mythicaldash_tickets" . $searchCondition;
 $totalResult = $conn->query($totalTicketsQuery);
 $totalTickets = $totalResult->fetch_assoc()['total_tickets'];
 $totalPages = ceil($totalTickets / $ticketsPerPage);
+$displaySearchKeyword = str_replace("%", "", $searchKeyword);
 ?>
 <!DOCTYPE html>
 <html lang="en" class="dark-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
@@ -54,7 +57,7 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                         <form class="mt-4">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" placeholder="Search tickets..." name="search"
-                                    value="<?= $searchKeyword ?>">
+                                    value="<?= $displaySearchKeyword ?>">
                                 <button class="btn btn-outline-secondary" type="submit">Search</button>
                             </div>
                         </form>
