@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\SettingsManager;
+use MythicalDash\ErrorHandler;
 
 include(__DIR__ . '/../requirements/page.php');
 $csrf = new MythicalDash\CSRF();
@@ -175,14 +176,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $egg = $doeseggexist->fetch_object();
       $conn->query("INSERT INTO mythicaldash_servers_queue (`name`, `ram`, `disk`, `cpu`, `xtra_ports`, `databases`, `backuplimit`, `location`, `ownerid`, `type`, `egg`, `puid`
       ) VALUES (
-        '" . mysqli_real_escape_string($conn,$s_name) . "',
-        '" . mysqli_real_escape_string($conn,$s_memory) . "', 
-        '" . mysqli_real_escape_string($conn,$s_disk) . "', 
-        '" . mysqli_real_escape_string($conn,$s_cores) . "', 
-        '" . mysqli_real_escape_string($conn,$s_ports) . "', 
-        '" . mysqli_real_escape_string($conn,$s_databases) . "', 
-        '" . mysqli_real_escape_string($conn,$s_backups) . "', 
-        '" . mysqli_real_escape_string($conn,$s_location) . "', 
+        '" . mysqli_real_escape_string($conn, $s_name) . "',
+        '" . mysqli_real_escape_string($conn, $s_memory) . "', 
+        '" . mysqli_real_escape_string($conn, $s_disk) . "', 
+        '" . mysqli_real_escape_string($conn, $s_cores) . "', 
+        '" . mysqli_real_escape_string($conn, $s_ports) . "', 
+        '" . mysqli_real_escape_string($conn, $s_databases) . "', 
+        '" . mysqli_real_escape_string($conn, $s_backups) . "', 
+        '" . mysqli_real_escape_string($conn, $s_location) . "', 
         '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "', 
         '$queue', 
         '" . $s_egg . "', 
@@ -194,6 +195,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       header("location: /server/create?e=CSRF Verification Failed");
       die();
     }
+  }
+} else {
+  $nuserdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'")->fetch_array();
+  $servers = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
+  $servers_in_queue = mysqli_query($conn, "SELECT * FROM mythicaldash_servers_queue WHERE ownerid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
+  $serversnumber = $servers->num_rows + $servers_in_queue->num_rows;
+  $usedRam = 0;
+  $usedDisk = 0;
+  $usedCpu = 0;
+  $usedPorts = 0;
+  $usedDatabase = 0;
+  $usedBackup = 0;
+  $uservers = array();
+  foreach ($servers as $serv) {
+    $ptid = $serv["pid"];
+    $ch = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers/" . $ptid);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt(
+      $ch,
+      CURLOPT_HTTPHEADER,
+      array(
+        "Authorization: Bearer " . SettingsManager::getSetting("PterodactylAPIKey"),
+        "Content-Type: application/json",
+        "Accept: Application/vnd.pterodactyl.v1+json"
+      )
+    );
+    $result1 = curl_exec($ch);
+    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if ($httpcode != 200) {
+      ErrorHandler::ShowCritical("Unable to connect to the game panel! Please contact one of the server administrators.");
+    }
+    curl_close($ch);
+    $result = json_decode($result1, true);
+    $id = $result['attributes']["uuid"];
+    $name = $result['attributes']['name'];
+    $ram = $result['attributes']['limits']['memory'];
+    $disk = $result['attributes']['limits']['disk'];
+    $cpuh = $result['attributes']['limits']['cpu'];
+    $db = $result['attributes']['feature_limits']['databases'];
+    $usedRam = $usedRam + $ram;
+    $usedDisk = $usedDisk + $disk;
+    $alloc = $result['attributes']['feature_limits']['allocations'] - 1;
+    $usedBackup = $result['attributes']['feature_limits']['backups'];
+    $usedPorts = $usedPorts + $alloc;
+    $usedDatabase = $usedDatabase + $db;
+    $usedCpu = $usedCpu + $cpuh;
+    array_push($uservers, $result['attributes']);
+  }
+  foreach ($servers_in_queue as $server) {
+    $usedRam = $usedRam + $server['ram'];
+    $usedDisk = $usedDisk + $server['disk'];
+    $usedPorts = $usedPorts + $server['xtra_ports'];
+    $usedBackup = $usedBackup + $server['backuplimit'];
+    $usedDatabase = $usedDatabase + $server['databases'];
+    $usedCpu = $usedCpu + $server["cpu"];
+  }
+  try {
+    $freeram = $nuserdb["ram"] - $usedRam;
+    $freedisk = $nuserdb["disk"] - $usedDisk;
+    $freecpu = $nuserdb["cpu"] - $usedCpu;
+    $freesvslots = $nuserdb["server_limit"] - $serversnumber;
+    $freebackups = $nuserdb["backups"] - $usedBackup;
+    $freeports = $nuserdb["ports"] - $usedPorts;
+    $freedbs = $nuserdb["databases"] - $usedDatabase;
+  } catch (Exception $ex) {
+    header('location: /dashboard?e=Failed to calculate the resources!');
+    $conn->close();
+    die();
   }
 }
 ?>
@@ -245,7 +314,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="card-body">
                   <form method="POST">
                     <label for="name">Name:</label>
-                    <input type="text" name="name" class="form-control" id="name" required placeholder="Name">
+                    <input type="text" name="name" class="form-control" id="name" value="<?= $session->getUserInfo("username")?>'s server" required placeholder="<?= $session->getUserInfo("username")?>'s server">
                     <br>
                     <?php
                     $locations = mysqli_query($conn, "SELECT * FROM mythicaldash_locations")->fetch_all(MYSQLI_ASSOC);
@@ -254,8 +323,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <select class="form-control" name="location" required id="location">
                       <?php foreach ($locations as $location): ?>
                         <?php
-                        $serversOnLoc = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE location='" . mysqli_real_escape_string($conn,$location["id"]) . "'")->fetch_all(MYSQLI_ASSOC);
-                        $serversInQueue = mysqli_query($conn, "SELECT * FROM mythicaldash_servers_queue WHERE location='" . mysqli_real_escape_string($conn,$location["id"]) . "'")->fetch_all(MYSQLI_ASSOC);
+                        $serversOnLoc = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE location='" . mysqli_real_escape_string($conn, $location["id"]) . "'")->fetch_all(MYSQLI_ASSOC);
+                        $serversInQueue = mysqli_query($conn, "SELECT * FROM mythicaldash_servers_queue WHERE location='" . mysqli_real_escape_string($conn, $location["id"]) . "'")->fetch_all(MYSQLI_ASSOC);
                         $availableSlots = $location['slots'] - count($serversOnLoc) - count($serversInQueue);
                         ?>
                         <option value="<?= $location["id"] ?>">
@@ -295,26 +364,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </select>
                     <br>
                     <label for="memory">RAM:</label>
-                    <input type="number" name="memory" class="form-control" id="ram" value="" required
-                      placeholder="RAM">
+                    <input type="number" name="memory" class="form-control" id="ram" value="<?= $freeram ?>" required
+                      placeholder="<?= $freeram ?>">
                     <br>
                     <label for="disk">DISK:</label>
-                    <input type="number" name="disk" class="form-control" id="disk" required placeholder="DISK">
+                    <input type="number" name="disk" class="form-control" id="disk" required value="<?= $freedisk ?>" placeholder="<?= $freedisk ?>">
                     <br>
                     <label for="cpu">CPU:</label>
-                    <input type="number" name="cores" class="form-control" id="cpu" required placeholder="CPU">
+                    <input type="number" name="cores" class="form-control" id="cpu" required value="<?= $freecpu ?>"  placeholder="<?= $freecpu?>">
                     <br>
                     <label for="allocations">PORTS:</label>
                     <input type="number" name="ports" class="form-control" id="allocations" required
-                      placeholder="PORTS">
+                      placeholder="<?= $freeports ?>" value="<?= $freeports ?>">
                     <br>
                     <label for="databases">DATABASES:</label>
                     <input type="number" name="databases" class="form-control" id="databases" required
-                      placeholder="DATABASES">
+                      placeholder="<?= $freedbs ?>" value="<?= $freedbs ?>">
                     <br>
                     <label for="backups">BACKUPS:</label>
                     <input type="number" name="backups" class="form-control" id="backups" required
-                      placeholder="BACKUPS">
+                      placeholder="<?= $freebackups?>" value="<?= $freebackups?>">
                     <br>
                     <?= $csrf->input('create-server-form'); ?>
                     <button action="submit" name="createsv" class="btn btn-primary">Create</button>
