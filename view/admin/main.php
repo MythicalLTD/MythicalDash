@@ -40,9 +40,9 @@ $TotalServers = $serverCount + $serverQueueCount;
 </head>
 
 <body>
-   <div id="preloader" class="discord-preloader">
+   <!--<div id="preloader" class="discord-preloader">
       <div class="spinner"></div>
-   </div>
+   </div>-->
    <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
          <?php include(__DIR__ . '/../components/sidebar.php') ?>
@@ -52,6 +52,45 @@ $TotalServers = $serverCount + $serverQueueCount;
                <div class="container-xxl flex-grow-1 container-p-y">
                   <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Statistics</h4>
                   <?php include(__DIR__ . '/../components/alert.php') ?>
+                  <?php
+                  $ch = curl_init();
+                  curl_setopt($ch, CURLOPT_URL, "https://api.github.com/repos/mythicalltd/mythicaldash/releases/latest");
+                  curl_setopt($ch, CURLOPT_HTTPHEADER, ['User-Agent: MythicalDash']);
+                  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                  $response = curl_exec($ch);
+                  curl_close($ch);
+                  $data = json_decode($response, true);
+                  if ($data && isset($data['tag_name'])) {
+                     $latestVersion = $data['tag_name'];
+                     $pr = $data['prerelease'];
+                     if ($pr == true) {
+                        $pre = " (Prerelease)";
+                     } else {
+                        $pre = null;
+                     }  
+                     if ($latestVersion == SettingsManager::getSetting("version")) {
+                        ?>
+                        <div class="alert alert-success " role="alert">
+                           You are up to date!
+                           <br><br> Branch: <code><?= $data['target_commitish'] ?></code> <br>Version: <code><?php echo $data['tag_name'].$pre ?></code>
+                        </div>
+                        <?php
+                     } else {
+                        ?>
+                        <div class="alert alert-danger " role="alert">
+                           You are not up-to-date with your MythicalDash installation, make sure to update <a
+                              href="https://docs.mythicalsystems.me/docs/MythicalDash/upgrade">here</a>. 
+                        </div>
+                        <?php
+                     }
+                  } else {
+                     ?>
+                     <div class="alert alert-danger " role="alert">
+                        Failed to get the info about MythicalDash version system.
+                     </div>
+                     <?php
+                  }
+                  ?>
                   <div class="">
                      <!-- Statistics -->
                      <div class="card h-100">
