@@ -43,6 +43,8 @@ if (isset($_GET['edit_user'])) {
                         $conn->query("UPDATE `mythicaldash_users` SET `role` = 'Administrator' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
                     } else if ($role == "User") {
                         $conn->query("UPDATE `mythicaldash_users` SET `role` = 'User' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
+                    } else if ($role == "Support") {
+                        $conn->query("UPDATE `mythicaldash_users` SET `role` = 'Support' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
                     } else {
                         $conn->query("UPDATE `mythicaldash_users` SET `role` = 'User' WHERE `mythicaldash_users`.`id` = " . $_GET['id'] . ";");
                     }
@@ -200,11 +202,19 @@ if (isset($_GET['edit_user'])) {
                                                         if ($user_info['role'] == "Administrator") {
                                                             ?>
                                                             <option value="Admin">Administrator</option>
+                                                            <option value="Support">Support</option>
                                                             <option value="User">User</option>
                                                             <?php
-                                                        } else {
+                                                        } else if ($user_info['role'] == "Support") {
+                                                            ?>
+                                                            <option value="Support">Support</option>
+                                                            <option value="Admin">Administrator</option>
+                                                            <option value="User">User</option>
+                                                            <?php
+                                                        }  else {
                                                             ?>
                                                             <option value="User">User</option>
+                                                            <option value="Support">Support</option>
                                                             <option value="Admin">Administrator</option>
                                                             <?php
                                                         }
