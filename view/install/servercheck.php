@@ -27,7 +27,7 @@ function parse_php_version()
 
 $phpVersion = parse_php_version();
 
-if ($phpVersion >= '8.0' && $phpVersion <= '8.3') {
+if ($phpVersion >= '8.1' && $phpVersion <= '8.3') {
 
 } else {
   ?>

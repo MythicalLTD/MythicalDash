@@ -86,7 +86,9 @@ $TotalServers = $serverCount + $serverQueueCount;
                   } else {
                      ?>
                      <div class="alert alert-danger " role="alert">
-                        Failed to get the info about MythicalDash version system.
+                        Failed to get the info about MythicalDash version system: <br>
+                        <code><?= $data['message'] ?></code>
+
                      </div>
                      <?php
                   }

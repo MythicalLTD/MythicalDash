@@ -129,6 +129,12 @@ function is_active_page($page_urls)
           <div>Overview</div>
         </a>
       </li>
+      <li class="menu-item <?php echo is_active_page(['/admin/health']) ? 'active' : ''; ?>">
+        <a href="/admin/health" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-heart"></i>
+          <div>Health</div>
+        </a>
+      </li>
       <li class="menu-item <?php echo is_active_page(['/admin/api']) ? 'active' : ''; ?>">
         <a href="/admin/api" class="menu-link">
           <i class="menu-icon tf-icons ti ti-device-gamepad-2"></i>

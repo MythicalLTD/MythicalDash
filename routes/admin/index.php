@@ -13,4 +13,9 @@ $router->add("/admin/overview", function () {
     require("../include/main.php");
     require("../view/admin/main.php");
 });
+
+$router->add("/admin/health", function () {
+    require("../include/main.php");
+    require("../view/admin/health.php");
+});
 ?>
