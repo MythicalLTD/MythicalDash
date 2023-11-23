@@ -17,3 +17,4 @@ migrates.ini
 /cli/logs
 /public/pma.zip
 /cli/*.yml
+/caches/github.json

@@ -30,7 +30,8 @@ namespace MythicalDash
                                 {"debug", "false"},
                                 {"silent_debug", "false"},
                                 {"encryptionkey", "<keyhere>"},
-                                {"disable_console", "false"}
+                                {"disable_console", "false"},
+                                {"lang", "en_US"}
                             }
                         },
                         {"database", new YamlMappingNode

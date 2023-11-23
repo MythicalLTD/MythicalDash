@@ -53,13 +53,8 @@ $TotalServers = $serverCount + $serverQueueCount;
                         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Health</h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <?php
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, "https://api.github.com/repos/mythicalltd/mythicaldash/releases/latest");
-                        curl_setopt($ch, CURLOPT_HTTPHEADER, ['User-Agent: MythicalDash']);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                        $response = curl_exec($ch);
-                        curl_close($ch);
-                        $data = json_decode($response, true);
+    
+                        $data = Main::getLatestReleaseInfo();
                         if ($data && isset($data['tag_name'])) {
                             $latestVersion = $data['tag_name'];
                             $pr = $data['prerelease'];

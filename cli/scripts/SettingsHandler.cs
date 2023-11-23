@@ -85,7 +85,16 @@ namespace MythicalDash
                 Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
             }
         }
-
+        public void setLang(string lang) {
+            if (fm.ConfigExists() == true)
+            { 
+                
+            }
+            else
+            {
+                Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
+            }
+        }
         public void SetMaintenance(bool status)
         {
             try
@@ -223,7 +232,6 @@ namespace MythicalDash
             {
                 Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
             }
-
         }
         public void DisableTurnstile()
         {
