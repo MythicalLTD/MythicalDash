@@ -1,6 +1,7 @@
 <?php
 use MythicalDash\ErrorHandler;
 use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/../requirements/page.php');
 if (SettingsManager::getSetting("enable_afk") == "false") {
     header('location: /');
@@ -27,14 +28,14 @@ if (isset($_GET['getcoins'])) {
         $data1 = $coins + SettingsManager::getSetting("afk_coins_per_min");
         $data2 = $idlemins + SettingsManager::getSetting("afk_min");
         try {
-            $conn->query("UPDATE `mythicaldash_users` SET `coins` = '".mysqli_real_escape_string($conn,$data1)."' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-            $conn->query("UPDATE `mythicaldash_users` SET `minutes_afk` = '".mysqli_real_escape_string($conn,$data2)."' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-            $conn->query("UPDATE `mythicaldash_users` SET `last_seen` = '".mysqli_real_escape_string($conn,$currenttimestamp)."' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+            $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn, $data1) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+            $conn->query("UPDATE `mythicaldash_users` SET `minutes_afk` = '" . mysqli_real_escape_string($conn, $data2) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+            $conn->query("UPDATE `mythicaldash_users` SET `last_seen` = '" . mysqli_real_escape_string($conn, $currenttimestamp) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
             echo '<script>window.location.replace("/earn/afk");</script>';
         } catch (Exception $e) {
             header('location: /earn/afk?Failed to update your coins due to some db error');
             $conn->close();
-            ErrorHandler::Critical("Failed to update coins ",$e);
+            ErrorHandler::Critical("Failed to update coins ", $e);
             die();
         }
     } else {
@@ -69,6 +70,11 @@ if (isset($_GET['getcoins'])) {
 </head>
 
 <body>
+    <?php
+    if (SettingsManager::getSetting("show_snow") == "true") {
+        include(__DIR__ . '/../components/snow.php');
+    }
+    ?>
     <div id="preloader" class="discord-preloader">
         <div class="spinner"></div>
     </div>

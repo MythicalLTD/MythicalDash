@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\SettingsManager;
+
 http_response_code(401);
 ?>
 <!DOCTYPE html>
@@ -19,6 +20,11 @@ http_response_code(401);
 </head>
 
 <body>
+  <?php
+  if (SettingsManager::getSetting("show_snow") == "true") {
+    include(__DIR__ . '/../components/snow.php');
+  }
+  ?>
   <div id="preloader" class="discord-preloader">
     <div class="spinner"></div>
   </div>
@@ -26,7 +32,8 @@ http_response_code(401);
     <div class="misc-wrapper">
       <h2 class="mb-1 mx-2">Please disable your adblocker!</h2>
       <p class="mb-4 mx-2">
-      You do not have permission to view this page. It is really sad when you try to use an adblocker on a free host! <br />
+        You do not have permission to view this page. It is really sad when you try to use an adblocker on a free host!
+        <br />
       </p>
       <a href="/" class="btn btn-primary mb-4">Back to home</a>
       <div class="mt-4">

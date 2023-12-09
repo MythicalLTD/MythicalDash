@@ -67,7 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 </head>
 
 <body>
-
+<?php
+  if (SettingsManager::getSetting("show_snow") == "true") {
+    include(__DIR__ . '/../components/snow.php');
+  }
+  ?>
+  
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <?php include(__DIR__ . '/../components/sidebar.php') ?>

@@ -160,7 +160,7 @@ try {
                                             die();
                                         }
                                     } else {
-                                        header("location: /auth/login?e=There was an error while signing up. Is our game panel down?");
+                                        header("location: /auth/login?e=We got error from panel: ".$error);
                                         die();
                                     }
 
@@ -267,6 +267,11 @@ try {
 </head>
 
 <body>
+<?php
+  if (SettingsManager::getSetting("show_snow") == "true") {
+    include(__DIR__ . '/../components/snow.php');
+  }
+  ?>
     <div id="preloader" class="discord-preloader">
         <div class="spinner"></div>
     </div>

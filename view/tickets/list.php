@@ -36,6 +36,11 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
 </head>
 
 <body>
+<?php
+  if (SettingsManager::getSetting("show_snow") == "true") {
+    include(__DIR__ . '/../components/snow.php');
+  }
+  ?>
     <div id="preloader" class="discord-preloader">
         <div class="spinner"></div>
     </div>

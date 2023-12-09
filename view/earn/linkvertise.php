@@ -135,6 +135,11 @@ if (isset($_GET['key'])) {
 </head>
 
 <body>
+<?php
+  if (SettingsManager::getSetting("show_snow") == "true") {
+    include(__DIR__ . '/../components/snow.php');
+  }
+  ?>
     <div class="flex-container">
         <div class="text-center">
             <h1>

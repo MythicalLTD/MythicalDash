@@ -19,19 +19,19 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
         $newports = $session->getUserInfo("ports") + $redeemdb['ports'];
         $newdatabases = $session->getUserInfo("databases") + $redeemdb['databases'];
         $newbackups = $session->getUserInfo("backups") + $redeemdb['backups'];
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn,$newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `ram` = '" . mysqli_real_escape_string($conn,$newram) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `disk` = '" . mysqli_real_escape_string($conn,$newdisk) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `cpu` = '" . mysqli_real_escape_string($conn,$newcpu) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `server_limit` = '" . mysqli_real_escape_string($conn,$new_server_limit) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `ports` = '" . mysqli_real_escape_string($conn,$newports) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `databases` = '" . mysqli_real_escape_string($conn,$newdatabases) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . mysqli_real_escape_string($conn,$newbackups) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn, $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `ram` = '" . mysqli_real_escape_string($conn, $newram) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `disk` = '" . mysqli_real_escape_string($conn, $newdisk) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `cpu` = '" . mysqli_real_escape_string($conn, $newcpu) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `server_limit` = '" . mysqli_real_escape_string($conn, $new_server_limit) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `ports` = '" . mysqli_real_escape_string($conn, $newports) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `databases` = '" . mysqli_real_escape_string($conn, $newdatabases) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . mysqli_real_escape_string($conn, $newbackups) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
         if ($redeemdb['uses'] > 1) {
             $newuses = $redeemdb['uses'] - 1;
-            $conn->query("UPDATE `mythicaldash_redeem` SET `uses` = '" . mysqli_real_escape_string($conn,$newuses) . "' WHERE `mythicaldash_redeem`.`code` = '" . mysqli_real_escape_string($conn,$code) . "';");
+            $conn->query("UPDATE `mythicaldash_redeem` SET `uses` = '" . mysqli_real_escape_string($conn, $newuses) . "' WHERE `mythicaldash_redeem`.`code` = '" . mysqli_real_escape_string($conn, $code) . "';");
         } else {
-            $conn->query("DELETE FROM mythicaldash_redeem WHERE `mythicaldash_redeem`.`code` = '" . mysqli_real_escape_string($conn,$code) . "'");
+            $conn->query("DELETE FROM mythicaldash_redeem WHERE `mythicaldash_redeem`.`code` = '" . mysqli_real_escape_string($conn, $code) . "'");
         }
         header('location: /earn/redeem?s=We updated your resources!');
     } else {
@@ -58,6 +58,11 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
 </head>
 
 <body>
+    <?php
+    if (SettingsManager::getSetting("show_snow") == "true") {
+        include(__DIR__ . '/../components/snow.php');
+    }
+    ?>
     <div id="preloader" class="discord-preloader">
         <div class="spinner"></div>
     </div>

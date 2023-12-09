@@ -42,7 +42,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                             <div class="card-body">
                                 <form action="/admin/settings/general" method="GET">
                                     <div class="row">
-                                        <div class="mb-3 col-md-6">
+                                        <div class="mb-3 col-md-4">
                                             <label for="app:name" class="form-label">Company Name</label>
                                             <input class="form-control" type="text" id="app:name" name="app:name"
                                                 value="<?= SettingsManager::getSetting("name") ?>"
@@ -52,6 +52,29 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label for="app:logo" class="form-label">Company Logo</label>
                                             <input class="form-control" type="text" id="app:logo" name="app:logo"
                                                 value="<?= SettingsManager::getSetting("logo") ?>" autofocus="">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Snow</label>
+                                            <div>
+                                                <?php
+                                                if (SettingsManager::getSetting("show_snow") == 'true') {
+                                                    ?>
+                                                    <select class="form-control" name="app:snow">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="app:snow">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="mt-2 text-center">

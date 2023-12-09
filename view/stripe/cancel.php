@@ -20,7 +20,6 @@ try {
                 if ($paymentsdb['ownerkey'] == $_COOKIE['token']) {
                     $code = mysqli_real_escape_string($conn, $_GET['id']);
                     $conn->query("UPDATE `mythicaldash_payments` SET `status` = 'paid' WHERE `code` = '".mysqli_real_escape_string($conn,$code)."'");
-                    $conn->close();
                     header('location: /user/payments?s=We canceld the payment code');
                     $conn->close();
                     die();

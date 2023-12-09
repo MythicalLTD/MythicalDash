@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $ucode = $conn->query("SELECT * FROM mythicaldash_resetpasswords WHERE `resetkeycode` = '" . $code . "'")->fetch_array();
                         $upassword = mysqli_real_escape_string($conn, $_GET['password']);
                         $password = password_hash($upassword, PASSWORD_BCRYPT);
-                        $conn->query("UPDATE `mythicaldash_users` SET `password` = '" . mysqli_real_escape_string($conn,$password) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $ucode['ownerkey']) . "';");
+                        $conn->query("UPDATE `mythicaldash_users` SET `password` = '" . mysqli_real_escape_string($conn, $password) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $ucode['ownerkey']) . "';");
                         $conn->query("DELETE FROM mythicaldash_resetpasswords WHERE `mythicaldash_resetpasswords`.`id` = " . mysqli_real_escape_string($conn, $ucode['id']) . "");
                         $user_info = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . mysqli_real_escape_string($conn, $ucode['ownerkey']) . "'")->fetch_array();
                         $conn->close();
@@ -77,6 +77,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     </head>
 
                     <body>
+                        <?php
+                        if (SettingsManager::getSetting("show_snow") == "true") {
+                            include(__DIR__ . '/../components/snow.php');
+                        }
+                        ?>
                         <div class="authentication-wrapper authentication-cover authentication-bg">
                             <div class="authentication-inner row">
                                 <div class="d-none d-lg-flex col-lg-7 p-0">

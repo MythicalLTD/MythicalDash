@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\SettingsManager;
+
 include(__DIR__ . '/requirements/page.php');
 ?>
 <!DOCTYPE html>
@@ -19,6 +20,12 @@ include(__DIR__ . '/requirements/page.php');
 </head>
 
 <body>
+<?php
+  if (SettingsManager::getSetting("show_snow") == "true") {
+    include(__DIR__ . '/components/snow.php');
+  }
+  ?>
+  </div>
   <div id="preloader" class="discord-preloader">
     <div class="spinner"></div>
   </div>
