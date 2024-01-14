@@ -88,4 +88,14 @@ $router->add("/admin/settings/tos", function () {
     require("../include/main.php");
     require("../view/admin/settings/tos.php");
 });
+
+$router->add("/admin/sql", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/sql.php");
+});
+
+$router->add("/admin/purgecache", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/cachepurge.php");
+});
 ?>

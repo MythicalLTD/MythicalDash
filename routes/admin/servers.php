@@ -23,4 +23,10 @@ $router->add("/admin/servers/queue/logs", function () {
     require("../include/main.php");
     require("../view/admin/servers/logs.php");
 });
+
+$router->add("/admin/server/queue/delete", function () {
+    require("../include/main.php");
+    require("../view/admin/servers/deleteq.php");
+});
+
 ?>

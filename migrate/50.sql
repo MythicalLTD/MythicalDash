@@ -1,0 +1,1 @@
+UPDATE `mythicaldash_settings` SET `show_snow` = 'false' WHERE `mythicaldash_settings`.`id` = 1;

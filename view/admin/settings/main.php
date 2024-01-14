@@ -33,6 +33,16 @@ include(__DIR__ . '/../../requirements/admin.php');
                     <div class="container-xxl flex-grow-1 container-p-y">
                         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Settings</h4>
                         <?php include(__DIR__ . '/../../components/alert.php') ?>
+                        <?php
+                        if (isset($_GET['sqlr'])) {
+                            ?>
+                            <div class="alert alert-danger alert-dismissible" role="alert">
+                                <code><?= $_GET['sqlr'] ?></code>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <?php
+                        }
+                        ?>
                         <div class="card mb-4">
                             <h5 class="card-header text-center">General</h5>
                             <div class="card-text text-center">
@@ -623,7 +633,8 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <input type="text" class="form-control" name="mail:from:address"
                                                     value="<?= SettingsManager::getSetting("fromEmail") ?>">
-                                                <p class="text-muted small">The email address where you send emails from.</p>
+                                                <p class="text-muted small">The email address where you send emails
+                                                    from.</p>
                                             </div>
                                         </div>
                                     </div>
@@ -1138,6 +1149,27 @@ include(__DIR__ . '/../../requirements/admin.php');
                                 </form>
                             </div>
                         </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header text-center">Developer Options</h5>
+                            <div class="card-text text-center">
+                                <label>THIS IS THE DANGER ZONE DO NOT RUN ANYTHING OR TOUCH ANYTHING HERE IF NOT TOLD SO
+                                    BY THE ORIGINAL DEV <code>mythicaldoggo</code> aka <code>nayskutzu</code>
+                                    &NewLine;</label><br>
+                                <p></p>
+                            </div>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-md-2">
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#executesql"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Run SQL
+                                            SCRIPT</button><br><br>&NewLine;&nbsp;
+                                            <a href="/admin/purgecache"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Purge Internal Caches</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal fade" id="runpurge" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-simple modal-edit-user">
@@ -1170,6 +1202,38 @@ include(__DIR__ . '/../../requirements/admin.php');
                                     <form method="POST" action="/admin/servers/purge" class="row g-3">
                                         <div class="col-12 text-center">
                                             <button type="submit" class="btn btn-danger me-sm-3 me-1">Continue</button>
+                                            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+                                                aria-label="Close">Cancel </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="executesql" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+                            <div class="modal-content p-3 p-md-5">
+                                <div class="modal-body">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                    <div class="text-center mb-4">
+                                        <h3 class="mb-2">Woah, buddy, are you sure you want to run this?</h3>
+                                        <p class="form-check-label">This thing is only for debug and fixing MythicalDash
+                                            SQL structure</p>
+                                    </div>
+                                    <form method="POST" action="/admin/sql" class="row g-3">
+
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <label class="control-label">SQL</label>
+                                                <div>
+                                                    <textarea type="text" required="" class="form-control" name="cmd"
+                                                        rows="4" value=""></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 text-center">
+                                            <button type="submit" class="btn btn-danger me-sm-3 me-1">Run</button>
                                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
                                                 aria-label="Close">Cancel </button>
                                         </div>
