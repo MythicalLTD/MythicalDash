@@ -23,7 +23,7 @@ try {
           $email = mysqli_real_escape_string($conn, $_POST['email']);
           $password = mysqli_real_escape_string($conn, $_POST['password']);
           if (!$email == "" || !$password == "") {
-            $query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
+            $query = "SELECT * FROM mythicaldash_users WHERE email = '$email' OR username = '$email'";
             $result = mysqli_query($conn, $query);
             if ($result) {
               if (mysqli_num_rows($result) == 1) {
@@ -34,7 +34,7 @@ try {
                   $email =  mysqli_real_escape_string($conn, $row['email']);
                   $banned =  mysqli_real_escape_string($conn, $row['banned']);
                   if (!$banned == "") {
-                    header('location: /auth/login?e=We are sorry but you are banned from using our system!');
+                    header('location: /auth/login?e='.$lang['login_banned']);
                     exit; // Stop execution if user is banned
                   } else {
                     $usr_id = mysqli_real_escape_string($conn, $row['api_key']);
@@ -42,7 +42,7 @@ try {
                     $data = json_decode(file_get_contents($url), true);
                       if (SettingsManager::getSetting('enable_anti_vpn') == "true") {
                         if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
-                        header('location: /auth/login?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
+                        header('location: /auth/login?e='.$lang['login_please_no_vpn']);
                         die();
                       }
                     }
@@ -66,7 +66,7 @@ try {
                     }
                     if (SettingsManager::getSetting('enable_alting') == "true") {
                       if (count($userids) !== 0) {
-                        header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
+                        header('location: /auth/login?e='.$lang['login_please_no_alts']);
                         die();
                       }
                     }
@@ -84,40 +84,39 @@ try {
                     // Stop execution after successful login
                   }
                 } else {
-                  header('location: /auth/login?e=Invalid Password');
+                  header('location: /auth/login?e='.$lang['login_invalid_password']);
                   exit; // Stop execution if password is invalid
                 }
               } else {
-                header('location: /auth/login?e=Invalid email');
+                header('location: /auth/login?e='.$lang['login_invalid_email']);
                 exit; // Stop execution if email is invalid
               }
             } else {
-              header('location: /auth/login?e=Failed to log user in');
+              header('location: /auth/login?e='.$lang['login_failed']);
               exit; // Stop execution if login fails
             }
             mysqli_free_result($result);
             $conn->close();
             exit;
           } else {
-            header("location: /auth/login?e=Captcha verification failed; please refresh!");
+            header("location: /auth/login?e=".$lang['captcha_failed']);
             die();
           }
         }
       } else {
-        header('location: /auth/login?e=Login failed');
+        header('location: /auth/login?e='.$lang['login_failed']);
         exit; // Stop execution if login button is not pressed
       }
     } else {
       // CSRF validation failed
       setcookie('api_key', '', time() - (10 * 365 * 24 * 60 * 60 * 2), '/');
       setcookie('phpsessid', '', time() - (10 * 365 * 24 * 60 * 60 * 2), '/');
-      header('location: /auth/login?e=CSRF Verification Failed');
-      exit; // Stop execution if CSRF validation fails
+      header('location: /auth/login?e='.$lang['csrf_failed']);
+      exit;
     }
   }
 } catch (Exception $e) {
-  header("location: /auth/login?e=An unexpected error occurred!");
-  ErrorHandler::Error("Login ", $e);
+  header("location: /auth/login?e=". $lang['login_erorr_unknown']);
   die();
 }
 ?>
@@ -128,7 +127,7 @@ try {
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-auth.css" />
   <title>
-    <?= SettingsManager::getSetting("name") ?> - Login
+    <?= SettingsManager::getSetting("name") ?> - <?= $lang['login'] ?>
   </title>
 
 </head>
@@ -157,10 +156,10 @@ try {
       </div>
       <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4">
         <div class="w-px-400 mx-auto">
-          <h3 class="mb-1 fw-bold">Welcome to
+          <h3 class="mb-1 fw-bold"><?= $lang['welcome_to'] ?>
             <?= SettingsManager::getSetting("name") ?>!
           </h3>
-          <p class="mb-4">Please sign-in to your account and start the adventure</p>
+          <p class="mb-4"><?= $lang['please_login'] ?></p>
           <?php
           if (isset($_GET['e'])) {
             ?>
@@ -174,7 +173,7 @@ try {
           ?>
           <form method="POST">
             <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
+              <label for="email" class="form-label"><?= $lang['email'] ?></label>
               <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email"
                 autofocus />
             </div>
@@ -182,9 +181,9 @@ try {
               <?php if (SettingsManager::getSetting("enable_smtp") == "ture") {
                 ?>
                 <div class="d-flex justify-content-between">
-                  <label class="form-label" for="password">Password</label>
+                  <label class="form-label" for="password"><?= $lang['password'] ?></label>
                   <a href="/auth/forgot-password">
-                    <small>Forgot Password?</small>
+                    <small><?= $lang['forgot_password'] ?></small>
                   </a>
                 </div>
                 <?php
@@ -213,17 +212,17 @@ try {
             }
             ?>
             <?= $csrf->input('login-form'); ?>
-            <button type="submit" name="login" class="btn btn-primary d-grid w-100">Sign in</button>
+            <button type="submit" name="login" class="btn btn-primary d-grid w-100"><?= $lang['login']?></button>
 
           </form>
           <p class="text-center">
-            <span>New on our platform?</span>
+            <span><?= $lang['new_to_platform'] ?></span>
             <a href="/auth/register">
-              <span>Create an account</span>
+              <span><?= $lang['register'] ?></span>
             </a>
           </p>
           <div class="divider my-2">
-            <div class="divider-text"> or </div>
+            <div class="divider-text"> <?= $lang['or'] ?> </div>
           </div>
           <div class="auth-footer-btn d-flex justify-content-center">
             <?php

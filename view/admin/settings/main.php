@@ -58,10 +58,15 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 value="<?= SettingsManager::getSetting("name") ?>"
                                                 placeholder="MythicalSystems">
                                         </div>
-                                        <div class="mb-3 col-md-6">
+                                        <div class="mb-3 col-md-3">
                                             <label for="app:logo" class="form-label">Company Logo</label>
                                             <input class="form-control" type="text" id="app:logo" name="app:logo"
                                                 value="<?= SettingsManager::getSetting("logo") ?>" autofocus="">
+                                        </div>
+                                        <div class="mb-3 col-md-3">
+                                            <label for="app:logo" class="form-label">Background Picture</label>
+                                            <input class="form-control" type="text" id="app:bg" name="app:bg"
+                                                value="<?= SettingsManager::getSetting("bg") ?>" autofocus="">
                                         </div>
                                         <div class="form-group col-md-2">
                                             <label class="control-label">Snow</label>

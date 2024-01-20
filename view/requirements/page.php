@@ -3,6 +3,7 @@ use MythicalDash\ErrorHandler;
 use MythicalDash\SessionManager;
 use MythicalDash\Database\Connect;
 use MythicalDash\SettingsManager;
+use MythicalDash\Pterodactyl\Connection;
 $conn = new Connect();
 $conn = $conn->connectToDatabase();
 $session = new SessionManager();
@@ -14,6 +15,11 @@ if (!$session->getUserInfo('banned') == "") {
 }
 if (SettingsManager::getSetting("maintenance") == "true") {
     ErrorHandler::ShowCritical("We are so sorry but our client is down for maintenance.");
+    die();
+}
+Connection::initializeSettings();
+if (!Connection::checkConnection() == true) {
+    ErrorHandler::ShowCritical("We are sorry but our pterodactyl gamepanel is down!");
     die();
 }
 ?>

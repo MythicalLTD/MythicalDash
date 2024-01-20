@@ -13,17 +13,18 @@ include(__DIR__ . '/requirements/page.php');
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
    <?php include(__DIR__ . '/requirements/head.php'); ?>
    <title>
-      <?= SettingsManager::getSetting("name") ?> - Leaderboard
+      <?= SettingsManager::getSetting("name") ?> -
+      <?= $lang['leaderboard'] ?>
    </title>
    <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
 
 <body>
-<?php
-  if (SettingsManager::getSetting("show_snow") == "true") {
-    include(__DIR__ . '/components/snow.php');
-  }
-  ?>
+   <?php
+   if (SettingsManager::getSetting("show_snow") == "true") {
+      include(__DIR__ . '/components/snow.php');
+   }
+   ?>
    <div id="preloader" class="discord-preloader">
       <div class="spinner"></div>
    </div>
@@ -34,7 +35,11 @@ include(__DIR__ . '/requirements/page.php');
             <?php include(__DIR__ . '/components/navbar.php') ?>
             <div class="content-wrapper">
                <div class="container-xxl flex-grow-1 container-p-y">
-                  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Dashboard /</span> Leaderboard</h4>
+                  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">
+                        <?= $lang['dashboard'] ?> /
+                     </span>
+                     <?= $lang['leaderboard'] ?>
+                  </h4>
                   <?php include(__DIR__ . '/components/alert.php') ?>
                   <div id="ads">
                      <?php
@@ -48,7 +53,10 @@ include(__DIR__ . '/requirements/page.php');
                   </div>
                   <div class="card bg-default shadow">
                      <div class="card-header">
-                        <h3 class="card-title mb-0">Coins Leaderboard</h3>
+                        <h3 class="card-title mb-0">
+                           <?= $lang['coins'] ?>
+                           <?= $lang['leaderboard'] ?>
+                        </h3>
                      </div>
                      <hr class="my-0">
                      <div class="card-body">
@@ -66,10 +74,18 @@ include(__DIR__ . '/requirements/page.php');
                         <table class="table table-striped table-bordered">
                            <thead>
                               <tr>
-                                 <th scope="col">Place</th>
-                                 <th scope="col">Username</th>
-                                 <th scope="col">Role</th>
-                                 <th scope="col">Coins</th>
+                                 <th scope="col">
+                                    <?= $lang['leaderboard_place'] ?>
+                                 </th>
+                                 <th scope="col">
+                                    <?= $lang['leaderboard_username'] ?>
+                                 </th>
+                                 <th scope="col">
+                                    <?= $lang['leaderboard_role'] ?>
+                                 </th>
+                                 <th scope="col">
+                                    <?= $lang['coins'] ?>
+                                 </th>
                               </tr>
                            </thead>
                            <tbody>
@@ -79,7 +95,7 @@ include(__DIR__ . '/requirements/page.php');
                                        <?php echo $i + 1; ?>
                                     </td>
                                     <td><a href="/user/profile?id=<?php echo $user['id']; ?>">
-                                          <?php echo mysqli_real_escape_string($conn ,$user['username']); ?>
+                                          <?php echo mysqli_real_escape_string($conn, $user['username']); ?>
                                        </a></td>
                                     <td>
                                        <?php echo $user['role']; ?>
@@ -96,7 +112,9 @@ include(__DIR__ . '/requirements/page.php');
                   <br>
                   <div class="card bg-default shadow">
                      <div class="card-header">
-                        <h3 class="card-title mb-0">AFK Leaderboard</h3>
+                        <h3 class="card-title mb-0">AFK
+                           <?= $lang['leaderboard'] ?>
+                        </h3>
                      </div>
                      <hr class="my-0">
                      <div class="card-body">
@@ -114,10 +132,18 @@ include(__DIR__ . '/requirements/page.php');
                         <table class="table table-striped table-bordered">
                            <thead>
                               <tr>
-                                 <th scope="col">Place</th>
-                                 <th scope="col">Username</th>
-                                 <th scope="col">Role</th>
-                                 <th scope="col">Minutes</th>
+                                 <th scope="col">
+                                    <?= $lang['leaderboard_place'] ?>
+                                 </th>
+                                 <th scope="col">
+                                    <?= $lang['leaderboard_username'] ?>
+                                 </th>
+                                 <th scope="col">
+                                    <?= $lang['leaderboard_role'] ?>
+                                 </th>
+                                 <th scope="col">
+                                    <?= $lang['leaderboard_minutes'] ?>
+                                 </th>
                               </tr>
                            </thead>
                            <tbody>

@@ -1,5 +1,6 @@
 <?php 
 use MythicalDash\ErrorHandler;
+use MythicalDash\Main;
 use Symfony\Component\Yaml\Yaml;
 $config = Yaml::parseFile('../config.yml');
 $appsettings = $config['app'];
@@ -32,4 +33,6 @@ else
 $prot = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $svhost = $_SERVER['HTTP_HOST'];
 $appURL = $prot . '://' . $svhost;
+
+$lang = Main::getLang();
 ?>

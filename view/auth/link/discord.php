@@ -56,11 +56,11 @@ try {
             header('Location: ' . $authorizeUrl);
         }
     } else {
-        header("location: /dashboard?e=We are sorry but we don't provide support for discord link right now");
+        header("location: /dashboard?e=".$lang['discord_oath2_link_failed']);
         die();
     }
 } catch (Exception $e) {
-    header("location: /auth/dashboard?e=An unexpected error occurred!");
+    header("location: /auth/dashboard?e=".$lang['discord_oath2_link_failed']);
     ErrorHandler::Error("Discord ", $e);
     die();
 }

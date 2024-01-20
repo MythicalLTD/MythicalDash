@@ -16,7 +16,7 @@ function is_active_page($page_urls)
   <div class="app-brand demo">
     <a href="/" class="app-brand-link">
       <span class="app-brand-text demo menu-text fw-bold">
-        <?= SettingsManager::getSetting("name") ?>
+         <?= SettingsManager::getSetting("name") ?>
       </span>
     </a>
   </div>

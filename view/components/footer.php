@@ -12,7 +12,7 @@ use MythicalDash\SettingsManager;
         <script>
           document.write(new Date().getFullYear());
         </script>
-        made with ❤️ by <a href="https://github.com/mythicalltd" target="_blank" class="fw-semibold">MythicalSystems</a>
+        made with ❤️ by <a href="https://github.com/mythicalltd" target="_blank" class="fw-semibold">MythicalSystems</a> theme by Roido
       </div>
       <div>
         <a href="<?= SettingsManager::getSetting("PterodactylURL")?>" target="_blank" class="footer-link me-4">Pterodactyl</a>

@@ -305,8 +305,7 @@ class ErrorHandler
         </html>
         <?php
         $output = ob_get_clean();
-        echo $output;
-        exit;
+        die($output);
     }
 }
 ?>

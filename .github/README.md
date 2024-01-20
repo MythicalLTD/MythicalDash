@@ -31,7 +31,7 @@ Well, we created a table to compare the most commonly used pterodactyl clients, 
 | Essentials Options       |      ✅       |    ✅      |      ✅      |      ✅      |     ✅     |
 | API (Client/Admin)       |      ✅       |    ✅      |      ✅      |      ✅      |     ✅     |
 | Payment Options          |      ✅       |    ✅      |      ✅      |      ✅      |     ✅     |
-| J4R                      |      ⚠️       |    ✅      |      ✅      |      ✅      |     ✅     |
+| J4R                      |      ✅       |    ✅      |      ✅      |      ✅      |     ✅     |
 | Referrals                |      ✅       |    ✅      |      ✅      |      ✅      |     ✅     |
 | Linkvertise              |      ✅       |    ✅      |      ✅      |      ✅      |     ❌     |
 | Custom Ads               |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
@@ -49,6 +49,12 @@ Well, we created a table to compare the most commonly used pterodactyl clients, 
 | Server Queue             |      ✅       |    ✅      |      ❌      |      ❌      |     ❌     |
 | Custom Search            |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
 | Leaderboards             |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
+| Health Options           |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
+| Advanced Encryption      |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
+| Easy Translations        |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
+| Activity Logs            |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
+| Anti XSS                 |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
+| Exploit Fixer (Guard)    |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
  ---------------------------------------------------------------------------------------------------
 
 #### Do I need to agree to any TOS when installing this?

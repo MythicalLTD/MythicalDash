@@ -18,3 +18,4 @@ migrates.ini
 /public/pma.zip
 /cli/*.yml
 /caches/github.json
+/MythicalDash

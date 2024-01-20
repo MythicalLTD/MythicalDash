@@ -56,7 +56,7 @@ try {
                         $email = $row['email'];
                         $banned = $row['banned'];
                         if (!$banned == "") {
-                            header('location: /auth/login?e=We are sorry but you are banned from using our system!');
+                            header('location: /auth/login?e='.$lang['login_banned']);
                             die();
                         } else {
                             $usr_id = $row['api_key'];
@@ -64,7 +64,7 @@ try {
                             $data = json_decode(file_get_contents($url), true);
 
                             if (isset($data['error']) || $data['org'] == "AS1221 Telstra Pty Ltd") {
-                                header('location: /auth/login?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
+                                header('location: /auth/login?e='.$lang['login_please_no_vpn']);
                                 die();
                             }
                             $userids = array();
@@ -86,7 +86,7 @@ try {
                                 }
                             }
                             if (count($userids) !== 0) {
-                                header('location: /auth/login?e=Using multiple accounts is really sad when using free services!');
+                                header('location: /auth/login?e='.$lang['login_please_no_alts']);
                                 die();
                             }
                             $conn->query("INSERT INTO mythicaldash_login_logs (ipaddr, userkey) VALUES ('" . mysqli_real_escape_string($conn,$session->getIP()) . "', '".mysqli_real_escape_string($conn,$usr_id)."')");
@@ -98,12 +98,12 @@ try {
                             header('location: /dashboard');
                         }
                     } else {
-                        header('location: /auth/login?e=No accounts were found under this discord account.');
+                        header('location: /auth/login?e='.$lang['discord_oath2_no_acc_found']);
                         $conn->close();
                         die();
                     }
                 } else {
-                    header('location: /auth/login?e=No accounts were found under this discord account.');
+                    header('location: /auth/login?e='.$lang['discord_oath2_no_acc_found']);
                     $conn->close();
                     die();
                 }
@@ -117,11 +117,11 @@ try {
             header('Location: ' . $authorizeUrl);
         }
     } else {
-        header("location: /auth/login?e=We are sorry but we don't provide support for discord link right now");
+        header("location: /auth/login?e=".$lang['discord_oath2_link_failed']);
         die();
     }
 } catch (Exception $e) {
-    header('location: /auth/login?e=An unexpected error occurred!');
+    header('location: /auth/login?e='.$lang['discord_oath2_link_failed']);
     ErrorHandler::Error("Discord ",$e);
     die();
 }

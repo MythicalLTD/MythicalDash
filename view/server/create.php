@@ -319,7 +319,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="card-body">
                   <form method="POST">
                     <label for="name">Name:</label>
-                    <input type="text" name="name" class="form-control" id="name" value="<?= $session->getUserInfo("username")?>'s server" required placeholder="<?= $session->getUserInfo("username")?>'s server">
+                    <input type="text" name="name" class="form-control" id="name" required placeholder="<?= $session->getUserInfo("username")?>'s server">
                     <br>
                     <?php
                     $locations = mysqli_query($conn, "SELECT * FROM mythicaldash_locations")->fetch_all(MYSQLI_ASSOC);

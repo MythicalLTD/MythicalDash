@@ -1,6 +1,8 @@
 <?php
 namespace MythicalDash;
 
+use Symfony\Component\Yaml\Yaml;
+use MythicalDash\SettingsManager;
 class Main
 {
     public static function isHTTPS()
@@ -57,7 +59,7 @@ class Main
 
     public static function getLang()
     {
-        $langConfig = ConfigHandler::get("app", "lang");
+        $langConfig = SettingsManager::getSetting('lang');
 
         if ($langConfig == null) {
             self::handleLanguageError("Failed to start the dash. Please use a valid language file.");

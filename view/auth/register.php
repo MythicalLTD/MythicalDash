@@ -40,15 +40,15 @@ try {
                             die();
                         }
                         if (preg_match("/[^a-zA-Z]+/", $username)) {
-                            header('location: /auth/register?e=Please only use characters from A-Z in your username!');
+                            header('location: /auth/register?e='.$lang['login_please_use'].' '.$lang['username'].'!');
                             die();
                         }
                         if (preg_match("/[^a-zA-Z]+/", $first_name)) {
-                            header('location: /auth/register?e=Please only use characters from A-Z in your first name!');
+                            header('location: /auth/register?e='.$lang['login_please_use'].' '.$lang['first_name'].'!');
                             die();
                         }
                         if (preg_match("/[^a-zA-Z]+/", $last_name)) {
-                            header('location: /auth/register?e=Please only use characters from A-Z in your last name!');
+                            header('location: /auth/register?e='.$lang['login_please_use'].' '.$lang['last_name'].'!');
                             die();
                         }
                         $password = password_hash($upassword, PASSWORD_BCRYPT);
@@ -62,7 +62,7 @@ try {
                                 $acount = mysqli_num_rows($aresult);
                                 if (SettingsManager::getSetting("enable_alting") == "true") {
                                     if ($acount >= 1) {
-                                        header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use temporary accounts, which is not allowed.');
+                                        header('location: /auth/register?e='.$lang['login_please_no_alts']);
                                         die();
                                     }
                                 }
@@ -82,7 +82,7 @@ try {
                                 }
                                 if (SettingsManager::getSetting("enable_anti_vpn") == "true") {
                                     if ($vpn == true) {
-                                        header('location: /auth/register?e=Hmmm it looks like you are trying to abuse. You are trying to use a VPN, which is not allowed.');
+                                        header('location: /auth/register?e='.$lang['login_please_no_vpn']);
                                         die();
                                     }
                                 }
@@ -126,7 +126,7 @@ try {
                                         curl_close($ch);
                                         $result13 = json_decode($result12, true);
                                         if (!isset($result13['object'])) {
-                                            header("location: /auth/login?e=There was an unexpected error while attempting to link your panel account to the client portal.");
+                                            header("location: /auth/login?e=".$lang['login_erorr_unknown']);
                                             $conn->close();
                                             die();
                                         }
@@ -155,12 +155,12 @@ try {
                                         curl_close($ch);
                                         $updateUserResult = json_decode($updateUserResult, true);
                                         if (!isset($updateUserResult['object'])) {
-                                            header('location: /auth/login?e=There was an error while updating your panel information on sign-up');
+                                            header('location: /auth/login?e='.$lang['login_erorr_unknown']);
                                             $conn->close();
                                             die();
                                         }
                                     } else {
-                                        header("location: /auth/login?e=We got error from panel: ".$error);
+                                        header("location: /auth/login?e=".$lang['login_erorr_unknown']);
                                         die();
                                     }
 
@@ -223,30 +223,33 @@ try {
                                 header('location: /auth/login');
                                 die();
                             } else {
-                                header('location: /auth/register?e=Username or email already exists. Please choose a different one');
+                                header('location: /auth/register?e='.$lang['username_or_email_exists']);
                                 $conn->close();
                                 die();
                             }
                         } else {
-                            header('location: /auth/register?e=Please fill in all the required info');
+                            header('location: /auth/register?e='.$lang['please_fill_in_all_required_info']);
                             $conn->close();
                             die();
                         }
                     } else {
-                        header("location: /auth/register?e=I'm sorry, but it looks like the pterodactyl panel is not linked to the dash.");
+                        header("location: /auth/register?e=".$lang['login_erorr_unknown']);
                         $conn->close();
                         die();
                     }
                 } else {
-                    header("location: /auth/register?e=Captcha verification failed; please refresh!");
+                    header("location: /auth/register?e=".$lang['captcha_failed']);
                     $conn->close();
                     die();
                 }
             }
+        } else {
+            // CSRF validation failed
+            header('location: /auth/register?e='.$lang['csrf_failed']);
         }
     }
 } catch (Exception $e) {
-    header("location: /auth/register?e=An unexpected error occurred!");
+    header("location: /auth/register?e=".$lang['login_erorr_unknown']);
     ErrorHandler::Error("Register ", $e);
     die();
 }
@@ -261,7 +264,7 @@ try {
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Register
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['register']?>
     </title>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-auth.css" />
 </head>
@@ -291,33 +294,33 @@ try {
             </div>
             <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4">
                 <div class="w-px-400 mx-auto">
-                    <h3 class="mb-1 fw-bold">Welcome to
+                    <h3 class="mb-1 fw-bold"><?= $lang['welcome_to']?> 
                         <?= SettingsManager::getSetting("name") ?>!
                     </h3>
-                    <p class="mb-4">Please create an account and embark on your adventure!</p>
+                    <p class="mb-4"><?= $lang['register_subtitle']?></p>
                     <form id="formAuthentication" class="mb-3" method="POST">
                         <div class="mb-3">
-                            <label for="first_name" class="form-label">First name</label>
+                            <label for="first_name" class="form-label"><?= $lang['first_name']?></label>
                             <input type="text" class="form-control" id="first_name" required name="first_name"
                                 placeholder="John" autofocus />
                         </div>
                         <div class="mb-3">
-                            <label for="last_name" class="form-label">Last name</label>
+                            <label for="last_name" class="form-label"><?= $lang['last_name']?></label>
                             <input type="text" class="form-control" id="last_name" required name="last_name"
                                 placeholder="Doe" autofocus />
                         </div>
                         <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
+                            <label for="username" class="form-label"><?= $lang['username']?></label>
                             <input type="text" class="form-control" id="username" required name="username"
                                 placeholder="johndoe" autofocus />
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label"><?= $lang['email']?></label>
                             <input type="email" class="form-control" id="email" required name="email"
                                 placeholder="Enter your email" />
                         </div>
                         <div class="mb-3 form-password-toggle">
-                            <label class="form-label" for="password">Password</label>
+                            <label class="form-label" for="password"><?= $lang['password']?></label>
                             <div class="input-group input-group-merge">
                                 <input type="password" id="password" required class="form-control" name="password"
                                     placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
@@ -329,10 +332,9 @@ try {
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" />
                                 <label class="form-check-label" for="terms-conditions">
-                                    I agree to the <a type="button" class="text-primary" data-bs-toggle="modal"
-                                        data-bs-target="#tos">terms of service</a> &amp; <a type="button"
-                                        class="text-primary" data-bs-toggle="modal" data-bs-target="#pp">privacy
-                                        policy</a>
+                                   <?= $lang['terms_agree']?> <a type="button" class="text-primary" data-bs-toggle="modal"
+                                        data-bs-target="#tos"><?= $lang['terms_of_service']?></a> &amp; <a type="button"
+                                        class="text-primary" data-bs-toggle="modal" data-bs-target="#pp"><?= $lang['privacy_policy']?></a>
                                 </label>
                             </div>
                         </div>
@@ -348,8 +350,7 @@ try {
                         }
                         ?>
                         <?= $csrf->input('register-form'); ?>
-                        <button type="submit" value="true" name="sign_up" class="btn btn-primary d-grid w-100">Sign
-                            up</button>
+                        <button type="submit" value="true" name="sign_up" class="btn btn-primary d-grid w-100"><?= $lang['register']?></button>
                     </form>
                     <?php
                     if (isset($_GET['e'])) {
@@ -363,9 +364,9 @@ try {
                     }
                     ?>
                     <p class="text-center">
-                        <span>Already have an account?</span>
+                        <span><?= $lang['register_have_an_account'] ?></span>
                         <a href="/auth/login">
-                            <span>Sign in instead</span>
+                            <span><?= $lang['login']?></span>
                         </a>
                     </p>
                 </div>
@@ -377,16 +378,15 @@ try {
                     <div class="modal-body">
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         <div class="text-center mb-4">
-                            <h3 class="mb-2">Terms of service</h3>
+                            <h3 class="mb-2"><?= $lang['terms_of_service']?></h3>
                             <p>
                                 <?= SettingsManager::getSetting("terms_of_service") ?>
                         </div>
                         <div class="col-12 text-center">
                             <button type="button" data-bs-toggle="modal" data-bs-target="#pp"
-                                class="btn btn-primary me-sm-3 me-1">Privacy
-                                Policy</button>
+                                class="btn btn-primary me-sm-3 me-1"><?= $lang['privacy_policy']?></button>
                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                aria-label="Close">Close </button>
+                                aria-label="Close"><?= $lang['close']?> </button>
                         </div>
                     </div>
                 </div>
@@ -398,15 +398,15 @@ try {
                     <div class="modal-body">
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         <div class="text-center mb-4">
-                            <h3 class="mb-2">Privacy Policy</h3>
+                            <h3 class="mb-2"><?= $lang['privacy_policy']?></h3>
                             <p>
                                 <?= SettingsManager::getSetting("privacy_policy") ?>
                         </div>
                         <div class="col-12 text-center">
                             <button type="button" data-bs-toggle="modal" data-bs-target="#tos" name="id" value=""
-                                class="btn btn-primary me-sm-3 me-1">Terms of Service</button>
+                                class="btn btn-primary me-sm-3 me-1"><?= $lang['terms_of_service']?></button>
                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                aria-label="Close">Close </button>
+                                aria-label="Close"><?= $lang['close']?> </button>
                         </div>
                     </div>
                 </div>

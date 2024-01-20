@@ -20,7 +20,7 @@ include(__DIR__ . '/requirements/page.php');
 </head>
 
 <body>
-<?php
+  <?php
   if (SettingsManager::getSetting("show_snow") == "true") {
     include(__DIR__ . '/components/snow.php');
   }
@@ -36,7 +36,7 @@ include(__DIR__ . '/requirements/page.php');
         <?php include(__DIR__ . '/components/navbar.php') ?>
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
-            <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Dashboard /</span> Blank</h4>
+            <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><?= $lang['dashboard']?> /</span> Blank</h4>
             <?php include(__DIR__ . '/components/alert.php') ?>
             <div id="ads">
               <?php

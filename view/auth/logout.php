@@ -12,7 +12,7 @@ try {
     }
     header('location: /auth/login');
 } catch (Exception $e) {
-    header("location: /auth/login?e=An unexpected error occurred!");
+    header("location: /auth/login?e=".$lang['login_erorr_unknown']);
     ErrorHandler::Error("Logout ", $e);
     die();
 }

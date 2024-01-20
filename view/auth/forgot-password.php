@@ -13,7 +13,7 @@ try {
     $session = new SessionManager();
     $csrf = new MythicalDash\CSRF();
     if (SettingsManager::getSetting("enable_smtp") == "false") {
-        header('location: /auth/login?e=We are sorry but this host dose not have a SMTP server setup');
+        header('location: /auth/login?e='.$lang['login_mail_server_not_setup']);
         die();
     }
     session_start();
@@ -225,26 +225,26 @@ try {
                             }
                         } catch (Exception $e) {
                             ErrorHandler::Critical("Failed to update settings ", $e);
-                            $error_message = "Email sending failed. Please try again later.";
+                            $error_message = $lang['login_erorr_unknown'];
                             header("location: /auth/forgot-password?error=" . urlencode($error_message));
                             die();
                         }
                     }
                 } else {
-                    header('location: /auth/forgot-password?e=Looks like the host that you are using dose not have a smtp server setup please contact support');
+                    header('location: /auth/forgot-password?e='.$lang['login_mail_server_not_setup']);
                     die();
                 }
             } else {
-                header('location: /auth/forgot-password?e=CSRF Verification Failed');
+                header('location: /auth/forgot-password?e='.$lang['csrf_failed']);
                 die();
             }
         } else {
-            header("location: /auth/forgot-password?e=The request you sen't dose not exist");
+            header("location: /auth/forgot-password?e=".$lang['login_erorr_unknown']);
             die();
         }
     }
 } catch (Exception $e) {
-    header("location: /auth/forgot-password?e=An unexpected error occurred!");
+    header("location: /auth/forgot-password?e=".$lang['login_erorr_unknown']);
     ErrorHandler::Error("Forgot-Password ", $e);
     die();
 }
@@ -259,7 +259,7 @@ try {
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-auth.css" />
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Forgot Password
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['forgot_passowrd']?>
     </title>
 </head>
 
@@ -289,8 +289,8 @@ try {
             </div>
             <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4">
                 <div class="w-px-400 mx-auto">
-                    <h3 class="mb-1 fw-bold">Forgot Password? 🔒</h3>
-                    <p class="mb-4">Enter your email and we'll send you instructions to reset your password</p>
+                    <h3 class="mb-1 fw-bold"><?= $lang['forgot_passowrd']?>? 🔒</h3>
+                    <p class="mb-4"><?= $lang['forgot_password_info'] ?></p>
                     <?php
                     if (isset($_GET['e'])) {
                         ?>
@@ -315,18 +315,17 @@ try {
                     ?>
                     <form class="mb-3" method="POST">
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label"><?= $lang['email'] ?></label>
                             <input type="email" class="form-control" id="email" name="email"
                                 placeholder="Enter your email" autofocus />
                         </div>
                         <?= $csrf->input('forgot-password-form'); ?>
-                        <button name="reset_password" value="true" class="btn btn-primary d-grid w-100">Send Reset
-                            Link</button>
+                        <button name="reset_password" value="true" class="btn btn-primary d-grid w-100"><?= $lang['send'] ?></button>
                     </form>
                     <div class="text-center">
                         <a href="/auth/login" class="d-flex align-items-center justify-content-center">
                             <i class="ti ti-chevron-left scaleX-n1-rtl"></i>
-                            Back to login
+                            <?= $lang['back_to_login']?>
                         </a>
                     </div>
 

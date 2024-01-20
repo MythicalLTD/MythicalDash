@@ -25,11 +25,11 @@ if (isset($_GET["buycpu"])) {
         $newcpu = $usr_cpu + "100";
         $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn, $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
         $conn->query("UPDATE `mythicaldash_users` SET `cpu` = '" . mysqli_real_escape_string($conn, $newcpu) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        header("location: /store?s=Thank you for your purchase. We updated your resources!");
+        header("location: /store?s=" . $lang['store_thanks_for_buying']);
         $conn->close();
         die();
     } else {
-        header("location: /store?e=You need more coins to buy this!");
+        header("location: /store?e=" . $lang['store_need_more_coins']);
         die();
     }
 }
@@ -40,11 +40,11 @@ if (isset($_GET["buyram"])) {
         $newram = $usr_ram + "1024";
         $conn->query("UPDATE `mythicaldash_users` SET `ram` = '" . mysqli_real_escape_string($conn, $newram) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
         $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn, $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        header("location: /store?s=Thank you for your purchase. We updated your resources!");
+        header("location: /store?s=" . $lang['store_thanks_for_buying']);
         $conn->close();
         die();
     } else {
-        header("location: /store?e=You need more coins to buy this!");
+        header("location: /store?e=" . $lang['store_need_more_coins']);
         die();
     }
 }
@@ -54,12 +54,12 @@ if (isset($_GET["buydisk"])) {
         $newcoins = $usr_coins - $diskprice;
         $newdisk = $usr_disk + "1024";
         $conn->query("UPDATE `mythicaldash_users` SET `disk` = '" . mysqli_real_escape_string($conn, $newdisk) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn , $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        header("location: /store?s=Thank you for your purchase. We updated your resources!");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn, $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        header("location: /store?s=" . $lang['store_thanks_for_buying']);
         $conn->close();
         die();
     } else {
-        header("location: /store?e=You need more coins to buy this!");
+        header("location: /store?e=" . $lang['store_need_more_coins']);
         die();
     }
 }
@@ -68,13 +68,13 @@ if (isset($_GET["buysv"])) {
     if ($usr_coins >= $svprice) {
         $newcoins = $usr_coins - $svprice;
         $newsv = $usr_svlimit + "1";
-        $conn->query("UPDATE `mythicaldash_users` SET `server_limit` = '" . mysqli_real_escape_string($conn ,$newsv) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn , $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        header("location: /store?s=Thank you for your purchase. We updated your resources!");
+        $conn->query("UPDATE `mythicaldash_users` SET `server_limit` = '" . mysqli_real_escape_string($conn, $newsv) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn, $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        header("location: /store?s=" . $lang['store_thanks_for_buying']);
         $conn->close();
         die();
     } else {
-        header("location: /store?e=You need more coins to buy this!");
+        header("location: /store?e=" . $lang['store_need_more_coins']);
         die();
     }
 }
@@ -83,13 +83,13 @@ if (isset($_GET["buyport"])) {
     if ($usr_coins >= $portsprice) {
         $newcoins = $usr_coins - $portsprice;
         $newport = $usr_ports + "1";
-        $conn->query("UPDATE `mythicaldash_users` SET `ports` = '" . mysqli_real_escape_string($conn ,$newport) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn , $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        header("location: /store?s=Thank you for your purchase. We updated your resources!");
+        $conn->query("UPDATE `mythicaldash_users` SET `ports` = '" . mysqli_real_escape_string($conn, $newport) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn, $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        header("location: /store?s=" . $lang['store_thanks_for_buying']);
         $conn->close();
         die();
     } else {
-        header("location: /store?e=You need more coins to buy this!");
+        header("location: /store?e=" . $lang['store_need_more_coins']);
         die();
     }
 }
@@ -100,12 +100,12 @@ if (isset($_GET['buydata'])) {
         $newcoins = $usr_coins - $databaseprice;
         $newdb = $usr_databases + "1";
         $conn->query("UPDATE `mythicaldash_users` SET `databases` = '" . mysqli_real_escape_string($conn, $newdb) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn , $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        header("location: /store?s=Thank you for your purchase. We updated your resources!");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn, $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        header("location: /store?s=" . $lang['store_thanks_for_buying']);
         $conn->close();
         die();
     } else {
-        header("location: /store?e=You need more coins to buy this!");
+        header("location: /store?e=" . $lang['store_need_more_coins']);
         die();
     }
 }
@@ -114,13 +114,13 @@ if (isset($_GET['buyback'])) {
     if ($usr_coins >= $backupprice) {
         $newcoins = $usr_coins - $backupprice;
         $newbk = $usr_backup_limit + "1";
-        $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . mysqli_real_escape_string($conn , $newbk) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn , $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
-        header("location: /store?s=Thank you for your purchase. We updated your resources!");
+        $conn->query("UPDATE `mythicaldash_users` SET `backups` = '" . mysqli_real_escape_string($conn, $newbk) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn, $newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "';");
+        header("location: /store?s=" . $lang['store_thanks_for_buying']);
         $conn->close();
         die();
     } else {
-        header("location: /store?e=You need more coins to buy this!");
+        header("location: /store?e=" . $lang['store_need_more_coins']);
         die();
     }
 }
@@ -137,17 +137,18 @@ if (isset($_GET['buyback'])) {
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <?php include(__DIR__ . '/requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Store
+        <?= SettingsManager::getSetting("name") ?> -
+        <?= $lang['store'] ?>
     </title>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
 
 <body>
-<?php
-  if (SettingsManager::getSetting("show_snow") == "true") {
-    include(__DIR__ . '/components/snow.php');
-  }
-  ?>
+    <?php
+    if (SettingsManager::getSetting("show_snow") == "true") {
+        include(__DIR__ . '/components/snow.php');
+    }
+    ?>
     <div id="preloader" class="discord-preloader">
         <div class="spinner"></div>
     </div>
@@ -158,7 +159,11 @@ if (isset($_GET['buyback'])) {
                 <?php include(__DIR__ . '/components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Dashboard /</span> Store</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">
+                                <?= $lang['dashboard'] ?> /
+                            </span>
+                            <?= $lang['store'] ?>
+                        </h4>
                         <?php include(__DIR__ . '/components/alert.php') ?>
                         <div id="ads">
                             <?php
@@ -175,8 +180,9 @@ if (isset($_GET['buyback'])) {
                         if (SettingsManager::getSetting("enable_stripe") == "true") {
                             ?>
                             <div class="alert alert-warning" role="alert">
-                                You don't have enough coins. <a href="/store/buy/stripe/coins">Would you like to buy more
-                                    coins?</a>
+                                <?= $lang['store_not_have_enough_coins'] ?> <a href="/store/buy/stripe/coins">
+                                    <?= $lang['store_wana_buy_coins'] ?>
+                                </a>
                             </div>
                             <?php
                         }
@@ -188,16 +194,20 @@ if (isset($_GET['buyback'])) {
                                         alt="Card image cap" style="width: 200px;">
                                     <center>
                                         <div class="card-body">
-                                            <h5 class="card-title">Cpu</h5>
+                                            <h5 class="card-title">
+                                                <?= $lang['cpu'] ?>
+                                            </h5>
                                             <small class="text-muted">
-                                                <code><?= $cpuprice ?> Coins</code>
+                                                <code><?= $cpuprice ?> <?= $lang['coins'] ?></code>
                                             </small>
                                             <p class="card-text">
-                                                For every
-                                                <?= $cpuprice ?> coins you get 1 CPU core to use on your
-                                                server.
+                                                <?=
+                                                    str_replace(array('%placeholder_1%', '%placeholder_2%', '%placeholder_3%'), array($cpuprice, $lang['coins'], $lang['cpu']), $lang['store_for_every']);
+                                                ?>
                                             </p>
-                                            <a href="/store?buycpu" class="btn btn-outline-primary waves-effect">Buy</a>
+                                            <a href="/store?buycpu" class="btn btn-outline-primary waves-effect">
+                                                <?= $lang['store_buy'] ?>
+                                            </a>
                                         </div>
                                     </center>
                                 </div>
@@ -208,16 +218,20 @@ if (isset($_GET['buyback'])) {
                                         alt="Card image cap" style="width: 200px;">
                                     <center>
                                         <div class="card-body">
-                                            <h5 class="card-title">Ram</h5>
+                                            <h5 class="card-title">
+                                                <?= $lang['ram'] ?>
+                                            </h5>
                                             <small class="text-muted">
-                                                <code><?= $ramprice ?> Coins</code>
+                                                <code><?= $ramprice ?> <?= $lang['coins'] ?></code>
                                             </small>
                                             <p class="card-text">
-                                                For every
-                                                <?= $ramprice ?>
-                                                coins you get 1GB ram to use on your server.
+                                                <?=
+                                                    str_replace(array('%placeholder_1%', '%placeholder_2%', '%placeholder_3%'), array($ramprice, $lang['coins'], $lang['ram']), $lang['store_for_every_gb']);
+                                                ?>
                                             </p>
-                                            <a href="/store?buyram" class="btn btn-outline-primary waves-effect">Buy</a>
+                                            <a href="/store?buyram" class="btn btn-outline-primary waves-effect">
+                                                <?= $lang['store_buy'] ?>
+                                            </a>
                                         </div>
                                     </center>
                                 </div>
@@ -228,17 +242,20 @@ if (isset($_GET['buyback'])) {
                                         alt="Card image cap" style="width: 200px;">
                                     <center>
                                         <div class="card-body">
-                                            <h5 class="card-title">Disk</h5>
+                                            <h5 class="card-title">
+                                                <?= $lang['disk'] ?>
+                                            </h5>
                                             <small class="text-muted">
-                                                <code><?= $diskprice ?> Coins</code>
+                                                <code><?= $diskprice ?> <?= $lang['coins'] ?></code>
                                             </small>
                                             <p class="card-text">
-                                                For every
-                                                <?= $diskprice ?> coins you get 1GB disk to use on
-                                                your server.
+                                                <?=
+                                                    str_replace(array('%placeholder_1%', '%placeholder_2%', '%placeholder_3%'), array($diskprice, $lang['coins'], $lang['disk']), $lang['store_for_every_gb']);
+                                                ?>
                                             </p>
-                                            <a href="/store?buydisk"
-                                                class="btn btn-outline-primary waves-effect">Buy</a>
+                                            <a href="/store?buydisk" class="btn btn-outline-primary waves-effect">
+                                                <?= $lang['store_buy'] ?>
+                                            </a>
                                         </div>
                                     </center>
                                 </div>
@@ -250,16 +267,20 @@ if (isset($_GET['buyback'])) {
                                         alt="Card image cap" style="width: 200px;">
                                     <center>
                                         <div class="card-body">
-                                            <h5 class="card-title">Server Slot</h5>
+                                            <h5 class="card-title">
+                                                <?= $lang['server_slot'] ?>
+                                            </h5>
                                             <small class="text-muted">
-                                                <code><?= $svprice ?> Coins</code>
+                                                <code><?= $svprice ?> <?= $lang['coins'] ?></code>
                                             </small>
                                             <p class="card-text">
-                                                For every
-                                                <?= $svprice ?> coins you get 1 server slot to
-                                                deploy your server.
+                                                <?=
+                                                    str_replace(array('%placeholder_1%', '%placeholder_2%', '%placeholder_3%'), array($svprice, $lang['coins'], $lang['server_slot']), $lang['store_for_every']);
+                                                ?>
                                             </p>
-                                            <a href="/store?buysv" class="btn btn-outline-primary waves-effect">Buy</a>
+                                            <a href="/store?buysv" class="btn btn-outline-primary waves-effect">
+                                                <?= $lang['store_buy'] ?>
+                                            </a>
                                         </div>
                                     </center>
                                 </div>
@@ -270,17 +291,20 @@ if (isset($_GET['buyback'])) {
                                         alt="Card image cap" style="width: 200px;">
                                     <center>
                                         <div class="card-body">
-                                            <h5 class="card-title">Server Backup</h5>
+                                            <h5 class="card-title">
+                                                <?= $lang['backup_slot'] ?>
+                                            </h5>
                                             <small class="text-muted">
-                                                <code><?= $backupprice ?> Coins</code>
+                                                <code><?= $backupprice ?> <?= $lang['coins'] ?></code>
                                             </small>
                                             <p class="card-text">
-                                                For every
-                                                <?= $backupprice ?> coins you get 1 backup slot to backup
-                                                your server.
+                                                <?=
+                                                    str_replace(array('%placeholder_1%', '%placeholder_2%', '%placeholder_3%'), array($backupprice, $lang['coins'], $lang['backup_slot']), $lang['store_for_every']);
+                                                ?>
                                             </p>
-                                            <a href="/store?buyback"
-                                                class="btn btn-outline-primary waves-effect">Buy</a>
+                                            <a href="/store?buyback" class="btn btn-outline-primary waves-effect">
+                                                <?= $lang['store_buy'] ?>
+                                            </a>
                                         </div>
                                     </center>
                                 </div>
@@ -291,17 +315,20 @@ if (isset($_GET['buyback'])) {
                                         alt="Card image cap" style="width: 200px;">
                                     <center>
                                         <div class="card-body">
-                                            <h5 class="card-title">Server Allocation</h5>
+                                            <h5 class="card-title">
+                                                <?= $lang['server_allocation'] ?>
+                                            </h5>
                                             <small class="text-muted">
-                                                <code><?= $portsprice ?> Coins</code>
+                                                <code><?= $portsprice ?> <?= $lang['coins'] ?></code>
                                             </small>
                                             <p class="card-text">
-                                                For every
-                                                <?= $portsprice ?> coins you get 1 extra port to use
-                                                on your server.
+                                                <?=
+                                                    str_replace(array('%placeholder_1%', '%placeholder_2%', '%placeholder_3%'), array($portsprice, $lang['coins'], $lang['server_allocation']), $lang['store_for_every']);
+                                                ?>
                                             </p>
-                                            <a href="/store?buyport"
-                                                class="btn btn-outline-primary waves-effect">Buy</a>
+                                            <a href="/store?buyport" class="btn btn-outline-primary waves-effect">
+                                                <?= $lang['store_buy'] ?>
+                                            </a>
                                         </div>
                                     </center>
                                 </div>
@@ -312,17 +339,20 @@ if (isset($_GET['buyback'])) {
                                         alt="Card image cap" style="width: 200px;">
                                     <center>
                                         <div class="card-body">
-                                            <h5 class="card-title">Server Database</h5>
+                                            <h5 class="card-title">
+                                                <?= $lang['mysql'] ?>
+                                            </h5>
                                             <small class="text-muted">
-                                                <code><?= $databaseprice ?> Coins</code>
+                                                <code><?= $databaseprice ?> <?= $lang['coins'] ?></code>
                                             </small>
                                             <p class="card-text">
-                                                For every
-                                                <?= $databaseprice ?> coins you get 1 database to use on
-                                                your server.
+                                                <?=
+                                                    str_replace(array('%placeholder_1%', '%placeholder_2%', '%placeholder_3%'), array($databaseprice, $lang['coins'], $lang['mysql']), $lang['store_for_every']);
+                                                ?>
                                             </p>
-                                            <a href="/store?buydata"
-                                                class="btn btn-outline-primary waves-effect">Buy</a>
+                                            <a href="/store?buydata" class="btn btn-outline-primary waves-effect">
+                                                <?= $lang['store_buy'] ?>
+                                            </a>
                                         </div>
                                     </center>
                                 </div>
