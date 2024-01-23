@@ -225,7 +225,7 @@ try {
                             }
                         } catch (Exception $e) {
                             ErrorHandler::Critical("Failed to update settings ", $e);
-                            $error_message = $lang['login_erorr_unknown'];
+                            $error_message = $lang['login_error_unknown'];
                             header("location: /auth/forgot-password?error=" . urlencode($error_message));
                             die();
                         }
@@ -239,12 +239,12 @@ try {
                 die();
             }
         } else {
-            header("location: /auth/forgot-password?e=".$lang['login_erorr_unknown']);
+            header("location: /auth/forgot-password?e=".$lang['login_error_unknown']);
             die();
         }
     }
 } catch (Exception $e) {
-    header("location: /auth/forgot-password?e=".$lang['login_erorr_unknown']);
+    header("location: /auth/forgot-password?e=".$lang['login_error_unknown']);
     ErrorHandler::Error("Forgot-Password ", $e);
     die();
 }
@@ -259,7 +259,7 @@ try {
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-auth.css" />
     <title>
-        <?= SettingsManager::getSetting("name") ?> - <?= $lang['forgot_passowrd']?>
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['forgot_password']?>
     </title>
 </head>
 
@@ -289,7 +289,7 @@ try {
             </div>
             <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4">
                 <div class="w-px-400 mx-auto">
-                    <h3 class="mb-1 fw-bold"><?= $lang['forgot_passowrd']?>? 🔒</h3>
+                    <h3 class="mb-1 fw-bold"><?= $lang['forgot_password']?>? 🔒</h3>
                     <p class="mb-4"><?= $lang['forgot_password_info'] ?></p>
                     <?php
                     if (isset($_GET['e'])) {

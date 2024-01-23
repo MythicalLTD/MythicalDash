@@ -13,7 +13,7 @@ http_response_code(401);
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <title>
-    <?= SettingsManager::getSetting("name") ?> - Not Authorized
+    <?= SettingsManager::getSetting("name") ?> - <?= $lang['401_title']?>
   </title>
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-misc.css" />
@@ -30,12 +30,11 @@ http_response_code(401);
   </div>
   <div class="container-xxl container-p-y">
     <div class="misc-wrapper">
-      <h2 class="mb-1 mx-2">You are not authorized!</h2>
+      <h2 class="mb-1 mx-2"><?= $lang['401_subtitle']?></h2>
       <p class="mb-4 mx-2">
-        You do not have permission to view this page using the credentials that you have provided while login. <br />
-        Please contact your site administrator.
+        <?= $lang['401_description']?>
       </p>
-      <a href="/" class="btn btn-primary mb-4">Back to home</a>
+      <a href="/dashboard" class="btn btn-primary mb-4"><?= $lang['home']?></a>
       <div class="mt-4">
         <img src="<?= $appURL ?>/assets/img/illustrations/page-misc-you-are-not-authorized.png"
           alt="page-misc-not-authorized" width="170" class="img-fluid" />

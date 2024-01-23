@@ -25,5 +25,22 @@ class Connect{
 
         return $conn;
     }
+
+    public static function getUserInfo(string $userToken, string $info) {
+        $connclass = new Connect();
+        $conn = $connclass->connectToDatabase();
+        $session_id = mysqli_real_escape_string($conn, $userToken);
+        $safeInfo = $conn->real_escape_string($info);
+        $query = "SELECT `$safeInfo` FROM mythicaldash_users WHERE api_key='$session_id' LIMIT 1";
+        $result = $conn->query($query);
+
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row[$info];
+        } else {
+            return null;
+        }
+
+    }
 }
 ?>

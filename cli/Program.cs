@@ -254,6 +254,11 @@ namespace MythicalDash
                 sh.DisableTurnstile();
                 Environment.Exit(0x0);
             }
+            else if (args.Contains("-environment:lang"))
+            {
+                sh.SetEnglish();
+                Environment.Exit(0x0);
+            }
             else if (args.Contains("-help"))
             {
                 Console.Clear();
@@ -266,6 +271,7 @@ namespace MythicalDash
                 Console.WriteLine("‖    -environment:down          ‖ Enter maintenance mode.                                                                ‖");
                 Console.WriteLine("‖    -environment:up            ‖ Exit maintenance mode.                                                                 ‖");
                 Console.WriteLine("‖    -environment:setup         ‖ This is a command to help you setup your dashboard!                                    ‖");
+                Console.WriteLine("‖    -environment:lang          ‖ Resets the dashboard language to en_US                                                 ‖");
                 Console.WriteLine("‖    -turnstile:disable         ‖ Stops turnstile from running!                                                          ‖");
                 Console.WriteLine("‖    -vpn:disable               ‖ Stops anti vpn from running!                                                           ‖");
                 Console.WriteLine("‖    -key:generate              ‖ Generate a new encryption key for MythicalDash.                                        ‖");

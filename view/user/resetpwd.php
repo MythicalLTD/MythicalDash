@@ -43,16 +43,16 @@ if (isset($_COOKIE['token']) && !$_COOKIE['token'] == "") {
 
         if ($http_code == 200) {
             $api_response = json_decode($response, true);
-            header('location: /user/edit?s=We updated the user settings in the database');
+            header('location: /user/edit?s='.$lang['updated_user_info_in_db']);
             curl_close($ch);
             die();
         } else {
-            header("location: /user/edit?e=Failed to update the user settings inside the panel");
+            header("location: /user/edit?e=".$lang['pterodactyl_failed_to_update_info']);
             curl_close($ch);
             die();
         }
     } else {
-        header('location: /user/edit?e=Can`t find this user in the database');
+        header('location: /user/edit?e='.$lang['error_not_found_in_database']);
         die();
     }
 } else {

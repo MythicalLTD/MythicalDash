@@ -15,7 +15,7 @@ if (isset($_GET['unlink_discord'])) {
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Edit
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['connections']?>
     </title>
 </head>
 
@@ -35,7 +35,7 @@ if (isset($_GET['unlink_discord'])) {
                 <?php include(__DIR__ . '/../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users /</span> Connections</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><?= $lang['users']?> /</span> <?= $lang['connections']?></h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
@@ -53,23 +53,23 @@ if (isset($_GET['unlink_discord'])) {
                                 <ul class="nav nav-pills flex-column flex-md-row mb-4">
                                     <li class="nav-item">
                                         <a href="/user/edit" class="nav-link"><i class="ti-xs ti ti-users me-1"></i>
-                                            Account</a>
+                                            <?= $lang['account']?></a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link active" href="/user/connections"><i
-                                                class="ti-xs ti ti-link me-1"></i> Connections</a>
+                                                class="ti-xs ti ti-link me-1"></i> <?= $lang['connections']?></a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="/user/payments"><i
-                                                class="ti-xs ti ti-currency-euro me-1"></i> Payments</a>
+                                                class="ti-xs ti ti-currency-euro me-1"></i> <?= $lang['payments']?></a>
                                     </li>
                                 </ul>
 
                                 <div class="col-md-6 col-12">
                                     <div class="card">
-                                        <h5 class="card-header pb-1">Linked Accounts</h5>
+                                        <h5 class="card-header pb-1"><?= $lang['linked_accounts']?></h5>
                                         <div class="card-body">
-                                            <p>Here you can link your accounts for easy login</p>
+                                            <p><?= $lang['linked_accounts_2']?></p>
                                             <div class="d-flex mb-3">
                                                 <div class="flex-shrink-0">
                                                     <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png"
@@ -88,12 +88,12 @@ if (isset($_GET['unlink_discord'])) {
                                                                 <?php
                                                             } else {
                                                                 ?>
-                                                                <small class="text-muted">Not Connected</small>
+                                                                <small class="text-muted"><?= $lang['linked_accounts_not_connected']?></small>
                                                                 <?php
                                                             }
                                                         } else {
                                                             ?>
-                                                            <small class="text-muted">Disabled by host</small>
+                                                            <small class="text-muted"><?= $lang['linked_accounts_disabled']?></small>
                                                             <?php
                                                         }
                                                         ?>

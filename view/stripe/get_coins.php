@@ -26,26 +26,26 @@ try {
                     $conn->close();
                     die();
                 } else {
-                    header('location: /user/payments?e=Sorry but you did not pay for this!');
+                    header('location: /user/payments?e='.$lang['you_not_paid_for_this']);
                     $conn->close();
                     die();
                 }
             } else {
-                header('location: /user/payments?e=The user already got his coins!');
+                header('location: /user/payments?e='.$lang['already_claimed']);
                 $conn->close();
                 die();
             }
         } else {
-            header('location: /user/payments?e=We cant find this payment in the database!');
+            header('location: /user/payments?e='.$lang['error_not_found_in_database']);
             $conn->close();
             die();
         }
     } else {
-        header('location: /user/payments?e=What are you doing on this page?');
+        header('location: /user/payments');
         die();
     }
 } catch (Exception $e) {
-    header("location: /user/payments?e=Some unexpected errors occurred!");
+    header("location: /user/payments?e=".$lang['login_error_unknown'].$e->getMessage() .'');
     ErrorHandler::Error("Coins ",$e);
     die();
 }

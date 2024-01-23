@@ -13,12 +13,12 @@ if (isset($_GET['ticketuuid']) && !$_GET['ticketuuid'] == "") {
         header('location: /help-center/tickets');
         die();
     } else {
-        header("location: /help-center/tickets?e=We cannot find this ticket in the database");
+        header("location: /help-center/tickets?e=".$lang['error_not_found_in_database']);
         $conn->close();
         die();
     }
 } else {
-    header("location: /help-center/tickets?e=We cannot find this ticket in the database");
+    header("location: /help-center/tickets?e=".$lang['error_not_found_in_database']);
     die();
 }
 ?>

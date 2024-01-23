@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 "mode" => "payment",
                 'customer_email' => $session->getUserInfo('email'),
                 "success_url" => "" . $appURL . "/store/get/stripe/coins?code=".$mypaymentkey,
-                "cancel_url" => "" . $appURL . "/user/payments?e=We canceled your payment!",
+                "cancel_url" => "" . $appURL . "/user/payments?e=".$lang['payment_request_cancel'],
                 "line_items" => [
                     [
                         "quantity" => 1,
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Buy Coins
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['buy_coins']?>
     </title>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 <?php include(__DIR__ . '/../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Store / Buy / </span> Coins</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><?= $lang['store']?> / </span> <?= $lang['coins']?></h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
@@ -97,25 +97,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             <div class="col-md-12 grid-margin stretch-card">
                                 <div class="card">
                                     <div class="card-header text-center">
-                                        <div class="card-title">Buy Coins Using Stripe</div>
+                                        <div class="card-title"><?= $lang['stripe_title']?></div>
                                     </div>
                                     <div class="card-body text-center">
                                         <form method='GET'>
-                                            <p>Welcome to our billing system. Here you can buy coins, so you can use
-                                                them inside our dashboard</p>
-                                            <p>The prices are "
-                                                <?= number_format(intval(SettingsManager::getSetting('stripe_coin_per_balance')) / 100, 2) ?>
-                                                in
-                                                <?= strtoupper(SettingsManager::getSetting('stripe_currency')) ?> " for
-                                                1
-                                                coin
-                                            </p>
+                                            <?= 
+                                            str_replace(array('%PLACEHOLDER_1%','%PLACEHOLDER_2%'),array(number_format(intval(SettingsManager::getSetting('stripe_coin_per_balance')) / 100, 2), strtoupper(SettingsManager::getSetting('stripe_currency'))), $lang['stripe_subtitle'])
+                                            ?>
                                             <input type="number" class="form-control mb-2" placeholder="50" value="25"
                                                 name="coins">
                                             <br>
                                             <?= $csrf->input('pay-form'); ?>
-                                            <button name="pay" type="subbmit" class="btn btn-primary">Purchase
-                                                Coins</button>
+                                            <button name="pay" type="subbmit" class="btn btn-primary"><?= $lang['store_buy']?> <?= $lang['coins']?></button>
                                         </form>
                                     </div>
                                 </div>

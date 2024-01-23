@@ -2,7 +2,7 @@
 use MythicalDash\SettingsManager;
 include(__DIR__ . '/../requirements/page.php');
 if (SettingsManager::getSetting("linkvertise_enabled") == "false") {
-    header('location: /');
+    header('location: /dashboard');
 }
 if (isset($_GET['key'])) {
     $key = mysqli_real_escape_string($conn, $_GET['key']);
@@ -12,9 +12,9 @@ if (isset($_GET['key'])) {
         $newcoins = $usr_coins + SettingsManager::getSetting("linkvertise_coins");
         $conn->query("UPDATE `mythicaldash_users` SET `coins` = '" . mysqli_real_escape_string($conn,$newcoins) . "' WHERE `mythicaldash_users`.`api_key` = '" . mysqli_real_escape_string($conn, $_COOKIE["token"])."'");
         $conn->query("DELETE FROM mythicaldash_linkvertise WHERE skey='$key'");
-        header('location: /');
+        header('location: /dashboard');
     } else {
-        header('location: /dashboard?e=Error: Key not found.');
+        header('location: /dashboard');
     }
 }
 ?>
@@ -143,10 +143,10 @@ if (isset($_GET['key'])) {
     <div class="flex-container">
         <div class="text-center">
             <h1>
-                <span class="fade-in" id="digit1">Link</span>
-                <span class="fade-in" id="digit2">ready</span>
+                <span class="fade-in" id="digit1"><?= $lang['link']?></span>
+                <span class="fade-in" id="digit2"><?= $lang['ready']?></span>
             </h1>
-            <h3 class="fadeIn">Please click the continue button to continue</h3>
+            <h3 class="fadeIn"><?= $lang['linkvertise']?></h3>
             <?php
             $genid = mt_rand(100000000000000, 999999999999999);
             $linkid = $genid;

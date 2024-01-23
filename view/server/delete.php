@@ -4,7 +4,7 @@ include(__DIR__ . '/../requirements/page.php');
 if (isset($_GET['server'])) {
     $ownsServer = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE pid = '" . mysqli_real_escape_string($conn, $_GET["server"]) . "' AND uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
     if ($ownsServer->num_rows == 0) {
-        header('location: /dashboard?e=Sorry but you don`t own this server');
+        header('location: /dashboard?e='.$lang['server_not_own']);
         $conn->close();
         die();
     }
@@ -21,16 +21,16 @@ if (isset($_GET['server'])) {
     $result = curl_exec($delete_server);
     curl_close($delete_server);
     if (!empty($result)) {
-        header('location: /dashboard?e=There was an error while deleting your server.');
+        header('location: /dashboard?e='.$lang['login_error_unknown']);
         $conn->close();
         die();
     }
     if (mysqli_query($conn, "DELETE FROM mythicaldash_servers WHERE pid = '" . mysqli_real_escape_string($conn, $_GET["server"]) . "'")) {
-        header('location: /dashboard?s=Done we deleted your server!');
+        header('location: /dashboard?s='.$lang['server_deleted']);
         $conn->close();
         die();
     } else {
-        header('location: /dashboard?e=There was an error while deleting your server.');
+        header('location: /dashboard?e='.$lang['login_error_unknown']);
         $conn->close();
         die();
     }

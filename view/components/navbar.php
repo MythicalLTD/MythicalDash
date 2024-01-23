@@ -15,19 +15,11 @@ use MythicalDash\SettingsManager;
       <div class="nav-item navbar-search-wrapper mb-0">
         <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
           <i class="ti ti-search ti-md me-2"></i>
-          <span class="d-none d-md-inline-block text-muted">Search (Ctrl+/)</span>
+          <span class="d-none d-md-inline-block text-muted"><?= $lang['search']?> (Ctrl+/)</span>
         </a>
       </div>
     </div>
     <ul class="navbar-nav flex-row align-items-center ms-auto">
-      <?php if (SettingsManager::getSetting("customcss_enabled") == "false") {
-        ?>
-        <li class="nav-item me-2 me-xl-0">
-          <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">
-            <i class="ti ti-md"></i>
-          </a>
-        </li>
-      <?php } ?>
       <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
         <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
           data-bs-auto-close="outside" aria-expanded="false">
@@ -37,9 +29,9 @@ use MythicalDash\SettingsManager;
         <ul class="dropdown-menu dropdown-menu-end py-0">
           <li class="dropdown-menu-header border-bottom">
             <div class="dropdown-header d-flex align-items-center py-3">
-              <h5 class="text-body mb-0 me-auto">Notification</h5>
+              <h5 class="text-body mb-0 me-auto"><?= $lang['notification']?></h5>
               <a href="javascript:void(0)" class="dropdown-notifications-all text-body" data-bs-toggle="tooltip"
-                data-bs-placement="top" title="Mark all as read"><i class="ti ti-mail-opened fs-4"></i></a>
+                data-bs-placement="top" title=""><i class="ti ti-mail-opened fs-4"></i></a>
             </div>
           </li>
           <li class="dropdown-notifications-list scrollable-container">
@@ -73,7 +65,7 @@ use MythicalDash\SettingsManager;
           <li class="dropdown-menu-footer border-top">
             <a href=""
               class="dropdown-item d-flex justify-content-center text-primary p-2 h-px-40 mb-1 align-items-center">
-              View all notifications
+              <?= $lang['view_all_notification']?>
             </a>
           </li>
         </ul>
@@ -108,7 +100,7 @@ use MythicalDash\SettingsManager;
                     </span>
                   </span>
                   <small class="text-muted">
-                    <?= $session->getUserInfo("coins") ?> coins
+                    <?= $session->getUserInfo("coins") ?> <?= $lang['coins'] ?>
                   </small>
                 </div>
               </div>
@@ -120,13 +112,25 @@ use MythicalDash\SettingsManager;
           <li>
             <a class="dropdown-item" href="/user/profile?id=<?= $session->getUserInfo("id") ?>">
               <i class="ti ti-user-check me-2 ti-sm"></i>
-              <span class="align-middle">Profile</span>
+              <span class="align-middle"><?= $lang['profile']?></span>
             </a>
           </li>
           <li>
             <a class="dropdown-item" href="/user/edit">
               <i class="ti ti-settings me-2 ti-sm"></i>
-              <span class="align-middle">Settings</span>
+              <span class="align-middle"><?= $lang['account']?></span>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="/user/connections">
+              <i class="ti ti-select me-2 ti-sm"></i>
+              <span class="align-middle"><?= $lang['connections']?></span>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="/user/payments">
+              <i class="ti ti-coin me-2 ti-sm"></i>
+              <span class="align-middle"><?= $lang['payments']?></span>
             </a>
           </li>
           <li>
@@ -135,7 +139,7 @@ use MythicalDash\SettingsManager;
           <li>
             <a class="dropdown-item" href="/help-center/">
               <i class="ti ti-lifebuoy me-2 ti-sm"></i>
-              <span class="align-middle">Help</span>
+              <span class="align-middle"><?= $lang['help_center']?></span>
             </a>
           </li>
           <li>
@@ -144,7 +148,7 @@ use MythicalDash\SettingsManager;
           <li>
             <a class="dropdown-item" href="/auth/logout">
               <i class="ti ti-logout me-2 ti-sm"></i>
-              <span class="align-middle">Log Out</span>
+              <span class="align-middle"><?= $lang['logout']?></span>
             </a>
           </li>
         </ul>
@@ -153,8 +157,8 @@ use MythicalDash\SettingsManager;
     </ul>
   </div>
   <div class="navbar-search-wrapper search-input-wrapper d-none">
-    <input type="text" class="form-control search-input container-xxl border-0" placeholder="Search..."
-      aria-label="Search..." />
+    <input type="text" class="form-control search-input container-xxl border-0" placeholder="<?= $lang['search']?>..."
+      aria-label="<?= $lang['search']?>...." />
     <i class="ti ti-x ti-sm search-toggler cursor-pointer"></i>
   </div>
 </nav>

@@ -9,17 +9,17 @@ $conn = $conn->connectToDatabase();
 $session = new SessionManager();
 $session->authenticateUser();
 if (!$session->getUserInfo('banned') == "") {
-    header('location: /auth/login?e=Sorry but you are banned for using our services');
+    header('location: /auth/login?e='.$lang['login_banned']);
     $conn->close();
     die();
 }
 if (SettingsManager::getSetting("maintenance") == "true") {
-    ErrorHandler::ShowCritical("We are so sorry but our client is down for maintenance.");
+    ErrorHandler::ShowCritical("".$lang['maintenance_description']);
     die();
 }
 Connection::initializeSettings();
 if (!Connection::checkConnection() == true) {
-    ErrorHandler::ShowCritical("We are sorry but our pterodactyl gamepanel is down!");
+    ErrorHandler::ShowCritical($lang['pterodactyl_connection_error']);
     die();
 }
 ?>

@@ -31,7 +31,7 @@ $totalPages = ceil($totalUsers / $usersPerPage);
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Users
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['users']?>
     </title>
     <style>
         .avatar-image {
@@ -60,7 +60,7 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                 <?php include(__DIR__ . '/../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users /</span> List</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><?= $lang['users']?> /</span> <?= $lang['list']?></h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
@@ -76,25 +76,23 @@ $totalPages = ceil($totalUsers / $usersPerPage);
                         <!-- Search Form -->
                         <form class="mt-4">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Search users..."                                         <?php $displaySearchKeyword = str_replace("%", "", $searchKeyword);?>
-
-name="search" value="<?= $displaySearchKeyword  ?>">
-                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                                <input type="text" class="form-control" placeholder="<?= $lang['search']?> <?= $lang['users']?>..." <?php $displaySearchKeyword = str_replace("%", "", $searchKeyword);?>name="search" value="<?= $displaySearchKeyword  ?>">
+                                <button class="btn btn-outline-secondary" type="submit"><?= $lang['search']?></button>
                             </div>
                         </form>
                         <div class="card">
                             <h5 class="card-header">
-                                Users
+                                <?= $lang['users']?>
                             </h5>
                             <div class="table-responsive text-nowrap">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Avatar</th>
-                                            <th>ID</th>
-                                            <th>Username</th>
-                                            <th>Role</th>
-                                            <th>Action</th>
+                                            <th><?= $lang['avatar']?></th>
+                                            <th><?= $lang['table_id']?></th>
+                                            <th><?= $lang['username']?></th>
+                                            <th><?= $lang['leaderboard_role']?></th>
+                                            <th><?= $lang['actions']?></th>
                                         </tr>
                                     </thead>
                                     <tbody class="table-border-bottom-0">
@@ -106,11 +104,11 @@ name="search" value="<?= $displaySearchKeyword  ?>">
                                                 echo "<td>" . $row['id'] . "</td>";
                                                 echo "<td>" . $row['username'] . "</td>";
                                                 echo "<td>" . $row['role'] . "</td>";
-                                                echo "<td><a href=\"/user/profile?id=" . $row['id'] . "\" class=\"btn btn-primary\">Show</a></td>";
+                                                echo "<td><a href=\"/user/profile?id=" . $row['id'] . "\" class=\"btn btn-primary\">".$lang['show']."</a></td>";
                                                 echo "</tr>";
                                             }
                                         } else {
-                                            echo "<tr><td colspan='5'>No users found.</td></tr>";
+                                            echo "<tr><td colspan='5'><center>".$lang['no_data_found_in_this_table']."</center></td></tr>";
                                         }
                                         ?>
                                     </tbody>

@@ -3,15 +3,6 @@ use MythicalDash\SettingsManager;
 
 include(__DIR__ . '/../requirements/page.php');
 
-if (isset($_GET['unlink_discord'])) {
-    $token = mysqli_real_escape_string($conn, $_COOKIE['token']);
-    $unlinkQuery = "UPDATE `mythicaldash_users` SET `discord_linked` = 'false' WHERE `mythicaldash_users`.`api_key` = '$token';";
-    $conn->query($unlinkQuery);
-    
-    $conn->close();
-    header('location: /user/connections');
-}
-
 $paymentsPerPage = 20;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $paymentsPerPage;
@@ -44,7 +35,7 @@ $totalPages = ceil($totalPayments / $paymentsPerPage);
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Payments
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['payments']?>
     </title>
 </head>
 
@@ -64,7 +55,7 @@ $totalPages = ceil($totalPayments / $paymentsPerPage);
                 <?php include(__DIR__ . '/../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users /</span> Payments</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><?= $lang['users']?> /</span> <?= $lang['payments']?></h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
@@ -81,43 +72,43 @@ $totalPages = ceil($totalPayments / $paymentsPerPage);
                                 <ul class="nav nav-pills flex-column flex-md-row mb-4">
                                     <li class="nav-item">
                                         <a href="/user/edit" class="nav-link"><i class="ti-xs ti ti-users me-1"></i>
-                                            Account</a>
+                                            <?= $lang['account']?></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/user/edit" class="nav-link"><i class="ti-xs ti ti-link me-1"></i>
-                                            Connections</a>
+                                        <a href="/user/connections" class="nav-link"><i class="ti-xs ti ti-link me-1"></i>
+                                            <?= $lang['connections']?></a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link active" href="/user/payments"><i
-                                                class="ti-xs ti ti-currency-euro me-1"></i> Payments</a>
+                                                class="ti-xs ti ti-currency-euro me-1"></i> <?= $lang['payments']?></a>
                                     </li>
                                 </ul>
 
                                 <!-- Search Form -->
                                 <form class="mt-4">
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Search users..."
+                                        <input type="text" class="form-control" placeholder="<?= $lang['search']?> <?= $lang['payments']?>..."
                                         <?php $displaySearchKeyword = str_replace("%", "", $searchKeyword);?>
 
                                             name="search" value="<?= $displaySearchKeyword  ?>">
-                                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                                        <button class="btn btn-outline-secondary" type="submit"><?= $lang['search']?></button>
                                     </div>
                                 </form>
                                 <!-- Users List Table -->
                                 <div class="card">
                                     <h5 class="card-header">
-                                        Users
+                                        <?= $lang['payments']?>
                                     </h5>
                                     <div class="table-responsive text-nowrap">
                                         <table class="table">
                                             <thead>
                                                 <tr>
-                                                    <th>ID</th>
-                                                    <th>Code</th>
-                                                    <th>Coins</th>
-                                                    <th>Getaway</th>
-                                                    <th>Status</th>
-                                                    <th>Action</th>
+                                                    <th><?= $lang['table_id']?></th>
+                                                    <th><?= $lang['code']?></th>
+                                                    <th><?= $lang['coins']?></th>
+                                                    <th><?= $lang['getaway']?></th>
+                                                    <th><?= $lang['status']?></th>
+                                                    <th><?= $lang['actions']?></th>
                                                 </tr>
                                             </thead>
                                             <tbody class="table-border-bottom-0">
@@ -131,14 +122,14 @@ $totalPages = ceil($totalPayments / $paymentsPerPage);
                                                         echo '<td>' . $row['getaway'] . '</td>';
                                                         echo '<td>' . $row['status'] . '</td>';
                                                         if ($row['status'] == "paid") {
-                                                            echo '<td><a href="/store/buy/stripe/coins" class="btn btn-primary">Buy Again</a></td>';
+                                                            echo '<td><a href="/store/buy/stripe/coins" class="btn btn-primary">'.$lang['buy_again'].'</a></td>';
                                                         } else {
-                                                            echo '<td><a href="/store/buy/stripe/coins" class="btn btn-primary">Buy Again</a>&nbsp;<a href="/user/payments/cancel/?id=' . $row['code'] . '" class="btn btn-danger">Cancel</a></td>';
+                                                            echo '<td><a href="/store/buy/stripe/coins" class="btn btn-primary">'.$lang['buy_again'].'</a>&nbsp;<a href="/user/payments/cancel/?id=' . $row['code'] . '" class="btn btn-danger">Cancel</a></td>';
                                                         }
                                                         echo '</tr>';
                                                     }
                                                 } else {
-                                                    echo "<tr><td colspan='5'>No payments found.</td></tr>";
+                                                    echo "<tr><td colspan='5'><center>".$lang['no_data_found_in_this_table']."</center></td></tr>";
                                                 }
                                                 ?>
                                             </tbody>

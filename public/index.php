@@ -41,36 +41,20 @@ if (file_exists('FIRST_INSTALL')) {
     $router->route();
 
 } else {
-    //Default routes and static routes 
-    include(__DIR__ . '/../routes/index.php');
-    //Default api routes and static routes 
-    include(__DIR__ . '/../routes/api/index.php');
-    //Default admin routes and static routes 
-    include(__DIR__ . '/../routes/admin/index.php');
-    //Routes for /auth/
-    include(__DIR__ . '/../routes/auth.php');
-    //Routes for /server/
-    include(__DIR__ . '/../routes/server.php');
-    //Routes for /help-center/
-    include(__DIR__ . '/../routes/help-center.php');
-    //Routes for /user/
-    include(__DIR__ . '/../routes/user.php');
-    //Routes for /earn/
-    include(__DIR__ . '/../routes/earn.php');
-    //Routes for /admin/api/
-    include(__DIR__ . '/../routes/admin/api.php');
-    //Routes for /admin/servers/
-    include(__DIR__ . '/../routes/admin/servers.php');
-    //Routes for /admin/settings/
-    include(__DIR__ . '/../routes/admin/settings.php');
-    //Routes for /admin/redeem/
-    include(__DIR__ . '/../routes/admin/redeem.php');
-    //Routes for /admin/users/
-    include(__DIR__ . '/../routes/admin/users.php');
-    //Routes for /admin/eggs/
-    include(__DIR__ . '/../routes/admin/eggs.php');
-    //Routes for /admin/locations/
-    include(__DIR__ . '/../routes/admin/locations.php');
+    $routesViewDirectory = __DIR__ . '/../routes/';
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($routesViewDirectory));
+    $phpViewFiles = new RegexIterator($iterator, '/\.php$/');
+
+    foreach ($phpViewFiles as $phpViewFile) {
+        try {
+            http_response_code(200);
+            include $phpViewFile->getPathname();
+        } catch (Exception $ex) {
+            http_response_code(500);
+            ErrorHandler::ShowCritical('Failed to start app: ' . $ex->getMessage());
+        }
+    }
+
     $addonsManager->processAddonRoutes($router);
 
     $router->add("/(.*)", function () {

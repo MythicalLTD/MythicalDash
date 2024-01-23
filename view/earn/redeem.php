@@ -33,9 +33,11 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
         } else {
             $conn->query("DELETE FROM mythicaldash_redeem WHERE `mythicaldash_redeem`.`code` = '" . mysqli_real_escape_string($conn, $code) . "'");
         }
-        header('location: /earn/redeem?s=We updated your resources!');
+        $conn->close();
+        header('location: /earn/redeem?s='.$lang['store_thanks_for_buying']);
+        die();
     } else {
-        header("location: /earn/redeem?e=We cannot find this code in the database");
+        header("location: /earn/redeem?e=".$lang['error_not_found_in_database']);
         $conn->close();
         die();
     }
@@ -52,7 +54,7 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Redeem
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['redeem']?>
     </title>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
@@ -73,7 +75,7 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
                 <?php include(__DIR__ . '/../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Earn /</span> Redeem</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><?= $lang['earn']?> /</span> <?= $lang['redeem']?></h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
@@ -89,16 +91,16 @@ if (isset($_GET['code']) && !$_GET['code'] == "") {
                             <div class="col-md-12 grid-margin stretch-card">
                                 <div class="card">
                                     <div class="card-header text-center">
-                                        <div class="card-title">Redeem a coupon code</div>
+                                        <div class="card-title"><?= $lang['redeem_title']?></div>
                                     </div>
                                     <div class="card-body text-center">
                                         <form method='GET'>
-                                            <h4>Please enter the coupon code you would like to redeem below!</h4>
+                                            <h4><?= $lang['redeem_subtitle']?></h4>
                                             <input type="text" class="form-control mb-4" placeholder="DO2NMNd02" value="<?php if (isset($_GET['code'])) {
                                                 echo $_GET['code'];
                                             } ?>" name="code">
                                             <br>
-                                            <button name="submit" class="btn btn-primary">Redeem</button>
+                                            <button name="submit" class="btn btn-primary"><?= $lang['redeem']?></button>
                                         </form>
                                     </div>
                                 </div>

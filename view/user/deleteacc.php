@@ -1,7 +1,7 @@
 <?php
 use MythicalDash\SettingsManager;
+use MythicalDash\Main;
 include(__DIR__ . '/../requirements/page.php');
-
 if (isset($_COOKIE['token']) && !$_COOKIE['token'] == "") {
     $user_query = "SELECT * FROM mythicaldash_users WHERE api_key = ?";
     $stmt = mysqli_prepare($conn, $user_query);
@@ -21,7 +21,7 @@ if (isset($_COOKIE['token']) && !$_COOKIE['token'] == "") {
         header('location: /auth/logout');
         die();
     } else {
-        header('location: /user/profile?e=Can`t find this user in the database');
+        header('location: /user/profile?e='.$lang['error_not_found_in_database']);
         die();
     }
 } else {
@@ -32,6 +32,7 @@ if (isset($_COOKIE['token']) && !$_COOKIE['token'] == "") {
 
 function deleteUserFromDb($dbconn, $userkey)
 {
+    $lang = Main::getLang();
     $query = "SELECT * FROM mythicaldash_users WHERE mythicaldash_users.api_key='" . $userkey . "'";
     $result = mysqli_query($dbconn, $query);
     if ($result) {
@@ -41,13 +42,13 @@ function deleteUserFromDb($dbconn, $userkey)
 
             } else {
                 $dbconn->close();
-                header('location: /admin/users?e=Failed to remove from database');
+                header('location: /admin/users?e='.$lang['error_while_drop_database']);
                 die();
             }
         }
     } else {
         $dbconn->close();
-        header('location: /admin/users?e=Database query error');
+        header('location: /admin/users?e='.$lang['login_error_unknown']);
         die();
     }
 }
@@ -76,6 +77,7 @@ function deleteUserFromPterodactyl($panel_url, $user_id, $api_key)
 
 function deleteTickets($dbconn, $userkey)
 {
+    $lang = Main::getLang();
     $query = "SELECT * FROM mythicaldash_tickets WHERE mythicaldash_tickets.ownerkey='" . $userkey . "'";
     $result = mysqli_query($dbconn, $query);
     if ($result) {
@@ -92,30 +94,31 @@ function deleteTickets($dbconn, $userkey)
 
                         } else {
                             $dbconn->close();
-                            header('location: /admin/users?e=Failed to remove from database');
+                            header('location: /admin/users?e='.$lang['error_while_drop_database']);
                             die();
                         }
                     }
                 } else {
                     $dbconn->close();
-                    header('location: /admin/users?e=Database query error');
+                    header('location: /admin/users?e='.$lang['login_error_unknown']);
                     die();
                 }
             } else {
                 $dbconn->close();
-                header('location: /admin/users?e=Failed to remove from database');
+                header('location: /admin/users?e='.$lang['error_while_drop_database']);
                 die();
             }
         }
     } else {
         $dbconn->close();
-        header('location: /admin/users?e=Database query error');
+        header('location: /admin/users?e='.$lang['login_error_unknown']);
         die();
     }
 }
 
 function deleteTicketsMsgs($dbconn, $userkey)
 {
+    $lang = Main::getLang();
     $query = "SELECT * FROM mythicaldash_tickets_messages WHERE mythicaldash_tickets_messages.userkey='" . $userkey . "'";
     $result = mysqli_query($dbconn, $query);
     if ($result) {
@@ -125,19 +128,20 @@ function deleteTicketsMsgs($dbconn, $userkey)
 
             } else {
                 $dbconn->close();
-                header('location: /admin/users?e=Failed to remove from database');
+                header('location: /admin/users?e='.$lang['error_while_drop_database']);
                 die();
             }
         }
     } else {
         $dbconn->close();
-        header('location: /admin/users?e=Database query error');
+        header('location: /admin/users?e='.$lang['login_error_unknown']);
         die();
     }
 }
 
 function deletePasswordsReset($dbconn, $userkey)
 {
+    $lang = Main::getLang();
     $query = "SELECT * FROM mythicaldash_resetpasswords WHERE mythicaldash_resetpasswords.ownerkey='" . $userkey . "'";
     $result = mysqli_query($dbconn, $query);
     if ($result) {
@@ -147,19 +151,20 @@ function deletePasswordsReset($dbconn, $userkey)
 
             } else {
                 $dbconn->close();
-                header('location: /admin/users?e=Failed to remove from database');
+                header('location: /admin/users?e='.$lang['error_while_drop_database']);
                 die();
             }
         }
     } else {
         $dbconn->close();
-        header('location: /admin/users?e=Database query error');
+        header('location: /admin/users?e='.$lang['login_error_unknown']);
         die();
     }
 }
 
 function deleteApiKeys($dbconn, $userkey)
 {
+    $lang = Main::getLang();
     $query = "SELECT * FROM mythicaldash_apikeys WHERE mythicaldash_apikeys.ownerkey='" . $userkey . "'";
     $result = mysqli_query($dbconn, $query);
     if ($result) {
@@ -169,19 +174,20 @@ function deleteApiKeys($dbconn, $userkey)
 
             } else {
                 $dbconn->close();
-                header('location: /admin/users?e=Failed to remove from database');
+                header('location: /admin/users?e='.$lang['error_while_drop_database']);
                 die();
             }
         }
     } else {
         $dbconn->close();
-        header('location: /admin/users?e=Database query error');
+        header('location: /admin/users?e='.$lang['login_error_unknown']);
         die();
     }
 }
 
 function deleteLoginLogs($dbconn, $userkey)
 {
+    $lang = Main::getLang();
     $query = "SELECT * FROM mythicaldash_login_logs WHERE mythicaldash_login_logs.userkey='" . $userkey . "'";
     $result = mysqli_query($dbconn, $query);
     if ($result) {
@@ -191,19 +197,20 @@ function deleteLoginLogs($dbconn, $userkey)
 
             } else {
                 $dbconn->close();
-                header('location: /admin/users?e=Failed to remove from database');
+                header('location: /admin/users?e='.$lang['error_while_drop_database']);
                 die();
             }
         }
     } else {
         $dbconn->close();
-        header('location: /admin/users?e=Database query error');
+        header('location: /admin/users?e='.$lang['login_error_unknown']);
         die();
     }
 }
 
 function deleteUserServersInQueue($dbconn, $userkey, $panel_url, $panel_apikey)
 {
+    $lang = Main::getLang();
     $query = "SELECT * FROM mythicaldash_servers_queue WHERE mythicaldash_servers_queue.ownerid='" . $userkey . "'";
     $result = mysqli_query($dbconn, $query);
     if ($result) {
@@ -213,19 +220,20 @@ function deleteUserServersInQueue($dbconn, $userkey, $panel_url, $panel_apikey)
 
             } else {
                 $dbconn->close();
-                header('location: /admin/users?e=Failed to remove from database');
+                header('location: /admin/users?e='.$lang['error_while_drop_database']);
                 die();
             }
         }
     } else {
         $dbconn->close();
-        header('location: /admin/users?e=Database query error');
+        header('location: /admin/users?e='.$lang['login_error_unknown']);
         die();
     }
 }
 
 function deleteUserServers($dbconn, $userkey, $panel_url, $panel_apikey)
 {
+    $lang = Main::getLang();
     $query = "SELECT * FROM mythicaldash_servers WHERE mythicaldash_servers.uid='" . $userkey . "'";
     $result = mysqli_query($dbconn, $query);
     if ($result) {
@@ -251,14 +259,14 @@ function deleteUserServers($dbconn, $userkey, $panel_url, $panel_apikey)
 
             } else {
                 $dbconn->close();
-                header('location: /admin/users?e=Failed to remove from database');
+                header('location: /admin/users?e='.$lang['error_while_drop_database']);
                 die();
             }
         }
         mysqli_free_result($result);
     } else {
         $dbconn->close();
-        header('location: /admin/users?e=Database query error');
+        header('location: /admin/users?e='.$lang['login_error_unknown']);
         die();
     }
 }

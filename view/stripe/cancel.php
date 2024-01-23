@@ -20,30 +20,30 @@ try {
                 if ($paymentsdb['ownerkey'] == $_COOKIE['token']) {
                     $code = mysqli_real_escape_string($conn, $_GET['id']);
                     $conn->query("UPDATE `mythicaldash_payments` SET `status` = 'paid' WHERE `code` = '".mysqli_real_escape_string($conn,$code)."'");
-                    header('location: /user/payments?s=We canceld the payment code');
+                    header('location: /user/payments?s='.$lang['payment_request_cancel']);
                     $conn->close();
                     die();
                 } else {
-                    header('location: /user/payments?e=This is not your payment code');
+                    header('location: /user/payments?e='.$lang['you_not_paid_for_this']);
                     $conn->close();
                     die();
                 }
             } else {
-                header('location: /user/payments?e=This code is not valid');
+                header('location: /user/payments?e='.$lang['code_not_valid']);
                 $conn->close();
                 die();
             }
         } else {
-            header('location: /user/payments?e=This code is not valid!');
+            header('location: /user/payments?e='.$lang['code_not_valid']);
             $conn->close();
             die();
         }
     } else {
-        header('location: /user/payments?e=This code is not valid!');
+        header('location: /user/payments?e='.$lang['code_not_valid']);
         die();
     }
 } catch (Exception $e) {
-    header("location: /user/payments?e=Some unexpected errors occurred!");
+    header("location: /user/payments?e=".$lang['login_error_unknown'].$e->getMessage() .'');
     ErrorHandler::Error("Coins ",$e);
     die();
 }

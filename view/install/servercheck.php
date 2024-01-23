@@ -166,12 +166,6 @@ if ($phpVersion >= '8.1' && $phpVersion <= '8.3') {
                         </a>
                       </li>
                       <li class="menu-item">
-                        <a href="https://paypal.me/mythicalsystems" class="menu-link" target="_blank">
-                          <i class="menu-icon tf-icons ti ti-brand-paypal"></i>
-                          <div data-i18n="PayPal">PayPal</div>
-                        </a>
-                      </li>
-                      <li class="menu-item">
                         <a href="https://github.com/sponsors/NaysKutzu" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-brand-github"></i>
                           <div data-i18n="Sponsor on Github">Sponsor on Github</div>
@@ -183,11 +177,11 @@ if ($phpVersion >= '8.1' && $phpVersion <= '8.3') {
             <div class="container-xxl flex-grow-1 container-p-y">
               <br>
               <h1 class="text-center">Wrong php version</h1>
-              <p class="text-center">We don't support this php version make sure to install <code>php8.3</code> version to
+              <p class="text-center">We don't support this php version make sure to install <code>php8.2</code> version to
                 run
                 MythicalDash:</p>
-              <div class="alert alert-danger text-center">apt -y install php8.3
-                php8.3-{common,cli,gd,mysql,opcache,soap,mbstring,bcmath,xml,fpm,curl,zip,xmlrpc,imagick,dev,imap,intl} &&
+              <div class="alert alert-danger text-center">apt -y install php8.2
+                php8.2-{common,cli,gd,mysql,opcache,soap,mbstring,bcmath,xml,fpm,curl,zip,xmlrpc,imagick,dev,imap,intl} &&
                 sudo
                 a2enmod php8.1</div>
               <div class="text-center">
@@ -392,12 +386,6 @@ foreach ($requiredExtensions as $ext) {
                           </a>
                         </li>
                         <li class="menu-item">
-                          <a href="https://paypal.me/mythicalsystems" class="menu-link" target="_blank">
-                            <i class="menu-icon tf-icons ti ti-brand-paypal"></i>
-                            <div data-i18n="PayPal">PayPal</div>
-                          </a>
-                        </li>
-                        <li class="menu-item">
                           <a href="https://github.com/sponsors/NaysKutzu" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-brand-github"></i>
                             <div data-i18n="Sponsor on Github">Sponsor on Github</div>
@@ -413,8 +401,8 @@ foreach ($requiredExtensions as $ext) {
                   install all
                   extension by: </p>
                 <div class="alert alert-danger text-center">
-                  apt -y install php8.3
-                  php8.3-{common,cli,gd,mysql,opcache,soap,mbstring,bcmath,xml,fpm,curl,zip,xmlrpc,imagick,dev,imap,intl}
+                  apt -y install php8.2
+                  php8.2-{common,cli,gd,mysql,opcache,soap,mbstring,bcmath,xml,fpm,curl,zip,xmlrpc,imagick,dev,imap,intl}
                 </div>
                 <div class="text-center">
                   <br>
@@ -611,12 +599,6 @@ if (!is_writable(__DIR__)) {
                         <a href="https://github.com/mythicalltd/mythicaldash" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-star"></i>
                           <div data-i18n="Star on Github">Star on Github</div>
-                        </a>
-                      </li>
-                      <li class="menu-item">
-                        <a href="https://paypal.me/mythicalsystems" class="menu-link" target="_blank">
-                          <i class="menu-icon tf-icons ti ti-brand-paypal"></i>
-                          <div data-i18n="PayPal">PayPal</div>
                         </a>
                       </li>
                       <li class="menu-item">
@@ -827,12 +809,6 @@ if (!is_writable(__DIR__)) {
                       <a href="https://github.com/mythicalltd/mythicaldash" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-star"></i>
                         <div data-i18n="Star on Github">Star on Github</div>
-                      </a>
-                    </li>
-                    <li class="menu-item">
-                      <a href="https://paypal.me/mythicalsystems" class="menu-link" target="_blank">
-                        <i class="menu-icon tf-icons ti ti-brand-paypal"></i>
-                        <div data-i18n="PayPal">PayPal</div>
                       </a>
                     </li>
                     <li class="menu-item">

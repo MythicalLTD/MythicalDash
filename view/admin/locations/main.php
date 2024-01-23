@@ -73,7 +73,7 @@ $totalPages = ceil($totalLocations / $locationsPerPage);
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Status</th>
+                                            <th>Host</th>
                                             <th>Location id</th>
                                             <th>Slots</th>
                                             <th>Action</th>
@@ -85,7 +85,7 @@ $totalPages = ceil($totalLocations / $locationsPerPage);
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
                                                 echo "<td>" . $row['name'] . "</td>";
-                                                echo "<td>" . $row['status'] . "</td>";
+                                                echo "<td>" . $row['host'] . "</td>";
                                                 echo "<td>" . $row['locationid'] . "</td>";
                                                 echo "<td>" . $row['slots'] . "</td>";
                                                 echo "<td><!--<a href=\"/admin/locations/edit?id=" . $row['id'] . "\" class=\"btn btn-primary\">Edit</a>-->&nbsp;<a href=\"/admin/locations/delete?id=" . $row['id'] . "\" class=\"btn btn-danger\">Delete</a></td>";

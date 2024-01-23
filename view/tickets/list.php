@@ -31,7 +31,7 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Tickets
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['ticket']?>
     </title>
 </head>
 
@@ -51,8 +51,8 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                 <?php include(__DIR__ . '/../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Help-Center / Tickets /</span>
-                            List</h4>
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><?= $lang['help_center']?> / <?= $lang['ticket']?></span></h4>
+
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
@@ -66,30 +66,29 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                         <!-- Search Form -->
                         <form class="mt-4">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Search tickets..." name="search"
+                                <input type="text" class="form-control" placeholder="<?= $lang['search']?> <?= $lang['ticket']?>..." name="search"
                                 <?php $displaySearchKeyword = str_replace("%", "", $searchKeyword);?>
 
                                     value="<?= $displaySearchKeyword ?>">
-                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                                <button class="btn btn-outline-secondary" type="submit"><?= $lang['search']?></button>
                             </div>
                         </form>
                         <!-- Users List Table -->
                         <div class="card">
                             <h5 class="card-header">
-                                Tickets
+                                <?= $lang['ticket']?>
                                 <button class="btn btn-primary float-end" data-bs-toggle="modal"
-                                    data-bs-target="#createticket">Create New Ticket</button>
+                                    data-bs-target="#createticket"><?= $lang['ticket_new'] ?></button>
                             </h5>
                             <div class="table-responsive text-nowrap">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Subject</th>
-                                            <th>Priority</th>
-                                            <th>Status</th>
-                                            <th>Created</th>
-                                            <th>Action</th>
+                                            <th><?= $lang['table_id']?></th>
+                                            <th><?= $lang['ticket_subject']?></th>
+                                            <th><?= $lang['ticket_priority']?></th>
+                                            <th><?= $lang['ticket_status']?></th>
+                                            <th><?= $lang['actions']?></th>
                                         </tr>
                                     </thead>
                                     <tbody class="table-border-bottom-0">
@@ -101,12 +100,11 @@ $totalPages = ceil($totalTickets / $ticketsPerPage);
                                                 echo "<td>" . $row['subject'] . "</td>";
                                                 echo "<td>" . $row['priority'] . "</td>";
                                                 echo "<td>" . $row['status'] . "</td>";
-                                                echo "<td>" . $row['created'] . "</td>";
                                                 echo "<td><a href=\"/help-center/tickets/view?ticketuuid=" . $row['ticketuuid'] . "\" class=\"btn btn-primary\">Open</a></td>";
                                                 echo "</tr>";
                                             }
                                         } else {
-                                            echo "<tr><br<center><td class='text-center'colspan='5'><br>No tickets found.<br><br>&nbsp;</td></center></tr>";
+                                            echo "<tr><br<center><td class='text-center'colspan='5'><br>".$lang['error_not_found_in_database']."<br><br>&nbsp;</td></center></tr>";
                                         }
                                         ?>
                                     </tbody>

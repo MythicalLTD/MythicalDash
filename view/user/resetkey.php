@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\Encryption;
+
 include(__DIR__ . '/../requirements/page.php');
 
 if (isset($_COOKIE['token']) && !$_COOKIE['token'] == "") {
@@ -17,7 +18,7 @@ if (isset($_COOKIE['token']) && !$_COOKIE['token'] == "") {
         $conn->close();
         header('location: /user/profile?s=We updated the user settings in the database');
     } else {
-        header('location: /user/profile?e=Can`t find this user in the database');
+        header('location: /user/edit?e=' . $lang['error_not_found_in_database']);
         die();
     }
 

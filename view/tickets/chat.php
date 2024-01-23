@@ -1,7 +1,7 @@
 <?php
 use MythicalDash\Encryption;
 use MythicalDash\SettingsManager;
-
+use MythicalDash\Database\Connect;
 include(__DIR__ . '/../requirements/page.php');
 
 if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
@@ -9,7 +9,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
     $stmt = mysqli_prepare($conn, $ticketquery_db);
 
     if (!$stmt) {
-        header("location: /help-center/tickets?e=Sorry, but we cannot talk with the backend at this moment, please try again!");
+        header("location: /help-center/tickets?e=".$lang['login_error_unknown']);
         die();
     }
 
@@ -17,7 +17,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
     mysqli_stmt_execute($stmt);
 
     if (mysqli_stmt_error($stmt)) {
-        header("location: /help-center/tickets?e=Sorry, but we cannot talk with the backend at this moment, please try again!");
+        header("location: /help-center/tickets?e=".$lang['login_error_unknown']);
         mysqli_stmt_close($stmt);
         $conn->close();
         die();
@@ -29,13 +29,13 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
         $ticket_db = mysqli_fetch_assoc($result);
         if ($ticket_db['status'] == "deleted") {
             if ($session->getUserInfo("role") == "User" || $session->getUserInfo("role") == "Support") {
-                header('location: /help-center/tickets?e=We are sorry, but this ticket is archived. You can\'t access it anymore!');
+                header('location: /help-center/tickets?e='.$lang['ticket_deleted']);
                 $conn->close();
                 die();
             }
         }
     } else {
-        header('location: /help-center/tickets?e=We can\'t find this ticket in the database');
+        header("location: /help-center/tickets?e=".$lang['error_not_found_in_database']);
         mysqli_stmt_close($stmt);
         $conn->close();
         die();
@@ -77,7 +77,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
         die();
     }
 } else {
-    header('location: /help-center/tickets?e=We can\'t find this ticket in the database');
+    header("location: /help-center/tickets?e=".$lang['error_not_found_in_database']);
     die();
 }
 ?>
@@ -89,7 +89,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Tickets
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['ticket'] ?>
     </title>
     <link rel="stylesheet" href="../../assets/vendor/css/pages/app-chat.css" />
 </head>
@@ -100,9 +100,9 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
     include(__DIR__ . '/../components/snow.php');
   }
   ?>
-    <div id="preloader" class="discord-preloader">
+    <!--<div id="preloader" class="discord-preloader">
         <div class="spinner"></div>
-    </div>
+    </div>-->
 
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
@@ -111,9 +111,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                 <?php include(__DIR__ . '/../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Help-Center / Tickets
-                                /</span>
-                            View</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><?= $lang['help_center']?> / <?= $lang['ticket']?></span></h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
@@ -131,12 +129,11 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                             <div class="row">
                                 <div class="col-md-12 text-start">
                                     <a class="btn btn-primary"
-                                        href="/help-center/tickets/reopen?ticketuuid=<?= $_GET['ticketuuid'] ?>">Reopen
-                                        ticket</a>
+                                        href="/help-center/tickets/reopen?ticketuuid=<?= $_GET['ticketuuid'] ?>"><?= $lang['reopen_ticket']?></a>
                                     <a href="/help-center/tickets/delete?ticketuuid=<?= $_GET['ticketuuid'] ?>"
-                                        class="btn btn-danger">Delete Ticket</a>
+                                        class="btn btn-danger"><?= $lang['delete_ticket']?></a>
                                     <a class="btn btn-secondary"
-                                        href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true">Export Ticket</a>
+                                        href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true"><?= $lang['export_ticket']?></a>
                                 </div>
                             </div>
                             <?php
@@ -145,11 +142,11 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                 <div class="row">
                                     <div class="col-md-12 text-start">
                                         <button type="button" data-bs-toggle="modal" data-bs-target="#replyticket"
-                                            class="btn btn-primary">Reply</button>
+                                            class="btn btn-primary"><?= $lang['reply_ticket']?></button>
                                         <a href="/help-center/tickets/close?ticketuuid=<?= $_GET['ticketuuid'] ?>"
-                                            class="btn btn-danger">Close Ticket</a>
+                                            class="btn btn-danger"><?= $lang['close_ticket']?></a>
                                         <a class="btn btn-secondary"
-                                            href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true">Export Ticket</a>
+                                            href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true"><?= $lang['export_ticket']?></a>
                                     </div>
                                 </div>
                             <?php
@@ -157,9 +154,9 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                             ?>
                                     <div class="row">
                                         <div class="col-md-12 text-start">
-                                            <a href="/admin/tickets" class="btn btn-danger">Exit</a>
+                                            <a href="/admin/tickets" class="btn btn-danger"><?= $lang['back']?></a>
                                             <a class="btn btn-secondary"
-                                                href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true">Export Ticket</a>
+                                                href="?ticketuuid=<?= $_GET['ticketuuid'] ?>&export=true"><?= $lang['export_ticket']?></a>
                                         </div>
                                     </div>
                             <?php
@@ -187,36 +184,68 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col-md-12 message">
-                                        <p>Hi, and welcome to
-                                            <?= SettingsManager::getSetting("name") ?>.<br>This is an automated message
-                                            from the
-                                            system to inform you that your ticket is now open.<br>Please do not spam any
-                                            staff member by any chance; this will not help you get support, and please
-                                            be respectful and make sure you read our terms of service and our rules.
-                                            <br>If you feel like you need help quickly, make sure to join our community
+                                        <p><?= $lang['ticket_open_msg_1']?>
+                                            <?= SettingsManager::getSetting("name") ?>.<br><?= $lang['ticket_open_msg_2']?>
                                             <a href="<?= SettingsManager::getSetting("discord_invite") ?>">
-                                                here</a><br><br>
+                                            <?= SettingsManager::getSetting("discord_invite") ?></a><br><br>
 
                                         </p>
                                         <hr>
                                         <p>
-                                            Ticket Subject:
+                                            <?= $lang['ticket_subject']?>
                                             <?= $ticket_db['subject'] ?><br>
-                                            Ticket Status:
+                                            <?= $lang['ticket_status']?>
                                             <?= $ticket_db['status'] ?><br>
-                                            Ticket Priority:
+                                            <?= $lang['ticket_priority']?>
                                             <?= $ticket_db['priority'] ?><br>
-                                            Ticket Description:
-                                            <?= $ticket_db['description'] ?><br>
-                                            Ticket Attachment:
-                                            <?= $ticket_db['attachment'] ?><br>
-                                            Ticket Creation Date:
-                                            <?= $ticket_db['created'] ?>
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <br>
+                            <div class="card ticket-reply">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-6 user">
+                                            <div class="d-flex align-items-center">
+                                                <span class="name">
+                                                    <a href="/user/profile?id=<?= Connect::getUserInfo($ticket_db['ownerkey'], "id") ?>"><?= Connect::getUserInfo($ticket_db['ownerkey'], "username") ?></a>
+                                                    <span class="badge bg-<?php if (Connect::getUserInfo($ticket_db['ownerkey'], "role") == "Administrator") {
+                                                        echo 'danger';
+                                                    } else {
+                                                        echo 'success';
+                                                    } ?> requestor-type ms-2">
+                                                        <?= Connect::getUserInfo($ticket_db['ownerkey'], "role") ?>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 text-end date">
+                                            <small>
+                                                <?= $ticket_db['created'] ?>
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-12 message">
+                                            <p>
+                                                <?= $ticket_db['description'] ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    if (!$ticket_db['attachment'] == "") {
+                                        ?>
+                                        <hr>
+                                        <a href="<?= $ticket_db['attachment'] ?>"><small>
+                                                <?= $ticket_db['attachment'] ?>
+                                            </small></a>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
                         <?php
                         $ticket_id = mysqli_real_escape_string($conn, $_GET['ticketuuid']);
                         $query = "SELECT * FROM mythicaldash_tickets_messages WHERE ticketuuid='".mysqli_real_escape_string($conn,$ticket_id)."' ORDER BY created ASC";
@@ -232,7 +261,7 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                         <div class="col-6 user">
                                             <div class="d-flex align-items-center">
                                                 <span class="name">
-                                                    <?= $tickedusdb['username'] ?>
+                                                    <a href="/user/profile?id=<?= Connect::getUserInfo($ticket_db['ownerkey'], "id") ?>"><?= $tickedusdb['username'] ?></a>
                                                     <span class="badge bg-<?php if ($tickedusdb['role'] == "Administrator") {
                                                         echo 'danger';
                                                     } else {
@@ -260,9 +289,9 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                     if (!$row['attachment'] == "") {
                                         ?>
                                         <hr>
-                                        <p><small>
+                                        <a href="<?= $row['attachment'] ?>"><small>
                                                 <?= $row['attachment'] ?>
-                                            </small></p>
+                                            </small></a>
                                         <?php
                                     }
                                     ?>
@@ -284,22 +313,22 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                     <div class="text-center mb-4">
-                                        <h3 class="mb-2">Reply</h3>
-                                        <p class="text-muted">Reply to the user inside the ticket!</p>
+                                        <h3 class="mb-2"><?= $lang['reply_ticket']?></h3>
+                                        <p class="text-muted"><?= $lang['reply_ticket_2']?></p>
                                     </div>
                                     <form method="GET" action="/help-center/tickets/reply" class="row g-3">
                                         <div class="col-12">
-                                            <label class="form-label" for="username">Name</label>
+                                            <label class="form-label" for="username"><?= $lang['username']?></label>
                                             <input type="text" id="username" name="username" class="form-control"
                                                 value="<?= $session->getUserInfo("username") ?>" disabled="" />
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-label" for="message">Message</label>
+                                            <label class="form-label" for="message"><?= $lang['ticket_message']?></label>
                                             <textarea required class="form-control" name="message" id="message" rows="3"
                                                 placeholder="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."></textarea>
                                         </div>
                                         <div class="col-12">
-                                            <label class="form-label" for="attachment">Attachment</label>
+                                            <label class="form-label" for="attachment"><?= $lang['ticket_attachment']?></label>
                                             <input type="text" id="attachment" name="attachment" class="form-control"
                                                 placeholder="https://i.imgur.com/yed5Zfk.gif" />
                                         </div>
@@ -309,10 +338,10 @@ if (isset($_GET['ticketuuid']) && $_GET['ticketuuid'] !== "") {
                                             value="<?= $session->getUserInfo("api_key") ?>">
 
                                         <div class="col-12 text-center">
-                                            <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                            <button type="submit" class="btn btn-primary me-sm-3 me-1"><?= $lang['save']?></button>
                                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
                                                 aria-label="Close">
-                                                Cancel
+                                                <?= $lang['back']?>
                                             </button>
                                         </div>
                                     </form>

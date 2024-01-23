@@ -116,7 +116,7 @@ try {
     }
   }
 } catch (Exception $e) {
-  header("location: /auth/login?e=". $lang['login_erorr_unknown']);
+  header("location: /auth/login?e=". $lang['login_error_unknown']."<br><code>".$e->getMessage()."</code>");
   die();
 }
 ?>
@@ -173,7 +173,7 @@ try {
           ?>
           <form method="POST">
             <div class="mb-3">
-              <label for="email" class="form-label"><?= $lang['email'] ?></label>
+              <label for="email" class="form-label"><?= $lang['email'] ?> <?= $lang['or']?> <?= $lang['username']?></label>
               <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email"
                 autofocus />
             </div>

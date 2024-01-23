@@ -12,7 +12,7 @@ use MythicalDash\SettingsManager;
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <title>
-    <?= SettingsManager::getSetting("name") ?> - Not Authorized
+  <?= SettingsManager::getSetting("name") ?> - <?= $lang['401_title']?>
   </title>
   <?php include(__DIR__ . '/../requirements/head.php'); ?>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-misc.css" />
@@ -29,12 +29,14 @@ use MythicalDash\SettingsManager;
   </div>
   <div class="container-xxl container-p-y">
     <div class="misc-wrapper">
-      <h2 class="mb-1 mx-2">Under Maintenance!</h2>
-      <p class="mb-4 mx-2">Sorry for the inconvenience but we're performing some maintenance at the moment</p>
-      <a href="/" class="btn btn-primary mb-4">Back to home</a>
+      <h2 class="mb-1 mx-2"><?= $lang['maintenance_subtitle']?></h2>
+      <p class="mb-4 mx-2">
+        <?= $lang['maintenance_description']?>
+      </p>
+      <a href="/dashboard" class="btn btn-primary mb-4"><?= $lang['home']?></a>
       <div class="mt-4">
-        <img src="<?= $appURL ?>/assets/img/illustrations/page-misc-under-maintenance.png"
-          alt="page-misc-under-maintenance" width="550" class="img-fluid" />
+        <img src="<?= $appURL ?>/assets/img/illustrations/page-misc-you-are-not-authorized.png"
+          alt="page-misc-not-authorized" width="170" class="img-fluid" />
       </div>
     </div>
   </div>

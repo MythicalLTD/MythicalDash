@@ -29,6 +29,11 @@ $router->add("/admin/settings/recaptcha", function () {
     require("../view/admin/settings/recaptcha.php");
 });
 
+$router->add("/admin/settings/landingpage", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/landingpage.php");
+});
+
 $router->add("/admin/settings/ads", function () {
     require("../include/main.php");
     require("../view/admin/settings/ads.php");

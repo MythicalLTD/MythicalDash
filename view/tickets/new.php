@@ -14,11 +14,11 @@ if (isset($_GET['subject']) && isset($_GET['priority']) && isset($_GET['descript
         header('location: /help-center/tickets');
         die();
     } else {
-        header('location: /help-center?e=Missing the required information to create a ticket.');
+        header('location: /help-center?e='.$lang['please_fill_in_all_required_info']);
         die();
     }
 } else {
-    header('location: /help-center?e=Missing the required information to create a ticket.');
+    header('location: /help-center?e='.$lang['please_fill_in_all_required_info']);
     die();
 }
 ?>

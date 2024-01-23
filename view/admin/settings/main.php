@@ -1,8 +1,8 @@
 <?php
 use MythicalDash\SettingsManager;
 
-include(__DIR__ . '/../../requirements/page.php');
-include(__DIR__ . '/../../requirements/admin.php');
+include (__DIR__ . '/../../requirements/page.php');
+include (__DIR__ . '/../../requirements/admin.php');
 
 ?>
 <!DOCTYPE html>
@@ -14,9 +14,9 @@ include(__DIR__ . '/../../requirements/admin.php');
     <meta charset="utf-8" />
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <?php include(__DIR__ . '/../../requirements/head.php'); ?>
+    <?php include (__DIR__ . '/../../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Settings
+        <?= SettingsManager::getSetting('name') ?> - Settings
     </title>
 </head>
 
@@ -26,22 +26,22 @@ include(__DIR__ . '/../../requirements/admin.php');
     </div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
-            <?php include(__DIR__ . '/../../components/sidebar.php') ?>
+            <?php include (__DIR__ . '/../../components/sidebar.php') ?>
             <div class="layout-page">
-                <?php include(__DIR__ . '/../../components/navbar.php') ?>
+                <?php include (__DIR__ . '/../../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
                         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Settings</h4>
-                        <?php include(__DIR__ . '/../../components/alert.php') ?>
+                        <?php include (__DIR__ . '/../../components/alert.php') ?>
                         <?php
-                        if (isset($_GET['sqlr'])) {
-                            ?>
+                            if (isset($_GET['sqlr'])) {
+                        ?>
                             <div class="alert alert-danger alert-dismissible" role="alert">
                                 <code><?= $_GET['sqlr'] ?></code>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <?php
-                        }
+                            }
                         ?>
                         <div class="card mb-4">
                             <h5 class="card-header text-center">General</h5>
@@ -52,42 +52,50 @@ include(__DIR__ . '/../../requirements/admin.php');
                             <div class="card-body">
                                 <form action="/admin/settings/general" method="GET">
                                     <div class="row">
-                                        <div class="mb-3 col-md-4">
+                                        <div class="mb-3 col-md-2">
                                             <label for="app:name" class="form-label">Company Name</label>
                                             <input class="form-control" type="text" id="app:name" name="app:name"
-                                                value="<?= SettingsManager::getSetting("name") ?>"
+                                                value="<?= SettingsManager::getSetting('name') ?>"
                                                 placeholder="MythicalSystems">
                                         </div>
+                                        
                                         <div class="mb-3 col-md-3">
                                             <label for="app:logo" class="form-label">Company Logo</label>
                                             <input class="form-control" type="text" id="app:logo" name="app:logo"
-                                                value="<?= SettingsManager::getSetting("logo") ?>" autofocus="">
+                                                value="<?= SettingsManager::getSetting('logo') ?>" autofocus="">
                                         </div>
                                         <div class="mb-3 col-md-3">
                                             <label for="app:logo" class="form-label">Background Picture</label>
                                             <input class="form-control" type="text" id="app:bg" name="app:bg"
-                                                value="<?= SettingsManager::getSetting("bg") ?>" autofocus="">
+                                                value="<?= SettingsManager::getSetting('bg') ?>" autofocus="">
                                         </div>
-                                        <div class="form-group col-md-2">
+                                        
+                                        <div class="mb-3 col-md-2">
+                                            <label for="app:name" class="form-label">Language Code</label>
+                                            <input class="form-control" type="text" id="app:lang" name="app:lang"
+                                                value="<?= SettingsManager::getSetting('lang') ?>"
+                                                placeholder="en_US">
+                                        </div>
+                                        <div class="form-group col-md-1">
                                             <label class="control-label">Snow</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("show_snow") == 'true') {
-                                                    ?>
-                                                    <select class="form-control" name="app:snow">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="app:snow">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if (SettingsManager::getSetting('show_snow') == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="app:snow">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="app:snow">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -116,14 +124,14 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label for="seo:description" class="form-label">Description</label>
                                             <input class="form-control" type="text" id="seo:description"
                                                 name="seo:description"
-                                                value="<?= SettingsManager::getSetting("seo_description") ?>"
+                                                value="<?= SettingsManager::getSetting('seo_description') ?>"
                                                 placeholder="MythicalSystems">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label for="seo:keywords" class="form-label">Keywords</label>
                                             <input class="form-control" type="text" id="seo:keywords"
                                                 name="seo:keywords"
-                                                value="<?= SettingsManager::getSetting("seo_keywords") ?>" autofocus="">
+                                                value="<?= SettingsManager::getSetting('seo_keywords') ?>" autofocus="">
                                         </div>
                                     </div>
                                     <div class="mt-2 text-center">
@@ -153,14 +161,14 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label for="pterodactyl:url" class="form-label">Panel URL</label>
                                             <input class="form-control" type="text" id="pterodactyl:url"
                                                 name="pterodactyl:url"
-                                                value="<?= SettingsManager::getSetting("PterodactylURL") ?>"
+                                                value="<?= SettingsManager::getSetting('PterodactylURL') ?>"
                                                 placeholder="https://panel.example.com">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label for="pterodactyl:api_key" class="form-label">Panel API Key</label>
                                             <input class="form-control" type="password" id="pterodactyl:api_key"
                                                 name="pterodactyl:api_key"
-                                                value="<?= SettingsManager::getSetting("PterodactylAPIKey") ?>"
+                                                value="<?= SettingsManager::getSetting('PterodactylAPIKey') ?>"
                                                 autofocus="">
                                         </div>
                                     </div>
@@ -181,7 +189,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         href="https://stripe.com/docs/currencies#presentment-currencies">Here you can
                                         find a list</a>).</label><br>
                                 <label>Price: This shall be the price per 1 coin (This shall be cents EX 1000 = 1
-                                    <?= strtoupper(SettingsManager::getSetting("stripe_currency")) ?>).
+                                    <?= strtoupper(SettingsManager::getSetting('stripe_currency')) ?>).
                                 </label><br>
                                 <label>Public Key: This shall be the publishable key that you can get from <a
                                         href="https://dashboard.stripe.com/apikeys">here</a>.</label><br>
@@ -197,22 +205,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("enable_stripe") == 'true') {
-                                                    ?>
-                                                    <select class="form-control" name="stripe:enabled">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="stripe:enabled">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if (SettingsManager::getSetting('enable_stripe') == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="stripe:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="stripe:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -221,7 +229,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <input type="text" required="" class="form-control"
                                                     name="stripe:stripe_currency"
-                                                    value="<?= strtoupper(SettingsManager::getSetting("stripe_currency")) ?>">
+                                                    value="<?= strtoupper(SettingsManager::getSetting('stripe_currency')) ?>">
                                             </div>
                                         </div>
                                         <div class="form-group col-md-1">
@@ -229,7 +237,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <input type="text" required="" class="form-control"
                                                     name="stripe:stripe_coin_per_balance"
-                                                    value="<?= SettingsManager::getSetting("stripe_coin_per_balance") ?>">
+                                                    value="<?= SettingsManager::getSetting('stripe_coin_per_balance') ?>">
                                             </div>
                                         </div>
                                         <div class="form-group col-md-4">
@@ -237,7 +245,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <input type="text" required="" class="form-control"
                                                     name="stripe:public_key"
-                                                    value="<?= SettingsManager::getSetting("stripe_publishable_key") ?>">
+                                                    value="<?= SettingsManager::getSetting('stripe_publishable_key') ?>">
                                             </div>
                                         </div>
                                         <div class="form-group col-md-4">
@@ -245,7 +253,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <input type="password" required="" class="form-control"
                                                     name="stripe:private_key"
-                                                    value="<?= SettingsManager::getSetting("stripe_secret_key") ?>">
+                                                    value="<?= SettingsManager::getSetting('stripe_secret_key') ?>">
                                             </div>
                                         </div>
                                         <br>
@@ -285,63 +293,63 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Enable Oath2</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("enable_discord_link") == 'true') {
-                                                    ?>
+                                                    if (SettingsManager::getSetting('enable_discord_link') == 'true') {
+                                                ?>
                                                     <select name="discord:enable" class="form-control">
                                                         <option value="true">True</option>
                                                         <option value="false">False</option>
                                                     </select>
                                                     <?php
-                                                } else if (SettingsManager::getSetting("enable_discord_link") == 'false') {
-                                                    ?>
+                                                    } else if (SettingsManager::getSetting('enable_discord_link') == 'false') {
+                                                        ?>
                                                         <select name="discord:enable" class="form-control">
                                                             <option value="false">False</option>
                                                             <option value="true">True</option>
                                                         </select>
                                                     <?php
-                                                } else {
-                                                    ?>
+                                                    } else {
+                                                        ?>
                                                         <select name="discord:enable" class="form-control">
                                                             <option value="false">True</option>
                                                             <option value="false">False</option>
                                                         </select>
                                                     <?php
-                                                }
-                                                ?>
+                                                    }
+                                                                                                        ?>
                                             </div>
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="discord:serverid" class="form-label">Discord Server ID</label>
                                             <input class="form-control" type="text" id="discord:serverid"
                                                 name="discord:serverid"
-                                                value="<?= SettingsManager::getSetting("discord_serverid") ?>"
+                                                value="<?= SettingsManager::getSetting('discord_serverid') ?>"
                                                 placeholder="000000000000">
                                         </div>
                                         <div class="mb-3 col-md-3">
                                             <label for="discord:invite" class="form-label">Discord Invite</label>
                                             <input class="form-control" type="text" id="discord:invite"
                                                 name="discord:invite"
-                                                value="<?= SettingsManager::getSetting("discord_invite") ?>"
+                                                value="<?= SettingsManager::getSetting('discord_invite') ?>"
                                                 placeholder="MythicalSystems">
                                         </div>
                                         <div class="mb-3 col-md-5">
                                             <label class="form-label">Discord Webhook</label>
                                             <input type="password" required="" class="form-control"
                                                 name="discord:webhook"
-                                                value="<?= SettingsManager::getSetting("discord_webhook") ?>">
+                                                value="<?= SettingsManager::getSetting('discord_webhook') ?>">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label for="discord:client_id" class="form-label">Discord Client ID</label>
                                             <input class="form-control" type="text" id="discord:client_id"
                                                 name="discord:client_id"
-                                                value="<?= SettingsManager::getSetting("discord_clientid") ?>"
+                                                value="<?= SettingsManager::getSetting('discord_clientid') ?>"
                                                 placeholder="000000000000">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Discord Client Secret</label>
                                             <input type="password" required="" class="form-control"
                                                 name="discord:client_secret"
-                                                value="<?= SettingsManager::getSetting("discord_clientsecret") ?>">
+                                                value="<?= SettingsManager::getSetting('discord_clientsecret') ?>">
                                         </div>
                                     </div>
                                     <div class="mt-2 text-center">
@@ -367,89 +375,89 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label for="resources:coins" class="form-label">Coins</label>
                                             <input class="form-control" type="text" id="resources:coins"
                                                 name="resources:coins"
-                                                value="<?= SettingsManager::getSetting("def_coins") ?>"
+                                                value="<?= SettingsManager::getSetting('def_coins') ?>"
                                                 placeholder="15">
                                         </div>
                                         <div class="mb-3 col-md-1">
                                             <label for="resources:ram" class="form-label">Ram (MB)</label>
                                             <input class="form-control" type="text" id="resources:ram"
                                                 name="resources:ram"
-                                                value="<?= SettingsManager::getSetting("def_memory") ?>"
+                                                value="<?= SettingsManager::getSetting('def_memory') ?>"
                                                 placeholder="1024">
                                         </div>
                                         <div class="mb-3 col-md-1">
                                             <label for="resources:disk" class="form-label">Disk (MB)</label>
                                             <input class="form-control" type="text" id="resources:disk"
                                                 name="resources:disk"
-                                                value="<?= SettingsManager::getSetting("def_disk_space") ?>"
+                                                value="<?= SettingsManager::getSetting('def_disk_space') ?>"
                                                 placeholder="1024">
                                         </div>
                                         <div class="mb-3 col-md-1">
                                             <label for="resources:cpu" class="form-label">Cpu (%)</label>
                                             <input class="form-control" type="text" id="resources:cpu"
                                                 name="resources:cpu"
-                                                value="<?= SettingsManager::getSetting("def_cpu") ?>" placeholder="100">
+                                                value="<?= SettingsManager::getSetting('def_cpu') ?>" placeholder="100">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="resources:svlimit" class="form-label">Server Limit</label>
                                             <input class="form-control" type="text" id="resources:svlimit"
                                                 name="resources:svlimit"
-                                                value="<?= SettingsManager::getSetting("def_server_limit") ?>"
+                                                value="<?= SettingsManager::getSetting('def_server_limit') ?>"
                                                 placeholder="2">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="resources:ports" class="form-label">Server Allocations</label>
                                             <input class="form-control" type="text" id="resources:ports"
                                                 name="resources:ports"
-                                                value="<?= SettingsManager::getSetting("def_port") ?>" placeholder="2">
+                                                value="<?= SettingsManager::getSetting('def_port') ?>" placeholder="2">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="resources:databases" class="form-label">Server Databases</label>
                                             <input class="form-control" type="text" id="resources:databases"
                                                 name="resources:databases"
-                                                value="<?= SettingsManager::getSetting("def_db") ?>" placeholder="2">
+                                                value="<?= SettingsManager::getSetting('def_db') ?>" placeholder="2">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="resources:backups" class="form-label">Server Backups</label>
                                             <input class="form-control" type="text" id="resources:backups"
                                                 name="resources:backups"
-                                                value="<?= SettingsManager::getSetting("def_backups") ?>"
+                                                value="<?= SettingsManager::getSetting('def_backups') ?>"
                                                 placeholder="2">
                                         </div>
                                         <div class="form-group col-md-2">
                                             <label class="control-label">Enable AFK</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("enable_afk") == 'true') {
-                                                    ?>
+                                                    if (SettingsManager::getSetting('enable_afk') == 'true') {
+                                                ?>
                                                     <select name="resources:eafk" class="form-control">
                                                         <option value="true">True</option>
                                                         <option value="false">False</option>
                                                     </select>
                                                     <?php
-                                                } else if (SettingsManager::getSetting("enable_afk") == 'false') {
-                                                    ?>
+                                                    } else if (SettingsManager::getSetting('enable_afk') == 'false') {
+                                                        ?>
                                                         <select name="resources:eafk" class="form-control">
                                                             <option value="false">False</option>
                                                             <option value="true">True</option>
                                                         </select>
                                                     <?php
-                                                } else {
-                                                    ?>
+                                                    } else {
+                                                        ?>
                                                         <select name="resources:eafk" class="form-control">
                                                             <option value="false">True</option>
                                                             <option value="false">False</option>
                                                         </select>
                                                     <?php
-                                                }
-                                                ?>
+                                                    }
+                                                                                                        ?>
                                             </div>
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="afk:coins:per:min" class="form-label">Coins per minute</label>
                                             <input class="form-control" type="text" id="afk:coins:per:min"
                                                 name="afk:coins:per:min"
-                                                value="<?= SettingsManager::getSetting("afk_coins_per_min") ?>"
+                                                value="<?= SettingsManager::getSetting('afk_coins_per_min') ?>"
                                                 placeholder="2">
                                         </div>
 
@@ -477,46 +485,46 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         <div class="mb-3 col-md-1">
                                             <label for="store:ram" class="form-label">Ram</label>
                                             <input class="form-control" type="text" id="store:ram" name="store:ram"
-                                                value="<?= SettingsManager::getSetting("price_memory") ?>"
+                                                value="<?= SettingsManager::getSetting('price_memory') ?>"
                                                 placeholder="400">
                                         </div>
                                         <div class="mb-3 col-md-1">
                                             <label for="store:disk" class="form-label">Disk</label>
                                             <input class="form-control" type="text" id="store:disk" name="store:disk"
-                                                value="<?= SettingsManager::getSetting("price_disk_space") ?>"
+                                                value="<?= SettingsManager::getSetting('price_disk_space') ?>"
                                                 placeholder="300">
                                         </div>
                                         <div class="mb-3 col-md-1">
                                             <label for="store:cpu" class="form-label">Cpu</label>
                                             <input class="form-control" type="text" id="store:cpu" name="store:cpu"
-                                                value="<?= SettingsManager::getSetting("price_cpu") ?>"
+                                                value="<?= SettingsManager::getSetting('price_cpu') ?>"
                                                 placeholder="450">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="store:svlimit" class="form-label">Server Slots</label>
                                             <input class="form-control" type="text" id="store:svlimit"
                                                 name="store:svlimit"
-                                                value="<?= SettingsManager::getSetting("price_server_limit") ?>"
+                                                value="<?= SettingsManager::getSetting('price_server_limit') ?>"
                                                 placeholder="1200">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="store:ports" class="form-label">Server Allocations</label>
                                             <input class="form-control" type="text" id="store:ports" name="store:ports"
-                                                value="<?= SettingsManager::getSetting("price_allocation") ?>"
+                                                value="<?= SettingsManager::getSetting('price_allocation') ?>"
                                                 placeholder="900">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="store:databases" class="form-label">Server Databases</label>
                                             <input class="form-control" type="text" id="store:databases"
                                                 name="store:databases"
-                                                value="<?= SettingsManager::getSetting("price_database") ?>"
+                                                value="<?= SettingsManager::getSetting('price_database') ?>"
                                                 placeholder="150">
                                         </div>
                                         <div class="mb-3 col-md-2">
                                             <label for="store:backups" class="form-label">Server Backups</label>
                                             <input class="form-control" type="text" id="store:backups"
                                                 name="store:backups"
-                                                value="<?= SettingsManager::getSetting("price_backup") ?>"
+                                                value="<?= SettingsManager::getSetting('price_backup') ?>"
                                                 placeholder="200">
                                         </div>
 
@@ -544,22 +552,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">SMTP</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("enable_smtp") == 'true') {
-                                                    ?>
-                                                    <select name="mail:enable" class="form-control">
-                                                        <option value="true">Enable</option>
-                                                        <option value="false">Disable</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select name="mail:enable" class="form-control">
-                                                        <option value="false">Disable</option>
-                                                        <option value="true">Enable</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if (SettingsManager::getSetting('enable_smtp') == 'true') {
                                                 ?>
+                                                    <select name="mail:enable" class="form-control">
+                                                        <option value="true">Enable</option>
+                                                        <option value="false">Disable</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select name="mail:enable" class="form-control">
+                                                        <option value="false">Disable</option>
+                                                        <option value="true">Enable</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -567,36 +575,36 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Encryption</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("smtpSecure") == 'ssl') {
-                                                    ?>
+                                                    if (SettingsManager::getSetting('smtpSecure') == 'ssl') {
+                                                ?>
                                                     <select name="mail:encryption" class="form-control">
                                                         <option value="ssl">SSL</option>
                                                         <option value="tls">TLS</option>
                                                     </select>
                                                     <?php
-                                                } else if (SettingsManager::getSetting("smtpSecure") == 'tls') {
-                                                    ?>
+                                                    } else if (SettingsManager::getSetting('smtpSecure') == 'tls') {
+                                                        ?>
                                                         <select name="mail:encryption" class="form-control">
                                                             <option value="tls">TLS</option>
                                                             <option value="ssl">SSL</option>
                                                         </select>
                                                     <?php
-                                                } else {
-                                                    ?>
+                                                    } else {
+                                                        ?>
                                                         <select name="mail:encryption" class="form-control">
                                                             <option value="ssl">SSL</option>
                                                             <option value="tls">TLS</option>
                                                         </select>
                                                     <?php
-                                                }
-                                                ?>
+                                                    }
+                                                                                                        ?>
                                             </div>
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label class="control-label">SMTP Host</label>
                                             <div>
                                                 <input required="" type="text" class="form-control" name="mail:host"
-                                                    value="<?= SettingsManager::getSetting("smtpHost") ?>">
+                                                    value="<?= SettingsManager::getSetting('smtpHost') ?>">
                                                 <p class="text-muted small">Enter the SMTP server
                                                     address that mail should be sent through.</p>
                                             </div>
@@ -605,7 +613,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">SMTP Port</label>
                                             <div>
                                                 <input required="" type="number" class="form-control" name="mail:port"
-                                                    value="<?= SettingsManager::getSetting("smtpPort") ?>">
+                                                    value="<?= SettingsManager::getSetting('smtpPort') ?>">
                                                 <p class="text-muted small">Enter the SMTP server
                                                     port that mail should be sent through.</p>
                                             </div>
@@ -615,7 +623,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                     class="field-optional"></span></label>
                                             <div>
                                                 <input type="text" class="form-control" name="mail:username"
-                                                    value="<?= SettingsManager::getSetting("smtpUsername") ?>">
+                                                    value="<?= SettingsManager::getSetting('smtpUsername') ?>">
                                                 <p class="text-muted small">The username to use when
                                                     connecting to the SMTP server.</p>
                                             </div>
@@ -625,7 +633,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                     class="field-optional"></span></label>
                                             <div>
                                                 <input type="password"
-                                                    value="<?= SettingsManager::getSetting("smtpPassword") ?>"
+                                                    value="<?= SettingsManager::getSetting('smtpPassword') ?>"
                                                     class="form-control" name="mail:password">
                                                 <p class="text-muted small">The password to use in
                                                     conjunction with the SMTP username.
@@ -637,7 +645,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                     class="field-optional"></span></label>
                                             <div>
                                                 <input type="text" class="form-control" name="mail:from:address"
-                                                    value="<?= SettingsManager::getSetting("fromEmail") ?>">
+                                                    value="<?= SettingsManager::getSetting('fromEmail') ?>">
                                                 <p class="text-muted small">The email address where you send emails
                                                     from.</p>
                                             </div>
@@ -671,22 +679,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("enable_turnstile") == 'true') {
-                                                    ?>
-                                                    <select class="form-control" name="recaptcha:enabled">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="recaptcha:enabled">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if (SettingsManager::getSetting('enable_turnstile') == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="recaptcha:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="recaptcha:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -695,7 +703,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <input type="text" required="" class="form-control"
                                                     name="recaptcha:website_key"
-                                                    value="<?= SettingsManager::getSetting("turnstile_sitekey") ?>">
+                                                    value="<?= SettingsManager::getSetting('turnstile_sitekey') ?>">
                                             </div>
                                         </div>
                                         <div class="form-group col-md-5">
@@ -703,7 +711,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <input type="password" required="" class="form-control"
                                                     name="recaptcha:secret_key"
-                                                    value="<?= SettingsManager::getSetting("turnstile_secretkey") ?>">
+                                                    value="<?= SettingsManager::getSetting('turnstile_secretkey') ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -734,22 +742,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("enable_ads") == 'true') {
-                                                    ?>
-                                                    <select class="form-control" name="ads:enabled">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="ads:enabled">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if (SettingsManager::getSetting('enable_ads') == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="ads:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="ads:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -759,7 +767,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <textarea type="text" required="" class="form-control" name="ads:code"
                                                     rows="4"
-                                                    value=""><?= SettingsManager::getSetting("ads_code") ?></textarea>
+                                                    value=""><?= SettingsManager::getSetting('ads_code') ?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -790,22 +798,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("linkvertise_enabled") == 'true') {
-                                                    ?>
-                                                    <select class="form-control" name="ads:enabled">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="ads:enabled">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if (SettingsManager::getSetting('linkvertise_enabled') == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="ads:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="ads:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -813,14 +821,14 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Key</label>
                                             <div>
                                                 <input type="number" required="" class="form-control" name="ads:code"
-                                                    value="<?= SettingsManager::getSetting("linkvertise_code") ?>">
+                                                    value="<?= SettingsManager::getSetting('linkvertise_code') ?>">
                                             </div>
                                         </div>
                                         <div class="form-group col-md-5">
                                             <label class="control-label">Coins</label>
                                             <div>
                                                 <input type="number" required="" class="form-control" name="ads:coins"
-                                                    value="<?= SettingsManager::getSetting("linkvertise_coins") ?>">
+                                                    value="<?= SettingsManager::getSetting('linkvertise_coins') ?>">
                                             </div>
                                         </div>
                                         <br>
@@ -853,22 +861,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("customcss_enabled") == 'true') {
-                                                    ?>
-                                                    <select class="form-control" name="customcss:enabled">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="customcss:enabled">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if (SettingsManager::getSetting('customcss_enabled') == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="customcss:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="customcss:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -878,7 +886,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <textarea type="text" required="" class="form-control"
                                                     name="customcss:code" rows="4"
-                                                    value=""><?= SettingsManager::getSetting("customcss_code") ?></textarea>
+                                                    value=""><?= SettingsManager::getSetting('customcss_code') ?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -907,22 +915,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("customhead_enabled") == 'true') {
-                                                    ?>
-                                                    <select class="form-control" name="customhead:enabled">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="customhead:enabled">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if (SettingsManager::getSetting('customhead_enabled') == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="customhead:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="customhead:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
@@ -932,7 +940,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <textarea type="text" required="" class="form-control"
                                                     name="customhead:code" rows="4"
-                                                    value=""><?= SettingsManager::getSetting("customhead_code") ?></textarea>
+                                                    value=""><?= SettingsManager::getSetting('customhead_code') ?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -964,7 +972,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <textarea type="text" required="" class="form-control" name="text"
                                                     rows="4"
-                                                    value=""><?= SettingsManager::getSetting("terms_of_service") ?></textarea>
+                                                    value=""><?= SettingsManager::getSetting('terms_of_service') ?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -992,22 +1000,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Anti AdBlocker Status</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("enable_adblocker_detection") == 'true') {
-                                                    ?>
-                                                    <select class="form-control" name="ads:adblocker">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="ads:adblocker">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if (SettingsManager::getSetting('enable_adblocker_detection') == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="ads:adblocker">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="ads:adblocker">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
                                             </div>
                                         </div>
                                         <br>
@@ -1015,22 +1023,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Anti VPN Status</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("enable_anti_vpn") == 'true') {
-                                                    ?>
-                                                    <select class="form-control" name="enable_anti_vpn">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="enable_anti_vpn">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if (SettingsManager::getSetting('enable_anti_vpn') == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="enable_anti_vpn">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="enable_anti_vpn">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
                                             </div>
                                         </div>
                                         <br>
@@ -1038,22 +1046,22 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Anti Alting Status</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("enable_alting") == 'true') {
-                                                    ?>
-                                                    <select class="form-control" name="enable_alting">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="enable_alting">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if (SettingsManager::getSetting('enable_alting') == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="enable_alting">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="enable_alting">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
                                             </div>
                                         </div>
                                         <br>
@@ -1086,7 +1094,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <textarea type="text" required="" class="form-control" name="text"
                                                     rows="4"
-                                                    value=""><?= SettingsManager::getSetting("privacy_policy") ?></textarea>
+                                                    value=""><?= SettingsManager::getSetting('privacy_policy') ?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -1114,28 +1122,28 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <label class="control-label">Status</label>
                                             <div>
                                                 <?php
-                                                if (SettingsManager::getSetting("server_purge") == 'true') {
-                                                    ?>
-                                                    <select class="form-control" name="purge:enabled">
-                                                        <option value="true">Enabled</option>
-                                                        <option value="false">Disabled</option>
-                                                    </select>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <select class="form-control" name="purge:enabled">
-                                                        <option value="false">Disabled</option>
-                                                        <option value="true">Enabled</option>
-                                                    </select>
-                                                    <?php
-                                                }
+                                                    if (SettingsManager::getSetting('server_purge') == 'true') {
                                                 ?>
+                                                    <select class="form-control" name="purge:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="purge:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
 
                                             </div>
                                         </div>
                                         <?php
-                                        if (SettingsManager::getSetting("server_purge") == 'true') {
-                                            ?>
+                                            if (SettingsManager::getSetting('server_purge') == 'true') {
+                                        ?>
                                             <div class="form-group col-md-2">
                                                 <label class="control-label">Execute Purge</label><br>
                                                 <button type="button" type="button" data-bs-toggle="modal"
@@ -1143,6 +1151,51 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                     class="btn btn-danger waves-effect waves-light">Execute changes</a>
                                             </div>
                                         <?php } ?>
+                                    </div>
+                                    <br>
+                                    <div class="mt-2 text-center">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header text-center">Landing Page</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your landingpage options here. &NewLine;</label><br>
+                                <p></p>
+                            </div>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/landingpage" method="GET">
+                                    <div class="row">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Status</label>
+                                            <div>
+                                                <?php
+                                                    if (SettingsManager::getSetting('landingpage') == 'true') {
+                                                ?>
+                                                    <select class="form-control" name="landingpage:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                    } else {
+                                                                                                        ?>
+                                                    <select class="form-control" name="landingpage:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                    }
+                                                                                                        ?>
+                                            </div>
+                                        </div>
+
+                                        
                                     </div>
                                     <br>
                                     <div class="mt-2 text-center">
@@ -1247,14 +1300,14 @@ include(__DIR__ . '/../../requirements/admin.php');
                             </div>
                         </div>
                     </div>
-                    <?php include(__DIR__ . '/../../components/footer.php') ?>
+                    <?php include (__DIR__ . '/../../components/footer.php') ?>
                     <div class="content-backdrop fade"></div>
                 </div>
             </div>
         </div>
         <div class="layout-overlay layout-menu-toggle"></div>
         <div class="drag-target"></div>
-        <?php include(__DIR__ . '/../../requirements/footer.php') ?>
+        <?php include (__DIR__ . '/../../requirements/footer.php') ?>
     </div>
 </body>
 

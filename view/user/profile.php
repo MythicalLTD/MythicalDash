@@ -12,7 +12,7 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
         $udb = $conn->query("SELECT * FROM mythicaldash_users WHERE id = '" . mysqli_real_escape_string($conn, $_GET['id']) . "'")->fetch_array();
 
     } else {
-        header("location: /dashboard?e=We cannot find this user in the database");
+        header('location: /user/edit?s=' . $lang['updated_user_info_in_db']);
         die();
     }
 } else {
@@ -27,17 +27,17 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Profile
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['profile']?>
     </title>
     <link rel="stylesheet" href="/assets/vendor/css/pages/page-profile.css" />
 </head>
 
 <body>
-<?php
-  if (SettingsManager::getSetting("show_snow") == "true") {
-    include(__DIR__ . '/../components/snow.php');
-  }
-  ?>
+    <?php
+    if (SettingsManager::getSetting("show_snow") == "true") {
+        include(__DIR__ . '/../components/snow.php');
+    }
+    ?>
     <div id="preloader" class="discord-preloader">
         <div class="spinner"></div>
     </div>
@@ -48,7 +48,7 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
                 <?php include(__DIR__ . '/../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users /</span> Profile</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><?= $lang['users'] ?> /</span> <?= $lang['profile']?></h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
 
                         <div class="row">
@@ -79,14 +79,14 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
                                                             <?= $udb['coins'] ?>
                                                         </li>
                                                         <li class="list-inline-item"><i class="ti ti-calendar"></i>
-                                                            Joined
+                                                            <?= $lang['joined_at']?>
                                                             <?= $udb['registred'] ?>
                                                         </li>
                                                     </ul>
                                                 </div>
                                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                                     data-bs-target="#giftCoins">
-                                                    <i class="ti ti-gift me-1"></i>Gift Coins
+                                                    <i class="ti ti-gift me-1"></i><?= $lang['gift_coins']?>
                                                 </button>
                                             </div>
                                         </div>
@@ -115,23 +115,21 @@ if (isset($_GET['id']) && !$_GET['id'] == "") {
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                     <div class="text-center mb-4">
-                                        <h3 class="mb-2">Gift user coins!</h3>
-                                        <p class="text-muted">Remember, once you send a user coins, you cannot take this
-                                            action back! Please do not open a ticket to get your coins back! We won't
-                                            help you!!!</p>
+                                        <h3 class="mb-2"><?= $lang["gift_coins_2"]?></h3>
+                                        <p class="text-muted"><?= $lang['gift_coins_3']?></p>
                                     </div>
                                     <form method="GET" action="/user/gift" class="row g-3">
                                         <input type="hidden" name="userid" value="<?= $_GET['id'] ?>">
                                         <div class="col-12">
-                                            <label class="form-label" for="coins">Coins</label>
+                                            <label class="form-label" for="coins"><?= $lang['coins']?></label>
                                             <input type="number" id="coins" name="coins" class="form-control"
                                                 placeholder="" required />
                                         </div>
                                         <div class="col-12 text-center">
                                             <button type="submit" name="key" value="<?= $_COOKIE['token'] ?>"
-                                                class="btn btn-primary me-sm-3 me-1">Send Coins</button>
+                                                class="btn btn-primary me-sm-3 me-1"><?= $lang['send']?></button>
                                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                                aria-label="Close">Cancel </button>
+                                                aria-label="Close"><?= $lang['back']?> </button>
                                         </div>
                                     </form>
                                 </div>

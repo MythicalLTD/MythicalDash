@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $check_query = "SELECT * FROM mythicaldash_users WHERE username = '$username' OR email = '$email'";
                     $result = mysqli_query($conn, $check_query);
                     if (mysqli_num_rows($result) > 0) {
-                        header('location: /user/edit?e=Username or email already exists. Please choose a different one');
+                        header('location: /user/edit?e='.$lang['username_or_email_exists']);
                         die();
                     }
                 } else {
@@ -55,22 +55,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     if ($http_code == 200) {
                         $api_response = json_decode($response, true);
-                        header('location: /user/edit?s=We updated the user settings in the database');
+                        header('location: /user/edit?s='.$lang['updated_user_info_in_db']);
                         curl_close($ch);
                         die();
                     } else {
-                        header("location: /user/edit?e=Failed to update the user settings inside the panel");
+                        header("location: /user/edit?e=".$lang['pterodactyl_failed_to_update_info']);
                         curl_close($ch);
                         die();
                     }
                 }
             } else {
-                header('location: /user/edit?e=Please fill in all the info');
+                header('location: /user/edit?e='.$lang['please_fill_in_all_required_info']);
                 die();
             }
         }
     } else {
-        header('location: /user/profile?e=CSRF Verification Failed');
+        header('location: /user/profile?e='.$lang['csrf_failed']);
     }
 }
 ?>
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Edit
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['account']?>
     </title>
 </head>
 
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php include(__DIR__ . '/../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users /</span> Edit</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><?= $lang['account']?> </span></h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <div id="ads">
                             <?php
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <ul class="nav nav-pills flex-column flex-md-row mb-4">
                                     <li class="nav-item">
                                         <a href="/user/edit" class="nav-link active"><i
-                                                class="ti-xs ti ti-users me-1"></i> Account</a>
+                                                class="ti-xs ti ti-users me-1"></i> <?= $lang['account']?> </a>
                                     </li>
                                     <!--<li class="nav-item">
                       <a class="nav-link" href="pages-account-settings-billing.html"
@@ -133,15 +133,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </li>-->
                                     <li class="nav-item">
                                         <a class="nav-link" href="/user/connections"><i
-                                                class="ti-xs ti ti-link me-1"></i> Connections</a>
+                                                class="ti-xs ti ti-link me-1"></i> <?= $lang['connections']?> </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="/user/payments"><i
-                                                class="ti-xs ti ti-currency-euro me-1"></i> Payments</a>
+                                                class="ti-xs ti ti-currency-euro me-1"></i> <?= $lang['payments']?> </a>
                                     </li>
                                 </ul>
                                 <div class="card mb-4">
-                                    <h5 class="card-header">Profile Details</h5>
+                                    <h5 class="card-header"><?= $lang['profile']?></h5>
                                     <!-- Account -->
                                     <div class="card-body">
                                         <div class="d-flex align-items-start align-items-sm-center gap-4">
@@ -154,48 +154,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <form action="/user/edit" method="POST">
                                             <div class="row">
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="username" class="form-label">Username</label>
+                                                    <label for="username" class="form-label"><?= $lang['username']?></label>
                                                     <input class="form-control" type="text" id="username"
                                                         name="username" value="<?= $session->getUserInfo("username") ?>"
                                                         placeholder="jhondoe" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="firstName" class="form-label">First Name</label>
+                                                    <label for="firstName" class="form-label"><?= $lang['first_name']?></label>
                                                     <input class="form-control" type="text" id="firstName"
                                                         name="firstName"
                                                         value="<?= Encryption::decrypt($session->getUserInfo('first_name'), $ekey) ?>"
                                                         autofocus />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="lastName" class="form-label">Last Name</label>
+                                                    <label for="lastName" class="form-label"><?= $lang['last_name']?></label>
                                                     <input class="form-control" type="text" name="lastName"
                                                         id="lastName"
                                                         value="<?= Encryption::decrypt($session->getUserInfo('last_name'), $ekey) ?>" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="email" class="form-label">E-mail</label>
+                                                    <label for="email" class="form-label"><?= $lang['email']?></label>
                                                     <input class="form-control" type="email" id="email" name="email"
                                                         value="<?= $session->getUserInfo("email") ?>"
                                                         placeholder="john.doe@example.com" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="avatar" class="form-label">Avatar</label>
+                                                    <label for="avatar" class="form-label"><?= $lang['avatar']?></label>
                                                     <input class="form-control" type="text" id="avatar" name="avatar"
                                                         value="<?= $session->getUserInfo("avatar") ?>" />
                                                 </div>
 
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="avatar" class="form-label">Secret Key</label><br>
+                                                    <label for="avatar" class="form-label"><?= $lang['secret_key']?></label><br>
                                                     <button type="button" data-bs-toggle="modal"
                                                         data-bs-target="#viewkey" class="btn btn-primary btn-sm me-2"
-                                                        value="true">View secret key</button>
+                                                        value="true"><?= $lang['show']?> <?= $lang["secret_key"]?></button>
                                                 </div>
                                             </div>
                                             <?= $csrf->input('profile-form'); ?>
 
                                             <div class="mt-2">
                                                 <button type="submit" name="edit_user" class="btn btn-primary me-2"
-                                                    value="true">Save changes</button>
+                                                    value="true"><?= $lang['save']?></button>
                                             </div>
                                         </form>
                                     </div>
@@ -211,22 +211,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     ?>
                                 </div>
                                 <div class="card">
-                                    <h5 class="card-header">Danger Zone</h5>
+                                    <h5 class="card-header"><?= $lang['danger_zone']?></h5>
                                     <div class="card-body">
                                         <div class="mb-3 col-12 mb-0">
                                             <div class="alert alert-warning">
-                                                <h5 class="alert-heading mb-1">Make sure you read what the button does!
-                                                </h5>
-                                                <p class="mb-0">Once you press a button, there is no going back. Please
-                                                    be certain.</p>
+                                                <h5 class="alert-heading mb-1">
+                                                </h5><?= $lang['danger_zone_read']?>
+                                                <p class="mb-0"><?= $lang['danger_zone_warn']?></p>
                                             </div>
                                         </div>
                                         <button type="button" data-bs-toggle="modal" data-bs-target="#resetPwd"
-                                            class="btn btn-danger deactivate-account">Reset Password</button>
+                                            class="btn btn-danger deactivate-account"><?= $lang['reset_password']?></button>
                                         <button type="button" data-bs-toggle="modal" data-bs-target="#resetKey"
-                                            class="btn btn-danger deactivate-account">Reset Secret Key</button>
+                                            class="btn btn-danger deactivate-account"><?= $lang['reset_key']?></button>
                                         <button type="button" data-bs-toggle="modal" data-bs-target="#deleteacc"
-                                            class="btn btn-danger deactivate-account">Delete Account</button>
+                                            class="btn btn-danger deactivate-account"><?= $lang['delete_account']?></button>
                                     </div>
                                 </div>
                             </div>
@@ -240,16 +239,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                     <div class="text-center mb-4">
-                                        <h3 class="mb-2">View secret key</h3>
-                                        <p class="text-muted">Here is your secret key that can be used to access our
-                                            client API and this is your login security token, so make sure not to share
-                                            it!
+                                        <h3 class="mb-2"><?= $lang['show']?> <?= $lang["secret_key"]?></h3>
+                                        <p class="text-muted"><?= $lang['show_key_description']?>
                                         </p>
                                         <code><?= $session->getUserInfo("api_key") ?></code>
                                     </div>
                                     <div class="col-12 text-center">
                                         <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                            aria-label="Close">Cancel </button>
+                                            aria-label="Close"><?= $lang['back']?> </button>
                                     </div>
                                 </div>
                             </div>
@@ -262,19 +259,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                     <div class="text-center mb-4">
-                                        <h3 class="mb-2">Delete this user?</h3>
-                                        <p class="text-muted">When you choose to delete this user, please be aware that
-                                            all associated user data will be permanently wiped. This action is
-                                            irreversible, so proceed with caution!
+                                        <h3 class="mb-2"><?= $lang['delete_account']?>?</h3>
+                                        <p class="text-muted"><?= $lang['delete_account_danger']?>
                                         </p>
                                     </div>
                                     <form method="GET" action="/user/security/delete_account" class="row g-3">
                                         <div class="col-12 text-center">
                                             <button type="submit" name="key"
                                                 value="<?= mysqli_real_escape_string($conn, $_COOKIE['token']) ?>"
-                                                class="btn btn-danger me-sm-3 me-1">Delete user</button>
+                                                class="btn btn-danger me-sm-3 me-1"><?= $lang['delete_account']?></button>
                                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                                aria-label="Close">Cancel </button>
+                                                aria-label="Close"><?= $lang['back']?> </button>
                                         </div>
                                     </form>
                                 </div>
@@ -288,17 +283,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                     <div class="text-center mb-4">
-                                        <h3 class="mb-2">Reset user secret key?</h3>
-                                        <p class="text-muted">After updating the key, the user will have to login again.
+                                        <h3 class="mb-2"><?= $lang['reset_key']?>?</h3>
+                                        <p class="text-muted"><?= $lang['reset_key_desc']?>
                                         </p>
                                     </div>
                                     <form method="GET" action="/user/security/resetkey" class="row g-3">
                                         <div class="col-12 text-center">
                                             <button type="submit" name="key"
                                                 value="<?= mysqli_real_escape_string($conn, $_COOKIE['token']) ?>"
-                                                class="btn btn-danger me-sm-3 me-1">Reset key</button>
+                                                class="btn btn-danger me-sm-3 me-1"><?= $lang['reset_key']?></button>
                                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                                aria-label="Close">Cancel </button>
+                                                aria-label="Close"><?= $lang['back']?> </button>
                                         </div>
                                     </form>
                                 </div>
@@ -312,21 +307,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                     <div class="text-center mb-4">
-                                        <h3 class="mb-2">Reset user password?</h3>
-                                        <p class="text-muted">After updating the key, the user will stay logged in!!</p>
+                                        <h3 class="mb-2"><?= $lang['reset_password']?>?</h3>
+                                        <p class="text-muted"><?= $lang['reset_pwd_desc']?></p>
                                     </div>
                                     <form method="GET" action="/user/security/resetpwd" class="row g-3">
                                         <div class="col-12">
-                                            <label class="form-label" for="resetPwd">New Password</label>
+                                            <label class="form-label" for="resetPwd"><?= $lang['new_password']?></label>
                                             <input type="password" id="pwd" name="pwd" class="form-control"
                                                 placeholder="" required />
                                         </div>
                                         <div class="col-12 text-center">
                                             <button type="submit" name="key"
                                                 value="<?= mysqli_real_escape_string($conn, $_COOKIE['token']) ?>"
-                                                class="btn btn-danger me-sm-3 me-1">Reset password</button>
+                                                class="btn btn-danger me-sm-3 me-1"><?= $lang['reset_password']?></button>
                                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                                aria-label="Close">Cancel </button>
+                                                aria-label="Close"><?= $lang['back']?> </button>
                                         </div>
                                     </form>
                                 </div>

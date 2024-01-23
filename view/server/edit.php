@@ -85,7 +85,7 @@ $freebackup = $session->getUserInfo("backups") - $usedbackup;
 // check server exist
 $server = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "' AND pid = '".mysqli_real_escape_string($conn,$serverid)."'");
 if ($server->num_rows == 0) {
-    header("location: /dashboard?e=This server doesn't exist or you don't have access to it.");
+    header("location: /dashboard?e=".$lang['error_not_found_in_database']);
     $conn->close();
     die();
 }
@@ -99,63 +99,63 @@ if (isset($_POST['submit'])) {
             $_POST['databases'] == $currentDatabases &&
             $_POST['backups'] == $currentBackups
         ) {
-            header("location: /dashboard?s=No changes made.");
+            header("location: /dashboard?s=".$lang['server_no_changes_made']);
             exit();
         }
         if ($_POST['memory'] < 256) {
-            header('location: /dashboard?e=Minimum memory is 256MB');
+            header('location: /dashboard?e='.str_replace(array('%PLACEHOLDER_1%', '%PLACEHOLDER_2%'), array($lang['ram'],'256MB'), $lang['server_minimum_is']));
             $conn->close();
             die();
         }
         if ($_POST['disk'] < 256) {
-            header('location: /dashboard?e=Minimum disk is 256MB');
+            header('location: /dashboard?e='.str_replace(array('%PLACEHOLDER_1%', '%PLACEHOLDER_2%'), array($lang['disk'],'256MB'), $lang['server_minimum_is']));
             $conn->close();
             die();
         }
         if ($_POST['cores'] < 10) {
-            header('location: /dashboard?e=Minimum cores is 0.10');
+            header('location: /dashboard?e='.str_replace(array('%PLACEHOLDER_1%', '%PLACEHOLDER_2%'), array($lang['cpu'],'0.10'), $lang['server_minimum_is']));
             $conn->close();
             die();
         }
         if ($_POST['ports'] < 0) {
-            header('location: /dashboard?e=Minimum ports is 0');
+            header('location: /dashboard?e='.str_replace(array('%PLACEHOLDER_1%', '%PLACEHOLDER_2%'), array($lang['server_allocation'],'0'), $lang['server_minimum_is']));
             $conn->close();
             die();
         }
         if ($_POST['backups'] < 0) {
-            header('location: /dashboard?e=Minimum backup is 0.');
+            header('location: /dashboard?e='.str_replace(array('%PLACEHOLDER_1%', '%PLACEHOLDER_2%'), array($lang['backup_slot'],'0'), $lang['server_minimum_is']));
             $conn->close();
             die();
         }
         if ($_POST['databases'] < 0) {
-            header('location: /dashboard?e=Minimum databases is 0.');
+            header('location: /dashboard?e='.str_replace(array('%PLACEHOLDER_1%', '%PLACEHOLDER_2%'), array($lang['mysql'],'0'), $lang['server_minimum_is']));
             $conn->close();
             die();
         }
         if ($_POST['memory'] > $freeram) {
-            header("location: /dashboard?e=You don't have enough memory.");
+            header("location: /dashboard?e=".str_replace('%PLACEHOLDER_1%',$lang['ram'],$lang['server_you_not_have']));
             $conn->close();
             die();
         }
         if ($_POST['cores'] > ($session->getUserInfo("cpu") - $usedcpu) + $currentCpu) {
-            header("location: /dashboard?e=You don't have enough cpu.");
+            header("location: /dashboard?e=".str_replace('%PLACEHOLDER_1%',$lang['cpu'],$lang['server_you_not_have']));
             $conn->close();
             die();
         }
         if ($_POST['disk'] > $freedisk) {
             if ($useddisk1 > $session->getUserInfo("disk_space")) {
                 if ($_POST['disk'] > $currentDisk) {
-                    header("location: /dashboard?e=Your in debt, you cannot increase disk.");
+                    header("location: /dashboard?e=".str_replace('%PLACEHOLDER_1%',$lang['disk'],$lang['server_you_not_have']));
                     $conn->close();
                     die();
                 }
                 if ($_POST['disk'] == $currentDisk) {
-                    header("location: /dashboard?e=You must reduce you're disk as your in debt.");
+                    header("location: /dashboard?e=".str_replace('%PLACEHOLDER_1%',$lang['disk'],$lang['server_you_not_have']));
                     $conn->close();
                     die();
                 }
             } else {
-                header("location: /dashboard?e=You don't have enough disk.");
+                header("location: /dashboard?e=".str_replace('%PLACEHOLDER_1%',$lang['disk'],$lang['server_you_not_have']));
                 $conn->close();
                 die();
             }
@@ -164,12 +164,12 @@ if (isset($_POST['submit'])) {
         if ($_POST['ports'] > $freeports) {
             if ($usedports1 > $session->getUserInfo("ports")) {
                 if ($_POST['ports'] > $currentPorts || $_POST['ports'] == $currentPorts) {
-                    header("Location: /dashboard?e=You're in debt, you cannot increase ports.");
+                    header("Location: /dashboard?e=".str_replace('%PLACEHOLDER_1%',$lang['server_allocation'],$lang['server_you_not_have']));
                     $conn->close();
                     die();
                 }
             } else {
-                header("Location: /dashboard?e=You don't have enough ports.");
+                header("Location: /dashboard?e=".str_replace('%PLACEHOLDER_1%',$lang['server_allocation'],$lang['server_you_not_have']));
                 $conn->close();
                 die();
             }
@@ -178,30 +178,30 @@ if (isset($_POST['submit'])) {
         if ($_POST['databases'] > $freedatabases) {
             if ($useddatabases > $session->getUserInfo("databases")) {
                 if ($_POST['databases'] > $currentDatabases || $_POST['databases'] == $currentDatabases) {
-                    header("Location: /dashboard?e=You're in debt, you cannot increase databases.");
+                    header("Location: /dashboard?e=".str_replace('%PLACEHOLDER_1%',$lang['mysql'],$lang['server_you_not_have']));
                     $conn->close();
                     die();
                 }
             } else {
-                header("Location: /dashboard?e=You don't have enough databases.");
+                header("Location: /dashboard?e=".str_replace('%PLACEHOLDER_1%',$lang['mysql'],$lang['server_you_not_have']));
                 $conn->close();
                 die();
             }
         }
 
-        if ($_POST['backups'] > $freebackup) {
-            if ($usedbackup > $session->getUserInfo("backups")) {
-                if ($_POST['backups'] > $currentBackups || $_POST['backups'] == $currentBackups) {
-                    header("Location: /dashboard?e=You're in debt, you cannot increase backups.");
-                    $conn->close();
-                    die();
-                }
-            } else {
-                header("Location: /dashboard?e=You don't have enough backups.");
-                $conn->close();
-                die();
-            }
-        }
+        //if ($_POST['backups'] > $freebackup) {
+        //    if ($usedbackup > $session->getUserInfo("backups")) {
+        //        if ($_POST['backups'] > $currentBackups || $_POST['backups'] == $currentBackups) {
+        //            header("Location: /dashboard?e=You're in debt, you cannot increase backups.");
+        //            $conn->close();
+        //            die();
+        //        }
+        //    } else {
+        //        header("Location: /dashboard?e=You don't have enough backups.");
+        //        $conn->close();
+        //        die();
+        //    }
+        //}
         // change server resources
         $ch = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers/" . $serverid . "/build");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -233,11 +233,11 @@ if (isset($_POST['submit'])) {
         unset($ch);
         $result = json_decode($result, true);
         if (!isset($result['object'])) {
-            header("location: /dashboard?e=There was an unexpected error while editing your server's limits.");
+            header("location: /dashboard?e=".$lang['login_error_unknown']);
             $conn->close();
             die();
         } else {
-            header("location: /dashboard?s=Done we updated your server limits.");
+            header("location: /dashboard?s=".$lang['server_updated']);
             $conn->close();
             die();
         }
@@ -256,7 +256,7 @@ if (isset($_POST['submit'])) {
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> - Edit Server
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['server']?>
     </title>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-help-center.css" />
 </head>
@@ -277,7 +277,7 @@ if (isset($_POST['submit'])) {
                 <?php include(__DIR__ . '/../components/navbar.php') ?>
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Server /</span> Edit</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><?= $lang['server']?> /</span> <?= $lang['edit']?></h4>
                         <?php include(__DIR__ . '/../components/alert.php') ?>
                         <br>
                         <div id="ads">
@@ -291,24 +291,24 @@ if (isset($_POST['submit'])) {
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="card-title">Edit Server</div>
+                                    <div class="card-title"><?= $lang['server']?>  <?= $lang['edit']?></div>
                                 </div>
                                 <div class="card-body">
                                     <form method="POST">
-                                        <p>RAM:&nbsp;&nbsp;&nbsp;<input class="form-control" id="ram" name="memory"
+                                        <p><?= $lang['ram']?>:&nbsp;&nbsp;&nbsp;<input class="form-control" id="ram" name="memory"
                                                 value="<?= $currentMemory ?>"></p>
-                                        <p>Disk:&nbsp;&nbsp;&nbsp;<input class="form-control" id="disk" name="disk"
+                                        <p><?= $lang['disk']?>:&nbsp;&nbsp;&nbsp;<input class="form-control" id="disk" name="disk"
                                                 value="<?= $currentDisk ?>"></p>
-                                        <p>CPU:&nbsp;&nbsp;&nbsp;<input class="form-control" id="cpu" name="cores"
+                                        <p><?= $lang['cpu']?>:&nbsp;&nbsp;&nbsp;<input class="form-control" id="cpu" name="cores"
                                                 value="<?= $currentCpu ?>"></p>
-                                        <p>Allocations:&nbsp;&nbsp;&nbsp;<input class="form-control" name="ports"
+                                        <p><?= $lang['server_allocation']?>:&nbsp;&nbsp;&nbsp;<input class="form-control" name="ports"
                                                 id="ports" value="<?= $currentPorts ?>"></p>
-                                        <p>Databases:&nbsp;&nbsp;&nbsp;<input class="form-control" name="databases"
+                                        <p><?= $lang['mysql']?>:&nbsp;&nbsp;&nbsp;<input class="form-control" name="databases"
                                                 id="databases" value="<?= $currentDatabases ?>"></p>
-                                        <p>Backups:&nbsp;&nbsp;&nbsp;<input class="form-control" name="backups"
+                                        <p><?= $lang['backup_slot']?>:&nbsp;&nbsp;&nbsp;<input class="form-control" name="backups"
                                                 id="backups" value="<?= $currentBackups ?>"></p>
 
-                                        <button name="submit" type="submit" class="btn btn-primary">Modify</button>
+                                        <button name="submit" type="submit" class="btn btn-primary"><?= $lang['save']?></button>
                                         <br>
                                     </form>
                                 </div>

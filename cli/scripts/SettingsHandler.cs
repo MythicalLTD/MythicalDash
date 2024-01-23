@@ -85,10 +85,30 @@ namespace MythicalDash
                 Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
             }
         }
-        public void setLang(string lang) {
+        public void SetEnglish() {
             if (fm.ConfigExists() == true)
             { 
-                
+                try
+                        {
+                            getConnection();
+                            using (var connection = new MySqlConnection(connectionString))
+                            {
+                                connection.Open();
+                                ExecuteSQLScript(connection, "UPDATE `mythicaldash_settings` SET `lang` = 'en_US' WHERE `mythicaldash_settings`.`id` = 1;");
+                                connection.Close();
+                            }
+                            string logDirectory = "logs";
+                            string[] logFiles = Directory.GetFiles(logDirectory);
+                            foreach (string logFile in logFiles)
+                            {
+                                File.Delete(logFile);
+                            }
+                            Program.logger.Log(LogType.Info, "Done");
+                        }
+                        catch (Exception ex)
+                        {
+                            Program.logger.Log(LogType.Error, "Sorry but the auto settings throws this error: " + ex.Message);
+                        }
             }
             else
             {

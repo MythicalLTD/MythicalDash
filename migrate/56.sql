@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_settings` ADD `landingpage` ENUM('true','false') NOT NULL DEFAULT 'true' AFTER `show_snow`;

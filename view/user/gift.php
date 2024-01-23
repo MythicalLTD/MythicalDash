@@ -10,11 +10,11 @@ if (isset($_GET['userid']) && isset($_GET['coins']) && is_numeric($_GET['coins']
 
     if (mysqli_num_rows($userResult) > 0) {
         if ($session->getUserInfo("id") == $_GET['userid']) {
-            header("location: /user/profile?e=You cannot send coins to yourself!&id=" . $_GET['userid']);
+            header("location: /user/profile?e=".$lang['you_cant_send_coins_to_yourself']."!&id=" . $_GET['userid']);
             die();
         }
         if ($coins <= 0) {
-            header("location: /user/profile?e=Please enter a valid number of coins to send&id=" . $_GET['userid']);
+            header("location: /user/profile?e=".$lang['input_not_valid']."id=" . $_GET['userid']);
             die();
         }
         if ($coins <= $session->getUserInfo("coins")) {
@@ -34,15 +34,15 @@ if (isset($_GET['userid']) && isset($_GET['coins']) && is_numeric($_GET['coins']
             header("location: /user/profile?id={$giftUser['id']}&s=Sent $coins coin(s) to {$giftUser['username']}");
             die();
         } else {
-            header("location: /user/profile?e=You don't have enough coins to send that many&id=$userid");
+            header("location: /user/profile?e=".$lang['store_not_have_enough_coins']."&id=$userid");
             die();
         }
     } else {
-        header("location: /dashboard?e=We cannot find this user in our database");
+        header("location: /dashboard?e=".$lang['error_not_found_in_database']);
         die();
     }
 } else {
-    header("location: /dashboard?e=Invalid input");
+    header("location: /dashboard?e=".$lang['input_not_valid']);
     die();
 }
 ?>

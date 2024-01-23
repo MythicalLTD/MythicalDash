@@ -12,31 +12,33 @@ http_response_code(404);
   <meta charset="utf-8" />
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-  <?php include(__DIR__ . '/../requirements/head.php'); ?>
+  <?php include (__DIR__ . '/../requirements/head.php'); ?>
   <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-misc.css" />
   <title>
-    <?= SettingsManager::getSetting("name") ?> - Not found
+    <?= SettingsManager::getSetting('name') ?> - <?= $lang['404_title']?>
   </title>
 
 </head>
 
 <body>
   <?php
-  if (SettingsManager::getSetting("show_snow") == "true") {
-    include(__DIR__ . '/../components/snow.php');
-  }
+    if (SettingsManager::getSetting('show_snow') == 'true') {
+      include (__DIR__ . '/../components/snow.php');
+    }
   ?>
   <div id="preloader" class="discord-preloader">
     <div class="spinner"></div>
   </div>
   <div class="container-xxl container-p-y">
     <div class="misc-wrapper">
-      <h2 class="mb-1 mt-4">Page Not Found :(</h2>
-      <p class="mb-4 mx-2">Oops! 😖 The requested URL was not found on this server.</p>
-      <a href="/" class="btn btn-primary mb-4">Back to home</a>
+      <h2 class="mb-1 mx-2"><?= $lang['404_subtitle']?></h2>
+      <p class="mb-4 mx-2">
+        <?= $lang['404_description']?>
+      </p>
+      <a href="/dashboard" class="btn btn-primary mb-4"><?= $lang['home']?></a>
       <div class="mt-4">
-        <img src="<?= $appURL ?>/assets/img/illustrations/page-misc-error.png" alt="page-misc-error" width="225"
-          class="img-fluid" />
+        <img src="<?= $appURL ?>/assets/img/illustrations/page-misc-you-are-not-authorized.png"
+          alt="page-misc-not-authorized" width="170" class="img-fluid" />
       </div>
     </div>
   </div>
@@ -45,7 +47,7 @@ http_response_code(404);
       data-app-light-img="illustrations/bg-shape-image-light.png"
       data-app-dark-img="illustrations/bg-shape-image-dark.png" />
   </div>
-  <?php include(__DIR__ . '/../requirements/footer.php'); ?>
+  <?php include (__DIR__ . '/../requirements/footer.php'); ?>
 </body>
 
 </html>
