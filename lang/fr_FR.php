@@ -201,7 +201,7 @@ return [
     "second" => "second(s)",
     "link" => "Lien",
     "ready" => "Prêt",
-    "linkvertise" => "Veuillez cliquer sur le bouton "continuer" pour poursuivre",
+    "linkvertise" => "Veuillez cliquer sur le bouton continuer pour poursuivre",
     "continue" => "Continuer",
     "redeem" => "Redeem",
     "redeem_title" => "Utiliser un coupon",
