@@ -1,1 +1,1 @@
-DROP TABLE `mythicaldash`.`mythicaldash_logs`;
+DROP TABLE `mythicaldash_logs`;

@@ -6,7 +6,7 @@ include(__DIR__ . '/../../requirements/admin.php');
 
 function PurgeServers($dbconn)
 {
-    $dbconn->query("TRUNCATE TABLE `mythicaldash`.`mythicaldash_servers_queue`");
+    $dbconn->query("TRUNCATE TABLE `mythicaldash_servers_queue`");
     $query = "SELECT * FROM mythicaldash_servers WHERE mythicaldash_servers.purge = 'true'";
     $resultdb = mysqli_query($dbconn, $query);
     if ($resultdb) {

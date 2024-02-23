@@ -47,6 +47,8 @@ include (__DIR__ . '/../../requirements/admin.php');
                             <h5 class="card-header text-center">General</h5>
                             <div class="card-text text-center">
                                 <p>Customize your general settings here.</p>
+                                <p>For the language list that you can you use please check your <code>/lang</code> folder!!.</p>
+                                
                             </div>
                             <hr class="my-0">
                             <div class="card-body">

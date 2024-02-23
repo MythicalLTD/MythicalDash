@@ -28,14 +28,14 @@ namespace MythicalDash
                 else
                 {
                     password += key.KeyChar;
-                    Console.Write("*"); 
+                    Console.Write("*");
                 }
             }
             return password;
         }
         public void Configurator()
         {
-            #pragma warning disable
+#pragma warning disable
             Program.logger.Log(LogType.Info, "Hi, please fill in your database configuration for MythicalDash.");
             string defaultHost = "localhost";
             string defaultPort = "3306";
@@ -92,7 +92,7 @@ namespace MythicalDash
             {
                 dbName = deafultdbName;
             }
-            #pragma warning restore
+#pragma warning restore
             if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(port) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(dbName))
             {
                 Program.logger.Log(LogType.Error, "Invalid input. Please provide all the required values.");
@@ -112,6 +112,22 @@ namespace MythicalDash
             {
                 Program.logger.Log(LogType.Error, $"Failed to connect to MySQL: {ex.Message}");
                 Environment.Exit(0x0);
+            }
+        }
+        public void Rebuild()
+        {
+            if (fm.ConfigExists() == true)
+            {
+                if (File.Exists("/var/www/mythicaldash/migrates.ini")) {
+                    File.Delete("/var/www/mythicaldash/migrates.ini");
+                }
+                Migrate m = new Migrate();
+                m.Now();
+                Environment.Exit(0x0);
+            }
+            else
+            {
+                Program.logger.Log(LogType.Error, "It looks like the config file does not exist!");
             }
         }
         public void UpdateConfig(string host, string port, string username, string password, string dbname)

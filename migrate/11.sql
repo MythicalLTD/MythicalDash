@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `mythicaldash_linkvertise`;
 CREATE TABLE `mythicaldash_linkvertise` (
   `id` int(11) NOT NULL,
   `skey` text NOT NULL,

@@ -259,6 +259,55 @@ namespace MythicalDash
                 sh.SetEnglish();
                 Environment.Exit(0x0);
             }
+            else if (args.Contains("-environment:rebuild"))
+            {
+                Program.logger.Log(LogType.Warning, "WARNING WARNING WARNING!");
+                Program.logger.Log(LogType.Warning, "WARNING WARNING WARNING!");
+                Program.logger.Log(LogType.Warning, "WARNING WARNING WARNING!");
+                Program.logger.Log(LogType.Warning, "WARNING WARNING WARNING!");
+                Program.logger.Log(LogType.Warning, "WARNING WARNING WARNING!");
+                Program.logger.Log(LogType.Warning, "WARNING WARNING WARNING!");
+                Program.logger.Log(LogType.Warning, "THIS COMMAND WILL WIPE YOUR DATABASE AND REBUILD IT!");
+                Program.logger.Log(LogType.Warning, "ANY DATA SAVED ON THE DATABASE WILL BE GONE FOREVER!");
+                Program.logger.Log(LogType.Warning, "MAKE SURE YOU KNOW WHAT YOU ARE DOING!!");
+                Program.logger.Log(LogType.Warning, "DO THIS ONLY IF YOU DO NOT USE ANY SERVER MODULE!");
+                Program.logger.Log(LogType.Warning, "ANY LEFT SERVERS/CLIENTS WILL GET ONLY DELETED INSIDE THE DATABASE!");
+                Program.logger.Log(LogType.Warning, "MAKE SURE YOU DELETE EVERY USER/SERVER BEFORE YOU RUN THIS!");
+                Program.logger.Log(LogType.Warning, "WARNING WARNING WARNING!");
+                Program.logger.Log(LogType.Warning, "WARNING WARNING WARNING!");
+                Program.logger.Log(LogType.Warning, "WARNING WARNING WARNING!");
+                Program.logger.Log(LogType.Warning, "WARNING WARNING WARNING!");
+                Program.logger.Log(LogType.Warning, "WARNING WARNING WARNING!");
+                Program.logger.Log(LogType.Warning, "WARNING WARNING WARNING!");
+                Program.logger.Log(LogType.Warning, "Are you sure you want to proceed? (yes/no)");
+#pragma warning disable CS8602
+                string? DBuserResponse = Console.ReadLine().Trim().ToLower();
+#pragma warning restore CS8602
+                if (DBuserResponse == "yes")
+                {
+                    try
+                    {
+                        db.Rebuild();
+                        Environment.Exit(0x0);
+                    }
+                    catch (Exception ex)
+                    {
+                        Program.logger.Log(LogType.Error, $"Failed rebuild: {ex.Message}");
+
+                    }
+                }
+                else if (DBuserResponse == "no")
+                {
+                    Program.logger.Log(LogType.Info, "Action cancelled.");
+                    Environment.Exit(0x0);
+                }
+                else
+                {
+                    Program.logger.Log(LogType.Info, "Invalid response. Please enter 'yes' or 'no'.");
+                    Environment.Exit(0x0);
+                }
+                Environment.Exit(0x0);
+            }
             else if (args.Contains("-help"))
             {
                 Console.Clear();
@@ -272,6 +321,7 @@ namespace MythicalDash
                 Console.WriteLine("‖    -environment:up            ‖ Exit maintenance mode.                                                                 ‖");
                 Console.WriteLine("‖    -environment:setup         ‖ This is a command to help you setup your dashboard!                                    ‖");
                 Console.WriteLine("‖    -environment:lang          ‖ Resets the dashboard language to en_US                                                 ‖");
+                Console.WriteLine("‖    -environment:rebuild       ‖ Rebuilds the hole database from scratch.                                               ‖");
                 Console.WriteLine("‖    -turnstile:disable         ‖ Stops turnstile from running!                                                          ‖");
                 Console.WriteLine("‖    -vpn:disable               ‖ Stops anti vpn from running!                                                           ‖");
                 Console.WriteLine("‖    -key:generate              ‖ Generate a new encryption key for MythicalDash.                                        ‖");

@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `mythicaldash_apikeys`;
 CREATE TABLE `mythicaldash_apikeys` (
   `id` int(11) NOT NULL,
   `name` text NOT NULL,
@@ -6,6 +7,7 @@ CREATE TABLE `mythicaldash_apikeys` (
   `created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `mythicaldash_eggs`;
 CREATE TABLE `mythicaldash_eggs` (
   `id` int(11) NOT NULL,
   `name` text NOT NULL,
@@ -15,6 +17,7 @@ CREATE TABLE `mythicaldash_eggs` (
   `date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `mythicaldash_locations`;
 CREATE TABLE `mythicaldash_locations` (
   `id` int(11) NOT NULL,
   `name` text NOT NULL,
@@ -24,6 +27,7 @@ CREATE TABLE `mythicaldash_locations` (
   `created` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `mythicaldash_login_logs`;
 CREATE TABLE `mythicaldash_login_logs` (
   `id` int(11) NOT NULL,
   `ipaddr` text NOT NULL,
@@ -31,6 +35,7 @@ CREATE TABLE `mythicaldash_login_logs` (
   `date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `mythicaldash_logs`;
 CREATE TABLE `mythicaldash_logs` (
   `id` int(11) NOT NULL,
   `log` text NOT NULL,
@@ -38,6 +43,7 @@ CREATE TABLE `mythicaldash_logs` (
   `type` enum('auth','action','error') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `mythicaldash_redeem`;
 CREATE TABLE `mythicaldash_redeem` (
   `id` int(11) NOT NULL,
   `code` text NOT NULL,
@@ -53,6 +59,7 @@ CREATE TABLE `mythicaldash_redeem` (
   `created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `mythicaldash_resetpasswords`;
 CREATE TABLE `mythicaldash_resetpasswords` (
   `id` int(11) NOT NULL,
   `email` text DEFAULT NULL,
@@ -63,6 +70,7 @@ CREATE TABLE `mythicaldash_resetpasswords` (
   `dateinfo` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `mythicaldash_servers`;
 CREATE TABLE `mythicaldash_servers` (
   `id` int(11) NOT NULL,
   `pid` text NOT NULL,
@@ -71,6 +79,7 @@ CREATE TABLE `mythicaldash_servers` (
   `created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `mythicaldash_servers_queue`;
 CREATE TABLE `mythicaldash_servers_queue` (
   `id` int(11) NOT NULL,
   `name` text NOT NULL,
@@ -88,6 +97,7 @@ CREATE TABLE `mythicaldash_servers_queue` (
   `created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `mythicaldash_settings`;
 CREATE TABLE `mythicaldash_settings` (
   `id` int(11) NOT NULL,
   `name` text NOT NULL DEFAULT '\'MythicalDash\'',
@@ -132,6 +142,7 @@ CREATE TABLE `mythicaldash_settings` (
   `version` text NOT NULL DEFAULT '2.0.0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `mythicaldash_tickets`;
 CREATE TABLE `mythicaldash_tickets` (
   `id` int(11) NOT NULL,
   `ownerkey` text NOT NULL,
@@ -144,6 +155,7 @@ CREATE TABLE `mythicaldash_tickets` (
   `created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `mythicaldash_tickets_messages`;
 CREATE TABLE `mythicaldash_tickets_messages` (
   `id` int(11) NOT NULL,
   `ticketuuid` text NOT NULL,
@@ -153,6 +165,7 @@ CREATE TABLE `mythicaldash_tickets_messages` (
   `created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `mythicaldash_users`;
 CREATE TABLE `mythicaldash_users` (
   `id` int(11) NOT NULL,
   `panel_id` text NOT NULL,
