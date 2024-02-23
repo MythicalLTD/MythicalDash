@@ -74,8 +74,20 @@ include(__DIR__ . '/../../requirements/admin.php');
 
                                         <div class="mb-3 col-md-2">
                                             <label for="app:name" class="form-label">Language Code</label>
-                                            <input class="form-control" type="text" id="app:lang" name="app:lang"
-                                                value="<?= SettingsManager::getSetting('lang') ?>" placeholder="en_US">
+                                            <!--<input class="form-control" type="text" id="app:lang" name="app:lang"
+                                                value="<?= SettingsManager::getSetting('lang') ?>" placeholder="en_US">-->
+                                            <select class="form-control" name="app:lang">
+                                                <?php
+                                                $path = __DIR__ . "/../../../lang/";
+                                                $files = scandir($path);
+                                                foreach ($files as $file) {
+                                                    if ($file != '.' && $file != '..') {
+                                                        $fileName = pathinfo($file, PATHINFO_FILENAME);
+                                                        echo "<option value='$fileName'>$fileName</option>";
+                                                    }
+                                                }
+                                                ?>
+                                            </select>
                                         </div>
                                         <div class="form-group col-md-1">
                                             <label class="control-label">Snow</label>
@@ -487,12 +499,15 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 placeholder="2">
                                         </div>
                                         <div class="mb-3 col-md-2">
-                                            <label for="resources:ports" class="form-label">Max Server Allocations</label>
+                                            <label for="resources:ports" class="form-label">Max Server
+                                                Allocations</label>
                                             <input class="form-control" type="text" name="resources:maxports"
-                                                value="<?= SettingsManager::getSetting('max_allocations') ?>" placeholder="2">
+                                                value="<?= SettingsManager::getSetting('max_allocations') ?>"
+                                                placeholder="2">
                                         </div>
                                         <div class="mb-3 col-md-2">
-                                            <label for="resources:databases" class="form-label">Max Server Databases</label>
+                                            <label for="resources:databases" class="form-label">Max Server
+                                                Databases</label>
                                             <input class="form-control" type="text" name="resources:maxdatabases"
                                                 value="<?= SettingsManager::getSetting('max_dbs') ?>" placeholder="2">
                                         </div>
