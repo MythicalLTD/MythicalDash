@@ -156,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <div class="mb-3 col-md-6">
                                                     <label for="username" class="form-label"><?= $lang['username']?></label>
                                                     <input class="form-control" type="text" id="username"
-                                                        name="username" value="<?= $session->getUserInfo("username") ?>"
+                                                        name="username" id="name" value="<?= $session->getUserInfo("username") ?>"
                                                         placeholder="jhondoe" />
                                                 </div>
                                                 <div class="mb-3 col-md-6">
