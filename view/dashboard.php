@@ -3,70 +3,74 @@ use MythicalDash\ErrorHandler;
 use MythicalDash\SettingsManager;
 use MythicalDash\Pterodactyl\Server;
 
-include('requirements/page.php');
-$nuserdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'")->fetch_array();
-$servers = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
-$servers_in_queue = mysqli_query($conn, "SELECT * FROM mythicaldash_servers_queue WHERE ownerid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
-$serversnumber = $servers->num_rows + $servers_in_queue->num_rows;
-$usedRam = 0;
-$usedDisk = 0;
-$usedCpu = 0;
-$usedPorts = 0;
-$usedDatabase = 0;
-$usedBackup = 0;
-$uservers = array();
-foreach ($servers as $serv) {
-   $ptid = $serv["pid"];
-   if (Server::checkServerExists($ptid) == true) {
-      $ch = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers/" . $ptid);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt(
-         $ch,
-         CURLOPT_HTTPHEADER,
-         array(
-            "Authorization: Bearer " . SettingsManager::getSetting("PterodactylAPIKey"),
-            "Content-Type: application/json",
-            "Accept: Application/vnd.pterodactyl.v1+json"
-         )
-      );
-      $result1 = curl_exec($ch);
-      $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-      if ($httpcode != 200) {
-         ErrorHandler::ShowCritical($lang['pterodactyl_connection_error']);
+try {
+   include('requirements/page.php');
+   $nuserdb = $conn->query("SELECT * FROM mythicaldash_users WHERE api_key = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'")->fetch_array();
+   $servers = mysqli_query($conn, "SELECT * FROM mythicaldash_servers WHERE uid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
+   $servers_in_queue = mysqli_query($conn, "SELECT * FROM mythicaldash_servers_queue WHERE ownerid = '" . mysqli_real_escape_string($conn, $_COOKIE['token']) . "'");
+   $serversnumber = $servers->num_rows + $servers_in_queue->num_rows;
+   $usedRam = 0;
+   $usedDisk = 0;
+   $usedCpu = 0;
+   $usedPorts = 0;
+   $usedDatabase = 0;
+   $usedBackup = 0;
+   $uservers = array();
+   foreach ($servers as $serv) {
+      $ptid = $serv["pid"];
+      if (Server::checkServerExists($ptid) == true) {
+         $ch = curl_init(SettingsManager::getSetting("PterodactylURL") . "/api/application/servers/" . $ptid);
+         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+         curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+               "Authorization: Bearer " . SettingsManager::getSetting("PterodactylAPIKey"),
+               "Content-Type: application/json",
+               "Accept: Application/vnd.pterodactyl.v1+json"
+            )
+         );
+         $result1 = curl_exec($ch);
+         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+         if ($httpcode != 200) {
+            ErrorHandler::ShowCritical($lang['pterodactyl_connection_error']);
+         }
+         curl_close($ch);
+         $result = json_decode($result1, true);
+         $id = $result['attributes']["uuid"];
+         $name = $result['attributes']['name'];
+         $ram = $result['attributes']['limits']['memory'];
+         $disk = $result['attributes']['limits']['disk'];
+         $cpuh = $result['attributes']['limits']['cpu'];
+         $db = $result['attributes']['feature_limits']['databases'];
+         $usedRam = $usedRam + $ram;
+         $usedDisk = $usedDisk + $disk;
+         $alloc = $result['attributes']['feature_limits']['allocations'] - 1;
+         $usedBackup = $result['attributes']['feature_limits']['backups'];
+         $usedPorts = $usedPorts + $alloc;
+         $usedDatabase = $usedDatabase + $db;
+         $usedCpu = $usedCpu + $cpuh;
+         array_push($uservers, $result['attributes']);
+      } else {
+         //i hope this works else server is bye bye and only in panel it will show :)
+         $conn->query("DELETE FROM mythicaldash_servers WHERE `mythicaldash_servers`.`pid` = '" . mysqli_real_escape_string($conn, $ptid) . "'");
+         $conn->close();
+         header('location: /dashboard');
       }
-      curl_close($ch);
-      $result = json_decode($result1, true);
-      $id = $result['attributes']["uuid"];
-      $name = $result['attributes']['name'];
-      $ram = $result['attributes']['limits']['memory'];
-      $disk = $result['attributes']['limits']['disk'];
-      $cpuh = $result['attributes']['limits']['cpu'];
-      $db = $result['attributes']['feature_limits']['databases'];
-      $usedRam = $usedRam + $ram;
-      $usedDisk = $usedDisk + $disk;
-      $alloc = $result['attributes']['feature_limits']['allocations'] - 1;
-      $usedBackup = $result['attributes']['feature_limits']['backups'];
-      $usedPorts = $usedPorts + $alloc;
-      $usedDatabase = $usedDatabase + $db;
-      $usedCpu = $usedCpu + $cpuh;
-      array_push($uservers, $result['attributes']);
-   } else {
-      //i hope this works else server is bye bye and only in panel it will show :)
-      $conn->query("DELETE FROM mythicaldash_servers WHERE `mythicaldash_servers`.`pid` = '" . mysqli_real_escape_string($conn, $ptid) . "'");
-      $conn->close();
-      header('location: /dashboard');
+
+   }
+   foreach ($servers_in_queue as $server) {
+      $usedRam = $usedRam + $server['ram'];
+      $usedDisk = $usedDisk + $server['disk'];
+      $usedPorts = $usedPorts + $server['xtra_ports'];
+      $usedBackup = $usedBackup + $server['backuplimit'];
+      $usedDatabase = $usedDatabase + $server['databases'];
+      $usedCpu = $usedCpu + $server["cpu"];
    }
 
+} catch (Exception $e) {
+   echo '<script>alert("There was an error while loading this page please contact your admin!")</script>';
 }
-foreach ($servers_in_queue as $server) {
-   $usedRam = $usedRam + $server['ram'];
-   $usedDisk = $usedDisk + $server['disk'];
-   $usedPorts = $usedPorts + $server['xtra_ports'];
-   $usedBackup = $usedBackup + $server['backuplimit'];
-   $usedDatabase = $usedDatabase + $server['databases'];
-   $usedCpu = $usedCpu + $server["cpu"];
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en" class="dark-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-semi-dark"
@@ -75,7 +79,8 @@ foreach ($servers_in_queue as $server) {
 <head>
    <?php include('requirements/head.php'); ?>
    <title>
-      <?= SettingsManager::getSetting("name") ?> - <?= $lang['dashboard'] ?>
+      <?= SettingsManager::getSetting("name") ?> -
+      <?= $lang['dashboard'] ?>
    </title>
 
 </head>
@@ -228,14 +233,18 @@ foreach ($servers_in_queue as $server) {
                      <div class="card h-100">
                         <div class="card-header">
                            <div class="text-center justify-content-between mb-3">
-                              <h5 class="card-title mb-0"><?= $lang['statistics'] ?></h5>
+                              <h5 class="card-title mb-0">
+                                 <?= $lang['statistics'] ?>
+                              </h5>
                               <small id="updateText" class="text-muted">Updated 0 seconds ago</small>
                            </div>
                         </div>
                         <div class="card-body">
                            <div class="row gy-3 mb-2">
                               <div class="col-md-3 col-6 text-center">
-                                 <span><?= $lang['ram'] ?></span>
+                                 <span>
+                                    <?= $lang['ram'] ?>
+                                 </span>
                                  <div class="d-flex align-items-center">
                                     <div class="badge rounded-pill bg-label-primary me-3 p-2">
                                        <i class="fas fa-memory fa-2x"></i>
@@ -248,7 +257,9 @@ foreach ($servers_in_queue as $server) {
                                  </div>
                               </div>
                               <div class="col-md-3 col-6 text-center">
-                                 <span><?= $lang['disk'] ?></span>
+                                 <span>
+                                    <?= $lang['disk'] ?>
+                                 </span>
                                  <div class="d-flex align-items-center">
                                     <div class="badge rounded-pill bg-label-primary me-3 p-2">
                                        <i class="fa fa-save fa-2x"></i>
@@ -261,7 +272,9 @@ foreach ($servers_in_queue as $server) {
                                  </div>
                               </div>
                               <div class="col-md-3 col-6 text-center">
-                                 <span><?= $lang['cpu'] ?></span>
+                                 <span>
+                                    <?= $lang['cpu'] ?>
+                                 </span>
                                  <div class="d-flex align-items-center">
                                     <div class="badge rounded-pill bg-label-primary me-3 p-2">
                                        <i class="fas fa-microchip fa-2x"></i>
@@ -274,7 +287,9 @@ foreach ($servers_in_queue as $server) {
                                  </div>
                               </div>
                               <div class="col-md-3 col-6 text-center">
-                                 <span><?= $lang['server_slot'] ?></span>
+                                 <span>
+                                    <?= $lang['server_slot'] ?>
+                                 </span>
                                  <div class="d-flex align-items-center">
                                     <div class="badge rounded-pill bg-label-primary me-3 p-2">
                                        <i class="fas fa-server fa-2x"></i>
@@ -290,7 +305,9 @@ foreach ($servers_in_queue as $server) {
 
                            <div class="row gy-3">
                               <div class="col-md-3 col-6 text-center">
-                                 <span><?= $lang['backup_slot'] ?></span>
+                                 <span>
+                                    <?= $lang['backup_slot'] ?>
+                                 </span>
                                  <div class="d-flex align-items-center">
                                     <div class="badge rounded-pill bg-label-primary me-3 p-2">
                                        <i class="fa fa-network-wired fa-2x"></i>
@@ -303,7 +320,9 @@ foreach ($servers_in_queue as $server) {
                                  </div>
                               </div>
                               <div class="col-md-3 col-6 text-center">
-                                 <span><?= $lang['server_allocation'] ?></span>
+                                 <span>
+                                    <?= $lang['server_allocation'] ?>
+                                 </span>
                                  <div class="d-flex align-items-center">
                                     <div class="badge rounded-pill bg-label-primary me-3 p-2">
                                        <i class="fas fa-microchip fa-2x"></i>
@@ -316,7 +335,9 @@ foreach ($servers_in_queue as $server) {
                                  </div>
                               </div>
                               <div class="col-md-3 col-6 text-center">
-                                 <span><?= $lang['mysql'] ?></span>
+                                 <span>
+                                    <?= $lang['mysql'] ?>
+                                 </span>
                                  <div class="d-flex align-items-center">
                                     <div class="badge rounded-pill bg-label-primary me-3 p-2">
                                        <i class="fas fa-database fa-2x"></i>
@@ -329,7 +350,9 @@ foreach ($servers_in_queue as $server) {
                                  </div>
                               </div>
                               <div class="col-md-3 col-6 text-center">
-                                 <span><?= $lang['coins'] ?></span>
+                                 <span>
+                                    <?= $lang['coins'] ?>
+                                 </span>
                                  <div class="d-flex align-items-center">
                                     <div class="badge rounded-pill bg-label-primary me-3 p-2">
                                        <i class="fas fa-coins fa-2x"></i>
@@ -350,7 +373,9 @@ foreach ($servers_in_queue as $server) {
                      <div class="col">
                         <div class="card bg-default shadow">
                            <div class="card-header bg-transparent border-0 text-center">
-                              <h5 class="card-title mb-0"><?= $lang['your_servers'] ?></h5>
+                              <h5 class="card-title mb-0">
+                                 <?= $lang['your_servers'] ?>
+                              </h5>
                            </div>
                            <div class="table-responsive">
                               <table class="table align-items-center table-flush">
@@ -360,25 +385,45 @@ foreach ($servers_in_queue as $server) {
                                        ?>
                                        <div style="text-align: center;">
                                           <img
-                                             src="https://cdn.discordapp.com/attachments/1169010619815567503/1169532722184732712/empty-svg.png?ex=655ef9b9&is=654c84b9&hm=e76387afc313923d52bd0757fb90cf220ee823d9f8040d4d07c15a1f7e32bb0a&"
+                                             src="/assets/img/empty.svg"
                                              height="150" />
                                           <br>
-                                          <h4 style=""><?= $lang['no_servers_1'] ?></h4>
-                                          <a href="/server/create" class="btn btn-primary"><?= $lang['no_servers_1'] ?></a><br /><br />
+                                          <h4 style="">
+                                             <?= $lang['no_servers_1'] ?>
+                                          </h4>
+                                          <a href="/server/create" class="btn btn-primary">
+                                             <?= $lang['no_servers_1'] ?>
+                                          </a><br /><br />
                                        </div>
                                        <?php
                                     } else {
                                        ?>
                                        <thead class="">
                                           <tr>
-                                             <th scope="col"><?= $lang['server_name'] ?></th>
-                                             <th scope="col"><?= $lang['server_node'] ?></th>
-                                             <th scope="col"><?= $lang['server_status'] ?></th>
-                                             <th scope="col"><?= $lang['server_type'] ?></th>
-                                             <th scope="col"><?= $lang['cpu'] ?></th>
-                                             <th scope="col"><?= $lang['ram'] ?></th>
-                                             <th scope="col"><?= $lang['disk'] ?></th>
-                                             <th scope="col"><?= $lang['actions'] ?></th>
+                                             <th scope="col">
+                                                <?= $lang['server_name'] ?>
+                                             </th>
+                                             <th scope="col">
+                                                <?= $lang['server_node'] ?>
+                                             </th>
+                                             <th scope="col">
+                                                <?= $lang['server_status'] ?>
+                                             </th>
+                                             <th scope="col">
+                                                <?= $lang['server_type'] ?>
+                                             </th>
+                                             <th scope="col">
+                                                <?= $lang['cpu'] ?>
+                                             </th>
+                                             <th scope="col">
+                                                <?= $lang['ram'] ?>
+                                             </th>
+                                             <th scope="col">
+                                                <?= $lang['disk'] ?>
+                                             </th>
+                                             <th scope="col">
+                                                <?= $lang['actions'] ?>
+                                             </th>
                                           </tr>
                                        </thead>
                                        <?php
@@ -404,7 +449,7 @@ foreach ($servers_in_queue as $server) {
                                              <?= $location["name"] ?>
                                           </td>
                                           <td>
-                                             <code> <?= str_replace("%placeholder_1%",$serverpos . "/" . $currentnodequeue->num_rows, $lang['server_waiting_list']) ?></code>
+                                             <code> <?= str_replace("%placeholder_1%", $serverpos . "/" . $currentnodequeue->num_rows, $lang['server_waiting_list']) ?></code>
                                           </td>
                                           <td class="">
                                              <?= $egg["name"] ?>
@@ -420,7 +465,9 @@ foreach ($servers_in_queue as $server) {
                                           </td>
                                           <td>
                                              <a href="/server/queue/delete?server=<?= $server["id"] ?>"
-                                                class="btn btn-danger btn-sm"><?= $lang['delete'] ?></a>
+                                                class="btn btn-danger btn-sm">
+                                                <?= $lang['delete'] ?>
+                                             </a>
                                           </td>
                                        </tr>
                                        <?php
@@ -473,16 +520,21 @@ foreach ($servers_in_queue as $server) {
                                                 if ($serverinfo["purge"] == "true") {
                                                    ?>
                                                    <a href="/server/active?id=<?= $serverinfo["id"] ?>"
-                                                      class="btn btn-warning btn-sm"><?= $lang['active'] ?></a>
+                                                      class="btn btn-warning btn-sm">
+                                                      <?= $lang['active'] ?>
+                                                   </a>
                                                    <?php
                                                 }
                                              }
                                              ?>
-                                             <a href="/server/edit?id=<?= $server["id"] ?>"
-                                                class="btn btn-primary btn-sm"><?= $lang['edit'] ?></a>
+                                             <a href="/server/edit?id=<?= $server["id"] ?>" class="btn btn-primary btn-sm">
+                                                <?= $lang['edit'] ?>
+                                             </a>
                                              <a class="btn btn-danger btn-sm"
                                                 href="/server/delete?server=<?= $server["id"] ?>"
-                                                onclick="event.preventDefault(); confirmDeleteAction(<?php echo $server['id'] ?>);"><?= $lang['delete'] ?></a>
+                                                onclick="event.preventDefault(); confirmDeleteAction(<?php echo $server['id'] ?>);">
+                                                <?= $lang['delete'] ?>
+                                             </a>
                                           </td>
                                        </tr>
                                        <?php
@@ -563,7 +615,7 @@ foreach ($servers_in_queue as $server) {
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: '<?= $lang['alert_yes']?>'
+            confirmButtonText: '<?= $lang['alert_yes'] ?>'
          }).then((result) => {
             if (result.isConfirmed) {
                // If the user clicks "Yes, delete it!", redirect to the delete URL
