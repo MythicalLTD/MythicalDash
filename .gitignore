@@ -20,3 +20,5 @@ migrates.ini
 /MythicalDash
 /MythicalDash.zip
 /mythicaldash_backup.sql
+public/FIRST_INSTALL
+public/FIRST_USER
