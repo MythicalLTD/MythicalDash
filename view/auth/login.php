@@ -178,7 +178,7 @@ try {
                 autofocus />
             </div>
             <div class="mb-3 form-password-toggle">
-              <?php if (SettingsManager::getSetting("enable_smtp") == "ture") {
+              <?php if (SettingsManager::getSetting("enable_smtp") == "true") {
                 ?>
                 <div class="d-flex justify-content-between">
                   <label class="form-label" for="password"><?= $lang['password'] ?></label>
