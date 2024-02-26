@@ -117,6 +117,54 @@ Here is a list of the core components that MythicalDash uses to run!
 [PHP-Router](https://packagist.org/packages/mythicalsystems/php-router), [Yaml](https://packagist.org/packages/symfony/yaml), [PHPMailer](https://packagist.org/packages/phpmailer/phpmailer), [Fody](https://www.nuget.org/packages/Costura.Fody/), [MySqlConnector](https://www.nuget.org/packages/MySqlConnector/), [YamlDotNet](https://www.nuget.org/packages/YamlDotNet)
 
 
+# Page Dialogs:
+
+## What are they?
+Page dialogs are a simple method to navigate into the dash by using page ids!
+
+## Why shall i use them?
+Well you do not have to use them if you do not want to use them, but there are just for developers or ppl that get annoyed in trying to find something in the UI!
+
+## Are there some reservations?
+Yes here there are:
+
+`0-99` Client related 
+`100-200` Admin related
+
+## What are the page ids i can use?
+Where here is a list:
+
+- `0`:  Logout `/auth/logout`
+- `1`:  Dashboard `/dashboard`
+- `2`:  Create a server `/server/create`
+- `3`:  AFK `/earn/afk`
+- `4`:  Redeem `/earn/redeem`
+- `5`:  Linkvertise `/earn/linkvertise`
+- `6`:  Store `/store`
+- `7`:  Help Center `/help-center`
+- `8`:  Tickets `/help-center/tickets`
+- `9`:  Terms Of Service `/help-center/tos`
+- `10`:  Privacy Policy `/help-center/pp`
+- `11`:  Leaderboard `/leaderboard`
+- `12`:  User List `/users/list`
+- `13`:  Account `/user/list`
+- `14`:  Connections `/user/connections`
+- `15`:  Payments `/user/payments`
+
+- `100`: Admin Overview - `/admin/overview`
+- `101`: Admin Health - `/admin/health`
+- `102`: Admin API - `/admin/api`
+- `103`: Admin Users - `/admin/users`
+- `104`: Admin Servers List - `/admin/servers/list`
+- `105`: Admin Servers Queue List - `/admin/servers/queue/list`
+- `106`: Admin Servers Queue Logs - `/admin/servers/queue/logs`
+- `107`: Admin Redeem - `/admin/redeem`
+- `108`: Admin Locations - `/admin/locations`
+- `109`: Admin Eggs List - `/admin/eggs/list`
+- `110`: Admin Eggs Config - `/admin/eggs/config`
+- `111`: Admin Settings - `/admin/settings`
+- `112`: Admin Tickets - `/admin/tickets`
+
 ## Serial Code:
 ```bash
 1 740 704 993
