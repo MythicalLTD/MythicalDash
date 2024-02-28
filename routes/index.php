@@ -71,7 +71,7 @@ $router->add("/store", function () {
     require("../view/store.php");
 });
 
-$router->add("/store/buy/stripe/coins", function () {
+$router->add("/store/buy/coins", function () {
     require("../include/main.php");
     require("../view/stripe/buy_coins.php");
 });

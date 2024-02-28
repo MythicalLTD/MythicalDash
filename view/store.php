@@ -177,10 +177,10 @@ if (isset($_GET['buyback'])) {
                             ?>
                         </div>
                         <?php
-                        if (SettingsManager::getSetting("enable_stripe") == "true") {
+                        if (SettingsManager::getSetting("allow_payments") == "true") {
                             ?>
                             <div class="alert alert-warning" role="alert">
-                                <?= $lang['store_not_have_enough_coins'] ?> <a href="/store/buy/stripe/coins">
+                                <?= $lang['store_not_have_enough_coins'] ?> <a href="/store/buy/coins">
                                     <?= $lang['store_wana_buy_coins'] ?>
                                 </a>
                             </div>

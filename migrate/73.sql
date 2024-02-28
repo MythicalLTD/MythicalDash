@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_settings` ADD `paypal_sandbox` ENUM('true','false') NOT NULL DEFAULT 'true' AFTER `paypal_signature`;

@@ -164,7 +164,7 @@ return [
     "already_claimed" => "Der Benutzer hat seine Münzen bereits erhalten!",
     "payment_request_cancel" => "Wir haben den Zahlungscode abgebrochen",
     "code_not_valid" => "Dieser Code ist ungültig",
-    "stripe_title" => "Münzen kaufen mit Stripe",
+    "stripe_title" => "Münzen kaufen",
     "stripe_subtitle" => "<p>Willkommen in unserem Abrechnungssystem. Hier können Sie Münzen kaufen, damit Sie sie in unserem Dashboard verwenden können</p> <p>Die Preise betragen '%PLACEHOLDER_1%' in %PLACEHOLDER_2% für 1 Münze</p>",
     "server_active" => "Wir haben Ihre Servereinstellungen aktualisiert. Ihr Server überspringt nun die nächste Bereinigung.",
     "server_not_own" => "Es tut uns leid, aber Sie besitzen diesen Server nicht!",

@@ -36,6 +36,7 @@ $svhost = $_SERVER['HTTP_HOST'];
 $appURL = $prot . '://' . $svhost;
 
 $lang = Main::getLang();
+define("APP_URL", $appURL);
 
 date_default_timezone_set(SettingsManager::getSetting('timezone'));
 ?>

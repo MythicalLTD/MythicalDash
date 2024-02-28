@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_settings` ADD `paypal_username` TEXT NULL DEFAULT NULL AFTER `enable_paypal`, ADD `paypal_password` TEXT NULL DEFAULT NULL AFTER `paypal_username`, ADD `paypal_signature` TEXT NULL DEFAULT NULL AFTER `paypal_password`;

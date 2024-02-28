@@ -164,7 +164,7 @@ return [
     "already_claimed" => "L'utilisateur a déjà reçu ses pièces!",
     "payment_request_cancel" => "Nous avons annulé le code de paiement",
     "code_not_valid" => "Ce code n'est pas valide",
-    "stripe_title" => "Acheter des pièces avec Stripe",
+    "stripe_title" => "Acheter des pièces",
     "stripe_subtitle" => "<p>Bienvenue dans notre système de facturation. Ici vous pouvez acheter des pièces, afin de les utiliser dans notre tableau de bord</p> <p>Les prix sont '%PLACEHOLDER_1%' dans %PLACEHOLDER_2% pour 1 pièce.</p>",
     "server_active" => "Nous avons mis à jour les paramètres de votre serveur. Votre serveur ignorera désormais la prochaine purge.",
     "server_not_own" => "Désolé, mais ce serveur ne vous appartient pas !",

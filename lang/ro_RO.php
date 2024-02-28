@@ -164,7 +164,7 @@ return [
     "already_claimed" => "Utilizatorul și-a primit deja monedele!",
     "payment_request_cancel" => "Am anulat codul de plată",
     "code_not_valid" => "Acest cod nu este valid",
-    "stripe_title" => "Cumpără monede folosind Stripe",
+    "stripe_title" => "Cumpără monede",
     "stripe_subtitle" => "<p>Bine ai venit în sistemul nostru de facturare. Aici poți cumpăra monede, astfel încât să le poți utiliza în panoul nostru de control</p> <p>Prețurile sunt '%PLACEHOLDER_1%' în %PLACEHOLDER_2% pentru 1 monedă</p>",
     "server_active" => "Am actualizat setările serverului tău. Serverul tău va sări peste următoarea purgare.",
     "server_not_own" => "Regret, dar nu ești proprietarul acestui server!",

@@ -164,7 +164,7 @@ return [
     "already_claimed" => "The user already got his coins!",
     "payment_request_cancel" => "We canceled the payment code",
     "code_not_valid" => "This code is not valid",
-    "stripe_title" => "Buy Coins Using Stripe",
+    "stripe_title" => "Buy Coins",
     "stripe_subtitle" => "<p>Welcome to our billing system. Here you can buy coins, so you can use them inside our dashboard</p> <p>The prices are '%PLACEHOLDER_1%' in %PLACEHOLDER_2% for 1 coin</p>",
     "server_active" => "We've updated your server settings. Your server will now skip the next purge.",
     "server_not_own" => "Sorry but you don't own this server!",
