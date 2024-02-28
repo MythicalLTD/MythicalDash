@@ -47,8 +47,10 @@ include(__DIR__ . '/../../requirements/admin.php');
                             <h5 class="card-header text-center">General</h5>
                             <div class="card-text text-center">
                                 <p>Customize your general settings here.</p>
-                                <p>For the language list that you can you use please check your <code>/lang</code>
-                                    folder!!.</p>
+                                <p>If you want a new language to show here drag and drop the language file inside the
+                                    <code>/lang</code>
+                                    folder!!.
+                                </p>
                             </div>
                             <hr class="my-0">
                             <div class="card-body">
@@ -61,23 +63,25 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 placeholder="MythicalSystems">
                                         </div>
 
-                                        <div class="mb-3 col-md-3">
+                                        <div class="mb-3 col-md-2">
                                             <label for="app:logo" class="form-label">Company Logo</label>
                                             <input class="form-control" type="text" id="app:logo" name="app:logo"
                                                 value="<?= SettingsManager::getSetting('logo') ?>" autofocus="">
                                         </div>
-                                        <div class="mb-3 col-md-3">
+                                        <div class="mb-3 col-md-2">
                                             <label for="app:logo" class="form-label">Background Picture</label>
                                             <input class="form-control" type="text" id="app:bg" name="app:bg"
                                                 value="<?= SettingsManager::getSetting('bg') ?>" autofocus="">
                                         </div>
 
                                         <div class="mb-3 col-md-2">
-                                            <label for="app:name" class="form-label">Language Code</label>
+                                            <label for="app:name" class="form-label">Language</label>
                                             <!--<input class="form-control" type="text" id="app:lang" name="app:lang"
                                                 value="<?= SettingsManager::getSetting('lang') ?>" placeholder="en_US">-->
                                             <select class="form-control" name="app:lang">
                                                 <?php
+                                                echo "<option value='" . SettingsManager::getSetting("lang") . "'>" . SettingsManager::getSetting("lang") . " (X)</option>";
+
                                                 $path = __DIR__ . "/../../../lang/";
                                                 $files = scandir($path);
                                                 foreach ($files as $file) {
@@ -89,6 +93,20 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 ?>
                                             </select>
                                         </div>
+                                        <div class="mb-3 col-md-2">
+                                            <label for="app:name" class="form-label">Timezone</label>
+                                            <select class="form-control" name="app:timezone">
+                                                <?php
+                                                $timezone_identifiers = DateTimeZone::listIdentifiers();
+                                                echo '<option value="' . SettingsManager::getSetting('timezone') . '">' . SettingsManager::getSetting('timezone') . ' (X)</option>';
+
+                                                foreach ($timezone_identifiers as $timezone) {
+                                                    echo '<option value="' . $timezone . '">' . $timezone . '</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+
                                         <div class="form-group col-md-1">
                                             <label class="control-label">Snow</label>
                                             <div>
@@ -111,6 +129,57 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                 ?>
 
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 text-center">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header text-center">Links</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your custom links here. &NewLine;</label><br>
+                                <label>In this page you can change what display links you want to show in the sidebar!
+                                    If you don't want to show any please input <code>none</code> into the field!</label>
+                                <p></p>
+                            </div>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/links" method="GET">
+                                    <div class="row">
+                                        <div class="mb-3 col-md-2">
+                                            <label for="url:panel" class="form-label">Panel</label>
+                                            <input class="form-control" type="text" disabled id="url:panel"
+                                                name="url:panel"
+                                                value="<?= SettingsManager::getSetting('PterodactylURL') ?>"
+                                                placeholder="MythicalSystems">
+                                        </div>
+                                        <div class="mb-3 col-md-2">
+                                            <label for="url:discord" class="form-label">Discord</label>
+                                            <input class="form-control" type="text" disabled id="url:website"
+                                                name="url:discord"
+                                                value="<?= SettingsManager::getSetting('discord_invite') ?>"
+                                                autofocus="">
+                                        </div>
+                                        <div class="mb-3 col-md-2">
+                                            <label for="url:website" class="form-label">WebSite</label>
+                                            <input class="form-control" type="text" id="url:website" name="url:website"
+                                                value="<?= SettingsManager::getSetting('website') ?>" autofocus="">
+                                        </div>
+                                        <div class="mb-3 col-md-2">
+                                            <label for="url:status" class="form-label">Status Page</label>
+                                            <input class="form-control" type="text" id="url:status" name="url:status"
+                                                value="<?= SettingsManager::getSetting('status') ?>" autofocus="">
+                                        </div>
+                                        <div class="mb-3 col-md-2">
+                                            <label for="url:x" class="form-label">Twitter (X)</label>
+                                            <input class="form-control" type="text" id="url:x" name="url:x"
+                                                value="<?= SettingsManager::getSetting('x') ?>" autofocus="">
                                         </div>
                                     </div>
                                     <div class="mt-2 text-center">

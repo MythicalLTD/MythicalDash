@@ -1,4 +1,4 @@
-<?php 
+<?php
 return [
     // DO NOT REPLACE %PLACEHOLDER%"s they are required for something!
     "home" => "Zuhause",
@@ -221,6 +221,11 @@ return [
     "notification" => "Benachrichtigung",
     "view_all_notification" => "Alle Benachrichtigungen anzeigen",
     "logout" => "Abmelden",
+    //REQUIRE UPDATE: 3.2.0
+    "admin_notification_server_title" => "Your server was deleted!",
+    "admin_notification_server_info" => "Hey it looks like an admin deleted your server with the id: (%placeholder%) :(",
+    "admin_notification_server_info_purge" => "Hey, it looks like your server with the id: (%placeholder%) was deleted due to auto purge system you did not mark your server as active! :(",
+    "sidebar_links" => "Links",
 ];
 
 ?>

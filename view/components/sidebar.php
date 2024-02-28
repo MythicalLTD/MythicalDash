@@ -16,7 +16,7 @@ function is_active_page($page_urls)
   <div class="app-brand demo">
     <a href="/" class="app-brand-link">
       <span class="app-brand-text demo menu-text fw-bold">
-         <?= SettingsManager::getSetting("name") ?>
+        <?= SettingsManager::getSetting("name") ?>
       </span>
     </a>
   </div>
@@ -25,31 +25,41 @@ function is_active_page($page_urls)
 
   <ul class="menu-inner py-1">
     <li class="menu-header small text-uppercase">
-      <span class="menu-header-text"><?= $lang['home']?></span>
+      <span class="menu-header-text">
+        <?= $lang['home'] ?>
+      </span>
     </li>
     <li class="menu-item <?php echo is_active_page(['/dashboard']) ? 'active' : ''; ?>">
       <a href="/dashboard" class="menu-link">
         <i class="menu-icon tf-icons ti ti-home"></i>
-        <div><?= $lang['dashboard']?></div>
+        <div>
+          <?= $lang['dashboard'] ?>
+        </div>
       </a>
     </li>
     <li class="menu-item <?php echo is_active_page(['/server/create']) ? 'active' : ''; ?>">
       <a href="/server/create" class="menu-link">
         <i class="menu-icon tf-icons ti ti-server"></i>
-        <div><?= $lang['create_server']?></div>
+        <div>
+          <?= $lang['create_server'] ?>
+        </div>
       </a>
     </li>
     <li class="menu-item <?php echo is_active_page(['/earn', '/earn/afk', '/earn/redeem']) ? 'active' : ''; ?>">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons ti ti-currency-euro"></i>
-        <div><?= $lang['earn']?></div>
+        <div>
+          <?= $lang['earn'] ?>
+        </div>
       </a>
       <ul class="menu-sub">
         <?php if (SettingsManager::getSetting("enable_afk") == "true") {
           ?>
           <li class="menu-item <?php echo is_active_page(['/earn/afk']) ? 'active' : ''; ?>">
             <a href="/earn/afk" class="menu-link">
-              <div><?= $lang['afk']?></div>
+              <div>
+                <?= $lang['afk'] ?>
+              </div>
             </a>
           </li>
           <?php
@@ -57,7 +67,9 @@ function is_active_page($page_urls)
 
         <li class="menu-item <?php echo is_active_page(['/earn/redeem']) ? 'active' : ''; ?>">
           <a href="/earn/redeem" class="menu-link">
-            <div><?= $lang['redeem']?></div>
+            <div>
+              <?= $lang['redeem'] ?>
+            </div>
           </a>
         </li>
         <?php if (SettingsManager::getSetting("linkvertise_enabled") == "true") {
@@ -80,27 +92,37 @@ function is_active_page($page_urls)
     <li class="menu-item  <?php echo is_active_page(['/help-center']) ? 'active' : ''; ?>">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons ti ti-messages"></i>
-        <div ><?= $lang['help_center']?></div>
+        <div>
+          <?= $lang['help_center'] ?>
+        </div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="/help-center" class="menu-link">
-            <div ><?= $lang['home']?></div>
+            <div>
+              <?= $lang['home'] ?>
+            </div>
           </a>
         </li>
         <li class="menu-item <?php echo is_active_page(['/help-center/tickets']) ? 'active' : ''; ?>">
           <a href="/help-center/tickets" class="menu-link">
-            <div ><?= $lang['ticket']?></div>
+            <div>
+              <?= $lang['ticket'] ?>
+            </div>
           </a>
         </li>
         <li class="menu-item <?php echo is_active_page(['/help-center/tos']) ? 'active' : ''; ?>">
           <a href="/help-center/tos" class="menu-link">
-            <div ><?= $lang['terms_of_service']?></div>
+            <div>
+              <?= $lang['terms_of_service'] ?>
+            </div>
           </a>
         </li>
         <li class="menu-item <?php echo is_active_page(['/help-center/pp']) ? 'active' : ''; ?>">
           <a href="/help-center/pp" class="menu-link">
-            <div ><?= $lang['privacy_policy']?></div>
+            <div>
+              <?= $lang['privacy_policy'] ?>
+            </div>
           </a>
         </li>
       </ul>
@@ -108,15 +130,72 @@ function is_active_page($page_urls)
     <li class="menu-item <?php echo is_active_page(['/leaderboard']) ? 'active' : ''; ?>">
       <a href="/leaderboard" class="menu-link">
         <i class="menu-icon tf-icons ti ti-star"></i>
-        <div><?= $lang['leaderboard']?></div>
+        <div>
+          <?= $lang['leaderboard'] ?>
+        </div>
       </a>
     </li>
     <li class="menu-item <?php echo is_active_page(['/users/list']) ? 'active' : ''; ?>">
       <a href="/users/list" class="menu-link">
         <i class="menu-icon tf-icons ti ti-users"></i>
-        <div><?= $lang['users']?></div>
+        <div>
+          <?= $lang['users'] ?>
+        </div>
       </a>
     </li>
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">
+        <?= $lang['sidebar_links'] ?>
+      </span>
+    </li>
+    <?php
+    $websiteSetting = SettingsManager::getSetting('website');
+    if ($websiteSetting !== "none" && $websiteSetting !== "") {
+      ?>
+      <li class="menu-item ">
+        <a href="<?= $websiteSetting ?>" target="_blank" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-globe"></i>
+          <div>WebSite</div>
+        </a>
+      </li>
+      <?php
+    } ?>
+    <li class="menu-item ">
+      <a href="<?= SettingsManager::getSetting('PterodactylURL') ?>" target="_blank" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-feather"></i>
+        <div>Pterodactyl Panel</div>
+      </a>
+    </li>
+    <li class="menu-item ">
+      <a href="<?= SettingsManager::getSetting('discord_invite') ?>" target="_blank" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-brand-discord"></i>
+        <div>Discord Server</div>
+      </a>
+    </li>
+    <?php
+    $statusSetting = SettingsManager::getSetting('status');
+    if ($statusSetting !== "none" && $statusSetting !== "") {
+      ?>
+      <li class="menu-item ">
+        <a href="<?= $statusSetting ?>" target="_blank" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-clock"></i>
+          <div>Status Page</div>
+        </a>
+      </li>
+      <?php
+    } ?>
+    <?php
+    $twitterSetting = SettingsManager::getSetting('x');
+    if ($twitterSetting !== "none" && $twitterSetting !== "") {
+      ?>
+      <li class="menu-item ">
+        <a href="<?= $twitterSetting ?>" target="_blank" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-brand-twitter"></i>
+          <div>Twitter (X)</div>
+        </a>
+      </li>
+      <?php
+    } ?>
     <?php
     if ($session->getUserInfo("role") == "Administrator") {
       ?>
@@ -148,25 +227,26 @@ function is_active_page($page_urls)
           <div>Users</div>
         </a>
       </li>
-      <li class="menu-item  <?php echo is_active_page(['/admin/servers', '/admin/servers/logs', '/admin/servers/queue']) ? 'active' : ''; ?>">
+      <li
+        class="menu-item  <?php echo is_active_page(['/admin/servers', '/admin/servers/logs', '/admin/servers/queue']) ? 'active' : ''; ?>">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons ti ti-server"></i>
-          <div >Servers</div>
+          <div>Servers</div>
         </a>
         <ul class="menu-sub">
           <li class="menu-item <?php echo is_active_page(['/admin/servers/list']) ? 'active' : ''; ?>">
             <a href="/admin/servers/list" class="menu-link">
-              <div >Server List</div>
+              <div>Server List</div>
             </a>
           </li>
           <li class="menu-item <?php echo is_active_page(['/admin/servers/queue/list']) ? 'active' : ''; ?>">
             <a href="/admin/servers/queue/list" class="menu-link">
-              <div >Queue List</div>
+              <div>Queue List</div>
             </a>
           </li>
           <li class="menu-item <?php echo is_active_page(['/admin/servers/queue/logs']) ? 'active' : ''; ?>">
             <a href="/admin/servers/queue/logs" class="menu-link">
-              <div >Queue Logs</div>
+              <div>Queue Logs</div>
             </a>
           </li>
         </ul>
@@ -185,17 +265,17 @@ function is_active_page($page_urls)
       <li class="menu-item  <?php echo is_active_page(['/admin/eggs']) ? 'active' : ''; ?>">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons ti ti-egg"></i>
-          <div >Eggs</div>
+          <div>Eggs</div>
         </a>
         <ul class="menu-sub">
           <li class="menu-item <?php echo is_active_page(['/admin/eggs/list']) ? 'active' : ''; ?>">
             <a href="/admin/eggs/list" class="menu-link">
-              <div >Eggs List</div>
+              <div>Eggs List</div>
             </a>
           </li>
           <li class="menu-item <?php echo is_active_page(['/admin/eggs/config']) ? 'active' : ''; ?>">
             <a href="/admin/eggs/config" class="menu-link">
-              <div >Config List</div>
+              <div>Config List</div>
             </a>
           </li>
         </ul>

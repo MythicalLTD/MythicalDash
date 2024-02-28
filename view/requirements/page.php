@@ -4,6 +4,7 @@ use MythicalDash\SessionManager;
 use MythicalDash\Database\Connect;
 use MythicalDash\SettingsManager;
 use MythicalDash\Pterodactyl\Connection;
+
 $conn = new Connect();
 $conn = $conn->connectToDatabase();
 $session = new SessionManager();

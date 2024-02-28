@@ -1,6 +1,8 @@
 <?php
 namespace MythicalDash\Pterodactyl;
+
 use MythicalDash\Pterodactyl\Connection;
+
 class User extends Connection
 {
     /**
@@ -50,11 +52,11 @@ class User extends Connection
             } elseif ($statusCode == 422) {
                 $errorResponse = json_decode($response, true);
                 $errorMessages = array();
-                
+
                 foreach ($errorResponse['errors'] as $error) {
                     $errorMessages[] = $error['detail'];
                 }
-        
+
                 return implode("|", $errorMessages);
             } else {
                 return "Unexpected error: " . $statusCode;
@@ -71,6 +73,13 @@ class User extends Connection
     public static function Delete(string $id): bool
     {
         return false;
+    }
+    /**
+     * SOON
+     */
+    public static function Info(string $id, string $info): string
+    {
+        return "";
     }
 }
 ?>

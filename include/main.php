@@ -1,6 +1,7 @@
 <?php 
 use MythicalDash\ErrorHandler;
 use MythicalDash\Main;
+use MythicalDash\SettingsManager;
 use Symfony\Component\Yaml\Yaml;
 $config = Yaml::parseFile('../config.yml');
 $appsettings = $config['app'];
@@ -35,4 +36,6 @@ $svhost = $_SERVER['HTTP_HOST'];
 $appURL = $prot . '://' . $svhost;
 
 $lang = Main::getLang();
+
+date_default_timezone_set(SettingsManager::getSetting('timezone'));
 ?>

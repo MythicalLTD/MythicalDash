@@ -117,6 +117,15 @@
                     case "112":
                         window.location.href = "/admin/tickets";
                         break;
+                    case "1000":
+                        fetchAndDisplayInfo();
+                        break;
+                    case "2000":
+                        fetchAndDisplaySystemInfo();
+                        break;
+                    case "3000":
+                        window.location.href = "/mythicaldash/logs";
+                        break;
                     default:
                         alert("Invalid dialog number. Please enter a valid dialog number.");
                 }
@@ -124,6 +133,54 @@
             }
         }
     });
+    function fetchAndDisplayInfo() {
+        fetch('/mythicaldash/info')
+            .then(response => response.json())
+            .then(data => {
+                alert(`Dash Name: ${data.data.dash_name}`);
+                alert(`Dash Version: ${data.data.dash_version}`);
+                alert(`Security Modules:
+                        - Turnstile: ${data.data.security_modules.turnstile}
+                        - Anti-Adblocker: ${data.data.security_modules['anti-adblocker']}
+                        - Anti-Alting: ${data.data.security_modules['anti-alting']}
+                        - Anti-VPN: ${data.data.security_modules['anti-vpn']}
+                        - Purge: ${data.data.security_modules.purge}`);
+                alert(`Stripe:
+                        - Enabled: ${data.data.stripe.enabled}
+                        - Public Key: ${data.data.stripe['public-key']}
+                        - Currency: ${data.data.stripe.currency}`);
+                alert(`Linkvertise:
+                        - Enabled: ${data.data.linkvertise.enabled}
+                        - Code: ${data.data.linkvertise.code}
+                        - Coins: ${data.data.linkvertise.coins}`);
+                alert(`Pterodactyl:
+                        - URL: ${data.data.pterodactyl.url}`);
+                alert(`SMTP:
+                        - Enabled: ${data.data.smtp.enabled}
+                        - Encryption: ${data.data.smtp.encryption}
+                        - Port: ${data.data.smtp.port}
+                        - From: ${data.data.smtp.from}`);
+                alert(`Discord:
+                        - Account Link: ${data.data.discord.account_link}
+                        - Server ID: ${data.data.discord.server_id}
+                        - Client ID: ${data.data.discord.client_id}`);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                alert('Error fetching data. Please try again later.');
+            });
+    }
+    function fetchAndDisplaySystemInfo() {
+            fetch('/mythicaldash/system')
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Operating System: ${data.data.os}\nHostname: ${data.data.hostname}\nKernel: ${data.data.kernel}\nVersion: ${data.data.version}\nArchitecture: ${data.data.arch}`);
+                })
+                .catch(error => {
+                    console.error('Error fetching system info:', error);
+                    alert('Error fetching system info. Please try again later.');
+                });
+        }
 </script>
 <?php
 function fis_active_page($page_urls)

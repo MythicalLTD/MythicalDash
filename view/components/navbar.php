@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\SettingsManager;
+use MythicalDash\NotificationHandler;
 
 ?>
 <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -15,10 +16,13 @@ use MythicalDash\SettingsManager;
       <div class="nav-item navbar-search-wrapper mb-0">
         <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
           <i class="ti ti-search ti-md me-2"></i>
-          <span class="d-none d-md-inline-block text-muted"><?= $lang['search']?> (Ctrl+/)</span>
+          <span class="d-none d-md-inline-block text-muted">
+            <?= $lang['search'] ?> (Ctrl+/)
+          </span>
         </a>
       </div>
     </div>
+    <?php $notifications = NotificationHandler::getByUserId($session->getUserInfo('id')); ?>
     <ul class="navbar-nav flex-row align-items-center ms-auto">
       <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
         <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
@@ -29,45 +33,47 @@ use MythicalDash\SettingsManager;
         <ul class="dropdown-menu dropdown-menu-end py-0">
           <li class="dropdown-menu-header border-bottom">
             <div class="dropdown-header d-flex align-items-center py-3">
-              <h5 class="text-body mb-0 me-auto"><?= $lang['notification']?></h5>
+              <h5 class="text-body mb-0 me-auto">
+                <?= $lang['notification'] ?>
+              </h5>
               <a href="javascript:void(0)" class="dropdown-notifications-all text-body" data-bs-toggle="tooltip"
                 data-bs-placement="top" title=""><i class="ti ti-mail-opened fs-4"></i></a>
             </div>
           </li>
           <li class="dropdown-notifications-list scrollable-container">
-            <ul class="list-group list-group-flush">
-              <!--<li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
-                          <div class="d-flex">
-                            <div class="flex-shrink-0 me-3">
-                              <div class="avatar">
-                                <span class="avatar-initial rounded-circle bg-label-warning"
-                                  ><i class="ti ti-alert-triangle"></i
-                                ></span>
-                              </div>
-                            </div>
-                            <div class="flex-grow-1">
-                              <h6 class="mb-1">CPU is running high</h6>
-                              <p class="mb-0">CPU Utilization Percent is currently at 88.63%,</p>
-                              <small class="text-muted">5 days ago</small>
-                            </div>
-                            <div class="flex-shrink-0 dropdown-notifications-actions">
-                              <a href="javascript:void(0)" class="dropdown-notifications-read"
-                                ><span class="badge badge-dot"></span
-                              ></a>
-                              <a href="javascript:void(0)" class="dropdown-notifications-archive"
-                                ><span class="ti ti-x"></span
-                              ></a>
-                            </div>
-                          </div>
-                        </li>-->
-            </ul>
+            <?php foreach ($notifications as $notification): ?>
+
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
+                  <div class="d-flex">
+                    <div class="flex-shrink-0 me-3">
+                      <div class="avatar">
+                        <span class="avatar-initial rounded-circle bg-label-warning"><i
+                            class="ti ti-alert-triangle"></i></span>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">
+                        <?= htmlspecialchars($notification['name']) ?>
+                      </h6>
+                      <p class="mb-0">
+                        <?= htmlspecialchars($notification['description']) ?>
+                      </p>
+                      <small class="text-muted">
+                        <?= htmlspecialchars($notification['date']) ?>
+                      </small>
+                    </div>
+                    <div class="flex-shrink-0 dropdown-notifications-actions">
+                      <a href="/notification/delete?id=<?= htmlspecialchars($notification['id']) ?>" class="dropdown-notifications-archive"><span
+                          class="ti ti-x"></span></a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            <?php endforeach; ?>
+
           </li>
-          <li class="dropdown-menu-footer border-top">
-            <a href=""
-              class="dropdown-item d-flex justify-content-center text-primary p-2 h-px-40 mb-1 align-items-center">
-              <?= $lang['view_all_notification']?>
-            </a>
-          </li>
+
         </ul>
       </li>
       <!-- User -->
@@ -100,7 +106,8 @@ use MythicalDash\SettingsManager;
                     </span>
                   </span>
                   <small class="text-muted">
-                    <?= $session->getUserInfo("coins") ?> <?= $lang['coins'] ?>
+                    <?= $session->getUserInfo("coins") ?>
+                    <?= $lang['coins'] ?>
                   </small>
                 </div>
               </div>
@@ -112,25 +119,33 @@ use MythicalDash\SettingsManager;
           <li>
             <a class="dropdown-item" href="/user/profile?id=<?= $session->getUserInfo("id") ?>">
               <i class="ti ti-user-check me-2 ti-sm"></i>
-              <span class="align-middle"><?= $lang['profile']?></span>
+              <span class="align-middle">
+                <?= $lang['profile'] ?>
+              </span>
             </a>
           </li>
           <li>
             <a class="dropdown-item" href="/user/edit">
               <i class="ti ti-settings me-2 ti-sm"></i>
-              <span class="align-middle"><?= $lang['account']?></span>
+              <span class="align-middle">
+                <?= $lang['account'] ?>
+              </span>
             </a>
           </li>
           <li>
             <a class="dropdown-item" href="/user/connections">
               <i class="ti ti-select me-2 ti-sm"></i>
-              <span class="align-middle"><?= $lang['connections']?></span>
+              <span class="align-middle">
+                <?= $lang['connections'] ?>
+              </span>
             </a>
           </li>
           <li>
             <a class="dropdown-item" href="/user/payments">
               <i class="ti ti-coin me-2 ti-sm"></i>
-              <span class="align-middle"><?= $lang['payments']?></span>
+              <span class="align-middle">
+                <?= $lang['payments'] ?>
+              </span>
             </a>
           </li>
           <li>
@@ -139,7 +154,9 @@ use MythicalDash\SettingsManager;
           <li>
             <a class="dropdown-item" href="/help-center/">
               <i class="ti ti-lifebuoy me-2 ti-sm"></i>
-              <span class="align-middle"><?= $lang['help_center']?></span>
+              <span class="align-middle">
+                <?= $lang['help_center'] ?>
+              </span>
             </a>
           </li>
           <li>
@@ -148,7 +165,9 @@ use MythicalDash\SettingsManager;
           <li>
             <a class="dropdown-item" href="/auth/logout">
               <i class="ti ti-logout me-2 ti-sm"></i>
-              <span class="align-middle"><?= $lang['logout']?></span>
+              <span class="align-middle">
+                <?= $lang['logout'] ?>
+              </span>
             </a>
           </li>
         </ul>
@@ -157,8 +176,8 @@ use MythicalDash\SettingsManager;
     </ul>
   </div>
   <div class="navbar-search-wrapper search-input-wrapper d-none">
-    <input type="text" class="form-control search-input container-xxl border-0" placeholder="<?= $lang['search']?>..."
-      aria-label="<?= $lang['search']?>...." />
+    <input type="text" class="form-control search-input container-xxl border-0" placeholder="<?= $lang['search'] ?>..."
+      aria-label="<?= $lang['search'] ?>...." />
     <i class="ti ti-x ti-sm search-toggler cursor-pointer"></i>
   </div>
 </nav>

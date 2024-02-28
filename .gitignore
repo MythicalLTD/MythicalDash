@@ -22,3 +22,4 @@ migrates.ini
 /mythicaldash_backup.sql
 public/FIRST_INSTALL
 public/FIRST_USER
+/caches/notifications.json

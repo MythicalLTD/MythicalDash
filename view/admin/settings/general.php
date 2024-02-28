@@ -8,12 +8,16 @@ try {
         $logo = mysqli_real_escape_string($conn, $_GET['app:logo']);
         $snow = mysqli_real_escape_string($conn, $_GET['app:snow']);
         $bg = mysqli_real_escape_string($conn, $_GET['app:bg']);
-        $langg = mysqli_real_escape_string($conn, $_GET['app:lang']);
+        $lang = mysqli_real_escape_string($conn, $_GET['app:lang']);
+        $timezone = mysqli_real_escape_string($conn, $_GET['app:timezone']);
+
         mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `name` = '" . $name . "' WHERE `mythicaldash_settings`.`id` = 1;");
         mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `logo` = '" . $logo . "' WHERE `mythicaldash_settings`.`id` = 1;");
         mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `show_snow` = '" . $snow . "' WHERE `mythicaldash_settings`.`id` = 1;");
         mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `bg` = '" . $bg . "' WHERE `mythicaldash_settings`.`id` = 1;");
-        mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `lang` = '" . $langg . "' WHERE `mythicaldash_settings`.`id` = 1;");
+        mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `lang` = '" . $lang . "' WHERE `mythicaldash_settings`.`id` = 1;");
+        mysqli_query($conn, "UPDATE `mythicaldash_settings` SET `timezone` = '" . $timezone . "' WHERE `mythicaldash_settings`.`id` = 1;");
+        
         header('location: /admin/settings?s=We updated the settings inside the database');
         $conn->close();
         die();

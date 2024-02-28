@@ -8,7 +8,58 @@ namespace MythicalDash
     public class Program
     {
         public static Logger logger = new Logger();
-
+        public static string hey = @"
+        __________________$$$$$$$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	_______________$$$$$$$________$$$$$$$$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	_____________$$________________________$$$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	____________$$_____________________________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	___________$__________________________________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	___________$$___________________________________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	__________$$__$$______________________$$__________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	________$$__$$___$$$$_________$$$$____$$__________$$$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	______$$___$$__$$$$__$$_____$$$$__$$_$$_____________$$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	______$$___$$____$$$$_________$$$$___$$_______________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	______$$___$$________________________$$_______________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	______$$____$$_______________________$$_____________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	________$$__$$____$$$$$$_____________$$___________$$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	________$$__$$__$$______$$___________$$_________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	________$$__$$__$$______$$___________$$_______$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	__________$$$$____$$$$$$_____________$$$$____$$$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	__________$$$$_____________________$$__$$____$$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	___________$$_$$$$$$$$$$$$_____$$$$______$$$$_$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	_____________$$___$$______$$$$$_______________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	_____________$$_____$$$$$$$____________________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	_____________$$________________________________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	____________$$_________________________________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	____________$$_________________________________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	____________$$___________________________________$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	____________$$___________________________________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	__________$$_________________________$$___________$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	__________$$__________$$___________$$_____________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	________$$__$$________$$_________$$_______________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	______$$____$$__________$$_______$$_______________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	______$$____$$____________$$___$$_________________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	____$$______$$_____________$$_$$_______$$_________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	____$$______$$________$$____$$$________$$_________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	____$$______$$________$$____$$$_______$$__________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	____$$______$$________$$_______________$$__________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	____$$______$$________$$_______________$$____________$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	_$$$$_______$$________$$_______________$$____________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	$___$$______$$________$$$$___________$$$$____________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	$___$$______$$________$$__$$_______$$__$$____________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	_$$$$$______$$________$$____$$___$$_____$$___________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	____$$______$$________$$______$$_______$$___________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	____$$______$$________$$_____$$________$$___________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	__$$________$$________$$$$$$$$___$$$$$$__$$_________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	__$$________$$________$$______$$$______$$$$_________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	$$________$$__________$$_________$$$$$$__$$__________$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	$$______$$__________$$$$$$$$$$$$$$$______$$__________$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	$$_$$_$$$__________$$_____________$$$$$$$__$$_________$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	_$$$$$$$___________$$______________________$$________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	_____$$__$$__$$__$$_$______________________$$__________$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	______$$$$__$___$__$$______________________$$____________$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	_______$$___$___$__$________________________$$_$__$$__$$__$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo
+	_________$$$$$$$$$$__________________________$$_$_$$$$$$$$			MythicalDash - CLI | v2.0 | Image using dumps when the source code is on github :) - mythicaldoggo";
         public static string ascii = @" 
   __  __       _   _     _           _ _____            _     
  |  \/  |     | | | |   (_)         | |  __ \          | |    

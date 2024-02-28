@@ -94,6 +94,11 @@ $router->add("/admin/settings/tos", function () {
     require("../view/admin/settings/tos.php");
 });
 
+$router->add("/admin/settings/links", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/url.php");
+});
+
 $router->add("/admin/sql", function () {
     require("../include/main.php");
     require("../view/admin/settings/sql.php");
