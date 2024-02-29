@@ -5,4 +5,4 @@ echo Please wait while we delete the files you do not need
 rd /s /q .github
 rd /s /q bot
 rd /s /q cli
-rd /s /q page
+rd /s /q pages
