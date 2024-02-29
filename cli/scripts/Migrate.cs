@@ -6,7 +6,7 @@ namespace MythicalDash
     public class Migrate
     {
         FileManager fm = new FileManager();
-        private static string MigrationConfigFilePath = "migrates.ini";
+        private static string MigrationConfigFilePath = "/var/www/mythicaldash/migrates.ini";
 
 #pragma warning disable
         public static string connectionString;
@@ -26,7 +26,7 @@ namespace MythicalDash
         {
             if (fm.ConfigExists() == true)
             {
-                string filePath = "config.yml";
+                string filePath = "/var/www/mythicaldash/config.yml";
                 string yamlContent = File.ReadAllText(filePath);
 
                 var deserializer = new DeserializerBuilder().Build();
@@ -59,7 +59,7 @@ namespace MythicalDash
             {
                 getConnection();
 
-                string[] scriptFiles = Directory.GetFiles("migrate/", "*.sql")
+                string[] scriptFiles = Directory.GetFiles("/var/www/mythicaldash/migrate/", "*.sql")
                     .OrderBy(scriptFile => Convert.ToInt32(Path.GetFileNameWithoutExtension(scriptFile)))
                     .ToArray();
 

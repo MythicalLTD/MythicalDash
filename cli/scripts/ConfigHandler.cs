@@ -5,7 +5,7 @@ namespace MythicalDash
     public class ConfigHandler
     {
         public static void DeleteConfig() {
-            string filePath = "config.yml"; 
+            string filePath = "/var/www/mythicaldash/config.yml"; 
             if (File.Exists(filePath)) {
                 File.Delete(filePath);
                 Program.logger.Log(LogType.Info, "Done we purged the config.yml file");
@@ -16,7 +16,7 @@ namespace MythicalDash
         }
         public static void CreateConfig()
         {
-            string filePath = "config.yml";
+            string filePath = "/var/www/mythicaldash/config.yml";
 
             if (File.Exists(filePath))
             {

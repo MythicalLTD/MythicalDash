@@ -134,7 +134,7 @@ namespace MythicalDash
         {
             if (fm.ConfigExists() == true)
             {
-                string filePath = "config.yml";
+                string filePath = "/var/www/mythicaldash/config.yml";
                 var yaml = new YamlStream();
 
                 using (var reader = new StreamReader(filePath))

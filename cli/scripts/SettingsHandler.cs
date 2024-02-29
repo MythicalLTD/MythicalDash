@@ -329,7 +329,7 @@ namespace MythicalDash
         {
             if (fm.ConfigExists() == true)
             {
-                string filePath = "config.yml";
+                string filePath = "/var/www/mythicaldash/config.yml";
                 string yamlContent = File.ReadAllText(filePath);
 
                 var deserializer = new DeserializerBuilder().Build();

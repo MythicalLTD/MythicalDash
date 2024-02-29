@@ -4,7 +4,7 @@ namespace MythicalDash
     {
         public bool ConfigExists()
         {
-            string filePath = "config.yml";
+            string filePath = "/var/www/mythicaldash/config.yml";
 
             if (File.Exists(filePath))
             {
@@ -16,7 +16,7 @@ namespace MythicalDash
 
         public bool MFolderExists() 
         {
-            string filePath = "migrate/info.md";
+            string filePath = "/var/www/mythicaldash/migrate/info.md";
             if (File.Exists(filePath)) {
                 return true;
             } else {
