@@ -1,5 +1,6 @@
 <?php
 use MythicalDash\ErrorHandler;
+include(__DIR__.'/../base.php');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if (isset($_POST['code']) && !$_POST['code'] == "") {

@@ -49,6 +49,11 @@ $router->add("/api/admin/settings/get", function () {
     require("../api/admin/settings/get.php");
 });
 
+$router->add("/api/admin/settings/set", function () {
+    require("../include/main.php");
+    require("../api/admin/settings/set.php");
+});
+
 $router->add("/api/admin/redeem/create", function () {
     require("../include/main.php");
     require("../api/admin/redeem/create.php");
@@ -63,4 +68,6 @@ $router->add("/api/admin/redeem/delete", function () {
     require("../include/main.php");
     require("../api/admin/redeem/delete.php");
 });
+
+
 ?>

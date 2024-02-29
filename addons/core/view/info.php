@@ -35,7 +35,7 @@ try {
             'stripe' => array(
                 'enabled' => SettingsManager::getSetting("enable_stripe"),
                 'public-key' => SettingsManager::getSetting("stripe_publishable_key"),
-                'currency' => SettingsManager::getSetting("stripe_currency"),
+                'currency' => SettingsManager::getSetting("payments_currency"),
             ),
             'linkvertise' => array(
                 'enabled' => SettingsManager::getSetting("linkvertise_enabled"),

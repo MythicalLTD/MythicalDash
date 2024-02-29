@@ -7,9 +7,11 @@ use MythicalDash\PayPal\Payment;
 $csrf = new MythicalDash\CSRF();
 
 include(__DIR__ . '/../requirements/page.php');
-if (SettingsManager::getSetting("enable_stripe") == "false") {
+if (SettingsManager::getSetting("allow_payments") == "false") {
     header('location: /');
+    die();
 }
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['paystripe'])) {
         $mypaymentkey = Encryption::generate_keynoinfo();
@@ -26,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     [
                         "quantity" => 1,
                         "price_data" => [
-                            "currency" => strtolower(SettingsManager::getSetting('stripe_currency')),
-                            "unit_amount" => intval(SettingsManager::getSetting('stripe_coin_per_balance')) * intval($_GET['coins']),
+                            "currency" => strtolower(SettingsManager::getSetting('payments_currency')),
+                            "unit_amount" => intval(SettingsManager::getSetting('coin_per_balance')) * intval($_GET['coins']),
                             "product_data" => [
                                 "images" => [
                                     $appURL . "/assets/img/illustrations/page-pricing-standard.png"
@@ -71,8 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             background-color: #161931 !important;
             background: #161931 !important;
         }
-
-     </style>
+    </style>
 </head>
 
 <body>
@@ -117,10 +118,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                     <div class="card-body text-center">
                                         <form method='GET'>
                                             <?=
-                                                str_replace(array('%PLACEHOLDER_1%', '%PLACEHOLDER_2%'), array(number_format(intval(SettingsManager::getSetting('stripe_coin_per_balance')) / 100, 2), strtoupper(SettingsManager::getSetting('stripe_currency'))), $lang['stripe_subtitle'])
+                                                str_replace(array('%PLACEHOLDER_1%', '%PLACEHOLDER_2%'), array(number_format(SettingsManager::getSetting('coin_per_balance'), 2), strtoupper(SettingsManager::getSetting('payments_currency'))), $lang['stripe_subtitle'])
                                                 ?>
-                                            <input type="number" id="coins" class="form-control mb-2" placeholder="50" value="25"
-                                                name="coins">
+                                            <input type="number" id="coins" class="form-control mb-2" placeholder="50"
+                                                value="25" name="coins">
                                             <br>
                                             <?= $csrf->input('pay-form'); ?>
                                             <?php
@@ -135,9 +136,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                             ?>
                                             <?php
                                             if (SettingsManager::getSetting('enable_paypal') == 'true') {
-                                                ?><br><center>
-                                                <div id="paypal-button-container" class="mt-3"></div></center>
-                                               
+                                                ?><br>
+                                                <center>
+                                                    <div id="paypal-button-container" class="mt-3"></div>
+                                                </center>
+
                                             <?php } ?>
 
                                         </form>
@@ -174,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     <script
         src="https://www.paypal.com/sdk/js?client-id=<?= SettingsManager::getSetting('paypal_client_id') ?>&currency=EUR"></script>
     <script>
-
+        var key = "";
         paypal.Buttons({
             onClick() {
                 var coins = $('#coins').val();
@@ -182,21 +185,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     alert("Please enter a valid number of coins.");
                     return false;
                 } else {
-                    var coinPerBalance = parseFloat("<?php echo SettingsManager::getSetting('stripe_coin_per_balance'); ?>");
+                    var coinPerBalance = parseFloat("<?php echo SettingsManager::getSetting('coin_per_balance'); ?>");
                     var price = coins * coinPerBalance;
                     if (price === 0) {
                         alert("We failed to fetch the amount of coins inside the textbox please try again later!");
                         return false;
                     } else {
-                        alert("Coins: "+coins+"\nPrice: "+price);
+
                     }
                 }
             },
+
             createOrder: (data, actions) => {
                 var coins = $('#coins').val();
-                var coinPerBalance = parseFloat("<?php echo SettingsManager::getSetting('stripe_coin_per_balance'); ?>");
+                var coinPerBalance = parseFloat("<?php echo SettingsManager::getSetting('coin_per_balance'); ?>");
                 var price = coins * coinPerBalance;
-                
+
                 return actions.order.create({
                     purchase_units: [{
                         amount: {
@@ -206,11 +210,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 });
             },
 
-            onApprove: (data,actions) => {
+            onApprove: (data, actions) => {
                 return actions.order.capture().then(function (orderData) {
-                    console.log('Test', orderData, JSON.stringify(orderData, null, 2));
+                    //console.log('Payment', orderData, JSON.stringify(orderData, null, 2));
                     const transaction = orderData.purchase_units[0].payments.captures[0];
-                    alert(`Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details!`);
+                    var coins = $('#coins').val();
+                    console.warn('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                    var data = {
+                        'coins': coins,
+                        'status': transaction.status,
+                        'payment_id': transaction.id,
+                        'date': '<?= date('Y-m-d H:i') ?>',
+                        'key': key,
+                    };
+
+                    $.ajax({
+                        method: "POST",
+                        url: "/store/get/stripe/coins?paypal=run",
+                        data: data,
+                        success: function (response) {
+                            window.location.href = "/dashboard?s=Thanks for buying from <?= SettingsManager::getSetting('name') ?>";
+                        }
+                    });
                 });
             },
             style: {
@@ -218,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 shape: 'pill',
                 disableMaxWidth: true,
             },
-            onInit: function(data, actions) {
+            onInit: function (data, actions) {
                 document.querySelector('#paypal-button-container').classList.add('custom-paypal-button');
             }
         }).render('#paypal-button-container')

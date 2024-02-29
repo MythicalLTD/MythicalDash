@@ -37,6 +37,6 @@ $appURL = $prot . '://' . $svhost;
 
 $lang = Main::getLang();
 define("APP_URL", $appURL);
-
+define('APP_ENCRYPTION_KEY', $ekey);
 date_default_timezone_set(SettingsManager::getSetting('timezone'));
 ?>

@@ -271,7 +271,7 @@ include(__DIR__ . '/../../requirements/admin.php');
                                         href="https://stripe.com/docs/currencies#presentment-currencies">Here you can
                                         find a list</a>).</label><br>
                                 <label>Price: This shall be the price per 1 coin (This shall be cents EX 1000 = 1
-                                    <?= strtoupper(SettingsManager::getSetting('stripe_currency')) ?>).
+                                    <?= strtoupper(SettingsManager::getSetting('payments_currency')) ?>).
                                 </label><br>
                                 <label>Public Key: This shall be the publishable key that you can get from <a
                                         href="https://dashboard.stripe.com/apikeys">here</a>.</label><br>
@@ -311,15 +311,15 @@ include(__DIR__ . '/../../requirements/admin.php');
                                             <div>
                                                 <input type="text" required="" class="form-control"
                                                     name="stripe:stripe_currency"
-                                                    value="<?= strtoupper(SettingsManager::getSetting('stripe_currency')) ?>">
+                                                    value="<?= strtoupper(SettingsManager::getSetting('payments_currency')) ?>">
                                             </div>
                                         </div>
                                         <div class="form-group col-md-1">
                                             <label class="control-label">Price</label>
                                             <div>
                                                 <input type="text" required="" class="form-control"
-                                                    name="stripe:stripe_coin_per_balance"
-                                                    value="<?= SettingsManager::getSetting('stripe_coin_per_balance') ?>">
+                                                    name="stripe:coin_per_balance"
+                                                    value="<?= SettingsManager::getSetting('coin_per_balance') ?>">
                                             </div>
                                         </div>
                                         <div class="form-group col-md-4">
