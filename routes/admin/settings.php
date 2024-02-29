@@ -49,6 +49,16 @@ $router->add("/admin/settings/stripe", function () {
     require("../view/admin/settings/stripe.php");
 });
 
+$router->add("/admin/settings/payments", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/payments.php");
+});
+
+$router->add("/admin/settings/paypal", function () {
+    require("../include/main.php");
+    require("../view/admin/settings/paypal.php");
+});
+
 $router->add("/admin/settings/security", function () {
     require("../include/main.php");
     require("../view/admin/settings/security.php");

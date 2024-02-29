@@ -11,7 +11,9 @@ if (SettingsManager::getSetting("allow_payments") == "false") {
     header('location: /');
     die();
 }
-
+function convertToCents($amount) {
+    return round($amount * 100);
+}
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['paystripe'])) {
         $mypaymentkey = Encryption::generate_keynoinfo();
@@ -29,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         "quantity" => 1,
                         "price_data" => [
                             "currency" => strtolower(SettingsManager::getSetting('payments_currency')),
-                            "unit_amount" => intval(SettingsManager::getSetting('coin_per_balance')) * intval($_GET['coins']),
+                            "unit_amount" => intval(convertToCents(SettingsManager::getSetting('coin_per_balance'))) * intval($_GET['coins']),
                             "product_data" => [
                                 "images" => [
                                     $appURL . "/assets/img/illustrations/page-pricing-standard.png"
@@ -175,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     <script src="<?= $appURL ?>/assets/js/user/paymentss-ecommerce.js"></script>
     <script
-        src="https://www.paypal.com/sdk/js?client-id=<?= SettingsManager::getSetting('paypal_client_id') ?>&currency=EUR"></script>
+        src="https://www.paypal.com/sdk/js?client-id=<?= SettingsManager::getSetting('paypal_client_id') ?>&currency=<?= strtoupper(SettingsManager::getSetting('payments_currency')) ?>"></script>
     <script>
         var key = "";
         paypal.Buttons({

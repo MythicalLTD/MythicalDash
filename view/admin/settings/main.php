@@ -267,12 +267,6 @@ include(__DIR__ . '/../../requirements/admin.php');
                             <h5 class="card-header text-center">Stripe</h5>
                             <div class="card-text text-center">
                                 <label>Customize your stripe settings here. &NewLine;</label><br>
-                                <label>Currency: This shall be your currency ISO (<a
-                                        href="https://stripe.com/docs/currencies#presentment-currencies">Here you can
-                                        find a list</a>).</label><br>
-                                <label>Price: This shall be the price per 1 coin (This shall be cents EX 1000 = 1
-                                    <?= strtoupper(SettingsManager::getSetting('payments_currency')) ?>).
-                                </label><br>
                                 <label>Public Key: This shall be the publishable key that you can get from <a
                                         href="https://dashboard.stripe.com/apikeys">here</a>.</label><br>
                                 <label>Secret Key: This shall be the secret key that you can get from <a
@@ -306,22 +300,6 @@ include(__DIR__ . '/../../requirements/admin.php');
 
                                             </div>
                                         </div>
-                                        <div class="form-group col-md-1">
-                                            <label class="control-label">Currency</label>
-                                            <div>
-                                                <input type="text" required="" class="form-control"
-                                                    name="stripe:stripe_currency"
-                                                    value="<?= strtoupper(SettingsManager::getSetting('payments_currency')) ?>">
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-md-1">
-                                            <label class="control-label">Price</label>
-                                            <div>
-                                                <input type="text" required="" class="form-control"
-                                                    name="stripe:coin_per_balance"
-                                                    value="<?= SettingsManager::getSetting('coin_per_balance') ?>">
-                                            </div>
-                                        </div>
                                         <div class="form-group col-md-4">
                                             <label class="control-label">Public Key</label>
                                             <div>
@@ -338,6 +316,141 @@ include(__DIR__ . '/../../requirements/admin.php');
                                                     value="<?= SettingsManager::getSetting('stripe_secret_key') ?>">
                                             </div>
                                         </div>
+                                        <br>
+
+                                    </div>
+                                    <br>
+                                    <div class="mt-2 text-center">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header text-center">PayPal</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your paypal settings here. &NewLine;</label><br>
+                                <label>Client ID: This shall be the publishable key that you can get from <a
+                                        href="https://developer.paypal.com/dashboard/applications/sandbox">here</a>.</label><br>
+                                <label>Secret Key: This shall be the secret key that you can get from <a
+                                        href="https://developer.paypal.com/dashboard/applications/sandbox">here</a>.</label>
+                                <p></p>
+                            </div>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/paypal" method="GET">
+                                    <div class="row">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label">Status</label>
+                                            <div>
+                                                <?php
+                                                if (SettingsManager::getSetting('enable_paypal') == 'true') {
+                                                    ?>
+                                                    <select class="form-control" name="paypal:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="paypal:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label">Client ID</label>
+                                            <div>
+                                                <input type="text" required="" class="form-control"
+                                                    name="paypal:client_id"
+                                                    value="<?= SettingsManager::getSetting('paypal_client_id') ?>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label">Secret key</label>
+                                            <div>
+                                                <input type="password" required="" class="form-control"
+                                                    name="paypal:secret_key"
+                                                    value="<?= SettingsManager::getSetting('paypal_client_secret') ?>">
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                    </div>
+                                    <br>
+                                    <div class="mt-2 text-center">
+                                        <button type="submit" name="update_settings"
+                                            class="btn btn-primary me-2 waves-effect waves-light" value="true">Save
+                                            changes</button>
+                                        <a href="/admin" class="btn btn-label-secondary waves-effect">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <h5 class="card-header text-center">Payments</h5>
+                            <div class="card-text text-center">
+                                <label>Customize your payments settings here. &NewLine;</label><br>
+                                <label>Currency: This shall be your currency ISO (<a
+                                        href="https://stripe.com/docs/currencies#presentment-currencies">Here you can
+                                        find a list</a>).</label><br>
+                                <label>Price: This shall be the price per 1 coin (This shall be cents EX 1000 = 1
+                                    <?= strtoupper(SettingsManager::getSetting('payments_currency')) ?>).
+                                </label><br>
+                                <p></p>
+                            </div>
+                            <hr class="my-0">
+                            <div class="card-body">
+                                <form action="/admin/settings/payments" method="GET">
+                                    <div class="row">
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label">Status</label>
+                                            <div>
+                                                <?php
+                                                if (SettingsManager::getSetting('allow_payments') == 'true') {
+                                                    ?>
+                                                    <select class="form-control" name="payments:enabled">
+                                                        <option value="true">Enabled</option>
+                                                        <option value="false">Disabled</option>
+                                                    </select>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <select class="form-control" name="payments:enabled">
+                                                        <option value="false">Disabled</option>
+                                                        <option value="true">Enabled</option>
+                                                    </select>
+                                                    <?php
+                                                }
+                                                ?>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label">Currency</label>
+                                            <div>
+                                                <input type="text" required="" class="form-control"
+                                                    name="payments:payments_currency"
+                                                    value="<?= strtoupper(SettingsManager::getSetting('payments_currency')) ?>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label">Price</label>
+                                            <div>
+                                                <input type="text" required="" class="form-control"
+                                                    name="payments:coin_per_balance"
+                                                    value="<?= SettingsManager::getSetting('coin_per_balance') ?>">
+                                            </div>
+                                        </div>
+                                        
                                         <br>
 
                                     </div>
