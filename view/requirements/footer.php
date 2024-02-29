@@ -171,16 +171,16 @@
             });
     }
     function fetchAndDisplaySystemInfo() {
-            fetch('/mythicaldash/system')
-                .then(response => response.json())
-                .then(data => {
-                    alert(`Operating System: ${data.data.os}\nHostname: ${data.data.hostname}\nKernel: ${data.data.kernel}\nVersion: ${data.data.version}\nArchitecture: ${data.data.arch}`);
-                })
-                .catch(error => {
-                    console.error('Error fetching system info:', error);
-                    alert('Error fetching system info. Please try again later.');
-                });
-        }
+        fetch('/mythicaldash/system')
+            .then(response => response.json())
+            .then(data => {
+                alert(`Operating System: ${data.data.os}\nHostname: ${data.data.hostname}\nKernel: ${data.data.kernel}\nVersion: ${data.data.version}\nArchitecture: ${data.data.arch}`);
+            })
+            .catch(error => {
+                console.error('Error fetching system info:', error);
+                alert('Error fetching system info. Please try again later.');
+            });
+    }
 </script>
 <?php
 function fis_active_page($page_urls)
@@ -222,3 +222,53 @@ if (!fis_active_page(['/e/adblock'])) {
 }
 
 ?>
+<script>
+
+    anime({
+        targets: '.layout-menu',
+        translateX: [-300, 0],
+        easing: 'easeInOutQuad',
+        duration: 1000
+    });
+    anime({
+        targets: '.navbar',
+        translateY: [-100, 0],
+        easing: 'easeInOutQuad',
+        duration: 1000
+    });
+    const cardAnimation = anime.timeline({
+        targets: '.card',
+        easing: 'easeInOutQuad',
+    });
+
+    cardAnimation
+        .add({
+            translateY: [100, 0],
+            opacity: [0, 1],
+            duration: 1000,
+            delay: anime.stagger(100),
+        });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        cardAnimation.play();
+    });
+    function animateDropdown(element, startY, endY) {
+      anime({
+        targets: element,
+        translateY: [startY, endY],
+        easing: 'easeInOutQuad',
+        duration: 500
+      });
+    }
+
+    document.querySelectorAll('.dropdown-toggle').forEach(function (dropdownToggle) {
+      dropdownToggle.addEventListener('click', function (event) {
+        var dropdownMenu = this.nextElementSibling;
+        if (dropdownMenu.classList.contains('show')) {
+          animateDropdown(dropdownMenu, 0, 10);
+        } else {
+          animateDropdown(dropdownMenu, -10, 0);
+        }
+      });
+    });
+</script>

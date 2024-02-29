@@ -82,141 +82,9 @@ try {
       <?= SettingsManager::getSetting("name") ?> -
       <?= $lang['dashboard'] ?>
    </title>
-
 </head>
 
 <body>
-   <style>
-      .resources {
-         width: 200px;
-         height: 50px;
-         background: #30355e;
-         position: relative;
-         display: flex;
-         place-content: center;
-         place-items: center;
-         overflow: hidden;
-         border-radius: 10px;
-      }
-
-      .resources h5 {
-         z-index: 1;
-      }
-
-      @keyframes rotBGimg {
-         from {
-            transform: rotate(0deg);
-         }
-
-         to {
-            transform: rotate(360deg);
-         }
-      }
-
-      .resources::after {
-         content: '';
-         position: absolute;
-         background: #3d4373;
-         ;
-         inset: 5px;
-         border-radius: 15px;
-      }
-
-      /* .resources:hover:before {
-  background-image: linear-gradient(180deg, rgb(81, 255, 0), purple);
-  animation: rotBGimg 3.5s linear infinite;
-} */
-   </style>
-   <style>
-      .e-card {
-         margin: 100px auto;
-         background: transparent;
-         box-shadow: 0px 8px 28px -9px rgba(0, 0, 0, 0.45);
-         position: relative;
-         width: auto;
-         height: 300px;
-         border-radius: 16px;
-         overflow: hidden;
-      }
-
-      .wave {
-         position: absolute;
-         width: 1040px;
-         height: 1400px;
-         opacity: 0.6;
-         left: 0;
-         top: 0;
-         margin-left: 20%;
-         margin-top: -20%;
-         background: linear-gradient(744deg, #4089ff, #4254f3 60%, #00ddeb);
-      }
-
-      .icon {
-         width: 3em;
-         margin-top: -1em;
-         padding-bottom: 1em;
-      }
-
-      .infotop {
-         text-align: center;
-         font-size: 20px;
-         position: absolute;
-         top: 4.6em;
-         left: 0;
-         right: 0;
-         color: rgb(255, 255, 255);
-         font-weight: 600;
-      }
-
-      .name {
-         font-size: 14px;
-         font-weight: 100;
-         position: relative;
-         top: 1em;
-         text-transform: lowercase;
-      }
-
-      .wave:nth-child(2),
-      .wave:nth-child(3) {
-         top: 210px;
-      }
-
-      .playing .wave {
-         border-radius: 40%;
-         animation: wave 3000ms infinite linear;
-      }
-
-      .wave {
-         border-radius: 40%;
-         animation: wave 55s infinite linear;
-      }
-
-      .playing .wave:nth-child(2) {
-         animation-duration: 4000ms;
-      }
-
-      .wave:nth-child(2) {
-         animation-duration: 50s;
-      }
-
-      .playing .wave:nth-child(3) {
-         animation-duration: 5000ms;
-      }
-
-      .wave:nth-child(3) {
-         animation-duration: 45s;
-      }
-
-      @keyframes wave {
-         0% {
-            transform: rotate(0deg);
-         }
-
-         100% {
-            transform: rotate(360deg);
-         }
-      }
-   </style>
    <div id="preloader" class="discord-preloader">
       <div class="spinner"></div>
    </div>
@@ -249,13 +117,19 @@ try {
                                     <div class="badge rounded-pill bg-label-primary me-3 p-2">
                                        <i class="fas fa-memory fa-2x"></i>
                                     </div>
-                                    <div class="resources">
+                                    <div class="resources"
+                                       style="position: relative; overflow: hidden; border-radius: 10px;">
+
                                        <h5 class="mb-0">
                                           <?= $usedRam . "MB / " . $nuserdb["ram"] ?>MB
                                        </h5>
+                                       <div
+                                          style="position: absolute; content: ''; background-image: linear-gradient(180deg, rgb(100, 195, 252), rgb(59, 163, 237)); inset: 5px; border-radius: 15px; animation: rotBGimg 3.5s linear infinite;">
+                                       </div>
                                     </div>
                                  </div>
                               </div>
+
                               <div class="col-md-3 col-6 text-center">
                                  <span>
                                     <?= $lang['disk'] ?>
@@ -268,6 +142,10 @@ try {
                                        <h5 class="mb-0">
                                           <?= $usedDisk . "MB / " . $nuserdb["disk"] ?>MB
                                        </h5>
+                                       <div
+                                          style="position: absolute; content: ''; background-image: linear-gradient(180deg, rgb(100, 195, 252), rgb(59, 163, 237)); inset: 5px; border-radius: 15px; animation: rotBGimg 3.5s linear infinite;">
+                                       </div>
+
                                     </div>
                                  </div>
                               </div>
@@ -283,6 +161,10 @@ try {
                                        <h5 class="mb-0">
                                           <?= $usedCpu . "% / " . $nuserdb["cpu"] ?>%
                                        </h5>
+                                       <div
+                                          style="position: absolute; content: ''; background-image: linear-gradient(180deg, rgb(100, 195, 252), rgb(59, 163, 237)); inset: 5px; border-radius: 15px; animation: rotBGimg 3.5s linear infinite;">
+                                       </div>
+
                                     </div>
                                  </div>
                               </div>
@@ -298,6 +180,10 @@ try {
                                        <h5 class="mb-0">
                                           <?= $serversnumber . " / " . $nuserdb["server_limit"] ?>
                                        </h5>
+                                       <div
+                                          style="position: absolute; content: ''; background-image: linear-gradient(180deg, rgb(100, 195, 252), rgb(59, 163, 237)); inset: 5px; border-radius: 15px; animation: rotBGimg 3.5s linear infinite;">
+                                       </div>
+
                                     </div>
                                  </div>
                               </div>
@@ -316,6 +202,10 @@ try {
                                        <h5 class="mb-0">
                                           <?= $usedBackup . " / " . $nuserdb["backups"] ?>
                                        </h5>
+                                       <div
+                                          style="position: absolute; content: ''; background-image: linear-gradient(180deg, rgb(100, 195, 252), rgb(59, 163, 237)); inset: 5px; border-radius: 15px; animation: rotBGimg 3.5s linear infinite;">
+                                       </div>
+
                                     </div>
                                  </div>
                               </div>
@@ -331,6 +221,10 @@ try {
                                        <h5 class="mb-0">
                                           <?= $usedPorts . " / " . $nuserdb["ports"] ?>
                                        </h5>
+                                       <div
+                                          style="position: absolute; content: ''; background-image: linear-gradient(180deg, rgb(100, 195, 252), rgb(59, 163, 237)); inset: 5px; border-radius: 15px; animation: rotBGimg 3.5s linear infinite;">
+                                       </div>
+
                                     </div>
                                  </div>
                               </div>
@@ -346,6 +240,10 @@ try {
                                        <h5 class="mb-0">
                                           <?= $usedDatabase . " / " . $nuserdb["databases"] ?>
                                        </h5>
+                                       <div
+                                          style="position: absolute; content: ''; background-image: linear-gradient(180deg, rgb(100, 195, 252), rgb(59, 163, 237)); inset: 5px; border-radius: 15px; animation: rotBGimg 3.5s linear infinite;">
+                                       </div>
+
                                     </div>
                                  </div>
                               </div>
@@ -361,6 +259,10 @@ try {
                                        <h5 class="mb-0">
                                           <?= $nuserdb["coins"] ?>
                                        </h5>
+                                       <div
+                                          style="position: absolute; content: ''; background-image: linear-gradient(180deg, rgb(100, 195, 252), rgb(59, 163, 237)); inset: 5px; border-radius: 15px; animation: rotBGimg 3.5s linear infinite;">
+                                       </div>
+
                                     </div>
                                  </div>
                               </div>
@@ -384,9 +286,7 @@ try {
                                     if (count($uservers) == 0 && $servers_in_queue->num_rows == 0) {
                                        ?>
                                        <div style="text-align: center;">
-                                          <img
-                                             src="/assets/img/empty.svg"
-                                             height="150" />
+                                          <img src="/assets/img/empty.svg" height="150" />
                                           <br>
                                           <h4 style="">
                                              <?= $lang['no_servers_1'] ?>
