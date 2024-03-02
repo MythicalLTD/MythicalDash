@@ -223,14 +223,13 @@ if (!fis_active_page(['/e/adblock'])) {
 
 ?>
 <script>
-
-
     anime({
         targets: '.navbar',
         translateY: [-100, 0],
         easing: 'easeInOutQuad',
         duration: 1000
     });
+    
     const cardAnimation = anime.timeline({
         targets: '.card',
         easing: 'easeInOutQuad',

@@ -131,35 +131,18 @@ try {
   </title>
 
 </head>
-
 <body>
-<?php
-  if (SettingsManager::getSetting("show_snow") == "true") {
-    include(__DIR__ . '/../components/snow.php');
-  }
-  ?>
   <div id="preloader" class="discord-preloader">
     <div class="spinner"></div>
   </div>
   <div class="authentication-wrapper authentication-cover authentication-bg">
     <div class="authentication-inner row">
-      <div class="d-none d-lg-flex col-lg-7 p-0">
-        <div class="auth-cover-bg auth-cover-bg-color d-flex justify-content-center align-items-center">
-          <img src="<?= $appURL ?>/assets/img/illustrations/auth-login-illustration-light.png" alt="auth-login-cover"
-            class="img-fluid my-5 auth-illustration"
-            data-app-light-img="illustrations/auth-login-illustration-light.png"
-            data-app-dark-img="illustrations/auth-login-illustration-dark.png" />
-          <img src="<?= $appURL ?>/assets/img/illustrations/bg-shape-image-light.png" alt="auth-login-cover"
-            class="platform-bg" data-app-light-img="illustrations/bg-shape-image-light.png"
-            data-app-dark-img="illustrations/bg-shape-image-dark.png" />
-        </div>
-      </div>
-      <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4">
+      <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4 center">
         <div class="w-px-400 mx-auto">
-          <h3 class="mb-1 fw-bold"><?= $lang['welcome_to'] ?>
+          <h3 class="mb-1 fw-bold text-center"><?= $lang['welcome_to'] ?>
             <?= SettingsManager::getSetting("name") ?>!
           </h3>
-          <p class="mb-4"><?= $lang['please_login'] ?></p>
+          <p class="mb-4 text-center"><?= $lang['please_login'] ?></p>
           <?php
           if (isset($_GET['e'])) {
             ?>
@@ -181,7 +164,7 @@ try {
               <?php if (SettingsManager::getSetting("enable_smtp") == "true") {
                 ?>
                 <div class="d-flex justify-content-between">
-                  <label class="form-label" for="password"><?= $lang['password'] ?></label>
+                  <label class="form-label" for="password"><?= $lang['password']?></label>
                   <a href="/auth/forgot-password">
                     <small><?= $lang['forgot_password'] ?></small>
                   </a>
@@ -194,13 +177,7 @@ try {
                   aria-describedby="password" />
                 <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
               </div>
-            </div>
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="remember-me" name="remember-me" />
-                <label class="form-check-label" for="remember-me"> Remember Me </label>
-              </div>
-            </div>
+            </div>     
             <?php
             if (SettingsManager::getSetting("enable_turnstile") == "true") {
               ?>
@@ -221,9 +198,6 @@ try {
               <span><?= $lang['register'] ?></span>
             </a>
           </p>
-          <div class="divider my-2">
-            <div class="divider-text"> <?= $lang['or'] ?> </div>
-          </div>
           <div class="auth-footer-btn d-flex justify-content-center">
             <?php
             if (SettingsManager::getSetting("enable_discord_link") == "true") {

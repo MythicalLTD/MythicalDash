@@ -200,77 +200,46 @@ try {
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <?php include(__DIR__ . '/../requirements/head.php'); ?>
     <title>
-        <?= SettingsManager::getSetting("name") ?> -
-        <?= $lang['register'] ?>
+        <?= SettingsManager::getSetting("name") ?> - <?= $lang['register'] ?>
     </title>
     <link rel="stylesheet" href="<?= $appURL ?>/assets/vendor/css/pages/page-auth.css" />
 </head>
 
 <body>
-    <?php
-    if (SettingsManager::getSetting("show_snow") == "true") {
-        include(__DIR__ . '/../components/snow.php');
-    }
-    ?>
     <div id="preloader" class="discord-preloader">
         <div class="spinner"></div>
     </div>
     <div class="authentication-wrapper authentication-cover authentication-bg">
         <div class="authentication-inner row">
-            <div class="d-none d-lg-flex col-lg-7 p-0">
-                <div class="auth-cover-bg auth-cover-bg-color d-flex justify-content-center align-items-center">
-                    <img src="<?= $appURL ?>/assets/img/illustrations/auth-register-illustration-light.png"
-                        alt="auth-register-cover" class="img-fluid my-5 auth-illustration"
-                        data-app-light-img="illustrations/auth-register-illustration-light.png"
-                        data-app-dark-img="illustrations/auth-register-illustration-dark.png" />
-                    <img src="<?= $appURL ?>/assets/img/illustrations/bg-shape-image-light.png"
-                        alt="auth-register-cover" class="platform-bg"
-                        data-app-light-img="illustrations/bg-shape-image-light.png"
-                        data-app-dark-img="illustrations/bg-shape-image-dark.png" />
-                </div>
-            </div>
-            <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4">
+            <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4 center">
                 <div class="w-px-400 mx-auto">
-                    <h3 class="mb-1 fw-bold">
-                        <?= $lang['welcome_to'] ?>
+                    <h3 class="mb-1 fw-bold text-center"><?= $lang['welcome_to'] ?>
                         <?= SettingsManager::getSetting("name") ?>!
                     </h3>
-                    <p class="mb-4">
-                        <?= $lang['register_subtitle'] ?>
-                    </p>
+                    <p class="mb-4 text-center"><?= $lang['register_subtitle'] ?></p>
                     <form id="formAuthentication" class="mb-3" method="POST">
                         <div class="mb-3">
-                            <label for="first_name" class="form-label">
-                                <?= $lang['first_name'] ?>
-                            </label>
+                            <label for="first_name" class="form-label"><?= $lang['first_name'] ?></label>
                             <input type="text" class="form-control" id="first_name" required name="first_name"
                                 placeholder="John" autofocus />
                         </div>
                         <div class="mb-3">
-                            <label for="last_name" class="form-label">
-                                <?= $lang['last_name'] ?>
-                            </label>
+                            <label for="last_name" class="form-label"><?= $lang['last_name'] ?></label>
                             <input type="text" class="form-control" id="last_name" required name="last_name"
-                                placeholder="Doe" autofocus />
+                                placeholder="Cazen" autofocus />
                         </div>
                         <div class="mb-3">
-                            <label for="username" class="form-label">
-                                <?= $lang['username'] ?>
-                            </label>
+                            <label for="username" class="form-label"><?= $lang['username'] ?></label>
                             <input type="text" class="form-control" id="username" required name="username"
-                                placeholder="johndoe" autofocus />
+                                placeholder="kentocazen" autofocus />
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">
-                                <?= $lang['email'] ?>
-                            </label>
+                            <label for="email" class="form-label"><?= $lang['email'] ?></label>
                             <input type="email" class="form-control" id="email" required name="email"
                                 placeholder="Enter your email" />
                         </div>
                         <div class="mb-3 form-password-toggle">
-                            <label class="form-label" for="password">
-                                <?= $lang['password'] ?>
-                            </label>
+                            <label class="form-label" for="password"><?= $lang['password'] ?></label>
                             <div class="input-group input-group-merge">
                                 <input type="password" id="password" required class="form-control" name="password"
                                     placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
@@ -282,13 +251,9 @@ try {
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" />
                                 <label class="form-check-label" for="terms-conditions">
-                                    <?= $lang['terms_agree'] ?> <a type="button" class="text-primary"
-                                        data-bs-toggle="modal" data-bs-target="#tos">
-                                        <?= $lang['terms_of_service'] ?>
-                                    </a> &amp; <a type="button" class="text-primary" data-bs-toggle="modal"
-                                        data-bs-target="#pp">
-                                        <?= $lang['privacy_policy'] ?>
-                                    </a>
+                                <?= $lang['terms_agree'] ?> <a type="button" class="text-primary" data-bs-toggle="modal"
+                                        data-bs-target="#tos"><?= $lang['terms_of_service'] ?></a> &amp; <a type="button"
+                                        class="text-primary" data-bs-toggle="modal" data-bs-target="#pp"><?= $lang['privacy_policy'] ?></a>
                                 </label>
                             </div>
                         </div>
@@ -296,17 +261,14 @@ try {
                         if (SettingsManager::getSetting("enable_turnstile") == "true") {
                             ?>
                             <center>
-                                <div class="cf-turnstile"
-                                    data-sitekey="<?= SettingsManager::getSetting("turnstile_sitekey") ?>"></div>
+                                <div class="cf-turnstile" data-sitekey="<?= SettingsManager::getSetting("turnstile_sitekey") ?>"></div>
                             </center>
                             &nbsp;
                             <?php
                         }
                         ?>
                         <?= $csrf->input('register-form'); ?>
-                        <button type="submit" value="true" name="sign_up" class="btn btn-primary d-grid w-100">
-                            <?= $lang['register'] ?>
-                        </button>
+                        <button type="submit" value="true" name="sign_up" class="btn btn-primary d-grid w-100"> <?= $lang['register'] ?></button>
                     </form>
                     <?php
                     if (isset($_GET['e'])) {
@@ -320,13 +282,9 @@ try {
                     }
                     ?>
                     <p class="text-center">
-                        <span>
-                            <?= $lang['register_have_an_account'] ?>
-                        </span>
+                        <span> <?= $lang['register_have_an_account'] ?></span>
                         <a href="/auth/login">
-                            <span>
-                                <?= $lang['login'] ?>
-                            </span>
+                            <span><?= $lang['login'] ?></span>
                         </a>
                     </p>
                 </div>
@@ -338,21 +296,15 @@ try {
                     <div class="modal-body">
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         <div class="text-center mb-4">
-                            <h3 class="mb-2">
-                                <?= $lang['terms_of_service'] ?>
-                            </h3>
+                            <h3 class="mb-2"><?= $lang['terms_of_service'] ?></h3>
                             <p>
-                                <?= SettingsManager::getSetting("terms_of_service") ?>
+                            <?= SettingsManager::getSetting("terms_of_service") ?>
                         </div>
                         <div class="col-12 text-center">
                             <button type="button" data-bs-toggle="modal" data-bs-target="#pp"
-                                class="btn btn-primary me-sm-3 me-1">
-                                <?= $lang['privacy_policy'] ?>
-                            </button>
+                                class="btn btn-primary me-sm-3 me-1"><?= $lang['privacy_policy'] ?></button>
                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                aria-label="Close">
-                                <?= $lang['close'] ?>
-                            </button>
+                                aria-label="Close"> <?= $lang['close'] ?> </button>
                         </div>
                     </div>
                 </div>
@@ -364,21 +316,15 @@ try {
                     <div class="modal-body">
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         <div class="text-center mb-4">
-                            <h3 class="mb-2">
-                                <?= $lang['privacy_policy'] ?>
-                            </h3>
+                            <h3 class="mb-2"><?= $lang['privacy_policy'] ?></h3>
                             <p>
-                                <?= SettingsManager::getSetting("privacy_policy") ?>
+                            <?= SettingsManager::getSetting("privacy_policy") ?>
                         </div>
                         <div class="col-12 text-center">
                             <button type="button" data-bs-toggle="modal" data-bs-target="#tos" name="id" value=""
-                                class="btn btn-primary me-sm-3 me-1">
-                                <?= $lang['terms_of_service'] ?>
-                            </button>
+                                class="btn btn-primary me-sm-3 me-1"> <?= $lang['terms_of_service'] ?></button>
                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                aria-label="Close">
-                                <?= $lang['close'] ?>
-                            </button>
+                                aria-label="Close"> <?= $lang['close'] ?> </button>
                         </div>
                     </div>
                 </div>

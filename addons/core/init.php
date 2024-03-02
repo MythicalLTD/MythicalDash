@@ -8,4 +8,3 @@ return [
     'author'      => 'NaysKutzu',
 ];
 
-?>
