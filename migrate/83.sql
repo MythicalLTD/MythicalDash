@@ -1,0 +1,1 @@
+UPDATE `mythicaldash_settings` SET `version` = '3.2.1' WHERE `mythicaldash_settings`.`id` = 1;
