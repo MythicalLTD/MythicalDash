@@ -224,12 +224,7 @@ if (!fis_active_page(['/e/adblock'])) {
 ?>
 <script>
 
-    anime({
-        targets: '.layout-menu',
-        translateX: [-300, 0],
-        easing: 'easeInOutQuad',
-        duration: 1000
-    });
+
     anime({
         targets: '.navbar',
         translateY: [-100, 0],
