@@ -26,7 +26,7 @@ MythicalDash is one of the fastest dashboards out there. It has lightning-fast l
 
 Well, we created a table to compare the most commonly used pterodactyl clients, so you can see it for yourself!
  ---------------------------------------------------------------------------------------------------
-| Feature                  |  MythicalDash |  HolaClient |   Meteor      |  NorthClient |  Dashactyl  |
+| Feature                  |  MythicalDash |  HolaClient |   Heliactyl 14      |  NorthClient |  Dashactyl  |
 | :----------------------: | :-----------: | :---------: | :-----------: | :----------: | :---------: |
 | Essentials Options       |      ✅       |    ✅      |      ✅      |      ✅      |     ✅     |
 | API (Client/Admin)       |      ✅       |    ✅      |      ✅      |      ✅      |     ✅     |
@@ -42,18 +42,18 @@ Well, we created a table to compare the most commonly used pterodactyl clients, 
 | CLI                      |      ✅       |    ⚠️      |      ✅      |      ❌      |     ❌     |
 | Support System           |      ✅       |    ⚠️      |      ⚠️      |      ❌      |     ❌     |
 | Easy Customizations      |      ✅       |    ✅      |      ⚠️      |      ❌      |     ❌     |
-| Runs everywhere          |      ✅       |    ⚠️      |      ⚠️      |      ❌      |     ❌     |
+| Runs everywhere          |      ✅       |    ⚠️      |      ✅      |      ❌      |     ❌     |
 | Anti CSRF                |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
-| Custom (CSS/Header/HTML) |      ✅       |    ✅      |      ❌      |      ❌      |     ❌     |
-| Web Logs                 |      ✅       |    ✅      |      ❌      |      ❌      |     ❌     |
-| Server Queue             |      ✅       |    ✅      |      ❌      |      ❌      |     ❌     |
-| Custom Search            |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
-| Leaderboards             |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
+| Custom (CSS/Header/HTML) |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
+| Web Logs                 |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
+| Server Queue             |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
+| Custom Search            |      ✅       |    ❌      |      ✅      |      ❌      |     ❌     |
+| Leaderboards             |      ✅       |    ❌      |      ✅      |      ❌      |     ❌     |
 | Health Options           |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
-| Advanced Encryption      |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
-| Easy Translations        |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
-| Activity Logs            |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
-| Anti XSS                 |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
+| Advanced Encryption      |      ✅       |    ❌      |      ✅      |      ❌      |     ❌     |
+| Easy Translations        |      ✅       |    ❌      |      ⚠️      |      ❌      |     ❌     |
+| Activity Logs            |      ✅       |    ❌      |      ✅      |      ❌      |     ❌     |
+| Anti XSS                 |      ✅       |    ❌      |      ✅      |      ❌      |     ❌     |
 | Exploit Fixer (Guard)    |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
  ---------------------------------------------------------------------------------------------------
 
