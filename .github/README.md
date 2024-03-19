@@ -45,12 +45,12 @@ Well, we created a table to compare the most commonly used pterodactyl clients, 
 | Runs everywhere          |      ✅       |    ⚠️      |      ✅      |      ❌      |     ❌     |
 | Anti CSRF                |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
 | Custom (CSS/Header/HTML) |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
-| Web Logs                 |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
+| Web Logs                 |      ✅       |    ✅      |      ❌      |      ❌      |     ❌     |
 | Server Queue             |      ✅       |    ✅      |      ✅      |      ❌      |     ❌     |
 | Custom Search            |      ✅       |    ❌      |      ✅      |      ❌      |     ❌     |
 | Leaderboards             |      ✅       |    ❌      |      ✅      |      ❌      |     ❌     |
 | Health Options           |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
-| Advanced Encryption      |      ✅       |    ❌      |      ✅      |      ❌      |     ❌     |
+| Advanced Encryption      |      ✅       |    ❌      |      ❌      |      ❌      |     ❌     |
 | Easy Translations        |      ✅       |    ❌      |      ⚠️      |      ❌      |     ❌     |
 | Activity Logs            |      ✅       |    ❌      |      ✅      |      ❌      |     ❌     |
 | Anti XSS                 |      ✅       |    ❌      |      ✅      |      ❌      |     ❌     |
