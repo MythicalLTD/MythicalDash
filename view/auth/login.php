@@ -1,23 +1,21 @@
 <?php
-use MythicalDash\CloudFlare\Captcha;
-use MythicalDash\ErrorHandler;
 use MythicalDash\SettingsManager;
 use MythicalDash\SessionManager;
 use MythicalDash\Database\Connect;
-
+use MythicalSystems\CloudFlare\TurnStile;
 try {
   $conn = new Connect();
   $conn = $conn->connectToDatabase();
   $session = new SessionManager();
   session_start();
-  $csrf = new MythicalDash\CSRF();
+  $csrf = new MythicalSystems\Utils\CSRFHandler;
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($csrf->validate('login-form')) {
       if (isset($_POST['login'])) {
         if (SettingsManager::getSetting("enable_turnstile") == "false") {
           $captcha_success = 1;
         } else {
-          $captcha_success = Captcha::validate_captcha($_POST["cf-turnstile-response"], $session->getIP(), SettingsManager::getSetting("turnstile_secretkey"));
+          $captcha_success = TurnStile::validate($_POST["cf-turnstile-response"], $session->getIP(), SettingsManager::getSetting("turnstile_secretkey"));
         }
         if ($captcha_success) {
           $email = mysqli_real_escape_string($conn, $_POST['email']);
@@ -147,7 +145,7 @@ try {
           if (isset($_GET['e'])) {
             ?>
             <div class="text-center alert alert-danger" role="alert">
-              <?= $_GET['e'] ?>
+              <?= htmlspecialchars($_GET['e']) ?>
             </div>
             <?php
           } else {

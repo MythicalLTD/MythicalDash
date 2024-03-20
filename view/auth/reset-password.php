@@ -6,7 +6,7 @@ use MythicalDash\Database\Connect;
 $conn = new Connect();
 $conn = $conn->connectToDatabase();
 session_start();
-$csrf = new MythicalDash\CSRF();
+$csrf = new MythicalSystems\Utils\CSRFHandler;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['code'])) {
         if (!$_GET['code'] == "") {

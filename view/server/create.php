@@ -3,7 +3,7 @@ use MythicalDash\ErrorHandler;
 use MythicalDash\SettingsManager;
 
 include (__DIR__ . '/../requirements/page.php');
-$csrf = new MythicalDash\CSRF();
+$csrf = new MythicalSystems\Utils\CSRFHandler;
 
 use MythicalDash\Telemetry;
 

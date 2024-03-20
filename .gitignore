@@ -21,3 +21,4 @@ migrates.ini
 /MythicalDash.zip
 /mythicaldash_backup.sql
 /caches/notifications.json
+/.mono/

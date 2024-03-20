@@ -11,7 +11,6 @@ try {
     $conn = new Connect();
     $conn = $conn->connectToDatabase();
     $session = new SessionManager();
-    $csrf = new MythicalDash\CSRF();
     if (SettingsManager::getSetting("enable_smtp") == "false") {
         header('location: /auth/login?e='.$lang['login_mail_server_not_setup']);
         die();
@@ -19,7 +18,6 @@ try {
     session_start();
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['reset_password'])) {
-            if ($csrf->validate('forgot-password-form')) {
                 if (SettingsManager::getSetting("enable_smtp") == "true") {
                     $email = mysqli_real_escape_string($conn, $_POST['email']);
                     $check_query = "SELECT * FROM mythicaldash_users WHERE email = '$email'";
@@ -234,10 +232,6 @@ try {
                     header('location: /auth/forgot-password?e='.$lang['login_mail_server_not_setup']);
                     die();
                 }
-            } else {
-                header('location: /auth/forgot-password?e='.$lang['csrf_failed']);
-                die();
-            }
         } else {
             header("location: /auth/forgot-password?e=".$lang['login_error_unknown']);
             die();
@@ -295,7 +289,7 @@ try {
                     if (isset($_GET['e'])) {
                         ?>
                         <div class="text-center alert alert-danger" role="alert">
-                            <?= $_GET['e'] ?>
+                            <?= htmlspecialchars($_GET['e']) ?>
                         </div>
                         <?php
                     } else {
@@ -306,7 +300,7 @@ try {
                     if (isset($_GET['s'])) {
                         ?>
                         <div class="text-center alert alert-success" role="alert">
-                            <?= $_GET['s'] ?>
+                            <?= htmlspecialchars($_GET['s']) ?>
                         </div>
                         <?php
                     } else {
@@ -319,7 +313,6 @@ try {
                             <input type="email" class="form-control" id="email" name="email"
                                 placeholder="Enter your email" autofocus />
                         </div>
-                        <?= $csrf->input('forgot-password-form'); ?>
                         <button name="reset_password" value="true" class="btn btn-primary d-grid w-100"><?= $lang['send'] ?></button>
                     </form>
                     <div class="text-center">

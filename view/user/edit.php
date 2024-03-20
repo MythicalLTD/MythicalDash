@@ -3,7 +3,7 @@ use MythicalDash\Encryption;
 use MythicalDash\SettingsManager;
 
 include(__DIR__ . '/../requirements/page.php');
-$csrf = new MythicalDash\CSRF();
+$csrf = new MythicalSystems\Utils\CSRFHandler;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($csrf->validate('profile-form')) {

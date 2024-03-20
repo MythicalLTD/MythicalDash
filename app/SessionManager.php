@@ -2,7 +2,8 @@
 
 namespace MythicalDash;
 use MythicalDash\Database\Connect;
-
+use MythicalSystems\User\Cookies as Cookie; 
+use MythicalSystems\CloudFlare\CloudFlare;
 
 class SessionManager
 {
@@ -17,8 +18,8 @@ class SessionManager
 
     public function authenticateUser()
     {
-        if (isset($_COOKIE['token'])) {
-            $session_id = mysqli_real_escape_string($this->dbConnection,$_COOKIE['token']);
+        if (!Cookie::getCookie('token') == null) {
+            $session_id = mysqli_real_escape_string($this->dbConnection,Cookie::getCookie('token'));
             $query = "SELECT * FROM mythicaldash_users WHERE api_key='" . $session_id . "'";
             $result = mysqli_query($this->dbConnection, $query);
 
@@ -36,7 +37,7 @@ class SessionManager
 
     public function getUserInfo($info)
     {
-        $session_id = mysqli_real_escape_string($this->dbConnection, $_COOKIE["token"]);
+        $session_id = mysqli_real_escape_string($this->dbConnection, Cookie::getCookie('token'));
         $safeInfo = $this->dbConnection->real_escape_string($info);
         $query = "SELECT `$safeInfo` FROM mythicaldash_users WHERE api_key='$session_id' LIMIT 1";
         $result = $this->dbConnection->query($query);
@@ -51,42 +52,14 @@ class SessionManager
 
     private function redirectToLogin($fullUrl)
     {
-        $this->deleteCookies();
+        Cookie::deleteAllCookies();
         header('location: /auth/login?r=' . $fullUrl);
         die();
     }
 
-    private function deleteCookies()
-    {
-        if (isset($_SERVER['HTTP_COOKIE'])) {
-            $cookies = explode(';', $_SERVER['HTTP_COOKIE']);
-            foreach ($cookies as $cookie) {
-                $parts = explode('=', $cookie);
-                $name = trim($parts[0]);
-                setcookie($name, '', time() - 1000);
-                setcookie($name, '', time() - 1000, '/');
-            }
-        }
-    }
     public function getIP()
     {
-        if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
-            $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
-            $_SERVER['HTTP_CLIENT_IP'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
-        }
-        $client = @$_SERVER['HTTP_CLIENT_IP'];
-        $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
-        $remote = $_SERVER['REMOTE_ADDR'];
-
-        if (filter_var($client, FILTER_VALIDATE_IP)) {
-            $ip = $client;
-        } elseif (filter_var($forward, FILTER_VALIDATE_IP)) {
-            $ip = $forward;
-        } else {
-            $ip = $remote;
-        }
-
-        return mysqli_real_escape_string($this->dbConnection, $ip);
+        return mysqli_real_escape_string($this->dbConnection, CloudFlare::getRealUserIP());
     }
     private function getFullUrl()
     {

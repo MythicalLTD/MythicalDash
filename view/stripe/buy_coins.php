@@ -4,7 +4,7 @@ use MythicalDash\ErrorHandler;
 use MythicalDash\SettingsManager;
 use MythicalDash\PayPal\Payment;
 
-$csrf = new MythicalDash\CSRF();
+$csrf = new MythicalSystems\Utils\CSRFHandler;
 
 include(__DIR__ . '/../requirements/page.php');
 if (SettingsManager::getSetting("allow_payments") == "false") {

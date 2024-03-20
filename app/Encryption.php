@@ -1,4 +1,4 @@
-<?php 
+<?php
 /* 
 Cautionary Note: Exercise discretion when handling this file, as any modifications made without a comprehensive understanding of its functionality could lead to unintended consequences.
 
@@ -16,58 +16,59 @@ Thus, the utmost caution and expertise are indispensable when engaging with this
 */
 namespace MythicalDash;
 
-class Encryption {
-    public static function encrypt($data, $encryptionKey) {
-        $encrypted = '';
-        $keyLength = strlen($encryptionKey);
+use MythicalSystems\Utils\EncryptionHandler;
 
-        for ($i = 0; $i < strlen($data); $i++) {
-            $keyChar = $encryptionKey[$i % $keyLength];
-            $encrypted .= chr((ord($data[$i]) + ord($keyChar)) % 256);
-        }
-
-        return base64_encode($encrypted);
+class Encryption
+{
+    /**
+     * Deprecated 
+     * 
+     * Please use the MythicalSystems\Utils\EncryptionHandler!
+     */
+    public static function encrypt($encryptedData, $encryptionKey)
+    {
+        return (EncryptionHandler::encrypt($encryptedData, $encryptionKey));
     }
-
-    public static function decrypt($encryptedData, $encryptionKey) {
-        $encryptedData = base64_decode($encryptedData);
-        $decrypted = '';
-        $keyLength = strlen($encryptionKey);
-
-        for ($i = 0; $i < strlen($encryptedData); $i++) {
-            $keyChar = $encryptionKey[$i % $keyLength];
-            $decrypted .= chr((ord($encryptedData[$i]) - ord($keyChar) + 256) % 256);
-        }
-
-        return $decrypted;
+    /**
+     * Deprecated 
+     * 
+     * Please use the MythicalSystems\Utils\EncryptionHandler!
+     */
+    public static function decrypt($encryptedData, $encryptionKey)
+    {
+        return (EncryptionHandler::decrypt($encryptedData, $encryptionKey));
     }
-    public static function generate_key($email,$password) {
+    public static function generate_key($email, $password)
+    {
         $timestamp = time();
         $formatted_timestamp = date("HisdmY", $timestamp);
         $encoded_timestamp = base64_encode($formatted_timestamp);
-        $key = base64_encode("mythicaldash_c_".$encoded_timestamp.base64_encode($email).password_hash(base64_encode($password),PASSWORD_DEFAULT).Main::generatePassword(12));
+        $key = base64_encode("mythicaldash_c_" . $encoded_timestamp . base64_encode($email) . password_hash(base64_encode($password), PASSWORD_DEFAULT) . Main::generatePassword(12));
         return $key;
     }
-    public static function generate_keynoinfo() {
+    public static function generate_keynoinfo()
+    {
         $timestamp = time();
         $formatted_timestamp = date("HisdmY", $timestamp);
         $encoded_timestamp = base64_encode($formatted_timestamp);
-        $key = base64_encode("mythicaldash_".Main::generatePassword(12).$encoded_timestamp.Main::generatePassword(12));
+        $key = base64_encode("mythicaldash_" . Main::generatePassword(12) . $encoded_timestamp . Main::generatePassword(12));
         return $key;
     }
-    
-    public static function generate_key_redeem() {
+
+    public static function generate_key_redeem()
+    {
         $timestamp = time();
         $formatted_timestamp = date("HisdmY", $timestamp);
         $encoded_timestamp = base64_encode($formatted_timestamp);
-        $key = "mythicaldash_redeem_".base64_encode(Main::generatePassword(12).$encoded_timestamp.Main::generatePassword(12));
+        $key = "mythicaldash_redeem_" . base64_encode(Main::generatePassword(12) . $encoded_timestamp . Main::generatePassword(12));
         return $key;
     }
-    public static function generateticket_key($tickeduuid) {
+    public static function generateticket_key($tickeduuid)
+    {
         $timestamp = time();
         $formatted_timestamp = date("HisdmY", $timestamp);
         $encoded_timestamp = base64_encode($formatted_timestamp);
-        $key = base64_encode("mythicaldash_ticket_".$encoded_timestamp.base64_encode($tickeduuid).Main::generatePassword(12));
+        $key = base64_encode("mythicaldash_ticket_" . $encoded_timestamp . base64_encode($tickeduuid) . Main::generatePassword(12));
         return $key;
     }
 }

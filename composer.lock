@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d0cd79a02ff50d5d6518b42672be713",
+    "content-hash": "e14cbfce46cd5a13403edf766788410d",
     "packages": [
         {
             "name": "atakde/discord-webhook-php",
@@ -381,21 +381,30 @@
             "time": "2023-12-03T20:05:35+00:00"
         },
         {
-            "name": "mythicalsystems/php-router",
-            "version": "1.0.3",
+            "name": "mythicalsystems/core",
+            "version": "1.0.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/MythicalLTD/php-router.git",
-                "reference": "8190321cf094124e92eebf4945e001820858e10c"
+                "url": "https://github.com/MythicalLTD/MythicalCore.git",
+                "reference": "7ad45f0fdd509b5731eda069f3188db987280aad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MythicalLTD/php-router/zipball/8190321cf094124e92eebf4945e001820858e10c",
-                "reference": "8190321cf094124e92eebf4945e001820858e10c",
+                "url": "https://api.github.com/repos/MythicalLTD/MythicalCore/zipball/7ad45f0fdd509b5731eda069f3188db987280aad",
+                "reference": "7ad45f0fdd509b5731eda069f3188db987280aad",
                 "shasum": ""
             },
             "require": {
-                "php": ">=6.0.0"
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=8.1.0"
+            },
+            "replace": {
+                "ecoal95/php-router": "*",
+                "mythicalsystems/php-router": "*"
+            },
+            "suggest": {
+                "guzzlehttp/guzzle": "^7.0"
             },
             "type": "library",
             "autoload": {
@@ -403,7 +412,8 @@
                     "src/php-6.0-support.php"
                 ],
                 "psr-0": {
-                    "Router": "src"
+                    "Router": "src",
+                    "MythicalSystems": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -414,28 +424,39 @@
                 {
                     "name": "NaysKutzu",
                     "email": "nayskutzu@mythicalsystems.me",
-                    "homepage": "https://nayskutzu.xyz",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Emilio Cobos Álvarez",
-                    "email": "emiliocobos@usal.es",
-                    "homepage": "http://emiliocobos.net",
-                    "role": "Old Developer"
+                    "homepage": "https://mythicalsystems.me",
+                    "role": "Owner"
                 }
             ],
-            "description": "Minimal routing library",
-            "homepage": "https://github.com/MythicalLTD/php-router",
+            "description": "The core composer packages for all MythicalSystems projects!",
+            "homepage": "https://github.com/mythicalltd/mythicalcore",
             "keywords": [
+                "kosmapanel",
+                "mythicalclient",
+                "mythicalcore",
+                "mythicaldash",
+                "mythicalltd",
                 "mythicalsystems",
                 "nayskutzu",
                 "php-router",
+                "phprouter",
                 "router"
             ],
             "support": {
-                "source": "https://github.com/MythicalLTD/php-router/tree/1.0.3"
+                "chat": "https://discord.gg/Tswkrhreu3",
+                "docs": "https://docs.mythicalsystems.me",
+                "forum": "https://discord.gg/Tswkrhreu3",
+                "issues": "https://github.com/mythicalltd/mythicalcore/issues",
+                "source": "https://github.com/MythicalLTD/MythicalCore/tree/1.0.0.1",
+                "wiki": "https://docs.mythicalsystems.me"
             },
-            "time": "2023-08-27T16:23:31+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/nayskutzu",
+                    "type": "GitHub"
+                }
+            ],
+            "time": "2024-03-20T19:35:32+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -724,16 +745,16 @@
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v13.12.0",
+            "version": "v13.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "8052da9058caae10c7297f85821f652b38e31d85"
+                "reference": "d569265e79dc82329dadea1b1088a0a29c7a8a76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/8052da9058caae10c7297f85821f652b38e31d85",
-                "reference": "8052da9058caae10c7297f85821f652b38e31d85",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/d569265e79dc82329dadea1b1088a0a29c7a8a76",
+                "reference": "d569265e79dc82329dadea1b1088a0a29c7a8a76",
                 "shasum": ""
             },
             "require": {
@@ -777,9 +798,9 @@
             ],
             "support": {
                 "issues": "https://github.com/stripe/stripe-php/issues",
-                "source": "https://github.com/stripe/stripe-php/tree/v13.12.0"
+                "source": "https://github.com/stripe/stripe-php/tree/v13.14.0"
             },
-            "time": "2024-02-22T22:19:58+00:00"
+            "time": "2024-03-14T21:12:02+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
