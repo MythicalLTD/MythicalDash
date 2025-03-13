@@ -23,7 +23,7 @@
 		"pinia": "^3.0.0",
 		"qrcode": "^1.5.4",
 		"vue": "^3.5.12",
-		"vue-i18n": "^11.1.1",
+		"vue-i18n": "^11.1.2",
 		"vue-qrcode": "^2.2.2",
 		"vue-router": "^4.4.5",
 		"vue-sweetalert2": "^5.0.11",
