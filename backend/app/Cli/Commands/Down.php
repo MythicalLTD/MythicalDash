@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,10 +11,10 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Cli\Commands;
+namespace MythicalDash\Cli\Commands;
 
-use MythicalClient\Cli\App;
-use MythicalClient\Cli\CommandBuilder;
+use MythicalDash\Cli\App;
+use MythicalDash\Cli\CommandBuilder;
 
 class Down extends App implements CommandBuilder
 {
@@ -24,10 +24,10 @@ class Down extends App implements CommandBuilder
 
         if (file_exists(__DIR__ . '/../../../storage/caches/maintenance.php')) {
             $app->send('&cThe server is already in maintenance mode!');
-            \MythicalClient\App::getInstance(true)->getLogger()->error('The server is already in maintenance mode!');
+            \MythicalDash\App::getInstance(true)->getLogger()->error('The server is already in maintenance mode!');
             exit;
         }
-        \MythicalClient\App::getInstance(true)->getLogger()->info('The server is now in maintenance mode!');
+        \MythicalDash\App::getInstance(true)->getLogger()->info('The server is now in maintenance mode!');
         $fileTemplate = "<?php header('Content-Type: application/json');echo json_encode(['code'=>503,'message'=>'The application is under maintenance.','error'=>'Service Unavailable','success'=>false,],JSON_PRETTY_PRINT);die();";
         file_put_contents(__DIR__ . '/../../../storage/caches/maintenance.php', $fileTemplate);
         $app->send('&aThe server is now in maintenance mode.');

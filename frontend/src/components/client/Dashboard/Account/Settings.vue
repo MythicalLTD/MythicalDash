@@ -3,11 +3,11 @@ import { reactive, ref, onMounted } from 'vue';
 import LayoutAccount from './Layout.vue';
 import TextInput from '@/components/client/ui/TextForms/TextInput.vue';
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
-import Session from '@/mythicalclient/Session';
+import Session from '@/mythicaldash/Session';
 import { useI18n } from 'vue-i18n';
 import Swal from 'sweetalert2';
-import Auth from '@/mythicalclient/Auth';
-import { MythicalDOM } from '@/mythicalclient/MythicalDOM';
+import Auth from '@/mythicaldash/Auth';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 import Button from '@/components/client/ui/Button.vue';
 
 const { t } = useI18n();

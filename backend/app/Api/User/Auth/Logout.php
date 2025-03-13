@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,8 +11,8 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-use MythicalClient\App;
-use MythicalClient\Plugins\Events\Events\AuthEvent;
+use MythicalDash\App;
+use MythicalDash\Plugins\Events\Events\AuthEvent;
 
 $router->get('/api/user/auth/logout', function (): void {
 	global $eventManager;

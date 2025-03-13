@@ -1,8 +1,8 @@
 <?php
 
-namespace MythicalClient\Plugins\Events\Events;
+namespace MythicalDash\Plugins\Events\Events;
 
-use MythicalClient\Plugins\Events\PluginEvent;
+use MythicalDash\Plugins\Events\PluginEvent;
 
 class AppEvent implements PluginEvent {
 	public static function onAppLoad() : string {

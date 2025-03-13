@@ -1,8 +1,8 @@
 <?php
 
-namespace MythicalClient\Plugins\Events;
+namespace MythicalDash\Plugins\Events;
 
-use MythicalClient\Plugins\PluginEvents;
+use MythicalDash\Plugins\PluginEvents;
 
 interface PluginEventRequirements {
 	public static function processEvents(PluginEvents $event) : void;

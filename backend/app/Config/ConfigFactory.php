@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,7 +11,7 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Config;
+namespace MythicalDash\Config;
 
 use MythicalSystems\Utils\XChaCha20;
 
@@ -21,7 +21,7 @@ class ConfigFactory
     private string $encryption_key;
     private array $cache = [];
 
-    private string $table_name = 'mythicalclient_settings';
+    private string $table_name = 'mythicaldash_settings';
 
     public function __construct(\PDO $db)
     {

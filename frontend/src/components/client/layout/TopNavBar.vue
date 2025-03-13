@@ -10,7 +10,7 @@
 
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 flex items-center justify-center">
-                        <img :src="appLogo" alt="MythicalClient" class="h-6 w-6" />
+                        <img :src="appLogo" alt="MythicalDash" class="h-6 w-6" />
                     </div>
                     <span
                         class="text-xl font-bold bg-linear-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent"
@@ -76,7 +76,7 @@ import {
 import { useSettingsStore } from '@/stores/settings';
 const Settings = useSettingsStore();
 import { useI18n } from 'vue-i18n';
-import Session from '@/mythicalclient/Session';
+import Session from '@/mythicaldash/Session';
 
 const role =
     (Session.getInfo('role_real_name') ?? '').charAt(0).toUpperCase() +

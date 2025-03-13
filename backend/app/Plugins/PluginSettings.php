@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,9 +11,9 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Plugins;
+namespace MythicalDash\Plugins;
 
-use MythicalClient\Chat\Database;
+use MythicalDash\Chat\Database;
 
 class PluginSettings extends PluginDB
 {
@@ -31,7 +31,7 @@ class PluginSettings extends PluginDB
         // Check if setting already exists
         $stmt = $conn->prepare('
 			SELECT id 
-			FROM mythicalclient_addons_settings 
+			FROM mythicaldash_addons_settings 
 			WHERE identifier = :identifier 
 			AND `key` = :key
 			LIMIT 1
@@ -47,7 +47,7 @@ class PluginSettings extends PluginDB
 
         if ($exists) {
             $stmt = $conn->prepare("
-				UPDATE mythicalclient_addons_settings 
+				UPDATE mythicaldash_addons_settings 
 				SET value = :value, 
 					date = CURRENT_TIMESTAMP,
 					deleted = 'false'
@@ -56,7 +56,7 @@ class PluginSettings extends PluginDB
 			");
         } else {
             $stmt = $conn->prepare("
-				INSERT INTO mythicalclient_addons_settings 
+				INSERT INTO mythicaldash_addons_settings 
 				(identifier, `key`, value, locked, deleted, date) 
 				VALUES (:identifier, :key, :value, 'false', 'false', CURRENT_TIMESTAMP)
 			");
@@ -80,7 +80,7 @@ class PluginSettings extends PluginDB
         $conn = Database::getPdoConnection();
 
         $stmt = $conn->prepare("
-			UPDATE mythicalclient_addons_settings 
+			UPDATE mythicaldash_addons_settings 
 			SET deleted = 'true',
 				date = CURRENT_TIMESTAMP
 			WHERE identifier = :identifier 
@@ -107,7 +107,7 @@ class PluginSettings extends PluginDB
 
         $stmt = $conn->prepare("
 			SELECT value 
-			FROM mythicalclient_addons_settings 
+			FROM mythicaldash_addons_settings 
 			WHERE identifier = :identifier 
 			AND `key` = :key 
 			AND deleted = 'false'

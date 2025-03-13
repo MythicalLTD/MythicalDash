@@ -2,7 +2,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { LicenseServer } from '@/mythicalclient/LicenseServer';
+import { LicenseServer } from '@/mythicaldash/LicenseServer';
 
 const showFooter = ref(true);
 

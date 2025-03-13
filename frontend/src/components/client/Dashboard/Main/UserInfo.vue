@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
-import Session from '@/mythicalclient/Session';
+import Session from '@/mythicaldash/Session';
 
 import { BookMarkedIcon as MarketIcon } from 'lucide-vue-next';
 </script>

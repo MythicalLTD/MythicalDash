@@ -8,7 +8,7 @@ export class MythicalDOM {
      */
     public static setPageTitle(title: string): void {
         const Settings = useSettingsStore();
-        document.title = 'MythicalClient ' + ' - ' + title;
+        document.title = 'MythicalDash ' + ' - ' + title;
         this.addFavicon('https://github.com/mythicalltd.png');
         const updateTitle = () => {
             document.title = Settings.getSetting('app_name') + ' - ' + title;

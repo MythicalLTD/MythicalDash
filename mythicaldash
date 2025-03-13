@@ -1,6 +1,6 @@
 <?php
 
-use MythicalClient\Cli\App;
+use MythicalDash\Cli\App;
 if (!empty($_SERVER['DOCUMENT_ROOT'])) {
     define('APP_PUBLIC', $_SERVER['DOCUMENT_ROOT'].'/backend');
 } else {

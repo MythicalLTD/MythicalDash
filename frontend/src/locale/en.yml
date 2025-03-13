@@ -44,11 +44,6 @@ Components:
                 title: 'Error'
                 generic: 'An error occurred. Please try again later'
                 footer: 'Please contact support for assistance'
-    Invoices:
-        title: 'Recent Invoices'
-        viewMore: 'View All Invoices'
-        order: 'Order #{id}'
-        due: 'Due'
 
 #-------------------------------------------------------------#
 #
@@ -344,39 +339,6 @@ account:
                         description: 'This will clear all cached data and reload the application.'
                         confirm: 'Yes, clear data'
                         cancel: 'Cancel'
-        billing:
-            alerts:
-                success:
-                    title: Success
-                    update_success: Billing information updated
-                    footer: Your billing information has been updated
-                error:
-                    title: Error
-                    generic: An error occurred. Please try again later
-                    footer: Please contact support for assistance
-            page:
-                title: Billing
-                subTitle: Manage your billing information
-                form:
-                    company_name:
-                        label: Company Name
-                    vat_id:
-                        label: VAT ID
-                    address:
-                        label: Address
-                    city:
-                        label: City
-                    state:
-                        label: State
-                    zip:
-                        label: Zip
-                    country:
-                        label: Country
-                    address2:
-                        label: Address 2
-                    update_button:
-                        label: Update
-                        reset: Reset
         emails:
             alerts:
                 success:
@@ -486,7 +448,6 @@ tickets:
             title: 'New Ticket'
             subTitle: 'Create a new ticket'
             form:
-                service: 'Related Service (if any)'
                 subject: 'Subject'
                 department: 'Department'
                 priority: 'Priority'
@@ -589,139 +550,3 @@ components:
         last: 'Last'
         noResults: 'No results found'
         view: 'View'
-    services:
-        list:
-            error: 'Failed to load services'
-            available: 'Available'
-            unavailable: 'Unavailable'
-            monthly: 'Monthly'
-            free: 'Free'
-            setup_fee: 'Setup Fee'
-            order: 'Order Now'
-        order:
-            errors:
-                title: 'Error'
-                invalid_json: 'Invalid request format'
-                missing_field: 'Required field missing: {field}'
-                service_not_found: 'Service not found'
-                category_not_found: 'Category not found'
-                provider_not_found: 'Provider not found'
-                invoice_failed: 'Failed to create invoice'
-                order_failed: 'Failed to create order'
-                insufficient_credits: 'Insufficient credits'
-                generic: 'An error occurred. Please try again.'
-            success:
-                title: 'Success'
-                order_created: 'Order created successfully'
-invoices:
-    pages:
-        invoices:
-            title: 'Invoices'
-            noInvoices: 'No invoices found'
-            noInvoicesDesc: "You don't have any invoices yet"
-            alerts:
-                error:
-                    generic: 'An error occurred. Please try again later'
-            table:
-                title: 'Invoices'
-                order: 'Order'
-                status: 'Status'
-                gateway: 'Payment Gateway'
-                created: 'Created'
-                due: 'Due Date'
-                actions: 'Actions'
-            actions:
-                view: 'View'
-        view:
-            title: 'Invoice #{id}'
-            actions:
-                back: 'Back'
-                download_pdf: 'Download PDF'
-                pay_now: 'Pay Now'
-            loading:
-                title: 'Loading invoice...'
-            error:
-                title: 'Error'
-                generic: 'Failed to load invoice'
-            status:
-                pending: 'PENDING'
-                paid: 'PAID'
-                cancelled: 'CANCELLED'
-                refunded: 'REFUNDED'
-            sections:
-                company_info:
-                    title: 'Bill From'
-                    vat: 'VAT: {number}'
-                client_info:
-                    title: 'Bill To'
-                    vat: 'VAT: {number}'
-                summary:
-                    invoice_number: 'Invoice Number'
-                    invoice_date: 'Invoice Date'
-                    due_date: 'Due Date'
-                    status: 'Status'
-                details:
-                    table:
-                        headers:
-                            description: 'Description'
-                            amount: 'Amount'
-                        category: 'Category: {name}'
-                        setup_fee: 'Setup Fee'
-                        total: 'Total'
-            alerts:
-                payment:
-                    success:
-                        title: 'Success'
-                        message: 'Payment processed successfully'
-                    error:
-                        title: 'Error'
-                        insufficient_credits: 'Insufficient credits'
-                        generic: 'Failed to process payment'
-            print:
-                company_name: '{name}'
-                company_details: '{address}\n{city}, {state} {zip}\n{country}'
-billing:
-    pages:
-        add_funds:
-            title: Add Funds
-            back: Back
-            form:
-                title: Add Funds to Your Account
-                description: Select your preferred payment method and enter the amount you wish to add to your account.
-                amount:
-                    label: Amount
-                    placeholder: Enter amount
-                payment_method:
-                    label: Payment Method
-                submit: Add Funds
-                processing: Processing...
-            summary:
-                title: Account Summary
-                current_balance: Current Balance
-                info: Funds will be added to your account immediately after successful payment processing. These funds can be used for any services or products within our platform.
-            alerts:
-                error:
-                    title: Error
-                    missing_fields: Please fill in all required fields.
-                    invalid_amount: Please enter a valid amount greater than 0.
-                    payment_failed: Payment processing failed. Please try again.
-                    footer: Please contact support for assistance.
-                    no_gateway: No payment gateway found.
-                success:
-                    title: Success
-                    payment_processed: Payment processed successfully. Your funds have been added to your account.
-orders:
-    pages:
-        orders:
-            title: 'Orders'
-            noOrders: 'No Orders Found'
-            noOrdersDesc: "You haven't placed any orders yet"
-            table:
-                title: 'Orders'
-                service: 'Service'
-                status: 'Status'
-                created: 'Created'
-                price: 'Price'
-            alerts:
-                error:
-                    generic: 'An error occurred. Please try again later'

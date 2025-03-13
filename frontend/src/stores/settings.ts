@@ -17,7 +17,7 @@ export const useSettingsStore = defineStore('settings', () => {
     const settings = ref<Record<string, string>>({});
     const isInitialized = ref(false);
     const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
-    const CACHE_KEY = 'mythicalclient_settings_cache';
+    const CACHE_KEY = 'mythicaldash_settings_cache';
 
     function loadFromCache(): boolean {
         const cached = localStorage.getItem(CACHE_KEY);

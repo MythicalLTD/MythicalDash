@@ -1,38 +1,38 @@
 services:
   # Frontend Vue service
-  mythicalclient_frontend:
+  mythicaldash_frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: mythicalclient_frontend
+    container_name: mythicaldash_frontend
     restart: unless-stopped
     volumes:
       - ./frontend:/app
       - /app/node_modules
       - ./frontend.conf:/etc/nginx/conf.d/default.conf
     networks:
-      - mythicalclient_network
+      - mythicaldash_network
 
   # PHP Backend service with PHP-FPM
-  mythicalclient_backend:
+  mythicaldash_backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: mythicalclient_backend
+    container_name: mythicaldash_backend
     restart: unless-stopped
     volumes:
       - ./backend:/var/www/html
       - ./backend/storage/packages:/var/www/html/storage/packages
     depends_on:
-      - mythicalclient_database
-      - mythicalclient_redis
+      - mythicaldash_database
+      - mythicaldash_redis
     networks:
-      - mythicalclient_network
+      - mythicaldash_network
 
   # Main Nginx service
-  mythicalclient_nginx:
+  mythicaldash_nginx:
     image: nginx:alpine
-    container_name: mythicalclient_nginx
+    container_name: mythicaldash_nginx
     restart: unless-stopped
     ports:
       - "9271:80"
@@ -40,15 +40,15 @@ services:
       - ./backend:/var/www/html
       - ./backend.conf:/etc/nginx/conf.d/default.conf
     depends_on:
-      - mythicalclient_frontend
-      - mythicalclient_backend
+      - mythicaldash_frontend
+      - mythicaldash_backend
     networks:
-      - mythicalclient_network
+      - mythicaldash_network
     
-  mythicalclient_database:
+  mythicaldash_database:
     image: mariadb:latest
     restart: unless-stopped
-    container_name: mythicalclient_database
+    container_name: mythicaldash_database
     volumes:
       - ./dockerfiles/mariadb/data:/var/lib/mysql/
     env_file:
@@ -64,11 +64,11 @@ services:
       timeout: 5s
       retries: 20
     networks:
-      - mythicalclient_network
+      - mythicaldash_network
     
-  mythicalclient_redis:
+  mythicaldash_redis:
     image: redis:7.0-alpine
-    container_name: mythicalclient_redis
+    container_name: mythicaldash_redis
     restart: unless-stopped
     command: redis-server --save 60 1 --loglevel notice --requirepass '${REDIS_PASSWORD}'
     env_file:
@@ -81,8 +81,8 @@ services:
       timeout: 5s
       retries: 20
     networks:
-      - mythicalclient_network
+      - mythicaldash_network
 
 networks:
-  mythicalclient_network:
+  mythicaldash_network:
     driver: bridge

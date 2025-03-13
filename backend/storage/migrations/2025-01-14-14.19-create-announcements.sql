@@ -1,5 +1,5 @@
 CREATE TABLE
-    `mythicalclient_announcements` (
+    `mythicaldash_announcements` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `title` TEXT NOT NULL,
         `shortDescription` TEXT NOT NULL,

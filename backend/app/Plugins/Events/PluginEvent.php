@@ -1,6 +1,6 @@
 <?php
 
-namespace MythicalClient\Plugins\Events;
+namespace MythicalDash\Plugins\Events;
 
 interface PluginEvent {
 

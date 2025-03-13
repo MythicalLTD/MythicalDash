@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Session from '@/mythicalclient/Session';
+import Session from '@/mythicaldash/Session';
 </script>
 
 <style scoped>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,13 +11,13 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Chat\Announcements;
+namespace MythicalDash\Chat\Announcements;
 
-use MythicalClient\Chat\Database;
+use MythicalDash\Chat\Database;
 
 class AnnouncementsTags extends Database
 {
-    public const TABLE_NAME = 'mythicalclient_announcements_tags';
+    public const TABLE_NAME = 'mythicaldash_announcements_tags';
 
     /**
      * Create a new announcement tag.

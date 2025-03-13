@@ -1,1 +1,0 @@
-ALTER TABLE `mythicalclient_tickets` CHANGE `service` `service` INT (16) NULL DEFAULT NULL;

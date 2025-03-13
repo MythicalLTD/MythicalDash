@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, nextTick, onMounted, onUnmounted } from 'vue';
 import { XIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-vue-next';
-import Announcements from '@/mythicalclient/Announcements';
+import Announcements from '@/mythicaldash/Announcements';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 

@@ -1,1 +1,1 @@
-ALTER TABLE `mythicalclient_tickets` DROP `enabled`;
+ALTER TABLE `mythicaldash_tickets` DROP `enabled`;

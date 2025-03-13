@@ -1,6 +1,6 @@
 <?php
 
-namespace MythicalClient\Plugins;
+namespace MythicalDash\Plugins;
 
 class PluginRoutes
 {

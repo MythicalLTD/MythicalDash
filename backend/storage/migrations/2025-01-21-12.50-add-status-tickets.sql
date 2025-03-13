@@ -1,4 +1,4 @@
-ALTER TABLE `mythicalclient_tickets` ADD `status` ENUM (
+ALTER TABLE `mythicaldash_tickets` ADD `status` ENUM (
 	'open',
 	'closed',
 	'waiting',

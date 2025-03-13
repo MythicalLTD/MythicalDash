@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
 {
 	public static function getRoutes(): array
@@ -15,15 +15,14 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Plugins;
+namespace MythicalDash\Plugins;
 
-use MythicalClient\App;
-use MythicalClient\Plugins\Events\PluginEventProcessor;
+use MythicalDash\App;
+use MythicalDash\Plugins\Events\PluginEventProcessor;
 
 class PluginManager
 {
     private array $plugins = [];
-	private array $deployable_plugins = [];
     public function loadKernel(): void
     {
 		global $eventManager;
@@ -43,13 +42,7 @@ class PluginManager
                                     if (PluginDependencies::checkDependencies($config)) {
                                         $instance->getLogger()->debug('Plugin ' . $plugin . ' was loaded in the memory!');
                                         $this->plugins[] = $plugin;
-										if ($config['plugin']['can_deploy']) {
-											$can_deploy = 'true';
-											$this->deployable_plugins[] = $plugin;
-										} else {
-											$can_deploy = 'false';
-										}
-                                        PluginDB::registerPlugin($config['plugin']['identifier'], $config['plugin']['name'], $can_deploy);
+                                        PluginDB::registerPlugin($config['plugin']['identifier'], $config['plugin']['name']);
 										PluginEventProcessor::processEvent($config['plugin']['identifier'], $eventManager);
                                     } else {
                                         $instance->getLogger()->error('Plugin ' . $plugin . ' has unmet dependencies!');
@@ -96,9 +89,5 @@ class PluginManager
     {
         return $this->plugins;
     }
-
-	public function getLoadedDeployablePlugins(): array {
-		return $this->deployable_plugins;
-	}
 
 }

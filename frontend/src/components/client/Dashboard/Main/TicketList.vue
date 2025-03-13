@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
-import Tickets from '@/mythicalclient/Tickets';
+import Tickets from '@/mythicaldash/Tickets';
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 

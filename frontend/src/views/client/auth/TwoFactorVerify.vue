@@ -12,10 +12,10 @@ import Turnstile from 'vue-turnstile';
 import { useSettingsStore } from '@/stores/settings';
 const Settings = useSettingsStore();
 import { useRouter } from 'vue-router';
-import Session from '@/mythicalclient/Session';
-import StorageMonitor from '@/mythicalclient/StorageMonitor';
-import Auth from '@/mythicalclient/Auth';
-import { MythicalDOM } from '@/mythicalclient/MythicalDOM';
+import Session from '@/mythicaldash/Session';
+import StorageMonitor from '@/mythicaldash/StorageMonitor';
+import Auth from '@/mythicaldash/Auth';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 
 new StorageMonitor();
 

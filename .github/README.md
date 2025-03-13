@@ -8,7 +8,7 @@
 
 MythicalDash is a client area/dashboard for the Pterodactyl Game Panel Plesk panel and many other platforms with features for managing client servers and much more.
 
-[View the Documentation Here](https://www.mythical.systems/docs/mythicalclient-v4/welcome)
+[View the Documentation Here](https://www.mythical.systems/docs/mythicaldash-v4/welcome)
 
 ---
 

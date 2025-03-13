@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,12 +11,12 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Plugins;
+namespace MythicalDash\Plugins;
 
-use MythicalClient\Plugins\Dependencies\ComposerDependencies;
-use MythicalClient\Plugins\Dependencies\PhpVersionDependencies;
-use MythicalClient\Plugins\Dependencies\PhpExtensionDependencies;
-use MythicalClient\Plugins\Dependencies\MythicalClientDependencies;
+use MythicalDash\Plugins\Dependencies\ComposerDependencies;
+use MythicalDash\Plugins\Dependencies\PhpVersionDependencies;
+use MythicalDash\Plugins\Dependencies\PhpExtensionDependencies;
+use MythicalDash\Plugins\Dependencies\MythicalDashDependencies;
 
 class PluginDependencies
 {
@@ -51,7 +51,7 @@ class PluginDependencies
             // Check if the requirement is a plugin
             if (strpos($dependency, 'plugin=') === 0) {
                 $plugin = substr($dependency, strlen('plugin='));
-                if (!MythicalClientDependencies::isInstalled($plugin)) {
+                if (!MythicalDashDependencies::isInstalled($plugin)) {
                     return false;
                 }
             }

@@ -1,1 +1,1 @@
-ALTER TABLE `mythicalclient_addons` DROP `display_name`;
+ALTER TABLE `mythicaldash_addons` DROP `display_name`;

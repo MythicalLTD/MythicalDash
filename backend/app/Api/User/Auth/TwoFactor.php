@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,15 +11,15 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-use MythicalClient\App;
+use MythicalDash\App;
 use PragmaRX\Google2FA\Google2FA;
-use MythicalClient\Chat\User\User;
-use MythicalClient\Chat\User\Session;
+use MythicalDash\Chat\User\User;
+use MythicalDash\Chat\User\Session;
 use MythicalSystems\CloudFlare\Turnstile;
-use MythicalClient\Config\ConfigInterface;
-use MythicalClient\Chat\columns\UserColumns;
-use MythicalClient\CloudFlare\CloudFlareRealIP;
-use MythicalClient\Plugins\Events\Events\AuthEvent;
+use MythicalDash\Config\ConfigInterface;
+use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Plugins\Events\Events\AuthEvent;
 
 $router->get('/api/user/auth/2fa/setup', function (): void {
 	global $eventManager;

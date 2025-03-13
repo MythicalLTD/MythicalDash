@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,16 +11,16 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Api\User\Auth;
+namespace MythicalDash\Api\User\Auth;
 
-use MythicalClient\App;
-use MythicalClient\Mail\Mail;
-use MythicalClient\Chat\User\User;
+use MythicalDash\App;
+use MythicalDash\Mail\Mail;
+use MythicalDash\Chat\User\User;
 use MythicalSystems\CloudFlare\Turnstile;
-use MythicalClient\Config\ConfigInterface;
-use MythicalClient\Chat\columns\UserColumns;
-use MythicalClient\CloudFlare\CloudFlareRealIP;
-use MythicalClient\Plugins\Events\Events\AuthEvent;
+use MythicalDash\Config\ConfigInterface;
+use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Plugins\Events\Events\AuthEvent;
 
 $router->add('/api/user/auth/login', function (): void {
 	global $eventManager;

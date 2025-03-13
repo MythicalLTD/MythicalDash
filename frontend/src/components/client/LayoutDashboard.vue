@@ -8,11 +8,11 @@ import SearchModal from '@/components/client/layout/SearchModal.vue';
 import NotificationsDropdown from '@/components/client/layout/NotificationsDropdown.vue';
 import ProfileDropdown from '@/components/client/layout/ProfileDropdown.vue';
 import { SettingsIcon, UsersIcon } from 'lucide-vue-next';
-import Session from '@/mythicalclient/Session';
-import StorageMonitor from '@/mythicalclient/StorageMonitor';
-import MythicalClient from '@/mythicalclient/MythicalClient';
-import { LicenseServer } from '@/mythicalclient/LicenseServer';
-MythicalClient.download();
+import Session from '@/mythicaldash/Session';
+import StorageMonitor from '@/mythicaldash/StorageMonitor';
+import MythicalDash from '@/mythicaldash/MythicalDash';
+import { LicenseServer } from '@/mythicaldash/LicenseServer';
+MythicalDash.download();
 
 new StorageMonitor();
 

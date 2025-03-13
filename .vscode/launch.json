@@ -4,20 +4,20 @@
 		{
 			"name": "Build Frontend",
 			"type": "node-terminal",
-			"command": "php mythicalclient frontend:build",
+			"command": "php mythicaldash frontend:build",
 			"request": "launch"
 
 		},
 		{
 			"name": "Watch Backend",
 			"type": "node-terminal",
-			"command": "php mythicalclient backend:watch",
+			"command": "php mythicaldash backend:watch",
 			"request": "launch"
 		},
 		{
 			"name": "Lint Backend",
 			"type": "node-terminal",
-			"command": "php mythicalclient backend:lint",
+			"command": "php mythicaldash backend:lint",
 			"request": "launch"
 		}
 	]

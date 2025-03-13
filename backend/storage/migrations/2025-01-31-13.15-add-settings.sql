@@ -1,5 +1,5 @@
 CREATE TABLE
-	`mythicalclient_addons_settings` (
+	`mythicaldash_addons_settings` (
 		`id` INT NOT NULL AUTO_INCREMENT,
 		`identifier` TEXT NOT NULL,
 		`key` TEXT NOT NULL,

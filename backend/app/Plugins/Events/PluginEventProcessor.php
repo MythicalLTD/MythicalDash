@@ -1,10 +1,10 @@
 <?php
 
-namespace MythicalClient\Plugins\Events;
+namespace MythicalDash\Plugins\Events;
 
-use MythicalClient\App;
-use MythicalClient\Plugins\PluginEvents;
-use MythicalClient\Plugins\PluginHelper;
+use MythicalDash\App;
+use MythicalDash\Plugins\PluginEvents;
+use MythicalDash\Plugins\PluginHelper;
 
 class PluginEventProcessor {
 	/**
@@ -23,7 +23,7 @@ class PluginEventProcessor {
                 return null;
             }
             // Build the expected event class name
-			$eventClass = "MythicalClient\\Storage\\Addons\\{$identifier}\\Module";
+			$eventClass = "MythicalDash\\Storage\\Addons\\{$identifier}\\Module";
 
             // Check if class exists and implements PluginEvent
             if (class_exists($eventClass) && is_subclass_of($eventClass, PluginEventRequirements::class)) {
@@ -52,7 +52,7 @@ class PluginEventProcessor {
 	 * Process an event for a plugin.
 	 *
 	 * @param string $identifier The plugin identifier
-	 * @param \MythicalClient\Plugins\PluginEvents $event The event to process
+	 * @param \MythicalDash\Plugins\PluginEvents $event The event to process
 	 * 
 	 * @return void
 	 */

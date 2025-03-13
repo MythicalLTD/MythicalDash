@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-    `mythicalclient_settings` (
+    `mythicaldash_settings` (
         `id` INT NOT NULL AUTO_INCREMENT COMMENT 'The id of the setting!',
         `name` TEXT NOT NULL COMMENT 'The name of the setting',
         `value` TEXT NOT NULL COMMENT 'The value of the setting!',

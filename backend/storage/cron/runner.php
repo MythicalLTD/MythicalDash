@@ -19,19 +19,19 @@ define('APP_UPSTREAM', 'github.com/mythicalltd/mythicaldash');
 
 require(__DIR__ . '/../packages/autoload.php');
 
-use MythicalClient\Cli\App;
-use MythicalClient\Plugins\PluginManager;
+use MythicalDash\Cli\App;
+use MythicalDash\Plugins\PluginManager;
 
 $pluginManager = new PluginManager();
 $pluginManager->loadKernel();
 
-App::sendOutputWithNewLine('&7Starting MythicalClient cron runner.');
+App::sendOutputWithNewLine('&7Starting MythicalDash cron runner.');
 
 foreach (glob(__DIR__ . '/php/*.php') as $file) {
 	App::sendOutputWithNewLine("");
 	App::sendOutputWithNewLine("|----");
 	require_once $file;
-	$className = 'MythicalClient\Cron\\' . basename($file, '.php');
+	$className = 'MythicalDash\Cron\\' . basename($file, '.php');
 	try {
 		if (class_exists($className)) {
 			$worker = new $className();

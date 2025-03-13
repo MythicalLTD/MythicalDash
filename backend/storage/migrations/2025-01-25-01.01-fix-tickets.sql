@@ -1,2 +1,2 @@
-ALTER TABLE `mythicalclient_tickets_attachments`
+ALTER TABLE `mythicaldash_tickets_attachments`
 DROP `enabled`;

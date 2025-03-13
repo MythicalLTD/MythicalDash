@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-    `mythicalclient_billing` (
+    `mythicaldash_billing` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `user` varchar(36) NOT NULL,
         `company_name` TEXT NULL DEFAULT NULL,
@@ -15,5 +15,5 @@ CREATE TABLE IF NOT EXISTS
         `locked` ENUM ('false', 'true') NOT NULL DEFAULT 'false',
         `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (`id`),
-        FOREIGN KEY (`user`) REFERENCES `mythicalclient_users` (`uuid`)
+        FOREIGN KEY (`user`) REFERENCES `mythicaldash_users` (`uuid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;

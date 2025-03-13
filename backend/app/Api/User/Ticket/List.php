@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,10 +11,10 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-use MythicalClient\App;
-use MythicalClient\Chat\User\Session;
-use MythicalClient\Chat\Tickets\Tickets;
-use MythicalClient\Chat\columns\UserColumns;
+use MythicalDash\App;
+use MythicalDash\Chat\User\Session;
+use MythicalDash\Chat\Tickets\Tickets;
+use MythicalDash\Chat\columns\UserColumns;
 
 $router->get('/api/user/ticket/list', function () {
     App::init();

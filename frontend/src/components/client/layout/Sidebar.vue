@@ -1,63 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import {
     AlertTriangleIcon,
     BellIcon,
     ChevronDown as ChevronDownIcon,
-    CopyPlusIcon,
-    FileTextIcon,
     LayoutDashboardIcon,
     ServerIcon,
     TicketIcon,
 } from 'lucide-vue-next';
-import Translation from '@/mythicalclient/Translation';
-import ServiceCategories from '@/mythicalclient/Services/ServiceCategories';
+import Translation from '@/mythicaldash/Translation';
 
-interface Category {
-    id: number;
-    name: string;
-    uri: string;
-    headline: string;
-    enabled: string;
-}
-
-const categories = ref<Category[]>([]);
-const isLoading = ref(true);
-
-const fetchCategories = async () => {
-    try {
-        const response = await ServiceCategories.getCategoriesCache();
-        categories.value = response;
-
-        // Find the Services menu item
-        const servicesMenuItem = menuSections.value[0].items.find((item) => item.name === 'Services');
-        if (servicesMenuItem && servicesMenuItem.subitems) {
-            // Update the Add Service menu item to include categories
-            const addServiceItem = servicesMenuItem.subitems.find((item) => item.name === 'Add Service');
-            if (addServiceItem) {
-                addServiceItem.subitems = [
-                    // Add categories as subitems
-                    ...categories.value.map((category) => ({
-                        name: category.name,
-                        icon: ServerIcon,
-                        href: `/services/${category.uri}`,
-                        active: isActiveRoute([`/services/${category.uri}`]),
-                        tooltip: category.headline,
-                    })),
-                ];
-                addServiceItem.expanded = false; // Add expanded property
-            }
-        }
-    } catch (error) {
-        console.error('Failed to fetch categories:', error);
-    } finally {
-        isLoading.value = false;
-    }
-};
-
-onMounted(() => {
-    fetchCategories();
-});
 
 defineProps<{
     isSidebarOpen: boolean;
@@ -67,7 +19,22 @@ const isActiveRoute = (routes: string | string[]) => {
     return routes.includes(window.location.pathname);
 };
 
-const menuSections = ref([
+interface MenuItem {
+    name: string;
+    icon: typeof ServerIcon;
+    href: string;
+    active: boolean;
+    expanded?: boolean;
+    subitems?: MenuItem[];
+    tooltip?: string;
+}
+
+interface MenuSection {
+    title: string;
+    items: MenuItem[];
+}
+
+const menuSections = ref<MenuSection[]>([
     {
         title: 'General',
         items: [
@@ -76,53 +43,7 @@ const menuSections = ref([
                 icon: LayoutDashboardIcon,
                 href: '/',
                 active: isActiveRoute(['/dashboard']),
-            },
-            {
-                name: Translation.getTranslation('components.sidebar.services'),
-                icon: ServerIcon,
-                href: '/services',
-                active: isActiveRoute(['/services']),
-                expanded: false,
-                subitems: [
-                    {
-                        name: Translation.getTranslation('components.sidebar.orders'),
-                        icon: ServerIcon,
-                        href: '/orders',
-                        active: isActiveRoute(['/orders']),
-                    },
-                    {
-                        name: Translation.getTranslation('components.sidebar.add_service'),
-                        icon: CopyPlusIcon,
-                        href: '/services/add',
-                        active: isActiveRoute(['/services/add']),
-                        expanded: false,
-                        subitems: [] as Array<{
-                            name: string;
-                            icon: typeof ServerIcon;
-                            href: string;
-                            active: boolean;
-                            tooltip?: string;
-                            subitems?:
-                                | Array<{
-                                      name: string;
-                                      icon: typeof ServerIcon;
-                                      href: string;
-                                      active: boolean;
-                                      tooltip?: string;
-                                      expanded?: boolean;
-                                  }>
-                                | [];
-                            expanded?: boolean;
-                        }>,
-                    },
-                ],
-            },
-            {
-                name: Translation.getTranslation('components.sidebar.invoices'),
-                icon: FileTextIcon,
-                href: '/invoices',
-                active: isActiveRoute(['/invoices']),
-            },
+            },          
         ],
     },
     {
@@ -158,15 +79,6 @@ const menuSections = ref([
         ],
     },
 ]);
-
-interface MenuItem {
-    name: string;
-    icon: typeof ServerIcon;
-    href: string;
-    active: boolean;
-    expanded?: boolean;
-    subitems?: MenuItem[];
-}
 
 const toggleSubitems = (item: MenuItem) => {
     item.expanded = !item.expanded;
@@ -214,7 +126,7 @@ const toggleSubitems = (item: MenuItem) => {
                                             <template v-for="subitem in item.subitems" :key="subitem.name">
                                                 <!-- Regular subitem -->
                                                 <div>
-                                                    <div v-if="subitem.subitems" class="w-full">
+                                                    <div v-if="subitem.subitems && subitem.subitems.length" class="w-full">
                                                         <button
                                                             @click="toggleSubitems(subitem)"
                                                             class="w-full flex items-center justify-between gap-3 px-4 py-2 rounded-lg hover:bg-gray-800/50 transition-colors text-sm"
@@ -248,7 +160,7 @@ const toggleSubitems = (item: MenuItem) => {
                                                                 class="ml-4 mt-1 space-y-1 overflow-hidden"
                                                             >
                                                                 <RouterLink
-                                                                    v-for="category in subitem.subitems"
+                                                                    v-for="category in subitem.subitems || []" 
                                                                     :key="category.name"
                                                                     :to="category.href"
                                                                     class="group relative flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800/50 transition-colors text-sm"

@@ -1,7 +1,7 @@
 <?php
-namespace MythicalClient\Chat\interface;
+namespace MythicalDash\Chat\interface;
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0

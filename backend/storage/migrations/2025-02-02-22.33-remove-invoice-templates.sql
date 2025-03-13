@@ -1,1 +1,1 @@
-DROP TABLE `mythicalclient_invoice_templates`;
+DROP TABLE `mythicaldash_invoice_templates`;

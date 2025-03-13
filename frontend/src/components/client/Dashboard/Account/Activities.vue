@@ -3,9 +3,9 @@ import { ref, onMounted, onErrorCaptured } from 'vue';
 import { format } from 'date-fns';
 import LayoutAccount from './Layout.vue';
 import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
-import Activities from '@/mythicalclient/Activities';
+import Activities from '@/mythicaldash/Activities';
 import { useI18n } from 'vue-i18n';
-import { MythicalDOM } from '@/mythicalclient/MythicalDOM';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 
 const { t } = useI18n();
 MythicalDOM.setPageTitle(t('account.pages.activity.page.title'));

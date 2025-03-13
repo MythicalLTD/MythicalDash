@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,33 +11,29 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Chat\Tickets;
+namespace MythicalDash\Chat\Tickets;
 
-use MythicalClient\Chat\Database;
+use MythicalDash\Chat\Database;
 
 class Tickets extends Database
 {
-    public const TABLE_NAME = 'mythicalclient_tickets';
-    public const TABLE_NAME_ATTACHMENTS = 'mythicalclient_tickets_attachments';
+    public const TABLE_NAME = 'mythicaldash_tickets';
+    public const TABLE_NAME_ATTACHMENTS = 'mythicaldash_tickets_attachments';
 
     public static function create(
         string $uuid,
         int $department,
-        ?int $service,
         string $title,
         string $description,
         string $priority,
     ): int {
         try {
             $con = self::getPdoConnection();
-            $sql = 'INSERT INTO ' . self::TABLE_NAME . ' (user, department, priority, title, description' . ($service === null ? '' : ', service') . ') VALUES (:uuid, :department, :priority, :title, :description' . ($service === null ? '' : ', :service') . ')';
+            $sql = 'INSERT INTO ' . self::TABLE_NAME . ' (user, department, priority, title, description) VALUES (:uuid, :department, :priority, :title, :description)';
             $stmt = $con->prepare($sql);
             $stmt->bindParam('uuid', $uuid, \PDO::PARAM_STR);
             $stmt->bindParam('department', $department, \PDO::PARAM_INT);
             $stmt->bindParam('priority', $priority, \PDO::PARAM_STR);
-            if ($service !== null) {
-                $stmt->bindParam('service', $service, \PDO::PARAM_INT);
-            }
             $stmt->bindParam('title', $title, \PDO::PARAM_STR);
             $stmt->bindParam('description', $description, \PDO::PARAM_STR);
             $stmt->execute();

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,9 +11,9 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Chat\User;
+namespace MythicalDash\Chat\User;
 
-use MythicalClient\Chat\Database;
+use MythicalDash\Chat\Database;
 
 class Mails extends Database
 {
@@ -28,7 +28,7 @@ class Mails extends Database
     {
         try {
             $dbConn = Database::getPdoConnection();
-            $from = \MythicalClient\App::getInstance(true)->getConfig()->getSetting(\MythicalClient\Config\ConfigInterface::SMTP_FROM, 'system@mythical.systems');
+            $from = \MythicalDash\App::getInstance(true)->getConfig()->getSetting(\MythicalDash\Config\ConfigInterface::SMTP_FROM, 'system@mythical.systems');
             $stmt = $dbConn->prepare('INSERT INTO ' . self::getTableName() . ' (subject, body, `from`, `user`) VALUES (:subject, :body, :from, :user)');
             $stmt->bindParam(':subject', $subject);
             $stmt->bindParam(':body', $body);
@@ -160,6 +160,6 @@ class Mails extends Database
 
     public static function getTableName(): string
     {
-        return 'mythicalclient_users_mails';
+        return 'mythicaldash_users_mails';
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,10 +11,10 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Cli\Commands;
+namespace MythicalDash\Cli\Commands;
 
-use MythicalClient\Cli\App;
-use MythicalClient\Cli\CommandBuilder;
+use MythicalDash\Cli\App;
+use MythicalDash\Cli\CommandBuilder;
 
 class Colors extends App implements CommandBuilder
 {

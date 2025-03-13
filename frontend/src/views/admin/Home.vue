@@ -40,7 +40,7 @@
                 <h2 class="font-medium">Free Edition</h2>
             </div>
             <p class="">
-                You are currently using the free edition of MythicalClient. Upgrade to the premium edition for more
+                You are currently using the free edition of MythicalDash. Upgrade to the premium edition for more
                 features and support.
             </p>
         </div>

@@ -1,1 +1,1 @@
-ALTER TABLE `mythicalclient_services` ADD `price` INT NOT NULL AFTER `quantity`;
+ALTER TABLE `mythicaldash_services` ADD `price` INT NOT NULL AFTER `quantity`;

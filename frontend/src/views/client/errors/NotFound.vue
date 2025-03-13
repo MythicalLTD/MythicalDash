@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { FileQuestionIcon } from 'lucide-vue-next';
 import ErrorPage from '@/components/client/Errors/ErrorPage.vue';
-import Translation from '@/mythicalclient/Translation';
-import { MythicalDOM } from '@/mythicalclient/MythicalDOM';
+import Translation from '@/mythicaldash/Translation';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();

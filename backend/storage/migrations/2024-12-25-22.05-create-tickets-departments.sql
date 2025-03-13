@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-    `mythicalclient_departments` (
+    `mythicaldash_departments` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `name` TEXT NOT NULL,
         `description` TEXT NOT NULL,

@@ -2,7 +2,7 @@ SET
     foreign_key_checks = 0;
 
 CREATE TABLE IF NOT EXISTS
-    `mythicalclient_users` (
+    `mythicaldash_users` (
         `id` int (11) NOT NULL AUTO_INCREMENT,
         `username` text NOT NULL,
         `first_name` text NOT NULL,
@@ -26,11 +26,11 @@ CREATE TABLE IF NOT EXISTS
         `last_seen` datetime NOT NULL DEFAULT current_timestamp(),
         `first_seen` datetime NOT NULL DEFAULT current_timestamp(),
         PRIMARY KEY (`id`),
-        FOREIGN KEY (`role`) REFERENCES `mythicalclient_roles` (`id`)
+        FOREIGN KEY (`role`) REFERENCES `mythicaldash_roles` (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS
-    `mythicalclient_roles` (
+    `mythicaldash_roles` (
         `id` int (11) NOT NULL AUTO_INCREMENT,
         `name` text NOT NULL,
         `real_name` text NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 INSERT INTO
-    `mythicalclient_roles` (`name`, `real_name`)
+    `mythicaldash_roles` (`name`, `real_name`)
 VALUES
     ('Default', 'default'),
     ('VIP', 'vip'),
@@ -51,7 +51,7 @@ VALUES
     ('Administrator','administrator');
 
 CREATE TABLE IF NOT EXISTS
-    `mythicalclient_users_mails` (
+    `mythicaldash_users_mails` (
         `id` int (11) NOT NULL AUTO_INCREMENT,
         `subject` text NOT NULL,
         `body` longtext NOT NULL,
@@ -62,11 +62,11 @@ CREATE TABLE IF NOT EXISTS
         `locked` enum ('false', 'true') NOT NULL DEFAULT 'false',
         `date` datetime NOT NULL DEFAULT current_timestamp(),
         PRIMARY KEY (`id`),
-        FOREIGN KEY (`user`) REFERENCES `mythicalclient_users` (`uuid`)
+        FOREIGN KEY (`user`) REFERENCES `mythicaldash_users` (`uuid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS
-    `mythicalclient_users_activities` (
+    `mythicaldash_users_activities` (
         `id` int (11) NOT NULL AUTO_INCREMENT,
         `user` varchar(36) NOT NULL,
         `action` text NOT NULL,
@@ -75,11 +75,11 @@ CREATE TABLE IF NOT EXISTS
         `locked` enum ('false', 'true') NOT NULL DEFAULT 'false',
         `date` datetime NOT NULL DEFAULT current_timestamp(),
         PRIMARY KEY (`id`),
-        FOREIGN KEY (`user`) REFERENCES `mythicalclient_users` (`uuid`)
+        FOREIGN KEY (`user`) REFERENCES `mythicaldash_users` (`uuid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS
-    `mythicalclient_users_apikeys` (
+    `mythicaldash_users_apikeys` (
         `id` int (11) NOT NULL AUTO_INCREMENT,
         `name` text NOT NULL,
         `user` varchar(36) NOT NULL,
@@ -89,22 +89,22 @@ CREATE TABLE IF NOT EXISTS
         `locked` enum ('false', 'true') NOT NULL DEFAULT 'false',
         `date` datetime NOT NULL DEFAULT current_timestamp(),
         PRIMARY KEY (`id`),
-        FOREIGN KEY (`user`) REFERENCES `mythicalclient_users` (`uuid`)
+        FOREIGN KEY (`user`) REFERENCES `mythicaldash_users` (`uuid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS
-    `mythicalclient_users_email_verification` (
+    `mythicaldash_users_email_verification` (
         `id` int (11) NOT NULL AUTO_INCREMENT,
         `code` text NOT NULL,
         `user` varchar(36) NOT NULL,
         `type` enum ('password', 'verify') NOT NULL DEFAULT 'verify',
         `date` datetime NOT NULL DEFAULT current_timestamp(),
         PRIMARY KEY (`id`),
-        FOREIGN KEY (`user`) REFERENCES `mythicalclient_users` (`uuid`)
+        FOREIGN KEY (`user`) REFERENCES `mythicaldash_users` (`uuid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci AUTO_INCREMENT = 2;
 
 CREATE TABLE IF NOT EXISTS
-    `mythicalclient_users_notifications` (
+    `mythicaldash_users_notifications` (
         `id` int (11) NOT NULL AUTO_INCREMENT,
         `user` varchar(36) NOT NULL,
         `name` text NOT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS
         `locked` enum ('false', 'true') NOT NULL DEFAULT 'false',
         `date` datetime NOT NULL DEFAULT current_timestamp(),
         PRIMARY KEY (`id`),
-        FOREIGN KEY (`user`) REFERENCES `mythicalclient_users` (`uuid`)
+        FOREIGN KEY (`user`) REFERENCES `mythicaldash_users` (`uuid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 SET

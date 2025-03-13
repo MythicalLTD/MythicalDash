@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,10 +11,10 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-use MythicalClient\Plugins\PluginManager;
+use MythicalDash\Plugins\PluginManager;
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -41,11 +41,12 @@ header_remove('X-Powered-By');
 header_remove('Server');
 
 if (!is_writable(__DIR__)) {
-    exit('Please make sure the root directory is writable.');
+	$error = "Please make sure the root directory is writable.";
+	exit(json_encode(['error' => $error, 'code' => 500, 'message' => 'Please make sure the root directory is writable.', 'success' => false]));
 }
 
 if (!is_writable(__DIR__ . '/../storage')) {
-    exit('Please make sure the storage directory is writable.');
+	exit(json_encode(['error' => 'Please make sure the storage directory is writable.', 'code' => 500, 'message' => 'Please make sure the storage directory is writable.', 'success' => false]));
 }
 
 /**

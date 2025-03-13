@@ -5,7 +5,7 @@ use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
 $header = <<<'HEADER'
-This file is part of MythicalClient.
+This file is part of MythicalDash.
 Please view the LICENSE file that was distributed with this source code.
 
 # MythicalSystems License v2.0

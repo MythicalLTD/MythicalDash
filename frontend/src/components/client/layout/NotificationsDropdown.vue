@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import Session from '@/mythicalclient/Session';
+import Session from '@/mythicaldash/Session';
 import { AlertTriangle as AlertTriangleIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();

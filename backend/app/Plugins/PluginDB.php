@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,13 +11,13 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Plugins;
+namespace MythicalDash\Plugins;
 
-use MythicalClient\Chat\Database;
+use MythicalDash\Chat\Database;
 
 class PluginDB extends Database
 {
-    public const PLUGIN_TABLE = 'mythicalclient_addons';
+    public const PLUGIN_TABLE = 'mythicaldash_addons';
 
     public static function getPlugins(): array
     {
@@ -38,11 +38,10 @@ class PluginDB extends Database
      *
      * @param string $name The unique name/identifier of the plugin
      * @param string $displayName The display name of the plugin
-	 * @param string $can_deploy Whether the plugin can deploy
      *
      * @return bool True if registration successful, false if already exists
      */
-    public static function registerPlugin(string $name, string $displayName, string $can_deploy): bool
+    public static function registerPlugin(string $name, string $displayName): bool
     {
 
         try {
@@ -54,14 +53,13 @@ class PluginDB extends Database
             }
 
             $stmt = $conn->prepare('
-                INSERT INTO mythicalclient_addons 
-                (name, display_name, can_deploy) 
-                VALUES (:name, :display_name, :can_deploy)
+                INSERT INTO mythicaldash_addons 
+                (name, display_name) 
+                VALUES (:name, :display_name)
             ');
 
             $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
             $stmt->bindParam(':display_name', $displayName, \PDO::PARAM_STR);
-            $stmt->bindParam(':can_deploy', $can_deploy, \PDO::PARAM_STR);
             $result = $stmt->execute();
 
             if (!$result) {
@@ -91,7 +89,7 @@ class PluginDB extends Database
 
             $stmt = $conn->prepare("
                 SELECT id 
-                FROM mythicalclient_addons 
+                FROM mythicaldash_addons 
                 WHERE name = :name 
                 AND deleted = 'false'
                 LIMIT 1
@@ -117,7 +115,7 @@ class PluginDB extends Database
             $conn = Database::getPdoConnection();
 
             $stmt = $conn->prepare('
-                UPDATE mythicalclient_addons 
+                UPDATE mythicaldash_addons 
                 SET enabled = :enabled,
                     date = CURRENT_TIMESTAMP
                 WHERE name = :name
@@ -146,7 +144,7 @@ class PluginDB extends Database
 
             $stmt = $conn->prepare("
                 SELECT enabled 
-                FROM mythicalclient_addons 
+                FROM mythicaldash_addons 
                 WHERE name = :name 
                 AND deleted = 'false'
                 LIMIT 1
@@ -173,7 +171,7 @@ class PluginDB extends Database
             $conn = Database::getPdoConnection();
 
             $stmt = $conn->prepare("
-                UPDATE mythicalclient_addons 
+                UPDATE mythicaldash_addons 
                 SET deleted = 'true',
                     date = CURRENT_TIMESTAMP
                 WHERE name = :name
@@ -199,7 +197,7 @@ class PluginDB extends Database
 
             $stmt = $conn->prepare("
                 SELECT name, enabled, locked 
-                FROM mythicalclient_addons 
+                FROM mythicaldash_addons 
                 WHERE name = :name 
                 AND deleted = 'false'
                 LIMIT 1
@@ -229,7 +227,7 @@ class PluginDB extends Database
 
             $sql = "
                 SELECT name, enabled, locked 
-                FROM mythicalclient_addons 
+                FROM mythicaldash_addons 
                 WHERE deleted = 'false'
             ";
 
@@ -258,7 +256,7 @@ class PluginDB extends Database
     {
         try {
             $conn = Database::getPdoConnection();
-            $stmt = $conn->prepare('SELECT name FROM mythicalclient_addons WHERE id = :id');
+            $stmt = $conn->prepare('SELECT name FROM mythicaldash_addons WHERE id = :id');
             $stmt->execute([':id' => $id]);
 
             return $stmt->fetch(\PDO::FETCH_ASSOC)['name'];

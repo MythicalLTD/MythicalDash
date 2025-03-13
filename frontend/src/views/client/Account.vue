@@ -24,7 +24,6 @@
         <SecurityTab v-if="activeTab === 'Security'" />
         <MailsTab v-if="activeTab === 'Mails'" />
         <ActivitiesTab v-if="activeTab === 'Activities'" />
-        <BillingTab v-if="activeTab === 'Billing'" />
     </LayoutDashboard>
 </template>
 
@@ -34,7 +33,6 @@ import SettingsTab from '@/components/client/Dashboard/Account/Settings.vue';
 import SecurityTab from '@/components/client/Dashboard/Account/Security.vue';
 import MailsTab from '@/components/client/Dashboard/Account/Mails.vue';
 import ActivitiesTab from '@/components/client/Dashboard/Account/Activities.vue';
-import BillingTab from '@/components/client/Dashboard/Account/Billing.vue';
 
 import { ref } from 'vue';
 import {
@@ -42,14 +40,12 @@ import {
     Lock as SecurityIcon,
     Mail as MailIcon,
     Bell as ActivityIcon,
-    CreditCard as BillingIcon,
 } from 'lucide-vue-next';
 
 const activeTab = ref('Settings');
 
 const tabs = [
     { name: 'Settings', icon: SettingsIcon },
-    { name: 'Billing', icon: BillingIcon },
     { name: 'Security', icon: SecurityIcon },
     { name: 'Mails', icon: MailIcon },
     { name: 'Activities', icon: ActivityIcon },

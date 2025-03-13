@@ -154,7 +154,7 @@
             <!-- Footer -->
             <footer class="bg-gray-800/50 backdrop-blur-md py-4 px-6">
                 <div class="flex flex-col md:flex-row justify-between items-center">
-                    <p class="text-gray-400 text-sm mb-2 md:mb-0">© 2023 MythicalClient. All rights reserved.</p>
+                    <p class="text-gray-400 text-sm mb-2 md:mb-0">© 2023 MythicalDash. All rights reserved.</p>
                     <div class="flex space-x-4">
                         <a
                             v-for="link in footerLinks"
@@ -187,8 +187,8 @@ import {
     PlusCircle,
     SettingsIcon,
 } from 'lucide-vue-next';
-import Session from '@/mythicalclient/Session';
-import StorageMonitor from '@/mythicalclient/StorageMonitor';
+import Session from '@/mythicaldash/Session';
+import StorageMonitor from '@/mythicaldash/StorageMonitor';
 import { useSettingsStore } from '@/stores/settings';
 const Settings = useSettingsStore();
 const router = useRouter();
@@ -234,7 +234,7 @@ const handleSearchBlur = () => {
 };
 
 import { useRoute, useRouter } from 'vue-router';
-import Dashboard from '@/mythicalclient/admin/Dashboard';
+import Dashboard from '@/mythicaldash/admin/Dashboard';
 
 const dashBoard = ref({ count: { user_count: 0, invoices_count: 0, tickets_count: 0 } });
 Dashboard.get().then((data) => {

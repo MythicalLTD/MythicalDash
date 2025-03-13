@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,12 +11,12 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Cli\Commands;
+namespace MythicalDash\Cli\Commands;
 
-use MythicalClient\Cli\App;
-use MythicalClient\Chat\Database;
-use MythicalClient\Cli\CommandBuilder;
-use MythicalClient\Config\ConfigFactory;
+use MythicalDash\Cli\App;
+use MythicalDash\Chat\Database;
+use MythicalDash\Cli\CommandBuilder;
+use MythicalDash\Config\ConfigFactory;
 
 class Setsetting extends App implements CommandBuilder
 {
@@ -33,7 +33,7 @@ class Setsetting extends App implements CommandBuilder
 
         $cliApp->send('&aPlease enter the value you want to set:');
         $value = readline('> ');
-        \MythicalClient\App::getInstance(true)->loadEnv();
+        \MythicalDash\App::getInstance(true)->loadEnv();
 
         try {
             $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD']);

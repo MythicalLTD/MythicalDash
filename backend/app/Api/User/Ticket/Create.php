@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,12 +11,12 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-use MythicalClient\App;
-use MythicalClient\Chat\User\User;
-use MythicalClient\Chat\User\Session;
-use MythicalClient\Chat\Tickets\Tickets;
-use MythicalClient\Chat\columns\UserColumns;
-use MythicalClient\Chat\Tickets\Departments;
+use MythicalDash\App;
+use MythicalDash\Chat\User\User;
+use MythicalDash\Chat\User\Session;
+use MythicalDash\Chat\Tickets\Tickets;
+use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\Tickets\Departments;
 
 $router->get('/api/user/ticket/create', function () {
     App::init();
@@ -25,17 +25,9 @@ $router->get('/api/user/ticket/create', function () {
     new Session($appInstance);
 
     $departments = Departments::getAll();
-    $services = [
-        [
-            'id' => 1,
-            'name' => 'Service 1',
-            'active' => true,
-        ],
-    ];
 
     $appInstance->OK('Ticket Process', [
         'departments' => $departments,
-        'services' => $services,
     ]);
 });
 
@@ -48,14 +40,6 @@ $router->post('/api/user/ticket/create', function () {
     if (isset($_POST['department_id']) && $_POST['department_id'] != '') {
         $departmentId = $_POST['department_id'];
         if (Departments::exists((int) $departmentId)) {
-            /**
-             * Make that every info needed is provided.
-             */
-            if (isset($_POST['service_id']) && $_POST['service_id'] != '') {
-                $serviceId = $_POST['service_id'];
-            } else {
-                $serviceId = null;
-            }
             if (isset($_POST['subject']) && $_POST['subject'] != '') {
                 $subject = $_POST['subject'];
             } else {
@@ -74,7 +58,6 @@ $router->post('/api/user/ticket/create', function () {
                 $priority = 'normal';
             }
 
-            // TODO: Check if service exists
             /**
              * Check if the user has more than 3 open tickets.
              */
@@ -88,7 +71,7 @@ $router->post('/api/user/ticket/create', function () {
             /**
              * Create the ticket.
              */
-            $ticketId = Tickets::create($session->getInfo(UserColumns::UUID, false), $departmentId, $serviceId, $subject, $message, $priority);
+            $ticketId = Tickets::create($session->getInfo(UserColumns::UUID, false), $departmentId, $subject, $message, $priority);
             if ($ticketId == 0) {
                 $appInstance->BadRequest('Failed to create ticket!', ['error_code' => 'FAILED_TO_CREATE_TICKET']);
             } else {

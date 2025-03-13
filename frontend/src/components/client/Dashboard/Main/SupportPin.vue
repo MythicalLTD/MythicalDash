@@ -15,8 +15,8 @@
 </template>
 <script setup lang="ts">
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
-import Auth from '@/mythicalclient/Auth';
-import Session from '@/mythicalclient/Session';
+import Auth from '@/mythicaldash/Auth';
+import Session from '@/mythicaldash/Session';
 import Swal from 'sweetalert2';
 import { useI18n } from 'vue-i18n';
 import { RefreshCcw as RefreshCcwIcon, Copy as CopyIcon } from 'lucide-vue-next';

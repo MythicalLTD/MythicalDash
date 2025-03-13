@@ -3,9 +3,9 @@ import { ref } from 'vue';
 import LayoutAccount from './Layout.vue';
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
 import { useRouter } from 'vue-router';
-import Session from '@/mythicalclient/Session';
+import Session from '@/mythicaldash/Session';
 import { useI18n } from 'vue-i18n';
-import { MythicalDOM } from '@/mythicalclient/MythicalDOM';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 
 const router = useRouter();
 const { t } = useI18n();

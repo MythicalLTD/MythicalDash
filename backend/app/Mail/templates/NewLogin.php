@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,15 +11,15 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Mail\templates;
+namespace MythicalDash\Mail\templates;
 
-use MythicalClient\App;
-use MythicalClient\Mail\Mail;
-use MythicalClient\Chat\Database;
-use MythicalClient\Chat\User\User;
-use MythicalClient\Chat\User\Mails;
+use MythicalDash\App;
+use MythicalDash\Mail\Mail;
+use MythicalDash\Chat\Database;
+use MythicalDash\Chat\User\User;
+use MythicalDash\Chat\User\Mails;
 
-use MythicalClient\Chat\columns\UserColumns;
+use MythicalDash\Chat\columns\UserColumns;
 
 class NewLogin extends Mail
 {
@@ -44,7 +44,7 @@ class NewLogin extends Mail
     {
         try {
             $conn = Database::getPdoConnection();
-            $query = $conn->prepare('SELECT content FROM mythicalclient_mail_templates WHERE name = :name');
+            $query = $conn->prepare('SELECT content FROM mythicaldash_mail_templates WHERE name = :name');
             $query->execute(['name' => 'new_login']);
             $template = $query->fetchColumn();
 

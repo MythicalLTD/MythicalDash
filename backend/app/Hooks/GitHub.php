@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,10 +11,10 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Hooks;
+namespace MythicalDash\Hooks;
 
 use GuzzleHttp\Client;
-use MythicalClient\Cache\Cache;
+use MythicalDash\Cache\Cache;
 
 class GitHub
 {
@@ -44,7 +44,7 @@ class GitHub
             'headers' => [
                 'Accept' => 'application/vnd.github+json',
                 'X-GitHub-Api-Version' => '2022-11-28',
-                'User-Agent' => 'MythicalClient',
+                'User-Agent' => 'MythicalDash',
             ],
         ]);
 

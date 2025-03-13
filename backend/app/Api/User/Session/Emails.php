@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,11 +11,11 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-use MythicalClient\App;
-use MythicalClient\Chat\User\User;
-use MythicalClient\Chat\User\Mails;
-use MythicalClient\Chat\User\Session;
-use MythicalClient\Chat\columns\UserColumns;
+use MythicalDash\App;
+use MythicalDash\Chat\User\User;
+use MythicalDash\Chat\User\Mails;
+use MythicalDash\Chat\User\Session;
+use MythicalDash\Chat\columns\UserColumns;
 
 $router->get('/api/user/session/emails', function (): void {
     App::init();

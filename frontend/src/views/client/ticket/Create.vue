@@ -5,14 +5,14 @@ import SelectInput from '@/components/client/ui/TextForms/SelectInput.vue';
 import { ref, onMounted } from 'vue';
 import TextInput from '@/components/client/ui/TextForms/TextInput.vue';
 import TextArea from '@/components/client/ui/TextForms/TextArea.vue';
-import Tickets from '@/mythicalclient/Tickets';
+import Tickets from '@/mythicaldash/Tickets';
 import Swal from 'sweetalert2';
 import failedAlertSfx from '@/assets/sounds/error.mp3';
 import successAlertSfx from '@/assets/sounds/success.mp3';
 import { useI18n } from 'vue-i18n';
 import { useSound } from '@vueuse/sound';
 import { useRouter } from 'vue-router';
-import { MythicalDOM } from '@/mythicalclient/MythicalDOM';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 
 const { t } = useI18n();
 const { play: playError } = useSound(failedAlertSfx);
@@ -33,15 +33,9 @@ interface Department {
     date: string;
 }
 
-interface Service {
-    id: number;
-    name: string;
-    active: boolean;
-}
 
 interface TicketCreateInfo {
     departments: Department[];
-    services: Service[];
 }
 
 const ticketCreateInfo = ref<TicketCreateInfo | null>(null);
@@ -53,7 +47,6 @@ const fetchTicketCreateInfo = async () => {
         if (response.success) {
             ticketCreateInfo.value = {
                 departments: response.departments,
-                services: response.services,
             };
         } else {
             console.error('Failed to fetch ticket create info:', response.error);
@@ -68,7 +61,6 @@ onMounted(() => {
 });
 
 const ticket = ref({
-    service: '',
     department: '',
     priority: 'medium',
     subject: '',
@@ -93,7 +85,6 @@ const submitTicket = async () => {
             ticket.value.subject,
             ticket.value.message,
             ticket.value.priority,
-            Number(ticket.value.service),
         );
 
         if (!response.success) {
@@ -174,22 +165,6 @@ const submitTicket = async () => {
                 :cardDescription="t('tickets.pages.create_ticket.subTitle')"
             >
                 <form @submit.prevent="submitTicket" class="space-y-6">
-                    <!-- Service Selection -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">
-                            {{ t('tickets.pages.create_ticket.form.service') }}
-                        </label>
-                        <SelectInput
-                            v-model="ticket.service"
-                            :options="
-                                ticketCreateInfo?.services.map((service) => ({
-                                    value: service.id.toString(),
-                                    label: service.name,
-                                })) || []
-                            "
-                        />
-                    </div>
-
                     <!-- Department -->
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">

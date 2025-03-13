@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,11 +11,11 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Cli\Commands;
+namespace MythicalDash\Cli\Commands;
 
-use MythicalClient\Cli\App;
+use MythicalDash\Cli\App;
 use MythicalSystems\Utils\XChaCha20;
-use MythicalClient\Cli\CommandBuilder;
+use MythicalDash\Cli\CommandBuilder;
 
 class KeyRegen extends App implements CommandBuilder
 {
@@ -43,7 +43,7 @@ class KeyRegen extends App implements CommandBuilder
         }
 
         if ($isForced) {
-            $mainApp = \MythicalClient\App::getInstance(true);
+            $mainApp = \MythicalDash\App::getInstance(true);
             $mainApp->loadEnv();
             $mainApp->getLogger()->warning('Old encryption key was: ' . $_ENV['DATABASE_ENCRYPTION_KEY']);
             $app->send(message: '&7Old encryption key was: &e' . $_ENV['DATABASE_ENCRYPTION_KEY']);

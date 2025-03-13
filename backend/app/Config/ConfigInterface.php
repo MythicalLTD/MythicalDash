@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,7 +11,7 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Config;
+namespace MythicalDash\Config;
 
 interface ConfigInterface
 {
@@ -19,7 +19,6 @@ interface ConfigInterface
     public const APP_LANG = 'app_lang';
     public const APP_URL = 'app_url';
     public const APP_VERSION = 'app_version';
-    public const APP_NUMBER_FORMAT = 'app_number_format';
     public const APP_TIMEZONE = 'app_timezone';
     public const APP_LOGO = 'app_logo';
     public const SEO_DESCRIPTION = 'seo_description';
@@ -41,37 +40,12 @@ interface ConfigInterface
     public const LEGAL_TOS = 'legal_tos_url';
     public const LEGAL_PRIVACY = 'legal_privacy_url';
 
-    public const COMPANY_NAME = 'company_name';
-    public const COMPANY_ADDRESS = 'company_address';
-    public const COMPANY_CITY = 'company_city';
-    public const COMPANY_STATE = 'company_state';
-    public const COMPANY_ZIP = 'company_zip';
-    public const COMPANY_COUNTRY = 'company_country';
-    public const COMPANY_VAT = 'company_vat';
 
-    /**
-     * Gateway Configs.
-     */
-    public const ENABLE_STRIPE = 'enable_stripe';
-    public const ENABLE_PAYPAL = 'enable_paypal';
+	/**
+	 * Pterodactyl.
+	 */
 
-    /**
-     * Paypal Configs.
-     */
-    public const PAYPAL_CLIENT_ID = 'paypal_email';
-    public const PAYPAL_IS_SANDBOX = 'paypal_is_sandbox';
-
-    /**
-     * Stripe Configs.
-     */
-    public const STRIPE_SECRET_KEY = 'stripe_secret_key';
-    public const STRIPE_PUBLISHABLE_KEY = 'stripe_publishable_key';
-    public const STRIPE_WEBHOOK_ID = 'stripe_webhook_id';
-
-    /**
-     * Currency Configs.
-     */
-    public const CURRENCY = 'currency';
-    public const CURRENCY_SYMBOL = 'currency_symbol';
+	public const PTERODACTYL_API_KEY = 'pterodactyl_api_key';
+	public const PTERODACTYL_BASE_URL = 'pterodactyl_base_url';
 
 }

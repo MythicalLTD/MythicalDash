@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,7 +11,7 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Plugins;
+namespace MythicalDash\Plugins;
 
 use Symfony\Component\Yaml\Yaml;
 
@@ -44,7 +44,7 @@ class PluginHelper
      */
     public static function getPluginConfig(string $identifier): array
     {
-        $app = \MythicalClient\App::getInstance(true);
+        $app = \MythicalDash\App::getInstance(true);
         try {
             $app->getLogger()->debug('Getting plugin config for: ' . $identifier . '');
             if (file_exists(self::getPluginsDir() . '/' . $identifier . '/conf.yml')) {

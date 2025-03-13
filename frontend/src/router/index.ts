@@ -52,21 +52,6 @@ const routes = [
         component: () => import('@/views/client/Announcements.vue'),
     },
     {
-        path: '/orders',
-        name: 'Orders',
-        component: () => import('@/views/client/Orders.vue'),
-    },
-    {
-        path: '/services/:name',
-        name: 'Service Detail',
-        component: () => import('@/views/client/services/[name].vue'),
-    },
-    {
-        path: '/addfunds',
-        name: 'Add Funds',
-        component: () => import('@/views/client/AddFunds.vue'),
-    },
-    {
         path: '/ticket',
         name: 'Ticket',
         component: () => import('@/views/client/ticket/List.vue'),
@@ -108,21 +93,6 @@ const routes = [
     {
         path: '/',
         redirect: '/dashboard',
-    },
-    {
-        path: '/order/:category/:service',
-        name: 'Order',
-        component: () => import('@/views/client/services/order.vue'),
-    },
-    {
-        path: '/invoices',
-        name: 'Invoices',
-        component: () => import('@/views/client/invoices/List.vue'),
-    },
-    {
-        path: '/invoice/:id',
-        name: 'Invoice Detail',
-        component: () => import('@/views/client/invoices/[id].vue'),
     },
     {
         path: '/mc-admin',

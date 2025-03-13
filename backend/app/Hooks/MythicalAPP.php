@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,7 +11,7 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Hooks;
+namespace MythicalDash\Hooks;
 
 class MythicalAPP extends \MythicalSystems\Api\Api
 {
@@ -144,7 +144,7 @@ class MythicalAPP extends \MythicalSystems\Api\Api
             'core' => [
                 'debug_os' => SYSTEM_OS_NAME,
                 'debug_os_kernel' => SYSTEM_KERNEL_NAME,
-                'debug_name' => 'MythicalClient',
+                'debug_name' => 'MythicalDash',
                 'debug_debug' => APP_DEBUG,
                 'debug_version' => APP_VERSION,
                 'debug_telemetry' => TELEMETRY,
@@ -154,9 +154,6 @@ class MythicalAPP extends \MythicalSystems\Api\Api
                         'enabled' => REDIS_ENABLED,
                         'limit' => RATE_LIMIT,
                     ],
-                ],
-                'license' => [
-                    'valid' => HAS_VALID_LICENSE,
                 ],
             ],
         ];

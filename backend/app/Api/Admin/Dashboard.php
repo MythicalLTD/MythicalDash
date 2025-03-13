@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,13 +11,13 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-use MythicalClient\App;
-use MythicalClient\Hooks\GitHub;
-use MythicalClient\Chat\Database;
-use MythicalClient\Chat\User\Can;
-use MythicalClient\Chat\User\Session;
-use MythicalClient\Chat\columns\UserColumns;
-use MythicalClient\Chat\User\UserActivities;
+use MythicalDash\App;
+use MythicalDash\Hooks\GitHub;
+use MythicalDash\Chat\Database;
+use MythicalDash\Chat\User\Can;
+use MythicalDash\Chat\User\Session;
+use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\User\UserActivities;
 
 global $eventManager;
 
@@ -31,13 +31,13 @@ $router->get('/api/admin', function (): void {
             $github_data = new GitHub();
             $github_data = $github_data->getRepoData();
             $activity = UserActivities::getAll(150);
-            $userCount = Database::getTableRowCount('mythicalclient_users');
-            $addonsCount = Database::getTableRowCount('mythicalclient_addons');
-            $departmentsCount = Database::getTableRowCount('mythicalclient_departments');
-            $invoicesCount = Database::getTableRowCount('mythicalclient_invoices');
-            $rolesCount = Database::getTableRowCount('mythicalclient_roles');
-            $servicesCount = Database::getTableRowCount('mythicalclient_services');
-            $ticketsCount = Database::getTableRowCount('mythicalclient_tickets');
+            $userCount = Database::getTableRowCount('mythicaldash_users');
+            $addonsCount = Database::getTableRowCount('mythicaldash_addons');
+            $departmentsCount = Database::getTableRowCount('mythicaldash_departments');
+            $invoicesCount = Database::getTableRowCount('mythicaldash_invoices');
+            $rolesCount = Database::getTableRowCount('mythicaldash_roles');
+            $servicesCount = Database::getTableRowCount('mythicaldash_services');
+            $ticketsCount = Database::getTableRowCount('mythicaldash_tickets');
 
             $appInstance->OK('Dashboard data retrieved successfully.', [
                 'core' => [

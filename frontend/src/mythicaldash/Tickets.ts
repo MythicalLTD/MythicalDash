@@ -11,7 +11,6 @@ class Tickets {
         subject: string,
         message: string,
         priority: string,
-        service: number,
     ) {
         const response = await fetch('/api/user/ticket/create', {
             method: 'POST',
@@ -20,7 +19,6 @@ class Tickets {
                 subject: subject,
                 message: message,
                 priority: priority,
-                service: service.toString() || '',
             }),
         });
         const data = await response.json();

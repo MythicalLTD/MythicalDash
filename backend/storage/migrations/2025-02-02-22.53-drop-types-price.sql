@@ -1,1 +1,1 @@
-DROP TABLE `mythicalclient_services_price`;
+DROP TABLE `mythicaldash_services_price`;

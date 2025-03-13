@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,7 +11,7 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Cli;
+namespace MythicalDash\Cli;
 
 class App extends \MythicalSystems\Utils\BungeeChatApi
 {
@@ -35,7 +35,7 @@ class App extends \MythicalSystems\Utils\BungeeChatApi
 
         require_once $commandFile;
 
-        $commandClass = "MythicalClient\\Cli\\Commands\\$commandName";
+        $commandClass = "MythicalDash\\Cli\\Commands\\$commandName";
 
         if (!class_exists($commandClass)) {
             self::send('Command not found.');
@@ -139,7 +139,7 @@ class App extends \MythicalSystems\Utils\BungeeChatApi
             }
             exit;
         } elseif ($cmdName == 'backend:watch') {
-            $process = popen('tail -f backend/storage/logs/mythicalclient.log backend/storage/logs/framework.log', 'r');
+            $process = popen('tail -f backend/storage/logs/mythicaldash.log backend/storage/logs/mythicaldash-v3.log', 'r');
             $this->sendOutput('Please wait while we attach to the process...');
             $this->sendOutput(message: "\n");
             sleep(5);
@@ -229,8 +229,8 @@ class App extends \MythicalSystems\Utils\BungeeChatApi
             return;
         }
 
-        // Strip timestamp and replace vite/VITE with MythicalClient
-        $output = preg_replace('/\d{1,2}:\d{2}:\d{2}\s[AP]M\s\[vite\]\s/', '[MythicalClient] ', $output);
+        // Strip timestamp and replace vite/VITE with MythicalDash
+        $output = preg_replace('/\d{1,2}:\d{2}:\d{2}\s[AP]M\s\[vite\]\s/', '[MythicalDash] ', $output);
         $output = str_replace(['vite', 'VITE'], ['mythicalcompiler', 'MythicalCompiler'], $output);
 
         // Handle different log levels with colors

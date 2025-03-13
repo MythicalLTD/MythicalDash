@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,11 +11,11 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Cli\Commands;
+namespace MythicalDash\Cli\Commands;
 
-use MythicalClient\Cli\App;
-use MythicalClient\Chat\Database;
-use MythicalClient\Cli\CommandBuilder;
+use MythicalDash\Cli\App;
+use MythicalDash\Chat\Database;
+use MythicalDash\Cli\CommandBuilder;
 
 class Migrate extends App implements CommandBuilder
 {
@@ -23,13 +23,13 @@ class Migrate extends App implements CommandBuilder
     {
         $cliApp = App::getInstance();
         if (!file_exists(__DIR__ . '/../../../storage/.env')) {
-            \MythicalClient\App::getInstance(true)->getLogger()->warning('Executed a command without a .env file');
+            \MythicalDash\App::getInstance(true)->getLogger()->warning('Executed a command without a .env file');
             $cliApp->send('The .env file does not exist. Please create one before running this command');
             exit;
         }
         $sqlScript = self::getMigrationSQL();
         try {
-            \MythicalClient\App::getInstance(true)->loadEnv();
+            \MythicalDash\App::getInstance(true)->loadEnv();
             $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD']);
         } catch (\Exception $e) {
             $cliApp->send('&cFailed to connect to the database: &r' . $e->getMessage());
@@ -41,7 +41,7 @@ class Migrate extends App implements CommandBuilder
          * Check if the migrations table exists.
          */
         try {
-            $query = $db->getPdo()->query("SHOW TABLES LIKE 'mythicalclient_migrations'");
+            $query = $db->getPdo()->query("SHOW TABLES LIKE 'mythicaldash_migrations'");
             if ($query->rowCount() > 0) {
                 $cliApp->send('&7The migrations table already exists!');
             } else {
@@ -74,7 +74,7 @@ class Migrate extends App implements CommandBuilder
             /**
              * Check if the migration was already executed.
              */
-            $stmt = $db->getPdo()->prepare("SELECT COUNT(*) FROM mythicalclient_migrations WHERE script = :script AND migrated = 'true'");
+            $stmt = $db->getPdo()->prepare("SELECT COUNT(*) FROM mythicaldash_migrations WHERE script = :script AND migrated = 'true'");
             $stmt->execute(['script' => $migrationName]);
             $migrationExists = $stmt->fetchColumn();
 
@@ -98,7 +98,7 @@ class Migrate extends App implements CommandBuilder
              * Save the migration to the database.
              */
             try {
-                $stmt = $db->getPdo()->prepare('INSERT INTO mythicalclient_migrations (script, migrated) VALUES (:script, :migrated)');
+                $stmt = $db->getPdo()->prepare('INSERT INTO mythicaldash_migrations (script, migrated) VALUES (:script, :migrated)');
                 $stmt->execute([
                     'script' => $migrationName,
                     'migrated' => 'true',
@@ -124,7 +124,7 @@ class Migrate extends App implements CommandBuilder
 
     private static function getMigrationSQL(): string
     {
-        return "CREATE TABLE IF NOT EXISTS `mythicalclient_migrations` (
+        return "CREATE TABLE IF NOT EXISTS `mythicaldash_migrations` (
             `id` INT NOT NULL AUTO_INCREMENT COMMENT 'The id of the migration!',
             `script` TEXT NOT NULL COMMENT 'The script to be migrated!',
             `migrated` ENUM('true','false') NOT NULL DEFAULT 'true' COMMENT 'Did we migrate this already?',

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,23 +11,23 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Chat\User;
+namespace MythicalDash\Chat\User;
 
 use Gravatar\Gravatar;
-use MythicalClient\App;
-use MythicalClient\Mail\Mail;
-use MythicalClient\Chat\Database;
-use MythicalClient\Mail\templates\Verify;
+use MythicalDash\App;
+use MythicalDash\Mail\Mail;
+use MythicalDash\Chat\Database;
+use MythicalDash\Mail\templates\Verify;
 use MythicalSystems\CloudFlare\CloudFlare;
-use MythicalClient\Mail\templates\NewLogin;
-use MythicalClient\Chat\columns\UserColumns;
-use MythicalClient\Mail\templates\ResetPassword;
-use MythicalClient\Chat\interface\UserActivitiesTypes;
-use MythicalClient\Chat\columns\EmailVerificationColumns;
+use MythicalDash\Mail\templates\NewLogin;
+use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Mail\templates\ResetPassword;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
+use MythicalDash\Chat\columns\EmailVerificationColumns;
 
 class User extends Database
 {
-    public const TABLE_NAME = 'mythicalclient_users';
+    public const TABLE_NAME = 'mythicaldash_users';
 
     /**
      * Register a new user in the database.

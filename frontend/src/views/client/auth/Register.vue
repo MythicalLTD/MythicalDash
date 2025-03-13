@@ -12,8 +12,8 @@ import { useRouter } from 'vue-router';
 import successAlertSfx from '@/assets/sounds/success.mp3';
 import failedAlertSfx from '@/assets/sounds/error.mp3';
 import { useSound } from '@vueuse/sound';
-import Auth from '@/mythicalclient/Auth';
-import { MythicalDOM } from '@/mythicalclient/MythicalDOM';
+import Auth from '@/mythicaldash/Auth';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);

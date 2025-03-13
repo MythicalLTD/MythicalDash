@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,11 +11,11 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Cli\Commands;
+namespace MythicalDash\Cli\Commands;
 
-use MythicalClient\Cli\App;
-use MythicalClient\Chat\Database;
-use MythicalClient\Cli\CommandBuilder;
+use MythicalDash\Cli\App;
+use MythicalDash\Chat\Database;
+use MythicalDash\Cli\CommandBuilder;
 
 class Rebuild extends App implements CommandBuilder
 {
@@ -23,7 +23,7 @@ class Rebuild extends App implements CommandBuilder
     {
         $app = App::getInstance();
         if (!file_exists(__DIR__ . '/../../../storage/.env')) {
-            \MythicalClient\App::getInstance(true)->getLogger()->warning('Executed a command without a .env file');
+            \MythicalDash\App::getInstance(true)->getLogger()->warning('Executed a command without a .env file');
             $app->send('The .env file does not exist. Please create one before running this command');
             exit;
         }
@@ -43,7 +43,7 @@ class Rebuild extends App implements CommandBuilder
         $app->send('&aRebuilding...');
 
         try {
-            \MythicalClient\App::getInstance(true)->loadEnv();
+            \MythicalDash\App::getInstance(true)->loadEnv();
             $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD']);
             $db = $db->getPdo();
         } catch (\Exception $e) {

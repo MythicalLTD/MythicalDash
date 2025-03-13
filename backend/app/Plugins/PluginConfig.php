@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,9 +11,9 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient\Plugins;
+namespace MythicalDash\Plugins;
 
-use MythicalClient\App;
+use MythicalDash\App;
 
 class PluginConfig
 {
@@ -29,7 +29,6 @@ class PluginConfig
             'author' => 'array',
             'icon' => 'string',
             'dependencies' => 'array',
-			'can_deploy' => 'boolean',
         ];
     }
 

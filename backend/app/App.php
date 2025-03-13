@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of MythicalClient.
+ * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
  *
  * # MythicalSystems License v2.0
@@ -11,20 +11,20 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalClient;
+namespace MythicalDash;
 
-use MythicalClient\Plugins\Events\Events\AppEvent;
+use MythicalDash\Plugins\Events\Events\AppEvent;
 use RateLimit\Rate;
 use Router\Router as rt;
 use RateLimit\RedisRateLimiter;
-use MythicalClient\Chat\Database;
+use MythicalDash\Chat\Database;
 use MythicalSystems\Utils\XChaCha20;
-use MythicalClient\Hooks\MythicalAPP;
+use MythicalDash\Hooks\MythicalAPP;
 use RateLimit\Exception\LimitExceeded;
-use MythicalClient\Config\ConfigFactory;
-use MythicalClient\Logger\LoggerFactory;
-use MythicalClient\Hooks\LicenseValidator;
-use MythicalClient\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Config\ConfigFactory;
+use MythicalDash\Logger\LoggerFactory;
+use MythicalDash\Hooks\LicenseValidator;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
 
 class App extends MythicalAPP
 {
@@ -58,31 +58,6 @@ class App extends MythicalAPP
             return;
         }
 		
-        /**
-         * Sentry.
-         */
-        \Sentry\init([
-            'dsn' => 'https://0e107fab7de1d5810a80fc591cb91a45@o4508434822791168.ingest.de.sentry.io/4508675813736528',
-            // Specify a fixed sample rate
-            'traces_sample_rate' => 1.0,
-            // Set a sampling rate for profiling - this is relative to traces_sample_rate
-            'profiles_sample_rate' => 1.0,
-        ]);
-        try {
-            /**
-             * License validator.
-             */
-            $this->licenseValidator = new LicenseValidator($_ENV['LICENSE_KEY']);
-            if (!$this->licenseValidator->validate()) {
-                $this->getLogger()->warning('License is not valid! Consider buying a license to support the development of MythicalClient!');
-                define('HAS_VALID_LICENSE', false);
-            } else {
-                $this->getLogger()->debug('License is valid! Thank you for supporting the development of MythicalClient!');
-                define('HAS_VALID_LICENSE', true);
-            }
-        } catch (\Exception $e) {
-            App::getInstance(true)->getLogger()->error('License validator error: ' . $e->getMessage());
-        }
         /**
          * Redis.
          */
@@ -265,7 +240,7 @@ class App extends MythicalAPP
      */
     public function getLogger(): LoggerFactory
     {
-        return new LoggerFactory(__DIR__ . '/../storage/logs/mythicalclient.log');
+        return new LoggerFactory(__DIR__ . '/../storage/logs/mythicaldash.log');
     }
 
     /**

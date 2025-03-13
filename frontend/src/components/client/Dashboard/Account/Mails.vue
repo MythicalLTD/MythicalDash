@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import LayoutAccount from './Layout.vue';
 import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
-import Mails from '@/mythicalclient/Mails';
+import Mails from '@/mythicaldash/Mails';
 import { format } from 'date-fns';
 import { h, onErrorCaptured, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { MythicalDOM } from '@/mythicalclient/MythicalDOM';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 
 const { t } = useI18n();
 MythicalDOM.setPageTitle(t('account.pages.emails.page.title'));
