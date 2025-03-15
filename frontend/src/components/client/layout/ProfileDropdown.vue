@@ -2,41 +2,54 @@
     <Transition name="dropdown">
         <div
             v-if="isOpen"
-            class="absolute top-16 right-4 w-80 bg-gray-900/95 backdrop-blur-xs border border-gray-700/50 rounded-xl shadow-2xl z-50"
+            class="absolute top-16 right-4 w-80 bg-[#0a0a0f]/95 backdrop-blur-md border border-[#2a2a3f]/30 rounded-xl shadow-2xl z-50 overflow-hidden"
             @click.stop
         >
             <!-- User Profile Section -->
-            <div class="p-5 border-b border-gray-700/50">
+            <div class="p-5 border-b border-[#2a2a3f]/30">
                 <div class="flex items-center gap-4">
                     <div class="relative">
                         <div
-                            class="h-12 w-12 rounded-full bg-linear-to-tr from-purple-500/20 to-blue-500/20 flex items-center justify-center ring-2 ring-purple-500/20"
+                            class="h-14 w-14 rounded-lg bg-gradient-to-tr from-indigo-500/20 to-blue-500/20 flex items-center justify-center ring-2 ring-indigo-500/20 overflow-hidden"
                         >
-                            <img :src="userInfo.avatar" alt="User Avatar" class="h-full w-full rounded-full" />
+                            <img :src="userInfo.avatar" alt="User Avatar" class="h-full w-full object-cover" />
                         </div>
                         <div
-                            class="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-green-500 ring-2 ring-gray-900"
+                            class="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-green-500 ring-2 ring-[#0a0a0f]"
                         ></div>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h3 class="font-medium truncate">{{ userInfo.firstName }} {{ userInfo.lastName }}</h3>
+                        <h3 class="font-medium text-gray-200 truncate">
+                            {{ userInfo.firstName }} {{ userInfo.lastName }}
+                        </h3>
                         <p class="text-sm text-gray-400 truncate">{{ userInfo.email }}</p>
+                        <div
+                            class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/20 text-indigo-400"
+                        >
+                            {{ userInfo.roleName }}
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Quick Stats -->
-            <div class="grid grid-cols-3 gap-1 p-3 border-b border-gray-700/50">
-                <div class="text-center p-2 rounded-lg hover:bg-gray-800/50 transition-colors">
-                    <p class="text-lg font-semibold text-purple-400">{{ stats.tickets }}</p>
+            <div class="grid grid-cols-3 gap-1 p-3 border-b border-[#2a2a3f]/30 bg-[#1a1a2e]/30">
+                <div
+                    class="text-center p-2 rounded-lg hover:bg-[#2a2a3f]/30 transition-colors duration-200 cursor-pointer"
+                >
+                    <p class="text-lg font-semibold text-indigo-400">{{ stats.tickets }}</p>
                     <p class="text-xs text-gray-400">{{ $t('components.profile.tickets') }}</p>
                 </div>
-                <div class="text-center p-2 rounded-lg hover:bg-gray-800/50 transition-colors">
-                    <p class="text-lg font-semibold text-purple-400">{{ stats.services }}</p>
+                <div
+                    class="text-center p-2 rounded-lg hover:bg-[#2a2a3f]/30 transition-colors duration-200 cursor-pointer"
+                >
+                    <p class="text-lg font-semibold text-indigo-400">{{ stats.services }}</p>
                     <p class="text-xs text-gray-400">{{ $t('components.profile.services') }}</p>
                 </div>
-                <div class="text-center p-2 rounded-lg hover:bg-gray-800/50 transition-colors">
-                    <p class="text-lg font-semibold text-purple-400">{{ stats.invoices }}</p>
+                <div
+                    class="text-center p-2 rounded-lg hover:bg-[#2a2a3f]/30 transition-colors duration-200 cursor-pointer"
+                >
+                    <p class="text-lg font-semibold text-indigo-400">{{ stats.invoices }}</p>
                     <p class="text-xs text-gray-400">{{ $t('components.profile.invoices') }}</p>
                 </div>
             </div>
@@ -47,23 +60,38 @@
                     v-for="item in profileMenu"
                     :key="item.name"
                     :to="item.href"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-800/50 transition-colors group"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[#1a1a2e]/70 transition-colors duration-200 group"
                 >
-                    <component
-                        :is="item.icon"
-                        class="h-5 w-5 text-gray-400 group-hover:text-purple-400 transition-colors"
-                    />
-                    <span class="text-sm">{{ item.name }}</span>
+                    <div
+                        class="w-8 h-8 rounded-lg bg-[#1a1a2e]/50 flex items-center justify-center group-hover:bg-indigo-500/10"
+                    >
+                        <component
+                            :is="item.icon"
+                            class="h-4 w-4 text-gray-400 group-hover:text-indigo-400 transition-colors duration-200"
+                        />
+                    </div>
+                    <span class="text-sm text-gray-300 group-hover:text-gray-100">{{ item.name }}</span>
                 </RouterLink>
 
                 <!-- Logout Button -->
-                <button
+                <Button
                     @click="handleLogout"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-red-500/10 text-red-400 transition-colors group"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-red-500/10 text-gray-300 hover:text-red-400 transition-colors duration-200 group mt-2"
                 >
-                    <LogOutIcon class="h-5 w-5" />
+                    <div
+                        class="w-8 h-8 rounded-lg bg-[#1a1a2e]/50 flex items-center justify-center group-hover:bg-red-500/10"
+                    >
+                        <LogOutIcon
+                            class="h-4 w-4 text-gray-400 group-hover:text-red-400 transition-colors duration-200"
+                        />
+                    </div>
                     <span class="text-sm">{{ $t('components.profile.logout') }}</span>
-                </button>
+                </Button>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-3 bg-[#1a1a2e]/30 text-center text-xs text-gray-500">
+                <p>Pterodactyl Client Area</p>
             </div>
         </div>
     </Transition>
@@ -112,18 +140,25 @@ const handleLogout = () => {
 <style scoped>
 .dropdown-enter-active,
 .dropdown-leave-active {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dropdown-enter-from,
 .dropdown-leave-to {
     opacity: 0;
-    transform: translateY(-8px) scale(0.98);
+    transform: translateY(-12px) scale(0.96);
 }
 
 .dropdown-enter-to,
 .dropdown-leave-from {
     opacity: 1;
     transform: translateY(0) scale(1);
+}
+
+/* Smooth transitions */
+.transition-colors {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
 }
 </style>

@@ -6,12 +6,7 @@ class Tickets {
         const data = await response.json();
         return data;
     }
-    static async createTicket(
-        department_id: number,
-        subject: string,
-        message: string,
-        priority: string,
-    ) {
+    static async createTicket(department_id: number, subject: string, message: string, priority: string) {
         const response = await fetch('/api/user/ticket/create', {
             method: 'POST',
             body: new URLSearchParams({

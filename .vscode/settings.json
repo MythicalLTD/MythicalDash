@@ -1,15 +1,17 @@
 {
 	"cSpell.words": [
 		"Adminannouncements",
+		"Cassian",
 		"fastcgi",
 		"filesize",
 		"fklmnor",
+		"Gherman",
 		"HWID",
 		"letsencrypt",
 		"lucide",
 		"modyfi",
 		"mythicaldash",
-		"mythicaldash",
+		"mythicaldoggo",
 		"PHPHWID",
 		"Predis",
 		"qrcode",
@@ -22,7 +24,11 @@
 		"supportbuddy",
 		"Swal",
 		"sweetalert",
-		"vueuse"
+		"Tanstack",
+		"Topup",
+		"topups",
+		"vueuse",
+		"whmcs"
 	],
 	"json.maxItemsComputed": 10000,
 	"editor.largeFileOptimizations": false,

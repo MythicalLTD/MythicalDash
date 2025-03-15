@@ -10,7 +10,6 @@ import {
 } from 'lucide-vue-next';
 import Translation from '@/mythicaldash/Translation';
 
-
 defineProps<{
     isSidebarOpen: boolean;
 }>();
@@ -43,7 +42,7 @@ const menuSections = ref<MenuSection[]>([
                 icon: LayoutDashboardIcon,
                 href: '/',
                 active: isActiveRoute(['/dashboard']),
-            },          
+            },
         ],
     },
     {
@@ -86,12 +85,12 @@ const toggleSubitems = (item: MenuItem) => {
 </script>
 <template>
     <aside
-        class="fixed top-0 left-0 h-full w-64 bg-gray-900/50 backdrop-blur-xs border-r border-gray-700/50 transform transition-transform duration-200 ease-in-out z-50 lg:translate-x-0 lg:z-20"
+        class="fixed top-0 left-0 h-full w-64 bg-[#0a0a0f]/95 backdrop-blur-md border-r border-[#2a2a3f]/30 transform transition-transform duration-200 ease-in-out z-50 lg:translate-x-0 lg:z-20"
         :class="isSidebarOpen ? 'translate-x-0' : '-translate-x-full'"
     >
         <!-- Sidebar Content -->
         <div class="flex flex-col h-full pt-16">
-            <div class="flex-1 overflow-y-auto">
+            <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-[#0a0a0f] scrollbar-thumb-[#2a2a3f]/50">
                 <nav class="p-4">
                     <div v-for="(section, index) in menuSections" :key="index" class="mb-6">
                         <div class="text-xs uppercase tracking-wider text-gray-500 font-medium px-4 mb-2">
@@ -102,8 +101,8 @@ const toggleSubitems = (item: MenuItem) => {
                                 <div v-if="item.subitems">
                                     <button
                                         @click="toggleSubitems(item)"
-                                        class="w-full flex items-center justify-between gap-3 px-4 py-2 rounded-lg hover:bg-gray-800/50 transition-colors"
-                                        :class="{ 'bg-purple-500/10 text-purple-400': item.active }"
+                                        class="w-full flex items-center justify-between gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-colors duration-200"
+                                        :class="{ 'bg-indigo-500/10 text-indigo-400': item.active }"
                                     >
                                         <div class="flex items-center gap-3">
                                             <component :is="item.icon" class="w-5 h-5" />
@@ -126,12 +125,15 @@ const toggleSubitems = (item: MenuItem) => {
                                             <template v-for="subitem in item.subitems" :key="subitem.name">
                                                 <!-- Regular subitem -->
                                                 <div>
-                                                    <div v-if="subitem.subitems && subitem.subitems.length" class="w-full">
+                                                    <div
+                                                        v-if="subitem.subitems && subitem.subitems.length"
+                                                        class="w-full"
+                                                    >
                                                         <button
                                                             @click="toggleSubitems(subitem)"
-                                                            class="w-full flex items-center justify-between gap-3 px-4 py-2 rounded-lg hover:bg-gray-800/50 transition-colors text-sm"
+                                                            class="w-full flex items-center justify-between gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-colors duration-200 text-sm"
                                                             :class="{
-                                                                'bg-purple-500/10 text-purple-400': subitem.active,
+                                                                'bg-indigo-500/10 text-indigo-400': subitem.active,
                                                             }"
                                                         >
                                                             <div class="flex items-center gap-3">
@@ -160,22 +162,22 @@ const toggleSubitems = (item: MenuItem) => {
                                                                 class="ml-4 mt-1 space-y-1 overflow-hidden"
                                                             >
                                                                 <RouterLink
-                                                                    v-for="category in subitem.subitems || []" 
+                                                                    v-for="category in subitem.subitems || []"
                                                                     :key="category.name"
                                                                     :to="category.href"
-                                                                    class="group relative flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800/50 transition-colors text-sm"
+                                                                    class="group relative flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-colors duration-200 text-sm"
                                                                     :class="{
-                                                                        'bg-purple-500/10 text-purple-400':
+                                                                        'bg-indigo-500/10 text-indigo-400':
                                                                             category.active,
                                                                     }"
                                                                 >
                                                                     <component :is="category.icon" class="w-4 h-4" />
                                                                     {{ category.name }}
 
-                                                                    <!-- Tooltip for category headline -->
+                                                                    <!-- Tooltip -->
                                                                     <div
                                                                         v-if="category.tooltip"
-                                                                        class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none"
+                                                                        class="absolute left-full ml-2 px-3 py-1.5 bg-[#1a1a2e] border border-[#2a2a3f]/30 text-white text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 pointer-events-none backdrop-blur-md"
                                                                     >
                                                                         {{ category.tooltip }}
                                                                     </div>
@@ -187,8 +189,8 @@ const toggleSubitems = (item: MenuItem) => {
                                                     <RouterLink
                                                         v-else
                                                         :to="subitem.href"
-                                                        class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800/50 transition-colors text-sm"
-                                                        :class="{ 'bg-purple-500/10 text-purple-400': subitem.active }"
+                                                        class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-colors duration-200 text-sm"
+                                                        :class="{ 'bg-indigo-500/10 text-indigo-400': subitem.active }"
                                                     >
                                                         <component :is="subitem.icon" class="w-4 h-4" />
                                                         {{ subitem.name }}
@@ -201,8 +203,8 @@ const toggleSubitems = (item: MenuItem) => {
                                 <RouterLink
                                     v-else
                                     :to="item.href"
-                                    class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800/50 transition-colors"
-                                    :class="{ 'bg-purple-500/10 text-purple-400': item.active }"
+                                    class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-colors duration-200"
+                                    :class="{ 'bg-indigo-500/10 text-indigo-400': item.active }"
                                 >
                                     <component :is="item.icon" class="w-5 h-5" />
                                     {{ item.name }}
@@ -221,8 +223,33 @@ const toggleSubitems = (item: MenuItem) => {
     transform: rotate(180deg);
 }
 
-/* Add z-index handling for tooltips */
+/* Custom scrollbar styling */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(42, 42, 63, 0.5);
+    border-radius: 2px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(42, 42, 63, 0.7);
+}
+
+/* Tooltip z-index handling */
 .group:hover {
     z-index: 100;
+}
+
+/* Smooth transitions */
+.transition-colors {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
 }
 </style>

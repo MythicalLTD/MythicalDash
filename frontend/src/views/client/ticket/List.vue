@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { format } from 'date-fns';
 import LayoutDashboard from '@/components/client/LayoutDashboard.vue';
 import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
+import Button from '@/components/client/ui/Button.vue';
 import Tickets from '@/mythicaldash/Tickets';
 import { AlertCircle, Plus, Ticket } from 'lucide-vue-next';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
@@ -148,10 +149,9 @@ const columnsTickets = [
         enableSorting: false,
         cell: ({ row }: { row: { original: { id: number } } }) =>
             h(
-                'button',
+                Button,
                 {
                     onClick: () => viewTicket(row.original.id),
-                    class: 'flex items-center gap-2 px-4 py-2 rounded-lg transition-colors font-medium bg-purple-600 text-white hover:bg-purple-700',
                 },
                 t('tickets.pages.tickets.actions.view'),
             ),
@@ -172,13 +172,10 @@ function createNewTicket() {
         <div class="space-y-6 p-6">
             <div class="flex justify-between items-center">
                 <h1 class="text-3xl font-bold text-gray-100">{{ t('tickets.pages.tickets.title') }}</h1>
-                <button
-                    @click="createNewTicket"
-                    class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm font-medium transition-colors flex items-center space-x-2"
-                >
+                <Button @click="createNewTicket">
                     <Plus class="w-4 h-4" />
                     <span>{{ t('tickets.pages.tickets.actions.newTicket') }}</span>
-                </button>
+                </Button>
             </div>
 
             <Transition name="fade" mode="out-in">
@@ -203,12 +200,9 @@ function createNewTicket() {
                     <Ticket class="w-16 h-16 text-gray-600 mx-auto mb-4" />
                     <p class="text-xl font-semibold text-gray-300">{{ t('tickets.pages.tickets.noTickets') }}</p>
                     <p class="text-gray-400 mt-2">{{ t('tickets.pages.tickets.noTickets') }}</p>
-                    <button
-                        @click="createNewTicket"
-                        class="mt-4 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm font-medium transition-colors"
-                    >
+                    <Button @click="createNewTicket">
                         {{ t('tickets.pages.tickets.actions.newTicket') }}
-                    </button>
+                    </Button>
                 </div>
 
                 <div v-else key="table">

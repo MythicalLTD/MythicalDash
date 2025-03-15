@@ -45,7 +45,6 @@ help:
 	@echo -e "${BOLD}Available commands:${NC}"
 	@echo -e "  ${GREEN}make frontend${NC}    ${ROCKET} Builds the frontend for production"
 	@echo -e "  ${GREEN}make backend${NC}     ${BUILD} Builds the backend components"
-	@echo -e "  ${GREEN}make dev${NC}         ${SERVER} Runs development servers"
 	@echo -e "  ${GREEN}make release${NC}     ${PACKAGE} Prepares a full release build"
 	@echo -e "  ${GREEN}make install${NC}     ${INFO} Installs all dependencies"
 	@echo -e "  ${GREEN}make clean${NC}       ${CLEAN} Cleans all build artifacts"
@@ -69,16 +68,6 @@ backend:
 	@cd $(BACKEND_DIR) && $(COMPOSER) dump-autoload
 	@echo -e "${GREEN}${CHECK} Backend build complete!${NC}\n"
 
-# Development server
-dev:
-	@echo -e "\n${BOLD}${BLUE}Development Server${NC} ${SERVER}"
-	@echo -e "${CYAN}===================${NC}"
-	@echo -e "${GREEN}${INFO} Starting development environment...${NC}"
-	@cd $(FRONTEND_DIR) && $(YARN) dev & \
-	cd $(BACKEND_DIR) && $(PHP) -S localhost:8000 & \
-	echo -e "${GREEN}${CHECK} Development servers started!${NC}\n"
-	@echo -e "${YELLOW}${INFO} Frontend: http://localhost:3000${NC}"
-	@echo -e "${YELLOW}${INFO} Backend: http://localhost:8000${NC}\n"
 
 # Release build
 release:

@@ -1,19 +1,35 @@
 <template>
     <div
         v-if="isSearchOpen"
-        class="fixed inset-0 bg-gray-900/95 backdrop-blur-xs z-50"
+        class="fixed inset-0 bg-[#0a0a0f]/95 backdrop-blur-md z-50 flex items-start justify-center"
         @click="$emit('close')"
         @keydown.ctrl.k.prevent="$emit('close')"
         @keydown.ctrl.d.prevent="toggleDashboard"
     >
-        <div class="max-w-3xl mx-auto pt-32 px-4" @click.stop>
+        <div class="w-full max-w-3xl mx-auto pt-24 px-4 md:px-6" @click.stop>
+            <!-- Search Header -->
+            <div class="mb-2 flex items-center justify-between">
+                <h2 class="text-lg font-medium text-gray-300">Quick Search</h2>
+                <div class="flex items-center gap-2">
+                    <kbd
+                        class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#1a1a2e] rounded-md border border-[#2a2a3f]/50"
+                    >
+                        Esc
+                    </kbd>
+                    <span class="text-gray-500">to close</span>
+                </div>
+            </div>
+
+            <!-- Search Input -->
             <div class="relative">
-                <SearchIcon class="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                <div class="absolute left-4 top-3.5 text-gray-400">
+                    <SearchIcon class="h-5 w-5" />
+                </div>
                 <input
                     type="text"
                     :placeholder="$t('components.search.placeholder')"
                     v-model="searchQuery"
-                    class="w-full bg-gray-800/50 border border-gray-700/50 rounded-lg pl-11 pr-4 py-3 focus:outline-hidden focus:ring-2 focus:ring-purple-500/50 text-gray-100"
+                    class="w-full bg-[#1a1a2e]/70 border border-[#2a2a3f]/50 rounded-xl pl-11 pr-20 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 text-gray-100 placeholder-gray-500 transition-all duration-200"
                     @keydown.esc="$emit('close')"
                     @input="performSearch"
                     @keydown.enter="handleEnter"
@@ -23,9 +39,14 @@
                 />
                 <div class="absolute right-4 top-3 flex space-x-2">
                     <kbd
-                        class="px-2 py-1 text-xs font-semibold text-gray-400 bg-gray-800 rounded-md border border-gray-700"
+                        class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#0a0a0f]/70 rounded-md border border-[#2a2a3f]/50"
                     >
-                        Ctrl K
+                        ↑↓
+                    </kbd>
+                    <kbd
+                        class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#0a0a0f]/70 rounded-md border border-[#2a2a3f]/50"
+                    >
+                        Enter
                     </kbd>
                 </div>
             </div>
@@ -33,28 +54,33 @@
             <!-- Search Results -->
             <div
                 v-if="searchResults.length > 0"
-                class="mt-4 bg-gray-800/50 rounded-lg border border-gray-700/50 overflow-hidden"
+                class="mt-4 bg-[#1a1a2e]/50 rounded-xl border border-[#2a2a3f]/30 overflow-hidden shadow-xl"
             >
                 <div
                     v-for="(result, index) in searchResults"
                     :key="result.id || result.href"
                     :class="[
-                        'p-4 cursor-pointer transition-colors duration-150',
-                        selectedIndex === index ? 'bg-purple-500/20' : 'hover:bg-gray-700/50',
+                        'p-4 cursor-pointer transition-all duration-150',
+                        selectedIndex === index
+                            ? 'bg-indigo-500/20 border-l-2 border-indigo-500'
+                            : 'hover:bg-[#2a2a3f]/30 border-l-2 border-transparent',
                     ]"
                     @click="navigateToResult(result)"
                     @mouseover="selectedIndex = index"
                 >
-                    <div class="flex items-center gap-3">
-                        <component :is="result.icon" class="w-5 h-5 text-purple-400" />
-                        <div class="flex-1">
-                            <div class="font-medium text-gray-100">
-                                <span v-if="result.id" class="text-purple-400 mr-2">#{{ result.id }}</span>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-[#2a2a3f]/30 flex items-center justify-center">
+                            <component :is="result.icon" class="w-5 h-5 text-indigo-400" />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-medium text-gray-100 flex items-center">
+                                <span v-if="result.id" class="text-indigo-400 mr-2 font-mono">#{{ result.id }}</span>
                                 {{ result.title }}
                             </div>
-                            <div class="text-sm text-gray-400">{{ result.description }}</div>
+                            <div class="text-sm text-gray-400 truncate">{{ result.description }}</div>
                         </div>
-                        <div v-if="result.shortcut" class="text-sm text-gray-500">
+                        <div v-if="result.shortcut" class="text-sm text-gray-500 flex items-center">
+                            <ArrowRightIcon class="w-4 h-4 mr-1" />
                             {{ result.shortcut }}
                         </div>
                     </div>
@@ -64,17 +90,82 @@
             <!-- No Results -->
             <div
                 v-else-if="searchQuery"
-                class="mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 text-gray-400"
+                class="mt-4 p-6 bg-[#1a1a2e]/50 rounded-xl border border-[#2a2a3f]/30 text-center"
             >
-                {{ $t('components.search.no_results') }}
+                <div class="flex flex-col items-center">
+                    <SearchXIcon class="w-12 h-12 text-gray-500 mb-3" />
+                    <p class="text-gray-400 mb-1">{{ $t('components.search.no_results') }}</p>
+                    <p class="text-sm text-gray-500">Try different keywords or check your spelling</p>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div v-else class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div
+                    class="p-4 bg-[#1a1a2e]/50 rounded-xl border border-[#2a2a3f]/30 hover:bg-[#1a1a2e]/70 transition-colors duration-200"
+                >
+                    <h3 class="font-medium text-gray-300 mb-2">Quick Navigation</h3>
+                    <div class="space-y-2">
+                        <div
+                            v-for="item in quickLinks"
+                            :key="item.href"
+                            class="flex items-center gap-3 p-2 rounded-lg hover:bg-[#2a2a3f]/30 cursor-pointer transition-colors duration-150"
+                            @click="navigateToResult(item)"
+                        >
+                            <component :is="item.icon" class="w-4 h-4 text-indigo-400" />
+                            <span class="text-sm text-gray-300">{{ item.title }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-[#1a1a2e]/50 rounded-xl border border-[#2a2a3f]/30">
+                    <h3 class="font-medium text-gray-300 mb-2">Keyboard Shortcuts</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between p-2">
+                            <span class="text-sm text-gray-400">Search</span>
+                            <div class="flex items-center gap-1">
+                                <kbd
+                                    class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#0a0a0f]/70 rounded-md border border-[#2a2a3f]/50"
+                                    >Ctrl</kbd
+                                >
+                                <span class="text-gray-500">+</span>
+                                <kbd
+                                    class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#0a0a0f]/70 rounded-md border border-[#2a2a3f]/50"
+                                    >K</kbd
+                                >
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-2">
+                            <span class="text-sm text-gray-400">Go to Dashboard</span>
+                            <div class="flex items-center gap-1">
+                                <kbd
+                                    class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#0a0a0f]/70 rounded-md border border-[#2a2a3f]/50"
+                                    >Ctrl</kbd
+                                >
+                                <span class="text-gray-500">+</span>
+                                <kbd
+                                    class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#0a0a0f]/70 rounded-md border border-[#2a2a3f]/50"
+                                    >D</kbd
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { LayoutDashboardIcon, Search as SearchIcon, TicketIcon } from 'lucide-vue-next';
+import { ref, watch, computed } from 'vue';
+import {
+    LayoutDashboard as LayoutDashboardIcon,
+    Search as SearchIcon,
+    Ticket as TicketIcon,
+    Server as ServerIcon,
+    ArrowRight as ArrowRightIcon,
+    SearchX as SearchXIcon,
+} from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -115,7 +206,16 @@ const searchableItems: SearchResult[] = [
         href: '/ticket',
         icon: TicketIcon,
     },
+    {
+        id: 3,
+        title: 'Servers',
+        description: 'Manage your game servers',
+        href: '/servers',
+        icon: ServerIcon,
+    },
 ];
+
+const quickLinks = computed(() => searchableItems.slice(0, 4));
 
 const performSearch = () => {
     selectedIndex.value = 0;
@@ -179,3 +279,23 @@ watch(
     },
 );
 </script>
+
+<style scoped>
+/* Keyboard shortcut styling */
+kbd {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.75rem;
+    line-height: 1;
+}
+
+/* Smooth transitions */
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus styles */
+input:focus {
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+</style>

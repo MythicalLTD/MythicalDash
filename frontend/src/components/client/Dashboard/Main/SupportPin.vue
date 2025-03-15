@@ -4,10 +4,10 @@
         <h2 class="text-purple-200 text-sm font-medium mb-2">{{ t('Components.SupportPin.title') }}</h2>
         <div class="flex items-center gap-2">
             <span class="text-emerald-400 text-2xl font-mono font-bold">{{ Session.getInfo('support_pin') }}</span>
-            <button @click="copyPin" class="text-purple-500 hover:text-white transition-colors">
+            <button @click="copyPin" class="text-blue-500 hover:text-white transition-colors">
                 <CopyIcon class="w-4 h-4" />
             </button>
-            <button @click="resetPin" class="text-purple-500 hover:text-white transition-colors">
+            <button @click="resetPin" class="text-blue-500 hover:text-white transition-colors">
                 <RefreshCcwIcon class="w-4 h-4 transition-transform duration-500 hover:rotate-180" />
             </button>
         </div>

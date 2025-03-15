@@ -510,6 +510,10 @@ components:
     notifications:
         title: 'Notifications'
         credits: 'You have {credits} credits left'
+        mark_all_read: 'Mark all as read'
+        mark_read: 'Mark as read'
+        no_notifications: 'No notifications found'
+        view_all: 'View all'
     errors:
         go_back: 'Go Back'
         go_home: 'Go Home'
@@ -550,3 +554,6 @@ components:
         last: 'Last'
         noResults: 'No results found'
         view: 'View'
+        readMore: 'Read More'
+        showing: 'Showing page: '
+        per_page: 'items per page'

@@ -20,17 +20,41 @@
     --mythicaldash-1300: oklch(0.041 0.062 302.717);
     --mythicaldash-1400: oklch(0.011 0.042 302.717);
     --mythicaldash-1500: oklch(0.001 0.022 302.717);
-    --mythicaldash-1600: oklch(0.001 0.022 302.717);
-    --mythicaldash-1700: oklch(0.001 0.022 302.717);
-    --mythicaldash-1800: oklch(0.001 0.022 302.717);
-    --mythicaldash-1900: oklch(0.001 0.022 302.717);
-    --mythicaldash-2000: oklch(0.001 0.022 302.717);
-    --mythicaldash-2100: oklch(0.001 0.022 302.717);
-    --mythicaldash-2200: oklch(0.001 0.022 302.717);
+    --mythicaldash-1600: oklch(0.001 0.012 302.717);
+    --mythicaldash-1700: oklch(0.001 0.008 302.717);
+    --mythicaldash-1800: oklch(0.001 0.006 302.717);
+    --mythicaldash-1900: oklch(0.001 0.004 302.717);
+    --mythicaldash-2000: oklch(0.001 0.002 302.717);
+    --mythicaldash-2100: oklch(0.001 0.001 302.717);
+    --mythicaldash-2200: oklch(0.001 0.001 302.717);
+
+    /* Dark theme specific colors */
+    --bg-darkest: #020203;
+    --bg-darker: #030305;
+    --bg-dark: #050508;
+    --bg-medium: #0a0a15;
+    --border-subtle: rgba(26, 26, 47, 0.3);
+    --text-primary: rgba(229, 231, 235, 1); /* gray-200 */
+    --text-secondary: rgba(156, 163, 175, 1); /* gray-400 */
+    --text-tertiary: rgba(107, 114, 128, 1); /* gray-500 */
+    --accent-primary: rgba(99, 102, 241, 1); /* indigo-500 */
+    --accent-primary-hover: rgba(79, 70, 229, 1); /* indigo-600 */
+    --accent-primary-subtle: rgba(99, 102, 241, 0.2); /* indigo-500 at 20% */
 }
 
 @layer utilities {
     /* Add any custom utilities here */
+    .bg-gradient-dark {
+        background: linear-gradient(to bottom, var(--bg-darker), var(--bg-medium), var(--bg-darker));
+    }
+
+    .border-subtle {
+        border-color: var(--border-subtle);
+    }
+
+    .text-glow {
+        text-shadow: 0 0 10px var(--accent-primary-subtle);
+    }
 }
 
 @layer base {
@@ -46,11 +70,13 @@
     ::before,
     ::backdrop,
     ::file-selector-button {
-        border-color: var(--color-gray-200, currentColor);
+        border-color: var(--border-subtle, currentColor);
     }
 
     html {
         font-family: 'Poppins', sans-serif;
+        background-color: var(--bg-darkest);
+        color: var(--text-primary);
     }
 
     html,
@@ -66,42 +92,65 @@
 
 /* Global Scrollbar Styles */
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--mythicaldash-2200);
-    border-radius: 5px;
+    background: var(--bg-darkest);
+    border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--mythicaldash-500);
-    border-radius: 5px;
+    background: rgba(42, 42, 63, 0.5);
+    border-radius: 3px;
     transition: background-color 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--mythicaldash-500);
+    background: rgba(42, 42, 63, 0.7);
 }
 
 /* For Firefox */
 * {
     scrollbar-width: thin;
-    scrollbar-color: var(--mythicaldash-500) var(--mythicaldash-1100);
+    scrollbar-color: rgba(42, 42, 63, 0.5) var(--bg-darkest);
 }
 
 /* When the scrollbar is actively being used */
 ::-webkit-scrollbar-thumb:active {
-    background: var(--mythicaldash-500);
+    background: rgba(99, 102, 241, 0.3);
 }
 
 /* Styling for horizontal scrollbars */
 ::-webkit-scrollbar-corner {
-    background: var(--mythicaldash-2200);
+    background: var(--bg-darkest);
 }
 
 /* Optional: Style for when the mouse is over the scrollable area */
 :hover::-webkit-scrollbar-thumb {
-    background: var(--mythicaldash-500);
+    background: rgba(42, 42, 63, 0.5);
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
+/* Smooth transitions for interactive elements */
+button,
+a,
+input,
+select,
+textarea {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+}
+
+/* Custom selection color */
+::selection {
+    background-color: var(--accent-primary-subtle);
+    color: var(--text-primary);
 }

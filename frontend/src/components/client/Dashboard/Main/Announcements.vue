@@ -202,7 +202,7 @@ onUnmounted(() => {
 
                         <button
                             @click="openAnnouncement(announcement)"
-                            class="mt-4 block w-full px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-sm transition-colors text-center text-sm"
+                            class="mt-4 block w-full px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-sm transition-colors text-center text-sm"
                         >
                             {{ t('Components.Announcements.Card.ReadMore') }}
                         </button>

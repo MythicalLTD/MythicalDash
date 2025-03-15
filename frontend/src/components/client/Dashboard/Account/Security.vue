@@ -1,18 +1,36 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import LayoutAccount from './Layout.vue';
-import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
+import { ref, onMounted } from 'vue';
+import Button from '@/components/client/ui/Button.vue';
 import { useRouter } from 'vue-router';
 import Session from '@/mythicaldash/Session';
 import { useI18n } from 'vue-i18n';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
+import {
+    Shield as ShieldIcon,
+    Key as KeyIcon,
+    Smartphone as SmartphoneIcon,
+    AlertTriangle as AlertTriangleIcon,
+    CheckCircle as CheckCircleIcon,
+    XCircle as XCircleIcon,
+    Lock as LockIcon,
+    LogOut as LogOutIcon,
+} from 'lucide-vue-next';
 
 const router = useRouter();
 const { t } = useI18n();
 
+const isLoading = ref(true);
 const is2FAEnabled = Session.getInfo('2fa_enabled') === 'true' ? ref(true) : ref(false);
+const lastPasswordChange = ref('2023-11-15T14:30:00Z'); // Mock data
 
 MythicalDOM.setPageTitle(t('account.pages.security.page.title'));
+
+onMounted(() => {
+    // Simulate loading
+    setTimeout(() => {
+        isLoading.value = false;
+    }, 1000);
+});
 
 const enable2FA = () => {
     // Add logic to enable 2FA
@@ -25,66 +43,233 @@ const disable2FA = () => {
     is2FAEnabled.value = false;
     router.push('/auth/2fa/setup/disband');
 };
+
+const changePassword = () => {
+    router.push('/auth/forgot-password');
+};
+
+const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    }).format(date);
+};
 </script>
 
 <style scoped>
-/* Hide scrollbar for Chrome, Safari and Opera */
-.overflow-x-auto::-webkit-scrollbar {
-    display: none;
+/* Smooth transitions */
+.transition-colors {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
-.overflow-x-auto {
-    -ms-overflow-style: none;
-    /* IE and Edge */
-    scrollbar-width: none;
-    /* Firefox */
+/* Animation for status indicators */
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 </style>
 
 <template>
-    <!-- User Info -->
-    <LayoutAccount />
+    <div>
+        <!-- Title and Description -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold text-gray-100 mb-2">Account Security</h2>
+            <p class="text-gray-400 text-sm">Manage your account security settings and monitor login activity</p>
+        </div>
 
-    <!-- Change Password -->
-    <CardComponent
-        :cardTitle="t('account.pages.security.page.cards.password.title')"
-        :cardDescription="t('account.pages.security.page.cards.password.subTitle')"
-    >
-        <router-link
-            to="/auth/forgot-password"
-            class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-sm text-sm font-medium transition-colors"
-        >
-            {{ t('account.pages.security.page.cards.password.change_button.label') }}
-        </router-link>
-    </CardComponent>
-    <br />
-    <!-- Two-Factor Authentication (2FA) -->
-    <CardComponent
-        :cardTitle="t('account.pages.security.page.cards.twofactor.title')"
-        :cardDescription="t('account.pages.security.page.cards.twofactor.subTitle')"
-    >
-        <div v-if="is2FAEnabled" class="flex items-center justify-between">
-            <p class="text-sm text-gray-100">
-                {{ t('account.pages.security.page.cards.twofactor.disable_button.description') }}
-            </p>
-            <button
-                @click="disable2FA"
-                class="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
-            >
-                {{ t('account.pages.security.page.cards.twofactor.disable_button.label') }}
-            </button>
+        <!-- Loading State -->
+        <div v-if="isLoading" class="space-y-4">
+            <div v-for="i in 5" :key="i" class="bg-[#1a1a2e]/30 rounded-lg p-4 animate-pulse">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-[#1a1a2e]/50"></div>
+                    <div class="flex-1">
+                        <div class="h-5 w-32 bg-[#1a1a2e]/50 rounded mb-2"></div>
+                        <div class="h-4 w-24 bg-[#1a1a2e]/50 rounded"></div>
+                    </div>
+                    <div class="w-20 h-8 bg-[#1a1a2e]/50 rounded-lg"></div>
+                </div>
+            </div>
         </div>
-        <div v-else class="flex items-center justify-between">
-            <p class="text-sm text-gray-100">
-                {{ t('account.pages.security.page.cards.twofactor.enable_button.description') }}
-            </p>
-            <button
-                @click="enable2FA"
-                class="ml-4 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
-            >
-                {{ t('account.pages.security.page.cards.twofactor.enable_button.label') }}
-            </button>
+
+        <div v-else class="space-y-6">
+            <!-- Security Status Overview -->
+            <div class="bg-[#12121f]/50 border border-[#2a2a3f]/30 rounded-xl p-5 shadow-lg">
+                <div class="mb-4">
+                    <h3 class="text-lg font-medium text-gray-200 flex items-center gap-2">
+                        <ShieldIcon class="h-5 w-5 text-indigo-400" />
+                        Security Status
+                    </h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Password Status -->
+                    <div class="bg-[#0a0a15]/50 border border-[#2a2a3f]/30 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <KeyIcon class="h-4 w-4 text-indigo-400" />
+                                <span class="text-sm font-medium text-gray-300">Password</span>
+                            </div>
+                            <div class="flex items-center gap-1 text-green-400">
+                                <CheckCircleIcon class="h-4 w-4" />
+                                <span class="text-xs">Active</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-3">Last changed: {{ formatDate(lastPasswordChange) }}</p>
+                        <Button @click="changePassword" variant="secondary" small class="w-full">
+                            Change Password
+                        </Button>
+                    </div>
+
+                    <!-- 2FA Status -->
+                    <div class="bg-[#0a0a15]/50 border border-[#2a2a3f]/30 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <SmartphoneIcon class="h-4 w-4 text-indigo-400" />
+                                <span class="text-sm font-medium text-gray-300">Two-Factor Authentication</span>
+                            </div>
+                            <div v-if="is2FAEnabled" class="flex items-center gap-1 text-green-400">
+                                <CheckCircleIcon class="h-4 w-4" />
+                                <span class="text-xs">Enabled</span>
+                            </div>
+                            <div v-else class="flex items-center gap-1 text-red-400">
+                                <XCircleIcon class="h-4 w-4" />
+                                <span class="text-xs">Disabled</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-3">
+                            {{
+                                is2FAEnabled
+                                    ? 'Your account has an extra layer of security.'
+                                    : 'Enable 2FA for additional security.'
+                            }}
+                        </p>
+                        <Button v-if="is2FAEnabled" @click="disable2FA" variant="danger" small class="w-full">
+                            Disable 2FA
+                        </Button>
+                        <Button v-else @click="enable2FA" variant="primary" small class="w-full"> Enable 2FA </Button>
+                    </div>
+
+                    <!-- Session Status -->
+                    <div class="bg-[#0a0a15]/50 border border-[#2a2a3f]/30 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <LockIcon class="h-4 w-4 text-indigo-400" />
+                                <span class="text-sm font-medium text-gray-300">Active Sessions</span>
+                            </div>
+                            <div class="flex items-center gap-1 text-indigo-400">
+                                <span class="text-xs font-medium">1 active</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-3">You're currently logged in on this device.</p>
+                        <Button variant="danger" small class="w-full flex items-center justify-center gap-1">
+                            <LogOutIcon class="h-3 w-3" />
+                            Logout All Devices
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Recommendations -->
+            <div class="bg-[#12121f]/50 border border-[#2a2a3f]/30 rounded-xl p-5 shadow-lg">
+                <div class="mb-4">
+                    <h3 class="text-lg font-medium text-gray-200 flex items-center gap-2">
+                        <ShieldIcon class="h-5 w-5 text-indigo-400" />
+                        Security Recommendations
+                    </h3>
+                    <p class="text-sm text-gray-400 mt-1">Enhance your account security with these recommendations</p>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex items-start gap-3 p-3 rounded-lg" :class="{ 'bg-[#0a0a15]/50': !is2FAEnabled }">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
+                            <SmartphoneIcon class="h-4 w-4 text-indigo-400" />
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-sm font-medium text-gray-300">Enable Two-Factor Authentication</h4>
+                            <p class="text-xs text-gray-500 mt-1">
+                                Add an extra layer of security to your account by requiring a verification code in
+                                addition to your password.
+                            </p>
+                            <Button v-if="!is2FAEnabled" @click="enable2FA" variant="primary" small class="mt-2">
+                                Enable 2FA
+                            </Button>
+                        </div>
+                        <div v-if="is2FAEnabled" class="shrink-0">
+                            <CheckCircleIcon class="h-5 w-5 text-green-400" />
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3 p-3 rounded-lg">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
+                            <KeyIcon class="h-4 w-4 text-indigo-400" />
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-300">Use a Strong Password</h4>
+                            <p class="text-xs text-gray-500 mt-1">
+                                Create a unique password that is at least 12 characters long with a mix of letters,
+                                numbers, and symbols.
+                            </p>
+                        </div>
+                        <div class="shrink-0">
+                            <CheckCircleIcon class="h-5 w-5 text-green-400" />
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3 p-3 rounded-lg">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
+                            <AlertTriangleIcon class="h-4 w-4 text-indigo-400" />
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-300">Monitor Login Activity</h4>
+                            <p class="text-xs text-gray-500 mt-1">
+                                Regularly check your recent login activity and report any suspicious attempts.
+                            </p>
+                        </div>
+                        <div class="shrink-0">
+                            <CheckCircleIcon class="h-5 w-5 text-green-400" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </CardComponent>
+    </div>
 </template>
+
+<style scoped>
+/* Smooth transitions */
+.transition-colors {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+}
+
+/* Animation for status indicators */
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+</style>

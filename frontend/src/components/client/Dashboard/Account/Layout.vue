@@ -1,57 +1,192 @@
 <script setup lang="ts">
 import Session from '@/mythicaldash/Session';
+import { computed } from 'vue';
+import { CheckCircle, AlertCircle, Clock, MapPin } from 'lucide-vue-next';
+
+// Format date to be more readable
+const formatDate = (dateString: string | null | undefined): string => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    }).format(date);
+};
+
+const firstSeen = computed(() => formatDate(Session.getInfo('first_seen')));
+const lastSeen = computed(() => formatDate(Session.getInfo('last_seen')));
+
+const isVerified = computed(() => {
+    const verified = Session.getInfo('verified');
+    if (typeof verified === 'boolean') {
+        return verified;
+    } else if (typeof verified === 'string') {
+        return verified.toLowerCase() === 'true' || verified === '1';
+    } else if (typeof verified === 'number') {
+        return verified === 1;
+    }
+    return false;
+});
 </script>
 
 <style scoped>
 /* Hide scrollbar for Chrome, Safari and Opera */
-.overflow-x-auto::-webkit-scrollbar {
+.scrollbar-hide::-webkit-scrollbar {
     display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-.overflow-x-auto {
-    -ms-overflow-style: none;
-    /* IE and Edge */
-    scrollbar-width: none;
-    /* Firefox */
+.scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.user-profile-card {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Smooth transitions */
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
 }
 </style>
 
 <template>
-    <!-- User Info -->
-    <div class="flex flex-col sm:flex-row items-start gap-4 mb-8 p-4 bg-gray-800/20 rounded-lg">
-        <img :src="Session.getInfo('avatar')" alt="" class="w-16 h-16 rounded-sm bg-gray-800" />
-        <div class="flex-1 min-w-0">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="space-y-1">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-xs text-gray-400">UUID:</span>
-                        <code class="text-xs font-mono text-purple-400">{{ Session.getInfo('uuid') }}</code>
+    <div class="user-profile-card bg-[#0a0a15]/50 border border-[#1a1a2f]/30 rounded-xl shadow-lg overflow-hidden">
+        <div class="p-6">
+            <!-- User Profile Header -->
+            <div class="flex flex-col md:flex-row items-start gap-6 mb-6">
+                <!-- Avatar Section -->
+                <div class="relative">
+                    <div
+                        class="h-20 w-20 rounded-lg bg-gradient-to-tr from-indigo-500/20 to-blue-500/20 flex items-center justify-center ring-2 ring-indigo-500/20 overflow-hidden"
+                    >
+                        <img :src="Session.getInfo('avatar')" alt="User Avatar" class="h-full w-full object-cover" />
                     </div>
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-xs text-gray-400">Role:</span>
-                        <span class="text-xs font-mono text-pink-400">{{ Session.getInfo('role_name') }}</span>
-                    </div>
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-xs text-gray-400">First IP:</span>
-                        <code class="text-xs font-mono text-gray-300">{{ Session.getInfo('first_ip') }}</code>
-                        <span class="text-xs text-gray-500">(</span>
-                        <code class="text-xs font-mono text-gray-300">{{ Session.getInfo('last_ip') }}</code>
-                        <span class="text-xs text-gray-500">)</span>
-                    </div>
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-xs text-gray-400">First seen:</span>
-                        <code class="text-xs font-mono text-gray-300">{{ Session.getInfo('first_seen') }}</code>
-                        <span class="text-xs text-gray-500">(</span>
-                        <code class="text-xs font-mono text-gray-300">{{ Session.getInfo('last_seen') }}</code>
-                        <span class="text-xs text-gray-500">)</span>
+                    <div
+                        v-if="isVerified"
+                        class="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-green-500 ring-2 ring-[#050508] flex items-center justify-center"
+                    >
+                        <CheckCircle class="h-3 w-3 text-white" />
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs text-gray-400">Verified:</span>
-                    <span class="text-xs font-mono text-emerald-400">{{ Session.getInfo('verified') }}</span>
+
+                <!-- User Info -->
+                <div class="flex-1 min-w-0">
+                    <h2 class="text-xl font-bold text-gray-100 mb-1">
+                        {{ Session.getInfo('first_name') }} {{ Session.getInfo('last_name') }}
+                    </h2>
+                    <p class="text-gray-400 mb-3">{{ Session.getInfo('email') }}</p>
+
+                    <!-- Role Badge -->
+                    <div
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/20 text-indigo-400 mb-4"
+                    >
+                        {{ Session.getInfo('role_name') }}
+                    </div>
+
+                    <!-- UUID -->
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs text-gray-500">UUID:</span>
+                        <code
+                            class="text-xs font-mono bg-[#050508]/70 px-2 py-0.5 rounded text-indigo-400 overflow-x-auto scrollbar-hide"
+                        >
+                            {{ Session.getInfo('uuid') }}
+                        </code>
+                    </div>
                 </div>
             </div>
+
+            <!-- User Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- IP Information -->
+                <div class="bg-[#050508]/70 rounded-lg p-4 border border-[#1a1a2f]/30">
+                    <div class="flex items-start gap-3">
+                        <div class="p-2 rounded-lg bg-indigo-500/10">
+                            <MapPin class="h-5 w-5 text-indigo-400" />
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-300 mb-1">IP Address</h3>
+                            <div class="flex flex-col gap-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs text-gray-500">First:</span>
+                                    <code class="text-xs font-mono text-gray-300">{{
+                                        Session.getInfo('first_ip')
+                                    }}</code>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs text-gray-500">Current:</span>
+                                    <code class="text-xs font-mono text-gray-300">{{
+                                        Session.getInfo('last_ip')
+                                    }}</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- First Seen -->
+                <div class="bg-[#050508]/70 rounded-lg p-4 border border-[#1a1a2f]/30">
+                    <div class="flex items-start gap-3">
+                        <div class="p-2 rounded-lg bg-indigo-500/10">
+                            <Clock class="h-5 w-5 text-indigo-400" />
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-300 mb-1">First Seen</h3>
+                            <p class="text-xs text-gray-400">{{ firstSeen }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Last Seen -->
+                <div class="bg-[#050508]/70 rounded-lg p-4 border border-[#1a1a2f]/30">
+                    <div class="flex items-start gap-3">
+                        <div class="p-2 rounded-lg bg-indigo-500/10">
+                            <Clock class="h-5 w-5 text-indigo-400" />
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-300 mb-1">Last Seen</h3>
+                            <p class="text-xs text-gray-400">{{ lastSeen }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verification Status -->
+            <div class="mt-4 flex items-center gap-3 bg-[#050508]/70 rounded-lg p-4 border border-[#1a1a2f]/30">
+                <div class="p-2 rounded-lg" :class="isVerified ? 'bg-green-500/10' : 'bg-red-500/10'">
+                    <component
+                        :is="isVerified ? CheckCircle : AlertCircle"
+                        class="h-5 w-5"
+                        :class="isVerified ? 'text-green-400' : 'text-red-400'"
+                    />
+                </div>
+                <div>
+                    <h3 class="text-sm font-medium text-gray-300">Account Verification</h3>
+                    <p class="text-xs" :class="isVerified ? 'text-green-400' : 'text-red-400'">
+                        {{ isVerified ? 'Your account is verified' : 'Your account is not verified' }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Content Slot -->
+            <slot></slot>
         </div>
     </div>
 </template>

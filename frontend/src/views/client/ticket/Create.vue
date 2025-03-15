@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import LayoutDashboard from '@/components/client/LayoutDashboard.vue';
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
+import Button from '@/components/client/ui/Button.vue';
 import SelectInput from '@/components/client/ui/TextForms/SelectInput.vue';
 import { ref, onMounted } from 'vue';
 import TextInput from '@/components/client/ui/TextForms/TextInput.vue';
@@ -32,7 +33,6 @@ interface Department {
     locked: string;
     date: string;
 }
-
 
 interface TicketCreateInfo {
     departments: Department[];
@@ -153,11 +153,9 @@ const submitTicket = async () => {
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-semibold text-gray-100">{{ t('tickets.pages.create_ticket.title') }}</h1>
                 <router-link to="/ticket">
-                    <button
-                        class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors duration-200"
-                    >
+                    <Button variant="secondary">
                         {{ t('tickets.pages.create_ticket.form.back') }}
-                    </button>
+                    </Button>
                 </router-link>
             </div>
             <CardComponent
@@ -204,19 +202,15 @@ const submitTicket = async () => {
                         <label class="block text-sm font-medium text-gray-300 mb-2">
                             {{ t('tickets.pages.create_ticket.form.message') }}
                         </label>
-                        <TextArea v-model="ticket.message" rows="6" required placeholder="Describe your issue..." />
+                        <TextArea v-model="ticket.message" :rows="6" required placeholder="Describe your issue..." />
                     </div>
 
                     <!-- Submit Button -->
                     <div class="flex justify-end">
-                        <button
-                            type="submit"
-                            :disabled="loading"
-                            class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors duration-200"
-                        >
+                        <Button type="submit" variant="primary" :disabled="loading">
                             <span v-if="loading">{{ t('tickets.pages.create_ticket.form.loading') }}</span>
                             <span v-else>{{ t('tickets.pages.create_ticket.form.submit') }}</span>
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </CardComponent>

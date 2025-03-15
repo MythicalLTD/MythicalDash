@@ -1,81 +1,81 @@
 import { useSettingsStore } from '@/stores/settings';
 interface MythicalDashOptions {
-	timeout?: number;
-	theme?: 'dark' | 'light';
-	accentColor?: string;
+    timeout?: number;
+    theme?: 'dark' | 'light';
+    accentColor?: string;
 }
 
 interface InstallStep {
-	message: string;
-	duration: number;
-	icon?: string;
+    message: string;
+    duration: number;
+    icon?: string;
 }
 
 export class MythicalDash {
-	private static instance: MythicalDash | null = null;
-	private container: HTMLDivElement | null = null;
-	private terminal: HTMLDivElement | null = null;
-	private options: Required<MythicalDashOptions>;
+    private static instance: MythicalDash | null = null;
+    private container: HTMLDivElement | null = null;
+    private terminal: HTMLDivElement | null = null;
+    private options: Required<MythicalDashOptions>;
 
-	private installSteps: InstallStep[] = [
-		{
-			message: 'Initializing MythicalDash environment',
-			duration: 800,
-			icon: '🚀',
-		},
-		{
-			message: 'Configuring client instance',
-			duration: 1000,
-			icon: '⚙️',
-		},
-		{
-			message: 'Fetching user preferences',
-			duration: 1200,
-			icon: '🔍',
-		},
-		{
-			message: 'Optimizing cache storage',
-			duration: 900,
-			icon: '💾',
-		},
-		{
-			message: 'Applying system settings',
-			duration: 700,
-			icon: '🔧',
-		},
-		{
-			message: 'Preparing UI components',
-			duration: 1100,
-			icon: '🎨',
-		},
-		{
-			message: 'Launch sequence initiated',
-			duration: 1000,
-			icon: '✨',
-		},
-	];
+    private installSteps: InstallStep[] = [
+        {
+            message: 'Initializing MythicalDash environment',
+            duration: 800,
+            icon: '🚀',
+        },
+        {
+            message: 'Configuring client instance',
+            duration: 1000,
+            icon: '⚙️',
+        },
+        {
+            message: 'Fetching user preferences',
+            duration: 1200,
+            icon: '🔍',
+        },
+        {
+            message: 'Optimizing cache storage',
+            duration: 900,
+            icon: '💾',
+        },
+        {
+            message: 'Applying system settings',
+            duration: 700,
+            icon: '🔧',
+        },
+        {
+            message: 'Preparing UI components',
+            duration: 1100,
+            icon: '🎨',
+        },
+        {
+            message: 'Launch sequence initiated',
+            duration: 1000,
+            icon: '✨',
+        },
+    ];
 
-	private defaultOptions: Required<MythicalDashOptions> = {
-		timeout: 7000,
-		theme: 'dark',
-		accentColor: '#6366f1', // Indigo color
-	};
+    private defaultOptions: Required<MythicalDashOptions> = {
+        timeout: 7000,
+        theme: 'dark',
+        accentColor: '#6366f1', // Indigo color
+    };
 
-	private constructor(options: MythicalDashOptions = {}) {
-		this.options = { ...this.defaultOptions, ...options };
-	}
+    private constructor(options: MythicalDashOptions = {}) {
+        this.options = { ...this.defaultOptions, ...options };
+    }
 
-	public static getInstance(options?: MythicalDashOptions): MythicalDash {
-		if (!MythicalDash.instance) {
-			MythicalDash.instance = new MythicalDash(options);
-		}
-		return MythicalDash.instance;
-	}
+    public static getInstance(options?: MythicalDashOptions): MythicalDash {
+        if (!MythicalDash.instance) {
+            MythicalDash.instance = new MythicalDash(options);
+        }
+        return MythicalDash.instance;
+    }
 
-	private createStyles(): string {
-		const isDark = this.options.theme === 'dark';
-		const accent = this.options.accentColor;
-		return `
+    private createStyles(): string {
+        const isDark = this.options.theme === 'dark';
+        const accent = this.options.accentColor;
+        return `
           .mythical-container {
               position: fixed;
               top: 0;
@@ -179,17 +179,17 @@ export class MythicalDash {
               100% { width: 100%; }
           }
       `;
-	}
+    }
 
-	private createInterface(): void {
-		const style = document.createElement('style');
-		style.textContent = this.createStyles();
-		document.head.appendChild(style);
+    private createInterface(): void {
+        const style = document.createElement('style');
+        style.textContent = this.createStyles();
+        document.head.appendChild(style);
 
-		this.container = document.createElement('div');
-		this.container.className = 'mythical-container';
+        this.container = document.createElement('div');
+        this.container.className = 'mythical-container';
 
-		this.container.innerHTML = `
+        this.container.innerHTML = `
           <div class="mythical-window">
               <div class="mythical-header">
                   <div class="mythical-logo">✨</div>
@@ -202,86 +202,86 @@ export class MythicalDash {
           </div>
       `;
 
-		document.body.appendChild(this.container);
-		this.terminal = this.container.querySelector('.mythical-content');
-	}
+        document.body.appendChild(this.container);
+        this.terminal = this.container.querySelector('.mythical-content');
+    }
 
-	private addStep(step: InstallStep): void {
-		if (!this.terminal) return;
+    private addStep(step: InstallStep): void {
+        if (!this.terminal) return;
 
-		const stepElement = document.createElement('div');
-		stepElement.className = 'mythical-step';
-		stepElement.innerHTML = `
+        const stepElement = document.createElement('div');
+        stepElement.className = 'mythical-step';
+        stepElement.innerHTML = `
           <div class="mythical-step-icon">${step.icon}</div>
           <div class="mythical-step-message">${step.message}</div>
       `;
 
-		this.terminal.appendChild(stepElement);
-		setTimeout(() => stepElement.classList.add('visible'), 50);
-	}
+        this.terminal.appendChild(stepElement);
+        setTimeout(() => stepElement.classList.add('visible'), 50);
+    }
 
-	private async runInstallation(): Promise<void> {
-		for (const step of this.installSteps) {
-			this.addStep(step);
-			await new Promise((resolve) => setTimeout(resolve, step.duration));
-		}
+    private async runInstallation(): Promise<void> {
+        for (const step of this.installSteps) {
+            this.addStep(step);
+            await new Promise((resolve) => setTimeout(resolve, step.duration));
+        }
 
-		setTimeout(() => this.cleanup(), 1000);
-	}
+        setTimeout(() => this.cleanup(), 1000);
+    }
 
-	private cleanup(): void {
-		if (this.container && document.body.contains(this.container)) {
-			this.container.style.opacity = '0';
-			setTimeout(() => {
-				document.body.removeChild(this.container!);
-				location.reload();
-			}, 300);
-		}
-	}
+    private cleanup(): void {
+        if (this.container && document.body.contains(this.container)) {
+            this.container.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(this.container!);
+                location.reload();
+            }, 300);
+        }
+    }
 
-	public download(): void {
-		const hasDownloaded = localStorage.getItem('mythical_downloaded');
-		if (!this.container && !hasDownloaded) {
-			localStorage.setItem('mythical_downloaded', 'true');
-			this.runInstallation();
-		}
-	}
+    public download(): void {
+        const hasDownloaded = localStorage.getItem('mythical_downloaded');
+        if (!this.container && !hasDownloaded) {
+            localStorage.setItem('mythical_downloaded', 'true');
+            this.runInstallation();
+        }
+    }
 
-	public static download(options?: MythicalDashOptions): void {
-		const downloadStyle = ['color: #9333ea', 'font-size: 14px', 'font-weight: bold', 'padding: 5px'].join(';');
+    public static download(options?: MythicalDashOptions): void {
+        const downloadStyle = ['color: #9333ea', 'font-size: 14px', 'font-weight: bold', 'padding: 5px'].join(';');
 
-		console.log('%c📥 Starting MythicalDash download...', downloadStyle);
-		console.log('%c🔍 Verifying download options...', downloadStyle);
+        console.log('%c📥 Starting MythicalDash download...', downloadStyle);
+        console.log('%c🔍 Verifying download options...', downloadStyle);
 
-		MythicalDash.getInstance(options).download();
+        MythicalDash.getInstance(options).download();
 
-		console.log('%c✅ Download initiated successfully!', downloadStyle);
+        console.log('%c✅ Download initiated successfully!', downloadStyle);
 
-		MythicalDash.startClient();
-	}
+        MythicalDash.startClient();
+    }
 
-	public static startClient(): void {
-		const styles = {
-			title: [
-				'color: #9333ea',
-				'font-size: 20px',
-				'font-weight: bold',
-				'text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3)',
-				'padding: 10px',
-			].join(';'),
+    public static startClient(): void {
+        const styles = {
+            title: [
+                'color: #9333ea',
+                'font-size: 20px',
+                'font-weight: bold',
+                'text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3)',
+                'padding: 10px',
+            ].join(';'),
 
-			subtitle: ['color: #a855f7', 'font-size: 14px', 'font-style: italic', 'padding: 5px'].join(';'),
+            subtitle: ['color: #a855f7', 'font-size: 14px', 'font-style: italic', 'padding: 5px'].join(';'),
 
-			info: ['color: #e9d5ff', 'font-size: 12px', 'padding: 5px'].join(';'),
+            info: ['color: #e9d5ff', 'font-size: 12px', 'padding: 5px'].join(';'),
 
-			warning: ['color: #fbbf24', 'font-weight: bold', 'padding: 5px'].join(';'),
+            warning: ['color: #fbbf24', 'font-weight: bold', 'padding: 5px'].join(';'),
 
-			success: ['color: #34d399', 'font-weight: bold', 'padding: 5px'].join(';'),
-		};
+            success: ['color: #34d399', 'font-weight: bold', 'padding: 5px'].join(';'),
+        };
 
-		// ASCII Art Logo
-		console.log(
-			`%c
+        // ASCII Art Logo
+        console.log(
+            `%c
     ███╗   ███╗██╗   ██╗████████╗██╗  ██╗██╗ ██████╗ █████╗ ██╗
     ████╗ ████║╚██╗ ██╔╝╚══██╔══╝██║  ██║██║██╔════╝██╔══██╗██║
     ██╔████╔██║ ╚████╔╝    ██║   ███████║██║██║     ███████║██║
@@ -289,72 +289,72 @@ export class MythicalDash {
     ██║ ╚═╝ ██║   ██║      ██║   ██║  ██║██║╚██████╗██║  ██║███████╗
     ╚═╝     ╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝
     `,
-			styles.title,
-		);
+            styles.title,
+        );
 
-		// Welcome Message
-		console.log('%cWelcome to MythicalDash! 🚀', styles.subtitle);
+        // Welcome Message
+        console.log('%cWelcome to MythicalDash! 🚀', styles.subtitle);
 
-		// Environment Info
-		console.log('%c🌐 Running in production mode', styles.info);
-		console.log(`%c📅 Started at: ${new Date().toLocaleString()}`, styles.info);
+        // Environment Info
+        console.log('%c🌐 Running in production mode', styles.info);
+        console.log(`%c📅 Started at: ${new Date().toLocaleString()}`, styles.info);
 
-		// Security Notice
-		console.log('%c⚠️ This is a browser feature intended for developers.', styles.warning);
-		console.log('%c⚠️ Do not paste any code here that you do not understand.', styles.warning);
+        // Security Notice
+        console.log('%c⚠️ This is a browser feature intended for developers.', styles.warning);
+        console.log('%c⚠️ Do not paste any code here that you do not understand.', styles.warning);
 
-		// Fun Message
-		const randomMessages = [
-			'🎮 Level up your hosting experience!',
-			'🌟 Making hosting magical since 2024',
-			'🚀 To infinity and beyond!',
-			'🎯 Your success is our mission',
-			'🌈 Where dreams become reality',
-			'⚡ Powered by pure magic',
-		];
+        // Fun Message
+        const randomMessages = [
+            '🎮 Level up your hosting experience!',
+            '🌟 Making hosting magical since 2024',
+            '🚀 To infinity and beyond!',
+            '🎯 Your success is our mission',
+            '🌈 Where dreams become reality',
+            '⚡ Powered by pure magic',
+        ];
 
-		console.log(`%c${randomMessages[Math.floor(Math.random() * randomMessages.length)]}`, styles.success);
+        console.log(`%c${randomMessages[Math.floor(Math.random() * randomMessages.length)]}`, styles.success);
 
-		// Version Info
-		const Settings = useSettingsStore();
-		console.log('%c📦 Version: ' + Settings.getSetting('version'));
+        // Version Info
+        const Settings = useSettingsStore();
+        console.log('%c📦 Version: ' + Settings.getSetting('version'));
 
-		// Credits
-		console.log('%c💜 Made with love by the MythicalDash Team', styles.subtitle);
+        // Credits
+        console.log('%c💜 Made with love by the MythicalDash Team', styles.subtitle);
 
-		MythicalDash.warnNotPaste();
-	}
+        MythicalDash.warnNotPaste();
+    }
 
-	public static warnNotPaste(): void {
-		const styles = {
-			title: [
-				'color: #9333ea',
-				'font-size: 20px',
-				'font-weight: bold',
-				'text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3)',
-				'padding: 10px',
-			].join(';'),
+    public static warnNotPaste(): void {
+        const styles = {
+            title: [
+                'color: #9333ea',
+                'font-size: 20px',
+                'font-weight: bold',
+                'text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3)',
+                'padding: 10px',
+            ].join(';'),
 
-			subtitle: ['color: #a855f7', 'font-size: 14px', 'font-style: italic', 'padding: 5px'].join(';'),
+            subtitle: ['color: #a855f7', 'font-size: 14px', 'font-style: italic', 'padding: 5px'].join(';'),
 
-			info: ['color: #e9d5ff', 'font-size: 12px', 'padding: 5px'].join(';'),
+            info: ['color: #e9d5ff', 'font-size: 12px', 'padding: 5px'].join(';'),
 
-			warning: ['color: #fbbf24', 'font-weight: bold', 'padding: 5px'].join(';'),
+            warning: ['color: #fbbf24', 'font-weight: bold', 'padding: 5px'].join(';'),
 
-			success: ['color: #34d399', 'font-weight: bold', 'padding: 5px'].join(';'),
-		};
-		const warningInterval = setInterval(() => {
-			console.log('%c⚠️ WARNING! WARNING! WARNING!', styles.warning);
-			console.log('%c⚠️ DO NOT PASTE ANY CODE HERE THAT YOU DO NOT UNDERSTAND!', styles.warning);
-			console.log('%c⚠️ PASTING UNKNOWN CODE CAN COMPROMISE YOUR ACCOUNT AND DATA!', styles.warning);
-			console.log('%c⚠️ WARNING! WARNING! WARNING!', styles.warning);
-		}, 100000);
+            success: ['color: #34d399', 'font-weight: bold', 'padding: 5px'].join(';'),
+        };
+        const warningInterval = setInterval(() => {
+            console.log('%c⚠️ WARNING! WARNING! WARNING!', styles.warning);
+            console.log('%c⚠️ DO NOT PASTE ANY CODE HERE THAT YOU DO NOT UNDERSTAND!', styles.warning);
+            console.log('%c⚠️ PASTING UNKNOWN CODE CAN COMPROMISE YOUR ACCOUNT AND DATA!', styles.warning);
+            console.log('%c⚠️ WARNING! WARNING! WARNING!', styles.warning);
+        }, 100000);
 
-		// Clean up interval when component unmounts
-		window.addEventListener('beforeunload', () => {
-			clearInterval(warningInterval);
-		});
-	}
+        // Clean up interval when component unmounts
+        window.addEventListener('beforeunload', () => {
+            clearInterval(warningInterval);
+        });
+    }
 }
 
 export default MythicalDash;

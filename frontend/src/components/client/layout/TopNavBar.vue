@@ -1,19 +1,22 @@
 <template>
-    <nav class="fixed top-0 left-0 right-0 h-16 bg-gray-900/50 backdrop-blur-xs border-b border-gray-700/50 z-30">
+    <nav class="fixed top-0 left-0 right-0 h-16 bg-[#0a0a0f]/95 backdrop-blur-md border-b border-[#2a2a3f]/30 z-30">
         <div class="h-full px-4 flex items-center justify-between">
             <!-- Left: Logo & Menu Button -->
             <div class="flex items-center gap-3">
-                <button class="lg:hidden p-2 hover:bg-gray-800/50 rounded-lg" @click="$emit('toggle-sidebar')">
+                <button
+                    class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-colors duration-200"
+                    @click="$emit('toggle-sidebar')"
+                >
                     <MenuIcon v-if="!isSidebarOpen" class="w-5 h-5" />
                     <XIcon v-else class="w-5 h-5" />
                 </button>
 
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 flex items-center justify-center">
+                    <div class="w-8 h-8 flex items-center justify-center bg-[#1a1a2e]/30 rounded-lg">
                         <img :src="appLogo" alt="MythicalDash" class="h-6 w-6" />
                     </div>
                     <span
-                        class="text-xl font-bold bg-linear-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent"
+                        class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent"
                     >
                         {{ appName }}
                     </span>
@@ -22,12 +25,14 @@
 
             <!-- Search Bar (Desktop) -->
             <div class="hidden lg:block absolute left-1/2 transform -translate-x-1/2">
-                <div class="relative">
-                    <SearchIcon class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                <div class="relative group">
+                    <SearchIcon
+                        class="absolute left-3 top-2.5 h-5 w-5 text-gray-400 group-hover:text-indigo-400 transition-colors duration-200"
+                    />
                     <input
                         type="text"
                         :placeholder="t('components.search.placeholder')"
-                        class="px-10 py-2 w-64 bg-gray-800/50 border border-gray-700/50 rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-purple-500/50"
+                        class="px-10 py-2 w-72 bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50"
                         @click="$emit('toggle-search')"
                         readonly
                     />
@@ -35,28 +40,48 @@
             </div>
 
             <!-- Search Icon (Mobile) -->
-            <button class="lg:hidden p-2 hover:bg-gray-800/50 rounded-lg" @click="$emit('toggle-search')">
+            <button
+                class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-colors duration-200"
+                @click="$emit('toggle-search')"
+            >
                 <SearchIcon class="w-5 h-5" />
             </button>
 
             <!-- Right: Actions -->
             <div class="flex items-center gap-2">
-                <button @click="$emit('toggle-notifications')" class="p-2 hover:bg-gray-800/50 rounded-lg relative">
+                <button
+                    @click="$emit('toggle-notifications')"
+                    class="p-2 hover:bg-[#1a1a2e]/50 rounded-lg relative transition-colors duration-200"
+                >
                     <BellIcon class="w-5 h-5" />
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-purple-500 rounded-full"></span>
+                    <span
+                        class="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full ring-4 ring-[#0a0a0f]/95"
+                    ></span>
                 </button>
 
-                <button @click="$emit('toggle-profile')" class="lg:hidden p-2 hover:bg-gray-800/50 rounded-lg">
+                <button
+                    @click="$emit('toggle-profile')"
+                    class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-colors duration-200"
+                >
                     <UserIcon class="w-5 h-5" />
                 </button>
 
                 <button
                     @click="$emit('toggle-profile')"
-                    class="hidden lg:flex p-2 hover:bg-gray-800/50 rounded-lg items-center gap-2 relative"
+                    class="hidden lg:flex items-center gap-3 px-3 py-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-colors duration-200"
                 >
-                    <img :src="Session.getInfo('avatar')" alt="Profile" class="w-8 h-8 rounded-full" />
+                    <div class="relative">
+                        <img
+                            :src="Session.getInfo('avatar')"
+                            alt="Profile"
+                            class="w-8 h-8 rounded-lg ring-2 ring-[#2a2a3f]/30"
+                        />
+                        <div
+                            class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-[#0a0a0f]/95"
+                        ></div>
+                    </div>
                     <div class="flex flex-col items-start">
-                        <span class="text-sm text-gray-300">{{ Session.getInfo('username') }}</span>
+                        <span class="text-sm font-medium text-gray-200">{{ Session.getInfo('username') }}</span>
                         <span class="text-xs text-gray-400">{{ role }}</span>
                     </div>
                 </button>
@@ -92,3 +117,22 @@ defineEmits(['toggle-sidebar', 'toggle-search', 'toggle-notifications', 'toggle-
 const appLogo = Settings.getSetting('app_logo');
 const appName = Settings.getSetting('app_name');
 </script>
+
+<style scoped>
+.bg-gradient-to-r {
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+/* Smooth hover transitions */
+.transition-colors {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+}
+
+/* Input focus ring styling */
+input:focus {
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+</style>

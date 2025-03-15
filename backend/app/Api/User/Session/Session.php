@@ -62,6 +62,18 @@ $router->post('/api/user/session/info/update', function (): void {
 });
 
 
+$router->add('/api/user/session/apiKey/reset', function (): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $session = new Session($appInstance);
+	$token = App::getInstance(true)->encrypt(date('Y-m-d H:i:s') . $_COOKIE['token'] . random_bytes(16) . base64_encode($appInstance->generateCode()));
+    $session->setInfo(UserColumns::ACCOUNT_TOKEN, $token, false);
+	
+    setcookie('user_token', $token, time() + (86400 * 30), "/");
+	$appInstance->OK('API KEY Reset!', ['api_key' => $token]);
+});
+
 $router->add('/api/user/session/newPin', function (): void {
     App::init();
     $appInstance = App::getInstance(true);

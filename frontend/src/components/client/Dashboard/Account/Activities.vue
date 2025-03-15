@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onErrorCaptured } from 'vue';
 import { format } from 'date-fns';
-import LayoutAccount from './Layout.vue';
 import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
 import Activities from '@/mythicaldash/Activities';
 import { useI18n } from 'vue-i18n';
@@ -62,8 +61,6 @@ const columnsActivities = [
 </script>
 
 <template>
-    <LayoutAccount />
-
     <div>
         <div v-if="loading" class="text-center py-4">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>

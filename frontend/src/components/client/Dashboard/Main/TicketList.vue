@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
 import Tickets from '@/mythicaldash/Tickets';
+import Button from '@/components/client/ui/Button.vue';
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -14,6 +15,13 @@ const { t } = useI18n();
 const recentTickets = ref<Ticket[]>([]);
 
 import { format } from 'date-fns';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const goToTicketList = () => {
+    router.push('/ticket');
+};
 
 const fetchRecentTickets = async () => {
     try {
@@ -49,11 +57,11 @@ onMounted(fetchRecentTickets);
             <div
                 v-for="ticket in recentTickets"
                 :key="ticket.id"
-                class="flex items-center justify-between py-2 border-b border-purple-700 last:border-0"
+                class="flex items-center justify-between py-2 border-b border-blue-700 last:border-0"
             >
                 <div>
                     <div class="font-medium text-white">{{ ticket.title }}</div>
-                    <div class="text-sm text-purple-500">{{ ticket.date }}</div>
+                    <div class="text-sm text-blue-500">{{ ticket.date }}</div>
                 </div>
                 <span
                     :class="[
@@ -67,7 +75,7 @@ onMounted(fetchRecentTickets);
                                 : ticket.status === t('Components.Tickets.status.Replied')
                                   ? 'bg-blue-500/20 text-blue-400'
                                   : ticket.status === t('Components.Tickets.status.InProgress')
-                                    ? 'bg-purple-500/20 text-purple-400'
+                                    ? 'bg-blue-500/20 text-blue-400'
                                     : '',
                     ]"
                 >
@@ -75,11 +83,8 @@ onMounted(fetchRecentTickets);
                 </span>
             </div>
         </div>
-        <RouterLink
-            to="/ticket"
-            class="mt-4 block w-full px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-sm transition-colors text-center text-sm"
-        >
+        <Button @click="goToTicketList" class="mt-4 block w-full px-4 py-2">
             {{ t('Components.Tickets.viewMore') }}
-        </RouterLink>
+        </Button>
     </CardComponent>
 </template>

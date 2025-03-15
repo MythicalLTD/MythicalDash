@@ -356,6 +356,10 @@ const validateFiles = (files: File[]): boolean => {
 
     return true;
 };
+
+const goBackToTicketList = () => {
+    router.push('/ticket');
+};
 </script>
 
 <style scoped>
@@ -376,17 +380,11 @@ const validateFiles = (files: File[]): boolean => {
             <div class="max-w-6xl mx-auto p-6">
                 <div class="flex justify-between items-center">
                     <h1 class="text-2xl font-semibold text-gray-100">{{ t('tickets.pages.ticket.title') }}</h1>
-                    <router-link to="/ticket">
-                        <button
-                            class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors duration-200"
-                        >
-                            Back
-                        </button>
-                    </router-link>
+                    <Button @click="goBackToTicketList"> ↪ Go back </Button>
                 </div>
                 <br />
                 <h2 class="text-xl font-semibold flex items-center gap-2">
-                    <MessagesSquareIcon class="w-5 h-5 text-purple-400" />
+                    <MessagesSquareIcon class="w-5 h-5 text-blue-400" />
                     {{ t('tickets.pages.ticket.subTitle') }}
                 </h2>
                 <!-- Ticket Header -->
@@ -398,22 +396,22 @@ const validateFiles = (files: File[]): boolean => {
                                 :class="[
                                     'px-3 py-1 rounded-full text-sm font-medium',
                                     {
-                                        'bg-blue-500/20 text-blue-400': ticket.status === 'inprogress',
+                                        'bg-purple-500/20 text-purple-400': ticket.status === 'inprogress',
                                         'bg-red-500/20 text-red-400': ticket.status === 'closed',
                                         'bg-green-500/20 text-green-400': ticket.status === 'open',
                                         'bg-yellow-500/20 text-yellow-400': ticket.status === 'waiting',
-                                        'bg-purple-500/20 text-purple-400': ticket.status === 'replied',
+                                        'bg-blue-500/20 text-blue-400': ticket.status === 'replied',
                                     },
                                 ]"
                             >
                                 <span
                                     class="inline-block w-2 h-2 rounded-full mr-2"
                                     :class="{
-                                        'bg-blue-400': ticket.status === 'inprogress',
+                                        'bg-purple-400': ticket.status === 'inprogress',
                                         'bg-red-400': ticket.status === 'closed',
                                         'bg-green-400': ticket.status === 'open',
                                         'bg-yellow-400': ticket.status === 'waiting',
-                                        'bg-purple-400': ticket.status === 'replied',
+                                        'bg-blue-400': ticket.status === 'replied',
                                     }"
                                 ></span>
                                 {{
@@ -445,7 +443,7 @@ const validateFiles = (files: File[]): boolean => {
 
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div class="flex items-start gap-3">
-                            <UserIcon class="w-5 h-5 text-purple-400 mt-1" />
+                            <UserIcon class="w-5 h-5 text-blue-400 mt-1" />
                             <div>
                                 <p class="text-sm text-gray-400">Created by</p>
                                 <div class="flex items-center mt-1">
@@ -463,7 +461,7 @@ const validateFiles = (files: File[]): boolean => {
                         </div>
 
                         <div class="flex items-start gap-3">
-                            <BuildingIcon class="w-5 h-5 text-purple-400 mt-1" />
+                            <BuildingIcon class="w-5 h-5 text-blue-400 mt-1" />
                             <div>
                                 <p class="text-sm text-gray-400">Department</p>
                                 <p class="font-medium mt-1">{{ ticket.department.name }}</p>
@@ -471,7 +469,7 @@ const validateFiles = (files: File[]): boolean => {
                         </div>
 
                         <div class="flex items-start gap-3">
-                            <AlertTriangleIcon class="w-5 h-5 text-purple-400 mt-1" />
+                            <AlertTriangleIcon class="w-5 h-5 text-blue-400 mt-1" />
                             <div>
                                 <p class="text-sm text-gray-400">Priority</p>
                                 <p
@@ -496,7 +494,7 @@ const validateFiles = (files: File[]): boolean => {
                         </div>
 
                         <div class="flex items-start gap-3">
-                            <ClockIcon class="w-5 h-5 text-purple-400 mt-1" />
+                            <ClockIcon class="w-5 h-5 text-blue-400 mt-1" />
                             <div>
                                 <p class="text-sm text-gray-400">Created</p>
                                 <p class="font-medium mt-1">{{ formatDate(ticket.date) }}</p>
@@ -506,7 +504,7 @@ const validateFiles = (files: File[]): boolean => {
 
                     <div class="border-t border-gray-700 pt-6">
                         <h2 class="text-lg font-semibold mb-2 flex items-center gap-2">
-                            <FileTextIcon class="w-5 h-5 text-purple-400" />
+                            <FileTextIcon class="w-5 h-5 text-blue-400" />
                             Description
                         </h2>
                         <p class="text-gray-300 whitespace-pre-wrap">{{ ticket.description }}</p>
@@ -514,7 +512,7 @@ const validateFiles = (files: File[]): boolean => {
                     <br />
                     <div v-if="attachments.length > 0">
                         <h2 class="text-lg font-semibold mb-2 flex items-center gap-2">
-                            <FileTextIcon class="w-5 h-5 text-purple-400" />
+                            <FileTextIcon class="w-5 h-5 text-blue-400" />
                             Attachments
                         </h2>
                         <div v-for="attachment in attachments" :key="attachment.id" class="flex items-center gap-2">
@@ -531,7 +529,7 @@ const validateFiles = (files: File[]): boolean => {
                 <!-- Messages -->
                 <div class="space-y-6">
                     <h2 class="text-xl font-semibold flex items-center gap-2">
-                        <MessagesSquareIcon class="w-5 h-5 text-purple-400" />
+                        <MessagesSquareIcon class="w-5 h-5 text-blue-400" />
                         Messages
                     </h2>
 
@@ -558,14 +556,14 @@ const validateFiles = (files: File[]): boolean => {
                     </TransitionGroup>
 
                     <h2 class="text-xl font-semibold flex items-center gap-2">
-                        <MessagesSquareIcon class="w-5 h-5 text-purple-400" />
+                        <MessagesSquareIcon class="w-5 h-5 text-blue-400" />
                         Response
                     </h2>
 
                     <!-- Reply Form -->
                     <CardComponent class="rounded-lg p-6" v-if="ticket.status !== 'closed'">
                         <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                            <ReplyIcon class="w-5 h-5 text-purple-400" />
+                            <ReplyIcon class="w-5 h-5 text-blue-400" />
                             Reply to Ticket
                         </h3>
 
@@ -576,7 +574,7 @@ const validateFiles = (files: File[]): boolean => {
 
                         <form @submit.prevent="submitReply" class="space-y-4">
                             <div>
-                                <TextArea v-model="newReply" rows="4" placeholder="Type your reply here..."></TextArea>
+                                <TextArea v-model="newReply" :rows="4" placeholder="Type your reply here..."></TextArea>
                             </div>
 
                             <div class="mb-4">

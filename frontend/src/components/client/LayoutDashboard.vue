@@ -164,11 +164,12 @@ onMounted(async () => {
 });
 </script>
 <template>
-    <div class="min-h-screen bg-[#0a0a1f] relative overflow-hidden">
+    <div class="min-h-screen bg-[#030305] relative overflow-hidden">
         <!-- Background elements -->
-        <div class="absolute inset-0 bg-linear-to-b from-[#0a0a1f] via-[#1a0b2e] to-[#0a0a1f]">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#030305] via-[#0a0a15] to-[#030305]">
             <div class="stars"></div>
-            <div class="mountains"></div>
+            <div class="grid-overlay"></div>
+            <div class="glow-effects"></div>
         </div>
 
         <!-- Content wrapper -->
@@ -179,7 +180,7 @@ onMounted(async () => {
                 <!-- Backdrop for mobile sidebar -->
                 <div
                     v-if="isSidebarOpen"
-                    class="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 lg:hidden"
+                    class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 lg:hidden"
                     @click="closeSidebar"
                 ></div>
 
@@ -189,13 +190,13 @@ onMounted(async () => {
                     @toggle-search="toggleSearch"
                     @toggle-notifications="toggleNotifications"
                     @toggle-profile="toggleProfile"
-                    class="bg-[#0a0a1f]/80 backdrop-blur-xs border-b border-purple-900/50"
+                    class="bg-[#050508]/90 backdrop-blur-md border-b border-[#1a1a2f]/30"
                 />
 
                 <!-- Sidebar with updated styling -->
                 <Sidebar
                     :isSidebarOpen="isSidebarOpen"
-                    class="bg-[#0a0a1f]/90 backdrop-blur-md border-r border-purple-900/50"
+                    class="bg-[#050508]/95 backdrop-blur-md border-r border-[#1a1a2f]/30"
                 />
 
                 <!-- Main Content -->
@@ -210,12 +211,12 @@ onMounted(async () => {
                     :isSearchOpen="isSearchOpen"
                     @close="closeSearch"
                     @navigate="navigateToResult"
-                    class="bg-[#0a0a1f]/95 backdrop-blur-lg"
+                    class="bg-[#050508]/95 backdrop-blur-lg border border-[#1a1a2f]/30"
                 />
 
                 <NotificationsDropdown
                     :isOpen="isNotificationsOpen"
-                    class="bg-[#0a0a1f]/95 backdrop-blur-lg border border-purple-900/50"
+                    class="bg-[#050508]/95 backdrop-blur-lg border border-[#1a1a2f]/30"
                 />
 
                 <ProfileDropdown
@@ -233,12 +234,12 @@ onMounted(async () => {
                         email: userInfo.email || '',
                         avatar: userInfo.avatar || '',
                     }"
-                    class="bg-[#0a0a1f]/95 backdrop-blur-lg border border-purple-900/50"
+                    class="bg-[#050508]/95 backdrop-blur-lg border border-[#1a1a2f]/30"
                 />
 
                 <!-- Footer -->
-                <footer v-if="showFooter" class="relative z-10 py-4 px-6 text-center text-sm text-gray-400">
-                    <a href="https://mythical.systems" class="hover:text-purple-400 transition-colors">
+                <footer v-if="showFooter" class="relative z-10 py-4 px-6 text-center text-sm text-gray-500">
+                    <a href="https://mythical.systems" class="hover:text-indigo-400 transition-colors">
                         MythicalSystems
                     </a>
                     <p>LTD 2020 - {{ new Date().getFullYear() }}</p>
@@ -252,37 +253,52 @@ onMounted(async () => {
 .stars {
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(2px 2px at calc(random() * 100%) calc(random() * 100%), white, transparent);
-    background-size: 200px 200px;
-    animation: twinkle 8s infinite;
+    background-image:
+        radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 70%, rgba(255, 255, 255, 0.15) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 40%, rgba(255, 255, 255, 0.2) 0%, transparent 100%),
+        radial-gradient(2px 2px at 80% 10%, rgba(255, 255, 255, 0.15) 0%, transparent 100%);
+    background-size:
+        250px 250px,
+        200px 200px,
+        300px 300px,
+        350px 350px;
+    animation: twinkle 10s infinite;
 }
 
-.mountains {
+.grid-overlay {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 30vh;
+    inset: 0;
     background-image:
-        linear-gradient(170deg, transparent 0%, #0a0a1f 80%), linear-gradient(150deg, #1a0b2e 0%, transparent 100%);
-    clip-path: polygon(0 100%, 20% 65%, 40% 90%, 60% 60%, 80% 85%, 100% 50%, 100% 100%);
+        linear-gradient(to right, rgba(42, 42, 63, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(42, 42, 63, 0.07) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.4));
+}
+
+.glow-effects {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.03) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 @keyframes twinkle {
     0%,
     100% {
-        opacity: 0.8;
+        opacity: 0.3;
     }
-
     50% {
-        opacity: 0.4;
+        opacity: 0.5;
     }
 }
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
-    .mountains {
-        height: 20vh;
+    .grid-overlay {
+        background-size: 30px 30px;
     }
 }
 </style>

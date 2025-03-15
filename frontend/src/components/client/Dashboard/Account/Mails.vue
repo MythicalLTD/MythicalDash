@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import LayoutAccount from './Layout.vue';
 import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
 import Mails from '@/mythicaldash/Mails';
 import { format } from 'date-fns';
@@ -77,8 +76,6 @@ const columnsEmails = [
 ];
 </script>
 <template>
-    <LayoutAccount />
-
     <div>
         <div v-if="loading" class="text-center py-4">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
@@ -107,5 +104,44 @@ const columnsEmails = [
     /* IE and Edge */
     scrollbar-width: none;
     /* Firefox */
+}
+
+/* Animation for loading skeleton */
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Staggered animation delay for loading items */
+.animate-pulse:nth-child(1) {
+    animation-delay: 0s;
+}
+.animate-pulse:nth-child(2) {
+    animation-delay: 0.1s;
+}
+.animate-pulse:nth-child(3) {
+    animation-delay: 0.2s;
+}
+.animate-pulse:nth-child(4) {
+    animation-delay: 0.3s;
+}
+.animate-pulse:nth-child(5) {
+    animation-delay: 0.4s;
+}
+
+/* Smooth transitions */
+.transition-colors {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
 }
 </style>
