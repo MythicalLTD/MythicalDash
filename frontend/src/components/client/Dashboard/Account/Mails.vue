@@ -5,6 +5,8 @@ import { format } from 'date-fns';
 import { h, onErrorCaptured, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
+import LoadingAnimation from '@/components/client/ui/LoadingAnimation.vue';
+import { Mail, Download } from 'lucide-vue-next';
 
 const { t } = useI18n();
 MythicalDOM.setPageTitle(t('account.pages.emails.page.title'));
@@ -15,6 +17,7 @@ interface Email {
     from: string;
     date: string;
 }
+
 const emails = ref<Email[]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
@@ -23,7 +26,6 @@ const fetchMails = async () => {
     try {
         const response = await Mails.get();
         emails.value = response;
-        console.log(response);
     } catch (err) {
         error.value = err instanceof Error ? err.message : 'An unknown error occurred';
     } finally {
@@ -65,29 +67,76 @@ const columnsEmails = [
             h(
                 'button',
                 {
-                    class: 'px-4 py-2 bg-blue-500 text-white rounded-sm hover:bg-blue-600',
+                    class: 'inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-all duration-200 shadow-sm shadow-indigo-900/20 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-500/50 focus:ring-offset-[#12121f]',
                     target: '_blank',
                     rel: 'noopener noreferrer',
                     onClick: () => (window.location.href = `/api/user/session/emails/${row.original.id}/raw`),
                 },
-                t('account.pages.emails.page.table.results.viewButton'),
+                [h(Download, { class: 'h-4 w-4' }), t('account.pages.emails.page.table.results.viewButton')],
             ),
     },
 ];
 </script>
+
 <template>
-    <div>
-        <div v-if="loading" class="text-center py-4">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
-            <p class="mt-2">Loading emails...</p>
+    <div class="space-y-6">
+        <!-- Header -->
+        <div>
+            <h2 class="text-xl font-bold text-gray-100 mb-2">{{ t('account.pages.emails.page.title') }}</h2>
+            <p class="text-gray-400">{{ t('account.pages.emails.page.description') }}</p>
         </div>
 
-        <div v-else-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-sm" role="alert">
-            <p>{{ error }}</p>
+        <!-- Loading State -->
+        <LoadingAnimation
+            v-if="loading"
+            loadingText="Loading Emails"
+            description="Please wait while we fetch your email history"
+        />
+
+        <!-- Error State -->
+        <div
+            v-else-if="error"
+            class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-start gap-3"
+        >
+            <div class="p-2 rounded-lg bg-red-500/10">
+                <svg
+                    class="h-5 w-5 text-red-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clip-rule="evenodd"
+                    />
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-sm font-medium text-red-400">Error Loading Emails</h3>
+                <p class="mt-1 text-sm text-gray-400">{{ error }}</p>
+            </div>
         </div>
 
+        <!-- Empty State -->
+        <div
+            v-else-if="emails.length === 0"
+            class="bg-[#1a1a2e]/50 border border-[#2a2a3f]/30 rounded-lg p-8 text-center"
+        >
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-500/10 flex items-center justify-center">
+                <Mail class="h-8 w-8 text-indigo-400" />
+            </div>
+            <h3 class="text-lg font-medium text-gray-200 mb-1">No Emails Found</h3>
+            <p class="text-sm text-gray-400">You haven't received any emails yet</p>
+        </div>
+
+        <!-- Email Table -->
         <div v-else class="overflow-x-auto">
-            <TableTanstack :data="emails" :columns="columnsEmails" :tableName="t('account.pages.emails.page.title')" />
+            <TableTanstack
+                :data="emails"
+                :columns="columnsEmails"
+                :tableName="t('account.pages.emails.page.title')"
+            />
         </div>
     </div>
 </template>
@@ -101,46 +150,12 @@ const columnsEmails = [
 /* Hide scrollbar for IE, Edge and Firefox */
 .overflow-x-auto {
     -ms-overflow-style: none;
-    /* IE and Edge */
     scrollbar-width: none;
-    /* Firefox */
-}
-
-/* Animation for loading skeleton */
-@keyframes pulse {
-    0%,
-    100% {
-        opacity: 0.5;
-    }
-    50% {
-        opacity: 0.8;
-    }
-}
-
-.animate-pulse {
-    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Staggered animation delay for loading items */
-.animate-pulse:nth-child(1) {
-    animation-delay: 0s;
-}
-.animate-pulse:nth-child(2) {
-    animation-delay: 0.1s;
-}
-.animate-pulse:nth-child(3) {
-    animation-delay: 0.2s;
-}
-.animate-pulse:nth-child(4) {
-    animation-delay: 0.3s;
-}
-.animate-pulse:nth-child(5) {
-    animation-delay: 0.4s;
 }
 
 /* Smooth transitions */
-.transition-colors {
-    transition-property: background-color, border-color, color, fill, stroke;
+.transition-all {
+    transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 200ms;
 }

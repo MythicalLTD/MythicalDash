@@ -43,14 +43,14 @@
                 <div
                     class="text-center p-2 rounded-lg hover:bg-[#2a2a3f]/30 transition-colors duration-200 cursor-pointer"
                 >
-                    <p class="text-lg font-semibold text-indigo-400">{{ stats.services }}</p>
-                    <p class="text-xs text-gray-400">{{ $t('components.profile.services') }}</p>
+                    <p class="text-lg font-semibold text-indigo-400">{{ stats.coins }}</p>
+                    <p class="text-xs text-gray-400">{{ $t('components.profile.coins') }}</p>
                 </div>
                 <div
                     class="text-center p-2 rounded-lg hover:bg-[#2a2a3f]/30 transition-colors duration-200 cursor-pointer"
                 >
-                    <p class="text-lg font-semibold text-indigo-400">{{ stats.invoices }}</p>
-                    <p class="text-xs text-gray-400">{{ $t('components.profile.invoices') }}</p>
+                    <p class="text-lg font-semibold text-indigo-400">{{ stats.servers }}</p>
+                    <p class="text-xs text-gray-400">{{ $t('components.profile.servers') }}</p>
                 </div>
             </div>
 
@@ -74,7 +74,7 @@
                 </RouterLink>
 
                 <!-- Logout Button -->
-                <Button
+                <button
                     @click="handleLogout"
                     class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-red-500/10 text-gray-300 hover:text-red-400 transition-colors duration-200 group mt-2"
                 >
@@ -86,12 +86,12 @@
                         />
                     </div>
                     <span class="text-sm">{{ $t('components.profile.logout') }}</span>
-                </Button>
+                </button>
             </div>
 
             <!-- Footer -->
             <div class="p-3 bg-[#1a1a2e]/30 text-center text-xs text-gray-500">
-                <p>Pterodactyl Client Area</p>
+                <p>Made with ❤️ by <a href="https://mythical.systems" target="_blank" class="text-indigo-400">MythicalSystems</a></p>
             </div>
         </div>
     </Transition>
@@ -116,24 +116,22 @@ interface Props {
     };
     stats: {
         tickets: string;
-        services: string;
-        invoices: string;
+        coins: string;
+        servers: string;
     };
 }
 withDefaults(defineProps<Props>(), {
     stats: () => ({
         tickets: '0',
-        services: '0',
-        invoices: '0',
+        coins: '0',
+        servers: '0',
     }),
 });
 
-const emit = defineEmits<{
-    (e: 'logout'): void;
-}>();
+
 
 const handleLogout = () => {
-    emit('logout');
+	location.href = "/api/user/auth/logout";
 };
 </script>
 

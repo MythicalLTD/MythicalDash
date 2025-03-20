@@ -1,0 +1,171 @@
+<?php
+
+namespace MythicalDash\Services\Pterodactyl\Client\Resources;
+
+use GuzzleHttp\Exception\ClientException;
+use MythicalDash\Services\Pterodactyl\Client\PterodactylClient;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
+use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
+use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
+use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+
+class SSHKeyResource extends PterodactylClient
+{
+    /**
+     * List all SSH keys
+     *
+     * @return array
+     * @throws AuthenticationException
+     * @throws PermissionException
+     * @throws RateLimitException
+     */
+    public function listKeys(): array
+    {
+        try {
+            return $this->request('GET', '/api/client/account/ssh-keys');
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode === 401) {
+                throw AuthenticationException::invalidCredentials();
+            }
+
+            if ($statusCode === 403) {
+                throw PermissionException::missingPermission('view_ssh_keys');
+            }
+
+            if ($statusCode === 429) {
+                $retryAfter = (int) $response->getHeaderLine('Retry-After');
+                throw RateLimitException::withRetryAfter($retryAfter);
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Get a specific SSH key
+     *
+     * @param string $keyId
+     * @return array
+     * @throws AuthenticationException
+     * @throws PermissionException
+     * @throws ResourceNotFoundException
+     * @throws RateLimitException
+     */
+    public function getKey(string $keyId): array
+    {
+        try {
+            return $this->request('GET', "/api/client/account/ssh-keys/{$keyId}");
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode === 401) {
+                throw AuthenticationException::invalidCredentials();
+            }
+
+            if ($statusCode === 403) {
+                throw PermissionException::missingPermission('view_ssh_keys');
+            }
+
+            if ($statusCode === 404) {
+                throw ResourceNotFoundException::forResource('SSH key', $keyId);
+            }
+
+            if ($statusCode === 429) {
+                $retryAfter = (int) $response->getHeaderLine('Retry-After');
+                throw RateLimitException::withRetryAfter($retryAfter);
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Create a new SSH key
+     *
+     * @param string $name
+     * @param string $publicKey
+     * @return array
+     * @throws AuthenticationException
+     * @throws PermissionException
+     * @throws ValidationException
+     * @throws RateLimitException
+     */
+    public function createKey(string $name, string $publicKey): array
+    {
+        try {
+            return $this->request('POST', '/api/client/account/ssh-keys', [
+                'json' => [
+                    'name' => $name,
+                    'public_key' => $publicKey,
+                ],
+            ]);
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode === 401) {
+                throw AuthenticationException::invalidCredentials();
+            }
+
+            if ($statusCode === 403) {
+                throw PermissionException::missingPermission('create_ssh_key');
+            }
+
+            if ($statusCode === 422) {
+                $errors = json_decode($response->getBody()->getContents(), true);
+                throw ValidationException::withErrors($errors['errors'] ?? []);
+            }
+
+            if ($statusCode === 429) {
+                $retryAfter = (int) $response->getHeaderLine('Retry-After');
+                throw RateLimitException::withRetryAfter($retryAfter);
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Delete an SSH key
+     *
+     * @param string $keyId
+     * @return array
+     * @throws AuthenticationException
+     * @throws PermissionException
+     * @throws ResourceNotFoundException
+     * @throws RateLimitException
+     */
+    public function deleteKey(string $keyId): array
+    {
+        try {
+            return $this->request('DELETE', "/api/client/account/ssh-keys/{$keyId}");
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode === 401) {
+                throw AuthenticationException::invalidCredentials();
+            }
+
+            if ($statusCode === 403) {
+                throw PermissionException::missingPermission('delete_ssh_key');
+            }
+
+            if ($statusCode === 404) {
+                throw ResourceNotFoundException::forResource('SSH key', $keyId);
+            }
+
+            if ($statusCode === 429) {
+                $retryAfter = (int) $response->getHeaderLine('Retry-After');
+                throw RateLimitException::withRetryAfter($retryAfter);
+            }
+
+            throw $e;
+        }
+    }
+} 

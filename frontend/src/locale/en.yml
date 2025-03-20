@@ -303,8 +303,11 @@ account:
                     footer: Please contact support for assistance
             page:
                 title: Account
-                subTitle: Manage your account settings
+                subTitle: Manage your personal information and account preferences
                 form:
+                    profile:
+                        title: Profile Information
+                        subTitle: Update your account's profile information
                     email:
                         label: Email
                     firstName:
@@ -318,17 +321,23 @@ account:
                     update_button:
                         label: Save Changes
                         reset: Reset
+                        loading: Saving...
+                    browserStorage:
+                        title: Browser Storage
+                        subTitle: Manage local browser storage and cached data
+                        currentStorageUsage: 'Current Storage Usage'
+                        clearAllBrowserData: 'Clear All Browser Data'
+                        totalBrowserStorage: 'Total browser storage used by this application'
+                        browserStorageDescription: 'Browser storage includes cookies, local storage, and session data and the offline copy of the application.'
+                        clearAllBrowserDataButton: Clear All Browser Data
+                        clearAllBrowserDataDescription: This will clear all locally stored data including preferences and cached information. This action cannot be undone.
                 delete:
                     title: 'Deactivate Account'
-                    subTitle: 'Once you deactivate your account, there is no going back. Please be certain.'
-                    # You can not add more than 3 lines!
-                    lines:
-                        - 'Once you deactivate your account, there is no going back. Please be certain.'
-                        - 'Once you delete your account, there is a 30 days window for you to contact support to recover your account. After 30 days, your account will be permanently disabled.'
-                        - 'This means that your account will be marked as deleted BUT we reserve the right to keep all the data for legal reasons. You may open a ticket for your data to be anonymized due to GDPR!'
-                    button:
-                        label: Deactivate Account
-                        loading: Deactivating...
+                    description: 'Once you deactivate your account, there is no going back. Please be certain.'
+                    button: 'Deactivate Account'
+                    warning:
+                        title: 'Warning'
+                        description: "Don't be an idiot, you can't undo this action, like really once you press this button, there is no more confirmation it will straight up delete your account. So be sure you want to do this."
                 clear:
                     title: Application Data
                     subTitle: Manage and clear application data incase you see outdated data.
@@ -527,6 +536,8 @@ components:
             unpaid_invoices: 'Unpaid Invoices'
             tickets: 'Tickets'
             orders: 'Orders'
+            coins: 'Coins'
+            servers: 'Servers'
         billing:
             title: 'Billing Summary'
             current_balance: 'Current Balance'
@@ -535,8 +546,8 @@ components:
             add_funds: 'Add Funds'
     profile:
         tickets: 'Tickets'
-        services: 'Services'
-        invoices: 'Invoices'
+        coins: 'Coins'
+        servers: 'Servers'
         logout: 'Logout'
         update: 'Update'
     loading:

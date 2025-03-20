@@ -12,6 +12,8 @@ import Session from '@/mythicaldash/Session';
 import StorageMonitor from '@/mythicaldash/StorageMonitor';
 import MythicalDash from '@/mythicaldash/MythicalDash';
 import { LicenseServer } from '@/mythicaldash/LicenseServer';
+import ReloadAnimation from '@/components/client/ui/ReloadAnimation.vue';
+
 MythicalDash.download();
 
 new StorageMonitor();
@@ -32,6 +34,7 @@ const loading = ref(true);
 const isSidebarOpen = ref(false);
 const isSearchOpen = ref(false);
 const isNotificationsOpen = ref(false);
+const isReloading = ref(false);
 const isProfileOpen = ref(false);
 
 // Toggle functions
@@ -83,7 +86,12 @@ const handleClickOutside = (event: MouseEvent) => {
     }
 };
 
-const handleKeydown = (event: KeyboardEvent) => {
+const handleKeydown = async (event: KeyboardEvent) => {
+	if (event.key === 'F5' || (event.ctrlKey && event.key === 'r')) {
+        event.preventDefault();
+        await reloadUserData();
+        return;
+    }
     if (event.ctrlKey && event.key === 'S') {
         event.preventDefault();
         toggleSearch();
@@ -162,8 +170,31 @@ onMounted(async () => {
         showFooter.value = true;
     }
 });
+
+const reloadUserData = async () => {
+    isReloading.value = true;
+
+    try {
+        console.log('Reloading user data...');
+
+        await Session.cleanup();
+        await Session.startSession();
+
+        setTimeout(() => {
+            isReloading.value = false;
+        }, 3500);
+
+        router.go(0);
+
+        console.log('User data reloaded successfully');
+    } catch (error) {
+        console.error('Failed to reload user data:', error);
+        isReloading.value = false;
+    }
+};
 </script>
 <template>
+    <ReloadAnimation :isReloading="isReloading" />
     <div class="min-h-screen bg-[#030305] relative overflow-hidden">
         <!-- Background elements -->
         <div class="absolute inset-0 bg-gradient-to-b from-[#030305] via-[#0a0a15] to-[#030305]">
@@ -224,8 +255,8 @@ onMounted(async () => {
                     :profileMenu="profileMenu"
                     :stats="{
                         tickets: Session.getInfo('tickets'),
-                        services: Session.getInfo('services'),
-                        invoices: Session.getInfo('invoices_pending'),
+                        coins: Session.getInfo('credits'),
+                        servers: '0',
                     }"
                     :userInfo="{
                         firstName: userInfo.firstName || '',

@@ -5,6 +5,8 @@ import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
 import Activities from '@/mythicaldash/Activities';
 import { useI18n } from 'vue-i18n';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
+import LoadingAnimation from '@/components/client/ui/LoadingAnimation.vue';
+import { Activity, AlertCircle } from 'lucide-vue-next';
 
 const { t } = useI18n();
 MythicalDOM.setPageTitle(t('account.pages.activity.page.title'));
@@ -54,23 +56,53 @@ const columnsActivities = [
     {
         accessorKey: 'date',
         header: t('account.pages.activity.page.table.columns.date'),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        cell: (info: any) => format(new Date(info.getValue()), 'MMM d, yyyy HH:mm'),
+        cell: (info: { getValue: () => string | number | Date }) => format(new Date(info.getValue()), 'MMM d, yyyy HH:mm'),
     },
 ];
 </script>
 
 <template>
-    <div>
-        <div v-if="loading" class="text-center py-4">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
-            <p class="mt-2">Loading activities...</p>
+    <div class="space-y-6">
+        <!-- Header -->
+        <div>
+            <h2 class="text-xl font-bold text-gray-100 mb-2">{{ t('account.pages.activity.page.title') }}</h2>
+            <p class="text-gray-400">{{ t('account.pages.activity.page.description') }}</p>
         </div>
 
-        <div v-else-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-sm" role="alert">
-            <p>{{ error }}</p>
+        <!-- Loading State -->
+        <LoadingAnimation
+            v-if="loading"
+            loadingText="Loading Activities"
+            description="Please wait while we fetch your activity history"
+        />
+
+        <!-- Error State -->
+        <div
+            v-else-if="error"
+            class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-start gap-3"
+        >
+            <div class="p-2 rounded-lg bg-red-500/10">
+                <AlertCircle class="h-5 w-5 text-red-400" />
+            </div>
+            <div>
+                <h3 class="text-sm font-medium text-red-400">Error Loading Activities</h3>
+                <p class="mt-1 text-sm text-gray-400">{{ error }}</p>
+            </div>
         </div>
 
+        <!-- Empty State -->
+        <div
+            v-else-if="activities.length === 0"
+            class="bg-[#1a1a2e]/50 border border-[#2a2a3f]/30 rounded-lg p-8 text-center"
+        >
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-500/10 flex items-center justify-center">
+                <Activity class="h-8 w-8 text-indigo-400" />
+            </div>
+            <h3 class="text-lg font-medium text-gray-200 mb-1">No Activities Found</h3>
+            <p class="text-sm text-gray-400">Your activity history will appear here</p>
+        </div>
+
+        <!-- Activities Table -->
         <div v-else class="overflow-x-auto">
             <TableTanstack
                 :data="activities"
@@ -82,12 +114,21 @@ const columnsActivities = [
 </template>
 
 <style scoped>
+/* Hide scrollbar for Chrome, Safari and Opera */
 .overflow-x-auto::-webkit-scrollbar {
     display: none;
 }
 
+/* Hide scrollbar for IE, Edge and Firefox */
 .overflow-x-auto {
     -ms-overflow-style: none;
     scrollbar-width: none;
+}
+
+/* Smooth transitions */
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
 }
 </style>

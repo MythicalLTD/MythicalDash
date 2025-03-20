@@ -23,13 +23,11 @@ use MythicalDash\Hooks\MythicalAPP;
 use RateLimit\Exception\LimitExceeded;
 use MythicalDash\Config\ConfigFactory;
 use MythicalDash\Logger\LoggerFactory;
-use MythicalDash\Hooks\LicenseValidator;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 
 class App extends MythicalAPP
 {
     public static App $instance;
-    public LicenseValidator $licenseValidator;
     public Database $db;
 
     public function __construct(bool $softBoot)
@@ -124,11 +122,6 @@ class App extends MythicalAPP
             self::init();
             self::InternalServerError($e->getMessage(), null);
         }
-    }
-
-    public function getLicenseValidator(): LicenseValidator
-    {
-        return $this->licenseValidator;
     }
 
     /**

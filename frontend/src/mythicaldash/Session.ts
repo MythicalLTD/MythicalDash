@@ -108,21 +108,25 @@ class Session {
         // Update memory cache
         this.sessionData = {
             ...this.sessionData,
-            ...user_info,
-            ...billing,
-            ...stats,
+            ...(stats || {}),
         };
 
-        // Update localStorage
-        Object.entries(user_info).forEach(([key, value]) => {
-            localStorage.setItem(key, JSON.stringify(value));
-        });
-        Object.entries(billing).forEach(([key, value]) => {
-            localStorage.setItem(key, JSON.stringify(value));
-        });
-        Object.entries(stats).forEach(([key, value]) => {
-            localStorage.setItem(key, JSON.stringify(value));
-        });
+        // Update localStorage with null checks
+        if (user_info && typeof user_info === 'object') {
+            Object.entries(user_info).forEach(([key, value]) => {
+                localStorage.setItem(key, JSON.stringify(value));
+            });
+        }
+        if (billing && typeof billing === 'object') {
+            Object.entries(billing).forEach(([key, value]) => {
+                localStorage.setItem(key, JSON.stringify(value));
+            });
+        }
+        if (stats && typeof stats === 'object') {
+            Object.entries(stats).forEach(([key, value]) => {
+                localStorage.setItem(key, JSON.stringify(value));
+            });
+        }
     }
 
     /**

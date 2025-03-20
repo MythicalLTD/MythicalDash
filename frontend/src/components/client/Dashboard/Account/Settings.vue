@@ -249,8 +249,8 @@ const previewBackground = computed(() => {
     <div>
         <!-- Title and Description -->
         <div class="mb-6">
-            <h2 class="text-xl font-semibold text-gray-100 mb-2">Account Settings</h2>
-            <p class="text-gray-400 text-sm">Manage your personal information and account preferences</p>
+            <h2 class="text-xl font-semibold text-gray-100 mb-2">{{ $t('account.pages.settings.page.title') }}</h2>
+            <p class="text-gray-400 text-sm">{{ $t('account.pages.settings.page.subTitle') }}</p>
         </div>
 
         <!-- Loading State -->
@@ -267,9 +267,11 @@ const previewBackground = computed(() => {
                 <div class="mb-4">
                     <h3 class="text-lg font-medium text-gray-200 flex items-center gap-2">
                         <UserIcon class="h-5 w-5 text-indigo-400" />
-                        Profile Information
+                        {{ $t('account.pages.settings.page.form.profile.title') }}
                     </h3>
-                    <p class="text-sm text-gray-400 mt-1">Update your account's profile information</p>
+                    <p class="text-sm text-gray-400 mt-1">
+                        {{ $t('account.pages.settings.page.form.profile.subTitle') }}
+                    </p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -386,16 +388,22 @@ const previewBackground = computed(() => {
                 <div class="mb-4">
                     <h3 class="text-lg font-medium text-gray-200 flex items-center gap-2">
                         <DatabaseIcon class="h-5 w-5 text-indigo-400" />
-                        Browser Storage
+                        {{ $t('account.pages.settings.page.form.browserStorage.title') }}
                     </h3>
-                    <p class="text-sm text-gray-400 mt-1">Manage local browser storage and cached data</p>
+                    <p class="text-sm text-gray-400 mt-1">
+                        {{ $t('account.pages.settings.page.form.browserStorage.subTitle') }}
+                    </p>
                 </div>
 
                 <div class="bg-[#0a0a15]/50 border border-[#2a2a3f]/30 rounded-lg p-4 mb-4">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h4 class="text-sm font-medium text-gray-300">Current Storage Usage</h4>
-                            <p class="text-xs text-gray-500 mt-1">Total browser storage used by this application</p>
+                            <h4 class="text-sm font-medium text-gray-300">
+                                {{ $t('account.pages.settings.page.form.browserStorage.currentStorageUsage') }}
+                            </h4>
+                            <p class="text-xs text-gray-500 mt-1">
+                                {{ $t('account.pages.settings.page.form.browserStorage.totalBrowserStorage') }}
+                            </p>
                         </div>
                         <div class="text-right">
                             <span class="text-lg font-semibold text-indigo-400">{{ formatBytes(totalSize) }}</span>
@@ -410,7 +418,7 @@ const previewBackground = computed(() => {
                         ></div>
                     </div>
                     <p class="text-xs text-gray-500 mt-1">
-                        Browser storage includes cookies, local storage, and session data
+                        {{ $t('account.pages.settings.page.form.browserStorage.browserStorageDescription') }}
                     </p>
                 </div>
 
@@ -419,10 +427,11 @@ const previewBackground = computed(() => {
                         <AlertIcon class="h-5 w-5 text-red-400" />
                     </div>
                     <div class="flex-1">
-                        <h4 class="text-sm font-medium text-gray-300">Clear All Browser Data</h4>
+                        <h4 class="text-sm font-medium text-gray-300">
+                            {{ $t('account.pages.settings.page.form.browserStorage.clearAllBrowserData') }}
+                        </h4>
                         <p class="text-xs text-gray-500 mt-1 mb-3">
-                            This will clear all locally stored data including preferences and cached information. This
-                            action cannot be undone.
+                            {{ $t('account.pages.settings.page.form.browserStorage.clearAllBrowserDataDescription') }}
                         </p>
                         <Button
                             @click="clearAllData"
@@ -432,7 +441,7 @@ const previewBackground = computed(() => {
                             class="flex items-center gap-2"
                         >
                             <TrashIcon class="h-3.5 w-3.5" />
-                            {{ t('account.pages.settings.page.clear.cache.confirm') }}
+                            {{ t('account.pages.settings.page.form.browserStorage.clearAllBrowserDataButton') }}
                         </Button>
                     </div>
                 </div>
