@@ -18,7 +18,7 @@
 		"@vueuse/sound": "^2.0.1",
 		"date-fns": "^4.1.0",
 		"html2canvas": "^1.4.1",
-		"jspdf": "^2.5.0",
+		"jspdf": "^3.0.1",
 		"lucide-vue-next": "^0.475.0",
 		"pinia": "^3.0.0",
 		"qrcode": "^1.5.4",
