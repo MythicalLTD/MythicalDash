@@ -1,22 +1,31 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Client\Resources;
 
 use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Client\PterodactylClient;
-use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
-use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
-use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class UsersResource extends PterodactylClient
 {
     /**
-     * List subusers
+     * List subusers.
      *
-     * @param string $serverId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -52,11 +61,8 @@ class UsersResource extends PterodactylClient
     }
 
     /**
-     * Get specific subuser
+     * Get specific subuser.
      *
-     * @param string $serverId
-     * @param string $userId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -92,12 +98,8 @@ class UsersResource extends PterodactylClient
     }
 
     /**
-     * Create subuser
+     * Create subuser.
      *
-     * @param string $serverId
-     * @param string $email
-     * @param array $permissions
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -144,12 +146,8 @@ class UsersResource extends PterodactylClient
     }
 
     /**
-     * Update subuser
+     * Update subuser.
      *
-     * @param string $serverId
-     * @param string $userId
-     * @param array $permissions
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -195,11 +193,8 @@ class UsersResource extends PterodactylClient
     }
 
     /**
-     * Delete subuser
+     * Delete subuser.
      *
-     * @param string $serverId
-     * @param string $userId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -235,9 +230,8 @@ class UsersResource extends PterodactylClient
     }
 
     /**
-     * Get permissions
+     * Get permissions.
      *
-     * @return array
      * @throws AuthenticationException
      * @throws RateLimitException
      */
@@ -263,11 +257,8 @@ class UsersResource extends PterodactylClient
     }
 
     /**
-     * Update email
+     * Update email.
      *
-     * @param string $email
-     * @param string $password
-     * @return array
      * @throws AuthenticationException
      * @throws ValidationException
      * @throws RateLimitException
@@ -304,11 +295,8 @@ class UsersResource extends PterodactylClient
     }
 
     /**
-     * Update password
+     * Update password.
      *
-     * @param string $currentPassword
-     * @param string $newPassword
-     * @return array
      * @throws AuthenticationException
      * @throws ValidationException
      * @throws RateLimitException
@@ -346,11 +334,8 @@ class UsersResource extends PterodactylClient
     }
 
     /**
-     * Update 2FA
+     * Update 2FA.
      *
-     * @param string $code
-     * @param string $password
-     * @return array
      * @throws AuthenticationException
      * @throws ValidationException
      * @throws RateLimitException
@@ -387,10 +372,8 @@ class UsersResource extends PterodactylClient
     }
 
     /**
-     * Disable 2FA
+     * Disable 2FA.
      *
-     * @param string $password
-     * @return array
      * @throws AuthenticationException
      * @throws ValidationException
      * @throws RateLimitException
@@ -424,4 +407,4 @@ class UsersResource extends PterodactylClient
             throw $e;
         }
     }
-} 
+}

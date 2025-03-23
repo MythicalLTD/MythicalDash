@@ -1,13 +1,25 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Plugins\Events;
 
 use MythicalDash\App;
 use MythicalDash\Plugins\PluginEvents;
 use MythicalDash\Plugins\PluginHelper;
 
-class PluginEventProcessor {
-	/**
+class PluginEventProcessor
+{
+    /**
      * Get the event class for a plugin.
      *
      * @param string $identifier The plugin identifier
@@ -23,7 +35,7 @@ class PluginEventProcessor {
                 return null;
             }
             // Build the expected event class name
-			$eventClass = "MythicalDash\\Storage\\Addons\\{$identifier}\\Module";
+            $eventClass = "MythicalDash\\Storage\\Addons\\{$identifier}\\Module";
 
             // Check if class exists and implements PluginEvent
             if (class_exists($eventClass) && is_subclass_of($eventClass, PluginEventRequirements::class)) {
@@ -33,6 +45,7 @@ class PluginEventProcessor {
             return null;
         } catch (\Exception $e) {
             App::getInstance(true)->getLogger()->error('Failed to get event class: ' . $e->getMessage());
+
             return null;
         }
     }
@@ -48,19 +61,20 @@ class PluginEventProcessor {
     {
         return self::getEventProcessor($identifier) !== null;
     }
-	/**
-	 * Process an event for a plugin.
-	 *
-	 * @param string $identifier The plugin identifier
-	 * @param \MythicalDash\Plugins\PluginEvents $event The event to process
-	 * 
-	 * @return void
-	 */
-	public static function processEvent(string $identifier, PluginEvents $event)
-	{
-		$eventProcessor = self::getEventProcessor($identifier);
-		if ($eventProcessor !== null) {
-			$eventProcessor->processEvents($event);
-		}
-	}
+
+    /**
+     * Process an event for a plugin.
+     *
+     * @param string $identifier The plugin identifier
+     * @param PluginEvents $event The event to process
+     *
+     * @return void
+     */
+    public static function processEvent(string $identifier, PluginEvents $event)
+    {
+        $eventProcessor = self::getEventProcessor($identifier);
+        if ($eventProcessor !== null) {
+            $eventProcessor->processEvents($event);
+        }
+    }
 }

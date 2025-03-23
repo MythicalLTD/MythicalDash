@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Client;
 
 use GuzzleHttp\Client;
@@ -26,24 +37,8 @@ class PterodactylClient
     }
 
     /**
-     * Send a request to the Pterodactyl API
+     * Get account details.
      *
-     * @param string $method HTTP method
-     * @param string $endpoint API endpoint
-     * @param array $options Request options
-     * @return array Response data
-     * @throws GuzzleException
-     */
-    protected function request(string $method, string $endpoint, array $options = []): array
-    {
-        $response = $this->httpClient->request($method, $endpoint, $options);
-        return json_decode($response->getBody()->getContents(), true);
-    }
-
-    /**
-     * Get account details
-     *
-     * @return array
      * @throws GuzzleException
      */
     public function getAccountDetails(): array
@@ -52,9 +47,8 @@ class PterodactylClient
     }
 
     /**
-     * Get account API keys
+     * Get account API keys.
      *
-     * @return array
      * @throws GuzzleException
      */
     public function getApiKeys(): array
@@ -63,11 +57,8 @@ class PterodactylClient
     }
 
     /**
-     * Create API key
+     * Create API key.
      *
-     * @param string $description
-     * @param array $allowedIps
-     * @return array
      * @throws GuzzleException
      */
     public function createApiKey(string $description, array $allowedIps = []): array
@@ -81,14 +72,30 @@ class PterodactylClient
     }
 
     /**
-     * Delete API key
+     * Delete API key.
      *
-     * @param string $identifier
-     * @return array
      * @throws GuzzleException
      */
     public function deleteApiKey(string $identifier): array
     {
         return $this->request('DELETE', "/api/client/account/api-keys/{$identifier}");
     }
-} 
+
+    /**
+     * Send a request to the Pterodactyl API.
+     *
+     * @param string $method HTTP method
+     * @param string $endpoint API endpoint
+     * @param array $options Request options
+     *
+     * @throws GuzzleException
+     *
+     * @return array Response data
+     */
+    protected function request(string $method, string $endpoint, array $options = []): array
+    {
+        $response = $this->httpClient->request($method, $endpoint, $options);
+
+        return json_decode($response->getBody()->getContents(), true);
+    }
+}

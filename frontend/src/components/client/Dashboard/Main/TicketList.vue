@@ -51,8 +51,11 @@ onMounted(fetchRecentTickets);
 
 <template>
     <!-- Recent Tickets -->
-    <CardComponent v-if="recentTickets.length > 0">
-        <h2 class="text-lg font-semibold text-white mb-4">{{ t('Components.Tickets.title') }}</h2>
+    <CardComponent
+        v-if="recentTickets.length > 0"
+        cardTitle="Recent Tickets"
+        cardDescription="View your recent tickets"
+    >
         <div class="space-y-3">
             <div
                 v-for="ticket in recentTickets"

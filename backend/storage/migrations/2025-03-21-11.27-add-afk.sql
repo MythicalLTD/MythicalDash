@@ -1,0 +1,2 @@
+ALTER TABLE `mythicaldash_users` ADD COLUMN `minutes_afk` INT(11) NOT NULL DEFAULT 0 AFTER `allocation_limit`;
+ALTER TABLE `mythicaldash_users` ADD COLUMN `last_seen_afk` INT(11) NOT NULL DEFAULT 0 AFTER `minutes_afk`;

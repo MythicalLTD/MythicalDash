@@ -1,23 +1,31 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Admin\Resources;
 
 use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Admin\PterodactylAdmin;
-use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
-use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
-use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class NestsResource extends PterodactylAdmin
 {
     /**
-     * List all nests
+     * List all nests.
      *
-     * @param int $page
-     * @param int $perPage
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws RateLimitException
@@ -53,10 +61,8 @@ class NestsResource extends PterodactylAdmin
     }
 
     /**
-     * Get a specific nest
+     * Get a specific nest.
      *
-     * @param int $nestId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -92,12 +98,8 @@ class NestsResource extends PterodactylAdmin
     }
 
     /**
-     * List eggs in a nest
+     * List eggs in a nest.
      *
-     * @param int $nestId
-     * @param int $page
-     * @param int $perPage
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -138,11 +140,8 @@ class NestsResource extends PterodactylAdmin
     }
 
     /**
-     * Get a specific egg
+     * Get a specific egg.
      *
-     * @param int $nestId
-     * @param int $eggId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -178,11 +177,8 @@ class NestsResource extends PterodactylAdmin
     }
 
     /**
-     * Create a new nest
+     * Create a new nest.
      *
-     * @param string $name
-     * @param string $description
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ValidationException
@@ -224,11 +220,8 @@ class NestsResource extends PterodactylAdmin
     }
 
     /**
-     * Update a nest
+     * Update a nest.
      *
-     * @param int $nestId
-     * @param array $data
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -272,10 +265,8 @@ class NestsResource extends PterodactylAdmin
     }
 
     /**
-     * Delete a nest
+     * Delete a nest.
      *
-     * @param int $nestId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -311,11 +302,8 @@ class NestsResource extends PterodactylAdmin
     }
 
     /**
-     * Create a new egg
+     * Create a new egg.
      *
-     * @param int $nestId
-     * @param array $data
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -359,12 +347,8 @@ class NestsResource extends PterodactylAdmin
     }
 
     /**
-     * Update an egg
+     * Update an egg.
      *
-     * @param int $nestId
-     * @param int $eggId
-     * @param array $data
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -408,11 +392,8 @@ class NestsResource extends PterodactylAdmin
     }
 
     /**
-     * Delete an egg
+     * Delete an egg.
      *
-     * @param int $nestId
-     * @param int $eggId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -446,4 +427,4 @@ class NestsResource extends PterodactylAdmin
             throw $e;
         }
     }
-} 
+}

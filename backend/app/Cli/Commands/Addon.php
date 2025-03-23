@@ -15,7 +15,6 @@ namespace MythicalDash\Cli\Commands;
 
 use MythicalDash\Cli\App;
 use MythicalDash\Cli\CommandBuilder;
-use MythicalDash\Plugins\PluginTypes;
 
 class Addon extends App implements CommandBuilder
 {
@@ -43,36 +42,14 @@ class Addon extends App implements CommandBuilder
                     self::getInstance()->send('&5&lMythical&d&lDash &7- &d&lAddons');
                     self::getInstance()->send('');
                     $addons = $pluginManager->getLoadedMemoryPlugins();
-
-                    $types = [
-                        PluginTypes::$event,
-                        PluginTypes::$provider,
-                        PluginTypes::$components,
-                    ];
-
-                    foreach ($types as $type) {
-                        if ($type == PluginTypes::$event) {
-                            self::getInstance()->send('&5&lEvents Plugins:');
-                            self::getInstance()->send('&f(Typical plugins that listen to events)');
+                    foreach ($addons as $plugin) {
+                        $addonConfig = \MythicalDash\Plugins\PluginConfig::getConfig($plugin);
+                        $name = $addonConfig['plugin']['name'];
+                        $version = $addonConfig['plugin']['version'];
+                        $description = $addonConfig['plugin']['description'];
+                        if ($addonConfig['plugin']['type'] == $type) {
+                            self::getInstance()->send("&7 - &b{$name} &8> &d{$version} &8> &7{$description}");
                             self::getInstance()->send('');
-                        } elseif ($type == PluginTypes::$provider) {
-                            self::getInstance()->send('&5&lProviders Plugins:');
-                            self::getInstance()->send('&f(Typical plugins that process purchases and create services!)');
-                            self::getInstance()->send('');
-                        } elseif ($type == PluginTypes::$components) {
-                            self::getInstance()->send('&5&lComponents Plugins:');
-                            self::getInstance()->send('&f(Typical plugins that add new components to the frontend!)');
-                            self::getInstance()->send('');
-                        }
-                        foreach ($addons as $plugin) {
-                            $addonConfig = \MythicalDash\Plugins\PluginConfig::getConfig($plugin);
-                            $name = $addonConfig['plugin']['name'];
-                            $version = $addonConfig['plugin']['version'];
-                            $description = $addonConfig['plugin']['description'];
-                            if ($addonConfig['plugin']['type'] == $type) {
-                                self::getInstance()->send("&7 - &b{$name} &8> &d{$version} &8> &7{$description}");
-                                self::getInstance()->send('');
-                            }
                         }
                     }
                     self::getInstance()->send('');

@@ -1,23 +1,31 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Client\Resources;
 
 use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Client\PterodactylClient;
-use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
-use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
-use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class FileResource extends PterodactylClient
 {
     /**
-     * List files in directory
+     * List files in directory.
      *
-     * @param string $serverId
-     * @param string $directory
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -61,11 +69,8 @@ class FileResource extends PterodactylClient
     }
 
     /**
-     * Get file contents
+     * Get file contents.
      *
-     * @param string $serverId
-     * @param string $file
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -109,12 +114,8 @@ class FileResource extends PterodactylClient
     }
 
     /**
-     * Write file contents
+     * Write file contents.
      *
-     * @param string $serverId
-     * @param string $file
-     * @param string $content
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -159,12 +160,8 @@ class FileResource extends PterodactylClient
     }
 
     /**
-     * Create directory
+     * Create directory.
      *
-     * @param string $serverId
-     * @param string $name
-     * @param string $path
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -211,11 +208,8 @@ class FileResource extends PterodactylClient
     }
 
     /**
-     * Delete files/directories
+     * Delete files/directories.
      *
-     * @param string $serverId
-     * @param array $files
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -259,12 +253,8 @@ class FileResource extends PterodactylClient
     }
 
     /**
-     * Rename file/directory
+     * Rename file/directory.
      *
-     * @param string $serverId
-     * @param string $from
-     * @param string $to
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -311,11 +301,8 @@ class FileResource extends PterodactylClient
     }
 
     /**
-     * Copy file
+     * Copy file.
      *
-     * @param string $serverId
-     * @param string $location
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -357,4 +344,4 @@ class FileResource extends PterodactylClient
             throw $e;
         }
     }
-} 
+}

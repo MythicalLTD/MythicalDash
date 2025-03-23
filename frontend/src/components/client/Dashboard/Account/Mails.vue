@@ -94,10 +94,7 @@ const columnsEmails = [
         />
 
         <!-- Error State -->
-        <div
-            v-else-if="error"
-            class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-start gap-3"
-        >
+        <div v-else-if="error" class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-start gap-3">
             <div class="p-2 rounded-lg bg-red-500/10">
                 <svg
                     class="h-5 w-5 text-red-400"
@@ -132,11 +129,7 @@ const columnsEmails = [
 
         <!-- Email Table -->
         <div v-else class="overflow-x-auto">
-            <TableTanstack
-                :data="emails"
-                :columns="columnsEmails"
-                :tableName="t('account.pages.emails.page.title')"
-            />
+            <TableTanstack :data="emails" :columns="columnsEmails" :tableName="t('account.pages.emails.page.title')" />
         </div>
     </div>
 </template>

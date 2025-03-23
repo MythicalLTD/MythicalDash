@@ -1,20 +1,29 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Client\Resources;
 
 use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Client\PterodactylClient;
-use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
-use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
 
 class AccountResource extends PterodactylClient
 {
     /**
-     * Get account details
+     * Get account details.
      *
-     * @return array
      * @throws AuthenticationException
      * @throws RateLimitException
      */
@@ -40,11 +49,11 @@ class AccountResource extends PterodactylClient
     }
 
     /**
-     * Update email address
+     * Update email address.
      *
      * @param string $email New email address
      * @param string $password Current password
-     * @return array
+     *
      * @throws AuthenticationException
      * @throws ValidationException
      * @throws RateLimitException
@@ -81,11 +90,11 @@ class AccountResource extends PterodactylClient
     }
 
     /**
-     * Update password
+     * Update password.
      *
      * @param string $currentPassword Current password
      * @param string $newPassword New password
-     * @return array
+     *
      * @throws AuthenticationException
      * @throws ValidationException
      * @throws RateLimitException
@@ -123,9 +132,8 @@ class AccountResource extends PterodactylClient
     }
 
     /**
-     * Enable 2FA
+     * Enable 2FA.
      *
-     * @return array
      * @throws AuthenticationException
      * @throws RateLimitException
      */
@@ -151,11 +159,11 @@ class AccountResource extends PterodactylClient
     }
 
     /**
-     * Disable 2FA
+     * Disable 2FA.
      *
      * @param string $code 2FA code
      * @param string $password Current password
-     * @return array
+     *
      * @throws AuthenticationException
      * @throws ValidationException
      * @throws RateLimitException
@@ -192,9 +200,8 @@ class AccountResource extends PterodactylClient
     }
 
     /**
-     * Get API keys
+     * Get API keys.
      *
-     * @return array
      * @throws AuthenticationException
      * @throws RateLimitException
      */
@@ -220,11 +227,11 @@ class AccountResource extends PterodactylClient
     }
 
     /**
-     * Create API key
+     * Create API key.
      *
      * @param string $description Key description
      * @param array $allowedIps Allowed IP addresses
-     * @return array
+     *
      * @throws AuthenticationException
      * @throws ValidationException
      * @throws RateLimitException
@@ -261,10 +268,10 @@ class AccountResource extends PterodactylClient
     }
 
     /**
-     * Delete API key
+     * Delete API key.
      *
      * @param string $keyId API key identifier
-     * @return array
+     *
      * @throws AuthenticationException
      * @throws RateLimitException
      */
@@ -288,4 +295,4 @@ class AccountResource extends PterodactylClient
             throw $e;
         }
     }
-} 
+}

@@ -1,22 +1,31 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Client\Resources;
 
 use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Client\PterodactylClient;
-use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
-use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
-use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class NetworkResource extends PterodactylClient
 {
     /**
-     * List allocations for a server
+     * List allocations for a server.
      *
-     * @param string $serverId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -52,10 +61,8 @@ class NetworkResource extends PterodactylClient
     }
 
     /**
-     * Create new allocation
+     * Create new allocation.
      *
-     * @param string $serverId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -97,12 +104,8 @@ class NetworkResource extends PterodactylClient
     }
 
     /**
-     * Set allocation note
+     * Set allocation note.
      *
-     * @param string $serverId
-     * @param string $allocationId
-     * @param string $notes
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -146,11 +149,8 @@ class NetworkResource extends PterodactylClient
     }
 
     /**
-     * Set primary allocation
+     * Set primary allocation.
      *
-     * @param string $serverId
-     * @param string $allocationId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -186,11 +186,8 @@ class NetworkResource extends PterodactylClient
     }
 
     /**
-     * Delete allocation
+     * Delete allocation.
      *
-     * @param string $serverId
-     * @param string $allocationId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -224,4 +221,4 @@ class NetworkResource extends PterodactylClient
             throw $e;
         }
     }
-} 
+}

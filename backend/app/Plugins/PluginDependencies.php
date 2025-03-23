@@ -15,8 +15,8 @@ namespace MythicalDash\Plugins;
 
 use MythicalDash\Plugins\Dependencies\ComposerDependencies;
 use MythicalDash\Plugins\Dependencies\PhpVersionDependencies;
-use MythicalDash\Plugins\Dependencies\PhpExtensionDependencies;
 use MythicalDash\Plugins\Dependencies\MythicalDashDependencies;
+use MythicalDash\Plugins\Dependencies\PhpExtensionDependencies;
 
 class PluginDependencies
 {

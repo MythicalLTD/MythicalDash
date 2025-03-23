@@ -3,13 +3,9 @@
 /*
  * This file is part of MythicalDash.
  * Please view the LICENSE file that was distributed with this source code.
-{
-	public static function getRoutes(): array
-	{
-		return [];
-	}
-}
-
+ *
+ * # MythicalSystems License v2.0
+ *
  * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
  *
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
@@ -23,9 +19,10 @@ use MythicalDash\Plugins\Events\PluginEventProcessor;
 class PluginManager
 {
     private array $plugins = [];
+
     public function loadKernel(): void
     {
-		global $eventManager;
+        global $eventManager;
         try {
             $instance = App::getInstance(true);
             $plugins = PluginHelper::getPluginsDir();
@@ -43,7 +40,7 @@ class PluginManager
                                         $instance->getLogger()->debug('Plugin ' . $plugin . ' was loaded in the memory!');
                                         $this->plugins[] = $plugin;
                                         PluginDB::registerPlugin($config['plugin']['identifier'], $config['plugin']['name']);
-										PluginEventProcessor::processEvent($config['plugin']['identifier'], $eventManager);
+                                        PluginEventProcessor::processEvent($config['plugin']['identifier'], $eventManager);
                                     } else {
                                         $instance->getLogger()->error('Plugin ' . $plugin . ' has unmet dependencies!');
                                     }
@@ -81,13 +78,13 @@ class PluginManager
         }
     }
 
-	public function getEventManager() : PluginEvents {
-		return new PluginEvents();
-	}
+    public function getEventManager(): PluginEvents
+    {
+        return new PluginEvents();
+    }
 
     public function getLoadedPlugins(): array
     {
         return $this->plugins;
     }
-
 }

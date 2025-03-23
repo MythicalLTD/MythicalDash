@@ -56,7 +56,8 @@ const columnsActivities = [
     {
         accessorKey: 'date',
         header: t('account.pages.activity.page.table.columns.date'),
-        cell: (info: { getValue: () => string | number | Date }) => format(new Date(info.getValue()), 'MMM d, yyyy HH:mm'),
+        cell: (info: { getValue: () => string | number | Date }) =>
+            format(new Date(info.getValue()), 'MMM d, yyyy HH:mm'),
     },
 ];
 </script>
@@ -77,10 +78,7 @@ const columnsActivities = [
         />
 
         <!-- Error State -->
-        <div
-            v-else-if="error"
-            class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-start gap-3"
-        >
+        <div v-else-if="error" class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-start gap-3">
             <div class="p-2 rounded-lg bg-red-500/10">
                 <AlertCircle class="h-5 w-5 text-red-400" />
             </div>

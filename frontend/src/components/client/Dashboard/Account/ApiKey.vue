@@ -11,6 +11,7 @@ import {
 import { TextInput } from '@/components/client/ui/TextForms';
 import Button from '@/components/client/ui/Button.vue';
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
+import Session from '@/mythicaldash/Session';
 
 const apiKey = ref<string>('');
 const isLoading = ref(false);
@@ -159,6 +160,10 @@ const resetApiKey = () => {
         },
     });
     resetApiKeyLocal();
+    localStorage.clear();
+    Session.cleanup();
+    document.cookie = 'user_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    window.location.href = '/auth/login';
 };
 </script>
 

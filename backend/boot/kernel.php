@@ -41,12 +41,12 @@ header_remove('X-Powered-By');
 header_remove('Server');
 
 if (!is_writable(__DIR__)) {
-	$error = "Please make sure the root directory is writable.";
-	exit(json_encode(['error' => $error, 'code' => 500, 'message' => 'Please make sure the root directory is writable.', 'success' => false]));
+    $error = 'Please make sure the root directory is writable.';
+    exit(json_encode(['error' => $error, 'code' => 500, 'message' => 'Please make sure the root directory is writable.', 'success' => false]));
 }
 
 if (!is_writable(__DIR__ . '/../storage')) {
-	exit(json_encode(['error' => 'Please make sure the storage directory is writable.', 'code' => 500, 'message' => 'Please make sure the storage directory is writable.', 'success' => false]));
+    exit(json_encode(['error' => 'Please make sure the storage directory is writable.', 'code' => 500, 'message' => 'Please make sure the storage directory is writable.', 'success' => false]));
 }
 
 /**

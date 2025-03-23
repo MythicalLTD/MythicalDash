@@ -1,20 +1,30 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Admin\Resources;
 
 use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Admin\PterodactylAdmin;
-use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
-use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
 
 class SettingsResource extends PterodactylAdmin
 {
     /**
-     * Get panel settings
+     * Get panel settings.
      *
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws RateLimitException
@@ -45,10 +55,8 @@ class SettingsResource extends PterodactylAdmin
     }
 
     /**
-     * Update panel settings
+     * Update panel settings.
      *
-     * @param array $settings
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ValidationException
@@ -87,9 +95,8 @@ class SettingsResource extends PterodactylAdmin
     }
 
     /**
-     * Get mail settings
+     * Get mail settings.
      *
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws RateLimitException
@@ -120,10 +127,8 @@ class SettingsResource extends PterodactylAdmin
     }
 
     /**
-     * Update mail settings
+     * Update mail settings.
      *
-     * @param array $settings
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ValidationException
@@ -162,10 +167,8 @@ class SettingsResource extends PterodactylAdmin
     }
 
     /**
-     * Test mail settings
+     * Test mail settings.
      *
-     * @param string $email
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ValidationException
@@ -206,9 +209,8 @@ class SettingsResource extends PterodactylAdmin
     }
 
     /**
-     * Get advanced settings
+     * Get advanced settings.
      *
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws RateLimitException
@@ -239,10 +241,8 @@ class SettingsResource extends PterodactylAdmin
     }
 
     /**
-     * Update advanced settings
+     * Update advanced settings.
      *
-     * @param array $settings
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ValidationException
@@ -279,4 +279,4 @@ class SettingsResource extends PterodactylAdmin
             throw $e;
         }
     }
-} 
+}

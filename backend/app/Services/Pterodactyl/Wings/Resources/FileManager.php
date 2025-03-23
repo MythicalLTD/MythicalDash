@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Wings\Resources;
 
 use MythicalDash\Services\Pterodactyl\Wings\WingsClient;
@@ -7,10 +18,11 @@ use MythicalDash\Services\Pterodactyl\Wings\WingsClient;
 class FileManager extends WingsClient
 {
     /**
-     * List files in a directory
+     * List files in a directory.
      *
      * @param string $serverId Server identifier
      * @param string $directory Directory path
+     *
      * @return array List of files and directories
      */
     public function listFiles(string $serverId, string $directory = '/'): array
@@ -21,10 +33,11 @@ class FileManager extends WingsClient
     }
 
     /**
-     * Get contents of a file
+     * Get contents of a file.
      *
      * @param string $serverId Server identifier
      * @param string $file File path
+     *
      * @return array File contents and metadata
      */
     public function getFileContents(string $serverId, string $file): array
@@ -35,11 +48,12 @@ class FileManager extends WingsClient
     }
 
     /**
-     * Write contents to a file
+     * Write contents to a file.
      *
      * @param string $serverId Server identifier
      * @param string $file File path
      * @param string $contents File contents
+     *
      * @return array Response data
      */
     public function writeFileContents(string $serverId, string $file, string $contents): array
@@ -51,11 +65,12 @@ class FileManager extends WingsClient
     }
 
     /**
-     * Rename/move a file or directory
+     * Rename/move a file or directory.
      *
      * @param string $serverId Server identifier
      * @param string $from Source path
      * @param string $to Destination path
+     *
      * @return array Response data
      */
     public function rename(string $serverId, string $from, string $to): array
@@ -69,10 +84,11 @@ class FileManager extends WingsClient
     }
 
     /**
-     * Copy a file or directory
+     * Copy a file or directory.
      *
      * @param string $serverId Server identifier
      * @param string $location Path to copy
+     *
      * @return array Response data
      */
     public function copy(string $serverId, string $location): array
@@ -83,10 +99,11 @@ class FileManager extends WingsClient
     }
 
     /**
-     * Delete files or directories
+     * Delete files or directories.
      *
      * @param string $serverId Server identifier
      * @param array $files Array of file paths to delete
+     *
      * @return array Response data
      */
     public function delete(string $serverId, array $files): array
@@ -97,11 +114,12 @@ class FileManager extends WingsClient
     }
 
     /**
-     * Create a compressed archive
+     * Create a compressed archive.
      *
      * @param string $serverId Server identifier
      * @param array $files Files to compress
      * @param string $root Root directory
+     *
      * @return array Response data
      */
     public function compress(string $serverId, array $files, string $root): array
@@ -115,10 +133,11 @@ class FileManager extends WingsClient
     }
 
     /**
-     * Extract a compressed archive
+     * Extract a compressed archive.
      *
      * @param string $serverId Server identifier
      * @param string $file Archive file path
+     *
      * @return array Response data
      */
     public function decompress(string $serverId, string $file): array
@@ -127,4 +146,4 @@ class FileManager extends WingsClient
             'json' => ['file' => $file],
         ]);
     }
-} 
+}

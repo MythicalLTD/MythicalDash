@@ -13,14 +13,14 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\User;
-use MythicalSystems\CloudFlare\Turnstile;
 use MythicalDash\Config\ConfigInterface;
+use MythicalSystems\CloudFlare\Turnstile;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
 
 $router->add('/api/user/auth/forgot', function (): void {
-	global $eventManager;
+    global $eventManager;
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
 
@@ -31,7 +31,7 @@ $router->add('/api/user/auth/forgot', function (): void {
      * @var string
      */
     if (!isset($_POST['email']) || $_POST['email'] == '') {
-		$eventManager->emit(AuthEvent::onAuthForgotPasswordFailed(), ['email' => 'UNKNOWN', 'error_code' => 'MISSING_EMAIL']);
+        $eventManager->emit(AuthEvent::onAuthForgotPasswordFailed(), ['email' => 'UNKNOWN', 'error_code' => 'MISSING_EMAIL']);
         $appInstance->BadRequest('Bad Request', ['error_code' => 'MISSING_EMAIL']);
     }
 
@@ -42,12 +42,12 @@ $router->add('/api/user/auth/forgot', function (): void {
      */
     if ($appInstance->getConfig()->getSetting(ConfigInterface::TURNSTILE_ENABLED, 'false') == 'true') {
         if (!isset($_POST['turnstileResponse']) || $_POST['turnstileResponse'] == '') {
-			$eventManager->emit(AuthEvent::onAuthForgotPasswordFailed(), ['email' => $_POST['email'], 'error_code' => 'MISSING_TURNSTILE_RESPONSE']);
+            $eventManager->emit(AuthEvent::onAuthForgotPasswordFailed(), ['email' => $_POST['email'], 'error_code' => 'MISSING_TURNSTILE_RESPONSE']);
             $appInstance->BadRequest('Bad Request', ['error_code' => 'TURNSTILE_FAILED']);
         }
         $cfTurnstileResponse = $_POST['turnstileResponse'];
         if (!Turnstile::validate($cfTurnstileResponse, CloudFlareRealIP::getRealIP(), $config->getSetting(ConfigInterface::TURNSTILE_KEY_PRIV, 'XXXX'))) {
-			$eventManager->emit(AuthEvent::onAuthForgotPasswordFailed(), ['email' => $_POST['email'], 'error_code' => 'TURNSTILE_FAILED']);
+            $eventManager->emit(AuthEvent::onAuthForgotPasswordFailed(), ['email' => $_POST['email'], 'error_code' => 'TURNSTILE_FAILED']);
             $appInstance->BadRequest('Invalid TurnStile Key', ['error_code' => 'TURNSTILE_FAILED']);
         }
     }

@@ -61,17 +61,16 @@ $router->post('/api/user/session/info/update', function (): void {
     }
 });
 
-
 $router->add('/api/user/session/apiKey/reset', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new Session($appInstance);
-	$token = App::getInstance(true)->encrypt(date('Y-m-d H:i:s') . $_COOKIE['token'] . random_bytes(16) . base64_encode($appInstance->generateCode()));
+    $token = 'mythicaldash_clientapi_' . App::getInstance(true)->encrypt(date('Y-m-d H:i:s') . 'MythicalDash' . random_bytes(16) . base64_encode($appInstance->generateCode()));
     $session->setInfo(UserColumns::ACCOUNT_TOKEN, $token, false);
-	
-    setcookie('user_token', $token, time() + (86400 * 30), "/");
-	$appInstance->OK('API KEY Reset!', ['api_key' => $token]);
+
+    setcookie('user_token', $token, time() + (86400 * 30), '/');
+    $appInstance->OK('API KEY Reset!', ['api_key' => $token]);
 });
 
 $router->add('/api/user/session/newPin', function (): void {
@@ -124,6 +123,16 @@ $router->get('/api/user/session', function (): void {
             UserColumns::LAST_SEEN,
             UserColumns::FIRST_SEEN,
             UserColumns::BACKGROUND,
+            UserColumns::MINUTES_AFK,
+            UserColumns::LAST_SEEN_AFK,
+            UserColumns::DISK_LIMIT,
+            UserColumns::MEMORY_LIMIT,
+            UserColumns::CPU_LIMIT,
+            UserColumns::SERVER_LIMIT,
+            UserColumns::BACKUP_LIMIT,
+            UserColumns::DATABASE_LIMIT,
+            UserColumns::ALLOCATION_LIMIT,
+            UserColumns::PTERODACTYL_USER_ID,
         ];
 
         $info = User::getInfoArray($accountToken, $columns, [
@@ -138,6 +147,7 @@ $router->get('/api/user/session', function (): void {
             'user_info' => $info,
             'stats' => [
                 'tickets' => $stats_tickets,
+                'servers' => '0',
             ],
         ]);
 

@@ -87,7 +87,7 @@ const handleClickOutside = (event: MouseEvent) => {
 };
 
 const handleKeydown = async (event: KeyboardEvent) => {
-	if (event.key === 'F5' || (event.ctrlKey && event.key === 'r')) {
+    if (event.key === 'F5' || (event.ctrlKey && event.key === 'r')) {
         event.preventDefault();
         await reloadUserData();
         return;

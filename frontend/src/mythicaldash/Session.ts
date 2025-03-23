@@ -45,6 +45,10 @@ class Session {
         return '';
     }
 
+    static getInfoInt(key: string): number {
+        return parseInt(this.getInfo(key));
+    }
+
     /**
      * Fetches session data from the server
      */

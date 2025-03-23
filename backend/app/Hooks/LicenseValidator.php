@@ -13,13 +13,13 @@
 
 namespace MythicalDash\Hooks;
 
-use GuzzleHttp\Client;
 use MythicalDash\App;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
 class LicenseValidator
 {
-    private const PRODUCT_ID = 1;
+    private const PRODUCT_ID = 3;
     private const API_URL = 'https://activation.mythical.systems';
     private const CACHE_DURATION = 1800; // 30 minutes
     private const CACHE_DIR = APP_CACHE_DIR . '/other';
@@ -48,6 +48,56 @@ class LicenseValidator
         App::getInstance(true)->getLogger()->debug('License validator initialized');
     }
 
+    public function validate(): bool
+    {
+        try {
+            // First check if we have valid cache
+            $cachedResult = $this->checkCache();
+            if ($cachedResult !== null) {
+                App::getInstance(true)->getLogger()->debug('Using cached license validation result');
+
+                return $cachedResult;
+            }
+
+            // No valid cache, perform actual validation
+            $response = $this->httpClient->post(self::API_URL . '/api/v1/validate', [
+                'json' => [
+                    'licenseKey' => $this->licenseKey,
+                    'productId' => self::PRODUCT_ID,
+                    'productVersion' => $this->version,
+                    'hwid' => $this->getHWID(),
+                ],
+            ]);
+
+            $responseData = json_decode($response->getBody()->getContents(), true);
+
+            $isValid = ($response->getStatusCode() === 200)
+                && (
+                    // Original format check
+                    (isset($responseData['valid']) && $responseData['valid'] === true)
+                        // New format check
+                    || (isset($responseData['message']) && $responseData['message'] === 'License validated'
+                        && isset($responseData['status']) && $responseData['status'] === 200)
+                );
+
+            // Cache the result
+            $this->setCache($isValid);
+
+            App::getInstance(true)->getLogger()->debug('License validation result: ' . ($isValid ? 'valid' : 'invalid') . ' - ' . json_encode($responseData));
+
+            return $isValid;
+
+        } catch (GuzzleException $e) {
+            App::getInstance(true)->getLogger()->error('License validation request failed: ' . $e->getMessage());
+
+            return false;
+        } catch (\Throwable $e) {
+            App::getInstance(true)->getLogger()->error('Unexpected error during license validation: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
     private function ensureCacheDirectory(): void
     {
         if (!is_dir(self::CACHE_DIR)) {
@@ -63,44 +113,6 @@ class LicenseValidator
         }
     }
 
-    public function validate(): bool
-    {
-        try {
-            // First check if we have valid cache
-            $cachedResult = $this->checkCache();
-            if ($cachedResult !== null) {
-                App::getInstance(true)->getLogger()->debug('Using cached license validation result');
-                return $cachedResult;
-            }
-
-            // No valid cache, perform actual validation
-            $response = $this->httpClient->post(self::API_URL . '/api/v1/validate', [
-                'json' => [
-                    'licenseKey' => $this->licenseKey,
-                    'productId' => self::PRODUCT_ID,
-                    'productVersion' => $this->version,
-                    'hwid' => $this->getHWID(),
-                ],
-            ]);
-
-            $responseData = json_decode($response->getBody()->getContents(), true);
-            $isValid = $response->getStatusCode() === 200 && isset($responseData['valid']) && $responseData['valid'] === true;
-
-            // Cache the result
-            $this->setCache($isValid);
-            
-            App::getInstance(true)->getLogger()->debug('License validation result: ' . ($isValid ? 'valid' : 'invalid'));
-            return $isValid;
-
-        } catch (GuzzleException $e) {
-            App::getInstance(true)->getLogger()->error('License validation request failed: ' . $e->getMessage());
-            return false;
-        } catch (\Throwable $e) {
-            App::getInstance(true)->getLogger()->error('Unexpected error during license validation: ' . $e->getMessage());
-            return false;
-        }
-    }
-
     private function checkCache(): ?bool
     {
         try {
@@ -111,6 +123,7 @@ class LicenseValidator
             $cacheContent = @file_get_contents($this->cacheFile);
             if ($cacheContent === false) {
                 App::getInstance(true)->getLogger()->warning('Failed to read license cache file');
+
                 return null;
             }
 
@@ -118,6 +131,7 @@ class LicenseValidator
             if (!$this->isValidCacheData($cacheData)) {
                 App::getInstance(true)->getLogger()->warning('Invalid cache data format');
                 @unlink($this->cacheFile);
+
                 return null;
             }
 
@@ -125,6 +139,7 @@ class LicenseValidator
             if (time() - $cacheData['timestamp'] > self::CACHE_DURATION) {
                 App::getInstance(true)->getLogger()->debug('License cache has expired');
                 @unlink($this->cacheFile);
+
                 return null;
             }
 
@@ -132,6 +147,7 @@ class LicenseValidator
 
         } catch (\Throwable $e) {
             App::getInstance(true)->getLogger()->error('Error checking license cache: ' . $e->getMessage());
+
             return null;
         }
     }
@@ -147,8 +163,8 @@ class LicenseValidator
             ];
 
             $written = @file_put_contents(
-                $this->cacheFile, 
-                json_encode($cacheData), 
+                $this->cacheFile,
+                json_encode($cacheData),
                 LOCK_EX
             );
 

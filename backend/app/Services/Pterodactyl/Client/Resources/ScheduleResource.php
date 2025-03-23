@@ -1,22 +1,31 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Client\Resources;
 
 use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Client\PterodactylClient;
-use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
-use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
-use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class ScheduleResource extends PterodactylClient
 {
     /**
-     * List schedules for a server
+     * List schedules for a server.
      *
-     * @param string $serverId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -52,11 +61,8 @@ class ScheduleResource extends PterodactylClient
     }
 
     /**
-     * Get specific schedule
+     * Get specific schedule.
      *
-     * @param string $serverId
-     * @param string $scheduleId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -92,16 +98,8 @@ class ScheduleResource extends PterodactylClient
     }
 
     /**
-     * Create new schedule
+     * Create new schedule.
      *
-     * @param string $serverId
-     * @param string $name
-     * @param bool $isActive
-     * @param string $minute
-     * @param string $hour
-     * @param string $dayOfWeek
-     * @param string $dayOfMonth
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -115,7 +113,7 @@ class ScheduleResource extends PterodactylClient
         string $minute = '*',
         string $hour = '*',
         string $dayOfWeek = '*',
-        string $dayOfMonth = '*'
+        string $dayOfMonth = '*',
     ): array {
         try {
             return $this->request('POST', "/api/client/servers/{$serverId}/schedules", [
@@ -159,12 +157,8 @@ class ScheduleResource extends PterodactylClient
     }
 
     /**
-     * Update schedule
+     * Update schedule.
      *
-     * @param string $serverId
-     * @param string $scheduleId
-     * @param array $data
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -208,11 +202,8 @@ class ScheduleResource extends PterodactylClient
     }
 
     /**
-     * Delete schedule
+     * Delete schedule.
      *
-     * @param string $serverId
-     * @param string $scheduleId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -248,15 +239,8 @@ class ScheduleResource extends PterodactylClient
     }
 
     /**
-     * Create task
+     * Create task.
      *
-     * @param string $serverId
-     * @param string $scheduleId
-     * @param string $action
-     * @param string $payload
-     * @param int $timeOffset
-     * @param bool $continueOnFailure
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -269,7 +253,7 @@ class ScheduleResource extends PterodactylClient
         string $action,
         string $payload,
         int $timeOffset = 0,
-        bool $continueOnFailure = false
+        bool $continueOnFailure = false,
     ): array {
         try {
             return $this->request('POST', "/api/client/servers/{$serverId}/schedules/{$scheduleId}/tasks", [
@@ -311,13 +295,8 @@ class ScheduleResource extends PterodactylClient
     }
 
     /**
-     * Update task
+     * Update task.
      *
-     * @param string $serverId
-     * @param string $scheduleId
-     * @param string $taskId
-     * @param array $data
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -361,12 +340,8 @@ class ScheduleResource extends PterodactylClient
     }
 
     /**
-     * Delete task
+     * Delete task.
      *
-     * @param string $serverId
-     * @param string $scheduleId
-     * @param string $taskId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -400,4 +375,4 @@ class ScheduleResource extends PterodactylClient
             throw $e;
         }
     }
-} 
+}

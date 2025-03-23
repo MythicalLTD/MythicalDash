@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Wings\Resources;
 
 use MythicalDash\Services\Pterodactyl\Wings\WingsClient;
@@ -7,9 +18,10 @@ use MythicalDash\Services\Pterodactyl\Wings\WingsClient;
 class BackupManager extends WingsClient
 {
     /**
-     * List all backups for a server
+     * List all backups for a server.
      *
      * @param string $serverId Server identifier
+     *
      * @return array List of backups
      */
     public function listBackups(string $serverId): array
@@ -18,10 +30,11 @@ class BackupManager extends WingsClient
     }
 
     /**
-     * Create a new backup
+     * Create a new backup.
      *
      * @param string $serverId Server identifier
      * @param array $options Backup options
+     *
      * @return array Backup details
      */
     public function createBackup(string $serverId, array $options = []): array
@@ -32,10 +45,11 @@ class BackupManager extends WingsClient
     }
 
     /**
-     * Get details of a specific backup
+     * Get details of a specific backup.
      *
      * @param string $serverId Server identifier
      * @param string $backupId Backup identifier
+     *
      * @return array Backup details
      */
     public function getBackup(string $serverId, string $backupId): array
@@ -44,10 +58,11 @@ class BackupManager extends WingsClient
     }
 
     /**
-     * Delete a backup
+     * Delete a backup.
      *
      * @param string $serverId Server identifier
      * @param string $backupId Backup identifier
+     *
      * @return array Response data
      */
     public function deleteBackup(string $serverId, string $backupId): array
@@ -56,10 +71,11 @@ class BackupManager extends WingsClient
     }
 
     /**
-     * Download a backup
+     * Download a backup.
      *
      * @param string $serverId Server identifier
      * @param string $backupId Backup identifier
+     *
      * @return array Download URL and details
      */
     public function downloadBackup(string $serverId, string $backupId): array
@@ -68,14 +84,15 @@ class BackupManager extends WingsClient
     }
 
     /**
-     * Restore a backup
+     * Restore a backup.
      *
      * @param string $serverId Server identifier
      * @param string $backupId Backup identifier
+     *
      * @return array Response data
      */
     public function restoreBackup(string $serverId, string $backupId): array
     {
         return $this->request('POST', "/api/servers/{$serverId}/backups/{$backupId}/restore");
     }
-} 
+}

@@ -13,14 +13,14 @@
 
 namespace MythicalDash\Chat\User;
 
-use Gravatar\Gravatar;
 use MythicalDash\App;
+use Gravatar\Gravatar;
 use MythicalDash\Mail\Mail;
 use MythicalDash\Chat\Database;
 use MythicalDash\Mail\templates\Verify;
-use MythicalSystems\CloudFlare\CloudFlare;
 use MythicalDash\Mail\templates\NewLogin;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalSystems\CloudFlare\CloudFlare;
 use MythicalDash\Mail\templates\ResetPassword;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Chat\columns\EmailVerificationColumns;
@@ -38,10 +38,11 @@ class User extends Database
      * @param string $first_name The first name of the user
      * @param string $last_name The last name of the user
      * @param string $ip The ip of the user
+     * @param int $pterodactylUserId The user id of the user in the pterodactyl panel
      *
      * @return string
      */
-    public static function register(string $username, string $password, string $email, string $first_name, string $last_name, string $ip): void
+    public static function register(string $username, string $password, string $email, string $first_name, string $last_name, string $ip, int $pterodactylUserId): void
     {
         try {
             $appInstance = App::getInstance(true);
@@ -75,9 +76,9 @@ class User extends Database
              */
             $stmt = $pdoConnection->prepare('
             INSERT INTO ' . self::TABLE_NAME . ' 
-            (username, first_name, last_name, email, password, avatar, background, uuid, token, role, first_ip, last_ip, banned, verified, support_pin) 
+            (username, first_name, last_name, email, password, avatar, background, uuid, pterodactyl_user_id, token, role, first_ip, last_ip, banned, verified, support_pin) 
             VALUES 
-            (:username, :first_name, :last_name, :email, :password, :avatar, :background, :uuid, :token, :role, :first_ip, :last_ip, :banned, :verified, :support_pin)
+            (:username, :first_name, :last_name, :email, :password, :avatar, :background, :uuid, :pterodactyl_user_id, :token, :role, :first_ip, :last_ip, :banned, :verified, :support_pin)
         ');
             $password = App::getInstance(true)->encrypt($password);
 
@@ -90,6 +91,7 @@ class User extends Database
                 ':avatar' => $avatar,
                 ':background' => 'https://cdn.mythical.systems/background.gif',
                 ':uuid' => $uuid,
+                ':pterodactyl_user_id' => $pterodactylUserId,
                 ':token' => $token,
                 ':role' => 1,
                 ':first_ip' => $ip,

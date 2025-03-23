@@ -1,23 +1,30 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Client\Resources;
 
 use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Client\PterodactylClient;
-use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
-use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class ActivityResource extends PterodactylClient
 {
     /**
-     * Get server activity logs
+     * Get server activity logs.
      *
-     * @param string $serverId
-     * @param int $page
-     * @param int $perPage
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -58,11 +65,8 @@ class ActivityResource extends PterodactylClient
     }
 
     /**
-     * Get user activity logs
+     * Get user activity logs.
      *
-     * @param int $page
-     * @param int $perPage
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws RateLimitException
@@ -98,12 +102,8 @@ class ActivityResource extends PterodactylClient
     }
 
     /**
-     * Get server audit logs
+     * Get server audit logs.
      *
-     * @param string $serverId
-     * @param int $page
-     * @param int $perPage
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -142,4 +142,4 @@ class ActivityResource extends PterodactylClient
             throw $e;
         }
     }
-} 
+}

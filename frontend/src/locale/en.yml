@@ -96,6 +96,9 @@ auth:
                     not_verified: Your email is not verified yet
                     banned: Your account was permanently banned
                     deleted: Your account was deleted either by you or an admin
+                    pterodactyl_user_not_found: Pterodactyl user not found.
+                    pterodactyl_error: Failed to register user in Pterodactyl panel
+                    pterodactyl_not_enabled: Pterodactyl is not enabled
             page:
                 title: Login
                 subTitle: Login in to your account
@@ -126,6 +129,8 @@ auth:
                     email_exists: Email already exists
                     generic: An error occurred. Please try again later
                     cloudflare_error: You have been blocked by Cloudflare Turnstile
+                    pterodactyl_not_enabled: Pterodactyl is not enabled
+                    pterodactyl_error: Failed to register user in Pterodactyl panel
                     footer: Please contact support for assistance
             page:
                 title: Register

@@ -1,22 +1,32 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Client\Resources;
 
 use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Client\PterodactylClient;
-use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
-use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
-use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
-use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ServerException;
+use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class ServerResource extends PterodactylClient
 {
     /**
-     * Get list of servers
+     * Get list of servers.
      *
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws RateLimitException
@@ -47,10 +57,8 @@ class ServerResource extends PterodactylClient
     }
 
     /**
-     * Get server details
+     * Get server details.
      *
-     * @param string $serverId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -86,10 +94,8 @@ class ServerResource extends PterodactylClient
     }
 
     /**
-     * Get server utilization
+     * Get server utilization.
      *
-     * @param string $serverId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -130,11 +136,10 @@ class ServerResource extends PterodactylClient
     }
 
     /**
-     * Send power signal to server
+     * Send power signal to server.
      *
-     * @param string $serverId
      * @param string $signal start|stop|restart|kill
-     * @return array
+     *
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -183,11 +188,8 @@ class ServerResource extends PterodactylClient
     }
 
     /**
-     * Send command to server
+     * Send command to server.
      *
-     * @param string $serverId
-     * @param string $command
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -236,10 +238,8 @@ class ServerResource extends PterodactylClient
     }
 
     /**
-     * Get server backup list
+     * Get server backup list.
      *
-     * @param string $serverId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -275,12 +275,8 @@ class ServerResource extends PterodactylClient
     }
 
     /**
-     * Create server backup
+     * Create server backup.
      *
-     * @param string $serverId
-     * @param string $name
-     * @param bool $isLocked
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -332,11 +328,8 @@ class ServerResource extends PterodactylClient
     }
 
     /**
-     * Delete server backup
+     * Delete server backup.
      *
-     * @param string $serverId
-     * @param string $backupId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -370,4 +363,4 @@ class ServerResource extends PterodactylClient
             throw $e;
         }
     }
-} 
+}

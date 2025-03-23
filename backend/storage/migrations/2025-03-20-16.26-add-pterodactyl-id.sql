@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_users` ADD COLUMN `pterodactyl_user_id` INT(11) NOT NULL DEFAULT 0 AFTER `uuid`;

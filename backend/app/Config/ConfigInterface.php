@@ -40,12 +40,39 @@ interface ConfigInterface
     public const LEGAL_TOS = 'legal_tos_url';
     public const LEGAL_PRIVACY = 'legal_privacy_url';
 
+    /**
+     * Pterodactyl.
+     */
+    public const PTERODACTYL_API_KEY = 'pterodactyl_api_key';
+    public const PTERODACTYL_BASE_URL = 'pterodactyl_base_url';
 
-	/**
-	 * Pterodactyl.
-	 */
+    /**
+     * License.
+     */
+    public const LICENSE_KEY = 'license_key';
 
-	public const PTERODACTYL_API_KEY = 'pterodactyl_api_key';
-	public const PTERODACTYL_BASE_URL = 'pterodactyl_base_url';
+    /**
+     * Earn.
+     */
+    public const AFK_ENABLED = 'afk_enabled';
+    public const AFK_MIN_PER_COIN = 'afk_min_per_coin';
 
+    public const CODE_REDEMPTION_ENABLED = 'code_redemption_enabled';
+
+    public const J4R_ENABLED = 'j4r_enabled';
+
+    /**
+     * Referrals.
+     */
+    public const REFERRALS_ENABLED = 'referrals_enabled';
+
+    /**
+     * Link For Rewards.
+     */
+    public const L4R_ENABLED = 'l4r_enabled';
+
+    /**
+     * Store.
+     */
+    public const STORE_ENABLED = 'store_enabled';
 }

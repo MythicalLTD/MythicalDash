@@ -77,6 +77,7 @@ release:
 	
 	@echo -e "${PURPLE}${INFO} Frontend checks...${NC}"
 	@cd $(FRONTEND_DIR) && $(YARN) lint
+	@cd $(BACKEND_DIR) && $(COMPOSER) run lint
 	@cd $(FRONTEND_DIR) && $(YARN) format
 	@echo -e "${GREEN}${CHECK} Frontend checks complete${NC}\n"
 	

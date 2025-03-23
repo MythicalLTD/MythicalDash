@@ -186,7 +186,6 @@ class Session extends Database
         ]));
     }
 
-
     /**
      * Force user reauthorization by clearing cookies and session.
      */

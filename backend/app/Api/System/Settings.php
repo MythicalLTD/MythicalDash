@@ -30,11 +30,22 @@ $router->add('/api/system/settings', function (): void {
         ConfigInterface::SEO_KEYWORDS => $config->getSetting(ConfigInterface::SEO_KEYWORDS, 'some,random,keywords'),
         ConfigInterface::TURNSTILE_ENABLED => $config->getSetting(ConfigInterface::TURNSTILE_ENABLED, 'false'),
         ConfigInterface::TURNSTILE_KEY_PUB => $config->getSetting(ConfigInterface::TURNSTILE_KEY_PUB, 'XXXX'),
-		
+
         ConfigInterface::LEGAL_TOS => $config->getSetting(ConfigInterface::LEGAL_TOS, '/tos'),
         ConfigInterface::LEGAL_PRIVACY => $config->getSetting(ConfigInterface::LEGAL_PRIVACY, '/privacy'),
 
+        ConfigInterface::PTERODACTYL_BASE_URL => $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, 'https://demopanel.mythical.systems'),
 
+        ConfigInterface::AFK_ENABLED => $config->getSetting(ConfigInterface::AFK_ENABLED, 'false'),
+        ConfigInterface::AFK_MIN_PER_COIN => $config->getSetting(ConfigInterface::AFK_MIN_PER_COIN, '1'),
+
+        ConfigInterface::CODE_REDEMPTION_ENABLED => $config->getSetting(ConfigInterface::CODE_REDEMPTION_ENABLED, 'false'),
+
+        ConfigInterface::J4R_ENABLED => $config->getSetting(ConfigInterface::J4R_ENABLED, 'false'),
+
+        ConfigInterface::REFERRALS_ENABLED => $config->getSetting(ConfigInterface::REFERRALS_ENABLED, 'false'),
+        ConfigInterface::L4R_ENABLED => $config->getSetting(ConfigInterface::L4R_ENABLED, 'false'),
+        ConfigInterface::STORE_ENABLED => $config->getSetting(ConfigInterface::STORE_ENABLED, 'false'),
     ];
 
     App::OK('Sure here are the settings you were looking for', ['settings' => $settings]);

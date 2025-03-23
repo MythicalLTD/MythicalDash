@@ -52,6 +52,36 @@ const routes = [
         component: () => import('@/views/client/Announcements.vue'),
     },
     {
+        path: '/earn/afk',
+        name: 'AFK Rewards',
+        component: () => import('@/views/client/earn/AFKRewards.vue'),
+    },
+    {
+        path: '/earn/redeem',
+        name: 'Redeem',
+        component: () => import('@/views/client/earn/CodeRedemption.vue'),
+    },
+    {
+        path: '/earn/j4r',
+        name: 'Join For Rewards',
+        component: () => import('@/views/client/earn/JoinForRewards.vue'),
+    },
+    {
+        path: '/earn/referrals',
+        name: 'Referrals',
+        component: () => import('@/views/client/earn/Referrals.vue'),
+    },
+    {
+        path: '/earn/links',
+        name: 'Link For Rewards',
+        component: () => import('@/views/client/earn/LinkForRewards.vue'),
+    },
+    {
+        path: '/store',
+        name: 'Store',
+        component: () => import('@/views/client/store/Store.vue'),
+    },
+    {
         path: '/ticket',
         name: 'Ticket',
         component: () => import('@/views/client/ticket/List.vue'),

@@ -1,22 +1,31 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Client\Resources;
 
 use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Client\PterodactylClient;
-use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
-use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
-use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class DatabaseResource extends PterodactylClient
 {
     /**
-     * List databases for a server
+     * List databases for a server.
      *
-     * @param string $serverId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -52,12 +61,8 @@ class DatabaseResource extends PterodactylClient
     }
 
     /**
-     * Create new database
+     * Create new database.
      *
-     * @param string $serverId
-     * @param string $database
-     * @param string $remote
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -104,11 +109,8 @@ class DatabaseResource extends PterodactylClient
     }
 
     /**
-     * Reset database password
+     * Reset database password.
      *
-     * @param string $serverId
-     * @param string $databaseId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -144,11 +146,8 @@ class DatabaseResource extends PterodactylClient
     }
 
     /**
-     * Delete database
+     * Delete database.
      *
-     * @param string $serverId
-     * @param string $databaseId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -182,4 +181,4 @@ class DatabaseResource extends PterodactylClient
             throw $e;
         }
     }
-} 
+}

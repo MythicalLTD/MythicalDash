@@ -12,17 +12,17 @@
  */
 
 use MythicalDash\App;
-use PragmaRX\Google2FA\Google2FA;
 use MythicalDash\Chat\User\User;
+use PragmaRX\Google2FA\Google2FA;
 use MythicalDash\Chat\User\Session;
-use MythicalSystems\CloudFlare\Turnstile;
 use MythicalDash\Config\ConfigInterface;
+use MythicalSystems\CloudFlare\Turnstile;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
 
 $router->get('/api/user/auth/2fa/setup', function (): void {
-	global $eventManager;
+    global $eventManager;
     App::init();
     $appInstance = App::getInstance(true);
 

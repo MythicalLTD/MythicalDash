@@ -29,6 +29,7 @@ class PluginDB extends Database
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
             self::db_Error('Failed to get plugins from database: ' . $e->getMessage());
+
             return [];
         }
     }
@@ -64,6 +65,7 @@ class PluginDB extends Database
 
             if (!$result) {
                 self::db_Error('Failed to execute plugin registration query');
+
                 return false;
             }
 
@@ -71,6 +73,7 @@ class PluginDB extends Database
 
         } catch (\Exception $e) {
             self::db_Error('Failed to register plugin: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -96,9 +99,11 @@ class PluginDB extends Database
             ");
 
             $stmt->execute([':name' => $name]);
+
             return (bool) $stmt->fetch(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
             self::db_Error('Failed to check if plugin is registered: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -156,6 +161,7 @@ class PluginDB extends Database
             return $result && $result['enabled'] === 'true';
         } catch (\Exception $e) {
             self::db_Error('Failed to check if plugin is enabled: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -209,6 +215,7 @@ class PluginDB extends Database
             return $result ?: null;
         } catch (\Exception $e) {
             self::db_Error('Failed to get plugin info: ' . $e->getMessage());
+
             return null;
         }
     }
@@ -241,6 +248,7 @@ class PluginDB extends Database
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
             self::db_Error('Failed to list plugins: ' . $e->getMessage());
+
             return [];
         }
     }
@@ -262,6 +270,7 @@ class PluginDB extends Database
             return $stmt->fetch(\PDO::FETCH_ASSOC)['name'];
         } catch (\Exception $e) {
             self::db_Error('Failed to convert ID to name: ' . $e->getMessage());
+
             return '';
         }
     }

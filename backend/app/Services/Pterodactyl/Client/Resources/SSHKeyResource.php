@@ -1,21 +1,31 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Client\Resources;
 
 use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Client\PterodactylClient;
-use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
-use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
-use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class SSHKeyResource extends PterodactylClient
 {
     /**
-     * List all SSH keys
+     * List all SSH keys.
      *
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws RateLimitException
@@ -46,10 +56,8 @@ class SSHKeyResource extends PterodactylClient
     }
 
     /**
-     * Get a specific SSH key
+     * Get a specific SSH key.
      *
-     * @param string $keyId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -85,11 +93,8 @@ class SSHKeyResource extends PterodactylClient
     }
 
     /**
-     * Create a new SSH key
+     * Create a new SSH key.
      *
-     * @param string $name
-     * @param string $publicKey
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ValidationException
@@ -131,10 +136,8 @@ class SSHKeyResource extends PterodactylClient
     }
 
     /**
-     * Delete an SSH key
+     * Delete an SSH key.
      *
-     * @param string $keyId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -168,4 +171,4 @@ class SSHKeyResource extends PterodactylClient
             throw $e;
         }
     }
-} 
+}

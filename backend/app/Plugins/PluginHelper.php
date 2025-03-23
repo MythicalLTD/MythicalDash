@@ -29,6 +29,7 @@ class PluginHelper
             if (is_dir($pluginsDir) && is_readable($pluginsDir) && is_writable($pluginsDir)) {
                 return $pluginsDir;
             }
+
             return '';
         } catch (\Exception) {
             return '';

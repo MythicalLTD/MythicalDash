@@ -1,22 +1,29 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Admin\Resources;
 
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
 use MythicalDash\Services\Pterodactyl\Admin\PterodactylAdmin;
-use MythicalDash\Services\Pterodactyl\Exceptions\PterodactylException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PterodactylException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class UsersResource extends PterodactylAdmin
 {
     /**
-     * List all users
+     * List all users.
      *
-     * @param int $page
-     * @param int $perPage
-     * @return array
      * @throws PterodactylException
      */
     public function listUsers(int $page = 1, int $perPage = 50): array
@@ -34,10 +41,8 @@ class UsersResource extends PterodactylAdmin
     }
 
     /**
-     * Get a specific user
+     * Get a specific user.
      *
-     * @param int $userId
-     * @return array
      * @throws ResourceNotFoundException
      * @throws PterodactylException
      */
@@ -47,22 +52,15 @@ class UsersResource extends PterodactylAdmin
             return $this->request('GET', "/api/application/users/{$userId}");
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === 404) {
-                throw ResourceNotFoundException::forResource('user', (string)$userId);
+                throw ResourceNotFoundException::forResource('user', (string) $userId);
             }
             throw new PterodactylException('Failed to retrieve user: ' . $e->getMessage());
         }
     }
 
     /**
-     * Create a new user
+     * Create a new user.
      *
-     * @param string $email
-     * @param string $username
-     * @param string $firstName
-     * @param string $lastName
-     * @param string $password
-     * @param bool $isAdmin
-     * @return array
      * @throws ValidationException
      * @throws PterodactylException
      */
@@ -72,7 +70,6 @@ class UsersResource extends PterodactylAdmin
         string $firstName,
         string $lastName,
         string $password,
-        bool $isAdmin = false
     ): array {
         try {
             return $this->request('POST', '/api/application/users', [
@@ -82,7 +79,6 @@ class UsersResource extends PterodactylAdmin
                     'first_name' => $firstName,
                     'last_name' => $lastName,
                     'password' => $password,
-                    'root_admin' => $isAdmin,
                 ],
             ]);
         } catch (ClientException $e) {
@@ -90,16 +86,14 @@ class UsersResource extends PterodactylAdmin
                 $errors = json_decode($e->getResponse()->getBody()->getContents(), true);
                 throw ValidationException::withErrors($errors['errors'] ?? []);
             }
+
             throw new PterodactylException('Failed to create user: ' . $e->getMessage());
         }
     }
 
     /**
-     * Update a user
+     * Update a user.
      *
-     * @param int $userId
-     * @param array $data
-     * @return array
      * @throws ValidationException
      * @throws ResourceNotFoundException
      * @throws PterodactylException
@@ -112,7 +106,7 @@ class UsersResource extends PterodactylAdmin
             ]);
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === 404) {
-                throw ResourceNotFoundException::forResource('user', (string)$userId);
+                throw ResourceNotFoundException::forResource('user', (string) $userId);
             }
             if ($e->getResponse()->getStatusCode() === 422) {
                 $errors = json_decode($e->getResponse()->getBody()->getContents(), true);
@@ -123,10 +117,8 @@ class UsersResource extends PterodactylAdmin
     }
 
     /**
-     * Delete a user
+     * Delete a user.
      *
-     * @param int $userId
-     * @return array
      * @throws ResourceNotFoundException
      * @throws PterodactylException
      */
@@ -136,82 +128,86 @@ class UsersResource extends PterodactylAdmin
             return $this->request('DELETE', "/api/application/users/{$userId}");
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === 404) {
-                throw ResourceNotFoundException::forResource('user', (string)$userId);
+                throw ResourceNotFoundException::forResource('user', (string) $userId);
             }
             throw new PterodactylException('Failed to delete user: ' . $e->getMessage());
         }
     }
 
-    /**
-     * List user's API keys
-     *
-     * @param int $userId
-     * @return array
-     * @throws ResourceNotFoundException
-     * @throws PterodactylException
-     */
-    public function listApiKeys(int $userId): array
+    public function findUserByEmail(string $email): array
     {
         try {
-            return $this->request('GET', "/api/application/users/{$userId}/api-keys");
-        } catch (ClientException $e) {
-            if ($e->getResponse()->getStatusCode() === 404) {
-                throw ResourceNotFoundException::forResource('user', (string)$userId);
-            }
-            throw new PterodactylException('Failed to retrieve API keys: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Create API key for user
-     *
-     * @param int $userId
-     * @param string $description
-     * @param array $allowedIps
-     * @return array
-     * @throws ValidationException
-     * @throws ResourceNotFoundException
-     * @throws PterodactylException
-     */
-    public function createApiKey(int $userId, string $description, array $allowedIps = []): array
-    {
-        try {
-            return $this->request('POST', "/api/application/users/{$userId}/api-keys", [
-                'json' => [
-                    'description' => $description,
-                    'allowed_ips' => $allowedIps,
+            $response = $this->request('GET', '/api/application/users', [
+                'query' => [
+                    'filter[email]' => $email,
                 ],
             ]);
+
+            if (empty($response['data'])) {
+                throw new ResourceNotFoundException('User not found with email: ' . $email);
+            }
+
+            // Return the first (and should be only) user with this email
+            return $response['data'][0];
         } catch (ClientException $e) {
-            if ($e->getResponse()->getStatusCode() === 404) {
-                throw ResourceNotFoundException::forResource('user', (string)$userId);
-            }
-            if ($e->getResponse()->getStatusCode() === 422) {
-                $errors = json_decode($e->getResponse()->getBody()->getContents(), true);
-                throw ValidationException::withErrors($errors['errors'] ?? []);
-            }
-            throw new PterodactylException('Failed to create API key: ' . $e->getMessage());
+            throw new PterodactylException('Failed to find user by email: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Delete API key
-     *
-     * @param int $userId
-     * @param string $keyIdentifier
-     * @return array
-     * @throws ResourceNotFoundException
-     * @throws PterodactylException
-     */
-    public function deleteApiKey(int $userId, string $keyIdentifier): array
+    public function findUserByUsername(string $username): array
     {
         try {
-            return $this->request('DELETE', "/api/application/users/{$userId}/api-keys/{$keyIdentifier}");
-        } catch (ClientException $e) {
-            if ($e->getResponse()->getStatusCode() === 404) {
-                throw ResourceNotFoundException::forResource('API key', $keyIdentifier);
+            $response = $this->request('GET', '/api/application/users', [
+                'query' => [
+                    'filter[username]' => $username,
+                ],
+            ]);
+
+            if (empty($response['data'])) {
+                throw new ResourceNotFoundException('User not found with username: ' . $username);
             }
-            throw new PterodactylException('Failed to delete API key: ' . $e->getMessage());
+
+            return $response['data'][0];
+        } catch (ClientException $e) {
+            throw new PterodactylException('Failed to find user by username: ' . $e->getMessage());
         }
     }
-} 
+
+    public function findUserByUuid(string $uuid): array
+    {
+        try {
+            $response = $this->request('GET', '/api/application/users', [
+                'query' => [
+                    'filter[uuid]' => $uuid,
+                ],
+            ]);
+
+            if (empty($response['data'])) {
+                throw new ResourceNotFoundException('User not found with uuid: ' . $uuid);
+            }
+
+            return $response['data'][0];
+        } catch (ClientException $e) {
+            throw new PterodactylException('Failed to find user by uuid: ' . $e->getMessage());
+        }
+    }
+
+    public function findUserByExternalId(string $externalId): array
+    {
+        try {
+            $response = $this->request('GET', '/api/application/users', [
+                'query' => [
+                    'filter[external_id]' => $externalId,
+                ],
+            ]);
+
+            if (empty($response['data'])) {
+                throw new ResourceNotFoundException('User not found with external id: ' . $externalId);
+            }
+
+            return $response['data'][0];
+        } catch (ClientException $e) {
+            throw new PterodactylException('Failed to find user by external id: ' . $e->getMessage());
+        }
+    }
+}

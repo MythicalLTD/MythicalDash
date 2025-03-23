@@ -1,23 +1,31 @@
 <?php
 
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
 namespace MythicalDash\Services\Pterodactyl\Admin\Resources;
 
 use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Admin\PterodactylAdmin;
-use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
-use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
-use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
+use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
+use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class LocationsResource extends PterodactylAdmin
 {
     /**
-     * List all locations
+     * List all locations.
      *
-     * @param int $page
-     * @param int $perPage
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws RateLimitException
@@ -53,10 +61,8 @@ class LocationsResource extends PterodactylAdmin
     }
 
     /**
-     * Get a specific location
+     * Get a specific location.
      *
-     * @param int $locationId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -92,11 +98,8 @@ class LocationsResource extends PterodactylAdmin
     }
 
     /**
-     * Create a new location
+     * Create a new location.
      *
-     * @param string $shortCode
-     * @param string $description
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ValidationException
@@ -138,12 +141,8 @@ class LocationsResource extends PterodactylAdmin
     }
 
     /**
-     * Update a location
+     * Update a location.
      *
-     * @param int $locationId
-     * @param string $shortCode
-     * @param string $description
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -190,10 +189,8 @@ class LocationsResource extends PterodactylAdmin
     }
 
     /**
-     * Delete a location
+     * Delete a location.
      *
-     * @param int $locationId
-     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -227,4 +224,4 @@ class LocationsResource extends PterodactylAdmin
             throw $e;
         }
     }
-} 
+}
