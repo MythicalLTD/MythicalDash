@@ -34,9 +34,9 @@ class LoggerFactory
     public function warning(string $message, bool $sendTelemetry = false): void
     {
         $caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['class'] ?? 'unknown';
-        //$eventID = null;
+        // $eventID = null;
         if ($sendTelemetry) {
-            //$eventID = \Sentry\captureMessage($message, \Sentry\Severity::warning(), null);
+            // $eventID = \Sentry\captureMessage($message, \Sentry\Severity::warning(), null);
         }
         $this->appendLog('[WARNING] [' . $caller . '] ' . $message);
     }
@@ -44,9 +44,9 @@ class LoggerFactory
     public function error(string $message, bool $sendTelemetry = false): void
     {
         $caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['class'] ?? 'unknown';
-        //$eventID = null;
+        // $eventID = null;
         if ($sendTelemetry) {
-            //$eventID = \Sentry\captureMessage($message, \Sentry\Severity::error(), null);
+            // $eventID = \Sentry\captureMessage($message, \Sentry\Severity::error(), null);
         }
         $this->appendLog('[ERROR]  [' . $caller . '] ' . $message);
     }
@@ -54,10 +54,10 @@ class LoggerFactory
     public function critical(string $message, bool $sendTelemetry = false): void
     {
         $caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['class'] ?? 'unknown';
-        //$eventID = null;
+        // $eventID = null;
         if ($sendTelemetry) {
 
-            //$eventID = \Sentry\captureMessage($message, \Sentry\Severity::fatal(), null);
+            // $eventID = \Sentry\captureMessage($message, \Sentry\Severity::fatal(), null);
         }
         $this->appendLog('[CRITICAL]  [' . $caller . '] ' . $message);
     }

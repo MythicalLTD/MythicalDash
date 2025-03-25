@@ -13,30 +13,22 @@
 
 namespace MythicalDash\Plugins;
 
-use MythicalDash\Plugins\PluginEvents;
-
 interface MythicalDashPlugin
 {
-	/**
-	 * Process the events for the plugin
-	 * 
-	 * @param PluginEvents $event The event to process
-	 * 
-	 * @return void
-	 */
+    /**
+     * Process the events for the plugin.
+     *
+     * @param PluginEvents $event The event to process
+     */
     public static function processEvents(PluginEvents $event): void;
 
-	/**
-	 * Process the plugin install
-	 * 
-	 * @return void
-	 */
-	public static function pluginInstall() : void;
+    /**
+     * Process the plugin install.
+     */
+    public static function pluginInstall(): void;
 
-	/**
-	 * Process the plugin uninstall
-	 * 
-	 * @return void
-	 */
-	public static function pluginUninstall(): void;
+    /**
+     * Process the plugin uninstall.
+     */
+    public static function pluginUninstall(): void;
 }

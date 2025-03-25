@@ -39,7 +39,7 @@ class UsersResource extends PterodactylAdmin
             throw new PterodactylException('Failed to retrieve users list: ' . $e->getMessage());
         }
     }
-	
+
     /**
      * Get a specific user.
      *
@@ -58,20 +58,21 @@ class UsersResource extends PterodactylAdmin
         }
     }
 
-	public function getUserWithServers(int $userId) : array {
-		try {
-			return $this->request('GET', "/api/application/users/{$userId}", [
-				'query' => [
-					'include' => 'servers',
-				],
-			]);
-		}catch (ClientException $e) {
+    public function getUserWithServers(int $userId): array
+    {
+        try {
+            return $this->request('GET', "/api/application/users/{$userId}", [
+                'query' => [
+                    'include' => 'servers',
+                ],
+            ]);
+        } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === 404) {
                 throw ResourceNotFoundException::forResource('user', (string) $userId);
             }
             throw new PterodactylException('Failed to retrieve user: ' . $e->getMessage());
         }
-	}
+    }
 
     /**
      * Create a new user.
@@ -233,14 +234,14 @@ class UsersResource extends PterodactylAdmin
      * @param int $perPage Items per page
      * @param array $filters Optional filters (email, uuid, username, external_id)
      * @param string $sortBy Sort by field (id or uuid)
-     * @return array
+     *
      * @throws PterodactylException
      */
     public function listUsersWithServers(
         int $page = 1,
         int $perPage = 50,
         array $filters = [],
-        string $sortBy = 'id'
+        string $sortBy = 'id',
     ): array {
         try {
             $query = [

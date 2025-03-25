@@ -16,8 +16,6 @@ app.use(pinia);
 app.use(router);
 app.use(VueSweetalert2);
 
-
-
 const i18n = createI18n({
     legacy: false,
     locale: 'EN',

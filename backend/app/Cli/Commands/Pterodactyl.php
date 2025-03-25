@@ -48,16 +48,17 @@ class Pterodactyl extends CliApp implements CommandBuilder
             case 'logs':
                 self::getLogs($cliApp, $appInstance);
                 break;
-			case 'debug':
-				self::debug($cliApp, $appInstance);
-				break;
+            case 'debug':
+                self::debug($cliApp, $appInstance);
+                break;
             default:
                 $cliApp->send('&cInvalid subcommand!');
                 break;
         }
     }
 
-	public static function debug(CliApp $cliApp, App $appInstance): void {
+    public static function debug(CliApp $cliApp, App $appInstance): void
+    {
         try {
             $appInstance->loadEnv();
             $db = new Database(
@@ -68,160 +69,171 @@ class Pterodactyl extends CliApp implements CommandBuilder
             );
             $config = new ConfigFactory($db->getPdo());
 
-			
-			$cliApp->send('&7Debug mode enabled!');
-			$cliApp->send('&7Pterodactyl panel URL: &e' . $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''));
-			$cliApp->send('&7Pterodactyl API key: &e' . $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
-			$cliApp->send('&7--------------------------------');
+            $cliApp->send('&7Debug mode enabled!');
+            $cliApp->send('&7Pterodactyl panel URL: &e' . $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''));
+            $cliApp->send('&7Pterodactyl API key: &e' . $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+            $cliApp->send('&7--------------------------------');
 
+            $cliApp->send('&7What do you want to test?');
+            $cliApp->send('&71. Users');
+            $cliApp->send('&72. Servers');
+            $cliApp->send('&73. Locations');
+            $cliApp->send('&74. Nodes');
+            $cliApp->send('&75. Nests');
+            $cliApp->send('&76. Eggs');
+            $cliApp->send('&77. All');
+            $answer = strtolower(readline('> '));
 
-			$cliApp->send('&7What do you want to test?');
-			$cliApp->send('&71. Users');
-			$cliApp->send('&72. Servers');
-			$cliApp->send('&73. Locations');
-			$cliApp->send('&74. Nodes');
-			$cliApp->send('&75. Nests');
-			$cliApp->send('&76. Eggs');
-			$cliApp->send('&77. All');
-			$answer = strtolower(readline('> '));
+            switch ($answer) {
+                case '1':
+                    self::testUsers($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    break;
+                case '2':
+                    self::testServers($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    break;
+                case '3':
+                    self::testLocations($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    break;
+                case '4':
+                    self::testNodes($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    break;
+                case '5':
+                    self::testNests($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    break;
+                case '6':
+                    self::testEggs($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    break;
+                case '7':
+                    self::testAll($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    break;
+                default:
+                    $cliApp->send('&cInvalid option!');
+                    break;
+            }
 
-			switch ($answer) {
-				case '1':
-					self::testUsers($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
-					break;
-				case '2':
-					self::testServers($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
-					break;
-				case '3':
-					self::testLocations($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
-					break;
-				case '4':
-					self::testNodes($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
-					break;
-				case '5':
-					self::testNests($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
-					break;
-				case '6':
-					self::testEggs($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
-					break;
-				case '7':
-					self::testAll($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
-					break;
-				default:
-					$cliApp->send('&cInvalid option!');
-					break;
-			}
+        } catch (\Exception $e) {
+            $cliApp->send('&cError: ' . $e->getMessage());
+        }
+    }
 
-		} catch (\Exception $e) {
-			$cliApp->send('&cError: ' . $e->getMessage());
-		}
-	}
-	public static function testUsers(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void {
-		$cliApp->send('&7Testing users...');
+    public static function testUsers(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void
+    {
+        $cliApp->send('&7Testing users...');
 
-		try {
-			$userResource = new UsersResource($url, $apiKey);
-			$users = $userResource->listUsers(1, 50);
-			
-			$cliApp->send('&7List of users:');
-			foreach ($users['data'] as $user) {
-				$cliApp->send("&7ID: &e{$user['attributes']['id']} &7| Username: &e{$user['attributes']['username']} &7| Email: &e{$user['attributes']['email']}");
-			}
+        try {
+            $userResource = new UsersResource($url, $apiKey);
+            $users = $userResource->listUsers(1, 50);
 
-			$cliApp->send('&7Enter user ID to view (or press enter to skip):');
-			$userId = readline('> ');
-			
-			if (!empty($userId)) {
-				$cliApp->send("&7Fetching user details for ID: &e{$userId}");
-				try {
-					$userDetails = $userResource->getUserWithServers($userId);
-					
-					// Debug the response structure
-					if (!is_array($userDetails)) {
-						$cliApp->send('&cError: Invalid response format');
-						return;
-					}
+            $cliApp->send('&7List of users:');
+            foreach ($users['data'] as $user) {
+                $cliApp->send("&7ID: &e{$user['attributes']['id']} &7| Username: &e{$user['attributes']['username']} &7| Email: &e{$user['attributes']['email']}");
+            }
 
-					// Check if we have valid data
-					if (!isset($userDetails['object']) || !isset($userDetails['attributes'])) {
-						$cliApp->send('&cError: Missing user attributes in response');
-						return;
-					}
+            $cliApp->send('&7Enter user ID to view (or press enter to skip):');
+            $userId = readline('> ');
 
-					$attributes = $userDetails['attributes'];
-					
-					$cliApp->send('&7User details:');
-					$cliApp->send('&7ID: &e' . ($attributes['id'] ?? 'N/A'));
-					$cliApp->send('&7Username: &e' . ($attributes['username'] ?? 'N/A'));
-					$cliApp->send('&7Email: &e' . ($attributes['email'] ?? 'N/A'));
-					$cliApp->send('&7First Name: &e' . ($attributes['first_name'] ?? 'N/A'));
-					$cliApp->send('&7Last Name: &e' . ($attributes['last_name'] ?? 'N/A'));
-					$cliApp->send('&7Admin: &e' . ($attributes['root_admin'] ? 'Yes' : 'No'));
-					$cliApp->send('&72FA Enabled: &e' . ($attributes['2fa'] ? 'Yes' : 'No'));
-					$cliApp->send('&7Created at: &e' . ($attributes['created_at'] ?? 'N/A'));
-					$cliApp->send('&7Updated at: &e' . ($attributes['updated_at'] ?? 'N/A'));
-					
-					$cliApp->send('&7--------------------------------');
+            if (!empty($userId)) {
+                $cliApp->send("&7Fetching user details for ID: &e{$userId}");
+                try {
+                    $userDetails = $userResource->getUserWithServers($userId);
 
-					if (isset($attributes['relationships']['servers']['data']) && 
-						is_array($attributes['relationships']['servers']['data'])) {
-						$servers = $attributes['relationships']['servers']['data'];
-						if (count($servers) > 0) {
-							$cliApp->send('&7Servers:');
-							foreach ($servers as $server) {
-								if (!isset($server['attributes'])) {
-									continue;
-								}
-								
-								$serverAttr = $server['attributes'];
-								$status = $serverAttr['status'] ?? 'unknown';
-								$suspended = $serverAttr['suspended'] ? '&c[SUSPENDED]' : '';
-								$memory = $serverAttr['limits']['memory'];
-								$disk = $serverAttr['limits']['disk'];
-								$cpu = $serverAttr['limits']['cpu'];
-								
-								$cliApp->send(
-									"&7ID: &e{$serverAttr['id']} " .
-									"&7| Name: &e{$serverAttr['name']} " .
-									"&7| Status: &e{$status} {$suspended}" .
-									"&7| Resources: &eRAM: {$memory}MB, Disk: {$disk}MB, CPU: {$cpu}%"
-								);
-							}
-						} else {
-							$cliApp->send('&7No servers found for this user.');
-						}
-					} else {
-						$cliApp->send('&7No servers found for this user.');
-					}
-				} catch (\Exception $e) {
-					$cliApp->send('&cError fetching user details: ' . $e->getMessage());
-				}
-			}
-		} catch (\Exception $e) {
-			$cliApp->send('&cError: ' . $e->getMessage());
-		}
-	}
-	public static function testServers(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void {
-		$cliApp->send('&7Testing servers...');
-	}
-	public static function testLocations(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void {	
-		$cliApp->send('&7Testing locations...');
-	}
-	public static function testNodes(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void {
-		$cliApp->send('&7Testing nodes...');
-	}
-	public static function testNests(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void {
-		$cliApp->send('&7Testing nests...');
-	}
-	public static function testEggs(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void {
-		$cliApp->send('&7Testing eggs...');
-	}
+                    // Debug the response structure
+                    if (!is_array($userDetails)) {
+                        $cliApp->send('&cError: Invalid response format');
 
-	public static function testAll(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void {
-		$cliApp->send('&7Testing all...');
-	}
-	
-	
+                        return;
+                    }
+
+                    // Check if we have valid data
+                    if (!isset($userDetails['object']) || !isset($userDetails['attributes'])) {
+                        $cliApp->send('&cError: Missing user attributes in response');
+
+                        return;
+                    }
+
+                    $attributes = $userDetails['attributes'];
+
+                    $cliApp->send('&7User details:');
+                    $cliApp->send('&7ID: &e' . ($attributes['id'] ?? 'N/A'));
+                    $cliApp->send('&7Username: &e' . ($attributes['username'] ?? 'N/A'));
+                    $cliApp->send('&7Email: &e' . ($attributes['email'] ?? 'N/A'));
+                    $cliApp->send('&7First Name: &e' . ($attributes['first_name'] ?? 'N/A'));
+                    $cliApp->send('&7Last Name: &e' . ($attributes['last_name'] ?? 'N/A'));
+                    $cliApp->send('&7Admin: &e' . ($attributes['root_admin'] ? 'Yes' : 'No'));
+                    $cliApp->send('&72FA Enabled: &e' . ($attributes['2fa'] ? 'Yes' : 'No'));
+                    $cliApp->send('&7Created at: &e' . ($attributes['created_at'] ?? 'N/A'));
+                    $cliApp->send('&7Updated at: &e' . ($attributes['updated_at'] ?? 'N/A'));
+
+                    $cliApp->send('&7--------------------------------');
+
+                    if (isset($attributes['relationships']['servers']['data'])
+                        && is_array($attributes['relationships']['servers']['data'])) {
+                        $servers = $attributes['relationships']['servers']['data'];
+                        if (count($servers) > 0) {
+                            $cliApp->send('&7Servers:');
+                            foreach ($servers as $server) {
+                                if (!isset($server['attributes'])) {
+                                    continue;
+                                }
+
+                                $serverAttr = $server['attributes'];
+                                $status = $serverAttr['status'] ?? 'unknown';
+                                $suspended = $serverAttr['suspended'] ? '&c[SUSPENDED]' : '';
+                                $memory = $serverAttr['limits']['memory'];
+                                $disk = $serverAttr['limits']['disk'];
+                                $cpu = $serverAttr['limits']['cpu'];
+
+                                $cliApp->send(
+                                    "&7ID: &e{$serverAttr['id']} " .
+                                    "&7| Name: &e{$serverAttr['name']} " .
+                                    "&7| Status: &e{$status} {$suspended}" .
+                                    "&7| Resources: &eRAM: {$memory}MB, Disk: {$disk}MB, CPU: {$cpu}%"
+                                );
+                            }
+                        } else {
+                            $cliApp->send('&7No servers found for this user.');
+                        }
+                    } else {
+                        $cliApp->send('&7No servers found for this user.');
+                    }
+                } catch (\Exception $e) {
+                    $cliApp->send('&cError fetching user details: ' . $e->getMessage());
+                }
+            }
+        } catch (\Exception $e) {
+            $cliApp->send('&cError: ' . $e->getMessage());
+        }
+    }
+
+    public static function testServers(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void
+    {
+        $cliApp->send('&7Testing servers...');
+    }
+
+    public static function testLocations(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void
+    {
+        $cliApp->send('&7Testing locations...');
+    }
+
+    public static function testNodes(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void
+    {
+        $cliApp->send('&7Testing nodes...');
+    }
+
+    public static function testNests(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void
+    {
+        $cliApp->send('&7Testing nests...');
+    }
+
+    public static function testEggs(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void
+    {
+        $cliApp->send('&7Testing eggs...');
+    }
+
+    public static function testAll(CliApp $cliApp, App $appInstance, string $url, string $apiKey): void
+    {
+        $cliApp->send('&7Testing all...');
+    }
 
     public static function getDescription(): string
     {
@@ -234,7 +246,7 @@ class Pterodactyl extends CliApp implements CommandBuilder
             'configure' => 'Configure Pterodactyl panel URL and API key',
             'test' => 'Test connection to Pterodactyl panel',
             'logs' => 'View recent panel activity',
-			'debug' => 'Test specific pterodactyl panel api endpoints!',
+            'debug' => 'Test specific pterodactyl panel api endpoints!',
         ];
     }
 

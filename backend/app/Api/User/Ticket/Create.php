@@ -33,7 +33,7 @@ $router->get('/api/user/ticket/create', function () {
 });
 
 $router->post('/api/user/ticket/create', function () {
-	global $eventManager;
+    global $eventManager;
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
@@ -73,16 +73,16 @@ $router->post('/api/user/ticket/create', function () {
             /**
              * Create the ticket.
              */
-			$uuid = $session->getInfo(UserColumns::UUID, false);
+            $uuid = $session->getInfo(UserColumns::UUID, false);
             $ticketId = Tickets::create($uuid, $departmentId, $subject, $message, $priority);
-			$eventManager->emit(TicketEvent::onTicketCreate(), [
-				'ticket_id' => $ticketId,
-				'department_id' => $departmentId,
-				'subject' => $subject,
-				'message' => $message,
-				'priority' => $priority,
-				'user_id' => $uuid
-			]);
+            $eventManager->emit(TicketEvent::onTicketCreate(), [
+                'ticket_id' => $ticketId,
+                'department_id' => $departmentId,
+                'subject' => $subject,
+                'message' => $message,
+                'priority' => $priority,
+                'user_id' => $uuid,
+            ]);
             if ($ticketId == 0) {
                 $appInstance->BadRequest('Failed to create ticket!', ['error_code' => 'FAILED_TO_CREATE_TICKET']);
             } else {

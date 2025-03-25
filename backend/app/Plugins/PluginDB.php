@@ -14,18 +14,19 @@
 namespace MythicalDash\Plugins;
 
 use MythicalDash\Chat\Database;
+
 /**
  * @deprecated Please use PluginHelper or PluginManager instead!
  */
 class PluginDB extends Database
 {
     public const PLUGIN_TABLE = 'mythicaldash_addons';
-	/**
-	 * Get all the plugins
-	 * 
-	 * @deprecated Please use PluginManager::getLoadedPlugins() instead
-	 * @return array
-	 */
+
+    /**
+     * Get all the plugins.
+     *
+     * @deprecated Please use PluginManager::getLoadedPlugins() instead
+     */
     public static function getPlugins(): array
     {
         try {
@@ -48,8 +49,8 @@ class PluginDB extends Database
      * @param string $displayName The display name of the plugin
      *
      * @return bool True if registration successful, false if already exists
-	 * 
-	 * @deprecated Use PluginHelper::getPluginConfig() instead
+     *
+     * @deprecated Use PluginHelper::getPluginConfig() instead
      */
     public static function registerPlugin(string $name, string $displayName): bool
     {
@@ -92,8 +93,8 @@ class PluginDB extends Database
      * @param string $name The name of the plugin
      *
      * @return bool True if plugin exists and isn't deleted
-	 * 
-	 * @deprecated Use PluginHelper::getPluginConfig() instead
+     *
+     * @deprecated Use PluginHelper::getPluginConfig() instead
      */
     public static function isPluginRegistered(string $name): bool
     {
@@ -123,8 +124,8 @@ class PluginDB extends Database
      *
      * @param string $name The name of the plugin
      * @param bool $enabled Whether to enable or disable the plugin
-	 * 
-	 * @deprecated Use PluginHelper::getPluginConfig() instead
+     *
+     * @deprecated Use PluginHelper::getPluginConfig() instead
      */
     public static function setPluginEnabled(string $name, bool $enabled): void
     {
@@ -153,8 +154,8 @@ class PluginDB extends Database
      * @param string $name The name of the plugin
      *
      * @return bool True if plugin is enabled
-	 * 
-	 * @deprecated Use PluginHelper::getPluginConfig() instead
+     *
+     * @deprecated Use PluginHelper::getPluginConfig() instead
      */
     public static function isPluginEnabled(string $name): bool
     {
@@ -184,8 +185,8 @@ class PluginDB extends Database
      * Delete a plugin.
      *
      * @param string $name The name of the plugin
-	 * 
-	 * @deprecated Use PluginHelper::getPluginConfig() instead
+     *
+     * @deprecated Use PluginHelper::getPluginConfig() instead
      */
     public static function deletePlugin(string $name): void
     {
@@ -211,8 +212,8 @@ class PluginDB extends Database
      * @param string $name The name of the plugin
      *
      * @return array|null Plugin information or null if not found
-	 * 
-	 * @deprecated Use PluginHelper::getPluginConfig() instead
+     *
+     * @deprecated Use PluginHelper::getPluginConfig() instead
      */
     public static function getPluginInfo(string $name): ?array
     {
@@ -244,8 +245,8 @@ class PluginDB extends Database
      * @param bool $includeDisabled Whether to include disabled plugins
      *
      * @return array List of plugins
-	 * 
-	 * @deprecated Use PluginHelper::getPluginConfig() instead
+     *
+     * @deprecated Use PluginHelper::getPluginConfig() instead
      */
     public static function listPlugins(bool $includeDisabled = false): array
     {
@@ -279,8 +280,8 @@ class PluginDB extends Database
      * @param int $id The ID to convert
      *
      * @return string The name
-	 * 
-	 * @deprecated Use PluginHelper::getPluginConfig() instead
+     *
+     * @deprecated Use PluginHelper::getPluginConfig() instead
      */
     public static function convertIdToName(int $id): string
     {

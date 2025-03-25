@@ -34,14 +34,14 @@ $router->get('/api/user/ticket/(.*)/messages', function ($ticketId) {
             $ticketInfo = Tickets::getTicket($ticketId);
             $ticketInfo['department_id'] = $ticketInfo['department'];
             $ticketInfo['department'] = Departments::get((int) $ticketInfo['department']);
-			$uuid = $s->getInfo(UserColumns::UUID, false);
-			global $eventManager;
+            $uuid = $s->getInfo(UserColumns::UUID, false);
+            global $eventManager;
             if ($ticketInfo['user'] !== $s->getInfo(UserColumns::UUID, false)) {
                 $appInstance->Forbidden('You do not have permission to view this ticket', ['error_code' => 'ERROR_PERMISSION_DENIED']);
 
                 return;
             }
-			
+
             if (empty($ticketInfo['department'])) {
                 $ticketInfo['department'] = [
                     'id' => 0,
@@ -78,14 +78,14 @@ $router->get('/api/user/ticket/(.*)/messages', function ($ticketId) {
             ];
 
             $attachments = Attachments::getAttachmentsByTicketId($ticketId);
-			
-			$eventManager->emit(TicketEvent::onTicketView(), [
-				'ticket_id' => $ticketId,
-				'user_id' => $uuid,
-				'messages' => $messages,
-				'attachments' => $attachments,
-				'ticket' => $ticketInfo,
-			]);
+
+            $eventManager->emit(TicketEvent::onTicketView(), [
+                'ticket_id' => $ticketId,
+                'user_id' => $uuid,
+                'messages' => $messages,
+                'attachments' => $attachments,
+                'ticket' => $ticketInfo,
+            ]);
 
             $appInstance->OK(200, [
                 'messages' => $messages,
@@ -107,8 +107,8 @@ $router->post('/api/user/ticket/(.*)/reply', function ($ticketId) {
     $appInstance->allowOnlyPOST();
     $s = new Session($appInstance);
     $ticketId = (int) $ticketId;
-	global $eventManager;
-	$uuid = $s->getInfo(UserColumns::UUID, false);
+    global $eventManager;
+    $uuid = $s->getInfo(UserColumns::UUID, false);
     if (!isset($_POST['message'])) {
         $appInstance->BadRequest('Message is required', ['error_code' => 'ERROR_MESSAGE_REQUIRED']);
 
@@ -124,11 +124,11 @@ $router->post('/api/user/ticket/(.*)/reply', function ($ticketId) {
             return;
         }
         Messages::createMessage($ticketId, $message, $uuid);
-		$eventManager->emit(TicketEvent::onTicketReply(), [
-			'ticket_id' => $ticketId,
-			'user_id' => $uuid,
-			'message' => $message,
-		]);
+        $eventManager->emit(TicketEvent::onTicketReply(), [
+            'ticket_id' => $ticketId,
+            'user_id' => $uuid,
+            'message' => $message,
+        ]);
         $appInstance->OK(200, ['message' => 'Message sent']);
     } else {
         $appInstance->BadRequest('Ticket not found', ['error_code' => 'ERROR_TICKET_NOT_FOUND']);
@@ -141,8 +141,8 @@ $router->post('/api/user/ticket/(.*)/status', function ($ticketId) {
     $appInstance->allowOnlyPOST();
     $s = new Session($appInstance);
     $ticketId = (int) $ticketId;
-	global $eventManager;
-	$uuid = $s->getInfo(UserColumns::UUID, false);
+    global $eventManager;
+    $uuid = $s->getInfo(UserColumns::UUID, false);
 
     if (!isset($_POST['status'])) {
         $appInstance->BadRequest('Status is required', ['error_code' => 'ERROR_STATUS_REQUIRED']);
@@ -159,11 +159,11 @@ $router->post('/api/user/ticket/(.*)/status', function ($ticketId) {
             return;
         }
         Tickets::updateTicketStatus($ticketId, $status);
-		$eventManager->emit(TicketEvent::onTicketUpdate(), [
-			'ticket_id' => $ticketId,
-			'user_id' => $uuid,
-			'status' => $status,
-		]);
+        $eventManager->emit(TicketEvent::onTicketUpdate(), [
+            'ticket_id' => $ticketId,
+            'user_id' => $uuid,
+            'status' => $status,
+        ]);
 
         $appInstance->OK(200, ['message' => 'Ticket status updated']);
     } else {
@@ -177,8 +177,8 @@ $router->post('/api/user/ticket/(.*)/attachments', function ($ticketId) {
     $appInstance->allowOnlyPOST();
     $s = new Session($appInstance);
     $ticketId = (int) $ticketId;
-	global $eventManager;
-	$uuid = $s->getInfo(UserColumns::UUID, false);
+    global $eventManager;
+    $uuid = $s->getInfo(UserColumns::UUID, false);
 
     if (!isset($_FILES['attachments'])) {
         $appInstance->BadRequest('Attachments are required', ['error_code' => 'ERROR_ATTACHMENTS_REQUIRED']);
@@ -263,11 +263,11 @@ $router->post('/api/user/ticket/(.*)/attachments', function ($ticketId) {
                 Attachments::addAttachment($ticketId, $relativePath);
                 $uploadedFiles[] = $relativePath;
             }
-			$eventManager->emit(TicketEvent::onTicketAttachmentUpload(), [
-				'ticket_id' => $ticketId,
-				'user_id' => $uuid,
-				'attachments' => $uploadedFiles,
-			]);
+            $eventManager->emit(TicketEvent::onTicketAttachmentUpload(), [
+                'ticket_id' => $ticketId,
+                'user_id' => $uuid,
+                'attachments' => $uploadedFiles,
+            ]);
             $appInstance->OK(200, [
                 'message' => 'Attachments uploaded successfully',
                 'files' => $uploadedFiles,

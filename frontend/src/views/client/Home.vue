@@ -1,7 +1,7 @@
 <template>
     <LayoutDashboard>
         <div class="p-6 space-y-6">
-			<BeforeContent />
+            <BeforeContent />
             <Header />
             <div class="grid gap-6 lg:grid-cols-4">
                 <!-- Left Column -->
@@ -20,7 +20,7 @@
                     <TicketList />
                 </div>
             </div>
-			<AfterContent />
+            <AfterContent />
         </div>
     </LayoutDashboard>
 </template>
@@ -36,7 +36,6 @@ import QuickLinks from '@/components/client/Dashboard/Main/QuickLinks.vue';
 import AnnouncementsPreview from '@/components/client/Dashboard/Main/AnnouncementsPreview.vue';
 import ServerList from '@/components/client/Dashboard/Main/ServerList.vue';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
-
 
 import BeforeContent from '@/plugins/components/Dashboard/BeforeContent.vue';
 import AfterContent from '@/plugins/components/Dashboard/AfterContent.vue';
