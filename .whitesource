@@ -1,6 +1,8 @@
 {
   "scanSettings": {
-    "baseBranches": []
+    "baseBranches": [
+		"v3-remastered"
+	]
   },
   "checkRunSettings": {
     "vulnerableCheckRunConclusionLevel": "failure",
