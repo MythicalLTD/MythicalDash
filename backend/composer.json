@@ -7,7 +7,7 @@
     "autoload": {
         "psr-4": {
             "MythicalDash\\": "app/",
-            "MythicalDash\\Storage\\Addons\\": "storage/addons/",
+            "MythicalDash\\Addons\\": "storage/addons/",
 			"MythicalDash\\Cron\\": "storage/cron/php/"
         }
     },

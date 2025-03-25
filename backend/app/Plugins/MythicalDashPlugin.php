@@ -11,11 +11,32 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalDash\Plugins\Events;
+namespace MythicalDash\Plugins;
 
 use MythicalDash\Plugins\PluginEvents;
 
-interface PluginEventRequirements
+interface MythicalDashPlugin
 {
+	/**
+	 * Process the events for the plugin
+	 * 
+	 * @param PluginEvents $event The event to process
+	 * 
+	 * @return void
+	 */
     public static function processEvents(PluginEvents $event): void;
+
+	/**
+	 * Process the plugin install
+	 * 
+	 * @return void
+	 */
+	public static function pluginInstall() : void;
+
+	/**
+	 * Process the plugin uninstall
+	 * 
+	 * @return void
+	 */
+	public static function pluginUninstall(): void;
 }

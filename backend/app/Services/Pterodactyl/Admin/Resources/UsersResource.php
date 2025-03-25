@@ -39,7 +39,7 @@ class UsersResource extends PterodactylAdmin
             throw new PterodactylException('Failed to retrieve users list: ' . $e->getMessage());
         }
     }
-
+	
     /**
      * Get a specific user.
      *
@@ -57,6 +57,21 @@ class UsersResource extends PterodactylAdmin
             throw new PterodactylException('Failed to retrieve user: ' . $e->getMessage());
         }
     }
+
+	public function getUserWithServers(int $userId) : array {
+		try {
+			return $this->request('GET', "/api/application/users/{$userId}", [
+				'query' => [
+					'include' => 'servers',
+				],
+			]);
+		}catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === 404) {
+                throw ResourceNotFoundException::forResource('user', (string) $userId);
+            }
+            throw new PterodactylException('Failed to retrieve user: ' . $e->getMessage());
+        }
+	}
 
     /**
      * Create a new user.
@@ -208,6 +223,49 @@ class UsersResource extends PterodactylAdmin
             return $response['data'][0];
         } catch (ClientException $e) {
             throw new PterodactylException('Failed to find user by external id: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * List all users with their servers.
+     *
+     * @param int $page Page number
+     * @param int $perPage Items per page
+     * @param array $filters Optional filters (email, uuid, username, external_id)
+     * @param string $sortBy Sort by field (id or uuid)
+     * @return array
+     * @throws PterodactylException
+     */
+    public function listUsersWithServers(
+        int $page = 1,
+        int $perPage = 50,
+        array $filters = [],
+        string $sortBy = 'id'
+    ): array {
+        try {
+            $query = [
+                'page' => $page,
+                'per_page' => $perPage,
+                'include' => 'servers',
+            ];
+
+            // Add any provided filters
+            foreach ($filters as $key => $value) {
+                if (in_array($key, ['email', 'uuid', 'username', 'external_id'])) {
+                    $query["filter[$key]"] = $value;
+                }
+            }
+
+            // Add sorting if valid
+            if (in_array($sortBy, ['id', 'uuid'])) {
+                $query['sort'] = $sortBy;
+            }
+
+            return $this->request('GET', '/api/application/users', [
+                'query' => $query,
+            ]);
+        } catch (ClientException $e) {
+            throw new PterodactylException('Failed to retrieve users with servers: ' . $e->getMessage());
         }
     }
 }

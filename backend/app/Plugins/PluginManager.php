@@ -14,77 +14,115 @@
 namespace MythicalDash\Plugins;
 
 use MythicalDash\App;
-use MythicalDash\Plugins\Events\PluginEventProcessor;
+use MythicalDash\Plugins\PluginProcessor;
 
 class PluginManager
 {
-    private array $plugins = [];
+	private array $plugins = [];
+	private $logger;
 
-    public function loadKernel(): void
-    {
-        global $eventManager;
-        try {
-            $instance = App::getInstance(true);
-            $plugins = PluginHelper::getPluginsDir();
-            $plugins = scandir($plugins);
-            foreach ($plugins as $plugin) {
-                if ($plugin != '.' && $plugin != '' && $plugin != '..' && $plugin != '.gitignore' && $plugin != '.gitkeep') {
-                    if (PluginConfig::isValidIdentifier($plugin)) {
-                        $config = PluginHelper::getPluginConfig($plugin);
-                        if (empty($config)) {
-                            $instance->getLogger()->warning('Plugin config is empty for: ' . $plugin);
-                        } else {
-                            if (PluginConfig::isConfigValid($config)) {
-                                if (!in_array($plugin, $this->plugins)) {
-                                    if (PluginDependencies::checkDependencies($config)) {
-                                        $instance->getLogger()->debug('Plugin ' . $plugin . ' was loaded in the memory!');
-                                        $this->plugins[] = $plugin;
-                                        PluginDB::registerPlugin($config['plugin']['identifier'], $config['plugin']['name']);
-                                        PluginEventProcessor::processEvent($config['plugin']['identifier'], $eventManager);
-                                    } else {
-                                        $instance->getLogger()->error('Plugin ' . $plugin . ' has unmet dependencies!');
-                                    }
-                                } else {
-                                    $instance->getLogger()->error('Duplicated plugin identifier: ' . $plugin . '');
-                                }
-                            } else {
-                                $instance->getLogger()->warning('Invalid config for plugin: ' . $plugin);
-                            }
-                        }
-                    } else {
-                        $instance->getLogger()->warning(message: 'Invalid plugin identifier: ' . $plugin);
-                    }
-                }
-            }
-        } catch (\Exception $e) {
-            $instance->getLogger()->error('Failed to start plugins: ' . $e->getMessage());
-        }
-    }
+	public function __construct()
+	{
+		$this->logger = App::getInstance(true)->getLogger();
+	}
 
-    /**
-     * Get the loaded memory plugins.
-     *
-     * @return array The loaded memory plugins
-     */
-    public function getLoadedMemoryPlugins(): array
-    {
-        $instance = App::getInstance(true);
-        try {
-            return $this->plugins;
-        } catch (\Exception $e) {
-            $instance->getLogger()->error('Failed to get plugin names: ' . $e->getMessage());
+	public function loadKernel(): void
+	{
+		global $eventManager;
+		try {
+			$pluginFiles = $this->getPluginFiles();
+			foreach ($pluginFiles as $plugin) {
+				$this->processPlugin($plugin, $eventManager);
+			}
+		} catch (\Exception $e) {
+			$this->logger->error('Failed to start plugins: ' . $e->getMessage());
+		}
+	}
 
-            return [];
-        }
-    }
+	private function getPluginFiles(): array
+	{
+		$pluginsDir = PluginHelper::getPluginsDir();
+		$allFiles = scandir($pluginsDir);
+		return array_filter($allFiles, function ($file) {
+			return !in_array($file, ['.', '..', '', '.gitignore', '.gitkeep']);
+		});
+	}
 
-    public function getEventManager(): PluginEvents
-    {
-        return new PluginEvents();
-    }
+	private function processPlugin(string $plugin, $eventManager): void
+	{
+		if (!PluginConfig::isValidIdentifier($plugin)) {
+			$this->logger->warning('Invalid plugin identifier: ' . $plugin);
+			return;
+		}
 
-    public function getLoadedPlugins(): array
-    {
-        return $this->plugins;
-    }
+		$config = $this->loadPluginConfig($plugin);
+		if (!$config) {
+			return;
+		}
+
+		$this->validateAndLoadPlugin($plugin, $config, $eventManager);
+	}
+
+	private function loadPluginConfig(string $plugin): ?array
+	{
+		$config = PluginHelper::getPluginConfig($plugin);
+		if (empty($config)) {
+			$this->logger->warning('Plugin config is empty for: ' . $plugin);
+			return null;
+		}
+
+		if (!PluginConfig::isConfigValid($config)) {
+			$this->logger->warning('Invalid config for plugin: ' . $plugin);
+			return null;
+		}
+
+		return $config;
+	}
+
+	private function validateAndLoadPlugin(string $plugin, array $config, $eventManager): void
+	{
+		if (in_array($plugin, $this->plugins)) {
+			$this->logger->error('Duplicated plugin identifier: ' . $plugin);
+			return;
+		}
+
+		if (!PluginDependencies::checkDependencies($config)) {
+			$this->logger->error('Plugin ' . $plugin . ' has unmet dependencies!');
+			return;
+		}
+
+		$this->loadPlugin($plugin, $config, $eventManager);
+	}
+
+	private function loadPlugin(string $plugin, array $config, $eventManager): void
+	{
+		$this->logger->debug('Plugin ' . $plugin . ' was loaded in the memory!');
+		$this->plugins[] = $plugin;
+		PluginProcessor::process($config['plugin']['identifier'], $eventManager);
+	}
+
+	/**
+	 * Get the loaded memory plugins.
+	 *
+	 * @return array The loaded memory plugins
+	 */
+	public function getLoadedMemoryPlugins(): array
+	{
+		try {
+			return $this->plugins;
+		} catch (\Exception $e) {
+			$this->logger->error('Failed to get plugin names: ' . $e->getMessage());
+			return [];
+		}
+	}
+
+	public function getEventManager(): PluginEvents
+	{
+		return new PluginEvents();
+	}
+
+	public function getLoadedPlugins(): array
+	{
+		return $this->plugins;
+	}
 }

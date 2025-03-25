@@ -27,6 +27,7 @@ class PluginFlags
             'developerIgnoreInstallScript',
             'developerEscalateInstallScript',
             'userEscalateInstallScript',
+            'hasEvents',
         ];
     }
 

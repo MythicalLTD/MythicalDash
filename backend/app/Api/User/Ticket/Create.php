@@ -17,6 +17,7 @@ use MythicalDash\Chat\User\Session;
 use MythicalDash\Chat\Tickets\Tickets;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Tickets\Departments;
+use MythicalDash\Plugins\Events\Events\TicketEvent;
 
 $router->get('/api/user/ticket/create', function () {
     App::init();
@@ -32,6 +33,7 @@ $router->get('/api/user/ticket/create', function () {
 });
 
 $router->post('/api/user/ticket/create', function () {
+	global $eventManager;
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
@@ -71,7 +73,16 @@ $router->post('/api/user/ticket/create', function () {
             /**
              * Create the ticket.
              */
-            $ticketId = Tickets::create($session->getInfo(UserColumns::UUID, false), $departmentId, $subject, $message, $priority);
+			$uuid = $session->getInfo(UserColumns::UUID, false);
+            $ticketId = Tickets::create($uuid, $departmentId, $subject, $message, $priority);
+			$eventManager->emit(TicketEvent::onTicketCreate(), [
+				'ticket_id' => $ticketId,
+				'department_id' => $departmentId,
+				'subject' => $subject,
+				'message' => $message,
+				'priority' => $priority,
+				'user_id' => $uuid
+			]);
             if ($ticketId == 0) {
                 $appInstance->BadRequest('Failed to create ticket!', ['error_code' => 'FAILED_TO_CREATE_TICKET']);
             } else {
