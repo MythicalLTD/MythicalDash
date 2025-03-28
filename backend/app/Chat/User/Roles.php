@@ -16,6 +16,7 @@ namespace MythicalDash\Chat\User;
 use MythicalDash\Chat\Database;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\columns\RolesColumns;
+use MythicalDash\Chat\interface\RolesInterface;
 
 class Roles extends Database
 {
@@ -42,14 +43,14 @@ class Roles extends Database
     /**
      * Get the role info.
      *
-     * @param \RolesInterface|string $real_name The role name
+     * @param RolesInterface|string $real_name The role name
      * @param RolesColumns|string $info The column name
      *
      * @throws \InvalidArgumentException If the column name is invalid
      *
      * @return string|null The value of the column
      */
-    public static function getInfo(\RolesInterface|string $real_name, RolesColumns|string $info): ?string
+    public static function getInfo(RolesInterface|string $real_name, RolesColumns|string $info): ?string
     {
         try {
             if (!in_array($info, RolesColumns::getColumns())) {
@@ -71,13 +72,13 @@ class Roles extends Database
     /**
      * Update the role info.
      *
-     * @param \RolesInterface|string $real_name The role name
+     * @param RolesInterface|string $real_name The role name
      * @param RolesColumns|string $info The column name
      * @param string $value The new value
      *
      * @throws \InvalidArgumentException If the column name is invalid
      */
-    public static function updateInfo(\RolesInterface|string $real_name, RolesColumns|string $info, string $value): bool
+    public static function updateInfo(RolesInterface|string $real_name, RolesColumns|string $info, string $value): bool
     {
         try {
             if (!in_array($info, RolesColumns::getColumns())) {

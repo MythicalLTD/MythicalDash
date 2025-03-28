@@ -151,6 +151,13 @@ $router->post('/api/user/ticket/(.*)/status', function ($ticketId) {
     }
     $status = $_POST['status'];
 
+    $status_list = ['open', 'closed', 'waiting', 'replied', 'inprogress'];
+    if (!in_array($status, $status_list)) {
+        $appInstance->BadRequest('Invalid status', ['error_code' => 'ERROR_INVALID_STATUS']);
+
+        return;
+    }
+
     if (Tickets::exists($ticketId)) {
         $ticketInfo = Tickets::getTicket($ticketId);
         if ($ticketInfo['user'] !== $s->getInfo(UserColumns::UUID, false)) {

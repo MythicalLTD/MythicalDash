@@ -33,11 +33,8 @@ $router->get('/api/admin', function (): void {
             $activity = UserActivities::getAll(150);
             $userCount = Database::getTableRowCount('mythicaldash_users');
             $addonsCount = Database::getTableRowCount('mythicaldash_addons');
-            $departmentsCount = Database::getTableRowCount('mythicaldash_departments');
-            $invoicesCount = Database::getTableRowCount('mythicaldash_invoices');
             $rolesCount = Database::getTableRowCount('mythicaldash_roles');
-            $servicesCount = Database::getTableRowCount('mythicaldash_services');
-            $ticketsCount = Database::getTableRowCount('mythicaldash_tickets');
+            $locationsCount = Database::getTableRowCount('mythicaldash_locations');
 
             $appInstance->OK('Dashboard data retrieved successfully.', [
                 'core' => [
@@ -46,11 +43,8 @@ $router->get('/api/admin', function (): void {
                 'count' => [
                     'user_count' => $userCount,
                     'addons_count' => $addonsCount,
-                    'departments_count' => $departmentsCount,
-                    'invoices_count' => $invoicesCount,
+                    'locations_count' => $locationsCount,
                     'roles_count' => $rolesCount,
-                    'services_count' => $servicesCount,
-                    'tickets_count' => $ticketsCount,
                 ],
                 'etc' => [
                     'activity' => $activity,

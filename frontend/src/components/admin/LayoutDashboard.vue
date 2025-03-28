@@ -1,13 +1,14 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
-    <div class="min-h-screen bg-gray-900 text-gray-100 font-sans">
+    <div class="min-h-screen bg-[#0A0B14] text-gray-100 font-sans">
         <!-- Mobile Menu Button -->
         <button
             @click="isSidebarOpen = !isSidebarOpen"
-            class="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800/50 rounded-full backdrop-blur-xs"
+            class="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#12141F]/50 rounded-full backdrop-blur-xs"
         >
-            <Menu v-if="!isSidebarOpen" class="w-6 h-6 text-pink-400" />
-            <X v-else class="w-6 h-6 text-pink-400" />
+            <Menu v-if="!isSidebarOpen" class="w-6 h-6 text-[#7C3AED]" />
+            <X v-else class="w-6 h-6 text-[#7C3AED]" />
         </button>
 
         <!-- Sidebar -->
@@ -15,54 +16,60 @@
             :class="[
                 'fixed inset-y-0 left-0 z-40 w-64 transition-transform duration-300 ease-in-out transform',
                 isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
-                'lg:translate-x-0 bg-gray-800/50 backdrop-blur-md',
+                'lg:translate-x-0 bg-[#12141F] border-r border-gray-800/30',
             ]"
         >
-            <div class="p-6">
-                <h1 class="text-2xl font-bold bg-linear-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
-                    <span class="block text-lg">{{ Settings.getSetting('debug_name') }}</span>
-                    <span class="block text-sm text-gray-400">{{ Settings.getSetting('debug_version') }}</span>
-                </h1>
+            <!-- Logo section -->
+            <div class="p-6 border-b border-gray-800/30">
+                <div class="flex items-center">
+                    <img src="https://github.com/mythicalltd.png" alt="Logo" class="h-8 w-8 mr-3" />
+                    <div>
+                        <h1 class="text-xl font-semibold text-white">
+                            {{ Settings.getSetting('debug_name') }}
+                        </h1>
+                        <span class="text-xs text-gray-400">{{ Settings.getSetting('debug_version') }}</span>
+                    </div>
+                </div>
             </div>
-            <nav class="p-6">
+
+            <!-- Navigation -->
+            <nav class="p-4">
                 <div v-for="(menuGroup, index) in menuGroups" :key="index" class="mb-6">
-                    <h3 class="text-sm uppercase tracking-wider text-gray-400 mb-4">{{ menuGroup.title }}</h3>
-                    <ul class="space-y-2">
+                    <h3 class="text-xs font-medium uppercase tracking-wider text-gray-400 mb-4 px-4">
+                        {{ menuGroup.title }}
+                    </h3>
+                    <ul class="space-y-1">
                         <li v-for="item in menuGroup.items" :key="item.name">
                             <!-- Menu item with submenu -->
                             <template v-if="item.subMenu">
                                 <div
                                     @click="toggleSubmenu(item)"
-                                    class="flex items-center px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gray-700/50 cursor-pointer"
+                                    class="flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 hover:bg-[#1A1D2D] cursor-pointer"
+                                    :class="{ 'bg-[#1A1D2D]': item.isOpen }"
                                 >
-                                    <component :is="item.icon" class="w-5 h-5 mr-3 text-pink-400" />
-                                    <span>{{ item.name }}</span>
+                                    <component :is="item.icon" class="w-5 h-5 mr-3 text-[#7C3AED]" />
+                                    <span class="text-sm">{{ item.name }}</span>
                                     <ChevronDown
                                         class="w-4 h-4 ml-auto transition-transform duration-200"
                                         :class="{ 'rotate-180': item.isOpen }"
                                     />
                                     <span
                                         v-if="'count' in item"
-                                        class="ml-2 text-xs bg-violet-500 text-white px-2 py-1 rounded-full"
+                                        class="ml-2 text-xs bg-[#7C3AED] text-white px-2 py-0.5 rounded-full"
                                     >
                                         {{ item.count }}
                                     </span>
                                 </div>
-                                <ul v-if="item.isOpen" class="mt-2 ml-4 space-y-2">
+                                <!-- Submenu items -->
+                                <ul v-if="item.isOpen" class="mt-1 ml-4 space-y-1">
                                     <li v-for="subItem in item.subMenu" :key="subItem.name">
                                         <RouterLink
                                             :to="subItem.path || ''"
-                                            class="flex items-center px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gray-700/50"
-                                            :class="{ 'bg-gray-700/50': route.path === subItem.path }"
+                                            class="flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 hover:bg-[#1A1D2D] text-sm"
+                                            :class="{ 'bg-[#1A1D2D]': route.path === subItem.path }"
                                         >
-                                            <component :is="subItem.icon" class="w-5 h-5 mr-3 text-pink-400" />
+                                            <component :is="subItem.icon" class="w-5 h-5 mr-3 text-[#7C3AED]" />
                                             <span>{{ subItem.name }}</span>
-                                            <span
-                                                v-if="'count' in subItem"
-                                                class="ml-auto text-xs bg-violet-500 text-white px-2 py-1 rounded-full"
-                                            >
-                                                {{ subItem.count }}
-                                            </span>
                                         </RouterLink>
                                     </li>
                                 </ul>
@@ -71,14 +78,14 @@
                             <RouterLink
                                 v-else
                                 :to="item.path || ''"
-                                class="flex items-center px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gray-700/50"
-                                :class="{ 'bg-gray-700/50': item.active }"
+                                class="flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 hover:bg-[#1A1D2D] text-sm"
+                                :class="{ 'bg-[#1A1D2D]': item.active }"
                             >
-                                <component :is="item.icon" class="w-5 h-5 mr-3 text-pink-400" />
+                                <component :is="item.icon" class="w-5 h-5 mr-3 text-[#7C3AED]" />
                                 <span>{{ item.name }}</span>
                                 <span
                                     v-if="'count' in item"
-                                    class="ml-auto text-xs bg-violet-500 text-white px-2 py-1 rounded-full"
+                                    class="ml-auto text-xs bg-[#7C3AED] text-white px-2 py-0.5 rounded-full"
                                 >
                                     {{ item.count }}
                                 </span>
@@ -89,81 +96,105 @@
             </nav>
         </aside>
 
+        <!-- Main Content Area -->
         <div class="lg:ml-64 min-h-screen flex flex-col">
             <!-- Top Navigation -->
-            <header class="bg-gray-800/50 backdrop-blur-md p-4 flex items-center justify-between">
-                <div class="relative w-full max-w-xl">
-                    <input
-                        v-model="searchQuery"
-                        type="search"
-                        placeholder="Search..."
-                        class="w-full bg-gray-700/50 text-gray-100 placeholder-gray-400 rounded-full py-2 pl-10 pr-4 focus:outline-hidden focus:ring-2 focus:ring-pink-500"
-                        @focus="isSearchFocused = true"
-                        @blur="handleSearchBlur"
-                    />
-                    <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <header class="bg-[#12141F] border-b border-gray-800/30 px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-6 flex-1">
+                    <div class="relative w-96">
+                        <input
+                            v-model="searchQuery"
+                            type="search"
+                            placeholder="Search... (Ctrl + K)"
+                            class="w-full bg-[#1A1D2D] text-gray-100 placeholder-gray-400 rounded-lg py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
+                            @focus="isSearchFocused = true"
+                            @blur="handleSearchBlur"
+                        />
+                        <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
 
-                    <!-- Search Results Dropdown -->
-                    <div
-                        v-if="isSearchFocused && filteredResults.length > 0"
-                        class="absolute z-10 w-full mt-2 bg-gray-800/90 backdrop-blur-md rounded-lg shadow-xl max-h-60 overflow-y-auto"
-                    >
-                        <a
-                            v-for="result in filteredResults"
-                            :key="result.id"
-                            :href="result.path"
-                            class="block px-4 py-2 hover:bg-gray-700/50 transition-colors duration-200"
-                            @mousedown.prevent="handleResultClick(result)"
+                        <!-- Search Results Dropdown -->
+                        <div
+                            v-if="isSearchFocused && filteredResults.length > 0"
+                            class="absolute z-50 w-full mt-2 bg-[#12141F] rounded-lg shadow-xl border border-gray-800/30"
                         >
-                            {{ result.name }}
-                        </a>
+                            <div class="py-2">
+                                <RouterLink
+                                    v-for="result in filteredResults"
+                                    :key="result.id"
+                                    :to="result.path"
+                                    class="flex items-center px-4 py-2 text-sm hover:bg-[#1A1D2D] transition-colors duration-200"
+                                    @mousedown.prevent="handleResultClick(result)"
+                                >
+                                    <span>{{ result.name }}</span>
+                                </RouterLink>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="relative ml-4">
-                    <button
-                        @click="isProfileOpen = !isProfileOpen"
-                        class="flex items-center space-x-2 focus:outline-hidden"
-                    >
-                        <img :src="Session.getInfo('avatar')" alt="User Avatar" class="w-8 h-8 rounded-full" />
-                        <ChevronDown class="w-4 h-4 text-gray-400" :class="{ 'rotate-180': isProfileOpen }" />
-                    </button>
-                    <div
-                        v-if="isProfileOpen"
-                        class="absolute right-0 mt-2 w-48 bg-gray-800/90 backdrop-blur-md rounded-lg shadow-xl py-1 animate-fadeIn"
-                    >
-                        <RouterLink
-                            v-for="item in profileMenu"
-                            :key="item.name"
-                            :to="item.path"
-                            class="block px-4 py-2 hover:bg-gray-700/50 transition-colors duration-200"
+                <!-- System Status & User Profile -->
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-green-400"></div>
+                        <span class="text-sm text-gray-400">System Normal</span>
+                    </div>
+
+                    <div class="relative">
+                        <button
+                            @click="isProfileOpen = !isProfileOpen"
+                            class="flex items-center gap-2 hover:bg-[#1A1D2D] rounded-lg px-3 py-2 transition-colors"
                         >
-                            {{ item.name }}
-                        </RouterLink>
+                            <img :src="Session.getInfo('avatar')" alt="User Avatar" class="w-8 h-8 rounded-full" />
+                            <span class="text-sm font-medium">{{ Session.getInfo('username') }}</span>
+                            <ChevronDown class="w-4 h-4" :class="{ 'rotate-180': isProfileOpen }" />
+                        </button>
+
+                        <!-- Profile Dropdown -->
+                        <div
+                            v-if="isProfileOpen"
+                            class="absolute right-0 mt-2 w-48 bg-[#12141F] rounded-lg shadow-xl border border-gray-800/30 py-1 animate-fadeIn"
+                        >
+                            <RouterLink
+                                v-for="item in profileMenu"
+                                :key="item.name"
+                                :to="item.path"
+                                class="block px-4 py-2 text-sm hover:bg-[#1A1D2D] transition-colors duration-200"
+                            >
+                                {{ item.name }}
+                            </RouterLink>
+                        </div>
                     </div>
                 </div>
             </header>
 
             <!-- Main Content -->
-            <main class="grow p-6 overflow-y-auto">
-                <div class="p-3">
-                    <slot></slot>
-                </div>
+            <main class="flex-1 p-6 bg-[#0A0B14]">
+                <slot></slot>
             </main>
 
             <!-- Footer -->
-            <footer class="bg-gray-800/50 backdrop-blur-md py-4 px-6">
-                <div class="flex flex-col md:flex-row justify-between items-center">
-                    <p class="text-gray-400 text-sm mb-2 md:mb-0">© 2023 MythicalDash. All rights reserved.</p>
-                    <div class="flex space-x-4">
-                        <a
-                            v-for="link in footerLinks"
-                            :key="link.name"
-                            :href="link.path"
-                            class="text-gray-400 hover:text-pink-400 text-sm transition-colors duration-200"
-                        >
-                            {{ link.name }}
-                        </a>
+            <footer class="bg-[#12141F] border-t border-gray-800/30">
+                <div class="max-w-7xl mx-auto px-6 py-4">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div class="flex items-center gap-2">
+                            <img src="https://github.com/mythicalltd.png" alt="Logo" class="h-6 w-6" />
+                            <div class="text-sm text-gray-400">
+                                <span>© {{ new Date().getFullYear() }} MythicalSystems. All rights reserved.</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-6">
+                            <a
+                                v-for="link in footerLinks"
+                                :key="link.name"
+                                :href="link.path"
+                                class="text-sm text-gray-400 hover:text-[#7C3AED] transition-colors"
+                            >
+                                {{ link.name }}
+                            </a>
+                        </div>
+                        <div class="text-sm text-gray-400">
+                            <span>Version {{ Settings.getSetting('debug_version') }}</span>
+                        </div>
                     </div>
                 </div>
             </footer>
@@ -172,7 +203,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import {
     LayoutDashboard,
     Users,
@@ -190,6 +221,9 @@ import {
 import Session from '@/mythicaldash/Session';
 import StorageMonitor from '@/mythicaldash/StorageMonitor';
 import { useSettingsStore } from '@/stores/settings';
+import { useRoute, useRouter } from 'vue-router';
+import Dashboard from '@/mythicaldash/admin/Dashboard';
+
 const Settings = useSettingsStore();
 const router = useRouter();
 
@@ -209,12 +243,10 @@ if (Session.getInfo('role') == '1' && Session.getInfo('role') == '2') {
     router.push('/dashboard');
 }
 
-// Existing refs here
-
 const handleResultClick = (result: { id: number; name: string; path: string }) => {
     searchQuery.value = '';
-    console.log(`Navigating to ${result.path}`);
     isSearchFocused.value = false;
+    router.push(result.path);
 };
 
 const toggleSubmenu = (item: MenuItem) => {
@@ -233,14 +265,6 @@ const handleSearchBlur = () => {
     }, 200);
 };
 
-import { useRoute, useRouter } from 'vue-router';
-import Dashboard from '@/mythicaldash/admin/Dashboard';
-
-const dashBoard = ref({ count: { user_count: 0, invoices_count: 0, tickets_count: 0 } });
-Dashboard.get().then((data) => {
-    dashBoard.value = data;
-});
-
 const route = useRoute();
 const adminBaseUri = '/mc-admin';
 
@@ -253,6 +277,11 @@ interface MenuItem {
     subMenu?: MenuItem[];
     isOpen?: boolean;
 }
+
+const dashBoard = ref({ count: { user_count: 0, locations_count: 0, tickets_count: 0 } });
+Dashboard.get().then((data) => {
+    dashBoard.value = data;
+});
 
 const menuGroups = ref<{ title: string; items: MenuItem[] }[]>([
     {
@@ -277,22 +306,22 @@ const menuGroups = ref<{ title: string; items: MenuItem[] }[]>([
                 active: route.path === `${adminBaseUri}/users`,
             },
             {
-                name: 'Invoices',
+                name: 'Locations',
                 icon: PaperclipIcon,
                 subMenu: [
                     {
-                        name: 'All Invoices',
-                        path: `${adminBaseUri}/invoices`,
+                        name: 'All Locations',
+                        path: `${adminBaseUri}/locations`,
                         icon: PaperclipIcon,
                     },
                     {
-                        name: 'Create Invoice',
-                        path: `${adminBaseUri}/invoices/create`,
+                        name: 'Create Location',
+                        path: `${adminBaseUri}/locations/create`,
                         icon: PlusCircle,
                     },
                 ],
-                active: route.path === `${adminBaseUri}/invoices`,
-                count: computed(() => dashBoard.value.count.invoices_count || 0),
+                active: route.path === `${adminBaseUri}/locations`,
+                count: computed(() => dashBoard.value.count.locations_count || 0),
             },
             {
                 name: 'Tickets',
@@ -335,23 +364,43 @@ const profileMenu = [
 ];
 
 const footerLinks = [
-    { name: 'Privacy Policy', path: '#' },
-    { name: 'Terms of Service', path: '#' },
-    { name: 'Contact Us', path: '#' },
+    { name: 'Buy a license', path: 'https://mythicalclient.com' },
+    { name: 'Documentation', path: 'https://mythical.systems' },
+    { name: 'Status', path: 'https://status.mythical.systems' },
 ];
 
 const searchResults = [
-    { id: 1, name: 'Dashboard', path: '/dashboard' },
-    { id: 2, name: 'Users', path: '/users' },
-    { id: 3, name: 'Settings', path: '/settings' },
-    { id: 4, name: 'API Keys', path: '/api-keys' },
-    { id: 5, name: 'Shard Hosts', path: '/database-hosts' },
-    { id: 6, name: 'Addons', path: '/mounts' },
+    { id: 1, name: 'Dashboard', path: `${adminBaseUri}` },
+    { id: 2, name: 'Users', path: `${adminBaseUri}/users` },
+    { id: 6, name: 'Locations', path: `${adminBaseUri}/locations` },
+    { id: 7, name: 'Tickets', path: `${adminBaseUri}/tickets` },
 ];
 
 const filteredResults = computed(() => {
     if (!searchQuery.value) return [];
-    return searchResults.filter((result) => result.name.toLowerCase().includes(searchQuery.value.toLowerCase()));
+    const query = searchQuery.value.toLowerCase();
+    return searchResults.filter((result) => result.name.toLowerCase().includes(query));
+});
+
+// Add keyboard shortcut for search
+onMounted(() => {
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement;
+            if (searchInput) {
+                searchInput.focus();
+            }
+        }
+    });
+});
+
+onUnmounted(() => {
+    document.removeEventListener('keydown', (e: KeyboardEvent) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+        }
+    });
 });
 </script>
 
@@ -430,5 +479,15 @@ body {
     .lg\:ml-64 {
         margin-left: 0;
     }
+}
+
+.search-results-enter-active,
+.search-results-leave-active {
+    transition: opacity 0.2s ease;
+}
+
+.search-results-enter-from,
+.search-results-leave-to {
+    opacity: 0;
 }
 </style>

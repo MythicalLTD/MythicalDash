@@ -129,6 +129,26 @@ const routes = [
         name: 'Admin Home',
         component: () => import('@/views/admin/Home.vue'),
     },
+    {
+        path: '/mc-admin/locations',
+        name: 'Locations',
+        component: () => import('@/views/admin/locations/Index.vue'),
+    },
+    {
+        path: '/mc-admin/locations/create',
+        name: 'Create Location',
+        component: () => import('@/views/admin/locations/Create.vue'),
+    },
+    {
+        path: '/mc-admin/locations/:id/edit',
+        name: 'Edit Location',
+        component: () => import('@/views/admin/locations/Edit.vue'),
+    },
+    {
+        path: '/mc-admin/locations/:id/delete',
+        name: 'Delete Location',
+        component: () => import('@/views/admin/locations/Delete.vue'),
+    },
 ];
 
 routes.push({

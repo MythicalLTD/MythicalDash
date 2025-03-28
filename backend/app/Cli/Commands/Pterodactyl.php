@@ -137,6 +137,8 @@ class Pterodactyl extends CliApp implements CommandBuilder
                 try {
                     $userDetails = $userResource->getUserWithServers($userId);
 
+                    file_put_contents('userDetails.json', json_encode($userDetails, JSON_PRETTY_PRINT));
+
                     // Debug the response structure
                     if (!is_array($userDetails)) {
                         $cliApp->send('&cError: Invalid response format');

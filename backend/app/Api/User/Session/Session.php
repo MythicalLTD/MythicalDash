@@ -18,6 +18,7 @@ use MythicalDash\Chat\User\Roles;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 
 $router->post('/api/user/session/info/update', function (): void {
     App::init();
@@ -165,5 +166,37 @@ $router->get('/api/user/session/activities', function (): void {
     $accountToken = $session->SESSION_KEY;
     $appInstance->OK('User activities', [
         'activities' => UserActivities::get(User::getInfo($accountToken, UserColumns::UUID, false)),
+    ]);
+});
+
+$router->get('/api/user/session/pterodactyl/resources', function (): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    $session = new Session($appInstance);
+    $accountToken = $session->SESSION_KEY;
+
+    $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
+
+    $resources = Servers::getUserTotalResourcesUsage($pterodactylUserId);
+
+    $appInstance->OK('User resources', [
+        'resources' => $resources,
+    ]);
+});
+
+$router->get('/api/user/session/servers', function (): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    $session = new Session($appInstance);
+    $accountToken = $session->SESSION_KEY;
+
+    $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
+
+    $servers = Servers::getUserServersList($pterodactylUserId);
+
+    $appInstance->OK('User servers', [
+        'servers' => $servers,
     ]);
 });

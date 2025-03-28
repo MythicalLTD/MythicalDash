@@ -57,7 +57,7 @@ $router->post('/api/user/ticket/create', function () {
             if (isset($_POST['priority']) && $_POST['priority'] != '') {
                 $priority = $_POST['priority'];
             } else {
-                $priority = 'normal';
+                $priority = 'low';
             }
 
             /**

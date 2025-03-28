@@ -18,8 +18,8 @@
                 </div>
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex flex-col">
-                        <span class="resource-value">{{ memoryUsage }}MB</span>
-                        <span class="resource-limit">of {{ memoryLimit }}MB</span>
+                        <span class="resource-value">{{ resources.memory }}MB</span>
+                        <span class="resource-limit">of {{ Session.getInfoInt('memory_limit') }}MB</span>
                     </div>
                     <div
                         class="percentage-badge"
@@ -61,8 +61,8 @@
                 </div>
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex flex-col">
-                        <span class="resource-value">{{ diskUsage }}MB</span>
-                        <span class="resource-limit">of {{ diskLimit }}MB</span>
+                        <span class="resource-value">{{ resources.disk }}MB</span>
+                        <span class="resource-limit">of {{ Session.getInfoInt('disk_limit') }}MB</span>
                     </div>
                     <div
                         class="percentage-badge"
@@ -104,8 +104,8 @@
                 </div>
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex flex-col">
-                        <span class="resource-value">{{ cpuUsage }}%</span>
-                        <span class="resource-limit">of {{ cpuLimit }}%</span>
+                        <span class="resource-value">{{ resources.cpu }}%</span>
+                        <span class="resource-limit">of {{ Session.getInfoInt('cpu_limit') }}%</span>
                     </div>
                     <div
                         class="percentage-badge"
@@ -148,7 +148,7 @@
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex flex-col">
                         <span class="resource-value">{{ serverSlots.used }}</span>
-                        <span class="resource-limit">of {{ serverSlots.total }}</span>
+                        <span class="resource-limit">of {{ Session.getInfoInt('server_limit') }}</span>
                     </div>
                     <div
                         class="percentage-badge"
@@ -314,24 +314,66 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { CircuitBoard, HardDrive, Cpu, Server, SaveAll, Network, Database } from 'lucide-vue-next';
 import CardComponent from '../../ui/Card/CardComponent.vue';
+import Servers from '@/mythicaldash/Pterodactyl/Servers';
+import Session from '@/mythicaldash/Session';
 
-const memoryUsage = ref(512);
-const memoryLimit = ref(512);
-const diskUsage = ref(1024);
-const diskLimit = ref(1024);
-const cpuUsage = ref(50);
-const cpuLimit = ref(50);
-const serverSlots = ref({ used: 1, total: 1 });
-const backups = ref({ used: 1, total: 1 });
-const allocations = ref({ used: 1, total: 1 });
-const databases = ref({ used: 1, total: 1 });
+// Initialize resource states
+const resources = ref({
+    memory: 0,
+    cpu: 0,
+    disk: 0,
+    backups: 0,
+    databases: 0,
+    allocations: 0,
+    servers: 0,
+});
 
-const memoryUsagePercentage = computed(() => (memoryUsage.value / memoryLimit.value) * 100);
-const diskUsagePercentage = computed(() => (diskUsage.value / diskLimit.value) * 100);
-const cpuUsagePercentage = computed(() => (cpuUsage.value / cpuLimit.value) * 100);
+// Computed properties for usage percentages
+const memoryUsagePercentage = computed(() => (resources.value.memory / Session.getInfoInt('memory_limit')) * 100 || 0);
+const diskUsagePercentage = computed(() => (resources.value.disk / Session.getInfoInt('disk_limit')) * 100 || 0);
+const cpuUsagePercentage = computed(() => (resources.value.cpu / Session.getInfoInt('cpu_limit')) * 100 || 0);
+
+// Computed properties for feature limits
+const serverSlots = computed(() => ({
+    used: resources.value.servers,
+    total: Session.getInfoInt('server_limit'),
+}));
+
+const backups = computed(() => ({
+    used: resources.value.backups,
+    total: Session.getInfoInt('backup_limit'),
+}));
+
+const allocations = computed(() => ({
+    used: resources.value.allocations,
+    total: Session.getInfoInt('allocation_limit'),
+}));
+
+const databases = computed(() => ({
+    used: resources.value.databases,
+    total: Session.getInfoInt('database_limit'),
+}));
+
+// Function to fetch data
+const fetchData = async () => {
+    try {
+        const [resourcesData] = await Promise.all([Servers.getPterodactylResources()]);
+
+        if (resourcesData) {
+            resources.value = resourcesData;
+        }
+    } catch (error) {
+        console.error('Failed to fetch data:', error);
+    }
+};
+
+// Fetch data when component mounts
+onMounted(() => {
+    fetchData();
+});
 </script>
 
 <style scoped>
