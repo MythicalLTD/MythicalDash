@@ -37,9 +37,9 @@
                         <div><span class="text-gray-400">Name:</span> {{ location.name }}</div>
                         <div><span class="text-gray-400">Description:</span> {{ location.description }}</div>
                         <div>
-                            <span class="text-gray-400">Status:</span>
-                            <span :class="location.status === 'active' ? 'text-green-400' : 'text-red-400'">
-                                {{ location.status === 'active' ? 'Active' : 'Inactive' }}
+                            <span class="text-gray-400">Status: </span>
+                            <span :class="location.status === 'online' ? 'text-green-400' : 'text-red-400'">
+                                {{ location.status === 'online' ? 'Online' : 'Offline' }}
                             </span>
                         </div>
                         <div><span class="text-gray-400">Node IP:</span> {{ location.node_ip }}</div>
@@ -48,6 +48,10 @@
                             {{ location.pterodactyl_location_id || 'N/A' }}
                         </div>
                     </div>
+                </div>
+
+                <div v-if="successMessage" class="bg-green-500/20 text-green-400 p-4 rounded-lg mb-6">
+                    {{ successMessage }}
                 </div>
 
                 <div class="flex justify-center space-x-3">
@@ -85,69 +89,35 @@ const locationId = Number(route.params.id);
 const loading = ref(true);
 const deleting = ref(false);
 const error = ref('');
-const location = ref({
+const successMessage = ref('');
+
+// Interface for the location data from API
+interface ApiLocation {
+    id: number;
+    name: string;
+    description: string;
+    pterodactyl_location_id: number | null;
+    node_ip: string;
+    status: string;
+    updated_at: string;
+    created_at: string;
+}
+
+const location = ref<ApiLocation>({
     id: 0,
     name: '',
     description: '',
-    pterodactyl_location_id: null as number | null,
+    pterodactyl_location_id: null,
     node_ip: '',
-    status: 'active' as 'active' | 'inactive',
+    status: '',
     updated_at: '',
     created_at: '',
 });
 
-// Mock data for demonstration
-const mockLocations = [
-    {
-        id: 1,
-        name: 'US East',
-        description: 'East Coast Data Center',
-        pterodactyl_location_id: 1,
-        node_ip: '192.168.1.10',
-        status: 'active',
-        updated_at: '2023-05-15T12:30:00Z',
-        created_at: '2023-05-15T10:30:00Z',
-    },
-    {
-        id: 2,
-        name: 'EU West',
-        description: 'Frankfurt Data Center',
-        pterodactyl_location_id: 2,
-        node_ip: '192.168.2.10',
-        status: 'active',
-        updated_at: '2023-06-20T15:45:00Z',
-        created_at: '2023-06-20T14:45:00Z',
-    },
-    {
-        id: 3,
-        name: 'Asia Pacific',
-        description: 'Singapore Data Center',
-        pterodactyl_location_id: 3,
-        node_ip: '192.168.3.10',
-        status: 'inactive',
-        updated_at: '2023-07-10T09:15:00Z',
-        created_at: '2023-07-10T08:15:00Z',
-    },
-];
-
 onMounted(async () => {
     try {
-        // Simulate API call to fetch location data
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Find the location in our mock data
-        const foundLocation = mockLocations.find((loc) => loc.id === locationId);
-
-        if (!foundLocation) {
-            error.value = 'Location not found';
-            return;
-        }
-
-        // Set the location data with proper type assertion
-        location.value = {
-            ...foundLocation,
-            status: foundLocation.status as 'active' | 'inactive',
-        };
+        // Fetch location data from API
+        await fetchLocationData();
     } catch (err) {
         error.value = 'Failed to load location data';
         console.error(err);
@@ -156,21 +126,72 @@ onMounted(async () => {
     }
 });
 
+// Fetch location data from API
+const fetchLocationData = async () => {
+    try {
+        const response = await fetch(`/api/admin/locations`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch location data');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Find the location with the matching ID
+            const foundLocation = data.locations.find((loc: ApiLocation) => loc.id === locationId);
+
+            if (!foundLocation) {
+                error.value = 'Location not found';
+                return;
+            }
+
+            // Populate the location data
+            location.value = foundLocation;
+        } else {
+            error.value = data.message || 'Failed to load location data';
+        }
+    } catch (err) {
+        console.error('Error fetching location data:', err);
+        throw err;
+    }
+};
+
 const deleteLocation = async () => {
     deleting.value = true;
+    successMessage.value = '';
+    error.value = '';
 
     try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Create FormData for the delete request
+        const formData = new FormData();
 
-        // In a real app, you would send a delete request to your API here
-        console.log('Deleting location:', location.value);
+        // Send delete request to API
+        const response = await fetch(`/api/admin/locations/${locationId}/delete`, {
+            method: 'POST',
+            body: formData,
+        });
 
-        // Redirect back to locations list
-        router.push('/mc-admin/locations');
-    } catch (error) {
-        console.error('Error deleting location:', error);
-    } finally {
+        const data = await response.json();
+
+        if (data.success) {
+            successMessage.value = 'Location deleted successfully';
+            // Wait a moment before redirecting
+            setTimeout(() => {
+                router.push('/mc-admin/locations');
+            }, 1500);
+        } else {
+            error.value = data.message || 'Failed to delete location';
+            deleting.value = false;
+        }
+    } catch (err) {
+        console.error('Error deleting location:', err);
+        error.value = 'An error occurred while deleting the location';
         deleting.value = false;
     }
 };

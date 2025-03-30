@@ -15,6 +15,10 @@ use MythicalDash\App;
 use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Locations\Locations;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
+use MythicalDash\Plugins\Events\Events\LocationEvent;
 
 $router->get('/api/admin/locations/pterodactyl', function (): void {
     App::init();
@@ -34,11 +38,36 @@ $router->get('/api/admin/locations/pterodactyl', function (): void {
     }
 });
 
+$router->get('/api/admin/locations', function (): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    $session = new MythicalDash\Chat\User\Session($appInstance);
+    $accountToken = $session->SESSION_KEY;
+
+    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+        $locations = Locations::getLocations();
+
+        $appInstance->OK('Locations', [
+            'locations' => $locations,
+        ]);
+    } else {
+        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
+    }
+});
+
 $router->post('/api/admin/locations/create', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
+    global $eventManager;
     $session = new MythicalDash\Chat\User\Session($appInstance);
+
+    UserActivities::add(
+        $session->getInfo(UserColumns::UUID, false),
+        UserActivitiesTypes::$admin_location_create,
+        CloudFlareRealIP::getRealIP()
+    );
 
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
 
@@ -84,6 +113,8 @@ $router->post('/api/admin/locations/create', function (): void {
                 return;
             }
 
+            $eventManager->emit(LocationEvent::onLocationCreated(), [$id]);
+
             $appInstance->OK('Location created', [
                 'location' => [
                     'name' => $name,
@@ -102,15 +133,15 @@ $router->post('/api/admin/locations/create', function (): void {
     }
 });
 
-$router->post('/api/admin/locations/update', function (): void {
+$router->post('/api/admin/locations/(.*)/update', function ($id): void {
+    global $eventManager;
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-        if (isset($_POST['id']) && isset($_POST['name']) && isset($_POST['description']) && isset($_POST['node_ip']) && isset($_POST['status'])) {
-            $id = $_POST['id'];
+        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['node_ip']) && isset($_POST['status'])) {
             $name = $_POST['name'];
             $description = $_POST['description'];
             $node_ip = $_POST['node_ip'];
@@ -142,6 +173,14 @@ $router->post('/api/admin/locations/update', function (): void {
                 return;
             }
 
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$admin_location_update,
+                CloudFlareRealIP::getRealIP()
+            );
+
+            $eventManager->emit(LocationEvent::onLocationUpdated(), [$id]);
+
             $appInstance->OK('Location updated', [
                 'location' => [
                     'name' => $name,
@@ -156,5 +195,40 @@ $router->post('/api/admin/locations/update', function (): void {
         }
     } else {
         $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
+    }
+});
+
+$router->post('/api/admin/locations/(.*)/delete', function ($id): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $session = new MythicalDash\Chat\User\Session($appInstance);
+    global $eventManager;
+
+    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+        if (!Locations::exists($id)) {
+            $appInstance->BadRequest('Location not found', ['error_code' => 'ERROR_LOCATION_NOT_FOUND']);
+        }
+
+        $eventManager->emit(LocationEvent::onLocationDeleted(), [$id]);
+
+        $deleted = Locations::delete($id);
+        if (!$deleted) {
+            $appInstance->BadRequest('Failed to delete location', ['error_code' => 'ERROR_FAILED_TO_DELETE_LOCATION']);
+        }
+
+        // TODO: Make sure there are not servers on this location before you delete it!
+
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$admin_location_delete,
+            CloudFlareRealIP::getRealIP()
+        );
+
+        $appInstance->OK('Location deleted', [
+            'location' => [
+                'id' => $id,
+            ],
+        ]);
     }
 });

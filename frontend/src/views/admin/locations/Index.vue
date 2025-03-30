@@ -11,7 +11,10 @@
             </button>
         </div>
         <!-- Locations Table using TableTanstack -->
-        <TableTanstack :data="locations" :columns="columns" tableName="Locations" />
+        <div v-if="loading" class="flex justify-center items-center py-10">
+            <LoaderCircle class="h-8 w-8 animate-spin text-pink-400" />
+        </div>
+        <TableTanstack v-else :data="locations" :columns="columns" tableName="Locations" />
     </LayoutDashboard>
 </template>
 
@@ -19,56 +22,24 @@
 import { ref, onMounted, h } from 'vue';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
-import { PlusIcon, EditIcon, TrashIcon } from 'lucide-vue-next';
+import { PlusIcon, EditIcon, TrashIcon, LoaderCircle } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 
-// Updated Location interface with the requested fields
+// Updated Location interface with the requested fields from the API
 interface Location {
     id: number;
     name: string;
     description: string;
     pterodactyl_location_id: number | null;
     node_ip: string;
-    status: 'active' | 'inactive';
+    status: string;
     updated_at: string;
     created_at: string;
 }
 
 const router = useRouter();
-
-// Mock data with the new structure
-const locations = ref<Location[]>([
-    {
-        id: 1,
-        name: 'US East',
-        description: 'East Coast Data Center',
-        pterodactyl_location_id: 1,
-        node_ip: '192.168.1.10',
-        status: 'active',
-        updated_at: '2023-05-15T12:30:00Z',
-        created_at: '2023-05-15T10:30:00Z',
-    },
-    {
-        id: 2,
-        name: 'EU West',
-        description: 'Frankfurt Data Center',
-        pterodactyl_location_id: 2,
-        node_ip: '192.168.2.10',
-        status: 'active',
-        updated_at: '2023-06-20T15:45:00Z',
-        created_at: '2023-06-20T14:45:00Z',
-    },
-    {
-        id: 3,
-        name: 'Asia Pacific',
-        description: 'Singapore Data Center',
-        pterodactyl_location_id: 3,
-        node_ip: '192.168.3.10',
-        status: 'inactive',
-        updated_at: '2023-07-10T09:15:00Z',
-        created_at: '2023-07-10T08:15:00Z',
-    },
-]);
+const locations = ref<Location[]>([]);
+const loading = ref(true);
 
 // Define columns for TableTanstack
 const columns = [
@@ -107,11 +78,12 @@ const columns = [
                 {
                     class: {
                         'px-2 py-1 rounded-full text-xs font-medium': true,
-                        'bg-green-500/20 text-green-400': status === 'active',
-                        'bg-red-500/20 text-red-400': status === 'inactive',
+                        'bg-green-500/20 text-green-400': status === 'online',
+                        'bg-red-500/20 text-red-400': status === 'offline',
+                        'bg-yellow-500/20 text-yellow-400': status !== 'online' && status !== 'offline',
                     },
                 },
-                status === 'active' ? 'Active' : 'Inactive',
+                status === 'online' ? 'Online' : status === 'offline' ? 'Offline' : status,
             );
         },
     },
@@ -154,8 +126,34 @@ const columns = [
     },
 ];
 
-// Pagination
-const loading = ref(false);
+// Fetch locations from API
+const fetchLocations = async () => {
+    loading.value = true;
+    try {
+        const response = await fetch('/api/admin/locations', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch locations');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            locations.value = data.locations;
+        } else {
+            console.error('Failed to load locations:', data.message);
+        }
+    } catch (error) {
+        console.error('Error fetching locations:', error);
+    } finally {
+        loading.value = false;
+    }
+};
 
 const goToCreation = () => {
     router.push('/mc-admin/locations/create');
@@ -170,10 +168,6 @@ const confirmDelete = (location: Location) => {
 };
 
 onMounted(() => {
-    // Simulate loading data from API
-    loading.value = true;
-    setTimeout(() => {
-        loading.value = false;
-    }, 500);
+    fetchLocations();
 });
 </script>

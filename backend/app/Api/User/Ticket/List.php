@@ -21,9 +21,7 @@ $router->get('/api/user/ticket/list', function () {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyGET();
     $s = new Session($appInstance);
-
     $tickets = Tickets::getAllTicketsByUser($s->getInfo(UserColumns::UUID, false), 150);
-
     $appInstance->OK('Tickets', [
         'tickets' => $tickets,
     ]);

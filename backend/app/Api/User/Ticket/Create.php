@@ -17,7 +17,10 @@ use MythicalDash\Chat\User\Session;
 use MythicalDash\Chat\Tickets\Tickets;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Tickets\Departments;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\TicketEvent;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 $router->get('/api/user/ticket/create', function () {
     App::init();
@@ -64,6 +67,7 @@ $router->post('/api/user/ticket/create', function () {
              * Check if the user has more than 3 open tickets.
              */
             $userTickets = Tickets::getAllTicketsByUser($session->getInfo(UserColumns::UUID, false), 150);
+
             $openTickets = array_filter($userTickets, function ($ticket) {
                 return in_array($ticket['status'], ['open', 'waiting', 'replied', 'inprogress']);
             });
@@ -75,6 +79,11 @@ $router->post('/api/user/ticket/create', function () {
              */
             $uuid = $session->getInfo(UserColumns::UUID, false);
             $ticketId = Tickets::create($uuid, $departmentId, $subject, $message, $priority);
+            UserActivities::add(
+                $uuid,
+                UserActivitiesTypes::$ticket_create,
+                CloudFlareRealIP::getRealIP()
+            );
             $eventManager->emit(TicketEvent::onTicketCreate(), [
                 'ticket_id' => $ticketId,
                 'department_id' => $departmentId,

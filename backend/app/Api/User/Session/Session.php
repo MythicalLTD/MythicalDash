@@ -18,10 +18,14 @@ use MythicalDash\Chat\User\Roles;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
+use MythicalDash\Plugins\Events\Events\UserEvent;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 $router->post('/api/user/session/info/update', function (): void {
     App::init();
+    global $eventManager;
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
 
@@ -54,7 +58,12 @@ $router->post('/api/user/session/info/update', function (): void {
         $session->setInfo(UserColumns::EMAIL, $_POST['email'], false);
         $session->setInfo(UserColumns::AVATAR, $_POST['avatar'], false);
         $session->setInfo(UserColumns::BACKGROUND, $_POST['background'], false);
-
+        $eventManager->emit(UserEvent::onUserUpdate(), [$session->SESSION_KEY]);
+        UserActivities::add(
+            User::getInfo($session->getInfo(UserColumns::UUID, false), UserColumns::UUID, false),
+            UserActivitiesTypes::$user_update,
+            CloudFlareRealIP::getRealIP()
+        );
         $appInstance->OK('User info updated successfully!', []);
     } catch (Exception $e) {
         $appInstance->getLogger()->error('Failed to update user info! ' . $e->getMessage());
@@ -63,13 +72,19 @@ $router->post('/api/user/session/info/update', function (): void {
 });
 
 $router->add('/api/user/session/apiKey/reset', function (): void {
+    global $eventManager;
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new Session($appInstance);
     $token = 'mythicaldash_clientapi_' . App::getInstance(true)->encrypt(date('Y-m-d H:i:s') . 'MythicalDash' . random_bytes(16) . base64_encode($appInstance->generateCode()));
     $session->setInfo(UserColumns::ACCOUNT_TOKEN, $token, false);
-
+    $eventManager->emit(UserEvent::resetApiKey(), [$token]);
+    UserActivities::add(
+        User::getInfo($session->getInfo(UserColumns::UUID, false), UserColumns::UUID, false),
+        UserActivitiesTypes::$user_reset_api_key,
+        CloudFlareRealIP::getRealIP()
+    );
     setcookie('user_token', $token, time() + (86400 * 30), '/');
     $appInstance->OK('API KEY Reset!', ['api_key' => $token]);
 });
@@ -77,11 +92,19 @@ $router->add('/api/user/session/apiKey/reset', function (): void {
 $router->add('/api/user/session/newPin', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
+    global $eventManager;
     $appInstance->allowOnlyPOST();
     $session = new Session($appInstance);
     $pin = $appInstance->generatePin();
     try {
         $session->setInfo(UserColumns::SUPPORT_PIN, $pin, false);
+        $eventManager->emit(UserEvent::newSupportPin(), [$pin]);
+        UserActivities::add(
+            User::getInfo($session->getInfo(UserColumns::UUID, false), UserColumns::UUID, false),
+            UserActivitiesTypes::$user_new_support_pin,
+            CloudFlareRealIP::getRealIP()
+        );
+
         $appInstance->OK('Support pin updated successfully!', ['pin' => $pin]);
     } catch (Exception $e) {
         $appInstance->getLogger()->error('Failed to generate new pin: ' . $e->getMessage());
@@ -100,8 +123,6 @@ $router->get('/api/user/session', function (): void {
             'user' => User::getInfo($accountToken, UserColumns::UUID, false),
             'status' => 'open',
         ]);
-
-        $stats_services = 0;
 
         $columns = [
             UserColumns::USERNAME,

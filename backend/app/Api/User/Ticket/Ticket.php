@@ -20,7 +20,10 @@ use MythicalDash\Chat\Tickets\Messages;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Tickets\Attachments;
 use MythicalDash\Chat\Tickets\Departments;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\TicketEvent;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 $router->get('/api/user/ticket/(.*)/messages', function ($ticketId) {
     App::init();
@@ -129,6 +132,11 @@ $router->post('/api/user/ticket/(.*)/reply', function ($ticketId) {
             'user_id' => $uuid,
             'message' => $message,
         ]);
+        UserActivities::add(
+            $uuid,
+            UserActivitiesTypes::$ticket_reply,
+            CloudFlareRealIP::getRealIP()
+        );
         $appInstance->OK(200, ['message' => 'Message sent']);
     } else {
         $appInstance->BadRequest('Ticket not found', ['error_code' => 'ERROR_TICKET_NOT_FOUND']);
@@ -171,7 +179,11 @@ $router->post('/api/user/ticket/(.*)/status', function ($ticketId) {
             'user_id' => $uuid,
             'status' => $status,
         ]);
-
+        UserActivities::add(
+            $uuid,
+            UserActivitiesTypes::$ticket_update,
+            CloudFlareRealIP::getRealIP()
+        );
         $appInstance->OK(200, ['message' => 'Ticket status updated']);
     } else {
         $appInstance->BadRequest('Ticket not found', ['error_code' => 'ERROR_TICKET_NOT_FOUND']);

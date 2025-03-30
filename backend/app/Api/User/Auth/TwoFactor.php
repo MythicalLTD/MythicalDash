@@ -18,8 +18,10 @@ use MythicalDash\Chat\User\Session;
 use MythicalDash\Config\ConfigInterface;
 use MythicalSystems\CloudFlare\Turnstile;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 $router->get('/api/user/auth/2fa/setup', function (): void {
     global $eventManager;
@@ -69,9 +71,15 @@ $router->post('/api/user/auth/2fa/setup', function (): void {
     $code = $_POST['code'];
 
     if ($google2fa->verifyKey($secret, $code, null, null, null)) {
-        User::updateInfo($_COOKIE['user_token'], UserColumns::TWO_FA_ENABLED, 'true', encrypted: false);
+        User::updateInfo($_COOKIE['user_token'], UserColumns::TWO_FA_ENABLED, 'true', false);
         User::updateInfo($_COOKIE['user_token'], UserColumns::TWO_FA_BLOCKED, 'false', false);
+
         $eventManager->emit(AuthEvent::onAuth2FAVerifySuccess(), ['secret' => $secret]);
+        UserActivities::add(
+            User::getInfo($_COOKIE['user_token'], UserColumns::UUID, false),
+            UserActivitiesTypes::$two_factor_verify,
+            CloudFlareRealIP::getRealIP()
+        );
         $appInstance->OK('Code valid go on!', ['secret' => $secret]);
     } else {
         $eventManager->emit(AuthEvent::onAuth2FAVerifyFailed(), ['error_code' => 'INVALID_CODE']);
@@ -88,6 +96,12 @@ $router->get('/api/auth/2fa/setup/kill', function () {
 
     $session->setInfo(UserColumns::TWO_FA_ENABLED, 'false', false);
     $session->setInfo(UserColumns::TWO_FA_KEY, '', false);
+
+    UserActivities::add(
+        $session->getInfo(UserColumns::UUID, false),
+        UserActivitiesTypes::$two_factor_disable,
+        CloudFlareRealIP::getRealIP()
+    );
 
     header('location: /?href=api');
 

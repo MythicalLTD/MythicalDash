@@ -49,12 +49,12 @@ class UserActivities extends Database
      *
      * @param string $uuid User UUID
      */
-    public static function get(string $uuid): array
+    public static function get(string $uuid, int $limit = 125): array
     {
         try {
             $dbConn = Database::getPdoConnection();
 
-            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTable() . ' WHERE user = :user LIMIT 125');
+            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTable() . ' WHERE user = :user ORDER BY id DESC LIMIT ' . $limit);
             $stmt->execute([
                 ':user' => $uuid,
             ]);

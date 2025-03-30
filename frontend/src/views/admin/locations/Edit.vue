@@ -41,8 +41,8 @@
                             v-model="locationForm.status"
                             class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         >
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
+                            <option value="online">Online</option>
+                            <option value="offline">Offline</option>
                         </select>
                     </div>
 
@@ -84,19 +84,23 @@
                         />
                     </div>
 
-                    <div>
+                    <div v-if="locationForm.created_at">
                         <label class="block text-sm font-medium text-gray-400 mb-1">Created At</label>
                         <div class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 text-gray-400">
                             {{ new Date(locationForm.created_at).toLocaleString() }}
                         </div>
                     </div>
 
-                    <div>
+                    <div v-if="locationForm.updated_at">
                         <label class="block text-sm font-medium text-gray-400 mb-1">Last Updated</label>
                         <div class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 text-gray-400">
                             {{ new Date(locationForm.updated_at).toLocaleString() }}
                         </div>
                     </div>
+                </div>
+
+                <div v-if="successMessage" class="bg-green-500/20 text-green-400 p-4 rounded-lg mb-6">
+                    {{ successMessage }}
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-4 border-t border-gray-700">
@@ -135,6 +139,7 @@ const locationId = Number(route.params.id);
 const loading = ref(true);
 const saving = ref(false);
 const error = ref('');
+const successMessage = ref('');
 
 // Form state with default values
 const locationForm = ref({
@@ -143,59 +148,17 @@ const locationForm = ref({
     description: '',
     pterodactyl_location_id: null as number | null,
     node_ip: '',
-    status: 'active' as 'active' | 'inactive',
+    status: 'online',
+    deleted: 'false',
+    locked: 'false',
     created_at: '',
     updated_at: '',
 });
 
-// Mock data for demonstration
-const mockLocations = [
-    {
-        id: 1,
-        name: 'US East',
-        description: 'East Coast Data Center',
-        pterodactyl_location_id: 1,
-        node_ip: '192.168.1.10',
-        status: 'active',
-        updated_at: '2023-05-15T12:30:00Z',
-        created_at: '2023-05-15T10:30:00Z',
-    },
-    {
-        id: 2,
-        name: 'EU West',
-        description: 'Frankfurt Data Center',
-        pterodactyl_location_id: 2,
-        node_ip: '192.168.2.10',
-        status: 'active',
-        updated_at: '2023-06-20T15:45:00Z',
-        created_at: '2023-06-20T14:45:00Z',
-    },
-    {
-        id: 3,
-        name: 'Asia Pacific',
-        description: 'Singapore Data Center',
-        pterodactyl_location_id: 3,
-        node_ip: '192.168.3.10',
-        status: 'inactive',
-        updated_at: '2023-07-10T09:15:00Z',
-        created_at: '2023-07-10T08:15:00Z',
-    },
-];
-
 onMounted(async () => {
     try {
-        // Simulate API call to fetch location data
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Find the location in our mock data
-        const location = mockLocations.find((loc) => loc.id === locationId);
-
-        if (!location) {
-            error.value = 'Location not found';
-            return;
-        }
-
-        // Populate the form with location data
+        // Fetch location data from API
+        await fetchLocationData();
     } catch (err) {
         error.value = 'Failed to load location data';
         console.error(err);
@@ -204,23 +167,104 @@ onMounted(async () => {
     }
 });
 
+// Fetch location data from API
+const fetchLocationData = async () => {
+    try {
+        const response = await fetch(`/api/admin/locations`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch location data');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Define a type for the location object from API
+            interface ApiLocation {
+                id: number;
+                name: string;
+                description: string;
+                pterodactyl_location_id: number | null;
+                node_ip: string;
+                status: string;
+                deleted: string;
+                locked: string;
+                created_at: string;
+                updated_at: string;
+            }
+
+            // Find the location with the matching ID
+            const location = data.locations.find((loc: ApiLocation) => loc.id === locationId);
+
+            if (!location) {
+                error.value = 'Location not found';
+                return;
+            }
+
+            // Populate the form with location data
+            locationForm.value = {
+                id: location.id,
+                name: location.name,
+                description: location.description,
+                pterodactyl_location_id: location.pterodactyl_location_id,
+                node_ip: location.node_ip,
+                status: location.status,
+                deleted: location.deleted,
+                locked: location.locked,
+                created_at: location.created_at,
+                updated_at: location.updated_at,
+            };
+        } else {
+            error.value = data.message || 'Failed to load location data';
+        }
+    } catch (err) {
+        console.error('Error fetching location data:', err);
+        throw err;
+    }
+};
+
 const updateLocation = async () => {
     saving.value = true;
+    successMessage.value = '';
+    error.value = '';
 
     try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Create FormData object
+        const formData = new FormData();
+        formData.append('name', locationForm.value.name);
+        formData.append('description', locationForm.value.description);
+        formData.append('node_ip', locationForm.value.node_ip);
+        formData.append('status', locationForm.value.status);
 
-        // Update the updated_at timestamp
-        locationForm.value.updated_at = new Date().toISOString();
+        if (locationForm.value.pterodactyl_location_id) {
+            formData.append('pterodactyl_location_id', locationForm.value.pterodactyl_location_id.toString());
+        }
 
-        // In a real app, you would send the data to your API here
-        console.log('Updating location:', locationForm.value);
+        // Send update request to API
+        const response = await fetch(`/api/admin/locations/${locationId}/update`, {
+            method: 'POST',
+            body: formData,
+        });
 
-        // Redirect back to locations list
-        router.push('/mc-admin/locations');
-    } catch (error) {
-        console.error('Error updating location:', error);
+        const data = await response.json();
+
+        if (data.success) {
+            successMessage.value = 'Location updated successfully';
+            // Wait a moment before redirecting
+            setTimeout(() => {
+                router.push('/mc-admin/locations');
+            }, 1500);
+        } else {
+            error.value = data.message || 'Failed to update location';
+        }
+    } catch (err) {
+        console.error('Error updating location:', err);
+        error.value = 'An error occurred while updating the location';
     } finally {
         saving.value = false;
     }

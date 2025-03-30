@@ -16,6 +16,9 @@ use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Mails;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 $router->get('/api/user/session/emails', function (): void {
     App::init();
@@ -29,6 +32,8 @@ $router->get('/api/user/session/emails', function (): void {
 });
 
 $router->get('/api/user/session/emails/(.*)/raw', function (string $id): void {
+    global $eventManager;
+
     $appInstance = App::getInstance(true);
     if ($id == '') {
         exit(header('location: /account'));
@@ -47,7 +52,13 @@ $router->get('/api/user/session/emails/(.*)/raw', function (string $id): void {
 
     if (Mails::exists($id)) {
         if (Mails::doesUserOwnEmail(User::getInfo($accountToken, UserColumns::UUID, false), $id)) {
+            $eventManager->emit(MythicalDash\Plugins\Events\Events\UserEmailEvent::onEmailView(), [$id]);
             $mail = Mails::get($id);
+            UserActivities::add(
+                User::getInfo($accountToken, UserColumns::UUID, false),
+                UserActivitiesTypes::$email_view,
+                CloudFlareRealIP::getRealIP()
+            );
             header('Content-Type: text/html; charset=utf-8');
             echo $mail['body'];
             exit;
@@ -60,6 +71,7 @@ $router->get('/api/user/session/emails/(.*)/raw', function (string $id): void {
 });
 
 $router->delete('/api/user/session/emails/(.*)/delete', function (string $id): void {
+    global $eventManager;
     $appInstance = App::getInstance(true);
     if ($id == '') {
         $appInstance->BadRequest('Email not found!', ['error_code' => 'EMAIL_NOT_FOUND']);
@@ -73,6 +85,12 @@ $router->delete('/api/user/session/emails/(.*)/delete', function (string $id): v
     $accountToken = $session->SESSION_KEY;
     if (Mails::exists($id)) {
         if (Mails::doesUserOwnEmail(User::getInfo($accountToken, UserColumns::UUID, false), $id)) {
+            $eventManager->emit(MythicalDash\Plugins\Events\Events\UserEmailEvent::onEmailDelete(), [$id]);
+            UserActivities::add(
+                User::getInfo($accountToken, UserColumns::UUID, false),
+                UserActivitiesTypes::$email_delete,
+                CloudFlareRealIP::getRealIP()
+            );
             Mails::delete($id, User::getInfo($accountToken, UserColumns::UUID, false));
             $appInstance->OK('Email deleted successfully!', []);
         } else {

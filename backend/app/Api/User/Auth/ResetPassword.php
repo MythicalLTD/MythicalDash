@@ -17,8 +17,10 @@ use MythicalDash\Chat\User\Verification;
 use MythicalDash\Config\ConfigInterface;
 use MythicalSystems\CloudFlare\Turnstile;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Chat\columns\EmailVerificationColumns;
 
 $router->get('/api/user/auth/reset', function (): void {
@@ -142,6 +144,11 @@ $router->post('/api/user/auth/reset', function (): void {
                     $userInfoArray[UserColumns::FIRST_NAME],
                     $userInfoArray[UserColumns::LAST_NAME],
                     $userInfoArray[UserColumns::PASSWORD]
+                );
+                UserActivities::add(
+                    $userInfoArray[UserColumns::UUID],
+                    UserActivitiesTypes::$change_password,
+                    CloudFlareRealIP::getRealIP()
                 );
             } catch (Exception $e) {
                 $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] Failed to login user in Pterodactyl: ' . $e->getMessage());

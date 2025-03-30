@@ -366,6 +366,7 @@ account:
             page:
                 title: Emails
                 subTitle: See your emails!
+                description: 'This is a list of your emails. You can view the details of each email by clicking the view button.'
                 table:
                     columns:
                         id: ID
@@ -411,6 +412,7 @@ account:
             page:
                 title: Activity
                 subTitle: See your activity!
+                description: 'This is a list of your recent activity. You can view the details of each action by clicking the view button.'
                 table:
                     columns:
                         action: Action
@@ -573,3 +575,5 @@ components:
         readMore: 'Read More'
         showing: 'Showing page: '
         per_page: 'items per page'
+        no_data_description: 'We are sorry, but we couldn`t find any data for this page.'
+        no_data: 'No data found'

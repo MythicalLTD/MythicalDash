@@ -17,6 +17,29 @@ class UserActivitiesTypes
 {
     public static string $login = 'auth:login';
     public static string $register = 'auth:register';
+    public static string $verify = 'auth:verify';
+    public static string $change_password = 'auth:change_password';
+    public static string $two_factor_verify = 'auth:two_factor_verify';
+    public static string $two_factor_disable = 'auth:two_factor_disable';
+    public static string $email_view = 'email:view';
+    public static string $email_delete = 'email:delete';
+    public static string $user_update = 'user:update';
+    public static string $user_new_support_pin = 'user:new_support_pin';
+    public static string $user_reset_api_key = 'user:reset_api_key';
+
+    /**
+     * Ticket Endpoints.
+     */
+    public static string $ticket_create = 'ticket:create';
+    public static string $ticket_update = 'ticket:update';
+    public static string $ticket_reply = 'ticket:reply';
+
+    /**
+     * Admin location create.
+     */
+    public static string $admin_location_create = 'admin:location:create';
+    public static string $admin_location_update = 'admin:location:update';
+    public static string $admin_location_delete = 'admin:location:delete';
 
     /**
      * Get all types.
