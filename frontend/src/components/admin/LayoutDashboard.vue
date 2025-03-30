@@ -371,9 +371,10 @@ const footerLinks = [
 
 const searchResults = [
     { id: 1, name: 'Dashboard', path: `${adminBaseUri}` },
-    { id: 2, name: 'Users', path: `${adminBaseUri}/users` },
-    { id: 6, name: 'Locations', path: `${adminBaseUri}/locations` },
-    { id: 7, name: 'Tickets', path: `${adminBaseUri}/tickets` },
+    { id: 2, name: 'Locations', path: `${adminBaseUri}/locations` },
+    { id: 3, name: 'Create Location', path: `${adminBaseUri}/locations/create` },
+    { id: 4, name: 'Tickets', path: `${adminBaseUri}/tickets` },
+    { id: 5, name: 'Users', path: `${adminBaseUri}/users` }
 ];
 
 const filteredResults = computed(() => {

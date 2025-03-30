@@ -35,7 +35,7 @@ $router->get('/api/admin', function (): void {
             $addonsCount = Database::getTableRowCount('mythicaldash_addons');
             $rolesCount = Database::getTableRowCount('mythicaldash_roles');
             $locationsCount = Database::getTableRowCount('mythicaldash_locations');
-
+            $ticketsCount = Database::getTableRowCount('mythicaldash_tickets');
             $appInstance->OK('Dashboard data retrieved successfully.', [
                 'core' => [
                     'github_data' => $github_data,
@@ -45,6 +45,7 @@ $router->get('/api/admin', function (): void {
                     'addons_count' => $addonsCount,
                     'locations_count' => $locationsCount,
                     'roles_count' => $rolesCount,
+                    'tickets_count' => $ticketsCount
                 ],
                 'etc' => [
                     'activity' => $activity,

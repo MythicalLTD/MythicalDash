@@ -35,7 +35,6 @@ class App extends MythicalAPP
 
     public function __construct(bool $softBoot)
     {
-        global $pluginManager, $eventManager;
         /**
          * Load the environment variables.
          */
@@ -58,6 +57,11 @@ class App extends MythicalAPP
         if ($softBoot) {
             return;
         }
+		/**
+		 * @global \MythicalDash\Plugins\PluginManager $pluginManager
+		 * @global \MythicalDash\Plugins\Events\PluginEvent $eventManager 
+		 */
+		global $pluginManager, $eventManager;
 
         /**
          * Redis.
@@ -94,13 +98,6 @@ class App extends MythicalAPP
         } catch (\Exception $e) {
             self::init();
             self::InternalServerError($e->getMessage(), null);
-        }
-
-        /**
-         * Email correction.
-         */
-        if ($this->getConfig()->getSetting('app_url', null) == null) {
-            $this->getConfig()->setSetting('app_url', $_SERVER['HTTP_HOST']);
         }
 
         /**

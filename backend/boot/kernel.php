@@ -55,4 +55,8 @@ if (!is_writable(__DIR__ . '/../storage')) {
 $pluginManager = new PluginManager();
 $eventManager = $pluginManager->getEventManager();
 
+/**
+ * @global \MythicalDash\Plugins\PluginManager $pluginManager
+ * @global \MythicalDash\Plugins\Events\PluginEvent $eventManager
+ */
 global $pluginManager, $eventManager;

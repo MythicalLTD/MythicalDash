@@ -149,6 +149,31 @@ const routes = [
         name: 'Delete Location',
         component: () => import('@/views/admin/locations/Delete.vue'),
     },
+    {
+        path: '/mc-admin/users',
+        name: 'Users',
+        component: () => import('@/views/admin/users/Index.vue'),
+    },
+    {
+        path: '/mc-admin/users/:id/edit',
+        name: 'Edit User',
+        component: () => import('@/views/admin/users/Edit.vue'),
+    },
+    {
+        path: '/mc-admin/users/:id/delete',
+        name: 'Delete User',
+        component: () => import('@/views/admin/users/Delete.vue'),
+    },
+    {
+        path: '/mc-admin/tickets',
+        name: 'Admin Tickets',
+        component: () => import('@/views/admin/tickets/Index.vue'),
+    },
+    {
+        path: '/mc-admin/tickets/:id',
+        name: 'Admin Ticket Details',
+        component: () => import('@/views/admin/tickets/Details.vue'),
+    },
 ];
 
 routes.push({
