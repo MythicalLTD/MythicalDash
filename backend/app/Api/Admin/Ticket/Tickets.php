@@ -12,66 +12,61 @@
  */
 
 use MythicalDash\App;
-use MythicalDash\Chat\Tickets\Tickets;
 use MythicalDash\Chat\User\Can;
-use MythicalDash\Chat\columns\UserColumns;
-use MythicalDash\Chat\Locations\Locations;
 use MythicalDash\Chat\User\User;
-use MythicalDash\Chat\User\UserActivities;
-use MythicalDash\CloudFlare\CloudFlareRealIP;
-use MythicalDash\Chat\interface\UserActivitiesTypes;
-use MythicalDash\Plugins\Events\Events\LocationEvent;
+use MythicalDash\Chat\Tickets\Tickets;
+use MythicalDash\Chat\columns\UserColumns;
 
 $router->get('/api/admin/tickets', function (): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$appInstance->allowOnlyGET();
-	$session = new MythicalDash\Chat\User\Session($appInstance);
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    $session = new MythicalDash\Chat\User\Session($appInstance);
 
-	if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-		$tickets = Tickets::getAllTickets(9500);
-		
-		// Process tickets to include user information instead of just UUID
-		foreach ($tickets as &$ticket) {
-			// Get user token from UUID
-			$userToken = User::getTokenFromUUID($ticket['user']);
-			
-			if ($userToken) {
-				// Get user information
-				$userInfo = User::getInfoArray($userToken, [
-					UserColumns::USERNAME,
-					UserColumns::FIRST_NAME,
-					UserColumns::LAST_NAME,
-					UserColumns::EMAIL,
-					UserColumns::AVATAR,
-				], [
-					UserColumns::FIRST_NAME,
-					UserColumns::LAST_NAME,
-				]);
-				
-				// Add user information to ticket
-				$ticket['user_details'] = [
-					'uuid' => $ticket['user'],
-					'username' => $userInfo[UserColumns::USERNAME] ?? 'Unknown',
-					'name' => ($userInfo[UserColumns::FIRST_NAME] ?? '') . ' ' . ($userInfo[UserColumns::LAST_NAME] ?? ''),
-					'email' => $userInfo[UserColumns::EMAIL] ?? '',
-					'avatar' => $userInfo[UserColumns::AVATAR] ?? '',
-				];
-			} else {
-				$ticket['user_details'] = [
-					'uuid' => $ticket['user'],
-					'username' => 'Unknown User',
-					'name' => 'Unknown User',
-					'email' => '',
-					'avatar' => '',
-				];
-			}
-		}
+    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+        $tickets = Tickets::getAllTickets(9500);
 
-		$appInstance->OK('Tickets', [
-			'tickets' => $tickets
-		]);
-	} else {
-		$appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-	}
+        // Process tickets to include user information instead of just UUID
+        foreach ($tickets as &$ticket) {
+            // Get user token from UUID
+            $userToken = User::getTokenFromUUID($ticket['user']);
+
+            if ($userToken) {
+                // Get user information
+                $userInfo = User::getInfoArray($userToken, [
+                    UserColumns::USERNAME,
+                    UserColumns::FIRST_NAME,
+                    UserColumns::LAST_NAME,
+                    UserColumns::EMAIL,
+                    UserColumns::AVATAR,
+                ], [
+                    UserColumns::FIRST_NAME,
+                    UserColumns::LAST_NAME,
+                ]);
+
+                // Add user information to ticket
+                $ticket['user_details'] = [
+                    'uuid' => $ticket['user'],
+                    'username' => $userInfo[UserColumns::USERNAME] ?? 'Unknown',
+                    'name' => ($userInfo[UserColumns::FIRST_NAME] ?? '') . ' ' . ($userInfo[UserColumns::LAST_NAME] ?? ''),
+                    'email' => $userInfo[UserColumns::EMAIL] ?? '',
+                    'avatar' => $userInfo[UserColumns::AVATAR] ?? '',
+                ];
+            } else {
+                $ticket['user_details'] = [
+                    'uuid' => $ticket['user'],
+                    'username' => 'Unknown User',
+                    'name' => 'Unknown User',
+                    'email' => '',
+                    'avatar' => '',
+                ];
+            }
+        }
+
+        $appInstance->OK('Tickets', [
+            'tickets' => $tickets,
+        ]);
+    } else {
+        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
+    }
 });

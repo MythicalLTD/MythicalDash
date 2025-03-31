@@ -40,6 +40,15 @@ class UserActivitiesTypes
     public static string $admin_location_create = 'admin:location:create';
     public static string $admin_location_update = 'admin:location:update';
     public static string $admin_location_delete = 'admin:location:delete';
+    /**
+     * Egg Categories.
+     */
+    public static string $admin_egg_category_create = 'admin:egg_category:create';
+    public static string $admin_egg_category_update = 'admin:egg_category:update';
+    public static string $admin_egg_category_delete = 'admin:egg_category:delete';
+    public static string $admin_egg_create = 'admin:egg:create';
+    public static string $admin_egg_update = 'admin:egg:update';
+    public static string $admin_egg_delete = 'admin:egg:delete';
 
     /**
      * Get all types.

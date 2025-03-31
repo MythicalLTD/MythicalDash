@@ -217,6 +217,7 @@ import {
     InfoIcon,
     PlusCircle,
     SettingsIcon,
+    EggIcon,
 } from 'lucide-vue-next';
 import Session from '@/mythicaldash/Session';
 import StorageMonitor from '@/mythicaldash/StorageMonitor';
@@ -278,7 +279,7 @@ interface MenuItem {
     isOpen?: boolean;
 }
 
-const dashBoard = ref({ count: { user_count: 0, locations_count: 0, tickets_count: 0 } });
+const dashBoard = ref({ count: { user_count: 0, locations_count: 0, tickets_count: 0, eggs_count: 0 } });
 Dashboard.get().then((data) => {
     dashBoard.value = data;
 });
@@ -324,6 +325,39 @@ const menuGroups = ref<{ title: string; items: MenuItem[] }[]>([
                 count: computed(() => dashBoard.value.count.locations_count || 0),
             },
             {
+                name: 'Eggs',
+                icon: EggIcon,
+                count: computed(() => dashBoard.value.count.eggs_count || 0),
+                subMenu: [
+                    {
+                        name: 'Categories',
+                        path: `${adminBaseUri}/egg-categories`,
+                        icon: EggIcon,
+                    },
+
+                    {
+                        name: 'Create Category',
+                        path: `${adminBaseUri}/egg-categories/create`,
+                        icon: PlusCircle,
+                    },
+                    {
+                        name: 'All Eggs',
+                        path: `${adminBaseUri}/eggs`,
+                        icon: EggIcon,
+                    },
+                    {
+                        name: 'Create Egg',
+                        path: `${adminBaseUri}/eggs/create`,
+                        icon: PlusCircle,
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        title: 'Support Buddy',
+        items: [
+            {
                 name: 'Tickets',
                 path: `${adminBaseUri}/tickets`,
                 icon: InfoIcon,
@@ -342,16 +376,16 @@ const menuGroups = ref<{ title: string; items: MenuItem[] }[]>([
                 active: route.path === `${adminBaseUri}/settings`,
             },
             {
-                name: 'Shard Hosts',
-                path: `${adminBaseUri}/database-hosts`,
+                name: 'MythicalCloud (Synced)',
+                path: `${adminBaseUri}/mythicalcloud`,
                 icon: Database,
-                active: route.path === `${adminBaseUri}/database-hosts`,
+                active: route.path === `${adminBaseUri}/mythicalcloud`,
             },
             {
                 name: 'Addons',
-                path: `${adminBaseUri}/mounts`,
+                path: `${adminBaseUri}/addons`,
                 icon: HardDrive,
-                active: route.path === `${adminBaseUri}/mounts`,
+                active: route.path === `${adminBaseUri}/addons`,
             },
         ],
     },
@@ -373,8 +407,10 @@ const searchResults = [
     { id: 1, name: 'Dashboard', path: `${adminBaseUri}` },
     { id: 2, name: 'Locations', path: `${adminBaseUri}/locations` },
     { id: 3, name: 'Create Location', path: `${adminBaseUri}/locations/create` },
-    { id: 4, name: 'Tickets', path: `${adminBaseUri}/tickets` },
-    { id: 5, name: 'Users', path: `${adminBaseUri}/users` }
+    { id: 4, name: 'Egg Categories', path: `${adminBaseUri}/egg-categories` },
+    { id: 5, name: 'Create Egg Category', path: `${adminBaseUri}/egg-categories/create` },
+    { id: 6, name: 'Tickets', path: `${adminBaseUri}/tickets` },
+    { id: 7, name: 'Users', path: `${adminBaseUri}/users` },
 ];
 
 const filteredResults = computed(() => {

@@ -57,11 +57,11 @@ class App extends MythicalAPP
         if ($softBoot) {
             return;
         }
-		/**
-		 * @global \MythicalDash\Plugins\PluginManager $pluginManager
-		 * @global \MythicalDash\Plugins\Events\PluginEvent $eventManager 
-		 */
-		global $pluginManager, $eventManager;
+        /**
+         * @global \MythicalDash\Plugins\PluginManager $pluginManager
+         * @global \MythicalDash\Plugins\Events\PluginEvent $eventManager
+         */
+        global $pluginManager, $eventManager;
 
         /**
          * Redis.

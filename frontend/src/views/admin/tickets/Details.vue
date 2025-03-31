@@ -29,7 +29,7 @@
                     </div>
                     <div class="text-gray-400">Ticket #{{ ticket.id }}</div>
                 </div>
-                
+
                 <!-- Ticket Meta Information -->
                 <div class="flex flex-wrap gap-3 mt-3 md:mt-0">
                     <div class="flex items-center">
@@ -79,8 +79,11 @@
                 <h3 class="text-lg font-medium text-gray-300 mb-2">User Information</h3>
                 <div class="bg-gray-900/50 p-4 rounded-lg">
                     <div class="flex items-center mb-4">
-                        <img 
-                            :src="ticket.user_details.avatar || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'" 
+                        <img
+                            :src="
+                                ticket.user_details.avatar ||
+                                'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'
+                            "
                             :alt="ticket.user_details.name"
                             class="w-12 h-12 rounded-full mr-4"
                         />
@@ -122,9 +125,7 @@
         <div v-if="showConfirmModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full">
                 <h3 class="text-xl font-medium text-gray-100 mb-4">Confirm Action</h3>
-                <p class="text-gray-300 mb-4">
-                    Are you sure you want to close ticket #{{ ticket.id }}?
-                </p>
+                <p class="text-gray-300 mb-4">Are you sure you want to close ticket #{{ ticket.id }}?</p>
                 <div class="flex justify-end space-x-3">
                     <button
                         @click="closeModal"
@@ -145,12 +146,14 @@
         </div>
 
         <!-- Success/Error Toast Notification -->
-        <div v-if="notification.show" 
+        <div
+            v-if="notification.show"
             class="fixed bottom-4 right-4 py-2 px-4 rounded-lg shadow-lg transition-all duration-300"
             :class="{
                 'bg-green-500/20 text-green-400 border border-green-500/30': notification.type === 'success',
-                'bg-red-500/20 text-red-400 border border-red-500/30': notification.type === 'error'
-            }">
+                'bg-red-500/20 text-red-400 border border-red-500/30': notification.type === 'error',
+            }"
+        >
             {{ notification.message }}
         </div>
     </LayoutDashboard>
@@ -160,13 +163,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
-import { 
-    ArrowLeftIcon, 
-    LoaderIcon, 
-    TicketIcon, 
-    ClockIcon, 
-    XCircle 
-} from 'lucide-vue-next';
+import { ArrowLeftIcon, LoaderIcon, TicketIcon, ClockIcon, XCircle } from 'lucide-vue-next';
 
 // Ticket interface
 interface UserDetails {
@@ -213,8 +210,8 @@ const ticket = ref<Ticket>({
         username: '',
         name: '',
         email: '',
-        avatar: ''
-    }
+        avatar: '',
+    },
 });
 
 const showConfirmModal = ref(false);
@@ -222,7 +219,7 @@ const processing = ref(false);
 const notification = ref({
     show: false,
     message: '',
-    type: 'success' as 'success' | 'error'
+    type: 'success' as 'success' | 'error',
 });
 
 // Format functions
@@ -261,16 +258,16 @@ const fetchTicketDetails = async () => {
         }
 
         const data = await response.json();
-        
+
         if (data.success) {
             // Find the ticket with the matching ID
             const foundTicket = data.tickets.find((t: Ticket) => t.id === ticketId);
-            
+
             if (!foundTicket) {
                 error.value = 'Ticket not found';
                 return;
             }
-            
+
             ticket.value = foundTicket;
         } else {
             error.value = data.message || 'Failed to load ticket data';
@@ -296,7 +293,7 @@ const closeModal = () => {
 // Close ticket action
 const confirmClose = async () => {
     processing.value = true;
-    
+
     try {
         await closeTicket();
     } catch (error) {
@@ -312,7 +309,7 @@ const closeTicket = async () => {
     try {
         // Create FormData for the close request
         const formData = new FormData();
-        
+
         // Send close request to API
         const response = await fetch(`/api/admin/tickets/${ticketId}/close`, {
             method: 'POST',
@@ -339,9 +336,9 @@ const showNotification = (message: string, type: 'success' | 'error') => {
     notification.value = {
         show: true,
         message,
-        type
+        type,
     };
-    
+
     // Hide notification after 3 seconds
     setTimeout(() => {
         notification.value.show = false;
@@ -351,4 +348,4 @@ const showNotification = (message: string, type: 'success' | 'error') => {
 onMounted(() => {
     fetchTicketDetails();
 });
-</script> 
+</script>

@@ -24,18 +24,22 @@ class UserActivities extends Database
      * @param string $uuid User UUID
      * @param string|UserActivitiesTypes $type Activity type
      * @param string $ipv4 IP address
+     * @param string $context Context
+     *
+     * @return bool True if the activity was added, false otherwise
      */
-    public static function add(string $uuid, string|UserActivitiesTypes $type, string $ipv4): bool
+    public static function add(string $uuid, string|UserActivitiesTypes $type, string $ipv4, string $context = 'None'): bool
     {
         try {
             $dbConn = Database::getPdoConnection();
 
-            $stmt = $dbConn->prepare('INSERT INTO ' . self::getTable() . ' (user, action, ip_address) VALUES (:user, :action, :ip_address)');
+            $stmt = $dbConn->prepare('INSERT INTO ' . self::getTable() . ' (user, action, ip_address, context) VALUES (:user, :action, :ip_address, :context)');
 
             return $stmt->execute([
                 ':user' => $uuid,
                 ':action' => $type,
                 ':ip_address' => $ipv4,
+                ':context' => $context,
             ]);
         } catch (\Exception $e) {
             self::db_Error('Failed to add user activity: ' . $e->getMessage());

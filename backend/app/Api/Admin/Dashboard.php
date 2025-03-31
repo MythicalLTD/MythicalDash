@@ -45,7 +45,7 @@ $router->get('/api/admin', function (): void {
                     'addons_count' => $addonsCount,
                     'locations_count' => $locationsCount,
                     'roles_count' => $rolesCount,
-                    'tickets_count' => $ticketsCount
+                    'tickets_count' => $ticketsCount,
                 ],
                 'etc' => [
                     'activity' => $activity,

@@ -15,9 +15,7 @@
             <div class="text-center">
                 <AlertTriangleIcon class="w-16 h-16 mx-auto text-red-400 mb-4" />
                 <h2 class="text-xl font-medium text-gray-100 mb-2">Confirm Deletion</h2>
-                <p class="text-gray-300 mb-2">
-                    This page is under development. User ID: {{ userId }}
-                </p>
+                <p class="text-gray-300 mb-2">This page is under development. User ID: {{ userId }}</p>
                 <p class="text-gray-400 mb-6">This action cannot be undone.</p>
             </div>
         </div>
@@ -32,4 +30,4 @@ import { ArrowLeftIcon, AlertTriangleIcon } from 'lucide-vue-next';
 const router = useRouter();
 const route = useRoute();
 const userId = Number(route.params.id);
-</script> 
+</script>

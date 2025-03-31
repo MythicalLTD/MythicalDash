@@ -13,28 +13,22 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\Can;
-use MythicalDash\Chat\columns\UserColumns;
-use MythicalDash\Chat\Locations\Locations;
 use MythicalDash\Chat\User\User;
-use MythicalDash\Chat\User\UserActivities;
-use MythicalDash\CloudFlare\CloudFlareRealIP;
-use MythicalDash\Chat\interface\UserActivitiesTypes;
-use MythicalDash\Plugins\Events\Events\LocationEvent;
+use MythicalDash\Chat\columns\UserColumns;
 
 $router->get('/api/admin/users', function (): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$appInstance->allowOnlyGET();
-	$session = new MythicalDash\Chat\User\Session($appInstance);
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    $session = new MythicalDash\Chat\User\Session($appInstance);
 
-	if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-		$user = User::getListWithFilters(['id', 'username', 'first_name', 'last_name', 'email', 'avatar', 'pterodactyl_user_id', 'role', 'last_seen'], ['first_name', 'last_name']);
+    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+        $user = User::getListWithFilters(['id', 'username', 'first_name', 'last_name', 'email', 'avatar', 'pterodactyl_user_id', 'role', 'last_seen'], ['first_name', 'last_name']);
 
-		$appInstance->OK('Users data retrieved successfully.', [
-			'users' => $user
-		]);
-	} else {
-		$appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-	}
+        $appInstance->OK('Users data retrieved successfully.', [
+            'users' => $user,
+        ]);
+    } else {
+        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
+    }
 });
-

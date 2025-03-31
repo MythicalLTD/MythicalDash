@@ -25,4 +25,4 @@ import { ArrowLeftIcon } from 'lucide-vue-next';
 const router = useRouter();
 const route = useRoute();
 const userId = Number(route.params.id);
-</script> 
+</script>

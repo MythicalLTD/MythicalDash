@@ -150,6 +150,26 @@ const routes = [
         component: () => import('@/views/admin/locations/Delete.vue'),
     },
     {
+        path: '/mc-admin/egg-categories',
+        name: 'Egg Categories',
+        component: () => import('@/views/admin/egg-categories/Index.vue'),
+    },
+    {
+        path: '/mc-admin/egg-categories/create',
+        name: 'Create Egg Category',
+        component: () => import('@/views/admin/egg-categories/Create.vue'),
+    },
+    {
+        path: '/mc-admin/egg-categories/:id/edit',
+        name: 'Edit Egg Category',
+        component: () => import('@/views/admin/egg-categories/Edit.vue'),
+    },
+    {
+        path: '/mc-admin/egg-categories/:id/delete',
+        name: 'Delete Egg Category',
+        component: () => import('@/views/admin/egg-categories/Delete.vue'),
+    },
+    {
         path: '/mc-admin/users',
         name: 'Users',
         component: () => import('@/views/admin/users/Index.vue'),
@@ -173,6 +193,42 @@ const routes = [
         path: '/mc-admin/tickets/:id',
         name: 'Admin Ticket Details',
         component: () => import('@/views/admin/tickets/Details.vue'),
+    },
+    {
+        path: '/mc-admin/eggs',
+        name: 'admin-eggs',
+        component: () => import('@/views/admin/eggs/Index.vue'),
+        meta: {
+            requiresAuth: true,
+            requiresAdmin: true,
+        },
+    },
+    {
+        path: '/mc-admin/eggs/create',
+        name: 'admin-eggs-create',
+        component: () => import('@/views/admin/eggs/Create.vue'),
+        meta: {
+            requiresAuth: true,
+            requiresAdmin: true,
+        },
+    },
+    {
+        path: '/mc-admin/eggs/:id/edit',
+        name: 'admin-eggs-edit',
+        component: () => import('@/views/admin/eggs/Edit.vue'),
+        meta: {
+            requiresAuth: true,
+            requiresAdmin: true,
+        },
+    },
+    {
+        path: '/mc-admin/eggs/:id/delete',
+        name: 'admin-eggs-delete',
+        component: () => import('@/views/admin/eggs/Delete.vue'),
+        meta: {
+            requiresAuth: true,
+            requiresAdmin: true,
+        },
     },
 ];
 
