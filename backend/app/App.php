@@ -126,9 +126,9 @@ class App extends MythicalAPP
             App::getInstance(true)->getLogger()->error('License validator error: ' . $e->getMessage());
         }
 
-        $router->add('/(.*)', function (): void {
+        $router->add('/(.*)', function ($route	): void {
             self::init();
-            self::NotFound('The api route does not exist!', null);
+            self::NotFound('The api route does not exist!', ['error_code' => 'API_ROUTE_NOT_FOUND','route' => $route]);
         });
 
         try {

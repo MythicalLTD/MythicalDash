@@ -149,6 +149,26 @@ const routes = [
         name: 'Delete Location',
         component: () => import('@/views/admin/locations/Delete.vue'),
     },
+	{
+		path: '/mc-admin/departments',
+		name: 'Departments',
+		component: () => import('@/views/admin/departments/Index.vue'),
+	},
+	{
+		path: '/mc-admin/departments/create',
+		name: 'Create Department',
+		component: () => import('@/views/admin/departments/Create.vue'),
+	},
+	{
+		path: '/mc-admin/departments/:id/edit',
+		name: 'Edit Department',
+		component: () => import('@/views/admin/departments/Edit.vue'),
+	},
+	{
+		path: '/mc-admin/departments/:id/delete',
+		name: 'Delete Department',
+		component: () => import('@/views/admin/departments/Delete.vue'),
+	},
     {
         path: '/mc-admin/egg-categories',
         name: 'Egg Categories',

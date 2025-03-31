@@ -22,6 +22,7 @@ import { useRouter } from 'vue-router';
 interface User {
     id: number;
     username: string;
+	uuid: string;
     first_name: string;
     last_name: string;
     email: string;
@@ -175,11 +176,11 @@ const fetchUsers = async () => {
 };
 
 const editUser = (user: User) => {
-    router.push(`/mc-admin/users/${user.id}/edit`);
+    router.push(`/mc-admin/users/${user.uuid}/edit`);
 };
 
 const confirmDelete = (user: User) => {
-    router.push(`/mc-admin/users/${user.id}/delete`);
+    router.push(`/mc-admin/users/${user.uuid}/delete`);
 };
 
 onMounted(() => {

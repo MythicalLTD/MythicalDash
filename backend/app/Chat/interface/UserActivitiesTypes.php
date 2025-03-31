@@ -50,6 +50,12 @@ class UserActivitiesTypes
     public static string $admin_egg_update = 'admin:egg:update';
     public static string $admin_egg_delete = 'admin:egg:delete';
 
+	/**
+	 * Ticket Departments.
+	 */
+	public static string $admin_ticket_department_create = 'admin:ticket_department:create';
+	public static string $admin_ticket_department_update = 'admin:ticket_department:update';
+	public static string $admin_ticket_department_delete = 'admin:ticket_department:delete';
     /**
      * Get all types.
      *

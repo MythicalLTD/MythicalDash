@@ -71,11 +71,11 @@ class Mails extends Database
      *
      * @param string $uuid User UUID
      */
-    public static function getAll(string $uuid): array
+    public static function getAll(string $uuid, int $limit = 50): array
     {
         try {
             $dbConn = Database::getPdoConnection();
-            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE `user` = :user ORDER BY id DESC LIMIT 50');
+            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE `user` = :user ORDER BY id DESC LIMIT ' . $limit);
             $stmt->bindParam(':user', $uuid);
             $stmt->execute();
 
