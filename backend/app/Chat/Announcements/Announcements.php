@@ -22,7 +22,7 @@ class Announcements extends Database
     /**
      * Create a new announcement.
      */
-    public static function create(string $title, string $shortDescription, string $description): void
+    public static function create(string $title, string $shortDescription, string $description): int
     {
         try {
             $con = self::getPdoConnection();
@@ -32,8 +32,12 @@ class Announcements extends Database
             $stmt->bindParam(':shortDescription', $shortDescription);
             $stmt->bindParam(':description', $description);
             $stmt->execute();
+
+            return $con->lastInsertId();
         } catch (\Exception $e) {
             self::db_Error('Failed to create announcement: ' . $e->getMessage());
+
+            return 0;
         }
     }
 
@@ -63,7 +67,7 @@ class Announcements extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $sql = 'DELETE FROM ' . self::TABLE_NAME . ' WHERE id = :id';
+            $sql = 'UPDATE ' . self::TABLE_NAME . ' SET deleted = "true" WHERE id = :id';
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->execute();
@@ -79,7 +83,7 @@ class Announcements extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $sql = 'SELECT * FROM ' . self::TABLE_NAME . ' WHERE id = :id';
+            $sql = 'SELECT * FROM ' . self::TABLE_NAME . ' WHERE id = :id AND deleted = "false"';
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->execute();
@@ -125,7 +129,7 @@ class Announcements extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $sql = 'SELECT * FROM ' . self::TABLE_NAME . ' ORDER BY ' . $column . ' ' . $order;
+            $sql = 'SELECT * FROM ' . self::TABLE_NAME . ' WHERE deleted = "false" ORDER BY ' . $column . ' ' . $order;
             $stmt = $con->query($sql);
 
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -147,14 +151,33 @@ class Announcements extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $sql = 'SELECT COUNT(*) FROM ' . self::TABLE_NAME . ' WHERE id = :id';
+            $sql = 'SELECT COUNT(*) FROM ' . self::TABLE_NAME . ' WHERE id = :id AND deleted = "false"';
             $stmt = $con->prepare($sql);
-            $stmt->bindParam(':id', $id);
+            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
             $stmt->execute();
 
             return $stmt->fetchColumn() > 0;
         } catch (\Exception $e) {
             self::db_Error('Failed to check if announcement exists: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
+    public static function existsTag(int $id, string $tag): bool
+    {
+        try {
+            $con = self::getPdoConnection();
+
+            $sql = 'SELECT COUNT(*) FROM ' . self::TABLE_NAME . ' WHERE id = :id AND deleted = "false" AND tag = :tag';
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+            $stmt->bindParam(':tag', $tag, \PDO::PARAM_STR);
+            $stmt->execute();
+
+            return $stmt->fetchColumn() > 0;
+        } catch (\Exception $e) {
+            self::db_Error('Failed to check if announcement tag exists: ' . $e->getMessage());
 
             return false;
         }

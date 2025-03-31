@@ -218,7 +218,8 @@ import {
     PlusCircle,
     SettingsIcon,
     EggIcon,
-	Building
+    Building,
+    BellIcon,
 } from 'lucide-vue-next';
 import Session from '@/mythicaldash/Session';
 import StorageMonitor from '@/mythicaldash/StorageMonitor';
@@ -280,7 +281,16 @@ interface MenuItem {
     isOpen?: boolean;
 }
 
-const dashBoard = ref({ count: { user_count: 0, locations_count: 0, tickets_count: 0, eggs_count: 0, departments_count: 0 } });
+const dashBoard = ref({
+    count: {
+        user_count: 0,
+        locations_count: 0,
+        tickets_count: 0,
+        eggs_count: 0,
+        departments_count: 0,
+        announcements_count: 0,
+    },
+});
 Dashboard.get().then((data) => {
     dashBoard.value = data;
 });
@@ -365,13 +375,20 @@ const menuGroups = ref<{ title: string; items: MenuItem[] }[]>([
                 active: route.path === `${adminBaseUri}/tickets`,
                 count: computed(() => dashBoard.value.count.tickets_count || 0),
             },
-			{
-				name: 'Departments',
-				path: `${adminBaseUri}/departments`,
-				icon: Building,	
-				count: computed(() => dashBoard.value.count.departments_count || 0),
-				active: route.path === `${adminBaseUri}/departments`,
-			},
+            {
+                name: 'Departments',
+                path: `${adminBaseUri}/departments`,
+                icon: Building,
+                count: computed(() => dashBoard.value.count.departments_count || 0),
+                active: route.path === `${adminBaseUri}/departments`,
+            },
+            {
+                name: 'Announcements',
+                path: `${adminBaseUri}/announcements`,
+                icon: BellIcon,
+                active: route.path === `${adminBaseUri}/announcements`,
+                count: computed(() => dashBoard.value.count.announcements_count || 0),
+            },
         ],
     },
     {
@@ -419,8 +436,8 @@ const searchResults = [
     { id: 5, name: 'Create Egg Category', path: `${adminBaseUri}/egg-categories/create` },
     { id: 6, name: 'Tickets', path: `${adminBaseUri}/tickets` },
     { id: 7, name: 'Users', path: `${adminBaseUri}/users` },
-	{ id: 8, name: 'Departments', path: `${adminBaseUri}/departments` },
-	{ id: 9, name: 'Create Department', path: `${adminBaseUri}/departments/create` },
+    { id: 8, name: 'Departments', path: `${adminBaseUri}/departments` },
+    { id: 9, name: 'Create Department', path: `${adminBaseUri}/departments/create` },
 ];
 
 const filteredResults = computed(() => {

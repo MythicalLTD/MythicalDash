@@ -2,17 +2,17 @@
 import { ref, reactive, onMounted, h, defineComponent } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
-import { 
-    ArrowLeftIcon, 
-    SaveIcon, 
-    LoaderIcon, 
-    TrashIcon, 
-    UserIcon, 
-    ServerIcon, 
-    SettingsIcon, 
+import {
+    ArrowLeftIcon,
+    SaveIcon,
+    LoaderIcon,
+    TrashIcon,
+    UserIcon,
+    ServerIcon,
+    SettingsIcon,
     DatabaseIcon,
-	ClockIcon,
-	MailIcon as EnvelopeIcon
+    ClockIcon,
+    MailIcon as EnvelopeIcon,
 } from 'lucide-vue-next';
 import Users from '@/mythicaldash/admin/Users';
 import Swal from 'sweetalert2';
@@ -104,7 +104,7 @@ interface Email {
     deleted: string;
     locked: string;
     date: string;
-	showBody: boolean;
+    showBody: boolean;
 }
 
 // Interface for tab definition
@@ -116,7 +116,7 @@ interface Tab {
 
 // Interface for role option
 interface RoleOption {
-    value: number|string;
+    value: number | string;
     label: string;
 }
 
@@ -125,50 +125,56 @@ const FormField = defineComponent({
     props: {
         label: {
             type: String,
-            required: true
+            required: true,
         },
         modelValue: {
             type: [String, Number],
-            required: true
+            required: true,
         },
         type: {
             type: String,
-            default: 'text'
+            default: 'text',
         },
         saving: {
             type: Boolean,
-            default: false
+            default: false,
         },
         disabled: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     emits: ['update:modelValue', 'save'],
     setup(props, { emit }) {
-        return () => h('div', { class: 'space-y-1' }, [
-            h('label', { class: 'block text-sm font-medium text-gray-300' }, props.label),
-            h('div', { class: 'relative' }, [
-                h('input', {
-                    type: props.type,
-                    value: props.modelValue,
-                    disabled: props.disabled,
-                    onInput: (e: Event) => emit('update:modelValue', (e.target as HTMLInputElement).value),
-                    class: 'w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-pink-500'
-                }),
-                !props.disabled && h('button', {
-                    type: 'button',
-                    disabled: props.saving,
-                    onClick: () => emit('save'),
-                    class: 'absolute right-2 top-2 text-gray-400 hover:text-pink-400'
-                }, [
-                    props.saving 
-                        ? h(LoaderIcon, { class: 'h-4 w-4 animate-spin' })
-                        : h(SaveIcon, { class: 'h-4 w-4' })
-                ])
-            ])
-        ]);
-    }
+        return () =>
+            h('div', { class: 'space-y-1' }, [
+                h('label', { class: 'block text-sm font-medium text-gray-300' }, props.label),
+                h('div', { class: 'relative' }, [
+                    h('input', {
+                        type: props.type,
+                        value: props.modelValue,
+                        disabled: props.disabled,
+                        onInput: (e: Event) => emit('update:modelValue', (e.target as HTMLInputElement).value),
+                        class: 'w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-pink-500',
+                    }),
+                    !props.disabled &&
+                        h(
+                            'button',
+                            {
+                                type: 'button',
+                                disabled: props.saving,
+                                onClick: () => emit('save'),
+                                class: 'absolute right-2 top-2 text-gray-400 hover:text-pink-400',
+                            },
+                            [
+                                props.saving
+                                    ? h(LoaderIcon, { class: 'h-4 w-4 animate-spin' })
+                                    : h(SaveIcon, { class: 'h-4 w-4' }),
+                            ],
+                        ),
+                ]),
+            ]);
+    },
 });
 
 // Form Select component
@@ -176,51 +182,59 @@ const FormSelect = defineComponent({
     props: {
         label: {
             type: String,
-            required: true
+            required: true,
         },
         modelValue: {
             type: [String, Number],
-            required: true
+            required: true,
         },
         options: {
             type: Array as () => RoleOption[],
-            required: true
+            required: true,
         },
         saving: {
             type: Boolean,
-            default: false
+            default: false,
         },
         disabled: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     emits: ['update:modelValue', 'save'],
     setup(props, { emit }) {
-        return () => h('div', { class: 'space-y-1' }, [
-            h('label', { class: 'block text-sm font-medium text-gray-300' }, props.label),
-            h('div', { class: 'relative' }, [
-                h('select', {
-                    value: props.modelValue,
-                    disabled: props.disabled,
-                    onChange: (e: Event) => emit('update:modelValue', (e.target as HTMLSelectElement).value),
-                    class: 'w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-pink-500'
-                }, props.options.map((option: RoleOption) => 
-                    h('option', { value: option.value }, option.label)
-                )),
-                !props.disabled && h('button', {
-                    type: 'button',
-                    disabled: props.saving,
-                    onClick: () => emit('save'),
-                    class: 'absolute right-2 top-2 text-gray-400 hover:text-pink-400'
-                }, [
-                    props.saving 
-                        ? h(LoaderIcon, { class: 'h-4 w-4 animate-spin' })
-                        : h(SaveIcon, { class: 'h-4 w-4' })
-                ])
-            ])
-        ]);
-    }
+        return () =>
+            h('div', { class: 'space-y-1' }, [
+                h('label', { class: 'block text-sm font-medium text-gray-300' }, props.label),
+                h('div', { class: 'relative' }, [
+                    h(
+                        'select',
+                        {
+                            value: props.modelValue,
+                            disabled: props.disabled,
+                            onChange: (e: Event) => emit('update:modelValue', (e.target as HTMLSelectElement).value),
+                            class: 'w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-pink-500',
+                        },
+                        props.options.map((option: RoleOption) => h('option', { value: option.value }, option.label)),
+                    ),
+                    !props.disabled &&
+                        h(
+                            'button',
+                            {
+                                type: 'button',
+                                disabled: props.saving,
+                                onClick: () => emit('save'),
+                                class: 'absolute right-2 top-2 text-gray-400 hover:text-pink-400',
+                            },
+                            [
+                                props.saving
+                                    ? h(LoaderIcon, { class: 'h-4 w-4 animate-spin' })
+                                    : h(SaveIcon, { class: 'h-4 w-4' }),
+                            ],
+                        ),
+                ]),
+            ]);
+    },
 });
 
 const router = useRouter();
@@ -241,8 +255,8 @@ const tabs: Tab[] = [
     { id: 'resources', name: 'Resource Limits', icon: ServerIcon },
     { id: 'account', name: 'Account Settings', icon: SettingsIcon },
     { id: 'system', name: 'System Info', icon: DatabaseIcon },
-	{ id: 'activity', name: 'Activity Logs', icon: ClockIcon },
-	{ id: 'emails', name: 'Emails', icon: EnvelopeIcon },
+    { id: 'activity', name: 'Activity Logs', icon: ClockIcon },
+    { id: 'emails', name: 'Emails', icon: EnvelopeIcon },
 ];
 
 // Role options for dropdown
@@ -289,22 +303,29 @@ const saving = reactive<Record<string, boolean>>({});
 // Role helpers
 const getRoleName = (roleId: string): string => {
     const id = parseInt(roleId);
-    const role = roleOptions.find(r => r.value === id);
+    const role = roleOptions.find((r) => r.value === id);
     return role ? role.label : 'Unknown';
 };
 
 const getRoleClass = (roleId: string): string => {
     const id = parseInt(roleId);
     switch (id) {
-        case 1: return 'bg-blue-500/20 text-blue-400';
-        case 2: return 'bg-green-500/20 text-green-400';
-        case 3: return 'bg-yellow-500/20 text-yellow-400';
-        case 4: return 'bg-purple-500/20 text-purple-400';
+        case 1:
+            return 'bg-blue-500/20 text-blue-400';
+        case 2:
+            return 'bg-green-500/20 text-green-400';
+        case 3:
+            return 'bg-yellow-500/20 text-yellow-400';
+        case 4:
+            return 'bg-purple-500/20 text-purple-400';
         case 5:
         case 6:
-        case 7: return 'bg-pink-500/20 text-pink-400';
-        case 8: return 'bg-red-500/20 text-red-400';
-        default: return 'bg-gray-500/20 text-gray-400';
+        case 7:
+            return 'bg-pink-500/20 text-pink-400';
+        case 8:
+            return 'bg-red-500/20 text-red-400';
+        default:
+            return 'bg-gray-500/20 text-gray-400';
     }
 };
 
@@ -320,10 +341,10 @@ const fetchUser = async (): Promise<void> => {
     try {
         const response = await Users.getUser(userId);
         if (response.success) {
-			user.value = response.user as User;
+            user.value = response.user as User;
             activityLogs.value = response.activity || [];
             emails.value = response.mails || [];
-                        
+
             // Populate form data
             formData.value = {
                 username: user.value.username || '',
@@ -379,13 +400,13 @@ const fetchUser = async (): Promise<void> => {
 // Save a specific field
 const saveField = async (column: string, value: string | number, encrypted: boolean = false): Promise<void> => {
     saving[column] = true;
-    
+
     try {
         // Convert number to string for API
         const stringValue = value.toString();
-        
+
         const response = await Users.updateUser(userId, column, stringValue, encrypted);
-        
+
         if (response.success) {
             playSuccess();
             Swal.fire({
@@ -397,10 +418,10 @@ const saveField = async (column: string, value: string | number, encrypted: bool
                 showConfirmButton: false,
                 timer: 3000,
             });
-            
+
             // Update the user object with the new value
             user.value[column] = value;
-            
+
             // Clear password field after successful update
             if (column === 'password') {
                 formData.value.password = '';
@@ -428,7 +449,6 @@ const saveField = async (column: string, value: string | number, encrypted: bool
     }
 };
 
-
 onMounted(() => {
     fetchUser();
 });
@@ -449,19 +469,16 @@ onMounted(() => {
             <!-- User Profile Header -->
             <div class="bg-gray-800 rounded-lg p-6 shadow-md">
                 <div class="flex items-center mb-6">
-                    <img 
-                        :src="user.avatar || '/assets/images/default-avatar.png'" 
-                        alt="User Avatar" 
+                    <img
+                        :src="user.avatar || '/assets/images/default-avatar.png'"
+                        alt="User Avatar"
                         class="w-16 h-16 rounded-full mr-4 object-cover"
                     />
                     <div>
                         <h2 class="text-xl font-semibold text-white">{{ user.username }}</h2>
                         <p class="text-gray-400">{{ user.email }}</p>
                         <div class="flex items-center mt-1">
-                            <span 
-                                :class="getRoleClass(user.role)"
-                                class="px-2 py-0.5 rounded-full text-xs"
-                            >
+                            <span :class="getRoleClass(user.role)" class="px-2 py-0.5 rounded-full text-xs">
                                 {{ getRoleName(user.role) }}
                             </span>
                             <span class="mx-2 text-gray-500">•</span>
@@ -492,15 +509,15 @@ onMounted(() => {
             <!-- Tabs for different categories -->
             <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden">
                 <div class="flex border-b border-gray-700">
-                    <button 
-                        v-for="tab in tabs" 
+                    <button
+                        v-for="tab in tabs"
                         :key="tab.id"
                         @click="activeTab = tab.id"
                         :class="[
                             'px-4 py-3 text-sm font-medium transition-colors',
-                            activeTab === tab.id 
-                                ? 'text-pink-400 border-b-2 border-pink-400' 
-                                : 'text-gray-400 hover:text-white'
+                            activeTab === tab.id
+                                ? 'text-pink-400 border-b-2 border-pink-400'
+                                : 'text-gray-400 hover:text-white',
                         ]"
                     >
                         <component :is="tab.icon" class="h-4 w-4 inline-block mr-2" />
@@ -513,41 +530,41 @@ onMounted(() => {
                     <div v-if="activeTab === 'basic'" class="space-y-6">
                         <h3 class="text-lg font-medium text-white">Basic Information</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FormField 
-                                label="Username" 
-                                v-model="formData.username" 
+                            <FormField
+                                label="Username"
+                                v-model="formData.username"
                                 :saving="saving.username"
                                 @save="saveField('username', formData.username)"
                             />
-                            <FormField 
-                                label="Email" 
-                                v-model="formData.email" 
+                            <FormField
+                                label="Email"
+                                v-model="formData.email"
                                 type="email"
                                 :saving="saving.email"
                                 @save="saveField('email', formData.email)"
                             />
-                            <FormField 
-                                label="First Name" 
-                                v-model="formData.first_name" 
+                            <FormField
+                                label="First Name"
+                                v-model="formData.first_name"
                                 :saving="saving.first_name"
                                 @save="saveField('first_name', formData.first_name)"
                             />
-                            <FormField 
-                                label="Last Name" 
-                                v-model="formData.last_name" 
+                            <FormField
+                                label="Last Name"
+                                v-model="formData.last_name"
                                 :saving="saving.last_name"
                                 @save="saveField('last_name', formData.last_name)"
                             />
-                            <FormField 
-                                label="Password" 
-                                v-model="formData.password" 
+                            <FormField
+                                label="Password"
+                                v-model="formData.password"
                                 type="password"
                                 :saving="saving.password"
                                 @save="saveField('password', formData.password, true)"
                             />
-                            <FormField 
-                                label="Avatar URL" 
-                                v-model="formData.avatar" 
+                            <FormField
+                                label="Avatar URL"
+                                v-model="formData.avatar"
                                 :saving="saving.avatar"
                                 @save="saveField('avatar', formData.avatar)"
                             />
@@ -558,9 +575,9 @@ onMounted(() => {
                                 :saving="saving.role"
                                 @save="saveField('role', formData.role)"
                             />
-                            <FormField 
-                                label="Credits" 
-                                v-model="formData.credits" 
+                            <FormField
+                                label="Credits"
+                                v-model="formData.credits"
                                 type="number"
                                 :saving="saving.credits"
                                 @save="saveField('credits', formData.credits)"
@@ -572,51 +589,51 @@ onMounted(() => {
                     <div v-if="activeTab === 'resources'" class="space-y-6">
                         <h3 class="text-lg font-medium text-white">Resource Limits</h3>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <FormField 
-                                label="Memory Limit (MB)" 
-                                v-model="formData.memory_limit" 
+                            <FormField
+                                label="Memory Limit (MB)"
+                                v-model="formData.memory_limit"
                                 type="number"
                                 :saving="saving.memory_limit"
                                 @save="saveField('memory_limit', formData.memory_limit)"
                             />
-                            <FormField 
-                                label="CPU Limit (%)" 
-                                v-model="formData.cpu_limit" 
+                            <FormField
+                                label="CPU Limit (%)"
+                                v-model="formData.cpu_limit"
                                 type="number"
                                 :saving="saving.cpu_limit"
                                 @save="saveField('cpu_limit', formData.cpu_limit)"
                             />
-                            <FormField 
-                                label="Disk Limit (MB)" 
-                                v-model="formData.disk_limit" 
+                            <FormField
+                                label="Disk Limit (MB)"
+                                v-model="formData.disk_limit"
                                 type="number"
                                 :saving="saving.disk_limit"
                                 @save="saveField('disk_limit', formData.disk_limit)"
                             />
-                            <FormField 
-                                label="Server Limit" 
-                                v-model="formData.server_limit" 
+                            <FormField
+                                label="Server Limit"
+                                v-model="formData.server_limit"
                                 type="number"
                                 :saving="saving.server_limit"
                                 @save="saveField('server_limit', formData.server_limit)"
                             />
-                            <FormField 
-                                label="Backup Limit" 
-                                v-model="formData.backup_limit" 
+                            <FormField
+                                label="Backup Limit"
+                                v-model="formData.backup_limit"
                                 type="number"
                                 :saving="saving.backup_limit"
                                 @save="saveField('backup_limit', formData.backup_limit)"
                             />
-                            <FormField 
-                                label="Database Limit" 
-                                v-model="formData.database_limit" 
+                            <FormField
+                                label="Database Limit"
+                                v-model="formData.database_limit"
                                 type="number"
                                 :saving="saving.database_limit"
                                 @save="saveField('database_limit', formData.database_limit)"
                             />
-                            <FormField 
-                                label="Allocation Limit" 
-                                v-model="formData.allocation_limit" 
+                            <FormField
+                                label="Allocation Limit"
+                                v-model="formData.allocation_limit"
                                 type="number"
                                 :saving="saving.allocation_limit"
                                 @save="saveField('allocation_limit', formData.allocation_limit)"
@@ -628,16 +645,16 @@ onMounted(() => {
                     <div v-if="activeTab === 'account'" class="space-y-6">
                         <h3 class="text-lg font-medium text-white">Account Settings</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FormField 
-                                label="Pterodactyl User ID" 
-                                v-model="formData.pterodactyl_user_id" 
+                            <FormField
+                                label="Pterodactyl User ID"
+                                v-model="formData.pterodactyl_user_id"
                                 type="number"
                                 readonly
-								disabled
+                                disabled
                             />
-                            <FormField 
-                                label="Background URL" 
-                                v-model="formData.background" 
+                            <FormField
+                                label="Background URL"
+                                v-model="formData.background"
                                 :saving="saving.background"
                                 @save="saveField('background', formData.background)"
                             />
@@ -646,7 +663,7 @@ onMounted(() => {
                                 v-model="formData.banned"
                                 :options="[
                                     { value: 'NO', label: 'No' },
-                                    { value: 'YES', label: 'Yes' }
+                                    { value: 'YES', label: 'Yes' },
                                 ]"
                                 :saving="saving.banned"
                                 @save="saveField('banned', formData.banned)"
@@ -656,7 +673,7 @@ onMounted(() => {
                                 v-model="formData.verified"
                                 :options="[
                                     { value: 'true', label: 'Yes' },
-                                    { value: 'false', label: 'No' }
+                                    { value: 'false', label: 'No' },
                                 ]"
                                 :saving="saving.verified"
                                 @save="saveField('verified', formData.verified)"
@@ -666,7 +683,7 @@ onMounted(() => {
                                 v-model="formData.two_fa_enabled"
                                 :options="[
                                     { value: 'true', label: 'Yes' },
-                                    { value: 'false', label: 'No' }
+                                    { value: 'false', label: 'No' },
                                 ]"
                                 :saving="saving.two_fa_enabled"
                                 @save="saveField('2fa_enabled', formData.two_fa_enabled)"
@@ -676,83 +693,94 @@ onMounted(() => {
                                 v-model="formData.two_fa_blocked"
                                 :options="[
                                     { value: 'true', label: 'Yes' },
-                                    { value: 'false', label: 'No' }
+                                    { value: 'false', label: 'No' },
                                 ]"
                                 :saving="saving.two_fa_blocked"
                                 @save="saveField('2fa_blocked', formData.two_fa_blocked)"
                             />
-                            <FormField 
-                                label="Support PIN" 
-                                v-model="formData.support_pin" 
+                            <FormField
+                                label="Support PIN"
+                                v-model="formData.support_pin"
                                 :saving="saving.support_pin"
                                 @save="saveField('support_pin', formData.support_pin)"
                             />
                         </div>
                     </div>
-					<div v-if="activeTab === 'activity'" class="space-y-6">
-						<div class="flex items-center justify-between mb-4">
-							<h3 class="text-lg font-medium text-white">Activity Logs</h3>
-							<span class="text-sm text-gray-400">{{ activityLogs.length }} entries</span>
-						</div>
-						<div class="space-y-4">
-							<div v-for="log in activityLogs" :key="log.id" class="bg-gray-700 rounded-lg p-4 hover:bg-gray-650 transition-colors">
-								<div class="flex items-center justify-between mb-2">
-									<span class="font-medium text-pink-400">{{ log.action }}</span>
-									<span class="text-sm text-gray-400">{{ formatDate(log.date) }}</span>
-								</div>
-								<div class="grid grid-cols-2 gap-2 text-sm">
-									<div>
-										<span class="text-gray-400">IP Address:</span>
-										<span class="text-white ml-2">{{ log.ip_address }}</span>
-									</div>
-									<div class="col-span-2">
-										<span class="text-gray-400">Context:</span>
-										<span class="text-white ml-2">{{ log.context }}</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+                    <div v-if="activeTab === 'activity'" class="space-y-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-medium text-white">Activity Logs</h3>
+                            <span class="text-sm text-gray-400">{{ activityLogs.length }} entries</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div
+                                v-for="log in activityLogs"
+                                :key="log.id"
+                                class="bg-gray-700 rounded-lg p-4 hover:bg-gray-650 transition-colors"
+                            >
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-medium text-pink-400">{{ log.action }}</span>
+                                    <span class="text-sm text-gray-400">{{ formatDate(log.date) }}</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div>
+                                        <span class="text-gray-400">IP Address:</span>
+                                        <span class="text-white ml-2">{{ log.ip_address }}</span>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <span class="text-gray-400">Context:</span>
+                                        <span class="text-white ml-2">{{ log.context }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-					<div v-if="activeTab === 'emails'" class="space-y-6">
-						<div class="flex items-center justify-between mb-4">
-							<h3 class="text-lg font-medium text-white">Last 50 Emails</h3>
-							<span class="text-sm text-gray-400">{{ emails.length }} messages</span>
-						</div>
-						<div class="space-y-4">
-							<div v-for="email in emails" :key="email.id" class="bg-gray-700 rounded-lg p-4 hover:bg-gray-650 transition-colors">
-								<div class="flex items-center justify-between mb-2">
-									<span class="font-medium text-pink-400">{{ email.subject }}</span>
-									<span class="text-sm text-gray-400">{{ formatDate(email.date) }}</span>
-								</div>
-								<div class="text-sm">
-									<div class="flex items-center">
-										<span class="text-gray-400">From:</span>
-										<span class="text-white ml-2">{{ email.from }}</span>
-									</div>
-								</div>
-								<div class="text-sm">
-									<span class="text-gray-400">To:</span>
-									<span class="text-white ml-2">{{ user.email }}</span>
-								</div>
-								<div class="mt-2">
-									<button 
-										@click="email.showBody = !email.showBody" 
-										class="text-sm text-pink-400 hover:text-pink-300 transition-colors"
-									>
-										{{ email.showBody ? 'Hide Content' : 'Show Content' }}
-									</button>
-									<div v-if="email.showBody" class="mt-3 border border-gray-600 rounded-lg overflow-hidden">
-										<iframe 
-											:srcdoc="email.body" 
-											class="w-full h-96 bg-white"
-											sandbox="allow-same-origin"
-										></iframe>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+                    <div v-if="activeTab === 'emails'" class="space-y-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-medium text-white">Last 50 Emails</h3>
+                            <span class="text-sm text-gray-400">{{ emails.length }} messages</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div
+                                v-for="email in emails"
+                                :key="email.id"
+                                class="bg-gray-700 rounded-lg p-4 hover:bg-gray-650 transition-colors"
+                            >
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-medium text-pink-400">{{ email.subject }}</span>
+                                    <span class="text-sm text-gray-400">{{ formatDate(email.date) }}</span>
+                                </div>
+                                <div class="text-sm">
+                                    <div class="flex items-center">
+                                        <span class="text-gray-400">From:</span>
+                                        <span class="text-white ml-2">{{ email.from }}</span>
+                                    </div>
+                                </div>
+                                <div class="text-sm">
+                                    <span class="text-gray-400">To:</span>
+                                    <span class="text-white ml-2">{{ user.email }}</span>
+                                </div>
+                                <div class="mt-2">
+                                    <button
+                                        @click="email.showBody = !email.showBody"
+                                        class="text-sm text-pink-400 hover:text-pink-300 transition-colors"
+                                    >
+                                        {{ email.showBody ? 'Hide Content' : 'Show Content' }}
+                                    </button>
+                                    <div
+                                        v-if="email.showBody"
+                                        class="mt-3 border border-gray-600 rounded-lg overflow-hidden"
+                                    >
+                                        <iframe
+                                            :srcdoc="email.body"
+                                            class="w-full h-96 bg-white"
+                                            sandbox="allow-same-origin"
+                                        ></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- System Information (Read-only) -->
                     <div v-if="activeTab === 'system'" class="space-y-6">
                         <h3 class="text-lg font-medium text-white">System Information</h3>
@@ -789,8 +817,6 @@ onMounted(() => {
                     </div>
                 </div>
             </div>
-		
         </div>
     </LayoutDashboard>
 </template>
-

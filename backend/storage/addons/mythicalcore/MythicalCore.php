@@ -13,7 +13,7 @@ class MythicalCore implements MythicalDashPlugin
 	 */
 	public static function processEvents(\MythicalDash\Plugins\PluginEvents $event): void
 	{
-		$event->on(AppEvent::onRouterReady(), function (\Router\Router $router) : void {
+		$event->on(AppEvent::onRouterReady(), function (\MythicalDash\Router\Router $router) : void {
 			new \MythicalDash\Addons\mythicalcore\Events\Router($router);
 		});
 

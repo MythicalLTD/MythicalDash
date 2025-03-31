@@ -45,7 +45,9 @@
                         </div>
 
                         <div class="md:col-span-2">
-                            <label for="description" class="block text-sm font-medium text-gray-400 mb-1">Description</label>
+                            <label for="description" class="block text-sm font-medium text-gray-400 mb-1"
+                                >Description</label
+                            >
                             <textarea
                                 id="description"
                                 v-model="departmentForm.description"
@@ -54,13 +56,13 @@
                                 class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                 placeholder="e.g. Handle billing and subscription related inquiries"
                             ></textarea>
-                            <p class="text-xs text-gray-400 mt-1">
-                                A description of the department's purpose
-                            </p>
+                            <p class="text-xs text-gray-400 mt-1">A description of the department's purpose</p>
                         </div>
 
                         <div>
-                            <label for="time_open" class="block text-sm font-medium text-gray-400 mb-1">Opening Time</label>
+                            <label for="time_open" class="block text-sm font-medium text-gray-400 mb-1"
+                                >Opening Time</label
+                            >
                             <input
                                 id="time_open"
                                 v-model="departmentForm.open"
@@ -72,7 +74,9 @@
                         </div>
 
                         <div>
-                            <label for="time_close" class="block text-sm font-medium text-gray-400 mb-1">Closing Time</label>
+                            <label for="time_close" class="block text-sm font-medium text-gray-400 mb-1"
+                                >Closing Time</label
+                            >
                             <input
                                 id="time_close"
                                 v-model="departmentForm.close"
@@ -131,13 +135,31 @@ import { useSound } from '@vueuse/sound';
 import failedAlertSfx from '@/assets/sounds/error.mp3';
 import successAlertSfx from '@/assets/sounds/success.mp3';
 
+// Define interfaces for the data structures
+interface Department {
+    id: number;
+    name: string;
+    description: string;
+    time_open: string;
+    time_close: string;
+    enabled: string;
+    // Add any other properties that might be in the department object
+}
+
+interface ApiResponse {
+    success: boolean;
+    message?: string;
+    departments?: Department[];
+    error_code?: string;
+}
+
 const router = useRouter();
 const route = useRoute();
 const departmentId = parseInt(route.params.id as string);
 
-const loading = ref(true);
-const saving = ref(false);
-const department = ref<any>(null);
+const loading = ref<boolean>(true);
+const saving = ref<boolean>(false);
+const department = ref<Department | null>(null);
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);
 
@@ -151,7 +173,7 @@ const departmentForm = ref({
 });
 
 // Fetch department details
-const fetchDepartment = async () => {
+const fetchDepartment = async (): Promise<void> => {
     loading.value = true;
     try {
         const response = await fetch(`/api/admin/ticket/departments`, {
@@ -165,10 +187,10 @@ const fetchDepartment = async () => {
             throw new Error('Failed to fetch departments');
         }
 
-        const data = await response.json();
+        const data = (await response.json()) as ApiResponse;
 
         if (data.success && data.departments) {
-            const foundDepartment = data.departments.find((dept: any) => dept.id === departmentId);
+            const foundDepartment = data.departments.find((dept: Department) => dept.id === departmentId);
             if (foundDepartment) {
                 department.value = foundDepartment;
                 departmentForm.value = {
@@ -267,4 +289,4 @@ const saveDepartment = async () => {
 onMounted(() => {
     fetchDepartment();
 });
-</script> 
+</script>

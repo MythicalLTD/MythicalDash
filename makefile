@@ -93,7 +93,11 @@ release:
 	@echo -e "${GREEN}${CHECK} Build complete${NC}\n"
 	
 	@echo -e "${GREEN}${ROCKET} Release build successful!${NC}\n"
-
+lint: 
+	@cd $(FRONTEND_DIR) && $(YARN) lint
+	@cd $(BACKEND_DIR) && $(COMPOSER) run lint
+	@cd $(FRONTEND_DIR) && $(YARN) format
+	@cd $(FRONTEND_DIR) && $(YARN) build
 # Install dependencies
 install:
 	@echo -e "\n${BOLD}${BLUE}Installing Dependencies${NC} ${PACKAGE}"

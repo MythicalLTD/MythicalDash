@@ -56,7 +56,7 @@ class Tickets extends Database
         int $department,
         string $title,
         string $description,
-        string $priority
+        string $priority,
     ): int|false {
         try {
             $dbConn = self::getPdoConnection();
@@ -89,6 +89,7 @@ class Tickets extends Database
         try {
             if (!self::exists($id)) {
                 self::db_Error('Ticket does not exist but tried to delete it: ' . $id);
+
                 return false;
             }
 
@@ -96,11 +97,11 @@ class Tickets extends Database
             $sql = 'UPDATE ' . self::getTableName() . ' SET deleted = "true" WHERE id = :id AND deleted = "false"';
             $stmt = $dbConn->prepare($sql);
             $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-            
+
             return $stmt->execute();
         } catch (\Exception $e) {
             self::db_Error('Failed to delete ticket: ' . $e->getMessage());
-            
+
             return false;
         }
     }
@@ -178,19 +179,20 @@ class Tickets extends Database
         try {
             if (!self::exists($ticketId)) {
                 self::db_Error('Ticket does not exist but tried to update its status: ' . $ticketId);
+
                 return false;
             }
-            
+
             $dbConn = self::getPdoConnection();
             $sql = 'UPDATE ' . self::getTableName() . ' SET status = :status WHERE id = :ticket_id AND deleted = "false"';
             $stmt = $dbConn->prepare($sql);
             $stmt->bindParam(':ticket_id', $ticketId, \PDO::PARAM_INT);
             $stmt->bindParam(':status', $status, \PDO::PARAM_STR);
-            
+
             return $stmt->execute();
         } catch (\Exception $e) {
             self::db_Error('Failed to update ticket status: ' . $e->getMessage());
-            
+
             return false;
         }
     }
@@ -267,9 +269,10 @@ class Tickets extends Database
         try {
             if (!self::exists($id)) {
                 self::db_Error('Ticket does not exist but tried to get it: ' . $id);
+
                 return null;
             }
-            
+
             $dbConn = self::getPdoConnection();
             $sql = 'SELECT * FROM ' . self::getTableName() . ' WHERE id = :id AND deleted = "false"';
             $stmt = $dbConn->prepare($sql);
@@ -277,6 +280,7 @@ class Tickets extends Database
             $stmt->execute();
 
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
             return $result ?: null;
         } catch (\Exception $e) {
             self::db_Error('Failed to get ticket: ' . $e->getMessage());

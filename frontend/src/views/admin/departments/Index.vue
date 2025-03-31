@@ -88,7 +88,8 @@ const columns = [
     {
         accessorKey: 'created_at',
         header: 'Created At',
-        cell: (info: { getValue: () => string }) => info.getValue() ? new Date(info.getValue()).toLocaleString() : 'N/A',
+        cell: (info: { getValue: () => string }) =>
+            info.getValue() ? new Date(info.getValue()).toLocaleString() : 'N/A',
     },
     {
         id: 'actions',
@@ -163,4 +164,4 @@ const confirmDelete = (department: Department) => {
 onMounted(() => {
     fetchDepartments();
 });
-</script> 
+</script>

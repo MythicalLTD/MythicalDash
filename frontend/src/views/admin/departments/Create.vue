@@ -41,7 +41,9 @@
                     </div>
 
                     <div class="md:col-span-2">
-                        <label for="description" class="block text-sm font-medium text-gray-400 mb-1">Description</label>
+                        <label for="description" class="block text-sm font-medium text-gray-400 mb-1"
+                            >Description</label
+                        >
                         <textarea
                             id="description"
                             v-model="departmentForm.description"
@@ -50,9 +52,7 @@
                             class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             placeholder="e.g. Handle billing and subscription related inquiries"
                         ></textarea>
-                        <p class="text-xs text-gray-400 mt-1">
-                            A description of the department's purpose
-                        </p>
+                        <p class="text-xs text-gray-400 mt-1">A description of the department's purpose</p>
                     </div>
 
                     <div>
@@ -68,7 +68,9 @@
                     </div>
 
                     <div>
-                        <label for="time_close" class="block text-sm font-medium text-gray-400 mb-1">Closing Time</label>
+                        <label for="time_close" class="block text-sm font-medium text-gray-400 mb-1"
+                            >Closing Time</label
+                        >
                         <input
                             id="time_close"
                             v-model="departmentForm.close"
@@ -199,4 +201,4 @@ const saveDepartment = async () => {
         loading.value = false;
     }
 };
-</script> 
+</script>

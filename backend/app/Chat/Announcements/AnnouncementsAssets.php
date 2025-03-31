@@ -21,8 +21,13 @@ class AnnouncementsAssets extends Database
 
     /**
      * Create a new announcement asset.
+     *
+     * @param int $announcementId The id of the announcement
+     * @param string $images The images of the announcement
+     *
+     * @return int The id of the announcement asset
      */
-    public static function create(int $announcementId, string $images): void
+    public static function create(int $announcementId, string $images): int
     {
         try {
             $con = self::getPdoConnection();
@@ -31,19 +36,25 @@ class AnnouncementsAssets extends Database
             $stmt->bindParam(':announcementId', $announcementId);
             $stmt->bindParam(':images', $images);
             $stmt->execute();
+
+            return $con->lastInsertId();
         } catch (\Exception $e) {
             self::db_Error('Failed to create announcement asset: ' . $e->getMessage());
+
+            return 0;
         }
     }
 
     /**
      * Delete an announcement asset.
+     *
+     * @param int $id The id of the announcement asset
      */
     public static function delete(int $id): void
     {
         try {
             $con = self::getPdoConnection();
-            $sql = 'DELETE FROM ' . self::TABLE_NAME . ' WHERE id = :id';
+            $sql = 'UPDATE ' . self::TABLE_NAME . ' SET deleted = "true" WHERE id = :id AND deleted = "false"';
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->execute();
@@ -54,12 +65,16 @@ class AnnouncementsAssets extends Database
 
     /**
      * Get all announcement assets.
+     *
+     * @param int $id The id of the announcement
+     *
+     * @return array The announcement assets
      */
     public static function getAll(int $id): array
     {
         try {
             $con = self::getPdoConnection();
-            $sql = 'SELECT * FROM ' . self::TABLE_NAME . ' WHERE announcements = :id';
+            $sql = 'SELECT * FROM ' . self::TABLE_NAME . ' WHERE announcements = :id AND deleted = "false"';
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->execute();
@@ -83,7 +98,7 @@ class AnnouncementsAssets extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $sql = 'SELECT COUNT(*) FROM ' . self::TABLE_NAME . ' WHERE id = :id';
+            $sql = 'SELECT COUNT(*) FROM ' . self::TABLE_NAME . ' WHERE id = :id AND deleted = "false"';
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->execute();

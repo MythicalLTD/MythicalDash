@@ -10,6 +10,7 @@
         <div v-if="loading" class="flex justify-center items-center py-10">
             <LoaderIcon class="h-8 w-8 animate-spin text-pink-400" />
         </div>
+        <div v-else-if="!user" class="bg-red-500/20 text-red-400 p-4 rounded-lg mb-6">User not found</div>
         <div v-else class="bg-gray-800 rounded-lg p-6 shadow-md">
             <div class="text-center mb-6">
                 <AlertTriangleIcon class="h-16 w-16 text-red-500 mx-auto mb-4" />
@@ -21,46 +22,43 @@
 
             <div class="bg-gray-700 rounded-lg p-4 mb-6">
                 <div class="flex items-center mb-4">
-                    <img 
-                        :src="user.avatar || '/assets/images/default-avatar.png'" 
-                        alt="User Avatar" 
+                    <img
+                        :src="user?.avatar || '/assets/images/default-avatar.png'"
+                        alt="User Avatar"
                         class="w-12 h-12 rounded-full mr-4 object-cover"
                     />
                     <div>
-                        <h3 class="text-lg font-medium text-white">{{ user.username }}</h3>
-                        <p class="text-gray-300">{{ user.email }}</p>
+                        <h3 class="text-lg font-medium text-white">{{ user?.username }}</h3>
+                        <p class="text-gray-300">{{ user?.email }}</p>
                     </div>
                 </div>
-                
+
                 <div class="grid grid-cols-2 gap-2 text-sm">
                     <div>
                         <span class="text-gray-400">Full Name:</span>
-                        <span class="text-white ml-2">{{ user.first_name }} {{ user.last_name }}</span>
+                        <span class="text-white ml-2">{{ user?.first_name }} {{ user?.last_name }}</span>
                     </div>
                     <div>
                         <span class="text-gray-400">Role:</span>
-                        <span 
-                            :class="getRoleClass(user.role_id)"
-                            class="ml-2 px-2 py-0.5 rounded-full text-xs"
-                        >
-                            {{ getRoleName(user.role_id) }}
+                        <span :class="getRoleClass(user?.role_id || '')" class="ml-2 px-2 py-0.5 rounded-full text-xs">
+                            {{ getRoleName(user?.role_id || '') }}
                         </span>
                     </div>
                     <div>
                         <span class="text-gray-400">Credits:</span>
-                        <span class="text-white ml-2">{{ user.credits || 0 }}</span>
+                        <span class="text-white ml-2">{{ user?.credits || 0 }}</span>
                     </div>
                     <div>
                         <span class="text-gray-400">Pterodactyl ID:</span>
-                        <span class="text-white ml-2">{{ user.pterodactyl_user_id || 'None' }}</span>
+                        <span class="text-white ml-2">{{ user?.pterodactyl_user_id || 'None' }}</span>
                     </div>
                     <div>
                         <span class="text-gray-400">Registered:</span>
-                        <span class="text-white ml-2">{{ formatDate(user.first_seen) }}</span>
+                        <span class="text-white ml-2">{{ formatDate(user?.first_seen) }}</span>
                     </div>
                     <div>
                         <span class="text-gray-400">Last Seen:</span>
-                        <span class="text-white ml-2">{{ formatDate(user.last_seen) }}</span>
+                        <span class="text-white ml-2">{{ formatDate(user?.last_seen) }}</span>
                     </div>
                 </div>
             </div>
@@ -196,14 +194,14 @@ const confirmDelete = async (): Promise<void> => {
         confirmButtonColor: '#ef4444',
         cancelButtonColor: '#4b5563',
         confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel'
+        cancelButtonText: 'Cancel',
     });
 
     if (result.isConfirmed) {
         deleting.value = true;
         try {
             const response = await Users.deleteUser(userId);
-            
+
             if (response.success) {
                 playSuccess();
                 Swal.fire({

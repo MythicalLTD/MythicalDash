@@ -317,6 +317,53 @@ class User extends Database
     }
 
     /**
+     * Check if the support pin is correct.
+     *
+     * @param string $supportPin The support pin
+     *
+     * @return bool If the support pin is correct
+     */
+    public static function checkSupportPin(string $supportPin): bool
+    {
+        try {
+            $con = self::getPdoConnection();
+            $stmt = $con->prepare('SELECT * FROM ' . self::TABLE_NAME . ' WHERE support_pin = :supportPin');
+            $stmt->bindParam(':supportPin', $supportPin);
+            $stmt->execute();
+
+            return (bool) $stmt->fetchColumn();
+
+        } catch (\Exception $e) {
+            Database::db_Error('Failed to check support pin: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
+    /**
+     * Convert the support pin to the UUID.
+     *
+     * @param string $supportPin The support pin of the user!
+     *
+     * @return string The UUID of the user
+     */
+    public static function convertPinToUUID(string $supportPin): string
+    {
+        try {
+            $con = self::getPdoConnection();
+            $stmt = $con->prepare('SELECT uuid FROM ' . self::TABLE_NAME . ' WHERE support_pin = :supportPin AND deleted = "false" LIMIT 1');
+            $stmt->bindParam(':supportPin', $supportPin);
+            $stmt->execute();
+
+            return $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            Database::db_Error('Failed to convert pin to uuid: ' . $e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
      * Get the user info.
      *
      * @param UserColumns|string $info The column name

@@ -7,7 +7,7 @@ use MythicalDash\Plugins\PluginHelper;
 
 class Router extends \MythicalDash\Addons\mythicalcore\MythicalCore {
 
-	public function __construct(\Router\Router $router) {
+	public function __construct(\MythicalDash\Router\Router $router) {
 		$router->add('/api/system/mythicalcore', function (): void {
 			$appInstance = App::getInstance(true);
 			$appInstance->allowOnlyGET();

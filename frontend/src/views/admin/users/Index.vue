@@ -2,6 +2,13 @@
     <LayoutDashboard>
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-pink-400">Users</h1>
+            <button
+                @click="supportPinModal()"
+                class="bg-gradient-to-r from-pink-500 to-violet-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center"
+            >
+                <SearchIcon class="w-4 h-4 mr-2" />
+                Enter Support Pin
+            </button>
         </div>
         <!-- Users Table using TableTanstack -->
         <div v-if="loading" class="flex justify-center items-center py-10">
@@ -15,14 +22,15 @@
 import { ref, onMounted, h } from 'vue';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
-import { EditIcon, TrashIcon, LoaderCircle, ClockIcon } from 'lucide-vue-next';
+import { EditIcon, TrashIcon, LoaderCircle, ClockIcon, SearchIcon } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 
 // User interface based on the API response
 interface User {
     id: number;
     username: string;
-	uuid: string;
+    uuid: string;
     first_name: string;
     last_name: string;
     email: string;
@@ -181,6 +189,61 @@ const editUser = (user: User) => {
 
 const confirmDelete = (user: User) => {
     router.push(`/mc-admin/users/${user.uuid}/delete`);
+};
+
+const supportPinModal = () => {
+    Swal.fire({
+        title: 'Enter Support Pin',
+        text: 'Enter the support pin to enter support mode',
+        input: 'text',
+        inputPlaceholder: 'e.g. 204375',
+        showCancelButton: true,
+        confirmButtonText: 'Enter',
+        showLoaderOnConfirm: true,
+        allowOutsideClick: true,
+        preConfirm: async (pin) => {
+            if (!pin) {
+                return Swal.showValidationMessage('Please enter a valid pin');
+            }
+
+            try {
+                const response = await fetch(`/api/admin/user/support-pin/${pin}`, {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.message || 'Invalid support pin');
+                }
+
+                return data;
+            } catch (error) {
+                console.error('Error checking support pin:', error);
+                return Swal.showValidationMessage(
+                    `Request failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                );
+            }
+        },
+    }).then((result) => {
+        if (result.isConfirmed && result.value.success) {
+            const uuid = result.value.uuid;
+
+            Swal.fire({
+                title: 'Success!',
+                text: 'Support pin validated successfully. Redirecting to user profile...',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+            }).then(() => {
+                // Redirect to the user edit page with the UUID
+                router.push(`/mc-admin/users/${uuid}/edit`);
+            });
+        }
+    });
 };
 
 onMounted(() => {

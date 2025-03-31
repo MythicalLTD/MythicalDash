@@ -38,6 +38,7 @@ $router->get('/api/admin', function (): void {
             $ticketsCount = Database::getTableRowCount('mythicaldash_tickets');
             $eggsCount = Database::getTableRowCount('mythicaldash_eggs');
             $departmentsCount = Database::getTableRowCount('mythicaldash_departments');
+            $announcementsCount = Database::getTableRowCount('mythicaldash_announcements');
             $appInstance->OK('Dashboard data retrieved successfully.', [
                 'core' => [
                     'github_data' => $github_data,
@@ -50,6 +51,7 @@ $router->get('/api/admin', function (): void {
                     'tickets_count' => $ticketsCount,
                     'eggs_count' => $eggsCount,
                     'departments_count' => $departmentsCount,
+                    'announcements_count' => $announcementsCount,
                 ],
                 'etc' => [
                     'activity' => $activity,

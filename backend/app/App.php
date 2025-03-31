@@ -14,11 +14,11 @@
 namespace MythicalDash;
 
 use RateLimit\Rate;
-use Router\Router as rt;
 use MythicalDash\Chat\Database;
 use RateLimit\RedisRateLimiter;
 use MythicalDash\Hooks\MythicalAPP;
 use MythicalSystems\Utils\XChaCha20;
+use MythicalDash\Router\Router as rt;
 use MythicalDash\Config\ConfigFactory;
 use MythicalDash\Logger\LoggerFactory;
 use RateLimit\Exception\LimitExceeded;
@@ -126,9 +126,9 @@ class App extends MythicalAPP
             App::getInstance(true)->getLogger()->error('License validator error: ' . $e->getMessage());
         }
 
-        $router->add('/(.*)', function ($route	): void {
+        $router->add('/(.*)', function ($route): void {
             self::init();
-            self::NotFound('The api route does not exist!', ['error_code' => 'API_ROUTE_NOT_FOUND','route' => $route]);
+            self::NotFound('The api route does not exist!', ['error_code' => 'API_ROUTE_NOT_FOUND', 'route' => $route]);
         });
 
         try {

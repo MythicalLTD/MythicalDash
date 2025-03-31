@@ -23,10 +23,13 @@
                     <div>
                         <h2 class="text-xl font-semibold text-white">Confirm Department Deletion</h2>
                         <p class="text-gray-400 mt-2">
-                            You are about to delete the department <span class="font-bold text-white">"{{ department.name }}"</span>. This action cannot be undone.
+                            You are about to delete the department
+                            <span class="font-bold text-white">"{{ department.name }}"</span>. This action cannot be
+                            undone.
                         </p>
                         <p class="text-gray-400 mt-2">
-                            If tickets are associated with this department, they may become inaccessible or display incorrectly.
+                            If tickets are associated with this department, they may become inaccessible or display
+                            incorrectly.
                         </p>
                     </div>
                 </div>
@@ -96,7 +99,9 @@
                 <AlertCircleIcon class="w-16 h-16 mx-auto" />
             </div>
             <h2 class="text-xl font-semibold text-white">Department Not Found</h2>
-            <p class="text-gray-400 mt-2">The department you're trying to delete doesn't exist or has already been deleted.</p>
+            <p class="text-gray-400 mt-2">
+                The department you're trying to delete doesn't exist or has already been deleted.
+            </p>
             <button
                 @click="router.push('/mc-admin/departments')"
                 class="mt-4 px-4 py-2 bg-gray-700 text-white rounded-lg transition-all duration-200 hover:bg-gray-600"
@@ -124,19 +129,37 @@ import { useSound } from '@vueuse/sound';
 import failedAlertSfx from '@/assets/sounds/error.mp3';
 import successAlertSfx from '@/assets/sounds/success.mp3';
 
+// Define interfaces for the data structures
+interface Department {
+    id: number;
+    name: string;
+    description: string;
+    time_open: string;
+    time_close: string;
+    enabled: string;
+    // Add any other properties that might be in the department object
+}
+
+interface ApiResponse {
+    success: boolean;
+    message?: string;
+    departments?: Department[];
+    error_code?: string;
+}
+
 const router = useRouter();
 const route = useRoute();
 const departmentId = parseInt(route.params.id as string);
 
-const loading = ref(true);
-const deleting = ref(false);
-const department = ref<any>(null);
-const confirmationChecked = ref(false);
+const loading = ref<boolean>(true);
+const deleting = ref<boolean>(false);
+const department = ref<Department | null>(null);
+const confirmationChecked = ref<boolean>(false);
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);
 
 // Fetch department details
-const fetchDepartment = async () => {
+const fetchDepartment = async (): Promise<void> => {
     loading.value = true;
     try {
         const response = await fetch(`/api/admin/ticket/departments`, {
@@ -150,10 +173,10 @@ const fetchDepartment = async () => {
             throw new Error('Failed to fetch departments');
         }
 
-        const data = await response.json();
+        const data = (await response.json()) as ApiResponse;
 
         if (data.success && data.departments) {
-            const foundDepartment = data.departments.find((dept: any) => dept.id === departmentId);
+            const foundDepartment = data.departments.find((dept: Department) => dept.id === departmentId);
             if (foundDepartment) {
                 department.value = foundDepartment;
             }
@@ -249,4 +272,4 @@ const confirmDelete = async () => {
 onMounted(() => {
     fetchDepartment();
 });
-</script> 
+</script>

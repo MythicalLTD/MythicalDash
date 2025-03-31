@@ -13,7 +13,6 @@
 
 namespace MythicalDash\Chat\Tickets;
 
-use MythicalDash\App;
 use MythicalDash\Chat\Database;
 
 class Departments extends Database
@@ -46,7 +45,7 @@ class Departments extends Database
         string $description,
         string $open,
         string $close,
-        string $enabled
+        string $enabled,
     ): int|false {
         try {
             $dbConn = self::getPdoConnection();
@@ -85,14 +84,15 @@ class Departments extends Database
         string $description,
         string $open,
         string $close,
-        string $enabled
+        string $enabled,
     ): bool {
         try {
             if (!self::exists($id)) {
                 self::db_Error('Department does not exist but tried to update it: ' . $id);
+
                 return false;
             }
-            
+
             $dbConn = self::getPdoConnection();
             $sql = 'UPDATE ' . self::getTableName() . ' SET name = :name, description = :description, time_open = :open, time_close = :close, enabled = :enabled WHERE id = :id AND deleted = "false"';
             $stmt = $dbConn->prepare($sql);
@@ -102,11 +102,11 @@ class Departments extends Database
             $stmt->bindParam(':open', $open);
             $stmt->bindParam(':close', $close);
             $stmt->bindParam(':enabled', $enabled);
-            
+
             return $stmt->execute();
         } catch (\Exception $e) {
             self::db_Error('Failed to update department: ' . $e->getMessage());
-            
+
             return false;
         }
     }
@@ -147,6 +147,7 @@ class Departments extends Database
         try {
             if (!self::exists($id)) {
                 self::db_Error('Department does not exist but tried to delete it: ' . $id);
+
                 return false;
             }
 
@@ -196,16 +197,18 @@ class Departments extends Database
         try {
             if (!self::exists($id)) {
                 self::db_Error('Department does not exist but tried to get it: ' . $id);
+
                 return null;
             }
-            
+
             $dbConn = self::getPdoConnection();
             $sql = 'SELECT * FROM ' . self::getTableName() . ' WHERE id = :id AND deleted = "false"';
             $stmt = $dbConn->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->execute();
-            
+
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
             return $result ?: null;
         } catch (\Exception $e) {
             self::db_Error('Failed to get department: ' . $e->getMessage());

@@ -1,7 +1,7 @@
 class Users {
     /**
      * Get all users
-     * 
+     *
      * @returns Promise with all users
      */
     public static async getUsers() {
@@ -13,7 +13,7 @@ class Users {
 
     /**
      * Get a specific user by ID
-     * 
+     *
      * @param userId The UUID of the user to get
      * @returns Promise with the user
      */
@@ -26,20 +26,15 @@ class Users {
 
     /**
      * Update a user's information
-     * 
+     *
      * @param userId The UUID of the user to update
      * @param column The column to update
      * @param value The new value
      * @param encrypted Whether the value should be encrypted
-     * 
+     *
      * @returns Promise with the response
      */
-    public static async updateUser(
-        userId: string,
-        column: string,
-        value: string,
-        encrypted: boolean = false
-    ) {
+    public static async updateUser(userId: string, column: string, value: string, encrypted: boolean = false) {
         const formData = new FormData();
         formData.append('column', column);
         formData.append('value', value);
@@ -54,9 +49,9 @@ class Users {
 
     /**
      * Delete a user
-     * 
+     *
      * @param userId The UUID of the user to delete
-     * 
+     *
      * @returns Promise with the response
      */
     public static async deleteUser(userId: string) {
@@ -67,4 +62,4 @@ class Users {
     }
 }
 
-export default Users; 
+export default Users;

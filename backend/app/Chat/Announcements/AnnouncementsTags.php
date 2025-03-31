@@ -22,7 +22,7 @@ class AnnouncementsTags extends Database
     /**
      * Create a new announcement tag.
      */
-    public static function create(int $announcementId, string $tag): void
+    public static function create(int $announcementId, string $tag): int
     {
         try {
             $con = self::getPdoConnection();
@@ -31,8 +31,12 @@ class AnnouncementsTags extends Database
             $stmt->bindParam(':announcementId', $announcementId);
             $stmt->bindParam(':tag', $tag);
             $stmt->execute();
+
+            return $con->lastInsertId();
         } catch (\Exception $e) {
             self::db_Error('Failed to create announcement tag: ' . $e->getMessage());
+
+            return 0;
         }
     }
 
@@ -43,7 +47,7 @@ class AnnouncementsTags extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $sql = 'DELETE FROM ' . self::TABLE_NAME . ' WHERE id = :id';
+            $sql = 'UPDATE ' . self::TABLE_NAME . ' SET deleted = "true" WHERE id = :id AND deleted = "false"';
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->execute();
@@ -59,7 +63,7 @@ class AnnouncementsTags extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $sql = 'SELECT * FROM ' . self::TABLE_NAME . ' WHERE announcements = :id';
+            $sql = 'SELECT * FROM ' . self::TABLE_NAME . ' WHERE announcements = :id AND deleted = "false"';
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->execute();
@@ -83,7 +87,7 @@ class AnnouncementsTags extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $sql = 'SELECT COUNT(*) FROM ' . self::TABLE_NAME . ' WHERE id = :id';
+            $sql = 'SELECT COUNT(*) FROM ' . self::TABLE_NAME . ' WHERE id = :id AND deleted = "false"';
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->execute();
