@@ -55,12 +55,15 @@ class UserColumns
     public const MINUTES_AFK = 'minutes_afk';
     public const LAST_SEEN_AFK = 'last_seen_afk';
 
+    public const ID = 'id';
+
     /**
      * @return string[]
      */
     public static function getColumns(): array
     {
         return [
+            self::ID,
             self::USERNAME,
             self::PASSWORD,
             self::EMAIL,

@@ -14,11 +14,13 @@
 namespace MythicalDash\Plugins;
 
 use MythicalDash\App;
+use MythicalDash\Plugins\Mixins\MixinManager;
 
 class PluginProcessor
 {
     private static array $pluginCache = [];
     private static array $validationCache = [];
+    private static array $mixinCache = [];
 
     /**
      * Get the event class for a plugin.
@@ -120,6 +122,85 @@ class PluginProcessor
 
         } catch (\Throwable $e) {
             $logger->error('Failed to process plugin event', false);
+        }
+    }
+
+    /**
+     * Get mixin for a specific plugin.
+     *
+     * @param string $identifier The plugin identifier
+     * @param string $mixinId The mixin identifier
+     *
+     * @return object|null The mixin instance or null if not found
+     */
+    public static function getMixin(string $identifier, string $mixinId): ?object
+    {
+        $cacheKey = "{$identifier}:{$mixinId}";
+
+        // Return cached result if available
+        if (isset(self::$mixinCache[$cacheKey])) {
+            return self::$mixinCache[$cacheKey];
+        }
+
+        $logger = App::getInstance(true)->getLogger();
+        $logger->debug("Getting mixin '{$mixinId}' for plugin: {$identifier}");
+
+        try {
+            $mixin = MixinManager::getMixin($identifier, $mixinId);
+
+            if ($mixin === null) {
+                $logger->warning("Mixin '{$mixinId}' not found for plugin: {$identifier}");
+
+                return null;
+            }
+
+            // Cache the result
+            self::$mixinCache[$cacheKey] = $mixin;
+
+            return $mixin;
+        } catch (\Throwable $e) {
+            $logger->error("Failed to get mixin '{$mixinId}' for plugin '{$identifier}': " . $e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
+     * Get all mixins for a plugin.
+     *
+     * @param string $identifier The plugin identifier
+     *
+     * @return array The mixins associated with the plugin
+     */
+    public static function getMixins(string $identifier): array
+    {
+        try {
+            return MixinManager::getMixinsForPlugin($identifier);
+        } catch (\Throwable $e) {
+            $logger = App::getInstance(true)->getLogger();
+            $logger->error("Failed to get mixins for plugin '{$identifier}': " . $e->getMessage());
+
+            return [];
+        }
+    }
+
+    /**
+     * Check if a plugin has a specific mixin.
+     *
+     * @param string $identifier The plugin identifier
+     * @param string $mixinId The mixin identifier
+     *
+     * @return bool True if the plugin has the mixin, false otherwise
+     */
+    public static function hasMixin(string $identifier, string $mixinId): bool
+    {
+        try {
+            return MixinManager::pluginHasMixin($identifier, $mixinId);
+        } catch (\Throwable $e) {
+            $logger = App::getInstance(true)->getLogger();
+            $logger->error("Failed to check if plugin '{$identifier}' has mixin '{$mixinId}': " . $e->getMessage());
+
+            return false;
         }
     }
 }

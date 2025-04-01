@@ -110,6 +110,13 @@ class PluginConfig
                 return false;
             }
 
+            // Validate mixins if they exist
+            if (isset($config['mixins']) && !self::validateMixins($config['mixins'], $config['identifier'])) {
+                $app->getLogger()->warning('Invalid mixins configuration for plugin: ' . $config['identifier']);
+
+                return false;
+            }
+
             $app->getLogger()->debug('Done processing: ' . $config['name']);
 
             return true;
@@ -119,6 +126,20 @@ class PluginConfig
 
             return false;
         }
+    }
+
+    /**
+     * Get the mixins configuration for a plugin.
+     *
+     * @param string $identifier The plugin identifier
+     *
+     * @return array The mixins configuration
+     */
+    public static function getPluginMixinsConfig(string $identifier): array
+    {
+        $config = self::getConfig($identifier);
+
+        return $config['mixins'] ?? [];
     }
 
     /**
@@ -226,5 +247,43 @@ class PluginConfig
         }
 
         return $defaults;
+    }
+
+    /**
+     * Validate mixins configuration.
+     *
+     * @param array $mixins The mixins configuration
+     * @param string $pluginIdentifier The plugin identifier
+     *
+     * @return bool True if valid, false otherwise
+     */
+    private static function validateMixins(array $mixins, string $pluginIdentifier): bool
+    {
+        try {
+            $app = App::getInstance(true);
+            $logger = $app->getLogger();
+
+            // Mixins must be defined as an associative array
+            foreach ($mixins as $mixinId => $mixinConfig) {
+                if (!is_string($mixinId)) {
+                    $logger->warning("Mixin identifier must be a string in plugin: {$pluginIdentifier}");
+
+                    return false;
+                }
+
+                // If mixin config is provided, it must be an array
+                if ($mixinConfig !== null && !is_array($mixinConfig)) {
+                    $logger->warning("Mixin configuration must be an array in plugin: {$pluginIdentifier}, mixin: {$mixinId}");
+
+                    return false;
+                }
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            $app->getLogger()->error('Error validating mixins: ' . $e->getMessage());
+
+            return false;
+        }
     }
 }

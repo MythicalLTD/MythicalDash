@@ -217,6 +217,7 @@ import {
     InfoIcon,
     PlusCircle,
     SettingsIcon,
+    ServerCrash,
     EggIcon,
     Building,
     BellIcon,
@@ -289,6 +290,7 @@ const dashBoard = ref({
         eggs_count: 0,
         departments_count: 0,
         announcements_count: 0,
+        server_queue_count: 0,
     },
 });
 Dashboard.get().then((data) => {
@@ -359,6 +361,29 @@ const menuGroups = ref<{ title: string; items: MenuItem[] }[]>([
                     {
                         name: 'Create Egg',
                         path: `${adminBaseUri}/eggs/create`,
+                        icon: PlusCircle,
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        title: 'Servers',
+        items: [
+            {
+                name: 'Server Queue',
+                icon: ServerCrash,
+                active: route.path === `${adminBaseUri}/server-queue`,
+                count: computed(() => dashBoard.value.count.server_queue_count || 0),
+                subMenu: [
+                    {
+                        name: 'All Servers',
+                        path: `${adminBaseUri}/server-queue`,
+                        icon: ServerCrash,
+                    },
+                    {
+                        name: 'Create Server',
+                        path: `${adminBaseUri}/server-queue/create`,
                         icon: PlusCircle,
                     },
                 ],
@@ -438,6 +463,8 @@ const searchResults = [
     { id: 7, name: 'Users', path: `${adminBaseUri}/users` },
     { id: 8, name: 'Departments', path: `${adminBaseUri}/departments` },
     { id: 9, name: 'Create Department', path: `${adminBaseUri}/departments/create` },
+    { id: 10, name: 'Server Queue', path: `${adminBaseUri}/server-queue` },
+    { id: 11, name: 'Create Server Queue', path: `${adminBaseUri}/server-queue/create` },
 ];
 
 const filteredResults = computed(() => {

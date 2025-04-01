@@ -6,6 +6,9 @@ import eggCategoryRoutes from './egg-categories.ts';
 import userRoutes from './users.ts';
 import announcementRoutes from './announcements.ts';
 import ticketRoutes from './tickets.ts';
+import mythicalcloudRoutes from './mythicalcloud.ts';
+import queueRoutes from './queue.ts';
+
 // Main admin dashboard route
 const mainAdminRoutes: RouteRecordRaw[] = [
     {
@@ -29,6 +32,8 @@ const adminRoutes: RouteRecordRaw[] = [
     ...userRoutes,
     ...announcementRoutes,
     ...ticketRoutes,
+    ...mythicalcloudRoutes,
+    ...queueRoutes,
 ];
 
 export default adminRoutes;

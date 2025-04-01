@@ -13,12 +13,23 @@ import {
     DatabaseIcon,
     ClockIcon,
     MailIcon as EnvelopeIcon,
+    ExternalLink as ExternalLinkIcon,
 } from 'lucide-vue-next';
 import Users from '@/mythicaldash/admin/Users';
 import Swal from 'sweetalert2';
 import { useSound } from '@vueuse/sound';
 import failedAlertSfx from '@/assets/sounds/error.mp3';
+import { useSettingsStore } from '@/stores/settings';
+const Settings = useSettingsStore();
 import successAlertSfx from '@/assets/sounds/success.mp3';
+
+// Utility function to open URLs safely in a new tab
+function openExternalLink(url: string): void {
+    // Using the global window object explicitly
+    const globalWindow = window as typeof globalThis;
+    const newWindow = globalWindow.open(url, '_blank');
+    if (newWindow) newWindow.opener = null;
+}
 
 // Define interfaces for user data
 interface User {
@@ -467,42 +478,95 @@ onMounted(() => {
         </div>
         <div v-else class="space-y-6">
             <!-- User Profile Header -->
-            <div class="bg-gray-800 rounded-lg p-6 shadow-md">
-                <div class="flex items-center mb-6">
-                    <img
-                        :src="user.avatar || '/assets/images/default-avatar.png'"
-                        alt="User Avatar"
-                        class="w-16 h-16 rounded-full mr-4 object-cover"
-                    />
-                    <div>
-                        <h2 class="text-xl font-semibold text-white">{{ user.username }}</h2>
-                        <p class="text-gray-400">{{ user.email }}</p>
-                        <div class="flex items-center mt-1">
-                            <span :class="getRoleClass(user.role)" class="px-2 py-0.5 rounded-full text-xs">
-                                {{ getRoleName(user.role) }}
+            <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                <div class="bg-gradient-to-r from-pink-500/10 to-blue-500/10 p-6 border-b border-gray-700">
+                    <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+                        <div class="relative">
+                            <img
+                                :src="user.avatar || '/assets/images/default-avatar.png'"
+                                alt="User Avatar"
+                                class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 border-gray-700 shadow-lg"
+                            />
+                            <span
+                                :class="[
+                                    'absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center shadow-md',
+                                    user.banned === 'YES'
+                                        ? 'bg-red-500 text-white'
+                                        : user.verified === 'true'
+                                          ? 'bg-green-500 text-white'
+                                          : 'bg-yellow-500 text-gray-800',
+                                ]"
+                            >
+                                <span v-if="user.banned === 'YES'" class="text-xs">!</span>
+                                <span v-else-if="user.verified === 'true'" class="text-xs">✓</span>
+                                <span v-else class="text-xs">?</span>
                             </span>
-                            <span class="mx-2 text-gray-500">•</span>
-                            <span class="text-gray-400 text-sm">ID: {{ user.id }}</span>
-                            <span class="mx-2 text-gray-500">•</span>
-                            <span class="text-gray-400 text-sm">UUID: {{ user.uuid }}</span>
+                        </div>
+
+                        <div class="flex-1">
+                            <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
+                                <h2 class="text-2xl font-bold text-white">{{ user.username }}</h2>
+                                <span
+                                    :class="getRoleClass(user.role)"
+                                    class="px-3 py-1 rounded-full text-xs inline-flex items-center w-fit"
+                                >
+                                    {{ getRoleName(user.role) }}
+                                </span>
+                            </div>
+
+                            <div class="mt-2 text-gray-300">{{ user.email }}</div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+                                <div class="flex items-center gap-2 text-gray-400 text-sm">
+                                    <ClockIcon class="h-4 w-4 text-gray-500" />
+                                    <span>Last active: {{ formatDate(user.last_seen) }}</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-gray-400 text-sm">
+                                    <UserIcon class="h-4 w-4 text-gray-500" />
+                                    <span>{{ user.first_name }} {{ user.last_name }}</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-gray-400 text-sm">
+                                    <DatabaseIcon class="h-4 w-4 text-gray-500" />
+                                    <span>Credits: {{ user.credits }}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2 mt-4">
+                                <div v-if="user.pterodactyl_user_id" class="flex">
+                                    <button
+                                        @click="
+                                            openExternalLink(
+                                                Settings.getSetting('pterodactyl_base_url') +
+                                                    `/admin/users/view/${user.pterodactyl_user_id}`,
+                                            )
+                                        "
+                                        class="flex items-center gap-1 px-3 py-1 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors text-sm"
+                                    >
+                                        <ExternalLinkIcon class="h-3.5 w-3.5" />
+                                        Pterodactyl Account
+                                    </button>
+                                </div>
+                                <div class="flex">
+                                    <button
+                                        @click="router.push('/mc-admin/users')"
+                                        class="flex items-center gap-1 px-3 py-1 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors text-sm"
+                                    >
+                                        <ArrowLeftIcon class="h-3.5 w-3.5" />
+                                        Back to Users
+                                    </button>
+                                </div>
+                                <div class="flex">
+                                    <button
+                                        @click="router.push(`/mc-admin/users/${userId}/delete`)"
+                                        class="flex items-center gap-1 px-3 py-1 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors text-sm"
+                                    >
+                                        <TrashIcon class="h-3.5 w-3.5" />
+                                        Delete User
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="flex justify-end space-x-3">
-                    <button
-                        @click="router.push('/mc-admin/users')"
-                        class="px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors"
-                    >
-                        Back to Users
-                    </button>
-                    <button
-                        @click="router.push(`/mc-admin/users/${userId}/delete`)"
-                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center"
-                    >
-                        <TrashIcon class="h-4 w-4 mr-2" />
-                        Delete User
-                    </button>
                 </div>
             </div>
 

@@ -14,6 +14,7 @@
 namespace MythicalDash\Plugins;
 
 use MythicalDash\App;
+use MythicalDash\Plugins\Mixins\MixinManager;
 
 class PluginManager
 {
@@ -62,6 +63,31 @@ class PluginManager
     public function getLoadedPlugins(): array
     {
         return $this->plugins;
+    }
+
+    /**
+     * Get mixins for a specific plugin.
+     *
+     * @param string $plugin The plugin identifier
+     *
+     * @return array List of mixin instances
+     */
+    public function getPluginMixins(string $plugin): array
+    {
+        return MixinManager::getMixinsForPlugin($plugin);
+    }
+
+    /**
+     * Check if a plugin has a specific mixin.
+     *
+     * @param string $plugin The plugin identifier
+     * @param string $mixinId The mixin identifier
+     *
+     * @return bool True if the plugin has the mixin, false otherwise
+     */
+    public function hasPluginMixin(string $plugin, string $mixinId): bool
+    {
+        return MixinManager::pluginHasMixin($plugin, $mixinId);
     }
 
     private function getPluginFiles(): array
@@ -122,6 +148,9 @@ class PluginManager
             return;
         }
 
+        // Load mixins for this plugin
+        $this->loadMixinsForPlugin($plugin, $config);
+
         $this->loadPlugin($plugin, $config, $eventManager);
     }
 
@@ -130,5 +159,30 @@ class PluginManager
         $this->logger->debug('Plugin ' . $plugin . ' was loaded in the memory!');
         $this->plugins[] = $plugin;
         PluginProcessor::process($config['plugin']['identifier'], $eventManager);
+    }
+
+    /**
+     * Load mixins for a plugin based on its configuration.
+     *
+     * @param string $plugin The plugin identifier
+     * @param array $config The plugin configuration
+     */
+    private function loadMixinsForPlugin(string $plugin, array $config): void
+    {
+        try {
+            // Check if plugin has mixins configured
+            if (!isset($config['mixins']) || !is_array($config['mixins'])) {
+                return;
+            }
+
+            $mixins = MixinManager::loadMixinsForPlugin($plugin);
+            $mixinCount = count($mixins);
+
+            if ($mixinCount > 0) {
+                $this->logger->debug("Loaded {$mixinCount} mixins for plugin: {$plugin}");
+            }
+        } catch (\Throwable $e) {
+            $this->logger->error("Failed to load mixins for plugin {$plugin}: " . $e->getMessage());
+        }
     }
 }
