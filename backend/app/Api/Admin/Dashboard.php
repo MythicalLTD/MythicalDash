@@ -39,7 +39,7 @@ $router->get('/api/admin', function (): void {
             $eggsCount = Database::getTableRowCount('mythicaldash_eggs');
             $departmentsCount = Database::getTableRowCount('mythicaldash_departments');
             $announcementsCount = Database::getTableRowCount('mythicaldash_announcements');
-            $serverQueueCount = Database::getTableRowCount('mythicaldash_server_queue');
+            $serverQueueCount = Database::getTableRowCount('mythicaldash_servers_queue');
 
             $appInstance->OK('Dashboard data retrieved successfully.', [
                 'core' => [
