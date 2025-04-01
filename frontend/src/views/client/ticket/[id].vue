@@ -17,6 +17,8 @@ import {
     Loader as LoaderIcon,
     Lock as LockIcon,
     Unlock as UnlockIcon,
+    Image as ImageIcon,
+    X as XIcon,
 } from 'lucide-vue-next';
 import Tickets from '@/mythicaldash/Tickets';
 import Swal from 'sweetalert2';
@@ -120,6 +122,10 @@ const attachments = ref<Attachment[]>([]);
 const isSubmitting = ref(false);
 const selectedFiles = ref<File[]>([]);
 const previewUrls = ref<string[]>([]);
+
+// Modal for viewing attachments
+const selectedAttachment = ref<string | null>(null);
+const isAttachmentModalOpen = ref(false);
 
 const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString(undefined, {
@@ -360,6 +366,45 @@ const validateFiles = (files: File[]): boolean => {
 const goBackToTicketList = () => {
     router.push('/ticket');
 };
+
+// Function to open attachment in modal
+const openAttachmentModal = (attachment: Attachment) => {
+    selectedAttachment.value = Settings.getSetting('app_url') + '/attachments/' + attachment.file;
+    isAttachmentModalOpen.value = true;
+};
+
+// Function to close attachment modal
+const closeAttachmentModal = () => {
+    isAttachmentModalOpen.value = false;
+    selectedAttachment.value = null;
+};
+
+// Handle keyboard events for modal
+const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape' && isAttachmentModalOpen.value) {
+        closeAttachmentModal();
+    }
+};
+
+// Add and remove event listener for keyboard events
+watch(isAttachmentModalOpen, (isOpen) => {
+    if (isOpen) {
+        document.addEventListener('keydown', handleKeyDown);
+    } else {
+        document.removeEventListener('keydown', handleKeyDown);
+    }
+});
+
+// Clean up event listeners when component is unmounted
+onUnmounted(() => {
+    document.removeEventListener('keydown', handleKeyDown);
+});
+
+// Detect if an attachment is an image
+const isImage = (filename: string): boolean => {
+    const extension = filename.split('.').pop()?.toLowerCase();
+    return ['jpg', 'jpeg', 'png', 'gif'].includes(extension || '');
+};
 </script>
 
 <style scoped>
@@ -515,16 +560,79 @@ const goBackToTicketList = () => {
                             <FileTextIcon class="w-5 h-5 text-blue-400" />
                             Attachments
                         </h2>
-                        <div v-for="attachment in attachments" :key="attachment.id" class="flex items-center gap-2">
-                            <a
-                                :href="'https://' + Settings.getSetting('app_url') + '/attachments/' + attachment.file"
-                                target="_blank"
-                                class="text-blue-400 hover:underline"
-                                >https://{{ Settings.getSetting('app_url') }}/attachments/{{ attachment.file }}</a
-                            >
+                        <div class="flex flex-wrap gap-4 mt-3">
+                            <div v-for="attachment in attachments" :key="attachment.id" class="relative group">
+                                <!-- Image Thumbnail (if it's an image) -->
+                                <div
+                                    v-if="isImage(attachment.file)"
+                                    @click="openAttachmentModal(attachment)"
+                                    class="w-32 h-32 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity border border-gray-700"
+                                >
+                                    <img
+                                        :src="Settings.getSetting('app_url') + '/attachments/' + attachment.file"
+                                        alt="Attachment"
+                                        class="w-full h-full object-cover"
+                                    />
+                                    <div
+                                        class="absolute inset-0 bg-black/0 group-hover:bg-black/30 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
+                                    >
+                                        <ImageIcon class="w-6 h-6 text-white" />
+                                    </div>
+                                </div>
+
+                                <!-- File Link (if not an image) -->
+                                <a
+                                    v-else
+                                    :href="Settings.getSetting('app_url') + '/attachments/' + attachment.file"
+                                    target="_blank"
+                                    class="flex items-center gap-2 p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
+                                >
+                                    <FileTextIcon class="w-5 h-5 text-blue-400" />
+                                    <span class="text-blue-400 hover:underline truncate max-w-[120px]">
+                                        {{ attachment.file.split('/').pop() }}
+                                    </span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </CardComponent>
+
+                <!-- Image Modal -->
+                <div
+                    v-if="isAttachmentModalOpen"
+                    class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+                    @click="closeAttachmentModal"
+                >
+                    <div class="relative max-w-4xl w-full bg-gray-900 rounded-lg overflow-hidden" @click.stop>
+                        <div class="flex justify-between items-center p-4 border-b border-gray-700">
+                            <h3 class="text-lg font-semibold">Image Preview</h3>
+                            <button
+                                @click="closeAttachmentModal"
+                                class="p-1 rounded-full hover:bg-gray-700 transition-colors"
+                            >
+                                <XIcon class="w-6 h-6" />
+                            </button>
+                        </div>
+                        <div class="p-4 flex items-center justify-center">
+                            <img
+                                v-if="selectedAttachment"
+                                :src="selectedAttachment"
+                                alt="Attachment Preview"
+                                class="max-h-[70vh] max-w-full object-contain"
+                            />
+                        </div>
+                        <div class="p-4 border-t border-gray-700">
+                            <a
+                                v-if="selectedAttachment"
+                                :href="selectedAttachment"
+                                target="_blank"
+                                class="text-blue-400 hover:underline"
+                            >
+                                Open in new tab
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Messages -->
                 <div class="space-y-6">

@@ -5,7 +5,7 @@ import eggRoutes from './eggs.ts';
 import eggCategoryRoutes from './egg-categories.ts';
 import userRoutes from './users.ts';
 import announcementRoutes from './announcements.ts';
-
+import ticketRoutes from './tickets.ts';
 // Main admin dashboard route
 const mainAdminRoutes: RouteRecordRaw[] = [
     {
@@ -28,6 +28,7 @@ const adminRoutes: RouteRecordRaw[] = [
     ...eggCategoryRoutes,
     ...userRoutes,
     ...announcementRoutes,
+    ...ticketRoutes,
 ];
 
 export default adminRoutes;
