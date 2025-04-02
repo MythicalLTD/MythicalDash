@@ -30,6 +30,9 @@ class Router
     /** @var array<string,array<Route>> Route cache indexed by HTTP method */
     private array $routesByMethod = [];
 
+    /** @var array<string> Current middleware group stack */
+    private array $middlewareStack = [];
+
     /**
      * Constructor.
      *
@@ -46,6 +49,31 @@ class Router
     }
 
     /**
+     * Start a middleware group.
+     *
+     * @param array $middlewares Middleware names to apply to all routes in the group
+     * @param callable $callback Function containing route definitions
+     *
+     * @return self For method chaining
+     */
+    public function middleware(array $middlewares, callable $callback): self
+    {
+        // Save the current middleware stack
+        $previousStack = $this->middlewareStack;
+
+        // Add new middlewares to the stack
+        $this->middlewareStack = array_merge($this->middlewareStack, $middlewares);
+
+        // Execute the callback with route definitions
+        $callback($this);
+
+        // Restore the previous middleware stack
+        $this->middlewareStack = $previousStack;
+
+        return $this;
+    }
+
+    /**
      * Add a route.
      *
      * @param string $expr Route expression
@@ -56,6 +84,11 @@ class Router
      */
     public function all(string $expr, callable $callback, array|string|null $methods = null): self
     {
+        // Apply middleware to the callback if any middleware is in the stack
+        if (!empty($this->middlewareStack)) {
+            $callback = Middleware::apply($callback, $this->middlewareStack);
+        }
+
         $route = new Route($expr, $callback, $methods);
         $this->routes[] = $route;
 

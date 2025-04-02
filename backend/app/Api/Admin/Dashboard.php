@@ -40,7 +40,7 @@ $router->get('/api/admin', function (): void {
             $departmentsCount = Database::getTableRowCount('mythicaldash_departments');
             $announcementsCount = Database::getTableRowCount('mythicaldash_announcements');
             $serverQueueCount = Database::getTableRowCount('mythicaldash_servers_queue');
-
+            $mailTemplatesCount = Database::getTableRowCount('mythicaldash_mail_templates');
             $appInstance->OK('Dashboard data retrieved successfully.', [
                 'core' => [
                     'github_data' => $github_data,
@@ -55,6 +55,7 @@ $router->get('/api/admin', function (): void {
                     'departments_count' => $departmentsCount,
                     'announcements_count' => $announcementsCount,
                     'server_queue_count' => $serverQueueCount,
+                    'mail_templates_count' => $mailTemplatesCount,
                 ],
                 'etc' => [
                     'activity' => $activity,
@@ -65,7 +66,7 @@ $router->get('/api/admin', function (): void {
             $appInstance->InternalServerError($e->getMessage(), ['error_code' => 'SERVICE_UNAVAILABLE']);
         }
     } else {
-        $appInstance->Unauthorized('You do not have permission to access this endpoint.', ['error_code' => 'NO_PERMISSION']);
+        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
     }
 
 });

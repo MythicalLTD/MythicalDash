@@ -35,7 +35,6 @@ interface User {
     last_name: string;
     email: string;
     avatar: string;
-    pterodactyl_user_id: number;
     role: number;
     last_seen: string;
 }
@@ -92,11 +91,6 @@ const columns = [
         accessorKey: 'email',
         header: 'Email',
         cell: (info: { getValue: () => string }) => info.getValue(),
-    },
-    {
-        accessorKey: 'pterodactyl_user_id',
-        header: 'Pterodactyl ID',
-        cell: (info: { getValue: () => number }) => info.getValue() || 'N/A',
     },
     {
         accessorKey: 'role',

@@ -26,19 +26,6 @@ $router->post('/api/user/store/purchase', function (): void {
         $appInstance->BadRequest('Store is not enabled', ['error_code' => 'STORE_NOT_ENABLED']);
     }
 
-    // Get the request data
-    $requestData = $appInstance->getRequestData();
-
-    // Validate required fields
-    if (!isset($requestData['itemId'])) {
-        $appInstance->error('Item ID is required', 400);
-
-        return;
-    }
-
-    $itemId = $requestData['itemId'];
-    $user = $session->getUser();
-
     // Mock items data - in a real implementation, this would be fetched from a database
     $items = [
         'ram_512mb' => [
@@ -92,60 +79,10 @@ $router->post('/api/user/store/purchase', function (): void {
         ],
     ];
 
-    // Check if the item exists
-    if (!isset($items[$itemId])) {
-        $appInstance->error('Item not found', 404);
-
-        return;
-    }
-
-    $item = $items[$itemId];
-
-    // Check if user has enough coins
-    if ($user->credits < $item['price']) {
-        $appInstance->error('Insufficient coins', 400);
-
-        return;
-    }
-
-    // Deduct coins from user
-    $user->credits -= $item['price'];
-    $user->save();
-
-    // Process the purchase based on item type
-    switch ($item['action']) {
-        case 'addRam':
-            // In a real implementation, this would update the user's server resources
-            logInfo("Added 512MB RAM for user {$user->id}");
-            break;
-        case 'addDisk':
-            logInfo("Added 1024MB disk for user {$user->id}");
-            break;
-        case 'addCpu':
-            logInfo("Added 50% CPU for user {$user->id}");
-            break;
-        case 'addServerSlot':
-            logInfo("Added server slot for user {$user->id}");
-            break;
-        case 'addBackup':
-            logInfo("Added backup slot for user {$user->id}");
-            break;
-        case 'addAllocation':
-            logInfo("Added allocation for user {$user->id}");
-            break;
-        case 'addDatabase':
-            logInfo("Added database for user {$user->id}");
-            break;
-        default:
-            logWarning("Unknown action {$item['action']} for user {$user->id}");
-            break;
-    }
-
     // Record the purchase in the transaction history
     // In a real implementation, save to database
 
     $appInstance->OK('Purchase successful', [
-        'item' => $item,
-        'currentCoins' => $user->credits,
+
     ]);
 });

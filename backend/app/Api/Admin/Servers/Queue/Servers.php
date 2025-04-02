@@ -54,7 +54,7 @@ $router->get('/api/admin/server-queue', function (): void {
             'server_queue' => $serverQueue,
         ]);
     } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
+        $appInstance->Unauthorized('Unauthorized', extraContent: ['error_code' => 'INVALID_SESSION']);
     }
 });
 
