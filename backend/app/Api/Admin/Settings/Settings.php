@@ -14,6 +14,7 @@
 use MythicalDash\App;
 use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Plugins\Events\Events\SettingsEvent;
 
 $router->post('/api/admin/settings/update', function (): void {
     App::init();
@@ -32,6 +33,11 @@ $router->post('/api/admin/settings/update', function (): void {
 
             $config = $config->setSetting($key, $value);
             if ($config) {
+                global $eventManager;
+                $eventManager->on(SettingsEvent::onSettingsUpdated(), [
+                    'key' => $key,
+                    'value' => $value,
+                ]);
                 $appInstance->OK('Settings updated successfully.', []);
             } else {
                 $appInstance->InternalServerError('Failed to update settings', ['error_code' => 'SERVICE_UNAVAILABLE']);

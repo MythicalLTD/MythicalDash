@@ -20,6 +20,7 @@ use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\Eggs\Eggs as EggManager;
 use MythicalDash\Hooks\Pterodactyl\Admin\Eggs;
 use MythicalDash\Hooks\Pterodactyl\Admin\Nests;
+use MythicalDash\Plugins\Events\Events\EggsEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 // Get all eggs for a specific nest
@@ -181,6 +182,16 @@ $router->post('/api/admin/eggs/create', function (): void {
                 CloudFlareRealIP::getRealIP()
             );
 
+            global $eventManager;
+            $eventManager->on(EggsEvent::onCreateEgg(), [
+                'id' => $id,
+                'name' => $name,
+                'description' => $description,
+                'category' => $category,
+                'enabled' => $enabled,
+                'pterodactyl_egg_id' => $pterodactylEggId,
+            ]);
+
             $appInstance->OK('Egg created', [
                 'egg' => [
                     'name' => $name,
@@ -253,6 +264,16 @@ $router->post('/api/admin/eggs/(.*)/update', function ($id): void {
                 CloudFlareRealIP::getRealIP()
             );
 
+            global $eventManager;
+            $eventManager->on(EggsEvent::onUpdateEgg(), [
+                'id' => $id,
+                'name' => $name,
+                'description' => $description,
+                'category' => $category,
+                'enabled' => $enabled,
+                'pterodactyl_egg_id' => $pterodactylEggId,
+            ]);
+
             $appInstance->OK('Egg updated', [
                 'egg' => [
                     'name' => $name,
@@ -281,6 +302,11 @@ $router->post('/api/admin/eggs/(.*)/delete', function ($id): void {
         if (!EggManager::exists($id)) {
             $appInstance->BadRequest('Egg not found', ['error_code' => 'ERROR_EGG_NOT_FOUND']);
         }
+
+        global $eventManager;
+        $eventManager->on(EggsEvent::onDeleteEgg(), [
+            'id' => $id,
+        ]);
 
         // TODO: Check if the egg is used by any servers
 

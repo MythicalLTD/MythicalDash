@@ -47,10 +47,7 @@ class Addon extends App implements CommandBuilder
                         $name = $addonConfig['plugin']['name'];
                         $version = $addonConfig['plugin']['version'];
                         $description = $addonConfig['plugin']['description'];
-                        if ($addonConfig['plugin']['type'] == $type) {
-                            self::getInstance()->send("&7 - &b{$name} &8> &d{$version} &8> &7{$description}");
-                            self::getInstance()->send('');
-                        }
+                        self::getInstance()->send("&7 - &b{$name} &8> &d{$version} &8> &7{$description}");
                     }
                     self::getInstance()->send('');
                     break;

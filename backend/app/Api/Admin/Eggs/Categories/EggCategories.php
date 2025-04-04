@@ -20,6 +20,7 @@ use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Hooks\Pterodactyl\Admin\Eggs;
 use MythicalDash\Hooks\Pterodactyl\Admin\Nests;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
+use MythicalDash\Plugins\Events\Events\EggCategoriesEvent;
 
 $router->get('/api/admin/egg-categories/pterodactyl-nests', function (): void {
     App::init();
@@ -118,6 +119,15 @@ $router->post('/api/admin/egg-categories/create', function (): void {
                 return;
             }
 
+            global $eventManager;
+            $eventManager->on(EggCategoriesEvent::onCreateEggCategory(), [
+                'id' => $id,
+                'name' => $name,
+                'description' => $description,
+                'pterodactyl_nest_id' => $pterodactyl_nest_id,
+                'enabled' => $enabled,
+            ]);
+
             $appInstance->OK('Egg category created', [
                 'category' => [
                     'name' => $name,
@@ -172,6 +182,14 @@ $router->post('/api/admin/egg-categories/(.*)/update', function ($id): void {
                 CloudFlareRealIP::getRealIP()
             );
 
+            global $eventManager;
+            $eventManager->on(EggCategoriesEvent::onUpdateEggCategory(), [
+                'id' => $id,
+                'name' => $name,
+                'description' => $description,
+                'enabled' => $enabled,
+            ]);
+
             $appInstance->OK('Egg category updated', [
                 'category' => [
                     'name' => $name,
@@ -200,8 +218,10 @@ $router->post('/api/admin/egg-categories/(.*)/delete', function ($id): void {
 
             return;
         }
-
-        // TODO: Check if the category is used by any eggs
+        global $eventManager;
+        $eventManager->on(EggCategoriesEvent::onDeleteEggCategory(), [
+            'id' => $id,
+        ]);
 
         $deleted = EggCategories::delete($id);
         if (!$deleted) {

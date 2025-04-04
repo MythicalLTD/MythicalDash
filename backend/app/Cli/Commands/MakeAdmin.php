@@ -14,7 +14,11 @@
 namespace MythicalDash\Cli\Commands;
 
 use MythicalDash\Cli\App;
+use MythicalDash\Chat\Database;
+use MythicalDash\Chat\User\User;
 use MythicalDash\Cli\CommandBuilder;
+use MythicalDash\Config\ConfigFactory;
+use MythicalDash\Chat\columns\UserColumns;
 
 class MakeAdmin extends App implements CommandBuilder
 {
@@ -23,8 +27,41 @@ class MakeAdmin extends App implements CommandBuilder
         $app = App::getInstance();
 
         $app->send('&7What account do you want to give admin?');
-        $app->send('');
-        $line = trim(readline('> '));
+        $app->send("Please enter the account's email address");
+        $email = trim(readline('> '));
+        $appInstance = \MythicalDash\App::getInstance(true);
+        try {
+            $appInstance->loadEnv();
+            $db = new Database(
+                $_ENV['DATABASE_HOST'],
+                $_ENV['DATABASE_DATABASE'],
+                $_ENV['DATABASE_USER'],
+                $_ENV['DATABASE_PASSWORD']
+            );
+            $config = new ConfigFactory($db->getPdo());
+
+            if (User::exists(UserColumns::EMAIL, $email)) {
+                $token = User::getTokenFromEmail($email);
+                if ($token) {
+                    $app->send('&aUser found!');
+
+                    User::updateInfo($token, UserColumns::ROLE_ID, '8', false);
+                    $app->send('&aUser updated!');
+                } else {
+                    $app->send('&cError: User not found!');
+
+                    return;
+                }
+            } else {
+                $app->send('&cError: User not found!');
+
+                return;
+            }
+        } catch (\Exception $e) {
+            $app->send('&cError: ' . $e->getMessage());
+
+            return;
+        }
 
     }
 

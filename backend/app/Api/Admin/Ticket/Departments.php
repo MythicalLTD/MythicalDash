@@ -18,6 +18,7 @@ use MythicalDash\Chat\Tickets\Departments;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
+use MythicalDash\Plugins\Events\Events\DepartmentsEvent;
 
 $router->get('/api/admin/ticket/departments', function (): void {
     App::init();
@@ -69,6 +70,15 @@ $router->post('/api/admin/ticket/departments/create', function (): void {
                 CloudFlareRealIP::getRealIP(),
             );
 
+            global $eventManager;
+            $eventManager->on(DepartmentsEvent::onCreateDepartment(), [
+                'id' => $departmentId,
+                'name' => $name,
+                'description' => $description,
+                'open' => $open,
+                'close' => $close,
+            ]);
+
             $appInstance->OK('Department created successfully.', [
                 'department' => [
                     'id' => $departmentId,
@@ -119,6 +129,14 @@ $router->post('/api/admin/ticket/departments/(.*)/update', function (string $id)
             UserActivitiesTypes::$admin_ticket_department_update,
             CloudFlareRealIP::getRealIP(),
         );
+        global $eventManager;
+        $eventManager->on(DepartmentsEvent::onUpdateDepartment(), [
+            'id' => $departmentId,
+            'name' => $name,
+            'description' => $description,
+            'open' => $open,
+            'close' => $close,
+        ]);
         $appInstance->OK('Department updated successfully.', [
             'department' => [
                 'id' => $departmentId,
@@ -156,6 +174,11 @@ $router->post('/api/admin/ticket/departments/(.*)/delete', function (string $id)
             UserActivitiesTypes::$admin_ticket_department_delete,
             CloudFlareRealIP::getRealIP(),
         );
+
+        global $eventManager;
+        $eventManager->on(DepartmentsEvent::onDeleteDepartment(), [
+            'id' => $departmentId,
+        ]);
 
         $departmentId = Departments::delete($departmentId);
         if ($departmentId === false) {

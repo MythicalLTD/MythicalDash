@@ -15,6 +15,7 @@ use MythicalDash\App;
 use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Mails\MailTemplates;
+use MythicalDash\Plugins\Events\Events\MailTemplatesEvent;
 
 $router->get('/api/admin/mail/mail-templates', function (): void {
     App::init();
@@ -80,6 +81,13 @@ $router->post('/api/admin/mail/mail-templates/create', function (): void {
 
             $mailTemplates = MailTemplates::create($name, $content, $active);
             if ($mailTemplates) {
+                global $eventManager;
+                $eventManager->on(MailTemplatesEvent::onCreateMailTemplate(), [
+                    'id' => $mailTemplates,
+                    'name' => $name,
+                    'content' => $content,
+                    'active' => $active,
+                ]);
                 $appInstance->OK('Mail template created successfully.', ['mail_template' => $mailTemplates]);
             } else {
                 $appInstance->BadRequest('Failed to create mail template', ['error_code' => 'FAILED_TO_CREATE_MAIL_TEMPLATE']);
@@ -149,6 +157,13 @@ $router->post('/api/admin/mail/mail-templates/(.*)/update', function (string $id
 
             $mailTemplates = MailTemplates::update($id, $name, $content, $active);
             if ($mailTemplates) {
+                global $eventManager;
+                $eventManager->on(MailTemplatesEvent::onUpdateMailTemplate(), [
+                    'id' => $id,
+                    'name' => $name,
+                    'content' => $content,
+                    'active' => $active,
+                ]);
                 $appInstance->OK('Mail template updated successfully.', ['mail_template' => $mailTemplates]);
             } else {
                 $appInstance->BadRequest('Failed to update mail template', ['error_code' => 'FAILED_TO_UPDATE_MAIL_TEMPLATE']);
@@ -173,6 +188,12 @@ $router->post('/api/admin/mail/mail-templates/(.*)/delete', function (string $id
 
             return;
         }
+
+        global $eventManager;
+        $eventManager->on(MailTemplatesEvent::onDeleteMailTemplate(), [
+            'id' => $id,
+        ]);
+
         if (MailTemplates::delete($id)) {
             $appInstance->OK('Mail template deleted successfully.', ['mail_template' => $id]);
         } else {

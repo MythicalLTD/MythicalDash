@@ -493,6 +493,29 @@ class User extends Database
     }
 
     /**
+     * Get the token from the email.
+     *
+     * @param string $email The email
+     *
+     * @return string The token
+     */
+    public static function getTokenFromEmail(string $email): string
+    {
+        try {
+            $con = self::getPdoConnection();
+            $stmt = $con->prepare('SELECT token FROM ' . self::TABLE_NAME . ' WHERE email = :email');
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+
+            return $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            Database::db_Error('Failed to uuid to token: ' . $e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
      * Process the template.
      *
      * @param string $template The template

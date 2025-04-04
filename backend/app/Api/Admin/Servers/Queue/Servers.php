@@ -19,6 +19,7 @@ use MythicalDash\Chat\Eggs\EggCategories;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Locations\Locations;
 use MythicalDash\Chat\Servers\ServerQueue;
+use MythicalDash\Plugins\Events\Events\ServerQueueEvent;
 
 $router->get('/api/admin/server-queue', function (): void {
     App::init();
@@ -105,6 +106,24 @@ $router->post('/api/admin/server-queue/create', function (): void {
                                 $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
                             }
 
+                            global $eventManager;
+                            $eventManager->on(ServerQueueEvent::onServerQueueCreated(), [
+                                'id' => $sv,
+                                'name' => $name,
+                                'description' => $description,
+                                'ram' => $ram,
+                                'disk' => $disk,
+                                'cpu' => $cpu,
+                                'ports' => $ports,
+                                'databases' => $databases,
+                                'backups' => $backups,
+                                'location' => $location,
+                                'user' => $user,
+                                'nest' => $nest,
+                                'egg' => $egg,
+                                'status' => 'pending',
+                            ]);
+
                             $appInstance->OK('Server queue item created successfully.', ['error_code' => 'SERVER_QUEUE_ITEM_CREATED', 'server_queue_item' => $sv]);
                         } else {
                             $appInstance->BadRequest('Invalid location', ['error_code' => 'INVALID_LOCATION']);
@@ -139,6 +158,11 @@ $router->post('/api/admin/server-queue/(.*)/update-status', function (string $id
                 $status = $_POST['status'];
                 if ($status == 'pending' || $status == 'building' || $status == 'failed') {
                     ServerQueue::updateStatus($id, $status);
+                    global $eventManager;
+                    $eventManager->on(ServerQueueEvent::onServerQueueUpdated(), [
+                        'id' => $id,
+                        'status' => $status,
+                    ]);
                     $appInstance->OK('Server queue status updated successfully.', ['error_code' => 'SERVER_QUEUE_STATUS_UPDATED']);
                 } else {
                     $appInstance->BadRequest('Invalid status', ['error_code' => 'INVALID_STATUS']);
@@ -164,7 +188,12 @@ $router->post('/api/admin/server-queue/(.*)/delete', function (string $id): void
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
         $serverQueueExists = ServerQueue::exists($id);
         if ($serverQueueExists) {
+            global $eventManager;
+            $eventManager->on(ServerQueueEvent::onServerQueueDeleted(), [
+                'id' => $id,
+            ]);
             ServerQueue::delete($id);
+
             $appInstance->OK('Server queue deleted successfully.', ['error_code' => 'SERVER_QUEUE_DELETED']);
         } else {
             $appInstance->NotFound('Server queue not found', ['error_code' => 'SERVER_QUEUE_NOT_FOUND']);
