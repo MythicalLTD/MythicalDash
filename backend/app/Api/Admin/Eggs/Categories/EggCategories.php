@@ -120,7 +120,7 @@ $router->post('/api/admin/egg-categories/create', function (): void {
             }
 
             global $eventManager;
-            $eventManager->on(EggCategoriesEvent::onCreateEggCategory(), [
+            $eventManager->emit(EggCategoriesEvent::onCreateEggCategory(), [
                 'id' => $id,
                 'name' => $name,
                 'description' => $description,
@@ -183,7 +183,7 @@ $router->post('/api/admin/egg-categories/(.*)/update', function ($id): void {
             );
 
             global $eventManager;
-            $eventManager->on(EggCategoriesEvent::onUpdateEggCategory(), [
+            $eventManager->emit(EggCategoriesEvent::onUpdateEggCategory(), [
                 'id' => $id,
                 'name' => $name,
                 'description' => $description,
@@ -219,7 +219,7 @@ $router->post('/api/admin/egg-categories/(.*)/delete', function ($id): void {
             return;
         }
         global $eventManager;
-        $eventManager->on(EggCategoriesEvent::onDeleteEggCategory(), [
+        $eventManager->emit(EggCategoriesEvent::onDeleteEggCategory(), [
             'id' => $id,
         ]);
 

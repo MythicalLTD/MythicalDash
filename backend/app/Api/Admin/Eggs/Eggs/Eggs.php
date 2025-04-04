@@ -183,7 +183,7 @@ $router->post('/api/admin/eggs/create', function (): void {
             );
 
             global $eventManager;
-            $eventManager->on(EggsEvent::onCreateEgg(), [
+            $eventManager->emit(EggsEvent::onCreateEgg(), [
                 'id' => $id,
                 'name' => $name,
                 'description' => $description,
@@ -265,7 +265,7 @@ $router->post('/api/admin/eggs/(.*)/update', function ($id): void {
             );
 
             global $eventManager;
-            $eventManager->on(EggsEvent::onUpdateEgg(), [
+            $eventManager->emit(EggsEvent::onUpdateEgg(), [
                 'id' => $id,
                 'name' => $name,
                 'description' => $description,
@@ -304,7 +304,7 @@ $router->post('/api/admin/eggs/(.*)/delete', function ($id): void {
         }
 
         global $eventManager;
-        $eventManager->on(EggsEvent::onDeleteEgg(), [
+        $eventManager->emit(EggsEvent::onDeleteEgg(), [
             'id' => $id,
         ]);
 

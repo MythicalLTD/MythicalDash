@@ -107,7 +107,7 @@ $router->post('/api/admin/server-queue/create', function (): void {
                             }
 
                             global $eventManager;
-                            $eventManager->on(ServerQueueEvent::onServerQueueCreated(), [
+                            $eventManager->emit(ServerQueueEvent::onServerQueueCreated(), [
                                 'id' => $sv,
                                 'name' => $name,
                                 'description' => $description,
@@ -159,7 +159,7 @@ $router->post('/api/admin/server-queue/(.*)/update-status', function (string $id
                 if ($status == 'pending' || $status == 'building' || $status == 'failed') {
                     ServerQueue::updateStatus($id, $status);
                     global $eventManager;
-                    $eventManager->on(ServerQueueEvent::onServerQueueUpdated(), [
+                    $eventManager->emit(ServerQueueEvent::onServerQueueUpdated(), [
                         'id' => $id,
                         'status' => $status,
                     ]);
@@ -189,7 +189,7 @@ $router->post('/api/admin/server-queue/(.*)/delete', function (string $id): void
         $serverQueueExists = ServerQueue::exists($id);
         if ($serverQueueExists) {
             global $eventManager;
-            $eventManager->on(ServerQueueEvent::onServerQueueDeleted(), [
+            $eventManager->emit(ServerQueueEvent::onServerQueueDeleted(), [
                 'id' => $id,
             ]);
             ServerQueue::delete($id);

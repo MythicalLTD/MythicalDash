@@ -34,7 +34,7 @@ $router->post('/api/admin/settings/update', function (): void {
             $config = $config->setSetting($key, $value);
             if ($config) {
                 global $eventManager;
-                $eventManager->on(SettingsEvent::onSettingsUpdated(), [
+                $eventManager->emit(SettingsEvent::onSettingsUpdated(), [
                     'key' => $key,
                     'value' => $value,
                 ]);

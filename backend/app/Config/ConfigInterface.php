@@ -70,9 +70,58 @@ interface ConfigInterface
      * Link For Rewards.
      */
     public const L4R_ENABLED = 'l4r_enabled';
+    /**
+     * Linkvertise Stuff.
+     */
+    public const L4R_LINKVERTISE_ENABLED = 'l4r_linkadvertise_enabled';
+    public const L4R_LINKVERTISE_USER_ID = 'l4r_linkadvertise_user_id';
+    public const L4R_LINKVERTISE_COINS_PER_LINK = 'l4r_linkadvertise_coins_per_link';
+    public const L4R_LINKVERTISE_DAILY_LIMIT = 'l4r_linkadvertise_daily_limit';
+    public const L4R_LINKVERTISE_MIN_TIME_TO_COMPLETE = 'l4r_linkadvertise_min_time_to_complete';
+    public const L4R_LINKVERTISE_TIME_TO_EXPIRE = 'l4r_linkadvertise_time_to_expire';
+    public const L4R_LINKVERTISE_COOLDOWN_TIME = 'l4r_linkadvertise_cooldown_time';
+    /**
+     * ShareUs Settings.
+     */
+    public const L4R_SHAREUS_ENABLED = 'l4r_shareus_enabled';
+    public const L4R_SHAREUS_API_KEY = 'l4r_shareus_api_key';
+    public const L4R_SHAREUS_COINS_PER_LINK = 'l4r_shareus_coins_per_link';
+    public const L4R_SHAREUS_DAILY_LIMIT = 'l4r_shareus_daily_limit';
+    public const L4R_SHAREUS_MIN_TIME_TO_COMPLETE = 'l4r_shareus_min_time_to_complete';
+    public const L4R_SHAREUS_TIME_TO_EXPIRE = 'l4r_shareus_time_to_expire';
+    public const L4R_SHAREUS_COOLDOWN_TIME = 'l4r_shareus_cooldown_time';
+
+    /**
+     * LinkPays Settings.
+     */
+    public const L4R_LINKPAYS_ENABLED = 'l4r_linkpays_enabled';
+    public const L4R_LINKPAYS_API_KEY = 'l4r_linkpays_api_key';
+    public const L4R_LINKPAYS_COINS_PER_LINK = 'l4r_linkpays_coins_per_link';
+    public const L4R_LINKPAYS_DAILY_LIMIT = 'l4r_linkpays_daily_limit';
+    public const L4R_LINKPAYS_MIN_TIME_TO_COMPLETE = 'l4r_linkpays_min_time_to_complete';
+    public const L4R_LINKPAYS_TIME_TO_EXPIRE = 'l4r_linkpays_time_to_expire';
+    public const L4R_LINKPAYS_COOLDOWN_TIME = 'l4r_linkpays_cooldown_time';
+
+    /**
+     * GyaniLinks Settings.
+     */
+    public const L4R_GYANILINKS_ENABLED = 'l4r_gyanilinks_enabled';
+    public const L4R_GYANILINKS_API_KEY = 'l4r_gyanilinks_api_key';
+    public const L4R_GYANILINKS_COINS_PER_LINK = 'l4r_gyanilinks_coins_per_link';
+    public const L4R_GYANILINKS_DAILY_LIMIT = 'l4r_gyanilinks_daily_limit';
+    public const L4R_GYANILINKS_MIN_TIME_TO_COMPLETE = 'l4r_gyanilinks_min_time_to_complete';
+    public const L4R_GYANILINKS_TIME_TO_EXPIRE = 'l4r_gyanilinks_time_to_expire';
+    public const L4R_GYANILINKS_COOLDOWN_TIME = 'l4r_gyanilinks_cooldown_time';
 
     /**
      * Store.
      */
     public const STORE_ENABLED = 'store_enabled';
+    public const STORE_RAM_PRICE = 'store_ram_price';
+    public const STORE_DISK_PRICE = 'store_disk_price';
+    public const STORE_CPU_PRICE = 'store_cpu_price';
+    public const STORE_PORTS_PRICE = 'store_ports_price';
+    public const STORE_DATABASES_PRICE = 'store_databases_price';
+    public const STORE_SERVER_SLOT_PRICE = 'store_server_slot_price';
+    public const STORE_BACKUPS_PRICE = 'store_backups_price';
 }

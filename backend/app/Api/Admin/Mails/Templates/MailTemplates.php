@@ -82,7 +82,7 @@ $router->post('/api/admin/mail/mail-templates/create', function (): void {
             $mailTemplates = MailTemplates::create($name, $content, $active);
             if ($mailTemplates) {
                 global $eventManager;
-                $eventManager->on(MailTemplatesEvent::onCreateMailTemplate(), [
+                $eventManager->emit(MailTemplatesEvent::onCreateMailTemplate(), [
                     'id' => $mailTemplates,
                     'name' => $name,
                     'content' => $content,
@@ -158,7 +158,7 @@ $router->post('/api/admin/mail/mail-templates/(.*)/update', function (string $id
             $mailTemplates = MailTemplates::update($id, $name, $content, $active);
             if ($mailTemplates) {
                 global $eventManager;
-                $eventManager->on(MailTemplatesEvent::onUpdateMailTemplate(), [
+                $eventManager->emit(MailTemplatesEvent::onUpdateMailTemplate(), [
                     'id' => $id,
                     'name' => $name,
                     'content' => $content,
@@ -190,7 +190,7 @@ $router->post('/api/admin/mail/mail-templates/(.*)/delete', function (string $id
         }
 
         global $eventManager;
-        $eventManager->on(MailTemplatesEvent::onDeleteMailTemplate(), [
+        $eventManager->emit(MailTemplatesEvent::onDeleteMailTemplate(), [
             'id' => $id,
         ]);
 

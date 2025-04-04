@@ -65,7 +65,7 @@ $router->post('/api/admin/announcements/create', function () {
             $appInstance->InternalServerError('Failed to create announcement', ['error_code' => 'FAILED_TO_CREATE_ANNOUNCEMENT']);
         }
 
-        $eventManager->on(AnnouncementsEvent::onCreateAnnouncement(), [
+        $eventManager->emit(AnnouncementsEvent::onCreateAnnouncement(), [
             'id' => $id,
             'title' => $title,
             'shortDescription' => $shortDescription,
@@ -114,7 +114,7 @@ $router->post('/api/admin/announcements/(.*)/update', function ($id) {
             $description
         );
 
-        $eventManager->on(AnnouncementsEvent::onUpdateAnnouncement(), [
+        $eventManager->emit(AnnouncementsEvent::onUpdateAnnouncement(), [
             'id' => $id,
             'title' => $title,
             'shortDescription' => $shortDescription,
@@ -159,7 +159,7 @@ $router->post('/api/admin/announcements/(.*)/tags/add', function ($id) {
             $appInstance->InternalServerError('Failed to create announcement tag', ['error_code' => 'FAILED_TO_CREATE_ANNOUNCEMENT_TAG']);
         }
 
-        $eventManager->on(AnnouncementsEvent::onAnnouncementsAddTag(), [
+        $eventManager->emit(AnnouncementsEvent::onAnnouncementsAddTag(), [
             'tag' => $tag,
             'tagId' => $tagId,
             'announcementId' => $id,
@@ -265,7 +265,7 @@ $router->post('/api/admin/announcements/(.*)/assets/add', function ($id) {
                 }
             }
 
-            $eventManager->on(AnnouncementsEvent::onAnnouncementsAddAttachment(), [
+            $eventManager->emit(AnnouncementsEvent::onAnnouncementsAddAttachment(), [
                 'announcementId' => $id,
                 'files' => $uploadedFiles,
             ]);
@@ -315,7 +315,7 @@ $router->post('/api/admin/announcements/(.*)/assets/(.*)/delete', function ($id,
         if (Announcements::exists((int) $id)) {
             if (AnnouncementsAssets::exists((int) $assetId)) {
                 global $eventManager;
-                $eventManager->on(AnnouncementsEvent::onAnnouncementsRemoveAttachment(), [
+                $eventManager->emit(AnnouncementsEvent::onAnnouncementsRemoveAttachment(), [
                     'announcementId' => $id,
                     'assetId' => $assetId,
                 ]);
@@ -348,7 +348,7 @@ $router->post('/api/admin/announcements/(.*)/tags/(.*)/delete', function (int $i
         }
 
         global $eventManager;
-        $eventManager->on(AnnouncementsEvent::onAnnouncementsRemoveTag(), [
+        $eventManager->emit(AnnouncementsEvent::onAnnouncementsRemoveTag(), [
             'announcementId' => $id,
             'tagId' => $tagId,
         ]);
@@ -386,7 +386,7 @@ $router->post('/api/admin/announcements/(.*)/delete', function ($id) {
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
         if (Announcements::exists((int) $id)) {
             global $eventManager;
-            $eventManager->on(AnnouncementsEvent::onDeleteAnnouncement(), [
+            $eventManager->emit(AnnouncementsEvent::onDeleteAnnouncement(), [
                 'announcementId' => $id,
             ]);
             Announcements::delete((int) $id);

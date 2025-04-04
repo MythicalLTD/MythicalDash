@@ -71,7 +71,7 @@ $router->post('/api/admin/ticket/departments/create', function (): void {
             );
 
             global $eventManager;
-            $eventManager->on(DepartmentsEvent::onCreateDepartment(), [
+            $eventManager->emit(DepartmentsEvent::onCreateDepartment(), [
                 'id' => $departmentId,
                 'name' => $name,
                 'description' => $description,
@@ -130,7 +130,7 @@ $router->post('/api/admin/ticket/departments/(.*)/update', function (string $id)
             CloudFlareRealIP::getRealIP(),
         );
         global $eventManager;
-        $eventManager->on(DepartmentsEvent::onUpdateDepartment(), [
+        $eventManager->emit(DepartmentsEvent::onUpdateDepartment(), [
             'id' => $departmentId,
             'name' => $name,
             'description' => $description,
@@ -176,7 +176,7 @@ $router->post('/api/admin/ticket/departments/(.*)/delete', function (string $id)
         );
 
         global $eventManager;
-        $eventManager->on(DepartmentsEvent::onDeleteDepartment(), [
+        $eventManager->emit(DepartmentsEvent::onDeleteDepartment(), [
             'id' => $departmentId,
         ]);
 
