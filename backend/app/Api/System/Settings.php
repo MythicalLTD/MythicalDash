@@ -46,6 +46,8 @@ $router->add('/api/system/settings', function (): void {
         ConfigInterface::REFERRALS_ENABLED => $config->getSetting(ConfigInterface::REFERRALS_ENABLED, 'false'),
         ConfigInterface::L4R_ENABLED => $config->getSetting(ConfigInterface::L4R_ENABLED, 'false'),
         ConfigInterface::STORE_ENABLED => $config->getSetting(ConfigInterface::STORE_ENABLED, 'false'),
+
+        ConfigInterface::SMTP_ENABLED => $config->getSetting(ConfigInterface::SMTP_ENABLED, 'false'),
     ];
 
     App::OK('Sure here are the settings you were looking for', ['settings' => $settings]);

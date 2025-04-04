@@ -88,4 +88,18 @@ class ConfigFactory
 
         return $result;
     }
+
+    public function dumpSettings(): array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table_name}");
+        $stmt->execute();
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $settings = [];
+        foreach ($results as $result) {
+            $settings[$result['name']] = XChaCha20::decrypt($result['value'], $this->encryption_key);
+        }
+
+        return $settings;
+    }
 }

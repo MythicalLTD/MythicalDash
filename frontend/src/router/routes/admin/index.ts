@@ -9,7 +9,7 @@ import ticketRoutes from './tickets.ts';
 import mythicalcloudRoutes from './mythicalcloud.ts';
 import queueRoutes from './queue.ts';
 import mailTemplatesRoutes from './mail-templates.ts';
-
+import settingsRoutes from './settings.ts';
 // Main admin dashboard route
 const mainAdminRoutes: RouteRecordRaw[] = [
     {
@@ -31,6 +31,7 @@ const adminRoutes: RouteRecordRaw[] = [
     ...eggRoutes,
     ...eggCategoryRoutes,
     ...userRoutes,
+    ...settingsRoutes,
     ...announcementRoutes,
     ...ticketRoutes,
     ...mythicalcloudRoutes,
