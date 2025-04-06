@@ -72,6 +72,11 @@
                 <div v-show="activeTab === 'legal'" class="space-y-6">
                     <LegalSettings :settings="settings" @update="updateSettings" />
                 </div>
+
+                <!-- Billing Settings -->
+                <div v-show="activeTab === 'billing'" class="space-y-6">
+                    <BillingSettings :settings="settings" @update="updateSettings" />
+                </div>
             </div>
         </div>
     </LayoutDashboard>
@@ -88,6 +93,7 @@ import {
     Link as LinkIcon,
     Briefcase as BriefcaseIcon,
     FileText as FileTextIcon,
+    CreditCard as CreditCardIcon,
     LoaderIcon,
 } from 'lucide-vue-next';
 
@@ -97,6 +103,7 @@ import MailSettings from './components/MailSettings.vue';
 import SecuritySettings from './components/SecuritySettings.vue';
 import IntegrationSettings from './components/IntegrationSettings.vue';
 import EarnSettings from './components/EarnSettings.vue';
+import BillingSettings from './components/BillingSettings.vue';
 import LegalSettings from './components/LegalSettings.vue';
 
 // Settings tabs
@@ -107,6 +114,7 @@ const tabs = [
     { id: 'integrations', name: 'Integrations', icon: LinkIcon },
     { id: 'earn', name: 'Earn & Rewards', icon: BriefcaseIcon },
     { id: 'legal', name: 'Legal', icon: FileTextIcon },
+    { id: 'billing', name: 'Billing', icon: CreditCardIcon },
 ];
 
 // State setup

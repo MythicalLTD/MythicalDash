@@ -100,6 +100,8 @@ const dashBoard = ref({
         announcements_count: 0,
         server_queue_count: 0,
         mail_templates_count: 0,
+        settings_count: 0,
+        redeem_codes_count: 0,
     },
 });
 

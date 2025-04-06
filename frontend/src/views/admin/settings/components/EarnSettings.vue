@@ -744,6 +744,49 @@
                 </div>
             </div>
 
+            <!-- Early Supporters -->
+            <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg font-medium text-white">Early Supporters</h3>
+                        <p class="text-sm text-gray-400">Configure early supporter rewards and limits.</p>
+                    </div>
+                    <div class="ml-4 flex items-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="earlySupportersEnabled"
+                                class="sr-only peer"
+                                @change="
+                                    updateSetting('early_supporters_enabled', earlySupportersEnabled ? 'true' : 'false')
+                                "
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                        </label>
+                    </div>
+                </div>
+
+                <div v-if="earlySupportersEnabled" class="space-y-4 mt-4">
+                    <div>
+                        <label for="early_supporters_amount" class="block text-sm font-medium text-gray-400 mb-1">
+                            Number of Early Supporters
+                        </label>
+                        <input
+                            id="early_supporters_amount"
+                            type="number"
+                            v-model="formData.early_supporters_amount"
+                            @change="updateSetting('early_supporters_amount', formData.early_supporters_amount)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">
+                            The maximum number of users who can become early supporters.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Store -->
             <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
                 <div class="flex justify-between items-start mb-4">
@@ -863,6 +906,101 @@
                     </div>
                 </div>
             </div>
+            <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg font-medium text-white">Max Resources</h3>
+                        <p class="text-sm text-gray-400">Configure maximum resource limits for users.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="max_ram" class="block text-sm font-medium text-gray-400 mb-1"> Max RAM (MB) </label>
+                        <input
+                            id="max_ram"
+                            type="number"
+                            v-model="formData.max_ram"
+                            @change="updateSetting('max_ram', formData.max_ram)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label for="max_disk" class="block text-sm font-medium text-gray-400 mb-1">
+                            Max Disk (MB)
+                        </label>
+                        <input
+                            id="max_disk"
+                            type="number"
+                            v-model="formData.max_disk"
+                            @change="updateSetting('max_disk', formData.max_disk)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label for="max_cpu" class="block text-sm font-medium text-gray-400 mb-1"> Max CPU (%) </label>
+                        <input
+                            id="max_cpu"
+                            type="number"
+                            v-model="formData.max_cpu"
+                            @change="updateSetting('max_cpu', formData.max_cpu)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label for="max_ports" class="block text-sm font-medium text-gray-400 mb-1"> Max Ports </label>
+                        <input
+                            id="max_ports"
+                            type="number"
+                            v-model="formData.max_ports"
+                            @change="updateSetting('max_ports', formData.max_ports)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label for="max_databases" class="block text-sm font-medium text-gray-400 mb-1">
+                            Max Databases
+                        </label>
+                        <input
+                            id="max_databases"
+                            type="number"
+                            v-model="formData.max_databases"
+                            @change="updateSetting('max_databases', formData.max_databases)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label for="max_server_slots" class="block text-sm font-medium text-gray-400 mb-1">
+                            Max Server Slots
+                        </label>
+                        <input
+                            id="max_server_slots"
+                            type="number"
+                            v-model="formData.max_server_slots"
+                            @change="updateSetting('max_server_slots', formData.max_server_slots)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label for="max_backups" class="block text-sm font-medium text-gray-400 mb-1">
+                            Max Backups
+                        </label>
+                        <input
+                            id="max_backups"
+                            type="number"
+                            v-model="formData.max_backups"
+                            @change="updateSetting('max_backups', formData.max_backups)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -911,6 +1049,17 @@ const formData = ref({
     l4r_gyanilinks_min_time_to_complete: '60',
     l4r_gyanilinks_time_to_expire: '3600',
     l4r_gyanilinks_cooldown_time: '3600',
+    referrals_enabled: 'false',
+    store_enabled: 'false',
+    early_supporters_enabled: 'false',
+    early_supporters_amount: '100',
+    max_ram: '4096',
+    max_disk: '10240',
+    max_cpu: '100',
+    max_ports: '10',
+    max_databases: '5',
+    max_server_slots: '3',
+    max_backups: '5',
 });
 
 // Computed properties for toggles
@@ -985,6 +1134,13 @@ const l4rGyaniLinksEnabled = computed({
     },
 });
 
+const earlySupportersEnabled = computed({
+    get: () => props.settings?.early_supporters_enabled === 'true',
+    set: (value) => {
+        emit('update', 'early_supporters_enabled', value ? 'true' : 'false');
+    },
+});
+
 // Initialize form with settings values
 watch(
     () => props.settings,
@@ -1023,6 +1179,17 @@ watch(
                 l4r_gyanilinks_min_time_to_complete: newSettings['l4r_gyanilinks_min_time_to_complete'] || '60',
                 l4r_gyanilinks_time_to_expire: newSettings['l4r_gyanilinks_time_to_expire'] || '3600',
                 l4r_gyanilinks_cooldown_time: newSettings['l4r_gyanilinks_cooldown_time'] || '3600',
+                referrals_enabled: newSettings['referrals_enabled'] || 'false',
+                store_enabled: newSettings['store_enabled'] || 'false',
+                early_supporters_enabled: newSettings['early_supporters_enabled'] || 'false',
+                early_supporters_amount: newSettings['early_supporters_amount'] || '100',
+                max_ram: newSettings['max_ram'] || '4096',
+                max_disk: newSettings['max_disk'] || '10240',
+                max_cpu: newSettings['max_cpu'] || '100',
+                max_ports: newSettings['max_ports'] || '10',
+                max_databases: newSettings['max_databases'] || '5',
+                max_server_slots: newSettings['max_server_slots'] || '3',
+                max_backups: newSettings['max_backups'] || '5',
             };
         }
     },

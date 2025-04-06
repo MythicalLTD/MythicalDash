@@ -269,6 +269,9 @@ const dashboardData = ref({
         eggs_count: 0,
         departments_count: 0,
         announcements_count: 0,
+        server_queue_count: 0,
+        mail_templates_count: 0,
+        settings_count: 0,
     },
 });
 
@@ -412,6 +415,9 @@ onMounted(async () => {
                 eggs_count: 0,
                 departments_count: 0,
                 announcements_count: 0,
+                server_queue_count: 0,
+                mail_templates_count: 0,
+                settings_count: 0,
             },
         };
     } catch (error) {

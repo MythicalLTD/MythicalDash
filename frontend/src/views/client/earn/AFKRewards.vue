@@ -183,7 +183,7 @@ let timerInterval: number | null = null;
 
 // Get the configurable AFK reward interval from settings (minutes per coin)
 const minutesPerCoin = computed(() => {
-    const setting = Settings.getSetting('afk_minutes_per_coin');
+    const setting = Settings.getSetting('afk_min_per_coin');
     // Default to 1 minute per coin if setting is not found or invalid
     return setting ? parseInt(setting) : 1;
 });
@@ -320,16 +320,6 @@ const stopTimer = () => {
 // Save final stats to the server when stopping AFK mode
 const saveStatsToServer = async () => {
     try {
-        // Example API call to save the final session stats
-        // await fetch('/api/user/afk/complete', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({
-        //         total_coins_earned: sessionCoins.value,
-        //         total_minutes_afk: currentSessionTime.value
-        //     })
-        // });
-
         console.log('Saved final AFK session stats:', {
             session_coins: sessionCoins.value,
             session_minutes: currentSessionTime.value,

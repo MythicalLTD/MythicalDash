@@ -15,6 +15,9 @@ namespace MythicalDash\Config;
 
 interface ConfigInterface
 {
+    /**
+     * App.
+     */
     public const APP_NAME = 'app_name';
     public const APP_LANG = 'app_lang';
     public const APP_URL = 'app_url';
@@ -23,9 +26,15 @@ interface ConfigInterface
     public const APP_LOGO = 'app_logo';
     public const SEO_DESCRIPTION = 'seo_description';
     public const SEO_KEYWORDS = 'seo_keywords';
+    /**
+     * Turnstile.
+     */
     public const TURNSTILE_ENABLED = 'turnstile_enabled';
     public const TURNSTILE_KEY_PUB = 'turnstile_key_pub';
     public const TURNSTILE_KEY_PRIV = 'turnstile_key_priv';
+    /**
+     * SMTP.
+     */
     public const SMTP_ENABLED = 'smtp_enabled';
     public const SMTP_HOST = 'smtp_host';
     public const SMTP_PORT = 'smtp_port';
@@ -33,7 +42,6 @@ interface ConfigInterface
     public const SMTP_PASS = 'smtp_pass';
     public const SMTP_FROM = 'smtp_from';
     public const SMTP_ENCRYPTION = 'smtp_encryption';
-
     /**
      * Legal Values.
      */
@@ -57,8 +65,13 @@ interface ConfigInterface
     public const AFK_ENABLED = 'afk_enabled';
     public const AFK_MIN_PER_COIN = 'afk_min_per_coin';
 
+    /**
+     * Code Redemption.
+     */
     public const CODE_REDEMPTION_ENABLED = 'code_redemption_enabled';
-
+    /**
+     * Join For Rewards.
+     */
     public const J4R_ENABLED = 'j4r_enabled';
 
     /**
@@ -124,4 +137,87 @@ interface ConfigInterface
     public const STORE_DATABASES_PRICE = 'store_databases_price';
     public const STORE_SERVER_SLOT_PRICE = 'store_server_slot_price';
     public const STORE_BACKUPS_PRICE = 'store_backups_price';
+
+    /**
+     * Misc.
+     */
+    public const WEBSITE_URL = 'website_url';
+    public const STATUS_PAGE_URL = 'status_page_url';
+    public const DISCORD_INVITE_URL = 'discord_invite_url';
+    public const TWITTER_URL = 'twitter_url';
+    public const GITHUB_URL = 'github_url';
+    public const LINKEDIN_URL = 'linkedin_url';
+    public const INSTAGRAM_URL = 'instagram_url';
+    public const YOUTUBE_URL = 'youtube_url';
+    public const TIKTOK_URL = 'tiktok_url';
+    public const FACEBOOK_URL = 'facebook_url';
+    public const REDDIT_URL = 'reddit_url';
+    public const TELEGRAM_URL = 'telegram_url';
+    public const WHATSAPP_URL = 'whatsapp_url';
+
+    /**
+     * Misc.
+     */
+    public const EARLY_SUPPORTERS_ENABLED = 'early_supporters_enabled';
+    public const EARLY_SUPPORTERS_AMOUNT = 'early_supporters_amount';
+    public const SHOW_NODE_PING = 'show_node_ping';
+
+    /**
+     * Credits Recharge.
+     */
+    public const CREDITS_RECHARGE_ENABLED = 'credits_recharge_enabled';
+    public const COMPANY_NAME = 'company_name';
+    public const COMPANY_ADDRESS = 'company_address';
+    public const COMPANY_CITY = 'company_city';
+    public const COMPANY_STATE = 'company_state';
+    public const COMPANY_ZIP = 'company_zip';
+    public const COMPANY_COUNTRY = 'company_country';
+    public const COMPANY_VAT = 'company_vat';
+
+    /**
+     * Gateway Configs.
+     */
+    public const ENABLE_STRIPE = 'enable_stripe';
+    public const ENABLE_PAYPAL = 'enable_paypal';
+
+    /**
+     * Paypal Configs.
+     */
+    public const PAYPAL_CLIENT_ID = 'paypal_email';
+    public const PAYPAL_IS_SANDBOX = 'paypal_is_sandbox';
+
+    /**
+     * Stripe Configs.
+     */
+    public const STRIPE_SECRET_KEY = 'stripe_secret_key';
+    public const STRIPE_PUBLISHABLE_KEY = 'stripe_publishable_key';
+    public const STRIPE_WEBHOOK_ID = 'stripe_webhook_id';
+
+    /**
+     * Currency Configs.
+     */
+    public const CURRENCY = 'currency';
+    public const CURRENCY_SYMBOL = 'currency_symbol';
+
+    /**
+     * Discord Integration.
+     */
+    public const DISCORD_ENABLED = 'discord_enabled';
+    public const DISCORD_SERVER_ID = 'discord_server_id';
+    public const DISCORD_CLIENT_ID = 'discord_client_id';
+    public const DISCORD_CLIENT_SECRET = 'discord_client_secret';
+    public const DISCORD_LINK_ALLOWED = 'discord_link_allowed';
+    public const DISCORD_REGISTER_ALLOWED = 'discord_register_allowed';
+
+    /**
+     * Max Resources.
+     */
+    public const MAX_RAM = 'max_ram';
+    public const MAX_DISK = 'max_disk';
+    public const MAX_CPU = 'max_cpu';
+    public const MAX_PORTS = 'max_ports';
+    public const MAX_DATABASES = 'max_databases';
+    public const MAX_SERVER_SLOTS = 'max_server_slots';
+    public const MAX_BACKUPS = 'max_backups';
+
 }

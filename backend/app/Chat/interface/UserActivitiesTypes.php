@@ -26,6 +26,7 @@ class UserActivitiesTypes
     public static string $user_update = 'user:update';
     public static string $user_new_support_pin = 'user:new_support_pin';
     public static string $user_reset_api_key = 'user:reset_api_key';
+    public static string $user_redeemed_code = 'user:redeemed_code';
 
     /**
      * Ticket Endpoints.
@@ -58,6 +59,13 @@ class UserActivitiesTypes
     public static string $admin_ticket_department_delete = 'admin:ticket_department:delete';
 
     /**
+     * Redeem Codes.
+     */
+    public static string $admin_created_redeem_code = 'admin:redeem_code:create';
+    public static string $admin_updated_redeem_code = 'admin:redeem_code:update';
+    public static string $admin_deleted_redeem_code = 'admin:redeem_code:delete';
+
+    /**
      * Get all types.
      *
      * @return array All types
@@ -67,6 +75,10 @@ class UserActivitiesTypes
         return [
             self::$login,
             self::$register,
+            self::$user_redeemed_code,
+            self::$admin_created_redeem_code,
+            self::$admin_updated_redeem_code,
+            self::$admin_deleted_redeem_code,
         ];
     }
 }

@@ -110,6 +110,33 @@
                 </div>
             </div>
 
+            <!-- Node Ping Visibility Section -->
+            <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
+                <div class="flex items-center mb-4">
+                    <div class="flex-1">
+                        <h3 class="text-lg font-medium text-white">Node Ping Visibility</h3>
+                        <p class="text-sm text-gray-400">
+                            Control whether users can see node ping information. When enabled, users will be able to see
+                            the ping/latency to each node.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Show Node Ping -->
+                <div class="flex items-center space-x-2">
+                    <input
+                        type="checkbox"
+                        id="show_node_ping"
+                        v-model="showNodePing"
+                        @change="updateSetting('show_node_ping', showNodePing ? 'true' : 'false')"
+                        class="rounded border-gray-700 text-pink-500 focus:ring-pink-500 bg-gray-800/30"
+                    />
+                    <label for="show_node_ping" class="text-sm font-medium text-gray-400"
+                        >Show Node Ping Information to Users</label
+                    >
+                </div>
+            </div>
+
             <!-- License Key Section -->
             <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
                 <h3 class="text-lg font-medium text-white mb-1">License Key</h3>
@@ -173,6 +200,14 @@ const turnstileEnabled = computed({
     get: () => props.settings?.turnstile_enabled === 'true',
     set: (value) => {
         emit('update', 'turnstile_enabled', value ? 'true' : 'false');
+    },
+});
+
+// Computed property for show node ping state
+const showNodePing = computed({
+    get: () => props.settings?.show_node_ping === 'true',
+    set: (value) => {
+        emit('update', 'show_node_ping', value ? 'true' : 'false');
     },
 });
 

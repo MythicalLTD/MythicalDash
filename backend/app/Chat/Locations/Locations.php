@@ -27,7 +27,7 @@ class Locations extends Database
     public static function getLocations(): array
     {
         $dbConn = Database::getPdoConnection();
-        $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName());
+        $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE deleted = "false"');
         $stmt->execute();
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

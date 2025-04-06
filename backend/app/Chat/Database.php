@@ -66,10 +66,14 @@ class Database
      *
      * @param string $table the table name
      */
-    public static function getTableRowCount(string $table): int
+    public static function getTableRowCount(string $table, bool $includeDeleted = false): int
     {
         try {
-            $query = self::getPdoConnection()->query('SELECT COUNT(*) FROM ' . $table . ' WHERE deleted = "false"');
+            if ($includeDeleted) {
+                $query = self::getPdoConnection()->query('SELECT COUNT(*) FROM ' . $table . ' WHERE deleted = "false"');
+            } else {
+                $query = self::getPdoConnection()->query('SELECT COUNT(*) FROM ' . $table);
+            }
 
             return (int) $query->fetchColumn();
         } catch (\Exception $e) {

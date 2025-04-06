@@ -41,6 +41,9 @@ $router->get('/api/admin', function (): void {
             $announcementsCount = Database::getTableRowCount('mythicaldash_announcements');
             $serverQueueCount = Database::getTableRowCount('mythicaldash_servers_queue');
             $mailTemplatesCount = Database::getTableRowCount('mythicaldash_mail_templates');
+            $settingsCount = Database::getTableRowCount('mythicaldash_settings', false);
+            $redeemCodesCount = Database::getTableRowCount('mythicaldash_redeem_codes');
+
             $appInstance->OK('Dashboard data retrieved successfully.', [
                 'core' => [
                     'github_data' => $github_data,
@@ -56,6 +59,8 @@ $router->get('/api/admin', function (): void {
                     'announcements_count' => $announcementsCount,
                     'server_queue_count' => $serverQueueCount,
                     'mail_templates_count' => $mailTemplatesCount,
+                    'settings_count' => $settingsCount,
+                    'redeem_codes_count' => $redeemCodesCount,
                 ],
                 'etc' => [
                     'activity' => $activity,

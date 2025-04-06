@@ -37,6 +37,8 @@ export interface DashboardCounts {
     departments_count: number;
     announcements_count: number;
     server_queue_count: number;
+    mail_templates_count: number;
+    settings_count: number;
 }
 
 export interface DashboardData {

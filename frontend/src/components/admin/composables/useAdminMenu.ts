@@ -12,6 +12,7 @@ import {
     Building,
     BellIcon,
     MailIcon,
+    Coins as Coin,
 } from 'lucide-vue-next';
 import type { MenuGroup, ProfileMenuItem } from '../types';
 
@@ -25,6 +26,8 @@ interface DashboardCounts {
     announcements_count: number;
     server_queue_count: number;
     mail_templates_count: number;
+    settings_count: number;
+    redeem_codes_count: number;
 }
 
 interface DashboardData {
@@ -82,6 +85,13 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     ],
                 },
                 {
+                    name: 'Redeem Codes',
+                    path: `${adminBaseUri}/redeem-codes`,
+                    icon: Coin,
+                    count: computed(() => dashBoard.value.count.redeem_codes_count || 0),
+                    active: route.path === `${adminBaseUri}/redeem-codes`,
+                },
+                {
                     name: 'Departments',
                     path: `${adminBaseUri}/departments`,
                     icon: Building,
@@ -129,6 +139,7 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     path: `${adminBaseUri}/settings`,
                     icon: SettingsIcon,
                     active: route.path === `${adminBaseUri}/settings`,
+                    count: computed(() => dashBoard.value.count.settings_count || 0),
                 },
                 {
                     name: 'Mail Templates',

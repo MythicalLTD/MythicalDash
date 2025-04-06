@@ -13,6 +13,7 @@
 
 namespace MythicalDash\Config;
 
+use MythicalDash\App;
 use MythicalSystems\Utils\XChaCha20;
 
 class ConfigFactory
@@ -91,13 +92,14 @@ class ConfigFactory
 
     public function dumpSettings(): array
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table_name}");
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table_name} ORDER BY name ASC");
         $stmt->execute();
+        $appInstance = App::getInstance(true);
         $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         $settings = [];
         foreach ($results as $result) {
-            $settings[$result['name']] = XChaCha20::decrypt($result['value'], $this->encryption_key);
+            $settings[$result['name']] = $appInstance->decrypt($result['value']);
         }
 
         return $settings;
