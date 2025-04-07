@@ -3,6 +3,7 @@
 namespace MythicalDash\Addons\mythicalcore;
 
 use MythicalDash\Plugins\Events\Events\AppEvent;
+use MythicalDash\Plugins\Events\Events\AuthEvent;
 use MythicalDash\Plugins\MythicalDashPlugin;
 
 class MythicalCore implements MythicalDashPlugin
@@ -17,6 +18,9 @@ class MythicalCore implements MythicalDashPlugin
 			new \MythicalDash\Addons\mythicalcore\Events\Router($router);
 		});
 
+		$event->on(AuthEvent::onAuthRegisterSuccess(), function (string $username, string $email) : void {
+			new \MythicalDash\Addons\mythicalcore\Events\Auth($username, $email);
+		});
 	}
 	/**
 	 * @inheritDoc

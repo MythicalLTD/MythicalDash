@@ -78,6 +78,8 @@ interface ConfigInterface
      * Referrals.
      */
     public const REFERRALS_ENABLED = 'referrals_enabled';
+	public const REFERRALS_COINS_PER_REFERRAL = 'referrals_coins_per_referral';
+	public const REFERRALS_COINS_PER_REFERRAL_REDEEMER = 'referrals_coins_per_referral_redeemer';
 
     /**
      * Link For Rewards.

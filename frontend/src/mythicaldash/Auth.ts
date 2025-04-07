@@ -106,8 +106,9 @@ class Auth {
         username: string,
         password: string,
         turnstileResponse: string,
+        referralCode: string | null,
     ) {
-        const response = await fetch('/api/user/auth/register', {
+        const response = await fetch('/api/user/auth/register?ref=' + referralCode, {
             method: 'POST',
             body: new URLSearchParams({
                 firstName: firstName,

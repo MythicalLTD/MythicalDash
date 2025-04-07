@@ -742,6 +742,55 @@
                         </label>
                     </div>
                 </div>
+
+                <div v-if="referralsEnabled" class="space-y-4 mt-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label
+                                for="referrals_coins_per_referral"
+                                class="block text-sm font-medium text-gray-400 mb-1"
+                            >
+                                Coins for Referrer
+                            </label>
+                            <input
+                                id="referrals_coins_per_referral"
+                                type="number"
+                                v-model="formData.referrals_coins_per_referral"
+                                @change="
+                                    updateSetting('referrals_coins_per_referral', formData.referrals_coins_per_referral)
+                                "
+                                class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            />
+                            <p class="mt-1 text-xs text-gray-500">
+                                Number of coins the referrer gets when someone uses their code
+                            </p>
+                        </div>
+
+                        <div>
+                            <label
+                                for="referrals_coins_per_referral_redeemer"
+                                class="block text-sm font-medium text-gray-400 mb-1"
+                            >
+                                Coins for Redeemer
+                            </label>
+                            <input
+                                id="referrals_coins_per_referral_redeemer"
+                                type="number"
+                                v-model="formData.referrals_coins_per_referral_redeemer"
+                                @change="
+                                    updateSetting(
+                                        'referrals_coins_per_referral_redeemer',
+                                        formData.referrals_coins_per_referral_redeemer,
+                                    )
+                                "
+                                class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            />
+                            <p class="mt-1 text-xs text-gray-500">
+                                Number of coins the redeemer gets when using a referral code
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Early Supporters -->
@@ -1060,6 +1109,8 @@ const formData = ref({
     max_databases: '5',
     max_server_slots: '3',
     max_backups: '5',
+    referrals_coins_per_referral: '35',
+    referrals_coins_per_referral_redeemer: '15',
 });
 
 // Computed properties for toggles
@@ -1190,6 +1241,8 @@ watch(
                 max_databases: newSettings['max_databases'] || '5',
                 max_server_slots: newSettings['max_server_slots'] || '3',
                 max_backups: newSettings['max_backups'] || '5',
+                referrals_coins_per_referral: newSettings['referrals_coins_per_referral'] || '35',
+                referrals_coins_per_referral_redeemer: newSettings['referrals_coins_per_referral_redeemer'] || '15',
             };
         }
     },

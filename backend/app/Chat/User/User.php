@@ -40,7 +40,7 @@ class User extends Database
      * @param string $ip The ip of the user
      * @param int $pterodactylUserId The user id of the user in the pterodactyl panel
      *
-     * @return string
+     * @return void
      */
     public static function register(string $username, string $password, string $email, string $first_name, string $last_name, string $ip, int $pterodactylUserId): void
     {
@@ -362,6 +362,29 @@ class User extends Database
             return null;
         }
     }
+
+	/**
+	 * Convert the email to the UUID.
+	 *
+	 * @param string $email The email of the user
+	 *
+	 * @return string The UUID of the user
+	 */
+	public static function convertEmailToUUID(string $email): string
+	{
+		try {
+			$con = self::getPdoConnection();
+			$stmt = $con->prepare('SELECT uuid FROM ' . self::TABLE_NAME . ' WHERE email = :email AND deleted = "false" LIMIT 1');	
+			$stmt->bindParam(':email', $email);
+			$stmt->execute();
+
+			return $stmt->fetchColumn();
+		} catch (\Exception $e) {
+			Database::db_Error('Failed to convert email to uuid: ' . $e->getMessage());
+
+			return null;
+		}
+	}
 
     /**
      * Get the user info.
