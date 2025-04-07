@@ -183,7 +183,7 @@ class RedeemCoins extends Database
     {
         try {
             $dbConn = Database::getPdoConnection();
-            $stmt = $dbConn->prepare('SELECT COUNT(*) FROM ' . self::getTableName() . ' WHERE code = :code AND deleted = "false"');
+            $stmt = $dbConn->prepare('SELECT COUNT(*) FROM ' . self::getTableName() . ' WHERE code = :code AND deleted = "false" AND enabled = "true"');
             $stmt->bindParam(':code', $code);
             $stmt->execute();
 
@@ -194,6 +194,29 @@ class RedeemCoins extends Database
             return false;
         }
     }
+
+    /**
+     * Get a redeem code by code string.
+     *
+     * @param string $code Code to get
+     *
+     * @return array|null Array containing code data, or null if not found
+     */
+    public static function getByCode(string $code): ?array
+    {
+        try {
+			$dbConn = Database::getPdoConnection();
+			$stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE code = :code AND deleted = "false" AND enabled = "true"');
+			$stmt->bindParam(':code', $code);
+			$stmt->execute();
+
+			return $stmt->fetch(\PDO::FETCH_ASSOC);
+		} catch (\Exception $e) {
+			self::db_Error('Failed to get redeem code: ' . $e->getMessage());
+
+			return null;
+		}
+	}
 
     /**
      * Get a redeem code by ID.

@@ -50,71 +50,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Redemption History -->
-                                <div class="mb-6">
-                                    <div class="flex items-center mb-3">
-                                        <TicketIcon class="w-5 h-5 text-indigo-400 mr-2" />
-                                        <h3 class="text-lg font-medium text-white">Redemption History</h3>
-                                    </div>
-
-                                    <div class="bg-gray-800/30 rounded-xl p-5 mb-4">
-                                        <div
-                                            v-if="redemptionHistory.length === 0"
-                                            class="text-center text-gray-400 py-6"
-                                        >
-                                            <ArchiveIcon class="w-12 h-12 mx-auto mb-3 text-gray-600" />
-                                            <p>No redemption history available</p>
-                                        </div>
-
-                                        <div v-else>
-                                            <div class="mb-3">
-                                                <label for="history" class="text-sm text-gray-400"
-                                                    >Previously Redeemed Codes</label
-                                                >
-                                                <div class="relative mt-1">
-                                                    <button
-                                                        @click="toggleHistoryDropdown"
-                                                        class="w-full flex items-center justify-between gap-3 px-4 py-2 rounded-lg bg-gray-700/50 border border-gray-600/50 hover:bg-gray-700 text-white transition-colors"
-                                                    >
-                                                        <span>{{ redemptionHistory.length }} codes redeemed</span>
-                                                        <ChevronDownIcon
-                                                            class="w-4 h-4 transition-transform duration-200"
-                                                            :class="{ 'rotate-180': isHistoryOpen }"
-                                                        />
-                                                    </button>
-
-                                                    <div
-                                                        v-if="isHistoryOpen"
-                                                        class="absolute z-10 mt-1 w-full bg-gray-800 border border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto"
-                                                    >
-                                                        <div class="py-1">
-                                                            <div
-                                                                v-for="(item, index) in redemptionHistory"
-                                                                :key="index"
-                                                                class="px-4 py-3 hover:bg-gray-700 cursor-pointer"
-                                                            >
-                                                                <div class="flex justify-between items-center">
-                                                                    <div>
-                                                                        <div class="font-medium text-white">
-                                                                            {{ item.code }}
-                                                                        </div>
-                                                                        <div class="text-sm text-gray-400">
-                                                                            {{ item.reward }}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="text-xs text-gray-500">
-                                                                        {{ formatDate(item.date) }}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <!-- Coin Balance -->
                                 <div class="bg-gray-800/30 rounded-xl p-5 mb-6">
                                     <div class="flex justify-between items-center">
@@ -131,42 +66,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Status Messages -->
-                                <transition
-                                    enter-active-class="transition-opacity duration-300"
-                                    leave-active-class="transition-opacity duration-300"
-                                    enter-from-class="opacity-0"
-                                    enter-to-class="opacity-100"
-                                    leave-from-class="opacity-100"
-                                    leave-to-class="opacity-0"
-                                >
-                                    <div
-                                        v-if="statusMessage.text"
-                                        :class="[
-                                            'p-4 rounded-lg mb-6',
-                                            statusMessage.type === 'success'
-                                                ? 'bg-emerald-900/30 border border-emerald-700/50 text-emerald-400'
-                                                : 'bg-red-900/30 border border-red-700/50 text-red-400',
-                                        ]"
-                                    >
-                                        <div class="flex items-start">
-                                            <div class="flex-shrink-0">
-                                                <CheckCircleIcon
-                                                    v-if="statusMessage.type === 'success'"
-                                                    class="h-5 w-5"
-                                                />
-                                                <AlertTriangleIcon v-else class="h-5 w-5" />
-                                            </div>
-                                            <div class="ml-3">
-                                                <p class="font-medium">{{ statusMessage.text }}</p>
-                                            </div>
-                                            <button @click="statusMessage.text = ''" class="ml-auto">
-                                                <XIcon class="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </transition>
                             </div>
                         </div>
                     </CardComponent>
@@ -228,23 +127,18 @@
 <script setup lang="ts">
 import LayoutDashboard from '@/components/client/LayoutDashboard.vue';
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
-import { ref, onMounted } from 'vue';
-import {
-    Ticket as TicketIcon,
-    ChevronDown as ChevronDownIcon,
-    Archive as ArchiveIcon,
-    CheckCircle as CheckCircleIcon,
-    AlertTriangle as AlertTriangleIcon,
-    Loader as SpinnerIcon,
-    X as XIcon,
-    Coins,
-    Calendar as CalendarIcon,
-} from 'lucide-vue-next';
+import { ref } from 'vue';
+import { Loader as SpinnerIcon, Coins, Calendar as CalendarIcon } from 'lucide-vue-next';
 import Session from '@/mythicaldash/Session';
 import { useSettingsStore } from '@/stores/settings';
 import router from '@/router';
+import { useSound } from '@vueuse/sound';
+import failedAlertSfx from '@/assets/sounds/error.mp3';
+import successAlertSfx from '@/assets/sounds/success.mp3';
 import Swal from 'sweetalert2';
 
+const { play: playError } = useSound(failedAlertSfx);
+const { play: playSuccess } = useSound(successAlertSfx);
 // Custom icons
 const TwitterIcon = defineComponent({
     setup() {
@@ -305,46 +199,24 @@ if (Settings.getSetting('code_redemption_enabled') === 'false') {
         icon: 'error',
         confirmButtonText: 'OK',
     });
+    playError();
     router.push('/dashboard');
 }
 
 // State
 const codeInput = ref('');
 const isRedeeming = ref(false);
-const isHistoryOpen = ref(false);
 const totalCoins = ref(Session.getInfoInt('credits'));
-const statusMessage = ref({
-    type: 'success',
-    text: '',
-});
-
-// Redemption history
-interface RedemptionRecord {
-    code: string;
-    reward: string;
-    date: Date;
-}
-
-const redemptionHistory = ref<RedemptionRecord[]>([]);
-
-// Format date for display
-const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
-};
-
-// Toggle history dropdown
-const toggleHistoryDropdown = () => {
-    isHistoryOpen.value = !isHistoryOpen.value;
-};
 
 // Handle code redemption
 const redeemCode = async () => {
     if (!codeInput.value.trim()) {
-        showStatusMessage('Please enter a code', 'error');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please enter a code',
+            showConfirmButton: true,
+        });
         return;
     }
 
@@ -352,92 +224,55 @@ const redeemCode = async () => {
 
     try {
         // Call API to redeem code
-        const response = await fetch('/api/user/redeem/code', {
+        const formData = new FormData();
+        formData.append('code', codeInput.value.trim());
+
+        const response = await fetch('/api/user/earn/redeem', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-            },
-            body: JSON.stringify({
-                code: codeInput.value.trim(),
-            }),
+            body: formData,
         });
 
         const data = await response.json();
 
-        if (response.ok && data.status === 200) {
+        if (response.ok && data.success === true) {
             // Code was successfully redeemed
-            showStatusMessage(data.message || 'Code redeemed successfully!', 'success');
-
-            // Add to history
-            redemptionHistory.value.unshift({
-                code: codeInput.value.trim(),
-                reward: data.reward || 'Unknown reward',
-                date: new Date(),
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: data.message || 'Code redeemed successfully!',
+                showConfirmButton: true,
             });
-
-            // Save history to local storage
-            saveRedemptionHistory();
-
+            playSuccess();
             // Update coin balance if applicable
-            if (data.coins) {
-                totalCoins.value += parseInt(data.coins);
+            if (data.credits_added) {
+                totalCoins.value += parseInt(data.credits_added);
             }
 
             // Clear input
             codeInput.value = '';
         } else {
             // Error redeeming code
-            showStatusMessage(data.message || 'Error redeeming code', 'error');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'Error redeeming code',
+                showConfirmButton: true,
+            });
+            playError();
         }
     } catch (error) {
         console.error('Error redeeming code:', error);
-        showStatusMessage('An error occurred while redeeming the code', 'error');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while redeeming the code',
+            showConfirmButton: true,
+        });
+        playError();
     } finally {
         isRedeeming.value = false;
     }
 };
-
-// Show status message
-const showStatusMessage = (text: string, type: 'success' | 'error') => {
-    statusMessage.value = { text, type };
-
-    // Clear message after 5 seconds
-    setTimeout(() => {
-        statusMessage.value.text = '';
-    }, 5000);
-};
-
-// Save redemption history to local storage
-const saveRedemptionHistory = () => {
-    try {
-        localStorage.setItem('redemption_history', JSON.stringify(redemptionHistory.value));
-    } catch (error) {
-        console.error('Error saving redemption history:', error);
-    }
-};
-
-// Load redemption history from local storage
-const loadRedemptionHistory = () => {
-    try {
-        const savedHistory = localStorage.getItem('redemption_history');
-        if (savedHistory) {
-            // Parse dates properly
-            const parsedHistory = JSON.parse(savedHistory);
-            redemptionHistory.value = parsedHistory.map((item: RedemptionRecord) => ({
-                ...item,
-                date: new Date(item.date),
-            }));
-        }
-    } catch (error) {
-        console.error('Error loading redemption history:', error);
-    }
-};
-
-// On component mount
-onMounted(() => {
-    loadRedemptionHistory();
-});
 </script>
 
 <style scoped>

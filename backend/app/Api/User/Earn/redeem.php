@@ -12,6 +12,7 @@
  */
 
 use MythicalDash\App;
+use MythicalDash\Chat\Redeem\RedeemRedeems;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Database\Database;
@@ -22,7 +23,7 @@ use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 // User endpoint to redeem a code
-$router->post('/api/user/redeem', function (): void {
+$router->post('/api/user/earn/redeem', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
@@ -39,50 +40,29 @@ $router->post('/api/user/redeem', function (): void {
     // Check if code exists
     if (!RedeemCoins::existsByCode($code)) {
         $appInstance->BadRequest('Invalid redeem code', ['error_code' => 'INVALID_CODE']);
-
         return;
     }
 
-    // Get code details by querying the database
-    $dbConn = MythicalDash\Chat\Database::getPdoConnection();
-    $stmt = $dbConn->prepare('SELECT * FROM ' . RedeemCoins::getTableName() . ' WHERE code = :code AND deleted = "false"');
-    $stmt->bindParam(':code', $code);
-    $stmt->execute();
-    $codeDetails = $stmt->fetch(PDO::FETCH_ASSOC);
+	$codeDB = RedeemCoins::getByCode($code);
 
-    // Check if code is enabled
-    if ($codeDetails['enabled'] !== 'true') {
-        $appInstance->BadRequest('This code is not currently active', ['error_code' => 'CODE_DISABLED']);
+	$coinsToAdd = $codeDB['coins'];
+	$usesLeft = $codeDB['uses'];
 
-        return;
-    }
+	if ($usesLeft <= 0) {
+		$appInstance->BadRequest('This code has reached its usage limit', ['error_code' => 'CODE_DEPLETED']);
+		return;
+	}
 
-    // Check if uses left
-    if ((int) $codeDetails['uses'] <= 0) {
-        $appInstance->BadRequest('This code has reached its usage limit', ['error_code' => 'CODE_DEPLETED']);
+	if (RedeemRedeems::isCodeRedeemed($codeDB['id'], $session->getInfo(UserColumns::UUID, false))) {
+		$appInstance->BadRequest('This code has already been redeemed', ['error_code' => 'CODE_ALREADY_REDEEMED']);
+		return;
+	}
 
-        return;
-    }
+	RedeemRedeems::redeemCode($codeDB['id'], $session->getInfo(UserColumns::UUID, false));
+	$newCredits = $session->getInfo(UserColumns::CREDITS, false) + $coinsToAdd;
+	$session->setInfo(UserColumns::CREDITS, $newCredits, false);
+	RedeemCoins::removeUsage($codeDB['id']);
 
-    // Add credits to user account
-    $currentCredits = (int) $session->getInfo(UserColumns::CREDITS, false);
-    $coinsToAdd = (int) $codeDetails['coins'];
-    $newCredits = $currentCredits + $coinsToAdd;
-
-    // Update user credits
-    if (!User::updateInfo($session->SESSION_KEY, UserColumns::CREDITS, (string) $newCredits, false)) {
-        $appInstance->InternalServerError('Failed to add credits to your account', ['error_code' => 'CREDITS_UPDATE_FAILED']);
-
-        return;
-    }
-
-    // Decrement code uses
-    $newUses = (int) $codeDetails['uses'] - 1;
-    $dbConn = MythicalDash\Chat\Database::getPdoConnection();
-    $stmt = $dbConn->prepare('UPDATE ' . RedeemCoins::getTableName() . ' SET uses = :uses WHERE id = :id');
-    $stmt->bindParam(':uses', $newUses);
-    $stmt->bindParam(':id', $codeDetails['id']);
-    $stmt->execute();
 
     // Add user activity log
     UserActivities::add(
