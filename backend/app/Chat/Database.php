@@ -334,37 +334,38 @@ class Database
     /**
      * Get the last insert ID.
      *
-	 * @param string $table the table name
-	 * 
+     * @param string $table the table name
+     *
      * @return int the last insert ID
      */
     public static function getLastInsertId(string $table): int
     {
         try {
-			$query = self::getPdoConnection()->query('SELECT LAST_INSERT_ID() FROM ' . $table);
-			return (int) $query->fetchColumn();
-		} catch (\Exception $e) {
-			self::db_Error('Failed to get last insert ID: ' . $e->getMessage());
+            $query = self::getPdoConnection()->query('SELECT LAST_INSERT_ID() FROM ' . $table);
 
-			return 0;
-		}
-	}
+            return (int) $query->fetchColumn();
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get last insert ID: ' . $e->getMessage());
 
-	/**
-	 * Request to save and unlock a record.
-	 *
-	 * @param string $table the table name
-	 * @param int $row the ID of the record to save and unlock
-	 */
-	public static function requestSaveAndUnlock(string $table, int $row): void
-	{
-		try {
-			$query = self::getPdoConnection()->query('UPDATE ' . $table . " SET locked = 'false' WHERE id = " . $row);
-			$query->execute();
-		} catch (\Exception $e) {
-			self::db_Error('Failed to request save and unlock: ' . $e->getMessage());
+            return 0;
+        }
+    }
 
-			return;
-		}
-	}
+    /**
+     * Request to save and unlock a record.
+     *
+     * @param string $table the table name
+     * @param int $row the ID of the record to save and unlock
+     */
+    public static function requestSaveAndUnlock(string $table, int $row): void
+    {
+        try {
+            $query = self::getPdoConnection()->query('UPDATE ' . $table . " SET locked = 'false' WHERE id = " . $row);
+            $query->execute();
+        } catch (\Exception $e) {
+            self::db_Error('Failed to request save and unlock: ' . $e->getMessage());
+
+            return;
+        }
+    }
 }

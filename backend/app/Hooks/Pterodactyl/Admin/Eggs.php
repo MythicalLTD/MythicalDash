@@ -69,7 +69,7 @@ class Eggs extends NestsResource
                 $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
-            $eggsData = $eggsResource->listEggs($nestId, 1, 150);
+            $eggsData = $eggsResource->listEggs($nestId, 1, 555);
 
             // Process and format eggs data
             $eggs = [];

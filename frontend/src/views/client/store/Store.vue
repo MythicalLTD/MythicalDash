@@ -1,7 +1,13 @@
 <template>
     <LayoutDashboard>
         <div class="p-6">
-            <h1 class="text-2xl font-bold text-white mb-6">Coin Store</h1>
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-white">Coin Store</h1>
+                <div class="flex items-center bg-gray-800/50 px-4 py-2 rounded-lg">
+                    <Coins class="h-5 w-5 text-yellow-500 mr-2" />
+                    <span class="text-lg font-medium text-yellow-500">{{ userCoins }}</span>
+                </div>
+            </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Main Store Content -->
@@ -65,66 +71,62 @@
                                 <!-- Product Grid -->
                                 <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div
-                                        v-for="item in filteredItems"
+                                        v-for="item in storeItems"
                                         :key="item.id"
-                                        class="bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/30"
+                                        class="bg-gray-800/30 rounded-xl p-6 border border-gray-700/30 hover:border-indigo-500/30 transition-all duration-300"
                                     >
-                                        <div class="p-5">
-                                            <div class="flex items-center mb-3">
-                                                <div
-                                                    class="h-12 w-12 rounded-lg bg-indigo-900/40 flex items-center justify-center mr-3"
-                                                >
-                                                    <component :is="item.icon" class="h-6 w-6 text-indigo-400" />
-                                                </div>
-                                                <div>
-                                                    <h3 class="text-lg font-bold text-white">{{ item.name }}</h3>
-                                                    <span class="text-xs text-gray-400">{{ item.description }}</span>
-                                                </div>
+                                        <div class="flex items-start mb-4">
+                                            <div
+                                                class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center mr-4 flex-shrink-0"
+                                            >
+                                                <component :is="item.icon" class="h-6 w-6 text-indigo-400" />
+                                            </div>
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">{{ item.name }}</h3>
+                                                <p class="text-sm text-gray-400">{{ item.description }}</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-2 mb-4">
+                                            <div
+                                                v-for="feature in item.features"
+                                                :key="feature"
+                                                class="flex items-center text-sm text-gray-300"
+                                            >
+                                                <CheckIcon class="h-4 w-4 text-emerald-400 mr-2" />
+                                                {{ feature }}
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            class="flex items-center justify-between mt-4 pt-4 border-t border-gray-700/30"
+                                        >
+                                            <div class="flex items-center text-yellow-500">
+                                                <Coins class="h-4 w-4 mr-1" />
+                                                <span class="font-medium">{{ item.price }}</span>
                                             </div>
 
-                                            <div v-if="item.features && item.features.length > 0" class="mb-4">
-                                                <ul class="space-y-1 text-sm text-gray-300">
-                                                    <li
-                                                        v-for="(feature, i) in item.features"
-                                                        :key="i"
-                                                        class="flex items-start"
-                                                    >
-                                                        <CheckIcon class="h-4 w-4 text-green-400 mr-2 mt-0.5" />
-                                                        {{ feature }}
-                                                    </li>
-                                                </ul>
-                                            </div>
-
-                                            <div class="flex items-center justify-between mt-4">
-                                                <div
-                                                    class="flex items-center bg-yellow-900/30 text-yellow-500 px-3 py-1 rounded-full text-sm font-medium"
-                                                >
-                                                    <Coins class="h-4 w-4 mr-1" />
-                                                    {{ item.price }}
-                                                </div>
-
-                                                <button
-                                                    @click="purchaseItem(item)"
-                                                    :disabled="userCoins < item.price || item.stock === 0"
-                                                    :class="[
-                                                        'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-                                                        userCoins < item.price || item.stock === 0
-                                                            ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                                                            : 'bg-indigo-600 hover:bg-indigo-700 text-white',
-                                                    ]"
-                                                >
-                                                    <span v-if="userCoins < item.price"> Insufficient Coins </span>
-                                                    <span v-else-if="item.stock === 0"> Out of Stock </span>
-                                                    <span v-else> Purchase </span>
-                                                </button>
-                                            </div>
+                                            <button
+                                                @click="purchaseItem(item)"
+                                                :disabled="userCoins < parseInt(item.price)"
+                                                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                                                :class="[
+                                                    userCoins < parseInt(item.price)
+                                                        ? 'bg-gray-700/50 text-gray-400 cursor-not-allowed'
+                                                        : 'bg-indigo-600 hover:bg-indigo-700 text-white',
+                                                ]"
+                                            >
+                                                {{
+                                                    userCoins < parseInt(item.price) ? 'Insufficient Coins' : 'Purchase'
+                                                }}
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Empty State -->
                                 <div
-                                    v-if="!isLoading && filteredItems.length === 0"
+                                    v-if="!isLoading && storeItems.length === 0"
                                     class="py-10 flex flex-col items-center justify-center"
                                 >
                                     <ShoppingCartIcon class="w-16 h-16 text-gray-600 mb-3" />
@@ -248,7 +250,7 @@
 <script setup lang="ts">
 import LayoutDashboard from '@/components/client/LayoutDashboard.vue';
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import {
     Loader as LoaderIcon,
     CheckCircle as CheckCircleIcon,
@@ -260,7 +262,6 @@ import {
     Check as CheckIcon,
     HardDrive as HardDriveIcon,
     Cpu as CpuIcon,
-    Globe as GlobeIcon,
     Database as DatabaseIcon,
     Server as ServerIcon,
     Save as BackupIcon,
@@ -297,36 +298,69 @@ const statusMessage = ref({
 // Store API response interfaces
 interface StoreItemData {
     id: string;
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-    totalAmount?: number;
-    usedAmount?: number;
-    percentUsed?: number;
-    unit?: string;
-    features?: string[];
-    stock: number;
+    price: string;
 }
 
-// Store items with UI components
 interface StoreItem extends StoreItemData {
+    name: string;
+    description: string;
     icon: typeof ShoppingCartIcon;
+    features: string[];
 }
 
 const storeItems = ref<StoreItem[]>([]);
 
-// Filtered items - no longer filtering by category
-const filteredItems = computed(() => {
-    return storeItems.value;
-});
+// Item metadata mapping
+const itemMetadata: Record<string, { name: string; description: string; features: string[]; icon: unknown }> = {
+    ram: {
+        name: 'Additional RAM',
+        description: "Increase your server's memory capacity",
+        features: ['Instant allocation', 'Flexible scaling', 'No restart required'],
+        icon: CpuIcon,
+    },
+    disk: {
+        name: 'Storage Space',
+        description: "Expand your server's storage capacity",
+        features: ['SSD storage', 'High performance', 'Instant provisioning'],
+        icon: HardDriveIcon,
+    },
+    cpu: {
+        name: 'CPU Power',
+        description: "Boost your server's processing power",
+        features: ['High-performance cores', 'Dedicated resources', 'Real-time scaling'],
+        icon: CpuIcon,
+    },
+    server_slot: {
+        name: 'Server Slot',
+        description: 'Add an additional server to your account',
+        features: ['Full server access', 'Custom configuration', 'Instant deployment'],
+        icon: ServerIcon,
+    },
+    server_backup: {
+        name: 'Backup Slot',
+        description: 'Additional backup storage for your servers',
+        features: ['Automated backups', 'Instant restoration', 'Secure storage'],
+        icon: BackupIcon,
+    },
+    server_allocation: {
+        name: 'Port Allocation',
+        description: 'Additional network port for your server',
+        features: ['Dedicated port', 'Custom port range', 'Instant assignment'],
+        icon: AllocationIcon,
+    },
+    server_database: {
+        name: 'Database',
+        description: 'Additional database for your server',
+        features: ['MySQL/MariaDB', 'Automated backups', 'Secure access'],
+        icon: DatabaseIcon,
+    },
+};
 
 // Load store data
 const loadStoreData = async () => {
     isLoading.value = true;
 
     try {
-        // Call API to get store items
         const response = await fetch('/api/user/store/items', {
             headers: {
                 Accept: 'application/json',
@@ -339,55 +373,26 @@ const loadStoreData = async () => {
 
         const data = await response.json();
 
-        console.log(data);
-
-        if (data.success) {
-            // Map backend item categories to icon components
-            const iconMap: Record<string, typeof ShoppingCartIcon> = {
-                ram: CpuIcon,
-                disk: HardDriveIcon,
-                cpu: CpuIcon,
-                slots: ServerIcon,
-                backups: BackupIcon,
-                allocations: AllocationIcon,
-                databases: DatabaseIcon,
-                features: GlobeIcon,
-            };
-
-            // Check if items are directly in data.data or nested in data.data.items
-            const items = Array.isArray(data.data)
-                ? data.data
-                : data.data.items && Array.isArray(data.data.items)
-                  ? data.data.items
-                  : [];
-
-            storeItems.value = items.map((item: StoreItemData) => {
-                return {
-                    ...item,
-                    icon: iconMap[item.category] || ShoppingCartIcon,
-                };
-            });
+        if (data.success && data.data.items) {
+            storeItems.value = data.data.items.map((item: StoreItemData) => ({
+                ...item,
+                ...itemMetadata[item.id],
+            }));
         } else {
             showStatusMessage(data.message || 'Failed to load store items', 'error');
         }
-
-        isLoading.value = false;
     } catch (error) {
         console.error('Error loading store data:', error);
         showStatusMessage('An error occurred while loading store data', 'error');
+    } finally {
         isLoading.value = false;
     }
 };
 
 // Purchase an item
 const purchaseItem = async (item: StoreItem) => {
-    if (userCoins.value < item.price) {
+    if (userCoins.value < parseInt(item.price)) {
         showStatusMessage('You do not have enough coins for this purchase', 'error');
-        return;
-    }
-
-    if (item.stock === 0) {
-        showStatusMessage('This item is currently out of stock', 'error');
         return;
     }
 
@@ -408,33 +413,20 @@ const purchaseItem = async (item: StoreItem) => {
             return;
         }
 
+        const formData = new FormData();
+        formData.append('itemId', item.id);
+
         // Call API to process purchase
         const response = await fetch('/api/user/store/purchase', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-            },
-            body: JSON.stringify({
-                itemId: item.id,
-            }),
+            body: formData,
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to process purchase');
-        }
 
         const data = await response.json();
 
         if (data.success) {
             // Update user coins
-            userCoins.value = data.data.currentCoins;
-
-            // Update item stock
-            const itemIndex = storeItems.value.findIndex((i) => i.id === item.id);
-            if (itemIndex !== -1) {
-                storeItems.value[itemIndex].stock -= 1;
-            }
+            userCoins.value = data.remaining_coins;
 
             // Show success message
             showStatusMessage(`Successfully purchased ${item.name}!`, 'success');
@@ -450,11 +442,57 @@ const purchaseItem = async (item: StoreItem) => {
                 confirmButtonColor: '#4f46e5',
             });
         } else {
-            showStatusMessage(data.message || 'Failed to process purchase', 'error');
+            // Handle specific error codes
+            let errorMessage = 'Failed to process purchase';
+
+            switch (data.error_code) {
+                case 'MISSING_ITEM_ID':
+                    errorMessage = 'Item ID is required';
+                    break;
+                case 'EMPTY_ITEM_ID':
+                    errorMessage = 'Item ID cannot be empty';
+                    break;
+                case 'INVALID_ITEM_ID':
+                    errorMessage = `Invalid item ID: ${item.id}`;
+                    break;
+                case 'INSUFFICIENT_COINS':
+                    errorMessage = `Insufficient coins. Required: ${data.required}, Available: ${data.available}`;
+                    break;
+                case 'STORE_NOT_ENABLED':
+                    errorMessage = 'Store is not enabled on this host';
+                    break;
+                case 'PURCHASE_FAILED':
+                    errorMessage = data.message || 'Failed to process purchase';
+                    break;
+                default:
+                    errorMessage = data.message || 'An unexpected error occurred';
+            }
+
+            showStatusMessage(errorMessage, 'error');
+
+            // Show error dialog for more details
+            Swal.fire({
+                title: 'Purchase Failed',
+                html: `<p class="text-red-400">${errorMessage}</p>
+                       <p class="mt-2 text-sm text-gray-400">Please try again or contact support if the issue persists.</p>`,
+                icon: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#4f46e5',
+            });
         }
     } catch (error) {
         console.error('Error purchasing item:', error);
         showStatusMessage('An error occurred while processing your purchase', 'error');
+
+        // Show error dialog for network/technical errors
+        Swal.fire({
+            title: 'Network Error',
+            html: `<p class="text-red-400">Unable to connect to the server</p>
+                   <p class="mt-2 text-sm text-gray-400">Please check your internet connection and try again.</p>`,
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#4f46e5',
+        });
     }
 };
 

@@ -50,6 +50,27 @@ class ReferralUses extends Database
     }
 
     /**
+     * Get list of all non-deleted referral codes by user.
+     *
+     * @return array List of referral codes
+     */
+    public static function getListByReferralCode(int $referralCodeId): array
+    {
+        try {
+            $dbConn = Database::getPdoConnection();
+            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE referral_code_id = :referral_code_id AND deleted = "false"');
+            $stmt->bindParam(':referral_code_id', $referralCodeId);
+            $stmt->execute();
+
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get list of referral codes by user: ' . $e->getMessage());
+
+            return [];
+        }
+    }
+
+    /**
      * Create a new referral use.
      *
      * @param int $referralCodeId The ID of the referral code
@@ -189,4 +210,4 @@ class ReferralUses extends Database
             return false;
         }
     }
-} 
+}

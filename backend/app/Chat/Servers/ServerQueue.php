@@ -48,6 +48,43 @@ class ServerQueue extends Database
     }
 
     /**
+     * Get all server queue items by user.
+     *
+     * @param string $user The user ID
+     *
+     * @return array The list of server queue items
+     */
+    public static function getByUser(string $user): array
+    {
+        try {
+            $dbConn = Database::getPdoConnection();
+
+            $query = 'SELECT * FROM ' . self::getTableName() . ' WHERE user = :user AND deleted = "false"';
+            $stmt = $dbConn->prepare($query);
+            $stmt->bindParam(':user', $user);
+            $stmt->execute();
+
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get server queue items by user: ' . $e->getMessage());
+
+            return [];
+        }
+    }
+
+    public static function hasAtLeastOnePendingItem(string $user): bool
+    {
+        $items = self::getByUser($user);
+        foreach ($items as $item) {
+            if ($item['status'] == 'pending') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get a specific server queue item by ID.
      *
      * @param int $id The ID of the server queue item

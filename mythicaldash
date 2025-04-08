@@ -10,7 +10,7 @@ if (!empty($_SERVER['DOCUMENT_ROOT'])) {
 define("ENV_PATH", APP_PUBLIC."/storage/");
 define('APP_START', microtime(true));
 define('APP_DIR', APP_PUBLIC.'/');
-define('SYSTEM_OS_NAME', gethostname().'/'.PHP_OS_FAMILY);
+define('APP_CRON_DIR', APP_PUBLIC.'/storage/cron/');
 define('SYSTEM_KERNEL_NAME', php_uname('s'));
 define('APP_VERSION', "dev");
 define("TELEMETRY", true);

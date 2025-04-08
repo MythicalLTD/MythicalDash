@@ -150,7 +150,7 @@ class NestsResource extends PterodactylAdmin
     public function getEgg(int $nestId, int $eggId): array
     {
         try {
-            return $this->request('GET', "/api/application/nests/{$nestId}/eggs/{$eggId}");
+            return $this->request('GET', "/api/application/nests/{$nestId}/eggs/{$eggId}?include=variables");
         } catch (ClientException $e) {
             $response = $e->getResponse();
             $statusCode = $response->getStatusCode();

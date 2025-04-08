@@ -20,10 +20,7 @@ define('APP_UPSTREAM', 'github.com/mythicalltd/mythicaldash');
 require(__DIR__ . '/../packages/autoload.php');
 
 use MythicalDash\Cli\App;
-use MythicalDash\Plugins\PluginManager;
 
-$pluginManager = new PluginManager();
-$pluginManager->loadKernel();
 
 App::sendOutputWithNewLine('&7Starting MythicalDash cron runner.');
 

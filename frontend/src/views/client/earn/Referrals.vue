@@ -30,7 +30,7 @@
                                         <div
                                             class="flex-1 bg-gray-900/70 rounded-l-lg px-4 py-3 text-gray-300 break-all"
                                         >
-                                            {{ referralLink }}
+                                            {{ referralCode }}
                                         </div>
                                         <button
                                             @click="copyReferralLink"
@@ -77,23 +77,13 @@
                                 </div>
 
                                 <!-- Referral Stats -->
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                     <div class="bg-gray-800/30 rounded-xl p-4 border border-gray-700/20">
                                         <h4 class="text-gray-400 text-sm mb-1">Total Referrals</h4>
                                         <div class="flex items-center">
                                             <UsersIcon class="h-5 w-5 text-indigo-400 mr-2" />
                                             <span class="text-2xl font-bold text-white">{{
                                                 stats.totalReferrals
-                                            }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="bg-gray-800/30 rounded-xl p-4 border border-gray-700/20">
-                                        <h4 class="text-gray-400 text-sm mb-1">Pending</h4>
-                                        <div class="flex items-center">
-                                            <ClockIcon class="h-5 w-5 text-yellow-400 mr-2" />
-                                            <span class="text-2xl font-bold text-white">{{
-                                                stats.pendingReferrals
                                             }}</span>
                                         </div>
                                     </div>
@@ -161,47 +151,47 @@
                                                 >
                                                     <td class="px-6 py-4 whitespace-nowrap">
                                                         <div class="flex items-center">
+                                                            <img
+                                                                v-if="referral.user.avatar"
+                                                                :src="referral.user.avatar"
+                                                                :alt="referral.user.username"
+                                                                class="h-8 w-8 rounded-full mr-3"
+                                                            />
                                                             <div
+                                                                v-else
                                                                 class="h-8 w-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 mr-3"
                                                             >
-                                                                {{ referral.username.charAt(0).toUpperCase() }}
+                                                                {{ referral.user.username.charAt(0).toUpperCase() }}
                                                             </div>
                                                             <div class="text-sm font-medium text-white">
-                                                                {{ referral.username }}
+                                                                {{ referral.user.username }}
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                                                        {{ formatDate(referral.date) }}
+                                                        {{ formatDate(referral.created_at) }}
                                                     </td>
                                                     <td class="px-6 py-4 whitespace-nowrap">
                                                         <span
                                                             :class="[
                                                                 'px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full',
-                                                                referral.status === 'completed'
+                                                                referral.deleted === 'false'
                                                                     ? 'bg-green-900/30 text-green-400'
-                                                                    : referral.status === 'pending'
-                                                                      ? 'bg-yellow-900/30 text-yellow-400'
-                                                                      : 'bg-red-900/30 text-red-400',
+                                                                    : 'bg-red-900/30 text-red-400',
                                                             ]"
                                                         >
-                                                            {{
-                                                                referral.status.charAt(0).toUpperCase() +
-                                                                referral.status.slice(1)
-                                                            }}
+                                                            {{ referral.deleted === 'false' ? 'Active' : 'Deleted' }}
                                                         </span>
                                                     </td>
                                                     <td class="px-6 py-4 whitespace-nowrap">
                                                         <div class="flex items-center text-sm">
                                                             <Coins class="h-3 w-3 text-yellow-500 mr-1" />
-                                                            <span
-                                                                :class="[
-                                                                    referral.status === 'completed'
-                                                                        ? 'text-white'
-                                                                        : 'text-gray-400',
-                                                                ]"
-                                                            >
-                                                                {{ referral.reward }}
+                                                            <span class="text-white">
+                                                                {{
+                                                                    Settings.getSetting(
+                                                                        'referrals_coins_per_referral',
+                                                                    ) || '35'
+                                                                }}
                                                             </span>
                                                         </div>
                                                     </td>
@@ -267,22 +257,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="bg-gray-800/30 p-4 rounded-lg">
-                                <div class="flex items-start mb-2">
-                                    <div
-                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
-                                    >
-                                        <span class="text-xs">4</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-sm font-medium text-white mb-1">Unlock Bonus Tiers</h4>
-                                        <p class="text-xs text-gray-400">
-                                            Reach referral milestones to unlock additional bonus rewards
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </CardComponent>
                 </div>
@@ -295,15 +269,7 @@
 import LayoutDashboard from '@/components/client/LayoutDashboard.vue';
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
 import { ref, onMounted, computed } from 'vue';
-import {
-    Loader as LoaderIcon,
-    Copy as CopyIcon,
-    Users as UsersIcon,
-    Clock as ClockIcon,
-    Mail as MailIcon,
-    Coins,
-} from 'lucide-vue-next';
-import Session from '@/mythicaldash/Session';
+import { Loader as LoaderIcon, Copy as CopyIcon, Users as UsersIcon, Mail as MailIcon, Coins } from 'lucide-vue-next';
 import { useSettingsStore } from '@/stores/settings';
 import router from '@/router';
 import Swal from 'sweetalert2';
@@ -334,43 +300,73 @@ if (Settings.getSetting('referrals_enabled') === 'false') {
     router.push('/dashboard');
 }
 
+// Define interfaces for our data structures
+interface ReferralUser {
+    username: string;
+    avatar: string;
+    uuid: string;
+}
+
+interface Referral {
+    id: number;
+    referral_code_id: number;
+    deleted: string;
+    updated_at: string;
+    created_at: string;
+    user: ReferralUser;
+}
+
+interface ReferralStats {
+    totalReferrals: number;
+    pendingReferrals: number;
+    totalEarned: number;
+}
+
+interface ApiResponse {
+    success: boolean;
+    error: string | null;
+    message: string;
+    referrals: Referral[];
+    referral_code: string;
+}
+
 // State
 const isLoading = ref(true);
 const copied = ref(false);
-const username = Session.getInfo('username');
-const userId = Session.getInfo('id');
+const referralCode = ref('');
 
 // Generate referral link
 const referralLink = computed(() => {
     const baseUrl = window.location.origin;
-    return `${baseUrl}/auth/register?ref=${username || userId}`;
+    return `${baseUrl}/auth/register?ref=${referralCode.value}`;
 });
 
 // Referral stats
-const stats = ref({
+const stats = ref<ReferralStats>({
     totalReferrals: 0,
     pendingReferrals: 0,
     totalEarned: 0,
 });
 
 // Referrals list
-const referrals = ref<
-    Array<{
-        id: number;
-        username: string;
-        date: string;
-        status: string;
-        reward: number;
-    }>
->([]);
+const referrals = ref<Referral[]>([]);
 
 // Copy referral link to clipboard
 const copyReferralLink = () => {
-    navigator.clipboard.writeText(referralLink.value);
-    copied.value = true;
-    setTimeout(() => {
-        copied.value = false;
-    }, 2000);
+    const textArea = document.createElement('textarea');
+    textArea.value = referralLink.value;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        copied.value = true;
+        setTimeout(() => {
+            copied.value = false;
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy text: ', err);
+    }
+    document.body.removeChild(textArea);
 };
 
 // Share referral link via different platforms
@@ -419,69 +415,39 @@ const loadReferrals = async () => {
     isLoading.value = true;
 
     try {
-        // In a real implementation, call the API to get referral data
-        // const response = await fetch('/api/user/earn/referrals');
-        // const data = await response.json();
+        const response = await fetch('/api/user/earn/referrals');
+        const data = (await response.json()) as ApiResponse;
 
-        // For demo purposes, we'll use mock data
-        setTimeout(() => {
-            // Mock stats
+        if (data.success) {
+            // Update referral code
+            referralCode.value = data.referral_code;
+
+            // Update referrals list
+            referrals.value = data.referrals;
+            // Calculate stats
             stats.value = {
-                totalReferrals: 8,
-                pendingReferrals: 2,
-                totalEarned: 575,
+                totalReferrals: data.referrals.length,
+                pendingReferrals: data.referrals.filter((referral: Referral) => referral.deleted === 'false').length,
+                totalEarned:
+                    data.referrals.length * parseInt(Settings.getSetting('referrals_coins_per_referral') || '35'),
             };
-
-            // Mock referrals
-            referrals.value = [
-                {
-                    id: 1,
-                    username: 'AlexGamer',
-                    date: '2023-10-15T12:00:00',
-                    status: 'completed',
-                    reward: 175,
-                },
-                {
-                    id: 2,
-                    username: 'SarahPlays',
-                    date: '2023-10-12T08:30:00',
-                    status: 'completed',
-                    reward: 150,
-                },
-                {
-                    id: 3,
-                    username: 'GameMaster99',
-                    date: '2023-10-05T16:45:00',
-                    status: 'completed',
-                    reward: 175,
-                },
-                {
-                    id: 4,
-                    username: 'CoolDude42',
-                    date: '2023-11-01T10:15:00',
-                    status: 'pending',
-                    reward: 50,
-                },
-                {
-                    id: 5,
-                    username: 'PixelPro',
-                    date: '2023-11-02T14:20:00',
-                    status: 'pending',
-                    reward: 50,
-                },
-                {
-                    id: 6,
-                    username: 'GameWizard',
-                    date: '2023-09-28T09:10:00',
-                    status: 'completed',
-                    reward: 75,
-                },
-            ];
-
-            isLoading.value = false;
-        }, 1000);
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: data.error || 'Failed to load referrals',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
+        }
     } catch (error) {
         console.error('Error loading referrals:', error);
+        Swal.fire({
+            title: 'Error',
+            text: 'Failed to load referrals. Please try again later.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+    } finally {
         isLoading.value = false;
     }
 };

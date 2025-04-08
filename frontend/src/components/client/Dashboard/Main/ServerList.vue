@@ -57,7 +57,7 @@ const formatBytes = (bytes: number) => {
 
 // Navigation
 const createServer = () => {
-    router.push('/servers/create');
+    router.push('/server/create');
 };
 // Fetch servers
 const fetchServers = async () => {

@@ -162,9 +162,9 @@ $router->add('/api/system/settings', function (): void {
         ConfigInterface::MAX_SERVER_SLOTS => '1',
         ConfigInterface::MAX_BACKUPS => '1',
 
-		// Referrals
-		ConfigInterface::REFERRALS_COINS_PER_REFERRAL => '35',
-		ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER => '15',
+        // Referrals
+        ConfigInterface::REFERRALS_COINS_PER_REFERRAL => '35',
+        ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER => '15',
     ];
 
     // Retrieve actual settings with defaults in a single array map

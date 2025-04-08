@@ -16,6 +16,8 @@ use MythicalDash\Chat\User\User;
 use MythicalDash\Config\ConfigInterface;
 use MythicalSystems\CloudFlare\Turnstile;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\Referral\ReferralUses;
+use MythicalDash\Chat\Referral\ReferralCodes;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
 
@@ -133,6 +135,32 @@ $router->add('/api/user/auth/register', function (): void {
         }
 
         User::register($username, $password, $email, $firstName, $lastName, CloudFlareRealIP::getRealIP(), $pterodactylUserId);
+        if ($config->getSetting(ConfigInterface::REFERRALS_ENABLED, false)) {
+            $newUserUuid = User::convertEmailToUUID(email: $email);
+            $newUserToken = User::getTokenFromEmail($email);
+            if ($newUserUuid) {
+                // Generate a referral code
+                $referralCode = $username . '_' . $appInstance->generatePin();
+                ReferralCodes::create($newUserUuid, $referralCode);
+
+                if (isset($_GET['ref']) && $_GET['ref'] != '') {
+                    $referrerCode = ReferralCodes::getByCode($_GET['ref']);
+
+                    $referrerUuid = $referrerCode['user'];
+                    $referrerToken = User::getTokenFromUUID($referrerUuid);
+
+                    if ($referrerCode) {
+                        ReferralUses::create($referrerCode['id'], $newUserUuid);
+
+                        $newUserBonus = intval($appInstance->getConfig()->getSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER, 15));
+                        User::updateInfo($newUserToken, UserColumns::CREDITS, $newUserBonus, false);
+
+                        $referrerBonus = intval($appInstance->getConfig()->getSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL, 35)) + intval(User::getInfo($referrerToken, UserColumns::CREDITS, false));
+                        User::updateInfo($referrerToken, UserColumns::CREDITS, $referrerBonus, false);
+                    }
+                }
+            }
+        }
         $eventManager->emit(AuthEvent::onAuthRegisterSuccess(), ['username' => $username, 'email' => $email]);
         App::OK('User registered', []);
 

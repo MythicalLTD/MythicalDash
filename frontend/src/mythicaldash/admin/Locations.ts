@@ -19,6 +19,7 @@ class Locations {
      * @param pterodactylLocationId The Pterodactyl location ID
      * @param nodeIp The IP address of the node
      * @param status The status of the location
+     * @param slots The number of slots available for the location
      *
      * @returns The response from the API
      */
@@ -28,6 +29,7 @@ class Locations {
         pterodactylLocationId: number,
         nodeIp: string,
         status: string,
+        slots: number,
     ) {
         const formData = new FormData();
         formData.append('name', name);
@@ -35,6 +37,7 @@ class Locations {
         formData.append('pterodactyl_location_id', pterodactylLocationId.toString());
         formData.append('node_ip', nodeIp);
         formData.append('status', status);
+        formData.append('slots', slots.toString());
 
         const response = await fetch('/api/admin/locations/create', {
             method: 'POST',

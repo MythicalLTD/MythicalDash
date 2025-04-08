@@ -71,12 +71,13 @@ $router->post('/api/admin/locations/create', function (): void {
 
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
 
-        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['pterodactyl_location_id']) && isset($_POST['node_ip']) && isset($_POST['status'])) {
+        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['pterodactyl_location_id']) && isset($_POST['node_ip']) && isset($_POST['status']) && isset($_POST['slots'])) {
             $name = $_POST['name'];
             $description = $_POST['description'];
             $pterodactyl_location_id = $_POST['pterodactyl_location_id'];
             $node_ip = $_POST['node_ip'];
             $status = $_POST['status'];
+            $slots = (int) $_POST['slots'];
 
             $status_list = ['online', 'offline', 'maintenance'];
             if (!in_array($status, $status_list)) {
@@ -85,7 +86,7 @@ $router->post('/api/admin/locations/create', function (): void {
                 return;
             }
 
-            if ($name == '' || $description == '' || $pterodactyl_location_id == '' || $node_ip == '' || $status == '') {
+            if ($name == '' || $description == '' || $pterodactyl_location_id == '' || $node_ip == '' || $status == '' || $slots == '') {
                 $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
 
                 return;
@@ -106,7 +107,7 @@ $router->post('/api/admin/locations/create', function (): void {
                 return;
             }
 
-            $id = Locations::create($name, $description, $pterodactyl_location_id, $node_ip, $status);
+            $id = Locations::create($name, $description, $pterodactyl_location_id, $node_ip, $status, $slots);
             if ($id == 0) {
                 $appInstance->BadRequest('Failed to create location', ['error_code' => 'ERROR_FAILED_TO_CREATE_LOCATION']);
 
@@ -122,6 +123,7 @@ $router->post('/api/admin/locations/create', function (): void {
                     'pterodactyl_location_id' => $pterodactyl_location_id,
                     'node_ip' => $node_ip,
                     'status' => $status,
+                    'slots' => $slots,
                     'id' => $id,
                 ],
             ]);
@@ -141,12 +143,12 @@ $router->post('/api/admin/locations/(.*)/update', function ($id): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['node_ip']) && isset($_POST['status'])) {
+        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['node_ip']) && isset($_POST['status']) && isset($_POST['slots'])) {
             $name = $_POST['name'];
             $description = $_POST['description'];
             $node_ip = $_POST['node_ip'];
             $status = $_POST['status'];
-
+            $slots = (int) $_POST['slots'];
             $status_list = ['online', 'offline', 'maintenance'];
             if (!in_array($status, $status_list)) {
                 $appInstance->BadRequest('Invalid status', ['error_code' => 'ERROR_INVALID_STATUS']);
@@ -154,7 +156,7 @@ $router->post('/api/admin/locations/(.*)/update', function ($id): void {
                 return;
             }
 
-            if ($name == '' || $description == '' || $node_ip == '' || $status == '') {
+            if ($name == '' || $description == '' || $node_ip == '' || $status == '' || $slots == '') {
                 $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
 
                 return;
@@ -166,7 +168,7 @@ $router->post('/api/admin/locations/(.*)/update', function ($id): void {
                 return;
             }
 
-            $updated = Locations::update($id, $name, $description, $node_ip, $status);
+            $updated = Locations::update($id, $name, $description, $node_ip, $status, $slots);
             if (!$updated) {
                 $appInstance->BadRequest('Failed to update location', ['error_code' => 'ERROR_FAILED_TO_UPDATE_LOCATION']);
 
@@ -187,6 +189,7 @@ $router->post('/api/admin/locations/(.*)/update', function ($id): void {
                     'description' => $description,
                     'node_ip' => $node_ip,
                     'status' => $status,
+                    'slots' => $slots,
                     'id' => $id,
                 ],
             ]);

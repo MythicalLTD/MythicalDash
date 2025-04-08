@@ -85,6 +85,16 @@
                         </select>
                         <p class="text-xs text-gray-400 mt-1">This is used to identify the Pterodactyl location</p>
                     </div>
+
+                    <div>
+                        <label for="slots" class="block text-sm font-medium text-gray-400 mb-1">Slots</label>
+                        <input
+                            type="number"
+                            id="slots"
+                            v-model="locationForm.slots"
+                            class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                    </div>
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-4 border-t border-gray-700">
@@ -133,6 +143,7 @@ const locationForm = ref({
     pterodactyl_location_id: 0,
     node_ip: '',
     status: 'active' as 'active' | 'inactive' | 'maintenance',
+    slots: 15,
 });
 
 interface PterodactylLocation {
@@ -159,6 +170,7 @@ const saveLocation = async () => {
             locationForm.value.pterodactyl_location_id,
             locationForm.value.node_ip,
             locationForm.value.status,
+            locationForm.value.slots,
         );
 
         if (response.success) {

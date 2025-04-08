@@ -159,6 +159,12 @@ const menuSections = ref<MenuSection[]>([
         title: 'General',
         items: [
             dashboardMenuItem,
+            {
+                name: 'Create Server',
+                icon: ServerIcon,
+                href: '/server/create',
+                active: isActiveRoute(['/server/create']),
+            },
             ...(isStoreEnabled.value ? [storeMenuItem] : []),
             {
                 name: Translation.getTranslation('components.sidebar.announcements'),

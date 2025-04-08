@@ -9,7 +9,7 @@ class Redeem {
      * @returns Response with information about the code
      */
     public static async checkCode(code: string) {
-        const response = await fetch(`/api/user/redeem/check/${code}`, {
+        const response = await fetch(`/api/user/earn/redeem/check/${code}`, {
             method: 'GET',
         });
         return await response.json();

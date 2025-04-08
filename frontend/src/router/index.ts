@@ -7,13 +7,21 @@ import clientRoutes from './routes/client';
 import ticketRoutes from './routes/tickets';
 import errorRoutes from './routes/errors';
 import adminRoutes from './routes/admin';
+import serverRoutes from './routes/server';
 
 // Import middlewares
 import { isAuthenticated, guestMiddleware, handleRedirectAfterLogin } from '../middlewares/auth';
 import { isAdmin } from '../middlewares/admin';
 
 // Combine all routes
-const routes: RouteRecordRaw[] = [...authRoutes, ...clientRoutes, ...ticketRoutes, ...adminRoutes, ...errorRoutes];
+const routes: RouteRecordRaw[] = [
+    ...authRoutes,
+    ...clientRoutes,
+    ...ticketRoutes,
+    ...adminRoutes,
+    ...errorRoutes,
+    ...serverRoutes,
+];
 
 const router = createRouter({
     history: createWebHistory(),

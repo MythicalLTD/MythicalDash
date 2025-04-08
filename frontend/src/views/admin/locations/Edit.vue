@@ -84,6 +84,16 @@
                         />
                     </div>
 
+                    <div>
+                        <label for="slots" class="block text-sm font-medium text-gray-400 mb-1">Slots</label>
+                        <input
+                            type="number"
+                            id="slots"
+                            v-model="locationForm.slots"
+                            class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                    </div>
+
                     <div v-if="locationForm.created_at">
                         <label class="block text-sm font-medium text-gray-400 mb-1">Created At</label>
                         <div class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 text-gray-400">
@@ -153,6 +163,7 @@ const locationForm = ref({
     locked: 'false',
     created_at: '',
     updated_at: '',
+    slots: 15,
 });
 
 onMounted(async () => {
@@ -196,6 +207,7 @@ const fetchLocationData = async () => {
                 locked: string;
                 created_at: string;
                 updated_at: string;
+                slots: number;
             }
 
             // Find the location with the matching ID
@@ -218,6 +230,7 @@ const fetchLocationData = async () => {
                 locked: location.locked,
                 created_at: location.created_at,
                 updated_at: location.updated_at,
+                slots: location.slots,
             };
         } else {
             error.value = data.message || 'Failed to load location data';
@@ -240,7 +253,7 @@ const updateLocation = async () => {
         formData.append('description', locationForm.value.description);
         formData.append('node_ip', locationForm.value.node_ip);
         formData.append('status', locationForm.value.status);
-
+        formData.append('slots', locationForm.value.slots.toString());
         if (locationForm.value.pterodactyl_location_id) {
             formData.append('pterodactyl_location_id', locationForm.value.pterodactyl_location_id.toString());
         }

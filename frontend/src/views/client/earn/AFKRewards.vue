@@ -178,8 +178,10 @@ const seconds = ref(0);
 const totalCoins = ref(Session.getInfoInt('credits'));
 const sessionCoins = ref(0);
 const currentSessionTime = ref(0);
-const totalAFKTime = ref(23); // Example: storing 4999 minutes (stored in DB as minutes)
+const totalAFKTime = ref(23);
+const lastActiveTime = ref(Date.now());
 let timerInterval: number | null = null;
+const visibilityCheckInterval: number | null = null;
 
 // Get the configurable AFK reward interval from settings (minutes per coin)
 const minutesPerCoin = computed(() => {
@@ -222,6 +224,25 @@ const formatTimeString = (totalMinutes: number): string => {
     return `${minutes}m`;
 };
 
+// Check if user is actively on the page
+const isUserActive = () => {
+    return document.visibilityState === 'visible';
+};
+
+// Handle visibility change
+const handleVisibilityChange = () => {
+    if (!isUserActive() && isActive.value) {
+        // User switched to another tab or minimized the window
+        stopTimer();
+        Swal.fire({
+            title: 'AFK Session Paused',
+            text: 'Your AFK session has been paused because you switched to another tab or minimized the window. Please keep this tab active to continue earning rewards.',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+        });
+    }
+};
+
 // Toggle AFK mode
 const toggleAFK = () => {
     if (isActive.value) {
@@ -233,15 +254,34 @@ const toggleAFK = () => {
 
 // Start the timer
 const startTimer = () => {
-    isActive.value = true;
-    timerInterval = window.setInterval(() => {
-        seconds.value++;
+    if (!isUserActive()) {
+        Swal.fire({
+            title: 'Cannot Start AFK',
+            text: 'Please keep this tab active to start earning AFK rewards.',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+        });
+        return;
+    }
 
-        // Award coins every minute and update time counters
+    isActive.value = true;
+    lastActiveTime.value = Date.now();
+
+    // Start the main timer
+    timerInterval = window.setInterval(() => {
+        if (!isUserActive()) {
+            stopTimer();
+            return;
+        }
+
+        seconds.value++;
         if (seconds.value % 60 === 0) {
             updateAFKStats();
         }
     }, 1000);
+
+    // Add visibility change listener
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 };
 
 // Update AFK stats - called every minute
@@ -310,6 +350,9 @@ const stopTimer = () => {
         clearInterval(timerInterval);
         timerInterval = null;
 
+        // Remove visibility change listener
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+
         // Save final stats when stopping the timer
         if (currentSessionTime.value > 0) {
             saveStatsToServer();
@@ -352,13 +395,16 @@ onUnmounted(() => {
         saveStatsToServer();
     }
     stopTimer();
+    if (visibilityCheckInterval !== null) {
+        clearInterval(visibilityCheckInterval);
+    }
 });
 
 onMounted(() => {
     loadSavedState();
     // Check if we should auto-start AFK timer
     const autoStart = localStorage.getItem('afk_autoStart');
-    if (autoStart === 'true') {
+    if (autoStart === 'true' && isUserActive()) {
         startTimer();
     }
 });

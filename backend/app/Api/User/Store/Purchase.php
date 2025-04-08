@@ -14,6 +14,7 @@
 use MythicalDash\App;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Config\ConfigInterface;
+use MythicalDash\Chat\columns\UserColumns;
 
 $router->post('/api/user/store/purchase', function (): void {
     App::init();
@@ -22,67 +23,115 @@ $router->post('/api/user/store/purchase', function (): void {
     $session = new Session($appInstance);
     $config = $appInstance->getConfig();
 
+    // Check if store is enabled
     if ($config->getSetting(ConfigInterface::STORE_ENABLED, 'false') !== 'true') {
         $appInstance->BadRequest('Store is not enabled', ['error_code' => 'STORE_NOT_ENABLED']);
+
+        return;
     }
 
-    // Mock items data - in a real implementation, this would be fetched from a database
+    // Validate required parameters
+    if (!isset($_POST['itemId'])) {
+        $appInstance->BadRequest('Item ID is required', ['error_code' => 'MISSING_ITEM_ID']);
+
+        return;
+    }
+
+    if ($_POST['itemId'] == '') {
+        $appInstance->BadRequest('Item ID is empty', ['error_code' => 'EMPTY_ITEM_ID']);
+
+        return;
+    }
+    // Define available items with their prices and effects
     $items = [
-        'ram_512mb' => [
-            'id' => 'ram_512mb',
-            'name' => 'RAM Upgrade',
-            'price' => 150,
-            'category' => 'ram',
-            'action' => 'addRam',
+        'ram' => [
+            'price' => (int) $config->getSetting(ConfigInterface::STORE_RAM_PRICE, 150),
+            'effect' => function ($session) {
+                $session->setInfo(UserColumns::MEMORY_LIMIT, $session->getInfo(UserColumns::MEMORY_LIMIT, false) + 1024, false);
+            },
         ],
-        'disk_1024mb' => [
-            'id' => 'disk_1024mb',
-            'name' => 'Disk Storage',
-            'price' => 200,
-            'category' => 'disk',
-            'action' => 'addDisk',
+        'disk' => [
+            'price' => (int) $config->getSetting(ConfigInterface::STORE_DISK_PRICE, 200),
+            'effect' => function ($session) {
+                $session->setInfo(UserColumns::DISK_LIMIT, $session->getInfo(UserColumns::DISK_LIMIT, false) + 1024, false);
+            },
         ],
-        'cpu_50pct' => [
-            'id' => 'cpu_50pct',
-            'name' => 'CPU Resource',
-            'price' => 300,
-            'category' => 'cpu',
-            'action' => 'addCpu',
+        'cpu' => [
+            'price' => (int) $config->getSetting(ConfigInterface::STORE_CPU_PRICE, 300),
+            'effect' => function ($session) {
+                $session->setInfo(UserColumns::CPU_LIMIT, $session->getInfo(UserColumns::CPU_LIMIT, false) + 100, false);
+            },
         ],
         'server_slot' => [
-            'id' => 'server_slot',
-            'name' => 'Server Slot',
-            'price' => 500,
-            'category' => 'slots',
-            'action' => 'addServerSlot',
+            'price' => (int) $config->getSetting(ConfigInterface::STORE_SERVER_SLOT_PRICE, 500),
+            'effect' => function ($session) {
+                $session->setInfo(UserColumns::SERVER_LIMIT, $session->getInfo(UserColumns::SERVER_LIMIT, false) + 1, false);
+            },
         ],
         'server_backup' => [
-            'id' => 'server_backup',
-            'name' => 'Server Backup',
-            'price' => 150,
-            'category' => 'backups',
-            'action' => 'addBackup',
+            'price' => (int) $config->getSetting(ConfigInterface::STORE_BACKUPS_PRICE, 150),
+            'effect' => function ($session) {
+                $session->setInfo(UserColumns::BACKUP_LIMIT, $session->getInfo(UserColumns::BACKUP_LIMIT, false) + 1, false);
+            },
         ],
         'server_allocation' => [
-            'id' => 'server_allocation',
-            'name' => 'Server Allocation',
-            'price' => 100,
-            'category' => 'allocations',
-            'action' => 'addAllocation',
+            'price' => (int) $config->getSetting(ConfigInterface::STORE_PORTS_PRICE, 100),
+            'effect' => function ($session) {
+                $session->setInfo(UserColumns::ALLOCATION_LIMIT, $session->getInfo(UserColumns::ALLOCATION_LIMIT, false) + 1, false);
+            },
         ],
         'server_database' => [
-            'id' => 'server_database',
-            'name' => 'Server Database',
-            'price' => 200,
-            'category' => 'databases',
-            'action' => 'addDatabase',
+            'price' => (int) $config->getSetting(ConfigInterface::STORE_DATABASES_PRICE, 200),
+            'effect' => function ($session) {
+                $session->setInfo(UserColumns::DATABASE_LIMIT, $session->getInfo(UserColumns::DATABASE_LIMIT, false) + 1, false);
+            },
         ],
     ];
 
-    // Record the purchase in the transaction history
-    // In a real implementation, save to database
+    $itemId = $_POST['itemId'];
 
-    $appInstance->OK('Purchase successful', [
+    // Check if item exists
+    if (!isset($items[$itemId])) {
+        $appInstance->BadRequest('Invalid item ID: ' . $itemId, ['error_code' => 'INVALID_ITEM_ID']);
 
-    ]);
+        return;
+    }
+
+    $item = $items[$itemId];
+    $price = $item['price'];
+    $currentCoins = (int) $session->getInfo(UserColumns::CREDITS, false);
+
+    // Validate user has enough coins
+    if ($currentCoins < $price) {
+        $appInstance->BadRequest('Insufficient coins', [
+            'error_code' => 'INSUFFICIENT_COINS',
+            'required' => $price,
+            'available' => $currentCoins,
+        ]);
+
+        return;
+    }
+
+    // Process purchase
+    try {
+        // Deduct coins
+        $session->setInfo(UserColumns::CREDITS, $currentCoins - $price, false);
+
+        // Apply item effect
+        $item['effect']($session);
+
+        // Return success response
+        $appInstance->OK('Purchase successful', [
+            'item' => [
+                'id' => $itemId,
+                'price' => $price,
+            ],
+            'remaining_coins' => $currentCoins - $price,
+        ]);
+    } catch (Exception $e) {
+        $appInstance->BadRequest('Failed to process purchase', [
+            'error_code' => 'PURCHASE_FAILED',
+            'message' => $e->getMessage(),
+        ]);
+    }
 });

@@ -31,6 +31,10 @@ const form = reactive({
     referralCode: '',
 });
 
+if (router.currentRoute.value.query.ref) {
+    form.referralCode = router.currentRoute.value.query.ref as string;
+}
+
 MythicalDOM.setPageTitle(t('auth.pages.register.page.title'));
 const referralsEnabled = Settings.getSetting('referrals_enabled');
 const handleSubmit = async () => {

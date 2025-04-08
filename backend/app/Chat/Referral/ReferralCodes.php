@@ -68,7 +68,7 @@ class ReferralCodes extends Database
 
             return (int) $dbConn->lastInsertId();
         } catch (\Exception $e) {
-            self::db_Error('Failed to create referral code:  ("' . $user . '", "' . $code . 'w")' . $e->getMessage());
+            self::db_Error('Failed to create referral code:  ("' . $user . '", "' . $code . '")' . $e->getMessage());
 
             return false;
         }
@@ -188,4 +188,4 @@ class ReferralCodes extends Database
             return [];
         }
     }
-} 
+}

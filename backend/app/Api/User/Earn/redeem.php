@@ -12,13 +12,13 @@
  */
 
 use MythicalDash\App;
-use MythicalDash\Chat\Redeem\RedeemRedeems;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
-use MythicalDash\Database\Database;
+use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\Redeem\RedeemCoins;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\Chat\Redeem\RedeemRedeems;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 
@@ -28,7 +28,11 @@ $router->post('/api/user/earn/redeem', function (): void {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new Session($appInstance);
+    if (!$appInstance->getConfig()->getSetting(ConfigInterface::CODE_REDEMPTION_ENABLED, false)) {
+        $appInstance->BadRequest('Code redemption is not enabled', ['error_code' => 'CODE_REDEMPTION_NOT_ENABLED']);
 
+        return;
+    }
     if (!isset($_POST['code']) || empty($_POST['code'])) {
         $appInstance->BadRequest('Redeem code is required', ['error_code' => 'CODE_REQUIRED']);
 
@@ -40,29 +44,31 @@ $router->post('/api/user/earn/redeem', function (): void {
     // Check if code exists
     if (!RedeemCoins::existsByCode($code)) {
         $appInstance->BadRequest('Invalid redeem code', ['error_code' => 'INVALID_CODE']);
+
         return;
     }
 
-	$codeDB = RedeemCoins::getByCode($code);
+    $codeDB = RedeemCoins::getByCode($code);
 
-	$coinsToAdd = $codeDB['coins'];
-	$usesLeft = $codeDB['uses'];
+    $coinsToAdd = $codeDB['coins'];
+    $usesLeft = $codeDB['uses'];
 
-	if ($usesLeft <= 0) {
-		$appInstance->BadRequest('This code has reached its usage limit', ['error_code' => 'CODE_DEPLETED']);
-		return;
-	}
+    if ($usesLeft <= 0) {
+        $appInstance->BadRequest('This code has reached its usage limit', ['error_code' => 'CODE_DEPLETED']);
 
-	if (RedeemRedeems::isCodeRedeemed($codeDB['id'], $session->getInfo(UserColumns::UUID, false))) {
-		$appInstance->BadRequest('This code has already been redeemed', ['error_code' => 'CODE_ALREADY_REDEEMED']);
-		return;
-	}
+        return;
+    }
 
-	RedeemRedeems::redeemCode($codeDB['id'], $session->getInfo(UserColumns::UUID, false));
-	$newCredits = $session->getInfo(UserColumns::CREDITS, false) + $coinsToAdd;
-	$session->setInfo(UserColumns::CREDITS, $newCredits, false);
-	RedeemCoins::removeUsage($codeDB['id']);
+    if (RedeemRedeems::isCodeRedeemed($codeDB['id'], $session->getInfo(UserColumns::UUID, false))) {
+        $appInstance->BadRequest('This code has already been redeemed', ['error_code' => 'CODE_ALREADY_REDEEMED']);
 
+        return;
+    }
+
+    RedeemRedeems::redeemCode($codeDB['id'], $session->getInfo(UserColumns::UUID, false));
+    $newCredits = $session->getInfo(UserColumns::CREDITS, false) + $coinsToAdd;
+    $session->setInfo(UserColumns::CREDITS, $newCredits, false);
+    RedeemCoins::removeUsage($codeDB['id']);
 
     // Add user activity log
     UserActivities::add(
@@ -79,7 +85,7 @@ $router->post('/api/user/earn/redeem', function (): void {
 });
 
 // Redeem code check - validates a code without redeeming it
-$router->get('/api/user/redeem/check/(.*)', function ($code): void {
+$router->get('/api/user/earn/redeem/check/(.*)', function ($code): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyGET();

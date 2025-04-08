@@ -33,7 +33,7 @@ class App extends MythicalAPP
     public LicenseValidator $licenseValidator;
     public Database $db;
 
-    public function __construct(bool $softBoot)
+    public function __construct(bool $softBoot, bool $isCron = false)
     {
         /**
          * Load the environment variables.
@@ -57,6 +57,11 @@ class App extends MythicalAPP
         if ($softBoot) {
             return;
         }
+
+        if ($isCron) {
+            define('CRON_MODE', true);
+        }
+
         /**
          * @global \MythicalDash\Plugins\PluginManager $pluginManager
          * @global \MythicalDash\Plugins\Events\PluginEvent $eventManager
@@ -73,21 +78,23 @@ class App extends MythicalAPP
             define('REDIS_ENABLED', true);
         }
 
-        // @phpstan-ignore-next-line
-        $rateLimiter = new RedisRateLimiter(Rate::perMinute(RATE_LIMIT), new \Redis(), 'rate_limiting');
-        try {
-            $rateLimiter->limit(CloudFlareRealIP::getRealIP());
-        } catch (LimitExceeded $e) {
-            self::getLogger()->error('User: ' . $e->getMessage());
-            self::init();
-            self::ServiceUnavailable('You are being rate limited!', ['error_code' => 'RATE_LIMITED']);
-        } catch (\Exception $e) {
-            self::getLogger()->error('-----------------------------');
-            self::getLogger()->error('REDIS SERVER IS DOWN');
-            self::getLogger()->error('RATE LIMITING IS DISABLED');
-            self::getLogger()->error('YOU SHOULD FIX THIS ASAP');
-            self::getLogger()->error('NO SUPPORT WILL BE PROVIDED');
-            self::getLogger()->error('-----------------------------');
+        if (!defined('CRON_MODE')) {
+            // @phpstan-ignore-next-line
+            $rateLimiter = new RedisRateLimiter(Rate::perMinute(RATE_LIMIT), new \Redis(), 'rate_limiting');
+            try {
+                $rateLimiter->limit(CloudFlareRealIP::getRealIP());
+            } catch (LimitExceeded $e) {
+                self::getLogger()->error('User: ' . $e->getMessage());
+                self::init();
+                self::ServiceUnavailable('You are being rate limited!', ['error_code' => 'RATE_LIMITED']);
+            } catch (\Exception $e) {
+                self::getLogger()->error('-----------------------------');
+                self::getLogger()->error('REDIS SERVER IS DOWN');
+                self::getLogger()->error('RATE LIMITING IS DISABLED');
+                self::getLogger()->error('YOU SHOULD FIX THIS ASAP');
+                self::getLogger()->error('NO SUPPORT WILL BE PROVIDED');
+                self::getLogger()->error('-----------------------------');
+            }
         }
 
         /**
@@ -103,8 +110,14 @@ class App extends MythicalAPP
         /**
          * Initialize the plugin manager.
          */
-        $pluginManager->loadKernel();
-        define('LOGGER', $this->getLogger());
+        if (!defined('CRON_MODE')) {
+            $pluginManager->loadKernel();
+            define('LOGGER', $this->getLogger());
+        }
+
+        if ($isCron) {
+            return;
+        }
 
         $router = new rt();
         $this->registerApiRoutes($router);
@@ -262,10 +275,10 @@ class App extends MythicalAPP
     /**
      * Get the instance of the App class.
      */
-    public static function getInstance(bool $softBoot): App
+    public static function getInstance(bool $softBoot, bool $isCron = false): App
     {
         if (!isset(self::$instance)) {
-            self::$instance = new self($softBoot);
+            self::$instance = new self($softBoot, $isCron);
         }
 
         return self::$instance;

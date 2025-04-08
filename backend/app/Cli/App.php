@@ -13,6 +13,8 @@
 
 namespace MythicalDash\Cli;
 
+use MythicalDash\Cli\Commands\Help;
+
 class App extends \MythicalSystems\Utils\BungeeChatApi
 {
     public $prefix = '&7[&5&lMythical&d&lClient&7] &8&l| &7';
@@ -28,7 +30,7 @@ class App extends \MythicalSystems\Utils\BungeeChatApi
         $commandFile = __DIR__ . "/Commands/$commandName.php";
 
         if (!file_exists($commandFile)) {
-            self::send('Command not found.');
+            Help::execute([]);
 
             return;
         }

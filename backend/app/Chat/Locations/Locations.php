@@ -41,19 +41,21 @@ class Locations extends Database
      * @param int $pterodactylLocationId The Pterodactyl location ID
      * @param string $nodeIp The IP address of the node
      * @param string $status The status of the location
+     * @param int $slots The number of slots available for the location
      *
      * @return int The ID of the location
      */
-    public static function create(string $name, string $description, int $pterodactylLocationId, string $nodeIp, string $status = 'active'): int
+    public static function create(string $name, string $description, int $pterodactylLocationId, string $nodeIp, string $status = 'active', int $slots = 15): int
     {
         try {
             $dbConn = Database::getPdoConnection();
-            $stmt = $dbConn->prepare('INSERT INTO ' . self::getTableName() . ' (name, description, pterodactyl_location_id, node_ip, status) VALUES (:name, :description, :pterodactyl_location_id, :node_ip, :status)');
+            $stmt = $dbConn->prepare('INSERT INTO ' . self::getTableName() . ' (name, description, pterodactyl_location_id, node_ip, status, slots) VALUES (:name, :description, :pterodactyl_location_id, :node_ip, :status, :slots)');
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':pterodactyl_location_id', $pterodactylLocationId);
             $stmt->bindParam(':node_ip', $nodeIp);
             $stmt->bindParam(':status', $status);
+            $stmt->bindParam(':slots', $slots);
 
             $stmt->execute();
 
@@ -73,10 +75,11 @@ class Locations extends Database
      * @param string $description The new description of the location
      * @param string $nodeIp The new IP address of the node
      * @param string $status The new status of the location
+     * @param int $slots The new number of slots available for the location
      *
      * @return bool True if the location was updated successfully, false otherwise
      */
-    public static function update(int $id, string $name, string $description, string $nodeIp, string $status): bool
+    public static function update(int $id, string $name, string $description, string $nodeIp, string $status, int $slots = 15): bool
     {
         try {
             if (!self::exists($id)) {
@@ -86,12 +89,13 @@ class Locations extends Database
             }
 
             $dbConn = Database::getPdoConnection();
-            $stmt = $dbConn->prepare('UPDATE ' . self::getTableName() . ' SET name = :name, description = :description, node_ip = :node_ip, status = :status WHERE id = :id');
+            $stmt = $dbConn->prepare('UPDATE ' . self::getTableName() . ' SET name = :name, description = :description, node_ip = :node_ip, status = :status, slots = :slots WHERE id = :id');
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':node_ip', $nodeIp);
             $stmt->bindParam(':status', $status);
+            $stmt->bindParam(':slots', $slots);
 
             return $stmt->execute();
         } catch (\Exception $e) {

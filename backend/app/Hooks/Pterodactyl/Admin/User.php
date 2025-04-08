@@ -156,6 +156,20 @@ class User extends UsersResource
         }
     }
 
+    public static function exists(string $userId): bool
+    {
+        $appInstance = App::getInstance(true);
+        $config = $appInstance->getConfig();
+        $userResource = new UsersResource($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+        try {
+            $userResource->findUserByUuid($userId);
+
+            return true;
+        } catch (ResourceNotFoundException $e) {
+            return false;
+        }
+    }
+
     /**
      * @param string $username The username of the user
      *
