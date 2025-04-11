@@ -13,12 +13,15 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\Database;
+use MythicalDash\Chat\Eggs\Eggs;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Roles;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\Locations\Locations;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Hooks\Pterodactyl\Admin\Nodes;
 use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 use MythicalDash\Plugins\Events\Events\UserEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
@@ -216,6 +219,21 @@ $router->get('/api/user/session/servers', function (): void {
     $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
 
     $servers = Servers::getUserServersList($pterodactylUserId);
+    foreach ($servers as &$server) {
+        $nodeId = $server['node'];
+        $locationId = Nodes::getLocationIdFromNode($nodeId);
+        $location = Locations::getLocationByPterodactylLocationId($locationId);
+        $server['location'] = $location;
+
+        $eggId = $server['egg'];
+        $egg = Eggs::getByPterodactylEggId($eggId);
+        $server['service'] = $egg;
+
+        $nestId = $server['nest'];
+        $nest = MythicalDash\Chat\Eggs\EggCategories::getByPterodactylNestId($nestId);
+        $server['category'] = $nest;
+    }
+    unset($server); // Unset the reference to avoid potential issues
 
     $appInstance->OK('User servers', [
         'servers' => $servers,

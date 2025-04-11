@@ -9,6 +9,22 @@ const serverRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
         },
     },
+    {
+        path: '/server/:id/delete',
+        name: 'Delete Server',
+        component: () => import('@/views/client/server/Delete.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
+        path: '/server/:id/update',
+        name: 'Update Server',
+        component: () => import('@/views/client/server/Update.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
 ];
 
 export default serverRoutes;

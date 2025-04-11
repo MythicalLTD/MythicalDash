@@ -425,7 +425,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, defineProps, defineEmits } from 'vue';
+import { ref, computed, watch, defineEmits } from 'vue';
 import { EyeIcon, EyeOffIcon, FeatherIcon } from 'lucide-vue-next';
 
 interface Props {

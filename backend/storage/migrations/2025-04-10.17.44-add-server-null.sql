@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_servers` CHANGE `build` `build` INT(11) NULL DEFAULT NULL;

@@ -227,4 +227,29 @@ class EggCategories extends Database
             return [];
         }
     }
+
+    /**
+     * Get a category by Pterodactyl nest ID.
+     *
+     * @param int $pterodactylNestId The Pterodactyl nest ID to get
+     *
+     * @return array|null The category data or null if not found
+     */
+    public static function getByPterodactylNestId(int $pterodactylNestId): ?array
+    {
+        try {
+            $dbConn = Database::getPdoConnection();
+            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' 
+				WHERE pterodactyl_nest_id = :pterodactyl_nest_id AND deleted = "false"');
+
+            $stmt->bindParam(':pterodactyl_nest_id', $pterodactylNestId);
+            $stmt->execute();
+
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get egg category by Pterodactyl nest ID: ' . $e->getMessage());
+
+            return null;
+        }
+    }
 }

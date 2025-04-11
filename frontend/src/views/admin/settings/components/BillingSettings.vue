@@ -298,7 +298,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineProps, defineEmits } from 'vue';
+import { ref, watch, defineEmits } from 'vue';
 
 interface Props {
     settings: Record<string, string>;

@@ -257,7 +257,7 @@ class Eggs extends Database
             $stmt->bindParam(':pterodactyl_egg_id', $pterodactylEggId);
             $stmt->execute();
 
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
             self::db_Error('Failed to get eggs by Pterodactyl egg ID: ' . $e->getMessage());
 

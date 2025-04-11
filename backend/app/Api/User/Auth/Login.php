@@ -16,10 +16,12 @@ namespace MythicalDash\Api\User\Auth;
 use MythicalDash\App;
 use MythicalDash\Mail\Mail;
 use MythicalDash\Chat\User\User;
+use MythicalDash\Chat\Servers\Server;
 use MythicalDash\Config\ConfigInterface;
 use MythicalSystems\CloudFlare\Turnstile;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
 
 $router->add('/api/user/auth/login', function (): void {
@@ -80,6 +82,7 @@ $router->add('/api/user/auth/login', function (): void {
             UserColumns::TWO_FA_BLOCKED,
             UserColumns::EMAIL,
             UserColumns::PASSWORD,
+            UserColumns::UUID,
             UserColumns::FIRST_NAME,
             UserColumns::LAST_NAME,
         ], [
@@ -132,7 +135,9 @@ $router->add('/api/user/auth/login', function (): void {
     } else {
         setcookie('user_token', $loginResult, time() + 3600, '/');
     }
-
+    /**
+     * Login user in Pterodactyl.
+     */
     try {
         \MythicalDash\Hooks\Pterodactyl\Admin\User::performLogin(
             $userInfoArray[UserColumns::PTERODACTYL_USER_ID],
@@ -144,6 +149,21 @@ $router->add('/api/user/auth/login', function (): void {
         );
     } catch (\Exception $e) {
         $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] Failed to login user in Pterodactyl: ' . $e->getMessage());
+        $appInstance->InternalServerError('Internal Server Error', ['error_code' => 'PTERODACTYL_ERROR']);
+    }
+    /**
+     * Import servers from Pterodactyl to MythicalDash.
+     */
+    try {
+        $pterodactylServers = Servers::getUserServersList($userInfoArray[UserColumns::PTERODACTYL_USER_ID]);
+
+        foreach ($pterodactylServers as $pterodactylServer) {
+            if (!Server::doesServerExistByPterodactylId($pterodactylServer['id'])) {
+                Server::create($pterodactylServer['id'], null, $userInfoArray[UserColumns::UUID]);
+            }
+        }
+    } catch (\Exception $e) {
+        $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] Failed to create servers in MythicalDash: ' . $e->getMessage());
         $appInstance->InternalServerError('Internal Server Error', ['error_code' => 'PTERODACTYL_ERROR']);
     }
 

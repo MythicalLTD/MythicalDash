@@ -5,6 +5,7 @@ use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Eggs\EggCategories;
 use MythicalDash\Chat\Eggs\Eggs;
 use MythicalDash\Chat\Locations\Locations;
+use MythicalDash\Chat\Servers\Server;
 use MythicalDash\Chat\Servers\ServerQueue;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Config\ConfigInterface;
@@ -97,7 +98,8 @@ class ServerCreationJob
 				$locationId,
 				$description,
 				$logger,
-				$chat
+				$chat,
+				$userUUID
 			);
 
 		} catch (\Exception $e) {
@@ -181,7 +183,7 @@ class ServerCreationJob
 		return true;
 	}
 
-	private static function createPterodactylServer($app, $id, $servePrefix, $name, $pterodactylUserId, $eggId, $nestId, $ram, $disk, $cpu, $ports, $databases, $backups, $locationId, $description, $logger, $chat)
+	private static function createPterodactylServer($app, $id, $servePrefix, $name, $pterodactylUserId, $eggId, $nestId, $ram, $disk, $cpu, $ports, $databases, $backups, $locationId, $description, $logger, $chat, $userUUID)
 	{
 		$chat->sendOutputWithNewLine($servePrefix . "&aCreating server...");
 
@@ -235,6 +237,7 @@ class ServerCreationJob
 
 			if (isset($response['attributes']) && isset($response['attributes']['id'])) {
 				$chat->sendOutputWithNewLine($servePrefix . "&aServer created successfully with ID: " . $response['attributes']['id']);
+				Server::create($response['attributes']['id'], $id, $userUUID);
 				ServerQueue::updateStatus($id, 'completed');
 				$chat->sendOutputWithNewLine($servePrefix . "&aServer information stored in database");
 				return true;

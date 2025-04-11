@@ -12,6 +12,9 @@ import CardComponent from '../../ui/Card/CardComponent.vue';
 import Servers from '@/mythicaldash/Pterodactyl/Servers';
 import Session from '@/mythicaldash/Session';
 import Swal from 'sweetalert2';
+import { useSettingsStore } from '@/stores/settings';
+const Settings = useSettingsStore();
+const pterodactylUrl = Settings.getSetting('pterodactyl_base_url');
 
 // Define server interface
 interface ServerLimits {
@@ -38,8 +41,15 @@ interface Server {
     allocation: number;
     created_at: string;
     updated_at: string;
-    location?: string;
-    egg?: string;
+    location?: {
+        name: string;
+    };
+    service?: {
+        name: string;
+    };
+    category?: {
+        name: string;
+    };
 }
 
 const router = useRouter();
@@ -73,7 +83,7 @@ const fetchServers = async () => {
 
 // Add new methods
 const editServer = (identifier: string) => {
-    router.push(`/server/${identifier}/settings`);
+    router.push(`/server/${identifier}/update`);
 };
 
 const deleteServer = async (identifier: string) => {
@@ -95,43 +105,16 @@ const deleteServer = async (identifier: string) => {
     });
 
     if (result.isConfirmed) {
-        try {
-            // Add your delete server logic here
-            console.log('Deleting server:', identifier);
-
-            await Swal.fire({
-                title: 'Deleted!',
-                text: 'Your server has been deleted.',
-                icon: 'success',
-                confirmButtonColor: '#4f46e5',
-                background: '#1f2937',
-                color: '#fff',
-                customClass: {
-                    popup: 'rounded-lg border border-gray-700',
-                    confirmButton: 'px-4 py-2 rounded-md text-sm font-medium',
-                },
-            });
-        } catch (error) {
-            console.error('Failed to delete server:', error);
-            await Swal.fire({
-                title: 'Error!',
-                text: 'Failed to delete the server.',
-                icon: 'error',
-                confirmButtonColor: '#4f46e5',
-                background: '#1f2937',
-                color: '#fff',
-                customClass: {
-                    popup: 'rounded-lg border border-gray-700',
-                    confirmButton: 'px-4 py-2 rounded-md text-sm font-medium',
-                },
-            });
-        }
+        router.push(`/server/${identifier}/delete`);
     }
 };
 
 const jumpToPanel = (identifier: string) => {
-    // You can replace this URL with your actual panel URL
-    window.open(`https://panel.yourdomain.com/server/${identifier}`, '_blank');
+    if (!pterodactylUrl) {
+        console.error('Pterodactyl URL not found in settings');
+        return;
+    }
+    window.open(`${pterodactylUrl}/server/${identifier}`, '_blank');
 };
 
 onMounted(() => {
@@ -198,10 +181,10 @@ onMounted(() => {
                                 <div class="text-xs text-gray-400">{{ server.identifier }}</div>
                             </td>
                             <td class="px-6 py-4 text-gray-400">
-                                {{ server.location || 'Unknown' }}
+                                {{ server.location?.name || 'Unknown' }}
                             </td>
                             <td class="px-6 py-4 text-gray-400">
-                                {{ server.egg || 'Unknown' }}
+                                {{ server.service?.name || 'Unknown' }}
                             </td>
                             <td class="px-6 py-4">
                                 {{ formatBytes(server.limits.memory) }}
@@ -222,14 +205,14 @@ onMounted(() => {
                                     <button
                                         class="p-1.5 rounded-md text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
                                         title="Edit Server"
-                                        @click="editServer(server.identifier)"
+                                        @click="editServer(server.id)"
                                     >
                                         <PencilIcon class="w-4 h-4" />
                                     </button>
                                     <button
                                         class="p-1.5 rounded-md text-gray-400 hover:text-red-400 hover:bg-gray-800/50 transition-colors"
                                         title="Delete Server"
-                                        @click="deleteServer(server.identifier)"
+                                        @click="deleteServer(server.id)"
                                     >
                                         <TrashIcon class="w-4 h-4" />
                                     </button>

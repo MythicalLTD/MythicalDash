@@ -59,6 +59,45 @@ class Servers extends ServersResource
     }
 
     /**
+     * Get the server details for a user.
+     *
+     * @param int $pterodactylUserId The ID of the user to get server details for
+     * @param int $serverId The ID of the server to get details for
+     * @param bool $forceRefresh Whether to force refresh the cache
+     *
+     * @return array The server details
+     */
+    public static function getUserServerDetails(int $pterodactylUserId, int $serverId, bool $forceRefresh = false): array
+    {
+        return self::getUserData($pterodactylUserId, $forceRefresh)['servers'][$serverId] ?? [];
+    }
+
+    /**
+     * Get the server details for a server ID.
+     *
+     * @param int $serverId The ID of the server to get details for
+     */
+    public static function getServerPterodactylDetails(int $serverId): array
+    {
+        try {
+            $serversResource = new ServersResource(
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+            );
+
+            $server = $serversResource->getServer($serverId);
+
+            return $server;
+        } catch (ResourceNotFoundException $e) {
+            return [];
+        } catch (\Throwable $e) {
+            App::getInstance(true)->getLogger()->error('[Pterodactyl/Admin/Servers#serverExists] Failed to check server existence: ' . $e->getMessage());
+
+            return [];
+        }
+    }
+
+    /**
      * Clear the user cache.
      *
      * @param int $pterodactylUserId The ID of the user to clear cache for
@@ -81,6 +120,117 @@ class Servers extends ServersResource
             foreach ($files as $file) {
                 unlink($file);
             }
+        }
+    }
+
+    /**
+     * Check if a server exists in Pterodactyl.
+     *
+     * @param string $serverIdentifier The server identifier to check
+     *
+     * @return bool Whether the server exists
+     */
+    public static function serverExists(string $serverIdentifier): bool
+    {
+        try {
+            $serversResource = new ServersResource(
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+            );
+
+            $serversResource->getServer($serverIdentifier);
+
+            return true;
+        } catch (ResourceNotFoundException $e) {
+            return false;
+        } catch (\Throwable $e) {
+            App::getInstance(true)->getLogger()->error('[Pterodactyl/Admin/Servers#serverExists] Failed to check server existence: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
+    /**
+     * Delete a server from Pterodactyl.
+     *
+     * @param int $serverId The server ID to delete
+     * @param bool $force Whether to force delete the server
+     *
+     * @return array The deletion result
+     */
+    public static function deletePterodactylServer(int $serverId, bool $force = false): array
+    {
+        try {
+            $serversResource = new ServersResource(
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+            );
+
+            return $serversResource->deleteServer($serverId, $force);
+        } catch (\Throwable $e) {
+            App::getInstance(true)->getLogger()->error('[Pterodactyl/Admin/Servers#deleteServer] Failed to delete server: ' . $e->getMessage());
+
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    public static function updatePterodactylServer(int $serverId, array $updateData): array
+    {
+        $appInstance = App::getInstance(true);
+
+        try {
+            $serversResource = new ServersResource(
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+            );
+
+            return $serversResource->updateServerBuild($serverId, $updateData);
+        } catch (ResourceNotFoundException $e) {
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#updatePterodactylServer] Server not found', false);
+
+            return [];
+        } catch (PterodactylException|ValidationException $e) {
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#updatePterodactylServer] Failed to update server: ' . $e->getMessage(), false);
+
+            return [];
+        } catch (\Throwable $e) {
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#updatePterodactylServer] Unexpected error: ' . $e->getMessage(), false);
+
+            return [];
+        }
+    }
+
+    /**
+     * Update the details of a server in Pterodactyl.
+     *
+     * @param int $serverId The ID of the server to update
+     * @param array $updateData The data to update the server with
+     *
+     * @return array The update result
+     */
+    public static function updatePterodactylServerDetails(int $serverId, array $updateData): array
+    {
+        $appInstance = App::getInstance(true);
+
+        try {
+            $serversResource = new ServersResource(
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+            );
+
+            return $serversResource->updateServerDetails($serverId, $updateData);
+        } catch (ResourceNotFoundException $e) {
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#updatePterodactylServerDetails] Server not found', false);
+
+            return [];
+        } catch (PterodactylException|ValidationException $e) {
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#updatePterodactylServerDetails] Failed to update server details: ' . $e->getMessage(), false);
+
+            return [];
+        } catch (\Throwable $e) {
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#updatePterodactylServerDetails] Unexpected error: ' . $e->getMessage(), false);
+
+            return [];
         }
     }
 
@@ -110,8 +260,10 @@ class Servers extends ServersResource
 
         if (file_exists($cacheFile) && !$forceRefresh) {
             $cacheData = json_decode(file_get_contents($cacheFile), true);
-            if ($cacheData && isset($cacheData['timestamp'])
-                && (time() - $cacheData['timestamp']) < self::CACHE_TTL) {
+            if (
+                $cacheData && isset($cacheData['timestamp'])
+                && (time() - $cacheData['timestamp']) < self::CACHE_TTL
+            ) {
                 return $cacheData;
             }
         }
@@ -160,16 +312,28 @@ class Servers extends ServersResource
                 $serversList[] = [
                     'id' => $attr['id'] ?? null,
                     'identifier' => $attr['identifier'] ?? null,
+                    'uuid' => $attr['uuid'] ?? null,
+                    'external_id' => $attr['external_id'] ?? null,
                     'name' => $attr['name'] ?? null,
                     'description' => $attr['description'] ?? '',
                     'status' => $attr['status'] ?? null,
                     'suspended' => $attr['suspended'] ?? false,
                     'limits' => $attr['limits'] ?? [],
                     'feature_limits' => $attr['feature_limits'] ?? [],
+                    'user' => $attr['user'] ?? null,
                     'node' => $attr['node'] ?? null,
                     'allocation' => $attr['allocation'] ?? null,
+                    'nest' => $attr['nest'] ?? null,
+                    'egg' => $attr['egg'] ?? null,
                     'created_at' => $attr['created_at'] ?? null,
                     'updated_at' => $attr['updated_at'] ?? null,
+                    'container' => [
+                        'startup_command' => $attr['container']['startup_command'] ?? '',
+                        'image' => $attr['container']['image'] ?? '',
+                        'installed' => $attr['container']['installed'] ?? 0,
+                        'environment' => $attr['container']['environment'] ?? [],
+                    ],
+
                 ];
             }
 
@@ -186,12 +350,16 @@ class Servers extends ServersResource
 
         } catch (ResourceNotFoundException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] User not found', false);
+
+            return [];
         } catch (PterodactylException|ValidationException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Failed to fetch user data', false);
+
+            return [];
         } catch (\Throwable $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Unexpected error', false);
-        }
 
-        return ['timestamp' => time(), 'resources' => [], 'servers' => []];
+            return [];
+        }
     }
 }

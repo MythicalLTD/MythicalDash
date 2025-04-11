@@ -22,6 +22,259 @@ use MythicalDash\Chat\Servers\ServerQueue;
 use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 use MythicalDash\Plugins\Events\Events\ServerQueueEvent;
 
+// Update server
+$router->post('/api/user/server/(.*)/update', function (string $id): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $session = new Session($appInstance);
+    $accountToken = $session->SESSION_KEY;
+    $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
+
+    // Get the server first to check ownership
+    // Get server details
+    $server = Servers::getServerPterodactylDetails((int) $id);
+
+    if (!$server) {
+        $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
+
+        return;
+    }
+
+    // Add additional server information
+    $locationId = $server['attributes']['relationships']['location']['attributes']['id'];
+    $location = Locations::getLocationByPterodactylLocationId($locationId);
+    $server['location'] = $location;
+
+    $eggId = $server['attributes']['relationships']['egg']['attributes']['id'];
+    $egg = Eggs::getByPterodactylEggId($eggId);
+    $server['service'] = $egg;
+
+    $nestId = $server['attributes']['relationships']['nest']['attributes']['id'];
+    $nest = EggCategories::getByPterodactylNestId($nestId);
+    $server['category'] = $nest;
+    $allocation = $server['attributes']['allocation'];
+
+    // Validate input data
+    if (isset($_POST['name']) && !empty($_POST['name'])) {
+        $name = $_POST['name'];
+    } else {
+        $appInstance->BadRequest('Name is required', ['error_code' => 'NAME_REQUIRED']);
+
+        return;
+    }
+    if (isset($_POST['description']) && !empty($_POST['description'])) {
+        $description = $_POST['description'];
+    } else {
+        $appInstance->BadRequest('Description is required', ['error_code' => 'DESCRIPTION_REQUIRED']);
+
+        return;
+    }
+    if (isset($_POST['memory']) && !empty($_POST['memory'])) {
+        $memory = $_POST['memory'];
+    } else {
+        $appInstance->BadRequest('Memory is required', ['error_code' => 'MEMORY_REQUIRED']);
+
+        return;
+    }
+    if (isset($_POST['cpu']) && !empty($_POST['cpu'])) {
+        $cpu = $_POST['cpu'];
+    } else {
+        $appInstance->BadRequest('CPU is required', ['error_code' => 'CPU_REQUIRED']);
+
+        return;
+    }
+    if (isset($_POST['disk']) && !empty($_POST['disk'])) {
+        $disk = $_POST['disk'];
+    } else {
+        $appInstance->BadRequest('Disk is required', ['error_code' => 'DISK_REQUIRED']);
+
+        return;
+    }
+    if (isset($_POST['databases']) && !empty($_POST['databases'])) {
+        $databases = $_POST['databases'];
+    } else {
+        $appInstance->BadRequest('Databases is required', ['error_code' => 'DATABASES_REQUIRED']);
+
+        return;
+    }
+    if (isset($_POST['backups']) && !empty($_POST['backups'])) {
+        $backups = $_POST['backups'];
+    } else {
+        $appInstance->BadRequest('Backups is required', ['error_code' => 'BACKUPS_REQUIRED']);
+
+        return;
+    }
+    if (isset($_POST['allocations']) && !empty($_POST['allocations'])) {
+        $allocations = $_POST['allocations'];
+    } else {
+        $appInstance->BadRequest('Allocations is required', ['error_code' => 'ALLOCATIONS_REQUIRED']);
+
+        return;
+    }
+
+    // Validate required fields
+    if (empty($name)) {
+        $appInstance->BadRequest('Name is required', ['error_code' => 'NAME_REQUIRED']);
+
+        return;
+    }
+
+    // Validate resource limits
+    if ($memory < 256) {
+        $appInstance->BadRequest('Memory must be at least 256MB', ['error_code' => 'MEMORY_MINIMUM']);
+
+        return;
+    }
+
+    if ($cpu < 5) {
+        $appInstance->BadRequest('CPU must be at least 5%', ['error_code' => 'CPU_MINIMUM']);
+
+        return;
+    }
+
+    if ($disk < 256) {
+        $appInstance->BadRequest('Disk must be at least 256MB', ['error_code' => 'DISK_MINIMUM']);
+
+        return;
+    }
+
+    if ($allocations < 1) {
+        $appInstance->BadRequest('Allocations must be at least 1', ['error_code' => 'ALLOCATIONS_MINIMUM']);
+
+        return;
+    }
+
+    $resources = Servers::getUserTotalResourcesUsage($pterodactylUserId);
+    $available_resources = User::getInfoArray($accountToken, [
+        UserColumns::MEMORY_LIMIT,
+        UserColumns::DISK_LIMIT,
+        UserColumns::CPU_LIMIT,
+        UserColumns::DATABASE_LIMIT,
+        UserColumns::BACKUP_LIMIT,
+        UserColumns::ALLOCATION_LIMIT,
+        UserColumns::SERVER_LIMIT,
+    ], []);
+
+    $free_resources = [
+        'memory' => $available_resources[UserColumns::MEMORY_LIMIT] - $resources['memory'],
+        'disk' => $available_resources[UserColumns::DISK_LIMIT] - $resources['disk'],
+        'cpu' => $available_resources[UserColumns::CPU_LIMIT] - $resources['cpu'],
+        'databases' => $available_resources[UserColumns::DATABASE_LIMIT] - $resources['databases'],
+        'backups' => $available_resources[UserColumns::BACKUP_LIMIT] - $resources['backups'],
+        'allocations' => $available_resources[UserColumns::ALLOCATION_LIMIT] - $resources['allocations'],
+        'servers' => $available_resources[UserColumns::SERVER_LIMIT] - $resources['servers'],
+    ];
+
+    // Check if user has enough resources for the changes
+    if ($memory > $free_resources['memory']) {
+        $appInstance->BadRequest('You do not have enough memory resources', ['error_code' => 'MEMORY_INSUFFICIENT']);
+
+        return;
+    }
+
+    if ($cpu > $free_resources['cpu']) {
+        $appInstance->BadRequest('You do not have enough CPU resources', ['error_code' => 'CPU_INSUFFICIENT']);
+
+        return;
+    }
+
+    if ($disk > $free_resources['disk']) {
+        $appInstance->BadRequest('You do not have enough disk space resources', ['error_code' => 'DISK_INSUFFICIENT']);
+
+        return;
+    }
+
+    if ($databases > $free_resources['databases']) {
+        $appInstance->BadRequest('You do not have enough database resources', ['error_code' => 'DATABASES_INSUFFICIENT']);
+
+        return;
+    }
+
+    if ($backups > $free_resources['backups']) {
+        $appInstance->BadRequest('You do not have enough backup resources', ['error_code' => 'BACKUPS_INSUFFICIENT']);
+
+        return;
+    }
+
+    if ($allocations > $free_resources['allocations']) {
+        $appInstance->BadRequest('You do not have enough allocation resources', ['error_code' => 'ALLOCATIONS_INSUFFICIENT']);
+
+        return;
+    }
+
+    // Update server details
+    try {
+        $updateData = [
+            'allocation' => $allocation,
+            'memory' => $memory,
+            'cpu' => $cpu,
+            'swap' => 0,
+            'io' => 500,
+            'disk' => $disk,
+            'feature_limits' => [
+                'databases' => $databases,
+                'backups' => $backups,
+                'allocations' => $allocations,
+            ],
+        ];
+
+        $details = [
+            'name' => $name,
+            'user' => $pterodactylUserId,
+            'description' => $description,
+            'external_id' => '',
+        ];
+
+        $serverId = $server['attributes']['id'];
+        $svAw1 = Servers::updatePterodactylServer($serverId, $updateData);
+        $svAw2 = Servers::updatePterodactylServerDetails($serverId, $details);
+
+        $appInstance->OK('Server updated successfully', [
+            'build' => $updateData,
+            'details' => $details,
+            'server' => $server,
+            'rsp' => [
+                'svAw1' => $svAw1,
+                'svAw2' => $svAw2,
+            ],
+        ]);
+
+    } catch (Exception $e) {
+        $appInstance->ServiceUnavailable('Error updating server: ' . $e->getMessage(), ['error_code' => 'FAILED_TO_UPDATE_SERVER']);
+    }
+});
+
+// Delete server
+$router->post('/api/user/server/(.*)/delete', function (string $id): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $session = new Session($appInstance);
+    $accountToken = $session->SESSION_KEY;
+    $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
+
+    // Get the server first to check ownership
+    $server = Servers::getServerPterodactylDetails((int) $id);
+
+    if (!$server) {
+        $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
+
+        return;
+    }
+
+    $serverId = $server['attributes']['id'];
+    if (MythicalDash\Chat\Servers\Server::doesServerExistByPterodactylId($serverId)) {
+        MythicalDash\Chat\Servers\Server::deleteServerByPterodactylId($serverId);
+    }
+
+    try {
+        Servers::deletePterodactylServer($serverId, false);
+        $appInstance->OK('Server deleted successfully', []);
+    } catch (Exception $e) {
+        $appInstance->ServiceUnavailable('Error deleting server: ' . $e->getMessage(), ['error_code' => 'FAILED_TO_DELETE_SERVER']);
+    }
+});
 $router->get('/api/user/server/create', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
@@ -43,7 +296,7 @@ $router->get('/api/user/server/create', function (): void {
     }, $categories);
 
     $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
-    $resources = Servers::getUserTotalResourcesUsage($pterodactylUserId);
+    $resources = Servers::getUserTotalResourcesUsage($pterodactylUserId, true);
     $available_resources = User::getInfoArray($accountToken, [
         UserColumns::MEMORY_LIMIT,
         UserColumns::DISK_LIMIT,
@@ -300,4 +553,40 @@ $router->post('/api/user/server/create', function (): void {
     } catch (Exception $e) {
         $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
     }
+});
+
+// Get server by ID
+$router->get('/api/user/server/(.*)', function (string $id): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    $session = new Session($appInstance);
+    $accountToken = $session->SESSION_KEY;
+    $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
+
+    // Get server details
+    $server = Servers::getServerPterodactylDetails((int) $id);
+
+    if (empty($server)) {
+        $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
+
+        return;
+    }
+
+    // Add additional server information
+    $locationId = $server['attributes']['relationships']['location']['attributes']['id'];
+    $location = Locations::getLocationByPterodactylLocationId($locationId);
+    $server['location'] = $location;
+
+    $eggId = $server['attributes']['relationships']['egg']['attributes']['id'];
+    $egg = Eggs::getByPterodactylEggId($eggId);
+    $server['service'] = $egg;
+
+    $nestId = $server['attributes']['relationships']['nest']['attributes']['id'];
+    $nest = EggCategories::getByPterodactylNestId($nestId);
+    $server['category'] = $nest;
+
+    $appInstance->OK('Server details about server ' . $id, [
+        'server' => $server,
+    ]);
 });

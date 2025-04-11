@@ -174,7 +174,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, defineProps, defineEmits } from 'vue';
+import { ref, computed, watch, defineEmits } from 'vue';
 import { EyeIcon, EyeOffIcon, ExternalLinkIcon } from 'lucide-vue-next';
 
 interface Props {

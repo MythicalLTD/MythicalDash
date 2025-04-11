@@ -24,6 +24,11 @@ class Locations extends Database
         return self::TABLE_NAME;
     }
 
+    /**
+     * Get all locations.
+     *
+     * @return array The locations
+     */
     public static function getLocations(): array
     {
         $dbConn = Database::getPdoConnection();
@@ -31,6 +36,29 @@ class Locations extends Database
         $stmt->execute();
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get a location by Pterodactyl location ID.
+     *
+     * @param int $pterodactylLocationId The Pterodactyl location ID to get
+     *
+     * @return array|null The location data or null if not found
+     */
+    public static function getLocationByPterodactylLocationId(int $pterodactylLocationId): ?array
+    {
+        try {
+            $dbConn = Database::getPdoConnection();
+            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE pterodactyl_location_id = :pterodactyl_location_id AND deleted = "false"');
+            $stmt->bindParam(':pterodactyl_location_id', $pterodactylLocationId);
+            $stmt->execute();
+
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get location by Pterodactyl location ID: ' . $e->getMessage());
+
+            return null;
+        }
     }
 
     /**

@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, defineProps, defineEmits } from 'vue';
+import { ref, watch, onMounted, defineEmits } from 'vue';
 import Monaco from 'monaco-editor-vue3';
 
 const props = defineProps({

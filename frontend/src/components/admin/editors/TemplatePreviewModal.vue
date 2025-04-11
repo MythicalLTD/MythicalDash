@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, defineProps, defineEmits } from 'vue';
+import { ref, onMounted, watch, defineEmits } from 'vue';
 import { XIcon, MaximizeIcon, MinimizeIcon, RefreshCcwIcon } from 'lucide-vue-next';
 
 const props = defineProps({

@@ -72,7 +72,11 @@ class ServersResource extends PterodactylAdmin
     public function getServer(int $serverId): array
     {
         try {
-            return $this->request('GET', "/api/application/servers/{$serverId}");
+            return $this->request('GET', "/api/application/servers/{$serverId}", [
+                'query' => [
+                    'include' => 'allocations,user,subusers,pack,nest,egg,variables,location,node,databases',
+                ],
+            ]);
         } catch (ClientException $e) {
             $response = $e->getResponse();
             $statusCode = $response->getStatusCode();
