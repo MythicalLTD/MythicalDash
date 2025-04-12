@@ -29,7 +29,10 @@
                                 <!-- Link Provider Cards -->
                                 <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <!-- Linkvertise -->
-                                    <div class="bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/30">
+                                    <div
+                                        v-if="Settings.getSetting('l4r_linkadvertise_enabled') === 'true'"
+                                        class="bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/30"
+                                    >
                                         <div class="p-5">
                                             <div class="flex items-center mb-3">
                                                 <img
@@ -67,7 +70,10 @@
                                     </div>
 
                                     <!-- ShareUs -->
-                                    <div class="bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/30">
+                                    <div
+                                        v-if="Settings.getSetting('l4r_shareus_enabled') === 'true'"
+                                        class="bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/30"
+                                    >
                                         <div class="p-5">
                                             <div class="flex items-center mb-3">
                                                 <img
@@ -105,7 +111,10 @@
                                     </div>
 
                                     <!-- LinkPays -->
-                                    <div class="bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/30">
+                                    <div
+                                        v-if="Settings.getSetting('l4r_linkpays_enabled') === 'true'"
+                                        class="bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/30"
+                                    >
                                         <div class="p-5">
                                             <div class="flex items-center mb-3">
                                                 <img
@@ -143,7 +152,10 @@
                                     </div>
 
                                     <!-- GyaniLinks -->
-                                    <div class="bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/30">
+                                    <div
+                                        v-if="Settings.getSetting('l4r_gyanilinks_enabled') === 'true'"
+                                        class="bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/30"
+                                    >
                                         <div class="p-5">
                                             <div class="flex items-center mb-3">
                                                 <img
@@ -437,20 +449,21 @@ const goToLinkProvider = async (providerKey: string) => {
             return;
         }
 
-        // Log the provider visit
-        await fetch('/api/user/earn/l4r/start', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-            },
-            body: JSON.stringify({
-                provider: providerKey,
-            }),
-        });
+        if (providerKey === 'linkvertise') {
+            window.open('/api/user/earn/l4r/linkvertise/start');
+        }
 
-        // Open provider URL in new tab
-        window.open(provider.url, '_blank');
+        if (providerKey === 'shareus') {
+            window.open('/api/user/earn/l4r/shareus/start');
+        }
+
+        if (providerKey === 'linkpays') {
+            window.open('/api/user/earn/l4r/linkpays/start');
+        }
+
+        if (providerKey === 'gyanilinks') {
+            window.open('/api/user/earn/l4r/gyanilinks/start');
+        }
 
         // Show success message
         showStatusMessage(`You've been redirected to ${provider.name}. Complete offers to earn rewards!`, 'success');

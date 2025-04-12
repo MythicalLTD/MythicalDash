@@ -6,9 +6,9 @@ const { promisify } = require('util');
 const readFileAsync = promisify(fs.readFile);
 
 // File extensions to include
-const VALID_EXTENSIONS = ['.vue', '.ts', '.js', '.php', '.css', '.yml', '.yaml', '.json'];
+const VALID_EXTENSIONS = ['.vue', '.ts', '.js', '.php', '.css', '.yml', '.yaml', '.json', '.sql'];
 // Directories to exclude
-const EXCLUDED_DIRS = ['node_modules', 'vendor', 'cache', '.cache', 'packages'];
+const EXCLUDED_DIRS = ['node_modules', 'vendor', 'cache', '.cache', 'packages','dist','assets'];
 
 // Process arguments
 const targetDir = process.argv[2] || '.';

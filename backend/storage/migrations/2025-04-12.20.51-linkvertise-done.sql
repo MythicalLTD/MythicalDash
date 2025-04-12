@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_linkvertise` ADD `completed` ENUM('false','true') NOT NULL DEFAULT 'false' AFTER `user`;
