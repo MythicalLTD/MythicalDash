@@ -1,5 +1,8 @@
 <template>
-    <CardComponent cardTitle="My Profile" cardDescription="Your account information">
+    <CardComponent
+        :cardTitle="t('Components.ManageAccount.title')"
+        :cardDescription="t('Components.ManageAccount.description')"
+    >
         <div class="flex items-center space-x-4 mb-4">
             <img
                 :src="`${Session.getInfo('avatar')}?height=60&width=60`"
@@ -20,7 +23,7 @@
         <div class="border-t border-gray-800 mt-4 pt-4">
             <button @click="goToAccount" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center">
                 <SettingsIcon class="w-4 h-4 mr-1" />
-                Manage Account
+                {{ t('Components.ManageAccount.viewMore') }}
                 <ChevronRightIcon class="w-4 h-4 ml-auto" />
             </button>
         </div>
@@ -33,10 +36,10 @@ import Session from '@/mythicaldash/Session';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Settings as SettingsIcon, ChevronRight as ChevronRightIcon } from 'lucide-vue-next';
-
+import { useI18n } from 'vue-i18n';
 const router = useRouter();
 const ticketCount = ref(0);
-
+const { t } = useI18n();
 // Navigate to account page
 const goToAccount = () => {
     router.push('/account');

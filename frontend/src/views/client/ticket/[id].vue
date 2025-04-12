@@ -144,8 +144,9 @@ watch(isLoading, (newValue) => {
         router.push({ name: 'Dashboard' });
         Swal.fire({
             icon: 'error',
-            title: 'Oops...',
-            text: t('tickets.pages.ticket.alerts.error.ticket_not_found'),
+            title: t('tickets.pages.ticket.error.title'),
+            text: t('tickets.pages.ticket.error.ticket_not_found'),
+            footer: t('tickets.pages.ticket.error.footer'),
             timer: 2000,
             showConfirmButton: false,
             toast: true,
@@ -170,8 +171,9 @@ const fetchTicketData = async () => {
         console.error('Failed to load ticket:', error);
         Swal.fire({
             icon: 'error',
-            title: t('tickets.pages.ticket.alerts.error.title'),
-            text: t('tickets.pages.ticket.alerts.error.ticket_not_found'),
+            title: t('tickets.pages.ticket.error.title'),
+            text: t('tickets.pages.ticket.error.ticket_not_found'),
+            footer: t('tickets.pages.ticket.error.footer'),
             timer: 2000,
             showConfirmButton: false,
             toast: true,
@@ -197,8 +199,9 @@ const refreshMessages = async () => {
         console.error('Failed to refresh messages:', error);
         Swal.fire({
             icon: 'error',
-            title: t('tickets.pages.ticket.alerts.error.title'),
-            text: t('tickets.pages.ticket.alerts.error.message_timeout'),
+            title: t('tickets.pages.ticket.error.title'),
+            text: t('tickets.pages.ticket.error.message_timeout'),
+            footer: t('tickets.pages.ticket.error.footer'),
             timer: 2000,
             showConfirmButton: false,
             toast: true,
@@ -238,8 +241,9 @@ const submitReply = async () => {
         console.error('Failed to submit reply:', error);
         Swal.fire({
             icon: 'error',
-            title: t('tickets.pages.ticket.alerts.error.title'),
-            text: t('tickets.pages.ticket.alerts.error.failed_reply'),
+            title: t('tickets.pages.ticket.error.title'),
+            text: t('tickets.pages.ticket.error.failed_reply'),
+            footer: t('tickets.pages.ticket.error.footer'),
             timer: 2000,
             showConfirmButton: false,
             toast: true,
@@ -253,8 +257,8 @@ const submitReply = async () => {
         window.location.reload();
         Swal.fire({
             icon: 'success',
-            title: t('tickets.pages.ticket.alerts.success.reply_success'),
-            text: t('tickets.pages.ticket.alerts.success.footer'),
+            title: t('tickets.pages.ticket.success.reply_success'),
+            text: t('tickets.pages.ticket.success.footer'),
             timer: 2000,
             showConfirmButton: false,
             toast: true,
@@ -270,8 +274,8 @@ const updateStatus = async (newStatus: 'open' | 'closed' | 'waiting' | 'replied'
     } catch (error) {
         Swal.fire({
             icon: 'error',
-            title: t('tickets.pages.ticket.alerts.error.title'),
-            text: t('tickets.pages.ticket.alerts.error.failed_status'),
+            title: t('tickets.pages.ticket.error.title'),
+            text: t('tickets.pages.ticket.error.failed_status'),
             timer: 2000,
             showConfirmButton: false,
             toast: true,
@@ -321,8 +325,8 @@ const validateFiles = (files: File[]): boolean => {
     if (selectedFiles.value.length + files.length > maxFiles) {
         Swal.fire({
             icon: 'error',
-            title: t('tickets.pages.ticket.alerts.error.title'),
-            text: t('tickets.pages.ticket.alerts.error.maximum_files'),
+            title: t('tickets.pages.ticket.error.title'),
+            text: t('tickets.pages.ticket.error.maximum_files'),
             timer: 3000,
             showConfirmButton: false,
             toast: true,
@@ -336,8 +340,8 @@ const validateFiles = (files: File[]): boolean => {
         if (file.size > maxSize) {
             Swal.fire({
                 icon: 'error',
-                title: t('tickets.pages.ticket.alerts.error.file_too_large'),
-                text: t('tickets.pages.ticket.alerts.error.file_too_large', { file: file.name }),
+                title: t('tickets.pages.ticket.error.file_too_large'),
+                text: t('tickets.pages.ticket.error.file_too_large', { file: file.name }),
                 timer: 3000,
                 showConfirmButton: false,
                 toast: true,
@@ -349,8 +353,8 @@ const validateFiles = (files: File[]): boolean => {
         if (!validTypes.includes(file.type)) {
             Swal.fire({
                 icon: 'error',
-                title: t('tickets.pages.ticket.alerts.error.title'),
-                text: t('tickets.pages.ticket.alerts.error.invalid_file_type', { file: file.name }),
+                title: t('tickets.pages.ticket.error.title'),
+                text: t('tickets.pages.ticket.error.invalid_file_type', { file: file.name }),
                 timer: 3000,
                 showConfirmButton: false,
                 toast: true,
@@ -425,7 +429,7 @@ const isImage = (filename: string): boolean => {
             <div class="max-w-6xl mx-auto p-6">
                 <div class="flex justify-between items-center">
                     <h1 class="text-2xl font-semibold text-gray-100">{{ t('tickets.pages.ticket.title') }}</h1>
-                    <Button @click="goBackToTicketList"> ↪ Go back </Button>
+                    <Button @click="goBackToTicketList">{{ t('tickets.pages.ticket.page.goBack') }}</Button>
                 </div>
                 <br />
                 <h2 class="text-xl font-semibold flex items-center gap-2">
@@ -473,7 +477,7 @@ const isImage = (filename: string): boolean => {
                                 class="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors"
                             >
                                 <LockIcon class="w-4 h-4" />
-                                Close Ticket
+                                {{ t('tickets.pages.ticket.page.buttons.close') }}
                             </button>
                             <button
                                 @click="updateStatus('open')"
@@ -481,7 +485,7 @@ const isImage = (filename: string): boolean => {
                                 class="flex items-center gap-2 px-4 py-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors"
                             >
                                 <UnlockIcon class="w-4 h-4" />
-                                Reopen Ticket
+                                {{ t('tickets.pages.ticket.page.buttons.reopen') }}
                             </button>
                         </div>
                     </div>
@@ -490,7 +494,7 @@ const isImage = (filename: string): boolean => {
                         <div class="flex items-start gap-3">
                             <UserIcon class="w-5 h-5 text-blue-400 mt-1" />
                             <div>
-                                <p class="text-sm text-gray-400">Created by</p>
+                                <p class="text-sm text-gray-400">{{ t('tickets.pages.ticket.page.createdBy') }}</p>
                                 <div class="flex items-center mt-1">
                                     <img
                                         :src="ticket.user.avatar"
@@ -508,7 +512,7 @@ const isImage = (filename: string): boolean => {
                         <div class="flex items-start gap-3">
                             <BuildingIcon class="w-5 h-5 text-blue-400 mt-1" />
                             <div>
-                                <p class="text-sm text-gray-400">Department</p>
+                                <p class="text-sm text-gray-400">{{ t('tickets.pages.ticket.page.department') }}</p>
                                 <p class="font-medium mt-1">{{ ticket.department.name }}</p>
                             </div>
                         </div>
@@ -516,7 +520,7 @@ const isImage = (filename: string): boolean => {
                         <div class="flex items-start gap-3">
                             <AlertTriangleIcon class="w-5 h-5 text-blue-400 mt-1" />
                             <div>
-                                <p class="text-sm text-gray-400">Priority</p>
+                                <p class="text-sm text-gray-400">{{ t('tickets.pages.ticket.page.priority') }}</p>
                                 <p
                                     :class="[
                                         'font-medium mt-1',
@@ -529,10 +533,10 @@ const isImage = (filename: string): boolean => {
                                 >
                                     {{
                                         ticket.priority === 'high'
-                                            ? 'High'
+                                            ? t('tickets.pages.ticket.page.priority_high')
                                             : ticket.priority === 'medium'
-                                              ? 'Medium'
-                                              : 'Low'
+                                              ? t('tickets.pages.ticket.page.priority_medium')
+                                              : t('tickets.pages.ticket.page.priority_low')
                                     }}
                                 </p>
                             </div>
@@ -541,7 +545,7 @@ const isImage = (filename: string): boolean => {
                         <div class="flex items-start gap-3">
                             <ClockIcon class="w-5 h-5 text-blue-400 mt-1" />
                             <div>
-                                <p class="text-sm text-gray-400">Created</p>
+                                <p class="text-sm text-gray-400">{{ t('tickets.pages.ticket.page.created') }}</p>
                                 <p class="font-medium mt-1">{{ formatDate(ticket.date) }}</p>
                             </div>
                         </div>
@@ -550,7 +554,7 @@ const isImage = (filename: string): boolean => {
                     <div class="border-t border-gray-700 pt-6">
                         <h2 class="text-lg font-semibold mb-2 flex items-center gap-2">
                             <FileTextIcon class="w-5 h-5 text-blue-400" />
-                            Description
+                            {{ t('tickets.pages.ticket.page.description') }}
                         </h2>
                         <p class="text-gray-300 whitespace-pre-wrap">{{ ticket.description }}</p>
                     </div>
@@ -558,7 +562,7 @@ const isImage = (filename: string): boolean => {
                     <div v-if="attachments.length > 0">
                         <h2 class="text-lg font-semibold mb-2 flex items-center gap-2">
                             <FileTextIcon class="w-5 h-5 text-blue-400" />
-                            Attachments
+                            {{ t('tickets.pages.ticket.page.attachments') }}
                         </h2>
                         <div class="flex flex-wrap gap-4 mt-3">
                             <div v-for="attachment in attachments" :key="attachment.id" class="relative group">
@@ -605,7 +609,7 @@ const isImage = (filename: string): boolean => {
                 >
                     <div class="relative max-w-4xl w-full bg-gray-900 rounded-lg overflow-hidden" @click.stop>
                         <div class="flex justify-between items-center p-4 border-b border-gray-700">
-                            <h3 class="text-lg font-semibold">Image Preview</h3>
+                            <h3 class="text-lg font-semibold">{{ t('tickets.pages.ticket.page.preview') }}</h3>
                             <button
                                 @click="closeAttachmentModal"
                                 class="p-1 rounded-full hover:bg-gray-700 transition-colors"
@@ -628,7 +632,7 @@ const isImage = (filename: string): boolean => {
                                 target="_blank"
                                 class="text-blue-400 hover:underline"
                             >
-                                Open in new tab
+                                {{ t('tickets.pages.ticket.page.open_in_new_tab') }}
                             </a>
                         </div>
                     </div>
@@ -638,7 +642,7 @@ const isImage = (filename: string): boolean => {
                 <div class="space-y-6">
                     <h2 class="text-xl font-semibold flex items-center gap-2">
                         <MessagesSquareIcon class="w-5 h-5 text-blue-400" />
-                        Messages
+                        {{ t('tickets.pages.ticket.page.messages') }}
                     </h2>
 
                     <TransitionGroup name="messages" tag="div" class="space-y-4">
@@ -665,29 +669,32 @@ const isImage = (filename: string): boolean => {
 
                     <h2 class="text-xl font-semibold flex items-center gap-2">
                         <MessagesSquareIcon class="w-5 h-5 text-blue-400" />
-                        Response
+                        {{ t('tickets.pages.ticket.page.response') }}
                     </h2>
 
                     <!-- Reply Form -->
                     <CardComponent class="rounded-lg p-6" v-if="ticket.status !== 'closed'">
                         <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
                             <ReplyIcon class="w-5 h-5 text-blue-400" />
-                            Reply to Ticket
+                            {{ t('tickets.pages.ticket.page.replyForm.title') }}
                         </h3>
 
                         <p class="text-sm text-gray-400 mb-4">
-                            Please provide as much detail as possible in your reply to help us assist you better.
-                            Include any relevant information or screenshots that might help resolve your issue.
+                            {{ t('tickets.pages.ticket.page.replyForm.description') }}
                         </p>
 
                         <form @submit.prevent="submitReply" class="space-y-4">
                             <div>
-                                <TextArea v-model="newReply" :rows="4" placeholder="Type your reply here..."></TextArea>
+                                <TextArea
+                                    v-model="newReply"
+                                    :rows="4"
+                                    :placeholder="t('tickets.pages.ticket.page.replyForm.forms.send')"
+                                ></TextArea>
                             </div>
 
                             <div class="mb-4">
                                 <label class="block text-sm font-medium text-gray-300 mb-2">
-                                    Attachments (Optional)
+                                    {{ t('tickets.pages.ticket.page.replyForm.forms.attachments') }}
                                 </label>
                                 <div class="flex items-center justify-center w-full">
                                     <label
@@ -710,9 +717,13 @@ const isImage = (filename: string): boolean => {
                                                 />
                                             </svg>
                                             <p class="mb-2 text-sm text-gray-400">
-                                                <span class="font-semibold">Click to upload</span> or drag and drop
+                                                <span class="font-semibold">{{
+                                                    t('tickets.pages.ticket.page.replyForm.forms.click_to_upload')
+                                                }}</span>
                                             </p>
-                                            <p class="text-xs text-gray-500">PNG, JPG or GIF (MAX. 2MB)</p>
+                                            <p class="text-xs text-gray-500">
+                                                {{ t('tickets.pages.ticket.page.replyForm.forms.formats') }}
+                                            </p>
                                         </div>
                                         <input
                                             type="file"
@@ -756,7 +767,11 @@ const isImage = (filename: string): boolean => {
                                 <Button type="submit" :disabled="isSubmitting || !newReply.trim()" variant="primary">
                                     <SendIcon class="w-4 h-4" v-if="!isSubmitting" />
                                     <LoaderIcon class="w-4 h-4 animate-spin" v-else />
-                                    {{ isSubmitting ? 'Sending...' : 'Send Reply' }}
+                                    {{
+                                        isSubmitting
+                                            ? t('tickets.pages.ticket.page.replyForm.forms.loading')
+                                            : t('tickets.pages.ticket.page.replyForm.forms.submit')
+                                    }}
                                 </Button>
                             </div>
                         </form>
@@ -764,7 +779,7 @@ const isImage = (filename: string): boolean => {
 
                     <div v-else class="bg-[#1A1825] rounded-lg p-6 text-center">
                         <LockIcon class="w-6 h-6 text-gray-400 mx-auto mb-2" />
-                        <p class="text-gray-400">This ticket is closed. Reopen it to add replies.</p>
+                        <p class="text-gray-400">{{ t('tickets.pages.ticket.page.reply_locked') }}</p>
                     </div>
                 </div>
             </div>

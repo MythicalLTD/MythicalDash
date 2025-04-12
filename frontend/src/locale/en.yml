@@ -19,10 +19,61 @@ Components:
                 Success: 'Copied to clipboard just like a boss.'
                 Footer: 'Yay it worked ;)'
             Error: 'An error occurred. Please try again later.'
+    QuickLinks:
+        tickets:
+            title: 'Tickets'
+            description: 'View and manage your tickets'
+        announcements:
+            title: 'Announcements'
+            description: 'View the latest announcements'
+        account:
+            title: 'Account'
+            description: 'Update your account settings'
+    ResourceCards:
+        title: 'Resource Usage'
+        description: 'View your resource usage and limits'
+        mb: 'MB'
+        of: 'of'
+        RAM:
+            title: 'RAM'
+        CPU:
+            title: 'CPU'
+        DISK:
+            title: 'Disk'
+        SLOT:
+            title: 'Server Slot(s)'
+        DATABASE:
+            title: 'Database'
+        BACKUP:
+            title: 'Server Backup(s)'
+        ALLOCATION:
+            title: 'Server Allocation(s)'
+    ServerList:
+        title: 'My Servers'
+        description: 'Manage your gaming infrastructure'
+        createServer: 'Create Your First Server'
+        createServerButton: 'Create Server'
+        noServers: 'No Servers Found'
+        noServersDescription: "You don't have any servers yet."
+        serverLimit: '{0} / {1} Servers'
+        newServer: 'New Server'
+        table:
+            name: 'Name'
+            location: 'Location'
+            egg: 'Egg'
+            memory: 'Memory'
+            cpu: 'CPU'
+            disk: 'Disk'
+            actions: 'Actions'
+    ManageAccount:
+        title: 'My Profile'
+        description: 'Your account information'
+        viewMore: 'View more'
     Announcements:
         Title: 'Announcements'
         Card:
             ReadMore: 'Read More'
+            NoAnnouncements: 'No announcements yet'
     Tickets:
         title: 'Recent tickets'
         viewMore: 'View more'
@@ -32,9 +83,25 @@ Components:
             Waiting: 'Waiting'
             Replied: 'Replied'
             InProgress: 'In Progress'
+    QuickSearch:
+        title: 'Quick Search'
+        esc_key: 'Esc'
+        enter_key: 'Enter'
+        to_close: 'to close'
+        description: 'Search for a server, ticket, or announcement'
+        notfound: "We couldn't find any results for your search."
+        quickNav: 'Quick Navigation'
+        keyboardShortcuts: 'Keyboard Shortcuts'
+        search: 'Search'
+        ctrl_key: 'Ctrl'
+        k_key: 'K'
+        d_key: 'D'
+        goToDashboard: 'Go to Dashboard'
+
     SupportPin:
         title: 'Support PIN'
         copy: 'Copy'
+        description: 'This PIN is used to verify your identity to our support team'
         alerts:
             success:
                 title: 'Success'
@@ -294,7 +361,28 @@ errors:
 #
 #-------------------------------------------------------------#
 account:
+    components:
+        header:
+            uuid: 'UUID:'
+            ip: 'IP Address'
+            first: 'First:'
+            current: 'Current:'
+            firstSeen: 'First Seen'
+            lastSeen: 'Last Seen'
+            verification: 'Account Verification'
+            verified: 'Your account is verified'
+            notVerified: 'Your account is not verified'
     pages:
+        index: 
+          title: "Account Management"
+          description: "View and manage your account settings and preferences"
+          tabs:
+            settings: "Settings"
+            security: "Security"
+            emails: "Emails"
+            activity: "Activity"
+            apikey: "API Key"
+
         settings:
             alerts:
                 success:
@@ -367,6 +455,12 @@ account:
                 title: Emails
                 subTitle: See your emails!
                 description: 'This is a list of your emails. You can view the details of each email by clicking the view button.'
+                loading: Loading emails...
+                loadingText: Loading your email history..
+                error: Error loading emails
+                noMails:
+                    title: No Emails Found
+                    description: You haven't received any emails yet
                 table:
                     columns:
                         id: ID
@@ -388,8 +482,59 @@ account:
                     generic: An error occurred. Please try again later
                     footer: Please contact support for assistance
             page:
-                title: Security
-                subTitle: Manage your security settings
+                title: Account Security
+                subTitle: Manage your account security settings and monitor login activity
+                securityStatus:
+                    title: Security Status
+                    twofactor:
+                        title: Two-Factor Authentication (2FA)
+                        active: Active
+                        disabled: Disabled
+                        description:
+                            enabled: 'Your account has an extra layer of security.'
+                            disabled: 'Enable 2FA for additional security.'
+                        button:
+                            disable: Disable 2FA
+                            enable: Enable 2FA
+                        lastEnabled: 'Last Enabled:'
+                        disableButton:
+                            label: Disable
+                            loading: Disabling...
+                    activeSessions:
+                        title: Active Sessions
+                        active: 1 Active
+                        description: 'You are currently logged in on this device.'
+                        button:
+                            label: Logout All Devices
+                            loading: Logging out...
+                    password:
+                        title: Password
+                        active: Active
+                        lastChanged: 'Last Changed:'
+                        changeButton:
+                            label: Change Password
+                recommendations:
+                    title: Recommendations
+                    description: Enhance your account security with these recommendations
+                    monitor:
+                        title: Monitor Login Activity
+                        description: Regularly check your recent login activity and report any suspicious attempts.
+                    password:
+                        title: Use a Strong Password
+                        description: Create a unique password that is at least 12 characters long with a mix of letters, numbers, and symbols.
+                    twofactor:
+                        enabled:
+                            title: Enable Two-Factor Authentication
+                            description: Add an extra layer of security to your account by requiring a verification code in addition to your password.
+                            button:
+                                label: Enable
+                                loading: Enabling...
+                        disabled:
+                            title: Disable Two-Factor Authentication
+                            description: Disable 2FA to put your account into a less secure state.
+                            button:
+                                label: Disable
+                                loading: Disabling...
                 cards:
                     twofactor:
                         title: Two-Factor Authentication (2FA)
@@ -408,6 +553,19 @@ account:
                         change_button:
                             label: Change Password
                             loading: Changing...
+        apikey:
+            page:
+                title: API Key
+                subTitle: Manage your API key
+                card:
+                    title: API Key
+                    description: Your API key provides access to the MythicalDash API
+                    yourKey: Your API Key
+                    loading: Loading API key...
+                    noApiKey: No API key available
+                    info: This key grants full access to your account via the API. Keep it secure and never share it publicly.
+                    resetKey: Reset API Key
+                    apiDocumentation: API Documentation
         activity:
             page:
                 title: Activity
@@ -419,6 +577,8 @@ account:
                         date: Date
                         ip: IP
                     error: An error occurred while fetching your activity
+                    noResults: No activities found
+                    info: Your activity history will appear here
                     results:
                         viewButton: View
 
@@ -443,6 +603,45 @@ tickets:
                     title: Success
                     reply_success: 'Reply submitted'
                     footer: 'Your reply has been sent, and the ticket has been updated'
+            page:
+                goBack: "↪ Go back"
+                createdBy: 'Created by'
+                department: 'Department'
+                priority: 'Priority'
+                priority_high: 'High'
+                priority_medium: 'Medium'
+                priority_low: 'Low'
+                status: 'Status'
+                created: 'Created'
+                description: 'Description'
+                attachments: 'Attachments'
+                status_open: 'Open'
+                status_closed: 'Closed'
+                status_waiting: 'Waiting for Reply'
+                status_inprogress: 'In Progress'
+                preview: 'Image Preview'
+                open_in_new_tab: 'Open in new tab'
+                messages: 'Messages'
+                response: "Response"
+                replyForm:
+                  title: Reply to Ticket
+                  description: 'Please provide as much detail as possible in your reply to help us assist you better. Include any relevant information or screenshots that might help resolve your issue.'
+                  forms: 
+                    send: 'Type your reply here..'
+                    attachments: 'Attachments (Optional)'
+                    click_to_upload: "Click to upload or drag and drop files here"
+                    formats: "PNG, JPG, GIF (MAX. 2MB)"
+                    submit: 'Submit'
+                    loading: 'Submitting...'
+                status_replied: 'Replied'
+                reply_locked: "This ticket is closed so you can't reply to it"
+                buttons: 
+                  close: 'Close Ticket'
+                  reopen: 'Reopen Ticket'
+                  open: 'Open Ticket'
+                  waiting: 'Waiting for Reply'
+                  inprogress: 'In Progress'
+                  replied: 'Replied'
         tickets:
             title: Tickets
             actions:
@@ -510,10 +709,19 @@ components:
         settings: Settings
         users: Users
         apikeys: API Keys
-        support: Support
+        support: Support & Info
         open_ticket: Open Ticket
         all_tickets: All Tickets
         knowledge: Knowledge Base
+        earn: Earn
+        afk: AFK Rewards
+        create: Create Server
+        code_redemption: Code Redemption
+        j4r: Join For Rewards
+        referrals: Referrals
+        l4r: Link For Rewards
+        store: Store
+        general: General
     search:
         placeholder: 'Search (Ctrl + K)'
         no_results: 'No results found'
@@ -577,3 +785,464 @@ components:
         per_page: 'items per page'
         no_data_description: 'We are sorry, but we couldn`t find any data for this page.'
         no_data: 'No data found'
+billing:
+    pages:
+        add_funds:
+            title: Add Funds
+            back: Back
+            form:
+                title: Add Funds to Your Account
+                description: Select your preferred payment method and enter the amount you wish to add to your account.
+                amount:
+                    label: Amount
+                    placeholder: Enter amount
+                payment_method:
+                    label: Payment Method
+                submit: Add Funds
+                processing: Processing...
+            summary:
+                title: Account Summary
+                current_balance: Current Balance
+                info: Funds will be added to your account immediately after successful payment processing. These funds can be used for any services or products within our platform.
+            alerts:
+                error:
+                    title: Error
+                    missing_fields: Please fill in all required fields.
+                    invalid_amount: Please enter a valid amount greater than 0.
+                    payment_failed: Payment processing failed. Please try again.
+                    footer: Please contact support for assistance.
+                    no_gateway: No payment gateway found.
+                    notEnabled: Billing is not enabled for this host!
+                success:
+                    title: Success
+                    payment_processed: Payment processed successfully. Your funds have been added to your account.
+afk:
+    notEnabled:
+        title: 'AFK Rewards'
+        text: 'AFK Rewards are not enabled on this host!'
+        button: 'Go to Dashboard'
+    pages:
+        index:
+            title: 'AFK Rewards'
+            subTitle: 'Earn coins by being AFK'
+            status: 'Status:'
+            active: 'Active'
+            inactive: 'Inactive'
+            startafk: 'Start AFK'
+            stopafk: 'Stop AFK'
+            timeDate:
+                hours: 'Hours'
+                minutes: 'Minutes'
+                seconds: 'Seconds'
+            totalCoins: 'Total Coins'
+            currentSession: 'Current Session'
+            coins: 'Coins'
+            totalAFKTime: 'Total AFK Time'
+
+        afkpaused:
+            title: 'AFK Session Paused'
+            text: 'Your AFK session has been paused because you switched to another tab or minimized the window. Please keep this tab active to continue earning rewards.'
+            button: 'OK'
+        cannotstartafk:
+            title: 'Cannot Start AFK'
+            text: 'Please keep this tab active to start earning AFK rewards.'
+            button: 'OK'
+
+code_redemption:
+    notEnabled:
+        title: 'Code Redemption'
+        text: 'Code redemption is not enabled on this host!'
+        button: 'Go to Dashboard'
+    pages:
+        index:
+            title: 'Code Redemption'
+            subTitle: 'Redeem your codes'
+            form:
+                label: 'Enter Redemption Code'
+                placeholder: 'Enter your code here'
+                redeem: 'Redeem Code'
+                redeeming: 'Redeeming...'
+                currentBalance: 'Current Balance'
+            social:
+                twitter:
+                    title: 'Twitter/X'
+                    description: 'Follow us on Twitter for regular code drops and announcements.'
+                discord:
+                    title: 'Discord'
+                    description: 'Join our Discord server for exclusive code drops and community support.'
+                telegram:
+                    title: 'Telegram'
+                    description: 'Join our Telegram channel for exclusive code drops and community support.'
+                events:
+                    title: 'Events'
+                    description: 'Special codes are released during seasonal events and promotions.'
+
+            alerts:
+                error:
+                    title: 'Error'
+                    generic: 'An error occurred. Please try again later'
+                    footer: 'Please contact support for assistance'
+                    button: 'OK'
+                success:
+                    title: 'Success'
+                    code_redeemed: 'Code redeemed successfully'
+                    footer: 'Your code has been redeemed'
+referrals:
+    notEnabled:
+        title: 'Referrals'
+        text: 'Referrals are not enabled on this host!'
+        button: 'Go to Dashboard'
+    pages:
+        index:
+            title: 'Referrals'
+            subTitle: 'Earn rewards by referring friends'
+            form:
+                label: 'Enter Referral Code'
+                placeholder: 'Enter your code here'
+                redeem: 'Redeem Code'
+                redeeming: 'Redeeming...'
+            copy:
+                title: 'Link Copied!'
+                text: 'Your referral link has been copied. You can now paste it in Discord.'
+                button: 'OK'
+            error:
+                title: 'Error'
+                text: 'Failed to load referrals'
+                button: 'OK'
+            body:
+                title: 'Your Unique Referral Link'
+                description: 'Share this link with friends to earn rewards when they sign up'
+                copy:
+                    title: 'Copy Referral Link'
+                    text: 'Copy your referral link to your clipboard'
+                    copied: 'Copied!'
+            social:
+                twitter: 'Twitter/X'
+                facebook: 'Facebook'
+                discord: 'Discord'
+                email: 'Email'
+            refferals:
+                title: 'Total Referrals'
+                earned: 'Total Earned'
+                yourReferrals: 'Your Referrals'
+                loading: 'Loading your referrals...'
+                noReferrals: 'No referrals found'
+                noReferralsDescription: 'Share your referral link with friends to start earning rewards!'
+                noEarnings: 'No earnings found'
+                noEarningsDescription: 'Share your referral link with friends to start earning rewards!'
+                table:
+                    user: 'User'
+                    date: 'Date'
+                    status: 'Status'
+                    reward: 'Reward'
+                    actions: 'Actions'
+                sharelink:
+                    title: 'How it works?'
+                    description: 'Easy steps to earn from referrals'
+                    steps:
+                        one:
+                            title: 'Share Your Link'
+                            id: '1'
+                            description: 'Copy your unique referral link and share it with friends'
+                        two:
+                            title: 'Get Referrals'
+                            id: '2'
+                            description: 'Your referrals will earn rewards when they sign up'
+                        three:
+                            title: 'Earn Rewards'
+                            id: '3'
+                            description: 'You will earn rewards when your referrals earn rewards'
+            share:
+                shareMessage: 'Join me on MythicalDash and get exclusive rewards using my referral link!'
+                title: 'Share Referral Link'
+                description: 'Share your referral link with friends and earn rewards!'
+                mailTitle: 'Share Referral Link via Email'
+                twitter:
+                    title: 'Twitter/X'
+                    description: 'Share your referral link on Twitter for regular code drops and announcements.'
+create:
+    pages:
+        index:
+            title: 'Create a New Server'
+            subTitle: 'Configure and deploy your new server'
+            form:
+                label: 'Server Name'
+                placeholder: 'Enter your server name'
+                submit: 'Create Server'
+                description: 'Description'
+                descriptionPlaceholder: 'Enter your server description'
+                location: 'Server Location'
+                locationPlaceholder: 'Select a location'
+                category: 'Server Category'
+                categoryPlaceholder: 'Select a category'
+                egg: 'Server Version'
+                eggPlaceholder: 'Select a version'
+                memory: 'Memory'
+                cpu: 'CPU'
+                disk: 'Disk'
+                databases: 'Databases'
+                backups: 'Backups'
+                allocations: 'Allocations'
+                servers: 'Servers'
+                mb: 'MB'
+                p: '%'
+                of: 'of'
+                available: 'Available'
+                depleted: 'Depleted'
+            slots: 'Slots'
+            resources:
+                title: 'Resource Availability'
+                available: 'Available'
+                depleted: 'Depleted'
+                memory: 'Memory'
+                cpu: 'CPU'
+                disk: 'Disk'
+                slots: 'Slots'
+                databases: 'Databases'
+                backups: 'Backups'
+                allocations: 'Allocations'
+                servers: 'Servers'
+                mb: 'MB'
+                of: 'of'
+                p: '%'
+        alerts:
+            error:
+                title: 'Error'
+                generic: 'An error occurred. Please try again later'
+                footer: 'Please contact support for assistance'
+                deploy:
+                    MISSING_REQUIRED_FIELDS: 'Missing required fields'
+                    NAME_TOO_LONG: 'Server name must be less than 32 characters'
+                    DESCRIPTION_TOO_LONG: 'Description must be less than 255 characters'
+                    LOCATION_DOES_NOT_EXIST: 'Selected location does not exist'
+                    CATEGORY_DOES_NOT_EXIST: 'Selected category does not exist'
+                    EGG_DOES_NOT_EXIST: 'Selected version does not exist'
+                    MEMORY_TOO_LOW: 'Memory must be at least 256MB'
+                    CPU_TOO_LOW: 'CPU must be at least 5%'
+                    DISK_TOO_LOW: 'Disk must be at least 256MB'
+                    ALLOCATIONS_TOO_LOW: 'Allocations must be at least 1'
+                    PENDING_SERVER_CREATION_REQUEST: 'You already have a pending server creation request'
+                    NOT_ENOUGH_MEMORY: 'You do not have enough memory resources'
+                    NOT_ENOUGH_DISK_SPACE: 'You do not have enough disk space resources'
+                    NOT_ENOUGH_CPU: 'You do not have enough CPU resources'
+                    NOT_ENOUGH_DATABASES: 'You do not have enough database resources'
+                    NOT_ENOUGH_BACKUPS: 'You do not have enough backup resources'
+                    NOT_ENOUGH_ALLOCATIONS: 'You do not have enough allocation resources'
+                    NOT_ENOUGH_SERVERS: 'You have reached your server limit'
+                    FAILED_TO_CREATE_SERVER_QUEUE_ITEM: 'Failed to create server queue item'
+            success:
+                title: 'Success'
+                generic: 'Your server has been created'
+                footer: 'Enjoy your server!'
+update:
+    pages:
+        alerts:
+            error:
+                title: 'Error'
+                generic: 'An error occurred. Please try again later'
+                delete: 'This will update your server configuration. This action cannot be undone!'
+                footer: 'Please contact support for assistance'
+                confirmButtonText: 'OK'
+                cancelButtonText: 'Cancel'
+            success:
+                title: 'Success'
+                generic: 'Your server has been updated'
+                footer: 'Server updated successfully'
+                confirmButtonText: 'OK'
+        index:
+            title: 'Update Server'
+            subTitle: 'Update your server configuration'
+            loading: 'Loading server data...'
+            form:
+                label: 'Server Name'
+                placeholder: 'Enter your server name'
+                submit: 'Update Server'
+                description: 'Description'
+                descriptionPlaceholder: 'Enter your server description'
+                location: 'Server Location'
+                locationPlaceholder: 'Select a location'
+                category: 'Server Category'
+                categoryPlaceholder: 'Select a category'
+                egg: 'Server Version'
+                eggPlaceholder: 'Select a version'
+                updateButton: 'Update Server'
+                deleteButton: 'Delete Server'
+                resources:
+                    title: 'Resource Availability'
+                    available: 'Available'
+                    depleted: 'Depleted'
+                    memory: 'Memory'
+                    cpu: 'CPU'
+                    disk: 'Disk'
+                    slots: 'Slots'
+                    databases: 'Databases'
+                    backups: 'Backups'
+                    allocations: 'Allocations'
+                    servers: 'Servers'
+                    mb: 'MB'
+                    of: 'of'
+                    p: '%'
+delete:
+    pages:
+        index:
+            title: 'Delete Server'
+            subTitle: 'Are you sure you want to delete this server?'
+            loading: 'Loading server data...'
+            unknownError: 'An unknown error occurred'
+            warning: 'Warning'
+            type: 'Type'
+            version: 'Version'
+            location: 'Location'
+            card:
+                title: 'Confirmation'
+                description: 'To confirm, type the server name:'
+                placeholder: 'Type server name to confirm'
+            button:
+                delete: 'Delete Server'
+                cancel: 'Cancel'
+            details:
+                title: 'Deleting this server is permanent'
+                description: 'This action will immediately and permanently delete your server and all data associated with it, including:'
+                files: 'All files stored on the server'
+                databases: 'All databases and their contents'
+                backups: 'All backups'
+                configuration: 'Server configuration'
+                cannotBeUndone: 'This action cannot be undone. Please be certain.'
+        alerts:
+            error:
+                title: 'Error'
+                generic: 'An error occurred. Please try again later'
+                footer: 'Please contact support for assistance'
+                confirmation: 'Confirmation text does not match server name'
+                confirmButtonText: 'OK'
+            success:
+                title: 'Success'
+                generic: 'Your server has been deleted'
+                footer: 'Server deletion request submitted successfully'
+                confirmButtonText: 'OK'
+
+store:
+    notEnabled:
+        title: 'Store'
+        text: 'Store is not enabled on this host!'
+        footer: 'Please contact support for assistance'
+        button: 'Go to Dashboard'
+    pages:
+        alerts:
+            buy:
+                title: 'Do you want to buy this?'
+                description: 'Are you sure you want to buy this?'
+                confirmButtonText: 'OK'
+                cancelButtonText: 'Cancel'
+            error:
+                title: 'Error'
+                generic: 'An error occurred. Please try again later'
+                notEnoughCoins: 'You do not have enough coins for this purchase'
+                footer: 'Please contact support for assistance'
+                buy:
+                    MISSING_ITEM_ID: 'Item ID is required'
+                    EMPTY_ITEM_ID: 'Item ID cannot be empty'
+                    INVALID_ITEM_ID: 'Invalid item ID'
+                    INSUFFICIENT_COINS: 'Insufficient coins you need {0} and you have {1}'
+                    STORE_NOT_ENABLED: 'Store is not enabled'
+                    PURCHASE_FAILED: 'Failed to process purchase'
+                    confirmButtonText: 'OK'
+                    cancelButtonText: 'Cancel'
+                    description: 'Please try again or contact support if the issue persists.'
+        index:
+            title: 'Store'
+            subTitle: 'Buy server resources and upgrades'
+            loading: 'Loading store items...'
+            empty: 'No items available in this category'
+            emptyDescription: 'Check back later for new items'
+            cardYourBalance: 'Your Balance'
+            cardAvailableCoins: 'Available coins to spend'
+            cardCurrentBalance: 'Current Balance'
+            addCredits: 'Add Credits'
+            redeemCodes: 'Redeem Codes'
+            earnMore: 'Earn More'
+            buyButton: 'Buy'
+            insufficientButton: 'Insufficient Coins'
+            howItWorks:
+                title: 'How It Works'
+                description: 'Spend your coins on server resources and upgrades'
+                steps:
+                    one:
+                        number: '1'
+                        title: 'Earn Coins'
+                        description: 'Complete tasks in the Earn section to accumulate coins'
+                    two:
+                        number: '2'
+                        title: 'Spend Coins'
+                        description: 'Spend your coins on server resources and upgrades'
+                    three:
+                        number: '3'
+                        title: 'Earn More'
+                        description: 'Earn more coins by referring friends'
+                    four:
+                        number: '4'
+                        title: 'Instant Delivery'
+                        description: 'Resources are immediately added to your account'
+
+            card:
+                title: 'Available Items'
+                description: 'Spend your coins on server resources and upgrades'
+            info:
+                buy:
+                    title: 'Confirm Purchase'
+                    description: 'Are you sure you want to purchase {0} for {1} coins?'
+                    confirmButtonText: 'Purchase'
+                    cancelButtonText: 'Cancel'
+                    success:
+                        title: 'Purchase Successful'
+                        description: 'You have successfully purchased {0}'
+                        confirmButtonText: 'OK'
+                ram:
+                    title: 'Additional RAM'
+                    description: "Increase your server's memory capacity"
+                    features:
+                        one: 'Instant allocation'
+                        two: 'Flexible scaling'
+                        three: 'No restart required'
+                disk:
+                    title: 'Additional Storage'
+                    description: "Increase your server's storage capacity"
+                    features:
+                        one: 'Instant allocation'
+                        two: 'Flexible scaling'
+                        three: 'No restart required'
+                cpu:
+                    title: 'Additional CPU'
+                    description: "Increase your server's CPU capacity"
+                    features:
+                        one: 'High-performance cores'
+                        two: 'Dedicated resources'
+                        three: 'Real-time scaling'
+                server_slot:
+                    title: 'Server Slot'
+                    description: 'Add an additional server to your account'
+                    features:
+                        one: 'Full server access'
+                        two: 'Custom configuration'
+                        three: 'Instant deployment'
+                server_backup:
+                    title: 'Backup Slot'
+                    description: 'Additional backup storage for your servers'
+                    features:
+                        one: 'Automated backups'
+                        two: 'Instant restoration'
+                        three: 'Secure storage'
+                server_allocation:
+                    title: 'Server Allocation'
+                    description: 'Additional server allocation for your servers'
+                    features:
+                        one: 'Unlimited allocation'
+                        two: 'Flexible scaling'
+                        three: 'No restart required'
+                server_database:
+                    title: 'Database'
+                    description: 'Additional database for your servers'
+                    features:
+                        one: 'MySQL/MariaDB'
+                        two: 'Automated backups'
+                        three: 'Secure access'

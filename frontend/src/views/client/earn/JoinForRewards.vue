@@ -287,6 +287,8 @@ import Session from '@/mythicaldash/Session';
 import { useSettingsStore } from '@/stores/settings';
 import router from '@/router';
 import Swal from 'sweetalert2';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
+MythicalDOM.setPageTitle('Join For Rewards');
 
 const Settings = useSettingsStore();
 

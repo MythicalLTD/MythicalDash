@@ -107,41 +107,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Admin Actions -->
-            <div v-if="ticket.status !== 'closed'" class="flex justify-end border-t border-gray-700 pt-4">
-                <button
-                    @click="openCloseModal"
-                    class="px-4 py-2 bg-red-500 rounded-lg text-white hover:bg-red-600 transition-colors flex items-center"
-                >
-                    <XCircle class="w-4 h-4 mr-2" />
-                    Close Ticket
+                <button @click="goToTicket(ticket.id)" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+                    View Ticket
                 </button>
-            </div>
-        </div>
-
-        <!-- Confirmation Modal -->
-        <div v-if="showConfirmModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full">
-                <h3 class="text-xl font-medium text-gray-100 mb-4">Confirm Action</h3>
-                <p class="text-gray-300 mb-4">Are you sure you want to close ticket #{{ ticket.id }}?</p>
-                <div class="flex justify-end space-x-3">
-                    <button
-                        @click="closeModal"
-                        class="px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        @click="confirmClose"
-                        :disabled="processing"
-                        class="px-4 py-2 bg-red-500 rounded-lg text-white hover:bg-red-600 transition-colors flex items-center"
-                    >
-                        <LoaderIcon v-if="processing" class="animate-spin w-4 h-4 mr-2" />
-                        <span v-else>Close Ticket</span>
-                    </button>
-                </div>
             </div>
         </div>
 
@@ -163,7 +131,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
-import { ArrowLeftIcon, LoaderIcon, TicketIcon, ClockIcon, XCircle } from 'lucide-vue-next';
+import { ArrowLeftIcon, LoaderIcon, TicketIcon, ClockIcon } from 'lucide-vue-next';
 
 // Ticket interface
 interface UserDetails {
@@ -214,8 +182,6 @@ const ticket = ref<Ticket>({
     },
 });
 
-const showConfirmModal = ref(false);
-const processing = ref(false);
 const notification = ref({
     show: false,
     message: '',
@@ -240,6 +206,10 @@ const formatStatus = (status: string): string => {
         closed: 'Closed',
     };
     return map[status] || status;
+};
+
+const goToTicket = (id: number) => {
+    router.push(`/ticket/${id}`);
 };
 
 // Fetch ticket details
@@ -278,71 +248,6 @@ const fetchTicketDetails = async () => {
     } finally {
         loading.value = false;
     }
-};
-
-// Modal control
-const openCloseModal = () => {
-    showConfirmModal.value = true;
-};
-
-const closeModal = () => {
-    showConfirmModal.value = false;
-    processing.value = false;
-};
-
-// Close ticket action
-const confirmClose = async () => {
-    processing.value = true;
-
-    try {
-        await closeTicket();
-    } catch (error) {
-        console.error('Error during close action:', error);
-        showNotification('Failed to close ticket. Please try again.', 'error');
-    } finally {
-        processing.value = false;
-        closeModal();
-    }
-};
-
-const closeTicket = async () => {
-    try {
-        // Create FormData for the close request
-        const formData = new FormData();
-
-        // Send close request to API
-        const response = await fetch(`/api/admin/tickets/${ticketId}/close`, {
-            method: 'POST',
-            body: formData,
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            showNotification('Ticket closed successfully', 'success');
-            // Refresh ticket details
-            await fetchTicketDetails();
-        } else {
-            showNotification(data.message || 'Failed to close ticket', 'error');
-        }
-    } catch (err) {
-        console.error('Error closing ticket:', err);
-        throw err;
-    }
-};
-
-// Notification handler
-const showNotification = (message: string, type: 'success' | 'error') => {
-    notification.value = {
-        show: true,
-        message,
-        type,
-    };
-
-    // Hide notification after 3 seconds
-    setTimeout(() => {
-        notification.value.show = false;
-    }, 3000);
 };
 
 onMounted(() => {

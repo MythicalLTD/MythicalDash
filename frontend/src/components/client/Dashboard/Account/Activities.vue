@@ -83,7 +83,7 @@ const columnsActivities = [
                 <AlertCircle class="h-5 w-5 text-red-400" />
             </div>
             <div>
-                <h3 class="text-sm font-medium text-red-400">Error Loading Activities</h3>
+                <h3 class="text-sm font-medium text-red-400">{{ t('account.pages.activity.page.table.error') }}</h3>
                 <p class="mt-1 text-sm text-gray-400">{{ error }}</p>
             </div>
         </div>
@@ -96,8 +96,10 @@ const columnsActivities = [
             <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-500/10 flex items-center justify-center">
                 <Activity class="h-8 w-8 text-indigo-400" />
             </div>
-            <h3 class="text-lg font-medium text-gray-200 mb-1">No Activities Found</h3>
-            <p class="text-sm text-gray-400">Your activity history will appear here</p>
+            <h3 class="text-lg font-medium text-gray-200 mb-1">
+                {{ t('account.pages.activity.page.table.noResults') }}
+            </h3>
+            <p class="text-sm text-gray-400">{{ t('account.pages.activity.page.table.info') }}</p>
         </div>
 
         <!-- Activities Table -->

@@ -1,7 +1,7 @@
 <template>
     <LayoutDashboard>
         <div class="p-6">
-            <h1 class="text-2xl font-bold text-white mb-6">AFK Rewards</h1>
+            <h1 class="text-2xl font-bold text-white mb-6">{{ t('afk.pages.index.title') }}</h1>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Main AFK Timer Card -->
@@ -26,9 +26,13 @@
                                             <Clock class="h-4 w-4 text-white" />
                                         </div>
                                         <span class="ml-3 text-lg font-medium text-white"
-                                            >Status:
+                                            >{{ t('afk.pages.index.status') }}
                                             <span :class="isActive ? 'text-emerald-400' : 'text-gray-400'">
-                                                {{ isActive ? 'AFK Active' : 'Inactive' }}
+                                                {{
+                                                    isActive
+                                                        ? t('afk.pages.index.active')
+                                                        : t('afk.pages.index.inactive')
+                                                }}
                                             </span>
                                         </span>
                                     </div>
@@ -41,7 +45,7 @@
                                         "
                                         class="px-4 py-2 text-white text-sm font-medium rounded-lg transition-colors"
                                     >
-                                        {{ isActive ? 'Stop AFK' : 'Start AFK' }}
+                                        {{ isActive ? t('afk.pages.index.stopafk') : t('afk.pages.index.startafk') }}
                                     </button>
                                 </div>
 
@@ -50,18 +54,20 @@
                                     <div class="grid grid-cols-3 gap-4">
                                         <div class="timer-unit">
                                             <div class="text-5xl font-bold text-white">{{ formatTime.hours }}</div>
-                                            <div class="text-xs text-gray-400 uppercase tracking-wide mt-2">Hours</div>
+                                            <div class="text-xs text-gray-400 uppercase tracking-wide mt-2">
+                                                {{ t('afk.pages.index.timeDate.hours') }}
+                                            </div>
                                         </div>
                                         <div class="timer-unit">
                                             <div class="text-5xl font-bold text-white">{{ formatTime.minutes }}</div>
                                             <div class="text-xs text-gray-400 uppercase tracking-wide mt-2">
-                                                Minutes
+                                                {{ t('afk.pages.index.timeDate.minutes') }}
                                             </div>
                                         </div>
                                         <div class="timer-unit">
                                             <div class="text-5xl font-bold text-white">{{ formatTime.seconds }}</div>
                                             <div class="text-xs text-gray-400 uppercase tracking-wide mt-2">
-                                                Seconds
+                                                {{ t('afk.pages.index.timeDate.seconds') }}
                                             </div>
                                         </div>
                                     </div>
@@ -77,14 +83,18 @@
                                                 <Coins class="h-5 w-5 text-yellow-500" />
                                             </div>
                                             <div>
-                                                <div class="text-sm text-gray-400">Total Coins</div>
+                                                <div class="text-sm text-gray-400">
+                                                    {{ t('afk.pages.index.totalCoins') }}
+                                                </div>
                                                 <div class="text-2xl font-bold text-yellow-500">{{ totalCoins }}</div>
                                             </div>
                                         </div>
                                         <div>
-                                            <div class="text-sm text-gray-400 text-right">Current Session</div>
+                                            <div class="text-sm text-gray-400 text-right">
+                                                {{ t('afk.pages.index.currentSession') }}
+                                            </div>
                                             <div class="text-xl font-medium text-yellow-400">
-                                                +{{ sessionCoins }} coins
+                                                +{{ sessionCoins }} {{ t('afk.pages.index.coins') }}
                                             </div>
                                         </div>
                                     </div>
@@ -93,27 +103,20 @@
                                 <!-- AFK Stats -->
                                 <div class="grid grid-cols-2 gap-4 mb-6">
                                     <div class="bg-gray-800/30 rounded-lg p-4">
-                                        <div class="text-sm text-gray-400 mb-1">Current Session</div>
+                                        <div class="text-sm text-gray-400 mb-1">
+                                            {{ t('afk.pages.index.currentSession') }}
+                                        </div>
                                         <div class="text-lg font-semibold text-white">
                                             {{ formatTimeString(currentSessionTime) }}
                                         </div>
                                     </div>
                                     <div class="bg-gray-800/30 rounded-lg p-4">
-                                        <div class="text-sm text-gray-400 mb-1">Total AFK Time</div>
+                                        <div class="text-sm text-gray-400 mb-1">
+                                            {{ t('afk.pages.index.totalAFKTime') }}
+                                        </div>
                                         <div class="text-lg font-semibold text-white">
                                             {{ formatTimeString(totalAFKTime) }}
                                         </div>
-                                    </div>
-                                </div>
-
-                                <!-- Ad Banner -->
-                                <div class="ad-banner mb-4 p-3 bg-gray-800/30 border border-gray-700/30 rounded-lg">
-                                    <div class="flex justify-between items-center">
-                                        <div class="text-xs text-gray-500">Advertisement</div>
-                                        <button class="text-xs text-gray-500 hover:text-gray-400">×</button>
-                                    </div>
-                                    <div class="h-16 flex items-center justify-center text-gray-600 text-sm">
-                                        [Banner Ad Placement]
                                     </div>
                                 </div>
                             </div>
@@ -171,6 +174,12 @@ import { useSettingsStore } from '@/stores/settings';
 import router from '@/router';
 import Swal from 'sweetalert2';
 const Settings = useSettingsStore();
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
+MythicalDOM.setPageTitle(t('afk.pages.index.title'));
 
 // AFK Timer state
 const isActive = ref(false);
@@ -192,10 +201,10 @@ const minutesPerCoin = computed(() => {
 
 if (Settings.getSetting('afk_enabled') === 'false') {
     Swal.fire({
-        title: 'AFK Rewards',
-        text: 'AFK Rewards are not enabled on this host!',
+        title: t('afk.notEnabled.title'),
+        text: t('afk.notEnabled.text'),
         icon: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('afk.notEnabled.button'),
     });
     router.push('/dashboard');
 }
@@ -235,10 +244,10 @@ const handleVisibilityChange = () => {
         // User switched to another tab or minimized the window
         stopTimer();
         Swal.fire({
-            title: 'AFK Session Paused',
-            text: 'Your AFK session has been paused because you switched to another tab or minimized the window. Please keep this tab active to continue earning rewards.',
+            title: t('afk.pages.afkpaused.title'),
+            text: t('afk.pages.afkpaused.text'),
             icon: 'warning',
-            confirmButtonText: 'OK',
+            confirmButtonText: t('afk.pages.afkpaused.button'),
         });
     }
 };
@@ -256,10 +265,10 @@ const toggleAFK = () => {
 const startTimer = () => {
     if (!isUserActive()) {
         Swal.fire({
-            title: 'Cannot Start AFK',
-            text: 'Please keep this tab active to start earning AFK rewards.',
+            title: t('afk.pages.cannotstartafk.title'),
+            text: t('afk.pages.cannotstartafk.text'),
             icon: 'warning',
-            confirmButtonText: 'OK',
+            confirmButtonText: t('afk.pages.cannotstartafk.button'),
         });
         return;
     }

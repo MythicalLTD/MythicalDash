@@ -19,6 +19,7 @@ use MythicalDash\Services\Pterodactyl\Admin\Resources\UsersResource;
 use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
 use MythicalDash\Services\Pterodactyl\Admin\Resources\ServersResource;
 use MythicalDash\Services\Pterodactyl\Exceptions\PterodactylException;
+use MythicalDash\Services\Pterodactyl\Admin\Resources\LocationsResource;
 use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class Servers extends ServersResource
@@ -231,6 +232,30 @@ class Servers extends ServersResource
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#updatePterodactylServerDetails] Unexpected error: ' . $e->getMessage(), false);
 
             return [];
+        }
+    }
+
+    public static function getServerCountByLocation(int $locationId): int
+    {
+        $appInstance = App::getInstance(true);
+
+        try {
+            $locationResource = new LocationsResource(
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+            );
+
+            $location = $locationResource->getLocation($locationId);
+
+            return count($location['attributes']['relationships']['servers']['data'], COUNT_NORMAL);
+        } catch (ResourceNotFoundException $e) {
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getServerCountByLocation] Locations not found: ' . $e->getMessage(), false);
+
+            return 0;
+        } catch (PterodactylException|ValidationException $e) {
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getServerCountByLocation] Location error:  ' . $e->getMessage(), false);
+
+            return 0;
         }
     }
 

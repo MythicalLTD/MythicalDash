@@ -15,6 +15,9 @@ import Swal from 'sweetalert2';
 import { useSettingsStore } from '@/stores/settings';
 const Settings = useSettingsStore();
 const pterodactylUrl = Settings.getSetting('pterodactyl_base_url');
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 // Define server interface
 interface ServerLimits {
@@ -122,21 +125,24 @@ onMounted(() => {
 });
 </script>
 <template>
-    <CardComponent cardTitle="My Servers" cardDescription="Manage your gaming infrastructure">
+    <CardComponent
+        :cardTitle="t('Components.ServerList.title')"
+        :cardDescription="t('Components.ServerList.description')"
+    >
         <div v-if="loading" class="flex justify-center items-center py-12">
             <div class="w-8 h-8 border-4 border-gray-700 border-t-indigo-500 rounded-full animate-spin"></div>
         </div>
 
         <div v-else-if="servers.length === 0" class="flex flex-col items-center justify-center py-12 text-center">
             <Server class="w-12 h-12 text-gray-600 mb-3" />
-            <h3 class="text-gray-300 font-medium mb-1">No Servers Found</h3>
-            <p class="text-gray-500 text-sm mb-4">You don't have any servers yet.</p>
+            <h3 class="text-gray-300 font-medium mb-1">{{ t('Components.ServerList.noServers') }}</h3>
+            <p class="text-gray-500 text-sm mb-4">{{ t('Components.ServerList.noServersDescription') }}</p>
             <button
                 @click="createServer"
                 class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
             >
                 <PlusIcon class="w-4 h-4" />
-                Create Your First Server
+                {{ t('Components.ServerList.createServer') }}
             </button>
         </div>
 
@@ -144,7 +150,7 @@ onMounted(() => {
             <!-- Header with stats and actions -->
             <div class="flex justify-between items-center mb-4">
                 <div class="text-sm text-gray-400">
-                    {{ servers.length }} / {{ Session.getInfoInt('server_limit') }} Servers
+                    {{ t('Components.ServerList.serverLimit', [servers.length, Session.getInfoInt('server_limit')]) }}
                 </div>
                 <button
                     @click="createServer"
@@ -152,7 +158,7 @@ onMounted(() => {
                     :disabled="servers.length >= Session.getInfoInt('server_limit')"
                 >
                     <PlusIcon class="w-4 h-4" />
-                    New Server
+                    {{ t('Components.ServerList.newServer') }}
                 </button>
             </div>
 
@@ -161,13 +167,13 @@ onMounted(() => {
                 <table class="w-full text-sm text-left text-gray-300">
                     <thead class="text-xs uppercase bg-gray-800/50">
                         <tr>
-                            <th scope="col" class="px-6 py-3">Name</th>
-                            <th scope="col" class="px-6 py-3">Location</th>
-                            <th scope="col" class="px-6 py-3">Egg</th>
-                            <th scope="col" class="px-6 py-3">Memory</th>
-                            <th scope="col" class="px-6 py-3">CPU</th>
-                            <th scope="col" class="px-6 py-3">Disk</th>
-                            <th scope="col" class="px-6 py-3">Actions</th>
+                            <th scope="col" class="px-6 py-3">{{ t('Components.ServerList.table.name') }}</th>
+                            <th scope="col" class="px-6 py-3">{{ t('Components.ServerList.table.location') }}</th>
+                            <th scope="col" class="px-6 py-3">{{ t('Components.ServerList.table.egg') }}</th>
+                            <th scope="col" class="px-6 py-3">{{ t('Components.ServerList.table.memory') }}</th>
+                            <th scope="col" class="px-6 py-3">{{ t('Components.ServerList.table.cpu') }}</th>
+                            <th scope="col" class="px-6 py-3">{{ t('Components.ServerList.table.disk') }}</th>
+                            <th scope="col" class="px-6 py-3">{{ t('Components.ServerList.table.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>

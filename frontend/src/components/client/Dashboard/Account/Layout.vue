@@ -2,7 +2,9 @@
 import Session from '@/mythicaldash/Session';
 import { computed } from 'vue';
 import { CheckCircle, AlertCircle, Clock, MapPin } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 // Format date to be more readable
 const formatDate = (dateString: string | null | undefined): string => {
     if (!dateString) return 'N/A';
@@ -103,7 +105,7 @@ const isVerified = computed(() => {
 
                     <!-- UUID -->
                     <div class="flex items-center gap-2 mb-1">
-                        <span class="text-xs text-gray-500">UUID:</span>
+                        <span class="text-xs text-gray-500">{{ t('account.components.header.uuid') }}</span>
                         <code
                             class="text-xs font-mono bg-[#050508]/70 px-2 py-0.5 rounded text-indigo-400 overflow-x-auto scrollbar-hide"
                         >
@@ -122,16 +124,22 @@ const isVerified = computed(() => {
                             <MapPin class="h-5 w-5 text-indigo-400" />
                         </div>
                         <div>
-                            <h3 class="text-sm font-medium text-gray-300 mb-1">IP Address</h3>
+                            <h3 class="text-sm font-medium text-gray-300 mb-1">
+                                {{ t('account.components.header.ip') }}
+                            </h3>
                             <div class="flex flex-col gap-1">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-xs text-gray-500">First:</span>
+                                    <span class="text-xs text-gray-500">{{
+                                        t('account.components.header.first')
+                                    }}</span>
                                     <code class="text-xs font-mono text-gray-300">{{
                                         Session.getInfo('first_ip')
                                     }}</code>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-xs text-gray-500">Current:</span>
+                                    <span class="text-xs text-gray-500">{{
+                                        t('account.components.header.current')
+                                    }}</span>
                                     <code class="text-xs font-mono text-gray-300">{{
                                         Session.getInfo('last_ip')
                                     }}</code>
@@ -148,7 +156,9 @@ const isVerified = computed(() => {
                             <Clock class="h-5 w-5 text-indigo-400" />
                         </div>
                         <div>
-                            <h3 class="text-sm font-medium text-gray-300 mb-1">First Seen</h3>
+                            <h3 class="text-sm font-medium text-gray-300 mb-1">
+                                {{ t('account.components.header.firstSeen') }}
+                            </h3>
                             <p class="text-xs text-gray-400">{{ firstSeen }}</p>
                         </div>
                     </div>
@@ -161,7 +171,9 @@ const isVerified = computed(() => {
                             <Clock class="h-5 w-5 text-indigo-400" />
                         </div>
                         <div>
-                            <h3 class="text-sm font-medium text-gray-300 mb-1">Last Seen</h3>
+                            <h3 class="text-sm font-medium text-gray-300 mb-1">
+                                {{ t('account.components.header.lastSeen') }}
+                            </h3>
                             <p class="text-xs text-gray-400">{{ lastSeen }}</p>
                         </div>
                     </div>
@@ -178,9 +190,13 @@ const isVerified = computed(() => {
                     />
                 </div>
                 <div>
-                    <h3 class="text-sm font-medium text-gray-300">Account Verification</h3>
+                    <h3 class="text-sm font-medium text-gray-300">{{ t('account.components.header.verification') }}</h3>
                     <p class="text-xs" :class="isVerified ? 'text-green-400' : 'text-red-400'">
-                        {{ isVerified ? 'Your account is verified' : 'Your account is not verified' }}
+                        {{
+                            isVerified
+                                ? t('account.components.header.verified')
+                                : t('account.components.header.notVerified')
+                        }}
                     </p>
                 </div>
             </div>

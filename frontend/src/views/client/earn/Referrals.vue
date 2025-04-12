@@ -1,7 +1,7 @@
 <template>
     <LayoutDashboard>
         <div class="p-6">
-            <h1 class="text-2xl font-bold text-white mb-6">Referrals</h1>
+            <h1 class="text-2xl font-bold text-white mb-6">{{ t('referrals.pages.index.title') }}</h1>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Main Referrals Content -->
@@ -21,9 +21,11 @@
 
                             <div class="relative z-10 p-6">
                                 <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/30 mb-6">
-                                    <h3 class="text-lg font-semibold text-white mb-2">Your Unique Referral Link</h3>
+                                    <h3 class="text-lg font-semibold text-white mb-2">
+                                        {{ t('referrals.pages.index.body.title') }}
+                                    </h3>
                                     <p class="text-sm text-gray-400 mb-4">
-                                        Share this link with friends to earn rewards when they sign up
+                                        {{ t('referrals.pages.index.body.description') }}
                                     </p>
 
                                     <div class="flex items-center">
@@ -36,10 +38,10 @@
                                             @click="copyReferralLink"
                                             class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-r-lg flex items-center transition-colors duration-200"
                                         >
-                                            <span v-if="copied">Copied!</span>
+                                            <span v-if="copied">{{ t('referrals.pages.index.body.copy.copied') }}</span>
                                             <div v-else class="flex items-center">
                                                 <CopyIcon class="h-4 w-4 mr-2" />
-                                                Copy
+                                                {{ t('referrals.pages.index.body.copy.title') }}
                                             </div>
                                         </button>
                                     </div>
@@ -50,28 +52,28 @@
                                             class="flex items-center gap-2 bg-[#1DA1F2]/10 hover:bg-[#1DA1F2]/20 text-[#1DA1F2] px-4 py-2 rounded-lg text-sm transition-colors duration-200"
                                         >
                                             <TwitterIcon class="h-4 w-4" />
-                                            Twitter
+                                            {{ t('referrals.pages.index.social.twitter') }}
                                         </button>
                                         <button
                                             @click="shareVia('facebook')"
                                             class="flex items-center gap-2 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 text-[#1877F2] px-4 py-2 rounded-lg text-sm transition-colors duration-200"
                                         >
                                             <FacebookIcon class="h-4 w-4" />
-                                            Facebook
+                                            {{ t('referrals.pages.index.social.facebook') }}
                                         </button>
                                         <button
                                             @click="shareVia('discord')"
                                             class="flex items-center gap-2 bg-[#5865F2]/10 hover:bg-[#5865F2]/20 text-[#5865F2] px-4 py-2 rounded-lg text-sm transition-colors duration-200"
                                         >
                                             <DiscordIcon class="h-4 w-4" />
-                                            Discord
+                                            {{ t('referrals.pages.index.social.discord') }}
                                         </button>
                                         <button
                                             @click="shareVia('email')"
                                             class="flex items-center gap-2 bg-gray-700/30 hover:bg-gray-700/50 text-gray-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200"
                                         >
                                             <MailIcon class="h-4 w-4" />
-                                            Email
+                                            {{ t('referrals.pages.index.social.email') }}
                                         </button>
                                     </div>
                                 </div>
@@ -79,7 +81,9 @@
                                 <!-- Referral Stats -->
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                     <div class="bg-gray-800/30 rounded-xl p-4 border border-gray-700/20">
-                                        <h4 class="text-gray-400 text-sm mb-1">Total Referrals</h4>
+                                        <h4 class="text-gray-400 text-sm mb-1">
+                                            {{ t('referrals.pages.index.refferals.title') }}
+                                        </h4>
                                         <div class="flex items-center">
                                             <UsersIcon class="h-5 w-5 text-indigo-400 mr-2" />
                                             <span class="text-2xl font-bold text-white">{{
@@ -89,7 +93,9 @@
                                     </div>
 
                                     <div class="bg-gray-800/30 rounded-xl p-4 border border-gray-700/20">
-                                        <h4 class="text-gray-400 text-sm mb-1">Total Earned</h4>
+                                        <h4 class="text-gray-400 text-sm mb-1">
+                                            {{ t('referrals.pages.index.refferals.earned') }}
+                                        </h4>
                                         <div class="flex items-center">
                                             <Coins class="h-5 w-5 text-yellow-500 mr-2" />
                                             <span class="text-2xl font-bold text-white">{{ stats.totalEarned }}</span>
@@ -98,11 +104,13 @@
                                 </div>
 
                                 <!-- Referrals List -->
-                                <h3 class="text-lg font-semibold text-white mb-4">Your Referrals</h3>
+                                <h3 class="text-lg font-semibold text-white mb-4">
+                                    {{ t('referrals.pages.index.refferals.yourReferrals') }}
+                                </h3>
 
                                 <div v-if="isLoading" class="py-10 flex flex-col items-center justify-center">
                                     <LoaderIcon class="w-12 h-12 text-indigo-500 animate-spin mb-3" />
-                                    <p class="text-gray-400">Loading your referrals...</p>
+                                    <p class="text-gray-400">{{ t('referrals.pages.index.refferals.loading') }}</p>
                                 </div>
 
                                 <div
@@ -110,9 +118,11 @@
                                     class="bg-gray-800/30 rounded-xl p-8 border border-gray-700/20 flex flex-col items-center justify-center"
                                 >
                                     <UsersIcon class="h-12 w-12 text-gray-600 mb-3" />
-                                    <h4 class="text-lg font-medium text-white mb-1">No referrals yet</h4>
+                                    <h4 class="text-lg font-medium text-white mb-1">
+                                        {{ t('referrals.pages.index.refferals.noReferrals') }}
+                                    </h4>
                                     <p class="text-gray-400 text-center max-w-md">
-                                        Share your referral link with friends to start earning rewards!
+                                        {{ t('referrals.pages.index.refferals.noReferralsDescription') }}
                                     </p>
                                 </div>
 
@@ -124,22 +134,22 @@
                                                     <th
                                                         class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
                                                     >
-                                                        User
+                                                        {{ t('referrals.pages.index.refferals.table.user') }}
                                                     </th>
                                                     <th
                                                         class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
                                                     >
-                                                        Date
+                                                        {{ t('referrals.pages.index.refferals.table.date') }}
                                                     </th>
                                                     <th
                                                         class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
                                                     >
-                                                        Status
+                                                        {{ t('referrals.pages.index.refferals.table.status') }}
                                                     </th>
                                                     <th
                                                         class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
                                                     >
-                                                        Reward
+                                                        {{ t('referrals.pages.index.refferals.table.reward') }}
                                                     </th>
                                                 </tr>
                                             </thead>
@@ -208,19 +218,26 @@
                 <!-- Sidebar -->
                 <div class="space-y-6">
                     <!-- How it Works Card -->
-                    <CardComponent cardTitle="How it Works" cardDescription="Easy steps to earn from referrals">
+                    <CardComponent
+                        :cardTitle="t('referrals.pages.index.refferals.sharelink.title')"
+                        :cardDescription="t('referrals.pages.index.refferals.sharelink.description')"
+                    >
                         <div class="p-4 space-y-4">
                             <div class="bg-gray-800/30 p-4 rounded-lg">
                                 <div class="flex items-start mb-2">
                                     <div
                                         class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
                                     >
-                                        <span class="text-xs">1</span>
+                                        <span class="text-xs">{{
+                                            t('referrals.pages.index.refferals.sharelink.steps.one.id')
+                                        }}</span>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-medium text-white mb-1">Share Your Link</h4>
+                                        <h4 class="text-sm font-medium text-white mb-1">
+                                            {{ t('referrals.pages.index.refferals.sharelink.steps.one.title') }}
+                                        </h4>
                                         <p class="text-xs text-gray-400">
-                                            Copy your unique referral link and share it with friends
+                                            {{ t('referrals.pages.index.refferals.sharelink.steps.one.description') }}
                                         </p>
                                     </div>
                                 </div>
@@ -231,12 +248,16 @@
                                     <div
                                         class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
                                     >
-                                        <span class="text-xs">2</span>
+                                        <span class="text-xs">{{
+                                            t('referrals.pages.index.refferals.sharelink.steps.two.id')
+                                        }}</span>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-medium text-white mb-1">Friends Sign Up</h4>
+                                        <h4 class="text-sm font-medium text-white mb-1">
+                                            {{ t('referrals.pages.index.refferals.sharelink.steps.two.title') }}
+                                        </h4>
                                         <p class="text-xs text-gray-400">
-                                            When friends use your link to create an account, you'll be credited
+                                            {{ t('referrals.pages.index.refferals.sharelink.steps.two.description') }}
                                         </p>
                                     </div>
                                 </div>
@@ -247,12 +268,16 @@
                                     <div
                                         class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
                                     >
-                                        <span class="text-xs">3</span>
+                                        <span class="text-xs">{{
+                                            t('referrals.pages.index.refferals.sharelink.steps.three.id')
+                                        }}</span>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-medium text-white mb-1">Earn Additional Rewards</h4>
+                                        <h4 class="text-sm font-medium text-white mb-1">
+                                            {{ t('referrals.pages.index.refferals.sharelink.steps.three.title') }}
+                                        </h4>
                                         <p class="text-xs text-gray-400">
-                                            Get more rewards when friends complete actions like purchases
+                                            {{ t('referrals.pages.index.refferals.sharelink.steps.three.description') }}
                                         </p>
                                     </div>
                                 </div>
@@ -273,6 +298,12 @@ import { Loader as LoaderIcon, Copy as CopyIcon, Users as UsersIcon, Mail as Mai
 import { useSettingsStore } from '@/stores/settings';
 import router from '@/router';
 import Swal from 'sweetalert2';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
+MythicalDOM.setPageTitle(t('referrals.pages.index.title'));
 
 // Custom icons for social platforms
 const TwitterIcon = {
@@ -292,10 +323,10 @@ const Settings = useSettingsStore();
 // Check if Referrals are enabled
 if (Settings.getSetting('referrals_enabled') === 'false') {
     Swal.fire({
-        title: 'Referrals',
-        text: 'Referrals are not enabled on this host!',
+        title: t('referrals.notEnabled.title'),
+        text: t('referrals.notEnabled.text'),
         icon: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('referrals.notEnabled.button'),
     });
     router.push('/dashboard');
 }
@@ -371,7 +402,7 @@ const copyReferralLink = () => {
 
 // Share referral link via different platforms
 const shareVia = (platform: string) => {
-    const message = `Join me on MythicalDash and get exclusive rewards using my referral link!`;
+    const message = t('referrals.pages.index.share.shareMessage');
     let url = '';
 
     switch (platform) {
@@ -384,14 +415,14 @@ const shareVia = (platform: string) => {
         case 'discord':
             navigator.clipboard.writeText(`${message} ${referralLink.value}`);
             Swal.fire({
-                title: 'Link Copied!',
-                text: 'Your referral link has been copied. You can now paste it in Discord.',
+                title: t('referrals.pages.index.copy.title'),
+                text: t('referrals.pages.index.copy.text'),
                 icon: 'success',
-                confirmButtonText: 'OK',
+                confirmButtonText: t('referrals.pages.index.copy.button'),
             });
             return;
         case 'email':
-            url = `mailto:?subject=${encodeURIComponent('Join me on MythicalDash')}&body=${encodeURIComponent(`${message}\n\n${referralLink.value}`)}`;
+            url = `mailto:?subject=${encodeURIComponent(t('referrals.pages.index.share.mailTitle'))}&body=${encodeURIComponent(`${message}\n\n${referralLink.value}`)}`;
             break;
     }
 
@@ -433,19 +464,19 @@ const loadReferrals = async () => {
             };
         } else {
             Swal.fire({
-                title: 'Error',
-                text: data.error || 'Failed to load referrals',
+                title: t('referrals.pages.index.error.title'),
+                text: data.error || t('referrals.pages.index.error.text'),
                 icon: 'error',
-                confirmButtonText: 'OK',
+                confirmButtonText: t('referrals.pages.index.error.button'),
             });
         }
     } catch (error) {
         console.error('Error loading referrals:', error);
         Swal.fire({
-            title: 'Error',
-            text: 'Failed to load referrals. Please try again later.',
+            title: t('referrals.pages.index.error.title'),
+            text: t('referrals.pages.index.error.text'),
             icon: 'error',
-            confirmButtonText: 'OK',
+            confirmButtonText: t('referrals.pages.index.error.button'),
         });
     } finally {
         isLoading.value = false;

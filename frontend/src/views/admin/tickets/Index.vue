@@ -9,34 +9,6 @@
         </div>
         <TableTanstack v-else :data="tickets" :columns="columns" tableName="Tickets" />
 
-        <!-- Confirmation Modal -->
-        <div v-if="showConfirmModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full">
-                <h3 class="text-xl font-medium text-gray-100 mb-4">Confirm Action</h3>
-                <p class="text-gray-300 mb-4">
-                    Are you sure you want to {{ actionType === 'close' ? 'close' : 'delete' }} ticket
-                    <span class="font-medium text-white">#{{ selectedTicket?.id }}</span
-                    >?
-                </p>
-                <div class="flex justify-end space-x-3">
-                    <button
-                        @click="closeModal"
-                        class="px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        @click="confirmAction"
-                        :disabled="processing"
-                        class="px-4 py-2 bg-red-500 rounded-lg text-white hover:bg-red-600 transition-colors flex items-center"
-                    >
-                        <LoaderCircle v-if="processing" class="animate-spin w-4 h-4 mr-2" />
-                        <span v-else>{{ actionType === 'close' ? 'Close Ticket' : 'Delete' }}</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
         <!-- Success/Error Toast Notification -->
         <div
             v-if="notification.show"
@@ -55,7 +27,7 @@
 import { ref, onMounted, h } from 'vue';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
-import { XCircle, LoaderCircle, TicketIcon, EyeIcon } from 'lucide-vue-next';
+import { LoaderCircle, TicketIcon, EyeIcon } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 
 // Ticket interface based on the API response
@@ -83,10 +55,6 @@ interface Ticket {
 const router = useRouter();
 const tickets = ref<Ticket[]>([]);
 const loading = ref(true);
-const showConfirmModal = ref(false);
-const selectedTicket = ref<Ticket | null>(null);
-const actionType = ref<'close' | 'delete'>('close');
-const processing = ref(false);
 const notification = ref({
     show: false,
     message: '',
@@ -182,21 +150,6 @@ const columns = [
         cell: (info: { row: { original: Ticket } }) => {
             const ticket = info.row.original;
 
-            // Don't show close button for already closed tickets
-            if (ticket.status === 'closed') {
-                return h('div', { class: 'flex space-x-2' }, [
-                    h(
-                        'button',
-                        {
-                            class: 'p-1 text-gray-400 hover:text-blue-400 transition-colors',
-                            title: 'View Details',
-                            onClick: () => viewTicket(ticket),
-                        },
-                        [h(EyeIcon, { class: 'w-4 h-4' })],
-                    ),
-                ]);
-            }
-
             return h('div', { class: 'flex space-x-2' }, [
                 h(
                     'button',
@@ -206,15 +159,6 @@ const columns = [
                         onClick: () => viewTicket(ticket),
                     },
                     [h(EyeIcon, { class: 'w-4 h-4' })],
-                ),
-                h(
-                    'button',
-                    {
-                        class: 'p-1 text-gray-400 hover:text-red-400 transition-colors',
-                        title: 'Close Ticket',
-                        onClick: () => openCloseModal(ticket),
-                    },
-                    [h(XCircle, { class: 'w-4 h-4' })],
                 ),
             ]);
         },
@@ -252,65 +196,9 @@ const fetchTickets = async () => {
     }
 };
 
-const openCloseModal = (ticket: Ticket) => {
-    selectedTicket.value = ticket;
-    actionType.value = 'close';
-    showConfirmModal.value = true;
-};
-
-const closeModal = () => {
-    showConfirmModal.value = false;
-    selectedTicket.value = null;
-    processing.value = false;
-};
-
 const viewTicket = (ticket: Ticket) => {
     // Navigate to ticket details view
     router.push(`/mc-admin/tickets/${ticket.id}`);
-};
-
-const confirmAction = async () => {
-    if (!selectedTicket.value) return;
-
-    processing.value = true;
-
-    try {
-        if (actionType.value === 'close') {
-            await closeTicket(selectedTicket.value.id);
-        }
-    } catch (error) {
-        console.error(`Error during ${actionType.value} action:`, error);
-        showNotification(`Failed to ${actionType.value} ticket. Please try again.`, 'error');
-    } finally {
-        processing.value = false;
-        closeModal();
-    }
-};
-
-const closeTicket = async (ticketId: number) => {
-    try {
-        // Create FormData for the close request
-        const formData = new FormData();
-
-        // Send close request to API
-        const response = await fetch(`/api/admin/tickets/${ticketId}/close`, {
-            method: 'POST',
-            body: formData,
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            showNotification('Ticket closed successfully', 'success');
-            // Refresh tickets list
-            await fetchTickets();
-        } else {
-            showNotification(data.message || 'Failed to close ticket', 'error');
-        }
-    } catch (err) {
-        console.error('Error closing ticket:', err);
-        throw err;
-    }
 };
 
 const showNotification = (message: string, type: 'success' | 'error') => {

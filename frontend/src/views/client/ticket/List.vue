@@ -218,6 +218,9 @@ function createNewTicket() {
 </template>
 
 <style scoped>
+/**
+	Transitions
+*/
 .fade-enter-active,
 .fade-leave-active {
     transition: opacity 0.5s ease;

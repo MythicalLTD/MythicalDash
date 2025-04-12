@@ -74,6 +74,14 @@ const clientRoutes: RouteRecordRaw[] = [
         },
     },
     {
+        path: '/store/add-credits',
+        name: 'Add Credits',
+        component: () => import('@/views/client/store/AddCredits.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         path: '/',
         redirect: '/dashboard',
     },

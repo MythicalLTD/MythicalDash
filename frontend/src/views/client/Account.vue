@@ -2,8 +2,8 @@
     <LayoutDashboard>
         <!-- Page Header -->
         <div class="mb-8">
-            <h1 class="text-2xl font-bold text-gray-100 mb-2">Account Management</h1>
-            <p class="text-gray-400">View and manage your account settings and preferences</p>
+            <h1 class="text-2xl font-bold text-gray-100 mb-2">{{ t('account.pages.index.title') }}</h1>
+            <p class="text-gray-400">{{ t('account.pages.index.description') }}</p>
         </div>
 
         <!-- User Profile Card -->
@@ -34,13 +34,12 @@
             <!-- Tab Content -->
             <div class="p-6">
                 <div class="tab-content">
-                    <SettingsTab v-if="activeTab === 'Settings'" />
-                    <SecurityTab v-if="activeTab === 'Security'" />
-                    <MailsTab v-if="activeTab === 'Mails'" />
-                    <ActivitiesTab v-if="activeTab === 'Activities'" />
-                    <ApiKey v-if="activeTab === 'API Key'" />
-                    <LinkedAccounts v-if="activeTab === 'Linked Accounts'" />
-                    <TopupLogs v-if="activeTab === 'Topup Logs'" />
+                    <SettingsTab v-if="activeTab === t('account.pages.index.tabs.settings')" />
+                    <SecurityTab v-if="activeTab === t('account.pages.index.tabs.security')" />
+                    <MailsTab v-if="activeTab === t('account.pages.index.tabs.emails')" />
+                    <ActivitiesTab v-if="activeTab === t('account.pages.index.tabs.activity')" />
+                    <ApiKey v-if="activeTab === t('account.pages.index.tabs.apikey')" />
+                    <LinkedAccounts v-if="activeTab === t('account.pages.index.tabs.linked_accounts')" />
                 </div>
             </div>
         </div>
@@ -55,8 +54,13 @@ import MailsTab from '@/components/client/Dashboard/Account/Mails.vue';
 import ActivitiesTab from '@/components/client/Dashboard/Account/Activities.vue';
 import ApiKey from '@/components/client/Dashboard/Account/ApiKey.vue';
 import LinkedAccounts from '@/components/client/Dashboard/Account/LinkedAccounts.vue';
-import TopupLogs from '@/components/client/Dashboard/Account/TopupLogs.vue';
 import LayoutAccount from '@/components/client/Dashboard/Account/Layout.vue';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
+MythicalDOM.setPageTitle(t('account.pages.index.title'));
 
 import { ref } from 'vue';
 import {
@@ -65,20 +69,16 @@ import {
     Mail as MailIcon,
     Bell as ActivityIcon,
     Key as ApiKeyIcon,
-    Link as LinkedAccountsIcon,
-    DollarSign as TopupLogsIcon,
 } from 'lucide-vue-next';
 
 const activeTab = ref('Settings');
 
 const tabs = [
-    { name: 'Settings', icon: SettingsIcon },
-    { name: 'Security', icon: SecurityIcon },
-    { name: 'Linked Accounts', icon: LinkedAccountsIcon },
-    { name: 'Topup Logs', icon: TopupLogsIcon },
-    { name: 'Mails', icon: MailIcon },
-    { name: 'Activities', icon: ActivityIcon },
-    { name: 'API Key', icon: ApiKeyIcon },
+    { name: t('account.pages.index.tabs.settings'), icon: SettingsIcon },
+    { name: t('account.pages.index.tabs.security'), icon: SecurityIcon },
+    { name: t('account.pages.index.tabs.emails'), icon: MailIcon },
+    { name: t('account.pages.index.tabs.activity'), icon: ActivityIcon },
+    { name: t('account.pages.index.tabs.apikey'), icon: ApiKeyIcon },
 ];
 </script>
 

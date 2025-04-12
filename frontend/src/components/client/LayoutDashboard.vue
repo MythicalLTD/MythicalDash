@@ -256,7 +256,7 @@ const reloadUserData = async () => {
                     :stats="{
                         tickets: Session.getInfo('tickets'),
                         coins: Session.getInfo('credits'),
-                        servers: '0',
+                        servers: Session.getInfo('servers'),
                     }"
                     :userInfo="{
                         firstName: userInfo.firstName || '',

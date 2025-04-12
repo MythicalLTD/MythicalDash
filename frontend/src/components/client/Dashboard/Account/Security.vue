@@ -48,6 +48,10 @@ const changePassword = () => {
     router.push('/auth/forgot-password');
 };
 
+const logoutAllDevices = () => {
+    router.push('/auth/logout');
+};
+
 const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-US', {
@@ -88,8 +92,8 @@ const formatDate = (dateString: string): string => {
     <div>
         <!-- Title and Description -->
         <div class="mb-6">
-            <h2 class="text-xl font-semibold text-gray-100 mb-2">Account Security</h2>
-            <p class="text-gray-400 text-sm">Manage your account security settings and monitor login activity</p>
+            <h2 class="text-xl font-semibold text-gray-100 mb-2">{{ t('account.pages.security.page.title') }}</h2>
+            <p class="text-gray-400 text-sm">{{ t('account.pages.security.page.subTitle') }}</p>
         </div>
 
         <!-- Loading State -->
@@ -112,7 +116,7 @@ const formatDate = (dateString: string): string => {
                 <div class="mb-4">
                     <h3 class="text-lg font-medium text-gray-200 flex items-center gap-2">
                         <ShieldIcon class="h-5 w-5 text-indigo-400" />
-                        Security Status
+                        {{ t('account.pages.security.page.securityStatus.title') }}
                     </h3>
                 </div>
 
@@ -122,16 +126,23 @@ const formatDate = (dateString: string): string => {
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-2">
                                 <KeyIcon class="h-4 w-4 text-indigo-400" />
-                                <span class="text-sm font-medium text-gray-300">Password</span>
+                                <span class="text-sm font-medium text-gray-300">{{
+                                    t('account.pages.security.page.securityStatus.password.title')
+                                }}</span>
                             </div>
                             <div class="flex items-center gap-1 text-green-400">
                                 <CheckCircleIcon class="h-4 w-4" />
-                                <span class="text-xs">Active</span>
+                                <span class="text-xs">{{
+                                    t('account.pages.security.page.securityStatus.password.active')
+                                }}</span>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mb-3">Last changed: {{ formatDate(lastPasswordChange) }}</p>
+                        <p class="text-xs text-gray-500 mb-3">
+                            {{ t('account.pages.security.page.securityStatus.password.lastChanged') }}
+                            {{ formatDate(lastPasswordChange) }}
+                        </p>
                         <Button @click="changePassword" variant="secondary" small class="w-full">
-                            Change Password
+                            {{ t('account.pages.security.page.securityStatus.password.changeButton.label') }}
                         </Button>
                     </div>
 
@@ -140,28 +151,36 @@ const formatDate = (dateString: string): string => {
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-2">
                                 <SmartphoneIcon class="h-4 w-4 text-indigo-400" />
-                                <span class="text-sm font-medium text-gray-300">Two-Factor Authentication</span>
+                                <span class="text-sm font-medium text-gray-300">{{
+                                    t('account.pages.security.page.securityStatus.twofactor.title')
+                                }}</span>
                             </div>
                             <div v-if="is2FAEnabled" class="flex items-center gap-1 text-green-400">
                                 <CheckCircleIcon class="h-4 w-4" />
-                                <span class="text-xs">Enabled</span>
+                                <span class="text-xs">{{
+                                    t('account.pages.security.page.securityStatus.twofactor.active')
+                                }}</span>
                             </div>
                             <div v-else class="flex items-center gap-1 text-red-400">
                                 <XCircleIcon class="h-4 w-4" />
-                                <span class="text-xs">Disabled</span>
+                                <span class="text-xs">{{
+                                    t('account.pages.security.page.securityStatus.twofactor.disabled')
+                                }}</span>
                             </div>
                         </div>
                         <p class="text-xs text-gray-500 mb-3">
                             {{
                                 is2FAEnabled
-                                    ? 'Your account has an extra layer of security.'
-                                    : 'Enable 2FA for additional security.'
+                                    ? t('account.pages.security.page.securityStatus.twofactor.description.enabled')
+                                    : t('account.pages.security.page.securityStatus.twofactor.description.disabled')
                             }}
                         </p>
                         <Button v-if="is2FAEnabled" @click="disable2FA" variant="danger" small class="w-full">
-                            Disable 2FA
+                            {{ t('account.pages.security.page.securityStatus.twofactor.button.disable') }}
                         </Button>
-                        <Button v-else @click="enable2FA" variant="primary" small class="w-full"> Enable 2FA </Button>
+                        <Button v-else @click="enable2FA" variant="primary" small class="w-full">
+                            {{ t('account.pages.security.page.securityStatus.twofactor.button.enable') }}
+                        </Button>
                     </div>
 
                     <!-- Session Status -->
@@ -169,16 +188,27 @@ const formatDate = (dateString: string): string => {
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-2">
                                 <LockIcon class="h-4 w-4 text-indigo-400" />
-                                <span class="text-sm font-medium text-gray-300">Active Sessions</span>
+                                <span class="text-sm font-medium text-gray-300">{{
+                                    t('account.pages.security.page.securityStatus.activeSessions.title')
+                                }}</span>
                             </div>
                             <div class="flex items-center gap-1 text-indigo-400">
-                                <span class="text-xs font-medium">1 active</span>
+                                <span class="text-xs font-medium">{{
+                                    t('account.pages.security.page.securityStatus.activeSessions.active')
+                                }}</span>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mb-3">You're currently logged in on this device.</p>
-                        <Button variant="danger" small class="w-full flex items-center justify-center gap-1">
+                        <p class="text-xs text-gray-500 mb-3">
+                            {{ t('account.pages.security.page.securityStatus.activeSessions.description') }}
+                        </p>
+                        <Button
+                            @click="logoutAllDevices"
+                            variant="danger"
+                            small
+                            class="w-full flex items-center justify-center gap-1"
+                        >
                             <LogOutIcon class="h-3 w-3" />
-                            Logout All Devices
+                            {{ t('account.pages.security.page.securityStatus.activeSessions.button.label') }}
                         </Button>
                     </div>
                 </div>
@@ -189,9 +219,11 @@ const formatDate = (dateString: string): string => {
                 <div class="mb-4">
                     <h3 class="text-lg font-medium text-gray-200 flex items-center gap-2">
                         <ShieldIcon class="h-5 w-5 text-indigo-400" />
-                        Security Recommendations
+                        {{ t('account.pages.security.page.recommendations.title') }}
                     </h3>
-                    <p class="text-sm text-gray-400 mt-1">Enhance your account security with these recommendations</p>
+                    <p class="text-sm text-gray-400 mt-1">
+                        {{ t('account.pages.security.page.recommendations.description') }}
+                    </p>
                 </div>
 
                 <div class="space-y-3">
@@ -200,13 +232,14 @@ const formatDate = (dateString: string): string => {
                             <SmartphoneIcon class="h-4 w-4 text-indigo-400" />
                         </div>
                         <div class="flex-1">
-                            <h4 class="text-sm font-medium text-gray-300">Enable Two-Factor Authentication</h4>
+                            <h4 class="text-sm font-medium text-gray-300">
+                                {{ t('account.pages.security.page.recommendations.twofactor.enabled.title') }}
+                            </h4>
                             <p class="text-xs text-gray-500 mt-1">
-                                Add an extra layer of security to your account by requiring a verification code in
-                                addition to your password.
+                                {{ t('account.pages.security.page.recommendations.twofactor.enabled.description') }}
                             </p>
                             <Button v-if="!is2FAEnabled" @click="enable2FA" variant="primary" small class="mt-2">
-                                Enable 2FA
+                                {{ t('account.pages.security.page.recommendations.twofactor.enabled.button.label') }}
                             </Button>
                         </div>
                         <div v-if="is2FAEnabled" class="shrink-0">
@@ -219,10 +252,11 @@ const formatDate = (dateString: string): string => {
                             <KeyIcon class="h-4 w-4 text-indigo-400" />
                         </div>
                         <div>
-                            <h4 class="text-sm font-medium text-gray-300">Use a Strong Password</h4>
+                            <h4 class="text-sm font-medium text-gray-300">
+                                {{ t('account.pages.security.page.recommendations.password.title') }}
+                            </h4>
                             <p class="text-xs text-gray-500 mt-1">
-                                Create a unique password that is at least 12 characters long with a mix of letters,
-                                numbers, and symbols.
+                                {{ t('account.pages.security.page.recommendations.password.description') }}
                             </p>
                         </div>
                         <div class="shrink-0">
@@ -235,9 +269,11 @@ const formatDate = (dateString: string): string => {
                             <AlertTriangleIcon class="h-4 w-4 text-indigo-400" />
                         </div>
                         <div>
-                            <h4 class="text-sm font-medium text-gray-300">Monitor Login Activity</h4>
+                            <h4 class="text-sm font-medium text-gray-300">
+                                {{ t('account.pages.security.page.recommendations.monitor.title') }}
+                            </h4>
                             <p class="text-xs text-gray-500 mt-1">
-                                Regularly check your recent login activity and report any suspicious attempts.
+                                {{ t('account.pages.security.page.recommendations.monitor.description') }}
                             </p>
                         </div>
                         <div class="shrink-0">

@@ -52,20 +52,20 @@ const { t } = useI18n();
 
 const quickLinks = [
     {
-        name: t('components.sidebar.tickets'),
-        description: 'View and manage your tickets',
+        name: t('Components.QuickLinks.tickets.title'),
+        description: t('Components.QuickLinks.tickets.description'),
         href: '/ticket',
         icon: TicketIcon,
     },
     {
-        name: 'Announcements',
-        description: 'View the latest announcements',
+        name: t('Components.QuickLinks.announcements.title'),
+        description: t('Components.QuickLinks.announcements.description'),
         href: '/announcements',
         icon: AnnouncementIcon,
     },
     {
-        name: 'Account',
-        description: 'Update your account settings',
+        name: t('Components.QuickLinks.account.title'),
+        description: t('Components.QuickLinks.account.description'),
         href: '/account',
         icon: SettingsIcon,
     },

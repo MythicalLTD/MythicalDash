@@ -192,14 +192,14 @@
 
                     <div v-if="formData.enable_paypal === 'true'" class="pl-1 border-l-2 border-pink-500/50 space-y-4">
                         <div>
-                            <label for="paypal_client_id" class="block text-sm font-medium text-gray-400 mb-1"
+                            <label for="paypal_email" class="block text-sm font-medium text-gray-400 mb-1"
                                 >PayPal Email</label
                             >
                             <input
-                                id="paypal_client_id"
+                                id="paypal_email"
                                 type="text"
-                                v-model="formData.paypal_client_id"
-                                @change="updateSetting('paypal_client_id', formData.paypal_client_id)"
+                                v-model="formData.paypal_email"
+                                @change="updateSetting('paypal_email', formData.paypal_email)"
                                 class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                 placeholder="Your PayPal Email"
                             />
@@ -325,7 +325,7 @@ const formData = ref({
     // Payment gateways
     enable_stripe: 'false',
     enable_paypal: 'false',
-    paypal_client_id: '',
+    paypal_email: '',
     paypal_is_sandbox: 'false',
 
     stripe_publishable_key: '',
@@ -358,7 +358,7 @@ watch(
                 // Payment gateways
                 enable_stripe: newSettings['enable_stripe'] || 'false',
                 enable_paypal: newSettings['enable_paypal'] || 'false',
-                paypal_client_id: newSettings['paypal_client_id'] || '',
+                paypal_email: newSettings['paypal_email'] || '',
                 paypal_is_sandbox: newSettings['paypal_is_sandbox'] || 'false',
                 stripe_publishable_key: newSettings['stripe_publishable_key'] || '',
                 stripe_secret_key: newSettings['stripe_secret_key'] || '',

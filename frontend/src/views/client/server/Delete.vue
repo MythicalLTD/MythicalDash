@@ -2,12 +2,12 @@
     <LayoutDashboard>
         <!-- Page Header -->
         <div class="mb-8">
-            <h1 class="text-2xl font-bold text-gray-100 mb-2">Delete Server</h1>
-            <p class="text-gray-400">Permanently remove your server</p>
+            <h1 class="text-2xl font-bold text-gray-100 mb-2">{{ t('delete.pages.index.title') }}</h1>
+            <p class="text-gray-400">{{ t('delete.pages.index.subTitle') }}</p>
         </div>
 
         <div v-if="isLoading" class="flex justify-center my-8">
-            <div class="animate-pulse text-gray-300">Loading server data...</div>
+            <div class="animate-pulse text-gray-300">{{ t('delete.pages.index.loading') }}</div>
         </div>
 
         <div v-else>
@@ -19,24 +19,30 @@
                     >
                         <div>
                             <h3 class="text-lg font-medium text-gray-100">
-                                {{ serverDetails.attributes?.name || 'Unknown Server' }}
+                                {{ serverDetails.attributes?.name || t('delete.pages.index.unknownError') }}
                             </h3>
                             <p class="text-gray-400 mt-1">
-                                {{ serverDetails.attributes?.description || 'No description' }}
+                                {{ serverDetails.attributes?.description || t('delete.pages.index.unknownError') }}
                             </p>
                         </div>
                         <div class="text-right">
                             <div class="text-sm text-gray-400">
-                                <span>Type: </span>
-                                <span class="text-gray-300">{{ serverDetails.category?.name || 'Unknown' }}</span>
+                                <span>{{ t('delete.pages.index.type') }}: </span>
+                                <span class="text-gray-300">{{
+                                    serverDetails.category?.name || t('delete.pages.index.unknownError')
+                                }}</span>
                             </div>
                             <div class="text-sm text-gray-400">
-                                <span>Version: </span>
-                                <span class="text-gray-300">{{ serverDetails.service?.name || 'Unknown' }}</span>
+                                <span>{{ t('delete.pages.index.version') }}: </span>
+                                <span class="text-gray-300">{{
+                                    serverDetails.service?.name || t('delete.pages.index.unknownError')
+                                }}</span>
                             </div>
                             <div class="text-sm text-gray-400">
-                                <span>Location: </span>
-                                <span class="text-gray-300">{{ serverDetails.location?.name || 'Unknown' }}</span>
+                                <span>{{ t('delete.pages.index.location') }}: </span>
+                                <span class="text-gray-300">{{
+                                    serverDetails.location?.name || t('delete.pages.index.unknownError')
+                                }}</span>
                             </div>
                         </div>
                     </div>
@@ -44,7 +50,7 @@
             </CardComponent>
 
             <!-- Warning -->
-            <CardComponent card-title="Warning" class="mb-6">
+            <CardComponent :card-title="t('delete.pages.index.warning')" class="mb-6">
                 <div class="p-4 bg-red-900/20 border border-red-800/30 rounded-lg">
                     <div class="flex items-start">
                         <svg
@@ -62,20 +68,20 @@
                             />
                         </svg>
                         <div>
-                            <h3 class="text-lg font-medium text-red-400">Deleting this server is permanent</h3>
+                            <h3 class="text-lg font-medium text-red-400">
+                                {{ t('delete.pages.index.details.title') }}
+                            </h3>
                             <p class="mt-2 text-gray-300">
-                                This action will immediately and permanently delete your server and all data associated
-                                with it, including:
+                                {{ t('delete.pages.index.details.description') }}
                             </p>
                             <ul class="mt-2 space-y-1 text-gray-400 list-disc list-inside">
-                                <li>All files stored on the server</li>
-                                <li>All databases and their contents</li>
-                                <li>All backups</li>
-                                <li>Server configuration</li>
+                                <li>{{ t('delete.pages.index.details.files') }}</li>
+                                <li>{{ t('delete.pages.index.details.databases') }}</li>
+                                <li>{{ t('delete.pages.index.details.backups') }}</li>
+                                <li>{{ t('delete.pages.index.details.configuration') }}</li>
                             </ul>
                             <p class="mt-3 text-gray-300">
-                                This action <span class="font-bold text-red-400">cannot be undone</span>. Please be
-                                certain.
+                                {{ t('delete.pages.index.details.cannotBeUndone') }}
                             </p>
                         </div>
                     </div>
@@ -83,22 +89,27 @@
             </CardComponent>
 
             <!-- Confirmation -->
-            <CardComponent card-title="Confirmation" class="mb-6">
+            <CardComponent :card-title="t('delete.pages.index.card.title')" class="mb-6">
                 <div class="space-y-4">
                     <p class="text-gray-300">
-                        To confirm, type the server name:
+                        {{ t('delete.pages.index.card.description') }}
                         <span class="font-medium text-white">{{ serverDetails.attributes?.name }}</span>
                     </p>
-                    <TextInput v-model="confirmationText" placeholder="Type server name to confirm" />
+                    <TextInput v-model="confirmationText" :placeholder="t('delete.pages.index.card.placeholder')" />
                 </div>
             </CardComponent>
 
             <!-- Actions -->
             <div class="flex justify-between">
-                <Button type="button" text="Cancel" variant="secondary" @click="router.push('/dashboard')" />
                 <Button
                     type="button"
-                    text="Delete Server"
+                    :text="t('delete.pages.index.button.cancel')"
+                    variant="secondary"
+                    @click="router.push('/dashboard')"
+                />
+                <Button
+                    type="button"
+                    :text="t('delete.pages.index.button.delete')"
                     variant="danger"
                     :disabled="confirmationText !== serverDetails.attributes?.name || isSubmitting"
                     :loading="isSubmitting"
@@ -121,11 +132,13 @@ import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 import { useSound } from '@vueuse/sound';
 import failedAlertSfx from '@/assets/sounds/error.mp3';
 import successAlertSfx from '@/assets/sounds/success.mp3';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);
 
-MythicalDOM.setPageTitle('Delete Server');
+MythicalDOM.setPageTitle(t('delete.pages.index.title'));
 
 const router = useRouter();
 const route = useRoute();
@@ -182,8 +195,10 @@ onMounted(async () => {
         playError();
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Failed to load server data: ' + error,
+            title: t('delete.pages.alerts.error.title'),
+            text: t('delete.pages.alerts.error.generic') + ' ' + error,
+            footer: t('delete.pages.alerts.error.footer'),
+            confirmButtonText: t('delete.pages.alerts.error.confirmButtonText'),
             showConfirmButton: true,
         }).then(() => {
             router.push('/dashboard');
@@ -199,8 +214,10 @@ const deleteServer = async () => {
         playError();
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Confirmation text does not match server name',
+            title: t('delete.pages.alerts.error.title'),
+            text: t('delete.pages.alerts.error.confirmation'),
+            footer: t('delete.pages.alerts.error.footer'),
+            confirmButtonText: t('delete.pages.alerts.error.confirmButtonText'),
             showConfirmButton: true,
         });
         return;
@@ -222,8 +239,10 @@ const deleteServer = async () => {
             playSuccess();
             Swal.fire({
                 icon: 'success',
-                title: 'Success',
-                text: 'Server deletion request submitted successfully',
+                title: t('delete.pages.alerts.success.title'),
+                text: t('delete.pages.alerts.success.generic'),
+                footer: t('delete.pages.alerts.success.footer'),
+                confirmButtonText: t('delete.pages.alerts.success.confirmButtonText'),
                 showConfirmButton: true,
             }).then(() => {
                 router.push('/dashboard');
@@ -232,8 +251,10 @@ const deleteServer = async () => {
             playError();
             Swal.fire({
                 icon: 'error',
-                title: 'Deletion Failed',
-                text: data.message || 'An unknown error occurred',
+                title: t('delete.pages.alerts.error.title'),
+                text: data.message || t('delete.pages.alerts.error.generic'),
+                footer: t('delete.pages.alerts.error.footer'),
+                confirmButtonText: t('delete.pages.alerts.error.confirmButtonText'),
                 showConfirmButton: true,
             });
         }
@@ -242,8 +263,10 @@ const deleteServer = async () => {
         playError();
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Failed to delete server: ' + error,
+            title: t('delete.pages.alerts.error.title'),
+            text: t('delete.pages.alerts.error.generic') + ' ' + error,
+            footer: t('delete.pages.alerts.error.footer'),
+            confirmButtonText: t('delete.pages.alerts.error.confirmButtonText'),
             showConfirmButton: true,
         });
     } finally {

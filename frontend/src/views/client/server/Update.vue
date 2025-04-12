@@ -2,12 +2,12 @@
     <LayoutDashboard>
         <!-- Page Header -->
         <div class="mb-8">
-            <h1 class="text-2xl font-bold text-gray-100 mb-2">Update Server</h1>
-            <p class="text-gray-400">Modify the configuration of your server</p>
+            <h1 class="text-2xl font-bold text-gray-100 mb-2">{{ t('update.pages.index.title') }}</h1>
+            <p class="text-gray-400">{{ t('update.pages.index.subTitle') }}</p>
         </div>
 
         <div v-if="isLoading" class="flex justify-center my-8">
-            <div class="animate-pulse text-gray-300">Loading server data...</div>
+            <div class="animate-pulse text-gray-300">{{ t('update.pages.index.loading') }}</div>
         </div>
 
         <form v-else @submit.prevent="updateServer">
@@ -17,18 +17,25 @@
                     <!-- Left Column - Name and Description -->
                     <div class="space-y-4">
                         <div>
-                            <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Server Name</label>
-                            <TextInput id="name" v-model="form.name" placeholder="My Awesome Server" required />
+                            <label for="name" class="block text-sm font-medium text-gray-300 mb-2">{{
+                                t('update.pages.index.form.label')
+                            }}</label>
+                            <TextInput
+                                id="name"
+                                v-model="form.name"
+                                :placeholder="t('update.pages.index.form.placeholder')"
+                                required
+                            />
                         </div>
 
                         <div>
-                            <label for="description" class="block text-sm font-medium text-gray-300 mb-2"
-                                >Description (Optional)</label
-                            >
+                            <label for="description" class="block text-sm font-medium text-gray-300 mb-2">{{
+                                t('update.pages.index.form.description')
+                            }}</label>
                             <TextArea
                                 id="description"
                                 v-model="form.description"
-                                placeholder="Describe your server..."
+                                :placeholder="t('update.pages.index.form.descriptionPlaceholder')"
                                 :rows="3"
                             />
                         </div>
@@ -37,23 +44,29 @@
                     <!-- Right Column - Server Info (Read Only) -->
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-2">Server Location</label>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">{{
+                                t('update.pages.index.form.location')
+                            }}</label>
                             <div class="p-3 bg-[#0a0a15]/70 rounded border border-[#1a1a2f]/50 text-gray-400">
-                                {{ serverDetails.location?.name || 'Unknown' }}
+                                {{ serverDetails.location?.name || t('update.pages.index.form.locationPlaceholder') }}
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-2">Server Type</label>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">{{
+                                t('update.pages.index.form.category')
+                            }}</label>
                             <div class="p-3 bg-[#0a0a15]/70 rounded border border-[#1a1a2f]/50 text-gray-400">
-                                {{ serverDetails.category?.name || 'Unknown' }}
+                                {{ serverDetails.category?.name || t('update.pages.index.form.categoryPlaceholder') }}
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-2">Server Version</label>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">{{
+                                t('update.pages.index.form.egg')
+                            }}</label>
                             <div class="p-3 bg-[#0a0a15]/70 rounded border border-[#1a1a2f]/50 text-gray-400">
-                                {{ serverDetails.service?.name || 'Unknown' }}
+                                {{ serverDetails.service?.name || t('update.pages.index.form.eggPlaceholder') }}
                             </div>
                         </div>
                     </div>
@@ -66,8 +79,13 @@
                     <!-- Memory -->
                     <div>
                         <label for="memory" class="block text-sm font-medium text-gray-300 mb-2">
-                            Memory (MB)
-                            <span class="text-xs text-gray-500">(Available: {{ resources.free.memory }})</span>
+                            {{ t('update.pages.index.form.resources.memory') }} ({{
+                                t('update.pages.index.form.resources.mb')
+                            }})
+                            <span class="text-xs text-gray-500"
+                                >({{ t('update.pages.index.form.resources.available') }}:
+                                {{ resources.free.memory }})</span
+                            >
                         </label>
                         <TextInput id="memory" v-model="memoryModel" type="number" required />
                     </div>
@@ -75,8 +93,13 @@
                     <!-- CPU -->
                     <div>
                         <label for="cpu" class="block text-sm font-medium text-gray-300 mb-2">
-                            CPU (%)
-                            <span class="text-xs text-gray-500">(Available: {{ resources.free.cpu }})</span>
+                            {{ t('update.pages.index.form.resources.cpu') }} ({{
+                                t('update.pages.index.form.resources.p')
+                            }})
+                            <span class="text-xs text-gray-500"
+                                >({{ t('update.pages.index.form.resources.available') }}:
+                                {{ resources.free.cpu }})</span
+                            >
                         </label>
                         <TextInput id="cpu" v-model="cpuModel" type="number" required />
                     </div>
@@ -84,8 +107,13 @@
                     <!-- Disk -->
                     <div>
                         <label for="disk" class="block text-sm font-medium text-gray-300 mb-2">
-                            Disk (MB)
-                            <span class="text-xs text-gray-500">(Available: {{ resources.free.disk }})</span>
+                            {{ t('update.pages.index.form.resources.disk') }} ({{
+                                t('update.pages.index.form.resources.mb')
+                            }})
+                            <span class="text-xs text-gray-500"
+                                >({{ t('update.pages.index.form.resources.available') }}:
+                                {{ resources.free.disk }})</span
+                            >
                         </label>
                         <TextInput id="disk" v-model="diskModel" type="number" required />
                     </div>
@@ -95,8 +123,11 @@
                     <!-- Databases -->
                     <div>
                         <label for="databases" class="block text-sm font-medium text-gray-300 mb-2">
-                            Databases
-                            <span class="text-xs text-gray-500">(Available: {{ resources.free.databases }})</span>
+                            {{ t('update.pages.index.form.resources.databases') }}
+                            <span class="text-xs text-gray-500"
+                                >({{ t('update.pages.index.form.resources.available') }}:
+                                {{ resources.free.databases }})</span
+                            >
                         </label>
                         <TextInput id="databases" v-model="databasesModel" type="number" required />
                     </div>
@@ -113,8 +144,11 @@
                     <!-- Allocations -->
                     <div>
                         <label for="allocations" class="block text-sm font-medium text-gray-300 mb-2">
-                            Allocations
-                            <span class="text-xs text-gray-500">(Available: {{ resources.free.allocations }})</span>
+                            {{ t('update.pages.index.form.resources.allocations') }}
+                            <span class="text-xs text-gray-500"
+                                >({{ t('update.pages.index.form.resources.available') }}:
+                                {{ resources.free.allocations }})</span
+                            >
                         </label>
                         <TextInput id="allocations" v-model="allocationsModel" type="number" required />
                     </div>
@@ -123,8 +157,13 @@
 
             <!-- Submit Buttons -->
             <div class="flex justify-between">
-                <Button type="button" text="Delete Server" variant="danger" @click="showDeleteConfirmation" />
-                <Button type="submit" text="Update Server" :loading="isSubmitting" />
+                <Button
+                    type="button"
+                    :text="t('update.pages.index.form.deleteButton')"
+                    variant="danger"
+                    @click="showDeleteConfirmation"
+                />
+                <Button type="submit" :text="t('update.pages.index.form.updateButton')" :loading="isSubmitting" />
             </div>
         </form>
     </LayoutDashboard>
@@ -142,11 +181,13 @@ import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 import { useSound } from '@vueuse/sound';
 import failedAlertSfx from '@/assets/sounds/error.mp3';
 import successAlertSfx from '@/assets/sounds/success.mp3';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);
 
-MythicalDOM.setPageTitle('Update Server');
+MythicalDOM.setPageTitle(t('update.pages.index.title'));
 
 const router = useRouter();
 const route = useRoute();
@@ -377,8 +418,10 @@ onMounted(async () => {
         playError();
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Failed to load server data: ' + error,
+            title: t('update.pages.alerts.error.title'),
+            text: t('update.pages.alerts.error.generic'),
+            footer: t('update.pages.alerts.error.footer'),
+            confirmButtonText: t('update.pages.alerts.error.confirmButtonText'),
             showConfirmButton: true,
         }).then(() => {
             router.push('/dashboard');
@@ -417,8 +460,10 @@ const updateServer = async () => {
             playSuccess();
             Swal.fire({
                 icon: 'success',
-                title: 'Success',
-                text: 'Server updated successfully',
+                title: t('update.pages.alerts.success.title'),
+                text: t('update.pages.alerts.success.generic'),
+                footer: t('update.pages.alerts.success.footer'),
+                confirmButtonText: t('update.pages.alerts.success.confirmButtonText'),
                 showConfirmButton: true,
             }).then(() => {
                 router.push('/dashboard');
@@ -427,9 +472,10 @@ const updateServer = async () => {
             playError();
             Swal.fire({
                 icon: 'error',
-                title: 'Update Failed',
-                text: data.message || 'An unknown error occurred',
-                footer: 'Please check your input and try again',
+                title: t('update.pages.alerts.error.title'),
+                text: data.message || t('update.pages.alerts.error.generic'),
+                footer: t('update.pages.alerts.error.footer'),
+                confirmButtonText: t('update.pages.alerts.error.confirmButtonText'),
                 showConfirmButton: true,
             });
         }
@@ -438,8 +484,10 @@ const updateServer = async () => {
         playError();
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Failed to update server: ' + error,
+            title: t('update.pages.alerts.error.title'),
+            text: t('update.pages.alerts.error.generic'),
+            footer: t('update.pages.alerts.error.footer'),
+            confirmButtonText: t('update.pages.alerts.error.confirmButtonText'),
             showConfirmButton: true,
         });
     } finally {
@@ -450,13 +498,14 @@ const updateServer = async () => {
 // Show delete confirmation
 const showDeleteConfirmation = () => {
     Swal.fire({
-        title: 'Are you sure?',
-        text: 'This will delete your server and all associated data. This action cannot be undone!',
+        title: t('update.pages.alerts.error.title'),
+        text: t('update.pages.alerts.error.delete'),
+        footer: t('update.pages.alerts.error.footer'),
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
+        confirmButtonText: t('update.pages.alerts.error.confirmButtonText'),
         confirmButtonColor: '#ef4444',
-        cancelButtonText: 'Cancel',
+        cancelButtonText: t('update.pages.alerts.error.cancelButtonText'),
         reverseButtons: true,
     }).then((result) => {
         if (result.isConfirmed) {
@@ -483,8 +532,10 @@ const deleteServer = async () => {
             playSuccess();
             Swal.fire({
                 icon: 'success',
-                title: 'Success',
-                text: 'Server deletion request submitted successfully',
+                title: t('update.pages.alerts.success.title'),
+                text: t('update.pages.alerts.success.generic'),
+                footer: t('update.pages.alerts.success.footer'),
+                confirmButtonText: t('update.pages.alerts.success.confirmButtonText'),
                 showConfirmButton: true,
             }).then(() => {
                 router.push('/dashboard');
@@ -493,8 +544,10 @@ const deleteServer = async () => {
             playError();
             Swal.fire({
                 icon: 'error',
-                title: 'Deletion Failed',
-                text: data.message || 'An unknown error occurred',
+                title: t('update.pages.alerts.error.title'),
+                text: data.message || t('update.pages.alerts.error.generic'),
+                footer: t('update.pages.alerts.error.footer'),
+                confirmButtonText: t('update.pages.alerts.error.confirmButtonText'),
                 showConfirmButton: true,
             });
         }
@@ -503,8 +556,10 @@ const deleteServer = async () => {
         playError();
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Failed to delete server: ' + error,
+            title: t('update.pages.alerts.error.title'),
+            text: t('update.pages.alerts.error.generic'),
+            footer: t('update.pages.alerts.error.footer'),
+            confirmButtonText: t('update.pages.alerts.error.confirmButtonText'),
             showConfirmButton: true,
         });
     } finally {

@@ -57,7 +57,7 @@
             <div class="empty-state-animation mb-3">
                 <BellOffIcon class="w-12 h-12 text-gray-600" />
             </div>
-            <p class="text-gray-400 text-sm">No announcements yet</p>
+            <p class="text-gray-400 text-sm">{{ t('Components.Announcements.Card.NoAnnouncements') }}</p>
         </div>
 
         <div class="mt-4 text-center">
@@ -65,7 +65,7 @@
                 @click="goToAnnouncements"
                 class="view-all-btn px-4 py-2.5 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 hover:from-indigo-500/30 hover:to-blue-500/30 text-indigo-400 rounded-lg text-sm transition-all duration-300 w-full relative overflow-hidden border border-indigo-500/10"
             >
-                <span class="relative z-10">View All Announcements</span>
+                <span class="relative z-10">{{ t('Components.Announcements.Card.ReadMore') }}</span>
             </button>
         </div>
     </CardComponent>
@@ -77,9 +77,11 @@ import Announcements from '@/mythicaldash/Announcements';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { BellOff as BellOffIcon } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
 const loading = ref(true);
+const { t } = useI18n();
 
 interface Announcement {
     id: number;

@@ -12,6 +12,7 @@ import { TextInput } from '@/components/client/ui/TextForms';
 import Button from '@/components/client/ui/Button.vue';
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
 import Session from '@/mythicaldash/Session';
+import { useI18n } from 'vue-i18n';
 
 const apiKey = ref<string>('');
 const isLoading = ref(false);
@@ -165,21 +166,32 @@ const resetApiKey = () => {
     document.cookie = 'user_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     window.location.href = '/auth/login';
 };
+
+const { t } = useI18n();
 </script>
 
 <template>
     <div class="space-y-6">
         <!-- API Key Information -->
-        <CardComponent cardTitle="API Key" cardDescription="Your API key provides access to the MythicalDash API">
+        <CardComponent
+            :cardTitle="t('account.pages.apikey.page.card.title')"
+            :cardDescription="t('account.pages.apikey.page.card.description')"
+        >
             <div class="space-y-6">
                 <!-- API Key Display -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-300">Your API Key</label>
+                    <label class="block text-sm font-medium text-gray-300">{{
+                        t('account.pages.apikey.page.card.yourKey')
+                    }}</label>
                     <div class="relative">
                         <TextInput
                             :model-value="isRevealed ? apiKey : maskedApiKey(apiKey)"
                             @update:model-value="apiKey = $event"
-                            :placeholder="isLoading ? 'Loading API key...' : 'No API key available'"
+                            :placeholder="
+                                isLoading
+                                    ? t('account.pages.apikey.page.card.loading')
+                                    : t('account.pages.apikey.page.card.noApiKey')
+                            "
                             :disabled="true"
                             inputClass="pr-24 font-mono text-xs"
                         />
@@ -203,8 +215,7 @@ const resetApiKey = () => {
                         </div>
                     </div>
                     <p class="text-xs text-gray-500 mt-1">
-                        This key grants full access to your account via the API. Keep it secure and never share it
-                        publicly.
+                        {{ t('account.pages.apikey.page.card.info') }}
                     </p>
                 </div>
 
@@ -220,7 +231,7 @@ const resetApiKey = () => {
                         <template #icon>
                             <RefreshIcon class="h-4 w-4" />
                         </template>
-                        Reset API Key
+                        {{ t('account.pages.apikey.page.card.resetKey') }}
                     </Button>
 
                     <a
@@ -233,7 +244,7 @@ const resetApiKey = () => {
                             <template #icon>
                                 <ExternalLinkIcon class="h-4 w-4" />
                             </template>
-                            API Documentation
+                            {{ t('account.pages.apikey.page.card.apiDocumentation') }}
                         </Button>
                     </a>
                 </div>

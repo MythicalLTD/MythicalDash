@@ -89,8 +89,8 @@ const columnsEmails = [
         <!-- Loading State -->
         <LoadingAnimation
             v-if="loading"
-            loadingText="Loading Emails"
-            description="Please wait while we fetch your email history"
+            :loadingText="t('account.pages.emails.page.loadingText')"
+            :description="t('account.pages.emails.page.loadingDescription')"
         />
 
         <!-- Error State -->
@@ -110,7 +110,7 @@ const columnsEmails = [
                 </svg>
             </div>
             <div>
-                <h3 class="text-sm font-medium text-red-400">Error Loading Emails</h3>
+                <h3 class="text-sm font-medium text-red-400">{{ t('account.pages.emails.page.error') }}</h3>
                 <p class="mt-1 text-sm text-gray-400">{{ error }}</p>
             </div>
         </div>
@@ -123,8 +123,8 @@ const columnsEmails = [
             <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-500/10 flex items-center justify-center">
                 <Mail class="h-8 w-8 text-indigo-400" />
             </div>
-            <h3 class="text-lg font-medium text-gray-200 mb-1">No Emails Found</h3>
-            <p class="text-sm text-gray-400">You haven't received any emails yet</p>
+            <h3 class="text-lg font-medium text-gray-200 mb-1">{{ t('account.pages.emails.page.noMails.title') }}</h3>
+            <p class="text-sm text-gray-400">{{ t('account.pages.emails.page.noMails.description') }}</p>
         </div>
 
         <!-- Email Table -->

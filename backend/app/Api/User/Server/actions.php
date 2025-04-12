@@ -251,8 +251,6 @@ $router->post('/api/user/server/(.*)/delete', function (string $id): void {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new Session($appInstance);
-    $accountToken = $session->SESSION_KEY;
-    $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
 
     // Get the server first to check ownership
     $server = Servers::getServerPterodactylDetails((int) $id);
@@ -326,6 +324,10 @@ $router->get('/api/user/server/create', function (): void {
         'allocations' => $available_resources[UserColumns::ALLOCATION_LIMIT],
         'servers' => $available_resources[UserColumns::SERVER_LIMIT],
     ];
+
+    foreach ($locations as &$location) {
+        $location['used_slots'] = Servers::getServerCountByLocation($location['pterodactyl_location_id']);
+    }
 
     $appInstance->OK('Server Creation', [
         'locations' => $locations,

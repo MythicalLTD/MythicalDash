@@ -9,14 +9,14 @@
         <div class="w-full max-w-3xl mx-auto pt-24 px-4 md:px-6" @click.stop>
             <!-- Search Header -->
             <div class="mb-2 flex items-center justify-between">
-                <h2 class="text-lg font-medium text-gray-300">Quick Search</h2>
+                <h2 class="text-lg font-medium text-gray-300">{{ t('Components.QuickSearch.title') }}</h2>
                 <div class="flex items-center gap-2">
                     <kbd
                         class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#1a1a2e] rounded-md border border-[#2a2a3f]/50"
                     >
-                        Esc
+                        {{ t('Components.QuickSearch.esc_key') }}
                     </kbd>
-                    <span class="text-gray-500">to close</span>
+                    <span class="text-gray-500">{{ t('Components.QuickSearch.to_close') }}</span>
                 </div>
             </div>
 
@@ -46,7 +46,7 @@
                     <kbd
                         class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#0a0a0f]/70 rounded-md border border-[#2a2a3f]/50"
                     >
-                        Enter
+                        {{ t('Components.QuickSearch.enter_key') }}
                     </kbd>
                 </div>
             </div>
@@ -95,7 +95,7 @@
                 <div class="flex flex-col items-center">
                     <SearchXIcon class="w-12 h-12 text-gray-500 mb-3" />
                     <p class="text-gray-400 mb-1">{{ $t('components.search.no_results') }}</p>
-                    <p class="text-sm text-gray-500">Try different keywords or check your spelling</p>
+                    <p class="text-sm text-gray-500">{{ t('Components.QuickSearch.notfound') }}</p>
                 </div>
             </div>
 
@@ -104,7 +104,7 @@
                 <div
                     class="p-4 bg-[#1a1a2e]/50 rounded-xl border border-[#2a2a3f]/30 hover:bg-[#1a1a2e]/70 transition-colors duration-200"
                 >
-                    <h3 class="font-medium text-gray-300 mb-2">Quick Navigation</h3>
+                    <h3 class="font-medium text-gray-300 mb-2">{{ t('Components.QuickSearch.quickNav') }}</h3>
                     <div class="space-y-2">
                         <div
                             v-for="item in quickLinks"
@@ -119,33 +119,33 @@
                 </div>
 
                 <div class="p-4 bg-[#1a1a2e]/50 rounded-xl border border-[#2a2a3f]/30">
-                    <h3 class="font-medium text-gray-300 mb-2">Keyboard Shortcuts</h3>
+                    <h3 class="font-medium text-gray-300 mb-2">{{ t('Components.QuickSearch.keyboardShortcuts') }}</h3>
                     <div class="space-y-2">
                         <div class="flex items-center justify-between p-2">
-                            <span class="text-sm text-gray-400">Search</span>
+                            <span class="text-sm text-gray-400">{{ t('Components.QuickSearch.search') }}</span>
                             <div class="flex items-center gap-1">
                                 <kbd
                                     class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#0a0a0f]/70 rounded-md border border-[#2a2a3f]/50"
-                                    >Ctrl</kbd
+                                    >{{ t('Components.QuickSearch.ctrl_key') }}</kbd
                                 >
                                 <span class="text-gray-500">+</span>
                                 <kbd
                                     class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#0a0a0f]/70 rounded-md border border-[#2a2a3f]/50"
-                                    >K</kbd
+                                    >{{ t('Components.QuickSearch.k_key') }}</kbd
                                 >
                             </div>
                         </div>
                         <div class="flex items-center justify-between p-2">
-                            <span class="text-sm text-gray-400">Go to Dashboard</span>
+                            <span class="text-sm text-gray-400">{{ t('Components.QuickSearch.goToDashboard') }}</span>
                             <div class="flex items-center gap-1">
                                 <kbd
                                     class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#0a0a0f]/70 rounded-md border border-[#2a2a3f]/50"
-                                    >Ctrl</kbd
+                                    >{{ t('Components.QuickSearch.ctrl_key') }}</kbd
                                 >
                                 <span class="text-gray-500">+</span>
                                 <kbd
                                     class="px-2 py-1 text-xs font-medium text-gray-400 bg-[#0a0a0f]/70 rounded-md border border-[#2a2a3f]/50"
-                                    >D</kbd
+                                    >{{ t('Components.QuickSearch.d_key') }}</kbd
                                 >
                             </div>
                         </div>
@@ -208,10 +208,24 @@ const searchableItems: SearchResult[] = [
     },
     {
         id: 3,
-        title: 'Servers',
-        description: 'Manage your game servers',
-        href: '/servers',
+        title: t('Components.ServerList.title'),
+        description: t('Components.ServerList.description'),
+        href: '/dashboard',
         icon: ServerIcon,
+    },
+    {
+        id: 4,
+        title: t('Components.ManageAccount.title'),
+        description: t('Components.ManageAccount.description'),
+        href: '/account',
+        icon: LayoutDashboardIcon,
+    },
+    {
+        id: 5,
+        title: t('Components.Announcements.Title'),
+        description: t('Components.QuickLinks.announcements.description'),
+        href: '/announcements',
+        icon: LayoutDashboardIcon,
     },
 ];
 

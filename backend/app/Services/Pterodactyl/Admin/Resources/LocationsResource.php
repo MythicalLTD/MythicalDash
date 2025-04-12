@@ -71,7 +71,11 @@ class LocationsResource extends PterodactylAdmin
     public function getLocation(int $locationId): array
     {
         try {
-            return $this->request('GET', "/api/application/locations/{$locationId}");
+            return $this->request('GET', "/api/application/locations/{$locationId}", [
+                'query' => [
+                    'include' => 'servers',
+                ],
+            ]);
         } catch (ClientException $e) {
             $response = $e->getResponse();
             $statusCode = $response->getStatusCode();

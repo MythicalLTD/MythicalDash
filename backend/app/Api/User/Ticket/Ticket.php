@@ -39,7 +39,7 @@ $router->get('/api/user/ticket/(.*)/messages', function ($ticketId) {
             $ticketInfo['department'] = Departments::get((int) $ticketInfo['department']);
             $uuid = $s->getInfo(UserColumns::UUID, false);
             global $eventManager;
-            if ($ticketInfo['user'] !== $s->getInfo(UserColumns::UUID, false)) {
+            if ($ticketInfo['user'] !== $s->getInfo(UserColumns::UUID, false) && $s->getInfo(UserColumns::ROLE_ID, false) < 3) {
                 $appInstance->Forbidden('You do not have permission to view this ticket', ['error_code' => 'ERROR_PERMISSION_DENIED']);
 
                 return;
@@ -121,7 +121,7 @@ $router->post('/api/user/ticket/(.*)/reply', function ($ticketId) {
 
     if (Tickets::exists($ticketId)) {
         $ticketInfo = Tickets::getTicket($ticketId);
-        if ($ticketInfo['user'] !== $s->getInfo(UserColumns::UUID, false)) {
+        if ($ticketInfo['user'] !== $s->getInfo(UserColumns::UUID, false) && $s->getInfo(UserColumns::ROLE_ID, false) < 3) {
             $appInstance->Forbidden('You do not have permission to reply to this ticket', ['error_code' => 'ERROR_PERMISSION_DENIED']);
 
             return;
@@ -168,7 +168,7 @@ $router->post('/api/user/ticket/(.*)/status', function ($ticketId) {
 
     if (Tickets::exists($ticketId)) {
         $ticketInfo = Tickets::getTicket($ticketId);
-        if ($ticketInfo['user'] !== $s->getInfo(UserColumns::UUID, false)) {
+        if ($ticketInfo['user'] !== $s->getInfo(UserColumns::UUID, false) && $s->getInfo(UserColumns::ROLE_ID, false) < 3) {
             $appInstance->Forbidden('You do not have permission to update this ticket', ['error_code' => 'ERROR_PERMISSION_DENIED']);
 
             return;
@@ -218,7 +218,7 @@ $router->post('/api/user/ticket/(.*)/attachments', function ($ticketId) {
 
     if (Tickets::exists($ticketId)) {
         $ticketInfo = Tickets::getTicket($ticketId);
-        if ($ticketInfo['user'] !== $s->getInfo(UserColumns::UUID, false)) {
+        if ($ticketInfo['user'] !== $s->getInfo(UserColumns::UUID, false) && $s->getInfo(UserColumns::ROLE_ID, false) < 3) {
             $appInstance->Forbidden('You do not have permission to upload attachments to this ticket', ['error_code' => 'ERROR_PERMISSION_DENIED']);
 
             return;

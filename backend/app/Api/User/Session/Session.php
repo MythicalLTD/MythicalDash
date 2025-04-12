@@ -63,7 +63,7 @@ $router->post('/api/user/session/info/update', function (): void {
         $session->setInfo(UserColumns::BACKGROUND, $_POST['background'], false);
         $eventManager->emit(UserEvent::onUserUpdate(), [$session->SESSION_KEY]);
         UserActivities::add(
-            User::getInfo($session->getInfo(UserColumns::UUID, false), UserColumns::UUID, false),
+            $session->getInfo(UserColumns::UUID, false),
             UserActivitiesTypes::$user_update,
             CloudFlareRealIP::getRealIP()
         );
@@ -84,7 +84,7 @@ $router->add('/api/user/session/apiKey/reset', function (): void {
     $session->setInfo(UserColumns::ACCOUNT_TOKEN, $token, false);
     $eventManager->emit(UserEvent::resetApiKey(), [$token]);
     UserActivities::add(
-        User::getInfo($session->getInfo(UserColumns::UUID, false), UserColumns::UUID, false),
+        $session->getInfo(UserColumns::UUID, false),
         UserActivitiesTypes::$user_reset_api_key,
         CloudFlareRealIP::getRealIP()
     );
@@ -103,7 +103,7 @@ $router->add('/api/user/session/newPin', function (): void {
         $session->setInfo(UserColumns::SUPPORT_PIN, $pin, false);
         $eventManager->emit(UserEvent::newSupportPin(), [$pin]);
         UserActivities::add(
-            User::getInfo($session->getInfo(UserColumns::UUID, false), UserColumns::UUID, false),
+            $session->getInfo(UserColumns::UUID, false),
             UserActivitiesTypes::$user_new_support_pin,
             CloudFlareRealIP::getRealIP()
         );
@@ -124,7 +124,10 @@ $router->get('/api/user/session', function (): void {
     try {
         $stats_tickets = Database::getTableColumnCount('mythicaldash_tickets', [
             'user' => User::getInfo($accountToken, UserColumns::UUID, false),
-            'status' => 'open',
+        ]);
+
+        $stats_servers = Database::getTableColumnCount('mythicaldash_servers', [
+            'user' => User::getInfo($accountToken, UserColumns::UUID, false),
         ]);
 
         $columns = [
@@ -172,7 +175,7 @@ $router->get('/api/user/session', function (): void {
             'user_info' => $info,
             'stats' => [
                 'tickets' => $stats_tickets,
-                'servers' => '0',
+                'servers' => $stats_servers,
             ],
         ]);
 

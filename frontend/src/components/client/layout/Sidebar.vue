@@ -16,7 +16,9 @@ import {
 } from 'lucide-vue-next';
 import Translation from '@/mythicaldash/Translation';
 import { useSettingsStore } from '@/stores/settings';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const Settings = useSettingsStore();
 
 // Check if AFK Rewards is enabled
@@ -74,7 +76,7 @@ interface MenuSection {
 
 // Define AFK Rewards menu item
 const afkRewardsMenuItem = {
-    name: 'AFK Rewards',
+    name: t('components.sidebar.afk'),
     icon: ClockIcon,
     href: '/earn/afk',
     active: isActiveRoute(['/earn/afk']),
@@ -82,7 +84,7 @@ const afkRewardsMenuItem = {
 
 // Define Code Redemption menu item
 const codeRedemptionMenuItem = {
-    name: 'Code Redemption',
+    name: t('components.sidebar.code_redemption'),
     icon: GiftIcon,
     href: '/earn/redeem',
     active: isActiveRoute(['/earn/redeem']),
@@ -90,7 +92,7 @@ const codeRedemptionMenuItem = {
 
 // Define Join For Rewards menu item
 const j4rMenuItem = {
-    name: 'Join For Rewards',
+    name: t('components.sidebar.j4r'),
     icon: UsersIcon,
     href: '/earn/j4r',
     active: isActiveRoute(['/earn/j4r']),
@@ -98,7 +100,7 @@ const j4rMenuItem = {
 
 // Define Referrals menu item
 const referralsMenuItem = {
-    name: 'Referrals',
+    name: t('components.sidebar.referrals'),
     icon: UserPlusIcon,
     href: '/earn/referrals',
     active: isActiveRoute(['/earn/referrals']),
@@ -106,7 +108,7 @@ const referralsMenuItem = {
 
 // Define Link For Rewards menu item
 const linkForRewardsMenuItem = {
-    name: 'Link For Rewards',
+    name: t('components.sidebar.l4r'),
     icon: LinkIcon,
     href: '/earn/links',
     active: isActiveRoute(['/earn/links']),
@@ -114,14 +116,14 @@ const linkForRewardsMenuItem = {
 
 // Define menu items
 const dashboardMenuItem = {
-    name: 'Dashboard',
+    name: t('components.sidebar.dashboard'),
     icon: HomeIcon,
     href: '/dashboard',
     active: isActiveRoute(['/dashboard']),
 };
 
 const storeMenuItem = {
-    name: 'Store',
+    name: t('components.sidebar.store'),
     icon: ShoppingCartIcon,
     href: '/store',
     active: isActiveRoute(['/store']),
@@ -156,33 +158,27 @@ const getEarnItems = computed(() => {
 
 const menuSections = ref<MenuSection[]>([
     {
-        title: 'General',
+        title: t('components.sidebar.general'),
         items: [
             dashboardMenuItem,
             {
-                name: 'Create Server',
+                name: t('components.sidebar.create'),
                 icon: ServerIcon,
                 href: '/server/create',
                 active: isActiveRoute(['/server/create']),
             },
             ...(isStoreEnabled.value ? [storeMenuItem] : []),
-            {
-                name: Translation.getTranslation('components.sidebar.announcements'),
-                icon: BellIcon,
-                href: '/announcements',
-                active: isActiveRoute(['/announcements']),
-            },
         ],
     },
     {
-        title: 'Earn',
+        title: t('components.sidebar.earn'),
         items: getEarnItems.value,
     },
     {
-        title: Translation.getTranslation('components.sidebar.support'),
+        title: t('components.sidebar.support'),
         items: [
             {
-                name: Translation.getTranslation('components.sidebar.tickets'),
+                name: t('components.sidebar.tickets'),
                 icon: TicketIcon,
                 href: '/ticket',
                 active: isActiveRoute(['/ticket']),
@@ -201,6 +197,12 @@ const menuSections = ref<MenuSection[]>([
                         active: isActiveRoute(['/ticket']),
                     },
                 ],
+            },
+            {
+                name: Translation.getTranslation('components.sidebar.announcements'),
+                icon: BellIcon,
+                href: '/announcements',
+                active: isActiveRoute(['/announcements']),
             },
         ],
     },

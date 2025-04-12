@@ -354,6 +354,8 @@ import Session from '@/mythicaldash/Session';
 import { useSettingsStore } from '@/stores/settings';
 import router from '@/router';
 import Swal from 'sweetalert2';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
+MythicalDOM.setPageTitle('Link For Rewards');
 
 const Settings = useSettingsStore();
 

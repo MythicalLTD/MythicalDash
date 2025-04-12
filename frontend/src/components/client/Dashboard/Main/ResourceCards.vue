@@ -1,5 +1,8 @@
 <template>
-    <CardComponent cardTitle="Resource Usage" cardDescription="View your resource usage and limits">
+    <CardComponent
+        :cardTitle="t('Components.ResourceCards.title')"
+        :cardDescription="t('Components.ResourceCards.description')"
+    >
         <!-- Background decorative elements -->
         <div class="absolute -top-20 -right-20 w-40 h-40 bg-blue-500/5 rounded-full blur-2xl"></div>
         <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-indigo-500/5 rounded-full blur-2xl"></div>
@@ -14,12 +17,15 @@
                     <div class="icon-container">
                         <CircuitBoard class="resource-icon" />
                     </div>
-                    <span class="text-gray-400 text-sm font-medium">Ram</span>
+                    <span class="text-gray-400 text-sm font-medium">{{ t('Components.ResourceCards.RAM.title') }}</span>
                 </div>
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex flex-col">
-                        <span class="resource-value">{{ resources.memory }}MB</span>
-                        <span class="resource-limit">of {{ Session.getInfoInt('memory_limit') }}MB</span>
+                        <span class="resource-value">{{ resources.memory }}{{ t('Components.ResourceCards.mb') }}</span>
+                        <span class="resource-limit"
+                            >{{ t('Components.ResourceCards.of') }} {{ Session.getInfoInt('memory_limit')
+                            }}{{ t('Components.ResourceCards.mb') }}</span
+                        >
                     </div>
                     <div
                         class="percentage-badge"
@@ -57,12 +63,17 @@
                     <div class="icon-container">
                         <HardDrive class="resource-icon" />
                     </div>
-                    <span class="text-gray-400 text-sm font-medium">Disk</span>
+                    <span class="text-gray-400 text-sm font-medium">{{
+                        t('Components.ResourceCards.DISK.title')
+                    }}</span>
                 </div>
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex flex-col">
-                        <span class="resource-value">{{ resources.disk }}MB</span>
-                        <span class="resource-limit">of {{ Session.getInfoInt('disk_limit') }}MB</span>
+                        <span class="resource-value">{{ resources.disk }}{{ t('Components.ResourceCards.mb') }}</span>
+                        <span class="resource-limit"
+                            >{{ t('Components.ResourceCards.of') }} {{ Session.getInfoInt('disk_limit')
+                            }}{{ t('Components.ResourceCards.mb') }}</span
+                        >
                     </div>
                     <div
                         class="percentage-badge"
@@ -100,12 +111,14 @@
                     <div class="icon-container">
                         <Cpu class="resource-icon" />
                     </div>
-                    <span class="text-gray-400 text-sm font-medium">CPU</span>
+                    <span class="text-gray-400 text-sm font-medium">{{ t('Components.ResourceCards.CPU.title') }}</span>
                 </div>
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex flex-col">
                         <span class="resource-value">{{ resources.cpu }}%</span>
-                        <span class="resource-limit">of {{ Session.getInfoInt('cpu_limit') }}%</span>
+                        <span class="resource-limit"
+                            >{{ t('Components.ResourceCards.of') }} {{ Session.getInfoInt('cpu_limit') }}%</span
+                        >
                     </div>
                     <div
                         class="percentage-badge"
@@ -143,12 +156,16 @@
                     <div class="icon-container">
                         <Server class="resource-icon" />
                     </div>
-                    <span class="text-gray-400 text-sm font-medium">Server Slot(s)</span>
+                    <span class="text-gray-400 text-sm font-medium">{{
+                        t('Components.ResourceCards.SLOT.title')
+                    }}</span>
                 </div>
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex flex-col">
                         <span class="resource-value">{{ serverSlots.used }}</span>
-                        <span class="resource-limit">of {{ Session.getInfoInt('server_limit') }}</span>
+                        <span class="resource-limit"
+                            >{{ t('Components.ResourceCards.of') }} {{ Session.getInfoInt('server_limit') }}</span
+                        >
                     </div>
                     <div
                         class="percentage-badge"
@@ -189,12 +206,14 @@
                     <div class="icon-container">
                         <SaveAll class="resource-icon" />
                     </div>
-                    <span class="text-gray-400 text-sm font-medium">Server Backup(s)</span>
+                    <span class="text-gray-400 text-sm font-medium">{{
+                        t('Components.ResourceCards.BACKUP.title')
+                    }}</span>
                 </div>
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex flex-col">
                         <span class="resource-value">{{ backups.used }}</span>
-                        <span class="resource-limit">of {{ backups.total }}</span>
+                        <span class="resource-limit">{{ t('Components.ResourceCards.of') }} {{ backups.total }}</span>
                     </div>
                     <div
                         class="percentage-badge"
@@ -232,12 +251,16 @@
                     <div class="icon-container">
                         <Network class="resource-icon" />
                     </div>
-                    <span class="text-gray-400 text-sm font-medium">Server Allocation(s)</span>
+                    <span class="text-gray-400 text-sm font-medium">{{
+                        t('Components.ResourceCards.ALLOCATION.title')
+                    }}</span>
                 </div>
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex flex-col">
                         <span class="resource-value">{{ allocations.used }}</span>
-                        <span class="resource-limit">of {{ allocations.total }}</span>
+                        <span class="resource-limit"
+                            >{{ t('Components.ResourceCards.of') }} {{ allocations.total }}</span
+                        >
                     </div>
                     <div
                         class="percentage-badge"
@@ -275,12 +298,14 @@
                     <div class="icon-container">
                         <Database class="resource-icon" />
                     </div>
-                    <span class="text-gray-400 text-sm font-medium">Server Database(s)</span>
+                    <span class="text-gray-400 text-sm font-medium">{{
+                        t('Components.ResourceCards.DATABASE.title')
+                    }}</span>
                 </div>
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex flex-col">
                         <span class="resource-value">{{ databases.used }}</span>
-                        <span class="resource-limit">of {{ databases.total }}</span>
+                        <span class="resource-limit">{{ t('Components.ResourceCards.of') }} {{ databases.total }}</span>
                     </div>
                     <div
                         class="percentage-badge"
@@ -319,7 +344,9 @@ import { CircuitBoard, HardDrive, Cpu, Server, SaveAll, Network, Database } from
 import CardComponent from '../../ui/Card/CardComponent.vue';
 import Servers from '@/mythicaldash/Pterodactyl/Servers';
 import Session from '@/mythicaldash/Session';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 // Initialize resource states
 const resources = ref({
     memory: 0,

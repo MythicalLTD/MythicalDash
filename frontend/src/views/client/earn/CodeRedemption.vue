@@ -1,7 +1,7 @@
 <template>
     <LayoutDashboard>
         <div class="p-6">
-            <h1 class="text-2xl font-bold text-white mb-6">Code Redemption</h1>
+            <h1 class="text-2xl font-bold text-white mb-6">{{ t('code_redemption.pages.index.title') }}</h1>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Main Code Redemption Card -->
@@ -22,15 +22,17 @@
                                     <div class="bg-gray-800/50 rounded-xl p-8">
                                         <form @submit.prevent="redeemCode" class="space-y-4">
                                             <div>
-                                                <label for="code" class="block text-sm font-medium text-gray-400 mb-2"
-                                                    >Enter Redemption Code</label
+                                                <label
+                                                    for="code"
+                                                    class="block text-sm font-medium text-gray-400 mb-2"
+                                                    >{{ t('code_redemption.pages.index.form.label') }}</label
                                                 >
                                                 <input
                                                     type="text"
                                                     id="code"
                                                     v-model="codeInput"
                                                     class="w-full px-4 py-3 rounded-lg border border-gray-700 bg-gray-800/50 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                                    placeholder="Enter your code here"
+                                                    :placeholder="t('code_redemption.pages.index.form.placeholder')"
                                                 />
                                             </div>
                                             <div>
@@ -41,9 +43,11 @@
                                                 >
                                                     <span v-if="isRedeeming">
                                                         <SpinnerIcon class="inline-block w-5 h-5 mr-2 animate-spin" />
-                                                        Redeeming...
+                                                        {{ t('code_redemption.pages.index.form.redeeming') }}
                                                     </span>
-                                                    <span v-else>Redeem Code</span>
+                                                    <span v-else>{{
+                                                        t('code_redemption.pages.index.form.redeem')
+                                                    }}</span>
                                                 </button>
                                             </div>
                                         </form>
@@ -60,7 +64,9 @@
                                                 <Coins class="h-5 w-5 text-yellow-500" />
                                             </div>
                                             <div>
-                                                <div class="text-sm text-gray-400">Current Balance</div>
+                                                <div class="text-sm text-gray-400">
+                                                    {{ t('code_redemption.pages.index.form.currentBalance') }}
+                                                </div>
                                                 <div class="text-2xl font-bold text-yellow-500">{{ totalCoins }}</div>
                                             </div>
                                         </div>
@@ -79,30 +85,36 @@
                             <div class="bg-gray-800/30 p-3 rounded-lg">
                                 <div class="flex items-center mb-2">
                                     <TwitterIcon class="w-5 h-5 text-blue-400 mr-2" />
-                                    <div class="text-sm font-medium text-white">Twitter/X</div>
+                                    <div class="text-sm font-medium text-white">
+                                        {{ t('code_redemption.pages.index.social.twitter.title') }}
+                                    </div>
                                 </div>
                                 <p class="text-xs text-gray-400">
-                                    Follow us on Twitter for regular code drops and announcements.
+                                    {{ t('code_redemption.pages.index.social.twitter.description') }}
                                 </p>
                             </div>
 
                             <div class="bg-gray-800/30 p-3 rounded-lg">
                                 <div class="flex items-center mb-2">
                                     <DiscordIcon class="w-5 h-5 text-indigo-400 mr-2" />
-                                    <div class="text-sm font-medium text-white">Discord</div>
+                                    <div class="text-sm font-medium text-white">
+                                        {{ t('code_redemption.pages.index.social.discord.title') }}
+                                    </div>
                                 </div>
                                 <p class="text-xs text-gray-400">
-                                    Join our Discord community for exclusive code giveaways.
+                                    {{ t('code_redemption.pages.index.social.discord.description') }}
                                 </p>
                             </div>
 
                             <div class="bg-gray-800/30 p-3 rounded-lg">
                                 <div class="flex items-center mb-2">
                                     <CalendarIcon class="w-5 h-5 text-purple-400 mr-2" />
-                                    <div class="text-sm font-medium text-white">Events</div>
+                                    <div class="text-sm font-medium text-white">
+                                        {{ t('code_redemption.pages.index.social.events.title') }}
+                                    </div>
                                 </div>
                                 <p class="text-xs text-gray-400">
-                                    Special codes are released during seasonal events and promotions.
+                                    {{ t('code_redemption.pages.index.social.events.description') }}
                                 </p>
                             </div>
                         </div>
@@ -136,9 +148,11 @@ import { useSound } from '@vueuse/sound';
 import failedAlertSfx from '@/assets/sounds/error.mp3';
 import successAlertSfx from '@/assets/sounds/success.mp3';
 import Swal from 'sweetalert2';
+import { useI18n } from 'vue-i18n';
 
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);
+const { t } = useI18n();
 // Custom icons
 const TwitterIcon = defineComponent({
     setup() {
@@ -188,16 +202,19 @@ const DiscordIcon = defineComponent({
     },
 });
 
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
+MythicalDOM.setPageTitle(t('code_redemption.pages.index.title'));
+
 const Settings = useSettingsStore();
 import { defineComponent, h } from 'vue';
 
 // If code redemption is disabled, redirect to dashboard
 if (Settings.getSetting('code_redemption_enabled') === 'false') {
     Swal.fire({
-        title: 'Code Redemption',
-        text: 'Code redemption is not enabled on this host!',
+        title: t('code_redemption.notEnabled.title'),
+        text: t('code_redemption.notEnabled.text'),
         icon: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('code_redemption.notEnabled.button'),
     });
     playError();
     router.push('/dashboard');
@@ -213,8 +230,10 @@ const redeemCode = async () => {
     if (!codeInput.value.trim()) {
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Please enter a code',
+            title: t('code_redemption.pages.index.alerts.error.title'),
+            text: t('code_redemption.pages.index.alerts.error.generic'),
+            footer: t('code_redemption.pages.index.alerts.error.footer'),
+            confirmButtonText: t('code_redemption.pages.index.alerts.error.button'),
             showConfirmButton: true,
         });
         return;
@@ -238,8 +257,9 @@ const redeemCode = async () => {
             // Code was successfully redeemed
             Swal.fire({
                 icon: 'success',
-                title: 'Success',
-                text: data.message || 'Code redeemed successfully!',
+                title: t('code_redemption.pages.index.alerts.success.title'),
+                text: data.message || t('code_redemption.pages.index.alerts.success.code_redeemed'),
+                footer: t('code_redemption.pages.index.alerts.success.footer'),
                 showConfirmButton: true,
             });
             playSuccess();
@@ -254,8 +274,10 @@ const redeemCode = async () => {
             // Error redeeming code
             Swal.fire({
                 icon: 'error',
-                title: 'Error',
-                text: data.message || 'Error redeeming code',
+                title: t('code_redemption.pages.index.alerts.error.title'),
+                text: data.message || t('code_redemption.pages.index.alerts.error.generic'),
+                footer: t('code_redemption.pages.index.alerts.error.footer'),
+                confirmButtonText: t('code_redemption.pages.index.alerts.error.button'),
                 showConfirmButton: true,
             });
             playError();
@@ -264,8 +286,10 @@ const redeemCode = async () => {
         console.error('Error redeeming code:', error);
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'An error occurred while redeeming the code',
+            title: t('code_redemption.pages.index.alerts.error.title'),
+            text: t('code_redemption.pages.index.alerts.error.generic'),
+            footer: t('code_redemption.pages.index.alerts.error.footer'),
+            confirmButtonText: t('code_redemption.pages.index.alerts.error.button'),
             showConfirmButton: true,
         });
         playError();

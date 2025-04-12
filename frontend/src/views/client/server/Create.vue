@@ -2,12 +2,12 @@
     <LayoutDashboard>
         <!-- Page Header -->
         <div class="mb-8">
-            <h1 class="text-2xl font-bold text-gray-100 mb-2">Create a New Server</h1>
-            <p class="text-gray-400">Configure and deploy your new server</p>
+            <h1 class="text-2xl font-bold text-gray-100 mb-2">{{ t('create.pages.index.title') }}</h1>
+            <p class="text-gray-400">{{ t('create.pages.index.subTitle') }}</p>
         </div>
 
         <!-- Resource Overview -->
-        <CardComponent card-title="Resource Availability" class="mb-6">
+        <CardComponent :card-title="t('create.pages.index.resources.title')" class="mb-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div
                     v-for="(resource, key) in resourceItems"
@@ -24,7 +24,11 @@
                                     : 'bg-red-900/30 text-red-400'
                             "
                         >
-                            {{ resources.free[key] > 0 ? 'Available' : 'Depleted' }}
+                            {{
+                                resources.free[key] > 0
+                                    ? t('create.pages.index.resources.available')
+                                    : t('create.pages.index.resources.depleted')
+                            }}
                         </span>
                     </div>
                     <div class="flex justify-between items-center">
@@ -32,7 +36,8 @@
                             formatResource(resources.free[key], resource.unit)
                         }}</span>
                         <span class="text-gray-500 text-xs"
-                            >of {{ formatResource(resources.total[key], resource.unit) }}</span
+                            >{{ t('create.pages.index.resources.of') }}
+                            {{ formatResource(resources.total[key], resource.unit) }}</span
                         >
                     </div>
                     <div class="w-full bg-[#030305] rounded-full h-1.5 mt-2">
@@ -53,18 +58,25 @@
                     <!-- Left Column - Name and Description -->
                     <div class="space-y-4">
                         <div>
-                            <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Server Name</label>
-                            <TextInput id="name" v-model="form.name" placeholder="My Awesome Server" required />
+                            <label for="name" class="block text-sm font-medium text-gray-300 mb-2">{{
+                                t('create.pages.index.form.label')
+                            }}</label>
+                            <TextInput
+                                id="name"
+                                v-model="form.name"
+                                :placeholder="t('create.pages.index.form.placeholder')"
+                                required
+                            />
                         </div>
 
                         <div>
-                            <label for="description" class="block text-sm font-medium text-gray-300 mb-2"
-                                >Description (Optional)</label
-                            >
+                            <label for="description" class="block text-sm font-medium text-gray-300 mb-2">{{
+                                t('create.pages.index.form.description')
+                            }}</label>
                             <TextArea
                                 id="description"
                                 v-model="form.description"
-                                placeholder="Describe your server..."
+                                :placeholder="t('create.pages.index.form.descriptionPlaceholder')"
                                 :rows="3"
                             />
                         </div>
@@ -73,37 +85,39 @@
                     <!-- Right Column - Location and Type -->
                     <div class="space-y-4">
                         <div>
-                            <label for="location" class="block text-sm font-medium text-gray-300 mb-2"
-                                >Server Location</label
-                            >
+                            <label for="location" class="block text-sm font-medium text-gray-300 mb-2">{{
+                                t('create.pages.index.form.location')
+                            }}</label>
                             <SelectInput
                                 id="location"
                                 v-model="form.location_id"
                                 :options="locationOptions"
-                                placeholder="Select a location"
+                                :placeholder="t('create.pages.index.form.locationPlaceholder')"
                             />
                         </div>
 
                         <div>
-                            <label for="category" class="block text-sm font-medium text-gray-300 mb-2"
-                                >Server Type</label
-                            >
+                            <label for="category" class="block text-sm font-medium text-gray-300 mb-2">{{
+                                t('create.pages.index.form.category')
+                            }}</label>
                             <SelectInput
                                 id="category"
                                 v-model="form.category_id"
                                 :options="categoryOptions"
-                                placeholder="Select a server type"
+                                :placeholder="t('create.pages.index.form.categoryPlaceholder')"
                                 @update:modelValue="updateEggs"
                             />
                         </div>
 
                         <div>
-                            <label for="egg" class="block text-sm font-medium text-gray-300 mb-2">Server Version</label>
+                            <label for="egg" class="block text-sm font-medium text-gray-300 mb-2">{{
+                                t('create.pages.index.form.egg')
+                            }}</label>
                             <SelectInput
                                 id="egg"
                                 v-model="form.egg_id"
                                 :options="eggOptions"
-                                placeholder="Select a version"
+                                :placeholder="t('create.pages.index.form.eggPlaceholder')"
                             />
                         </div>
                     </div>
@@ -116,8 +130,10 @@
                     <!-- Memory -->
                     <div>
                         <label for="memory" class="block text-sm font-medium text-gray-300 mb-2">
-                            Memory (MB)
-                            <span class="text-xs text-gray-500">(Available: {{ resources.free.memory }})</span>
+                            {{ t('create.pages.index.resources.memory') }} ({{ t('create.pages.index.resources.mb') }})
+                            <span class="text-xs text-gray-500"
+                                >({{ t('create.pages.index.form.available') }}: {{ resources.free.memory }})</span
+                            >
                         </label>
                         <TextInput id="memory" v-model="memoryModel" type="number" required />
                     </div>
@@ -125,8 +141,10 @@
                     <!-- CPU -->
                     <div>
                         <label for="cpu" class="block text-sm font-medium text-gray-300 mb-2">
-                            CPU (%)
-                            <span class="text-xs text-gray-500">(Available: {{ resources.free.cpu }})</span>
+                            {{ t('create.pages.index.resources.cpu') }} ({{ t('create.pages.index.resources.p') }})
+                            <span class="text-xs text-gray-500"
+                                >({{ t('create.pages.index.form.available') }}: {{ resources.free.cpu }})</span
+                            >
                         </label>
                         <TextInput id="cpu" v-model="cpuModel" type="number" required />
                     </div>
@@ -134,8 +152,10 @@
                     <!-- Disk -->
                     <div>
                         <label for="disk" class="block text-sm font-medium text-gray-300 mb-2">
-                            Disk (MB)
-                            <span class="text-xs text-gray-500">(Available: {{ resources.free.disk }})</span>
+                            {{ t('create.pages.index.resources.disk') }} ({{ t('create.pages.index.resources.mb') }})
+                            <span class="text-xs text-gray-500"
+                                >({{ t('create.pages.index.form.available') }}: {{ resources.free.disk }})</span
+                            >
                         </label>
                         <TextInput id="disk" v-model="diskModel" type="number" required />
                     </div>
@@ -145,8 +165,10 @@
                     <!-- Databases -->
                     <div>
                         <label for="databases" class="block text-sm font-medium text-gray-300 mb-2">
-                            Databases
-                            <span class="text-xs text-gray-500">(Available: {{ resources.free.databases }})</span>
+                            {{ t('create.pages.index.resources.databases') }}
+                            <span class="text-xs text-gray-500"
+                                >({{ t('create.pages.index.form.available') }}: {{ resources.free.databases }})</span
+                            >
                         </label>
                         <TextInput id="databases" v-model="databasesModel" type="number" required />
                     </div>
@@ -154,8 +176,10 @@
                     <!-- Backups -->
                     <div>
                         <label for="backups" class="block text-sm font-medium text-gray-300 mb-2">
-                            Backups
-                            <span class="text-xs text-gray-500">(Available: {{ resources.free.backups }})</span>
+                            {{ t('create.pages.index.resources.backups') }}
+                            <span class="text-xs text-gray-500"
+                                >({{ t('create.pages.index.form.available') }}: {{ resources.free.backups }})</span
+                            >
                         </label>
                         <TextInput id="backups" v-model="backupsModel" type="number" required />
                     </div>
@@ -163,8 +187,10 @@
                     <!-- Allocations -->
                     <div>
                         <label for="allocations" class="block text-sm font-medium text-gray-300 mb-2">
-                            Allocations
-                            <span class="text-xs text-gray-500">(Available: {{ resources.free.allocations }})</span>
+                            {{ t('create.pages.index.resources.allocations') }}
+                            <span class="text-xs text-gray-500"
+                                >({{ t('create.pages.index.form.available') }}: {{ resources.free.allocations }})</span
+                            >
                         </label>
                         <TextInput id="allocations" v-model="allocationsModel" type="number" required />
                     </div>
@@ -191,11 +217,14 @@ import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 import { useSound } from '@vueuse/sound';
 import failedAlertSfx from '@/assets/sounds/error.mp3';
 import successAlertSfx from '@/assets/sounds/success.mp3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);
 
-MythicalDOM.setPageTitle('Create Server');
+MythicalDOM.setPageTitle(t('create.pages.index.title'));
 
 const router = useRouter();
 const isSubmitting = ref(false);
@@ -205,6 +234,8 @@ interface Location {
     id: number;
     name: string;
     description: string;
+    slots: number;
+    used_slots: number;
     pterodactyl_location_id: number;
     node_ip: string;
     status: string;
@@ -307,13 +338,13 @@ const resources = reactive<{
 });
 
 const resourceItems: Record<keyof ResourceLimits, Resource> = {
-    memory: { label: 'Memory', unit: 'MB' },
-    disk: { label: 'Disk Space', unit: 'MB' },
-    cpu: { label: 'CPU', unit: '%' },
-    databases: { label: 'Databases', unit: '' },
-    backups: { label: 'Backups', unit: '' },
-    allocations: { label: 'Allocations', unit: '' },
-    servers: { label: 'Servers', unit: '' },
+    memory: { label: t('create.pages.index.resources.memory'), unit: t('create.pages.index.resources.mb') },
+    disk: { label: t('create.pages.index.resources.disk'), unit: t('create.pages.index.resources.mb') },
+    cpu: { label: t('create.pages.index.resources.cpu'), unit: t('create.pages.index.resources.p') },
+    databases: { label: t('create.pages.index.resources.databases'), unit: '' },
+    backups: { label: t('create.pages.index.resources.backups'), unit: '' },
+    allocations: { label: t('create.pages.index.resources.allocations'), unit: '' },
+    servers: { label: t('create.pages.index.resources.servers'), unit: '' },
 };
 
 // Form data
@@ -378,7 +409,10 @@ const allocationsModel = computed({
 const locationOptions = computed<SelectOption[]>(() => {
     return locations.value.map((location) => ({
         value: location.id.toString(),
-        label: `${location.name} - ${location.status}`,
+        label:
+            `${location.name} - ${location.status} (${location.used_slots}/${location.slots} ` +
+            t('create.pages.index.slots') +
+            `)`,
     }));
 });
 
@@ -410,8 +444,8 @@ onMounted(async () => {
             playError();
             Swal.fire({
                 icon: 'error',
-                title: 'Error',
-                text: 'Failed to load server creation data',
+                title: t('create.pages.alerts.error.title'),
+                text: t('create.pages.alerts.error.generic'),
                 showConfirmButton: true,
             });
             throw new Error('Failed to load server creation data');
@@ -438,8 +472,8 @@ onMounted(async () => {
             playError();
             Swal.fire({
                 icon: 'error',
-                title: 'Error',
-                text: data.message || 'Failed to load server creation data',
+                title: t('create.pages.alerts.error.title'),
+                text: data.message || t('create.pages.alerts.error.generic'),
                 showConfirmButton: true,
             });
         }
@@ -485,7 +519,11 @@ const canCreateServer = computed(() => {
         form.backups <= resources.free.backups &&
         form.allocations > 0 &&
         form.allocations <= resources.free.allocations &&
-        resources.free.servers > 0
+        resources.free.servers > 0 &&
+        (() => {
+            const location = locations.value.find((location) => location.id === parseInt(form.location_id));
+            return location ? location.used_slots < location.slots : false;
+        })()
     );
 });
 
@@ -495,8 +533,8 @@ const createServer = async () => {
         playError();
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Cannot create server with the current configuration',
+            title: t('create.pages.alerts.error.title'),
+            text: t('create.pages.alerts.error.generic'),
             showConfirmButton: true,
         });
         return;
@@ -532,8 +570,9 @@ const createServer = async () => {
             playSuccess();
             Swal.fire({
                 icon: 'success',
-                title: 'Success',
-                text: 'Server creation request submitted successfully please wait for it to be built.',
+                title: t('create.pages.alerts.success.title'),
+                text: t('create.pages.alerts.success.generic'),
+                footer: t('create.pages.alerts.success.footer'),
                 showConfirmButton: true,
             }).then(() => {
                 router.push('/dashboard'); // Redirect to servers list
@@ -541,33 +580,35 @@ const createServer = async () => {
         } else {
             const errorCode = data.error_code as keyof typeof errorMessages;
             const errorMessages = {
-                MISSING_REQUIRED_FIELDS: 'Missing required fields',
-                NAME_TOO_LONG: 'Server name must be less than 32 characters',
-                DESCRIPTION_TOO_LONG: 'Description must be less than 255 characters',
-                LOCATION_DOES_NOT_EXIST: 'Selected location does not exist',
-                CATEGORY_DOES_NOT_EXIST: 'Selected category does not exist',
-                EGG_DOES_NOT_EXIST: 'Selected version does not exist',
-                MEMORY_TOO_LOW: 'Memory must be at least 256MB',
-                CPU_TOO_LOW: 'CPU must be at least 5%',
-                DISK_TOO_LOW: 'Disk must be at least 256MB',
-                ALLOCATIONS_TOO_LOW: 'Allocations must be at least 1',
+                MISSING_REQUIRED_FIELDS: t('create.pages.alerts.error.deploy.MISSING_REQUIRED_FIELDS'),
+                NAME_TOO_LONG: t('create.pages.alerts.error.deploy.NAME_TOO_LONG'),
+                DESCRIPTION_TOO_LONG: t('create.pages.alerts.error.deploy.DESCRIPTION_TOO_LONG'),
+                LOCATION_DOES_NOT_EXIST: t('create.pages.alerts.error.deploy.LOCATION_DOES_NOT_EXIST'),
+                CATEGORY_DOES_NOT_EXIST: t('create.pages.alerts.error.deploy.CATEGORY_DOES_NOT_EXIST'),
+                EGG_DOES_NOT_EXIST: t('create.pages.alerts.error.deploy.EGG_DOES_NOT_EXIST'),
+                MEMORY_TOO_LOW: t('create.pages.alerts.error.deploy.MEMORY_TOO_LOW'),
+                CPU_TOO_LOW: t('create.pages.alerts.error.deploy.CPU_TOO_LOW'),
+                DISK_TOO_LOW: t('create.pages.alerts.error.deploy.DISK_TOO_LOW'),
+                ALLOCATIONS_TOO_LOW: t('create.pages.alerts.error.deploy.ALLOCATIONS_TOO_LOW'),
                 PENDING_SERVER_CREATION_REQUEST: 'You already have a pending server creation request',
                 NOT_ENOUGH_MEMORY: 'You do not have enough memory resources',
-                NOT_ENOUGH_DISK_SPACE: 'You do not have enough disk space resources',
-                NOT_ENOUGH_CPU: 'You do not have enough CPU resources',
-                NOT_ENOUGH_DATABASES: 'You do not have enough database resources',
-                NOT_ENOUGH_BACKUPS: 'You do not have enough backup resources',
-                NOT_ENOUGH_ALLOCATIONS: 'You do not have enough allocation resources',
-                NOT_ENOUGH_SERVERS: 'You have reached your server limit',
-                FAILED_TO_CREATE_SERVER_QUEUE_ITEM: 'Failed to create server queue item',
+                NOT_ENOUGH_DISK_SPACE: t('create.pages.alerts.error.deploy.NOT_ENOUGH_DISK_SPACE'),
+                NOT_ENOUGH_CPU: t('create.pages.alerts.error.deploy.NOT_ENOUGH_CPU'),
+                NOT_ENOUGH_DATABASES: t('create.pages.alerts.error.deploy.NOT_ENOUGH_DATABASES'),
+                NOT_ENOUGH_BACKUPS: t('create.pages.alerts.error.deploy.NOT_ENOUGH_BACKUPS'),
+                NOT_ENOUGH_ALLOCATIONS: t('create.pages.alerts.error.deploy.NOT_ENOUGH_ALLOCATIONS'),
+                NOT_ENOUGH_SERVERS: t('create.pages.alerts.error.deploy.NOT_ENOUGH_SERVERS'),
+                FAILED_TO_CREATE_SERVER_QUEUE_ITEM: t(
+                    'create.pages.alerts.error.deploy.FAILED_TO_CREATE_SERVER_QUEUE_ITEM',
+                ),
             };
 
             playError();
             Swal.fire({
                 icon: 'error',
-                title: 'Server Creation Failed',
-                text: errorMessages[errorCode] || data.message || 'An unknown error occurred',
-                footer: 'Please check your input and try again',
+                title: t('create.pages.alerts.error.title'),
+                text: errorMessages[errorCode] || data.message || t('create.pages.alerts.error.generic'),
+                footer: t('create.pages.alerts.error.footer'),
                 showConfirmButton: true,
             });
         }
@@ -576,8 +617,9 @@ const createServer = async () => {
         playError();
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Failed to create server: ' + error,
+            title: t('create.pages.alerts.error.title'),
+            text: t('create.pages.alerts.error.generic'),
+            footer: t('create.pages.alerts.error.footer'),
             showConfirmButton: true,
         });
     } finally {

@@ -35,7 +35,7 @@
             <div class="mt-4 pt-4 border-t border-gray-800/30">
                 <div class="text-xs text-gray-400 flex items-center">
                     <ShieldCheckIcon class="w-4 h-4 text-emerald-500 mr-2" />
-                    <span>This PIN is used to verify your identity to our support team</span>
+                    <span>{{ t('Components.SupportPin.description') }}</span>
                 </div>
             </div>
         </div>

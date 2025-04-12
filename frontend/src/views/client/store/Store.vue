@@ -2,7 +2,7 @@
     <LayoutDashboard>
         <div class="p-6">
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold text-white">Coin Store</h1>
+                <h1 class="text-2xl font-bold text-white">{{ t('store.pages.index.title') }}</h1>
                 <div class="flex items-center bg-gray-800/50 px-4 py-2 rounded-lg">
                     <Coins class="h-5 w-5 text-yellow-500 mr-2" />
                     <span class="text-lg font-medium text-yellow-500">{{ userCoins }}</span>
@@ -13,8 +13,8 @@
                 <!-- Main Store Content -->
                 <div class="lg:col-span-2">
                     <CardComponent
-                        cardTitle="Available Items"
-                        cardDescription="Spend your coins on server resources and upgrades"
+                        :cardTitle="t('store.pages.index.card.title')"
+                        :cardDescription="t('store.pages.index.card.description')"
                     >
                         <div class="relative overflow-hidden">
                             <!-- Background decorative elements -->
@@ -65,7 +65,7 @@
                                 <!-- Loading State -->
                                 <div v-if="isLoading" class="py-10 flex flex-col items-center justify-center">
                                     <LoaderIcon class="w-12 h-12 text-indigo-500 animate-spin mb-3" />
-                                    <p class="text-gray-400">Loading store items...</p>
+                                    <p class="text-gray-400">{{ t('store.pages.index.loading') }}</p>
                                 </div>
 
                                 <!-- Product Grid -->
@@ -117,7 +117,9 @@
                                                 ]"
                                             >
                                                 {{
-                                                    userCoins < parseInt(item.price) ? 'Insufficient Coins' : 'Purchase'
+                                                    userCoins < parseInt(item.price)
+                                                        ? t('store.pages.index.insufficientButton')
+                                                        : t('store.pages.index.buyButton')
                                                 }}
                                             </button>
                                         </div>
@@ -130,8 +132,10 @@
                                     class="py-10 flex flex-col items-center justify-center"
                                 >
                                     <ShoppingCartIcon class="w-16 h-16 text-gray-600 mb-3" />
-                                    <p class="text-gray-400 text-center">No items available in this category</p>
-                                    <p class="text-gray-500 text-sm text-center mt-2">Check back later for new items</p>
+                                    <p class="text-gray-400 text-center">{{ t('store.pages.index.empty') }}</p>
+                                    <p class="text-gray-500 text-sm text-center mt-2">
+                                        {{ t('store.pages.index.emptyDescription') }}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -141,7 +145,10 @@
                 <!-- Sidebar -->
                 <div class="space-y-6">
                     <!-- Coin Balance Card -->
-                    <CardComponent cardTitle="Your Balance" cardDescription="Available coins to spend">
+                    <CardComponent
+                        :cardTitle="t('store.pages.index.cardYourBalance')"
+                        :cardDescription="t('store.pages.index.cardAvailableCoins')"
+                    >
                         <div class="p-5">
                             <div class="bg-gray-800/30 rounded-xl p-5 flex items-center">
                                 <div
@@ -150,18 +157,30 @@
                                     <Coins class="h-6 w-6 text-yellow-500" />
                                 </div>
                                 <div>
-                                    <div class="text-sm text-gray-400">Current Balance</div>
+                                    <div class="text-sm text-gray-400">
+                                        {{ t('store.pages.index.cardCurrentBalance') }}
+                                    </div>
                                     <div class="text-3xl font-bold text-yellow-500">{{ userCoins }}</div>
                                 </div>
                             </div>
-
+                            <RouterLink
+                                to="/store/add-credits"
+                                class="mt-4 bg-indigo-600/20 hover:bg-indigo-600/30 transition-all duration-200 rounded-lg p-4 flex items-center justify-center gap-2 group"
+                            >
+                                <PlusIcon
+                                    class="h-5 w-5 text-indigo-400 group-hover:text-indigo-300 transition-colors duration-200"
+                                />
+                                <span class="text-sm text-indigo-300 group-hover:text-indigo-200 font-medium">{{
+                                    t('store.pages.index.addCredits')
+                                }}</span>
+                            </RouterLink>
                             <div class="mt-4 grid grid-cols-2 gap-3">
                                 <RouterLink
                                     to="/earn/redeem"
                                     class="bg-gray-800/30 hover:bg-gray-800/50 transition-colors duration-200 rounded-lg p-3 text-center"
                                 >
                                     <GiftIcon class="h-5 w-5 text-indigo-400 mx-auto mb-1" />
-                                    <span class="text-sm text-gray-300">Redeem Codes</span>
+                                    <span class="text-sm text-gray-300">{{ t('store.pages.index.redeemCodes') }}</span>
                                 </RouterLink>
 
                                 <RouterLink
@@ -169,26 +188,33 @@
                                     class="bg-gray-800/30 hover:bg-gray-800/50 transition-colors duration-200 rounded-lg p-3 text-center"
                                 >
                                     <LinkIcon class="h-5 w-5 text-indigo-400 mx-auto mb-1" />
-                                    <span class="text-sm text-gray-300">Earn More</span>
+                                    <span class="text-sm text-gray-300">{{ t('store.pages.index.earnMore') }}</span>
                                 </RouterLink>
                             </div>
                         </div>
                     </CardComponent>
 
                     <!-- How It Works Card -->
-                    <CardComponent cardTitle="How It Works" cardDescription="Spending coins in the store">
+                    <CardComponent
+                        :cardTitle="t('store.pages.index.howItWorks.title')"
+                        :cardDescription="t('store.pages.index.howItWorks.description')"
+                    >
                         <div class="p-4 space-y-4">
                             <div class="bg-gray-800/30 p-4 rounded-lg">
                                 <div class="flex items-start mb-2">
                                     <div
                                         class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
                                     >
-                                        <span class="text-xs">1</span>
+                                        <span class="text-xs">{{
+                                            t('store.pages.index.howItWorks.steps.one.number')
+                                        }}</span>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-medium text-white mb-1">Earn Coins</h4>
+                                        <h4 class="text-sm font-medium text-white mb-1">
+                                            {{ t('store.pages.index.howItWorks.steps.one.title') }}
+                                        </h4>
                                         <p class="text-xs text-gray-400">
-                                            Complete tasks in the Earn section to accumulate coins
+                                            {{ t('store.pages.index.howItWorks.steps.one.description') }}
                                         </p>
                                     </div>
                                 </div>
@@ -199,12 +225,16 @@
                                     <div
                                         class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
                                     >
-                                        <span class="text-xs">2</span>
+                                        <span class="text-xs">{{
+                                            t('store.pages.index.howItWorks.steps.two.number')
+                                        }}</span>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-medium text-white mb-1">Browse Store</h4>
+                                        <h4 class="text-sm font-medium text-white mb-1">
+                                            {{ t('store.pages.index.howItWorks.steps.two.title') }}
+                                        </h4>
                                         <p class="text-xs text-gray-400">
-                                            Explore different categories and find items you want
+                                            {{ t('store.pages.index.howItWorks.steps.two.description') }}
                                         </p>
                                     </div>
                                 </div>
@@ -215,11 +245,17 @@
                                     <div
                                         class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
                                     >
-                                        <span class="text-xs">3</span>
+                                        <span class="text-xs">{{
+                                            t('store.pages.index.howItWorks.steps.three.number')
+                                        }}</span>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-medium text-white mb-1">Make Purchase</h4>
-                                        <p class="text-xs text-gray-400">Buy items with your accumulated coins</p>
+                                        <h4 class="text-sm font-medium text-white mb-1">
+                                            {{ t('store.pages.index.howItWorks.steps.three.title') }}
+                                        </h4>
+                                        <p class="text-xs text-gray-400">
+                                            {{ t('store.pages.index.howItWorks.steps.three.description') }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -229,12 +265,16 @@
                                     <div
                                         class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
                                     >
-                                        <span class="text-xs">4</span>
+                                        <span class="text-xs">{{
+                                            t('store.pages.index.howItWorks.steps.four.number')
+                                        }}</span>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-medium text-white mb-1">Instant Delivery</h4>
+                                        <h4 class="text-sm font-medium text-white mb-1">
+                                            {{ t('store.pages.index.howItWorks.steps.four.title') }}
+                                        </h4>
                                         <p class="text-xs text-gray-400">
-                                            Resources are immediately added to your account
+                                            {{ t('store.pages.index.howItWorks.steps.four.description') }}
                                         </p>
                                     </div>
                                 </div>
@@ -251,6 +291,7 @@
 import LayoutDashboard from '@/components/client/LayoutDashboard.vue';
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
 import { ref, onMounted } from 'vue';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 import {
     Loader as LoaderIcon,
     CheckCircle as CheckCircleIcon,
@@ -273,18 +314,24 @@ import Session from '@/mythicaldash/Session';
 import Swal from 'sweetalert2';
 import { useSettingsStore } from '@/stores/settings';
 import router from '@/router';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const Settings = useSettingsStore();
+MythicalDOM.setPageTitle(t('store.pages.index.title'));
 
 // Check if Store is enabled
 if (Settings.getSetting('store_enabled') === 'false') {
     Swal.fire({
-        title: 'Store',
-        text: 'Store is not enabled on this host!',
+        title: t('store.pages.index.title'),
+        text: t('store.pages.index.subTitle'),
+        footer: t('store.notEnabled.footer'),
+        confirmButtonText: t('store.notEnabled.button'),
         icon: 'error',
-        confirmButtonText: 'OK',
+        showConfirmButton: true,
+    }).then(() => {
+        router.push('/dashboard');
     });
-    router.push('/dashboard');
 }
 
 // State
@@ -313,45 +360,73 @@ const storeItems = ref<StoreItem[]>([]);
 // Item metadata mapping
 const itemMetadata: Record<string, { name: string; description: string; features: string[]; icon: unknown }> = {
     ram: {
-        name: 'Additional RAM',
-        description: "Increase your server's memory capacity",
-        features: ['Instant allocation', 'Flexible scaling', 'No restart required'],
+        name: t('store.pages.index.info.ram.title'),
+        description: t('store.pages.index.info.ram.description'),
+        features: [
+            t('store.pages.index.info.ram.features.one'),
+            t('store.pages.index.info.ram.features.two'),
+            t('store.pages.index.info.ram.features.three'),
+        ],
         icon: CpuIcon,
     },
     disk: {
-        name: 'Storage Space',
-        description: "Expand your server's storage capacity",
-        features: ['SSD storage', 'High performance', 'Instant provisioning'],
+        name: t('store.pages.index.info.disk.title'),
+        description: t('store.pages.index.info.disk.description'),
+        features: [
+            t('store.pages.index.info.disk.features.one'),
+            t('store.pages.index.info.disk.features.two'),
+            t('store.pages.index.info.disk.features.three'),
+        ],
         icon: HardDriveIcon,
     },
     cpu: {
-        name: 'CPU Power',
-        description: "Boost your server's processing power",
-        features: ['High-performance cores', 'Dedicated resources', 'Real-time scaling'],
+        name: t('store.pages.index.info.cpu.title'),
+        description: t('store.pages.index.info.cpu.description'),
+        features: [
+            t('store.pages.index.info.cpu.features.one'),
+            t('store.pages.index.info.cpu.features.two'),
+            t('store.pages.index.info.cpu.features.three'),
+        ],
         icon: CpuIcon,
     },
     server_slot: {
-        name: 'Server Slot',
-        description: 'Add an additional server to your account',
-        features: ['Full server access', 'Custom configuration', 'Instant deployment'],
+        name: t('store.pages.index.info.server_slot.title'),
+        description: t('store.pages.index.info.server_slot.description'),
+        features: [
+            t('store.pages.index.info.server_slot.features.one'),
+            t('store.pages.index.info.server_slot.features.two'),
+            t('store.pages.index.info.server_slot.features.three'),
+        ],
         icon: ServerIcon,
     },
     server_backup: {
-        name: 'Backup Slot',
-        description: 'Additional backup storage for your servers',
-        features: ['Automated backups', 'Instant restoration', 'Secure storage'],
+        name: t('store.pages.index.info.server_backup.title'),
+        description: t('store.pages.index.info.server_backup.description'),
+        features: [
+            t('store.pages.index.info.server_backup.features.one'),
+            t('store.pages.index.info.server_backup.features.two'),
+            t('store.pages.index.info.server_backup.features.three'),
+        ],
         icon: BackupIcon,
     },
     server_allocation: {
-        name: 'Port Allocation',
-        description: 'Additional network port for your server',
-        features: ['Dedicated port', 'Custom port range', 'Instant assignment'],
+        name: t('store.pages.index.info.server_allocation.title'),
+        description: t('store.pages.index.info.server_allocation.description'),
+        features: [
+            t('store.pages.index.info.server_allocation.features.one'),
+            t('store.pages.index.info.server_allocation.features.two'),
+            t('store.pages.index.info.server_allocation.features.three'),
+        ],
         icon: AllocationIcon,
     },
     server_database: {
-        name: 'Database',
-        description: 'Additional database for your server',
-        features: ['MySQL/MariaDB', 'Automated backups', 'Secure access'],
+        name: t('store.pages.index.info.server_database.title'),
+        description: t('store.pages.index.info.server_database.description'),
+        features: [
+            t('store.pages.index.info.server_database.features.one'),
+            t('store.pages.index.info.server_database.features.two'),
+            t('store.pages.index.info.server_database.features.three'),
+        ],
         icon: DatabaseIcon,
     },
 };
@@ -379,11 +454,11 @@ const loadStoreData = async () => {
                 ...itemMetadata[item.id],
             }));
         } else {
-            showStatusMessage(data.message || 'Failed to load store items', 'error');
+            showStatusMessage(data.message || t('store.pages.alerts.error.generic'), 'error');
         }
     } catch (error) {
         console.error('Error loading store data:', error);
-        showStatusMessage('An error occurred while loading store data', 'error');
+        showStatusMessage(t('store.pages.alerts.error.generic'), 'error');
     } finally {
         isLoading.value = false;
     }
@@ -392,19 +467,22 @@ const loadStoreData = async () => {
 // Purchase an item
 const purchaseItem = async (item: StoreItem) => {
     if (userCoins.value < parseInt(item.price)) {
-        showStatusMessage('You do not have enough coins for this purchase', 'error');
+        showStatusMessage(t('store.pages.alerts.error.notEnoughCoins'), 'error');
         return;
     }
 
     try {
         // Confirmation dialog
         const result = await Swal.fire({
-            title: 'Confirm Purchase',
-            html: `Are you sure you want to purchase <strong>${item.name}</strong> for <strong>${item.price} coins</strong>?`,
+            title: t('store.pages.alerts.buy.title'),
+            html: t('store.pages.alerts.buy.description', {
+                name: item.name,
+                price: item.price,
+            }),
             icon: 'question',
             showCancelButton: true,
-            confirmButtonText: 'Purchase',
-            cancelButtonText: 'Cancel',
+            confirmButtonText: t('store.pages.alerts.buy.confirmButtonText'),
+            cancelButtonText: t('store.pages.alerts.buy.cancelButtonText'),
             confirmButtonColor: '#4f46e5',
             cancelButtonColor: '#1f2937',
         });
@@ -429,70 +507,69 @@ const purchaseItem = async (item: StoreItem) => {
             userCoins.value = data.remaining_coins;
 
             // Show success message
-            showStatusMessage(`Successfully purchased ${item.name}!`, 'success');
+            showStatusMessage(
+                t('store.pages.index.info.buy.success.description', {
+                    name: item.name,
+                }),
+                'success',
+            );
 
             // Show more detailed success message
             Swal.fire({
-                title: 'Purchase Successful!',
-                html: `<p>You have successfully purchased <strong>${item.name}</strong>.</p>
-                       <p class="mt-2">The resource has been added to your account.</p>
-                       <p class="mt-2 text-sm text-gray-400">Your new balance: <strong>${userCoins.value} coins</strong></p>`,
+                title: t('store.pages.index.info.buy.success.title'),
+                html: t('store.pages.index.info.buy.success.description', {
+                    name: item.name,
+                }),
                 icon: 'success',
-                confirmButtonText: 'OK',
+                confirmButtonText: t('store.pages.index.info.buy.success.confirmButtonText'),
                 confirmButtonColor: '#4f46e5',
             });
         } else {
             // Handle specific error codes
-            let errorMessage = 'Failed to process purchase';
+            let errorMessage = t('store.pages.alerts.error.generic');
 
             switch (data.error_code) {
                 case 'MISSING_ITEM_ID':
-                    errorMessage = 'Item ID is required';
+                    errorMessage = t('store.pages.alerts.error.buy.MISSING_ITEM_ID');
                     break;
                 case 'EMPTY_ITEM_ID':
-                    errorMessage = 'Item ID cannot be empty';
+                    errorMessage = t('store.pages.alerts.error.buy.EMPTY_ITEM_ID');
                     break;
                 case 'INVALID_ITEM_ID':
-                    errorMessage = `Invalid item ID: ${item.id}`;
+                    errorMessage = t('store.pages.alerts.error.buy.INVALID_ITEM_ID');
                     break;
                 case 'INSUFFICIENT_COINS':
-                    errorMessage = `Insufficient coins. Required: ${data.required}, Available: ${data.available}`;
+                    errorMessage = t('store.pages.alerts.error.buy.INSUFFICIENT_COINS', {
+                        required: data.required,
+                        available: data.available,
+                    });
                     break;
                 case 'STORE_NOT_ENABLED':
-                    errorMessage = 'Store is not enabled on this host';
+                    errorMessage = t('store.pages.alerts.error.buy.STORE_NOT_ENABLED');
                     break;
                 case 'PURCHASE_FAILED':
-                    errorMessage = data.message || 'Failed to process purchase';
+                    errorMessage = data.message || t('store.pages.alerts.error.buy.PURCHASE_FAILED');
                     break;
                 default:
-                    errorMessage = data.message || 'An unexpected error occurred';
+                    errorMessage = data.message || t('store.pages.alerts.error.generic');
             }
 
             showStatusMessage(errorMessage, 'error');
 
             // Show error dialog for more details
             Swal.fire({
-                title: 'Purchase Failed',
-                html: `<p class="text-red-400">${errorMessage}</p>
-                       <p class="mt-2 text-sm text-gray-400">Please try again or contact support if the issue persists.</p>`,
+                title: t('store.pages.alerts.error.buy.title'),
+                html: t('store.pages.alerts.error.buy.description'),
                 icon: 'error',
-                confirmButtonText: 'OK',
+                confirmButtonText: t('store.pages.alerts.error.buy.confirmButtonText'),
+                cancelButtonText: t('store.pages.alerts.error.buy.cancelButtonText'),
                 confirmButtonColor: '#4f46e5',
+                cancelButtonColor: '#1f2937',
             });
         }
     } catch (error) {
         console.error('Error purchasing item:', error);
-        showStatusMessage('An error occurred while processing your purchase', 'error');
-
-        // Show error dialog for network/technical errors
-        Swal.fire({
-            title: 'Network Error',
-            html: `<p class="text-red-400">Unable to connect to the server</p>
-                   <p class="mt-2 text-sm text-gray-400">Please check your internet connection and try again.</p>`,
-            icon: 'error',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#4f46e5',
-        });
+        showStatusMessage(t('store.pages.alerts.error.generic'), 'error');
     }
 };
 
