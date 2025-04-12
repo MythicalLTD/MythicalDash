@@ -165,6 +165,15 @@ $router->add('/api/system/settings', function (): void {
         // Referrals
         ConfigInterface::REFERRALS_COINS_PER_REFERRAL => '35',
         ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER => '15',
+
+        // Default Resources
+        ConfigInterface::DEFAULT_RAM => '1024',
+        ConfigInterface::DEFAULT_DISK => '1024',
+        ConfigInterface::DEFAULT_CPU => '100',
+        ConfigInterface::DEFAULT_PORTS => '2',
+        ConfigInterface::DEFAULT_DATABASES => '1',
+        ConfigInterface::DEFAULT_SERVER_SLOTS => '1',
+        ConfigInterface::DEFAULT_BACKUPS => '5',
     ];
 
     // Retrieve actual settings with defaults in a single array map

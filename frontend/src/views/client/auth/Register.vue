@@ -147,6 +147,7 @@ const handleSubmit = async () => {
                 id="password"
                 type="password"
                 v-model="form.password"
+                :minlength="8"
                 :placeholder="t('auth.pages.register.page.form.password.placeholder')"
                 required
             />

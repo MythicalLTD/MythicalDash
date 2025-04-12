@@ -135,9 +135,9 @@ $router->add('/api/user/auth/register', function (): void {
         }
 
         User::register($username, $password, $email, $firstName, $lastName, CloudFlareRealIP::getRealIP(), $pterodactylUserId);
-        if ($config->getSetting(ConfigInterface::REFERRALS_ENABLED, false)) {
-            $newUserUuid = User::convertEmailToUUID(email: $email);
-            $newUserToken = User::getTokenFromEmail($email);
+		$newUserUuid = User::convertEmailToUUID($email);
+		$newUserToken = User::getTokenFromEmail($email);
+		if ($config->getSetting(ConfigInterface::REFERRALS_ENABLED, false)) {
             if ($newUserUuid) {
                 // Generate a referral code
                 $referralCode = $username . '_' . $appInstance->generatePin();
@@ -161,6 +161,28 @@ $router->add('/api/user/auth/register', function (): void {
                 }
             }
         }
+
+		/**
+		 * Default Resources
+		 */
+
+		$defaultRam = $config->getSetting(ConfigInterface::DEFAULT_RAM, 1024);
+		$defaultDisk = $config->getSetting(ConfigInterface::DEFAULT_DISK, 1024);
+		$defaultCpu = $config->getSetting(ConfigInterface::DEFAULT_CPU, 100);
+		$defaultPorts = $config->getSetting(ConfigInterface::DEFAULT_PORTS, 2);
+		$defaultDatabases = $config->getSetting(ConfigInterface::DEFAULT_DATABASES, 1);
+		$defaultServerSlots = $config->getSetting(ConfigInterface::DEFAULT_SERVER_SLOTS, 1);
+		$defaultBackups = $config->getSetting(ConfigInterface::DEFAULT_BACKUPS, 5);
+
+		User::updateInfo($newUserToken, UserColumns::MEMORY_LIMIT, $defaultRam, false);
+		User::updateInfo($newUserToken, UserColumns::DISK_LIMIT, $defaultDisk, false);
+		User::updateInfo($newUserToken, UserColumns::CPU_LIMIT, $defaultCpu, false);
+		User::updateInfo($newUserToken, UserColumns::ALLOCATION_LIMIT, $defaultPorts, false);
+		User::updateInfo($newUserToken, UserColumns::DATABASE_LIMIT, $defaultDatabases, false);
+		User::updateInfo($newUserToken, UserColumns::SERVER_LIMIT, $defaultServerSlots, false);
+		User::updateInfo($newUserToken, UserColumns::BACKUP_LIMIT, $defaultBackups, false);
+
+
         $eventManager->emit(AuthEvent::onAuthRegisterSuccess(), ['username' => $username, 'email' => $email]);
         App::OK('User registered', []);
 

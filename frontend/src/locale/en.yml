@@ -226,6 +226,9 @@ auth:
                     confirm_password:
                         label: Confirm Password
                         placeholder: Confirm your password
+                    referralCode:
+                        label: Referral Code
+                        placeholder: Enter your referral code
                     register_button:
                         label: Register
                         loading: Registering...

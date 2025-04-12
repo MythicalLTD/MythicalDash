@@ -221,5 +221,14 @@ interface ConfigInterface
     public const MAX_DATABASES = 'max_databases';
     public const MAX_SERVER_SLOTS = 'max_server_slots';
     public const MAX_BACKUPS = 'max_backups';
-
+	/**
+	 * Default Resources.
+	 */
+	public const DEFAULT_RAM = 'default_ram';
+	public const DEFAULT_DISK = 'default_disk';
+	public const DEFAULT_CPU = 'default_cpu';
+	public const DEFAULT_PORTS = 'default_ports';
+	public const DEFAULT_DATABASES = 'default_databases';
+	public const DEFAULT_SERVER_SLOTS = 'default_server_slots';
+	public const DEFAULT_BACKUPS = 'default_backups';
 }

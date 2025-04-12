@@ -160,7 +160,10 @@ $router->get('/api/user/auth/callback/discord/login', function () {
                 $password = User::getInfo(User::getTokenFromUUID(User::getUUIDFromDiscordID($id)), UserColumns::PASSWORD, true);
                 header('Location: ' . $url . '/auth/login?email=' . urlencode(base64_encode($email)) . '&password=' . urlencode(base64_encode($password)) . '&performLogin=true');
                 exit;
-            }
+            } else {
+				header('Location: ' . $url . '/auth/login?error=discord');
+				exit;
+			}
         }
         header('Location: ' . $url . '/api/user/auth/callback/discord/login');
 

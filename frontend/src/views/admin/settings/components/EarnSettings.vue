@@ -955,6 +955,101 @@
                     </div>
                 </div>
             </div>
+            <!-- Default Resources -->
+            <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg font-medium text-white">Default Resources</h3>
+                        <p class="text-sm text-gray-400">Configure default resource limits for users.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="default_ram" class="block text-sm font-medium text-gray-400 mb-1">RAM</label>
+                        <input
+                            id="default_ram"
+                            type="number"
+                            v-model="formData.default_ram"
+                            @change="updateSetting('default_ram', formData.default_ram)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">The default amount of RAM for new users.</p>
+                    </div>
+                    <div>
+                        <label for="default_disk" class="block text-sm font-medium text-gray-400 mb-1">Disk</label>
+                        <input
+                            id="default_disk"
+                            type="number"
+                            v-model="formData.default_disk"
+                            @change="updateSetting('default_disk', formData.default_disk)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">The default amount of disk for new users.</p>
+                    </div>
+                    <div>
+                        <label for="default_cpu" class="block text-sm font-medium text-gray-400 mb-1">CPU</label>
+                        <input
+                            id="default_cpu"
+                            type="number"
+                            v-model="formData.default_cpu"
+                            @change="updateSetting('default_cpu', formData.default_cpu)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">The default amount of CPU for new users.</p>
+                    </div>
+                    <div>
+                        <label for="default_ports" class="block text-sm font-medium text-gray-400 mb-1">Ports</label>
+                        <input
+                            id="default_ports"
+                            type="number"
+                            v-model="formData.default_ports"
+                            @change="updateSetting('default_ports', formData.default_ports)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">The default number of ports for new users.</p>
+                    </div>
+                    <div>
+                        <label for="default_databases" class="block text-sm font-medium text-gray-400 mb-1"
+                            >Databases</label
+                        >
+                        <input
+                            id="default_databases"
+                            type="number"
+                            v-model="formData.default_databases"
+                            @change="updateSetting('default_databases', formData.default_databases)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">The default number of databases for new users.</p>
+                    </div>
+                    <div>
+                        <label for="default_server_slots" class="block text-sm font-medium text-gray-400 mb-1"
+                            >Server Slots</label
+                        >
+                        <input
+                            id="default_server_slots"
+                            type="number"
+                            v-model="formData.default_server_slots"
+                            @change="updateSetting('default_server_slots', formData.default_server_slots)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">The default number of server slots for new users.</p>
+                    </div>
+                    <div>
+                        <label for="default_backups" class="block text-sm font-medium text-gray-400 mb-1"
+                            >Backups</label
+                        >
+                        <input
+                            id="default_backups"
+                            type="number"
+                            v-model="formData.default_backups"
+                            @change="updateSetting('default_backups', formData.default_backups)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">The default number of backups for new users.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Max Resources -->
             <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
                 <div class="flex justify-between items-start mb-4">
                     <div>
@@ -1111,6 +1206,13 @@ const formData = ref({
     max_backups: '5',
     referrals_coins_per_referral: '35',
     referrals_coins_per_referral_redeemer: '15',
+    default_ram: '1024',
+    default_disk: '1024',
+    default_cpu: '100',
+    default_ports: '2',
+    default_databases: '1',
+    default_server_slots: '1',
+    default_backups: '5',
 });
 
 // Computed properties for toggles
@@ -1243,6 +1345,13 @@ watch(
                 max_backups: newSettings['max_backups'] || '5',
                 referrals_coins_per_referral: newSettings['referrals_coins_per_referral'] || '35',
                 referrals_coins_per_referral_redeemer: newSettings['referrals_coins_per_referral_redeemer'] || '15',
+                default_ram: newSettings['default_ram'] || '1024',
+                default_disk: newSettings['default_disk'] || '1024',
+                default_cpu: newSettings['default_cpu'] || '100',
+                default_ports: newSettings['default_ports'] || '2',
+                default_databases: newSettings['default_databases'] || '1',
+                default_server_slots: newSettings['default_server_slots'] || '1',
+                default_backups: newSettings['default_backups'] || '5',
             };
         }
     },
