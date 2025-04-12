@@ -17,15 +17,15 @@ use MythicalDash\App;
 use MythicalDash\Chat\Schema;
 use MythicalDash\Chat\Database;
 
-class Linkvertise extends Database implements Schema
+class GyaniLinks extends Database implements Schema
 {
     public static function getTableName(): string
     {
-        return 'mythicaldash_linkvertise';
+        return 'mythicaldash_gyanilinks';
     }
 
     /**
-     * Create a new linkvertise code.
+     * Create a new LinkPays code.
      */
     public static function create(string $code, string $user): int
     {
@@ -45,14 +45,14 @@ class Linkvertise extends Database implements Schema
 
             return $dbConn->lastInsertId();
         } catch (\Exception $e) {
-            self::db_Error('Failed to create linkvertise: ' . $e->getMessage());
+            self::db_Error('Failed to create LinkPays: ' . $e->getMessage());
 
             return 0;
         }
     }
 
     /**
-     * Get all linkvertise codes.
+     * Get all LinkPays codes.
      */
     public static function getAll(int $limit = 150): array
     {
@@ -65,14 +65,14 @@ class Linkvertise extends Database implements Schema
 
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
-            self::db_Error('Failed to get all linkvertise codes: ' . $e->getMessage());
+            self::db_Error('Failed to get all LinkPays codes: ' . $e->getMessage());
 
             return [];
         }
     }
 
     /**
-     * Get all linkvertise codes by user.
+     * Get all LinkPays codes by user.
      *
      * @param string $user The uuid of the user
      * @param int $limit The limit of codes to get
@@ -97,16 +97,16 @@ class Linkvertise extends Database implements Schema
 
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
-            self::db_Error('Failed to get all linkvertise codes by user: ' . $e->getMessage());
+            self::db_Error('Failed to get all LinkPays codes by user: ' . $e->getMessage());
 
             return [];
         }
     }
 
     /**
-     * Delete a linkvertise code.
+     * Delete a LinkPays code.
      *
-     * @param int $id The id of the linkvertise code
+     * @param int $id The id of the LinkPays code
      */
     public static function delete(int $id): bool
     {
@@ -124,7 +124,7 @@ class Linkvertise extends Database implements Schema
 
             return $stmt->rowCount() > 0;
         } catch (\Exception $e) {
-            self::db_Error('Failed to delete linkvertise code: ' . $e->getMessage());
+            self::db_Error('Failed to delete LinkPays code: ' . $e->getMessage());
 
             return false;
         }
@@ -158,9 +158,9 @@ class Linkvertise extends Database implements Schema
     }
 
     /**
-     * Mark a linkvertise code as completed.
+     * Mark a LinkPays code as completed.
      *
-     * @param int $id The id of the linkvertise code
+     * @param int $id The id of the LinkPays code
      */
     public static function markAsCompleted(int $id): bool
     {
@@ -185,9 +185,9 @@ class Linkvertise extends Database implements Schema
     }
 
     /**
-     * Get a linkvertise code by id.
+     * Get a LinkPays code by id.
      *
-     * @param int $id The id of the linkvertise code
+     * @param int $id The id of the LinkPays code
      */
     public static function getById(int $id): array
     {
@@ -207,7 +207,7 @@ class Linkvertise extends Database implements Schema
 
             return $result ? $result : [];
         } catch (\Exception $e) {
-            self::db_Error('Failed to get linkvertise code by id: ' . $e->getMessage());
+            self::db_Error('Failed to get LinkPays code by id: ' . $e->getMessage());
 
             return [];
         }

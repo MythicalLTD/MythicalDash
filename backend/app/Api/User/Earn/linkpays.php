@@ -14,30 +14,31 @@
 use MythicalDash\App;
 use MythicalDash\Chat\User\Session;
 use MythicalSystems\User\UUIDManager;
-use MythicalDash\Chat\Earn\Linkvertise;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Services\LinkPays\LinkPays;
+use MythicalDash\Chat\Earn\LinkPays as LinkPaysDB;
 
-$router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
+$router->get('/api/user/earn/l4r/linkpays/start', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
     $appInstance->allowOnlyGET();
     $session = new Session($appInstance);
     header('Content-Type: text/html');
-    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://publisher.linkvertise.com; style-src 'self' 'unsafe-inline';");
 
-    // Check if Linkvertise is enabled
-    if ($config->getSetting(ConfigInterface::L4R_LINKVERTISE_ENABLED, 'false') !== 'true') {
-        header('Location: /earn/links');
+    // Check if LinkPays is enabled
+    if ($config->getSetting(ConfigInterface::L4R_LINKPAYS_ENABLED, 'false') !== 'true') {
+        header('Location: /earn/links?error=linkpays_not_enabled');
         exit;
     }
 
-    $dayLimit = $config->getSetting(ConfigInterface::L4R_LINKVERTISE_DAILY_LIMIT, 5);
-    $coolDown = $config->getSetting(ConfigInterface::L4R_LINKVERTISE_COOLDOWN_TIME, 3600);
+    $dayLimit = $config->getSetting(ConfigInterface::L4R_LINKPAYS_DAILY_LIMIT, 5);
+    $coolDown = $config->getSetting(ConfigInterface::L4R_LINKPAYS_COOLDOWN_TIME, 3600);
+    $appUrl = $config->getSetting(ConfigInterface::APP_URL, 'https://app.mythicaldash.com');
 
     $dayCount = 0;
-    $links = Linkvertise::getAllByUser($session->getInfo(UserColumns::UUID, false), 35);
+    $links = LinkPaysDB::getAllByUser($session->getInfo(UserColumns::UUID, false), 35);
     foreach ($links as $link) {
         // Check if link was created within last 24 hours
         $createdAt = strtotime($link['created_at']);
@@ -51,6 +52,7 @@ $router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
                 $waitTime = $coolDown - $timeSinceLastLink;
                 $waitMinutes = ceil($waitTime / 60);
                 ?>
+				?>
 				<!DOCTYPE html>
 				<html>
 
@@ -181,8 +183,8 @@ $router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
         }
     }
 
-    $linkvertiseUUID = UUIDManager::generateUUID();
-    $id = Linkvertise::create($linkvertiseUUID, $session->getInfo(UserColumns::UUID, false));
+    $ShareUSUUID = UUIDManager::generateUUID();
+    $id = LinkPaysDB::create($ShareUSUUID, $session->getInfo(UserColumns::UUID, false));
     if ($id === 0) {
         ?>
 		<!DOCTYPE html>
@@ -246,7 +248,7 @@ $router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
 		<body>
 			<div class="container">
 				<h1>Error</h1>
-				<p>Failed to create linkvertise code</p>
+				<p>Failed to create linkpays code</p>
 			</div>
 		</body>
 
@@ -254,134 +256,64 @@ $router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
 		<?php
         return;
     }
+    $finalLink = $appUrl . '/api/user/earn/l4r/linkpays/earn/' . $ShareUSUUID;
+    try {
+        $shareUS = new LinkPays($config->getSetting(ConfigInterface::L4R_LINKPAYS_API_KEY, ''));
+        $link = $shareUS->getLink($finalLink);
+        header('Location: ' . $link);
+    } catch (Exception $e) {
+        header('Location: /earn/links?error=linkpays_error');
 
-    ?>
-	<!DOCTYPE html>
-	<html>
+        return;
+    }
 
-	<head>
-		<title>Continue to Linkvertise</title>
-		<style>
-			body {
-				margin: 0;
-				padding: 0;
-				background-color: #111827;
-				height: 100vh;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				font-family: system-ui, -apple-system, sans-serif;
-			}
-
-			.container {
-				text-align: center;
-			}
-
-			h1 {
-				color: #ffffff;
-				font-size: 1.875rem;
-				font-weight: bold;
-				margin-bottom: 1.5rem;
-			}
-
-			p {
-				color: #9CA3AF;
-				margin-bottom: 2rem;
-			}
-
-			.button {
-				background-color: #4F46E5;
-				color: #ffffff;
-				padding: 0.75rem 1.5rem;
-				border-radius: 0.5rem;
-				text-decoration: none;
-				font-weight: bold;
-				transition: background-color 0.2s;
-				display: inline-block;
-			}
-
-			.button:hover {
-				background-color: #4338CA;
-			}
-
-			.button.btn-back {
-				background-color: #6B7280;
-			}
-
-			.button.btn-back:hover {
-				background-color: #4B5563;
-			}
-		</style>
-	</head>
-
-	<body>
-		<div class="container">
-			<h1>Continue to Linkvertise</h1>
-			<p>Click the button below to continue to Linkvertise and earn rewards</p>
-			<a href="/api/user/earn/l4r/linkvertise/earn/<?php echo $linkvertiseUUID; ?>" class="button">
-				Continue to Linkvertise
-			</a>
-			<a href="/dashboard" class="button btn-back">
-				Go back
-			</a>
-			<script src="https://publisher.linkvertise.com/cdn/linkvertise.js"></script>
-			<script>linkvertise(<?php echo $config->getSetting(ConfigInterface::L4R_LINKVERTISE_USER_ID, '583258'); ?>, { whitelist: [], blacklist: [] });</script>
-		</div>
-	</body>
-
-	</html>
-	<?php
 });
 
-$router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code): void {
+$router->get('/api/user/earn/l4r/linkpays/earn/(.*)', function (string $code): void {
     App::init();
     $appInstance = App::getInstance(true);
-    $config = $appInstance->getConfig();
     $appInstance->allowOnlyGET();
     $session = new Session($appInstance);
-
-    // Check if Linkvertise is enabled
-    if ($config->getSetting(ConfigInterface::L4R_LINKVERTISE_ENABLED, 'false') !== 'true') {
+    $config = $appInstance->getConfig();
+    // Check if LinkPays is enabled
+    if ($config->getSetting(ConfigInterface::L4R_LINKPAYS_ENABLED, 'false') !== 'true') {
         header('Location: /earn/links');
         exit;
     }
 
-    $minToComplete = $config->getSetting(ConfigInterface::L4R_LINKVERTISE_MIN_TIME_TO_COMPLETE, 60);
-    $coolDown = $config->getSetting(ConfigInterface::L4R_LINKVERTISE_COOLDOWN_TIME, 3600);
-    $coinsPerLink = $config->getSetting(ConfigInterface::L4R_LINKVERTISE_COINS_PER_LINK, 60);
+    $minToComplete = $config->getSetting(ConfigInterface::L4R_LINKPAYS_MIN_TIME_TO_COMPLETE, 60);
+    $coolDown = $config->getSetting(ConfigInterface::L4R_LINKPAYS_COOLDOWN_TIME, 3600);
+    $coinsPerLink = $config->getSetting(ConfigInterface::L4R_LINKPAYS_COINS_PER_LINK, 60);
 
     // Validate code format
     if (empty($code) || !preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', $code)) {
-        header('Location: /earn/links');
+        header('Location: /earn/links?error=invalid_code');
         exit;
     }
 
-    $linkId = Linkvertise::convertCodeToId($code);
+    $linkId = LinkPaysDB::convertCodeToId($code);
     if ($linkId === 0) {
-        header('Location: /earn/links');
+        header('Location: /earn/links?error=invalid_code');
         exit;
     }
 
-    $link = Linkvertise::getById($linkId);
+    $link = LinkPaysDB::getById($linkId);
     if (empty($link)) {
-        header('Location: /earn/links');
+        header('Location: /earn/links?error=invalid_code');
         exit;
     }
 
     // Validate link ownership
     if ($link['user'] !== $session->getInfo(UserColumns::UUID, false)) {
-        header('Location: /earn/links');
+        header('Location: /earn/links?error=invalid_ownership');
         exit;
     }
 
     // Check if link is already completed
     if ($link['completed'] == 'true') {
-        header('Location: /earn/links');
+        header('Location: /earn/links?error=already_completed');
         exit;
     }
-
-    header('Content-Type: text/html');
-
     // Get the time when the link was created
     $createdAt = strtotime($link['created_at']);
     $now = time();
@@ -389,7 +321,7 @@ $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code)
 
     // Check if user took less time than required
     if ($timeTaken < $minToComplete) {
-        Linkvertise::delete($linkId);
+        LinkPaysDB::delete($linkId);
         ?>
 		<!DOCTYPE html>
 		<html>
@@ -453,67 +385,8 @@ $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code)
     }
 
     // User took enough time, give them coins
-    Linkvertise::markAsCompleted($linkId);
+    LinkPaysDB::markAsCompleted($linkId);
     $session->setInfo(UserColumns::CREDITS, (int) $session->getInfo(UserColumns::CREDITS, false) + (int) $coinsPerLink, false);
-
-    // Show success page
-    ?>
-	<!DOCTYPE html>
-	<html>
-	<head>
-		<title>Success</title>
-		<style>
-			body {
-				margin: 0;
-				padding: 0;
-				background-color: #111827;
-				height: 100vh;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				font-family: system-ui, -apple-system, sans-serif;
-			}
-			.container {
-				text-align: center;
-			}
-			h1 {
-				color: #ffffff;
-				font-size: 1.875rem;
-				font-weight: bold;
-				margin-bottom: 1.5rem;
-			}
-			p {
-				color: #9CA3AF;
-				margin-bottom: 2rem;
-			}
-			.button {
-				background-color: #4F46E5;
-				color: #ffffff;
-				padding: 0.75rem 1.5rem;
-				border-radius: 0.5rem;
-				text-decoration: none;
-				font-weight: bold;
-				transition: background-color 0.2s;
-				display: inline-block;
-			}
-			.button:hover {
-				background-color: #4338CA;
-			}
-			.button.btn-back {
-				background-color: #6B7280;
-			}
-			.button.btn-back:hover {
-				background-color: #4B5563;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-			<h1>Success!</h1>
-			<p>You have successfully completed the link and earned <?php echo $coinsPerLink; ?> coins!</p>
-			<a href="/earn/links" class="button btn-back">Go back</a>
-		</div>
-	</body>
-	</html>
-	<?php
+    header('Location: /earn/links?success=true');
+    exit;
 });

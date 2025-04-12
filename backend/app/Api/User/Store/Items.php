@@ -60,8 +60,8 @@ $router->get('/api/user/store/items', function (): void {
     $filteredItems = [];
     foreach ($items as $item) {
         $skip = false;
-        
-        switch($item['id']) {
+
+        switch ($item['id']) {
             case 'ram':
                 if ($config->getSetting(ConfigInterface::BLOCK_RAM, 'false') === 'true') {
                     $skip = true;
@@ -69,7 +69,7 @@ $router->get('/api/user/store/items', function (): void {
                 break;
             case 'disk':
                 if ($config->getSetting(ConfigInterface::BLOCK_DISK, 'false') === 'true') {
-                    $skip = true; 
+                    $skip = true;
                 }
                 break;
             case 'cpu':
@@ -105,7 +105,6 @@ $router->get('/api/user/store/items', function (): void {
     }
 
     $items = $filteredItems;
-
 
     $appInstance->OK('Store items fetched successfully!', ['data' => [
         'items' => $items,

@@ -252,28 +252,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Stats Grid -->
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="bg-gray-800/30 rounded-lg p-4">
-                                    <div class="text-xs text-gray-400 mb-1">Offers Completed</div>
-                                    <div class="text-lg font-semibold text-white">{{ stats.offersCompleted }}</div>
-                                </div>
-                                <div class="bg-gray-800/30 rounded-lg p-4">
-                                    <div class="text-xs text-gray-400 mb-1">Total Earned</div>
-                                    <div class="text-lg font-semibold text-yellow-500">
-                                        {{ stats.totalEarned }} coins
-                                    </div>
-                                </div>
-                                <div class="bg-gray-800/30 rounded-lg p-4">
-                                    <div class="text-xs text-gray-400 mb-1">Available Now</div>
-                                    <div class="text-lg font-semibold text-indigo-400">4</div>
-                                </div>
-                                <div class="bg-gray-800/30 rounded-lg p-4">
-                                    <div class="text-xs text-gray-400 mb-1">Completed Today</div>
-                                    <div class="text-lg font-semibold text-white">{{ stats.completedToday }}</div>
-                                </div>
-                            </div>
                         </div>
                     </CardComponent>
 
@@ -406,8 +384,8 @@ const providers: Record<string, ProviderConfig> = {
     },
     shareus: {
         name: 'ShareUs',
-        url: 'https://shareus.io/?referral=mythicaldash',
-        maxReward: 50,
+        url: 'https://links.shareus.io/dashboard/assets/linksbyshareusfavicon-Bib5uv4j.png',
+        maxReward: 90,
     },
     linkpays: {
         name: 'LinkPays',
@@ -431,10 +409,10 @@ const stats = ref({
 // Get logo for provider
 const getProviderLogo = (provider: string): string => {
     const logoMap: Record<string, string> = {
-        linkvertise: 'https://i.imgur.com/EGgUjQu.png',
-        shareus: 'https://i.imgur.com/iQ5ID0M.png',
-        linkpays: 'https://i.imgur.com/c8s6sAl.png',
-        gyanilinks: 'https://i.imgur.com/JN3VJt9.png',
+        linkvertise: 'https://cdn.mythical.systems/mythicaldash/linkvertise.png',
+        shareus: 'https://cdn.mythical.systems/mythicaldash/shareus.png',
+        linkpays: 'https://cdn.mythical.systems/mythicaldash/linkpays.jpg',
+        gyanilinks: 'http://cdn.mythical.systems/mythicaldash/gyanilinks.png',
     };
 
     return logoMap[provider.toLowerCase()] || 'https://via.placeholder.com/48';
