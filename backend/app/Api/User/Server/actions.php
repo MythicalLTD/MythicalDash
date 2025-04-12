@@ -41,6 +41,13 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         return;
     }
 
+	$pterodactylUserId = $session->getInfo(UserColumns::PTERODACTYL_USER_ID, false);
+	$owner = $server['attributes']['user'];
+	if ($owner != $pterodactylUserId) {
+		$appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
+		return;
+	}
+	
     // Add additional server information
     $locationId = $server['attributes']['relationships']['location']['attributes']['id'];
     $location = Locations::getLocationByPterodactylLocationId($locationId);
@@ -261,6 +268,12 @@ $router->post('/api/user/server/(.*)/delete', function (string $id): void {
         return;
     }
 
+	$pterodactylUserId = $session->getInfo(UserColumns::PTERODACTYL_USER_ID, false);
+	$owner = $server['attributes']['user'];
+	if ($owner != $pterodactylUserId) {
+		$appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
+		return;
+	}
     $serverId = $server['attributes']['id'];
     if (MythicalDash\Chat\Servers\Server::doesServerExistByPterodactylId($serverId)) {
         MythicalDash\Chat\Servers\Server::deleteServerByPterodactylId($serverId);
@@ -574,7 +587,12 @@ $router->get('/api/user/server/(.*)', function (string $id): void {
 
         return;
     }
-
+	$pterodactylUserId = $session->getInfo(UserColumns::PTERODACTYL_USER_ID, false);
+	$owner = $server['attributes']['user'];
+	if ($owner != $pterodactylUserId) {
+		$appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
+		return;
+	}
     // Add additional server information
     $locationId = $server['attributes']['relationships']['location']['attributes']['id'];
     $location = Locations::getLocationByPterodactylLocationId($locationId);

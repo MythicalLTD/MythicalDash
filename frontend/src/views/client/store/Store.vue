@@ -550,22 +550,53 @@ const purchaseItem = async (item: StoreItem) => {
                 case 'PURCHASE_FAILED':
                     errorMessage = data.message || t('store.pages.alerts.error.buy.PURCHASE_FAILED');
                     break;
+                case 'MAX_RAM_LIMIT':
+                    errorMessage = t('store.pages.alerts.error.buy.MAX_RAM_LIMIT', {
+                        required: data.required,
+                        available: data.available,
+                    });
+                    break;
+                case 'MAX_DISK_LIMIT':
+                    errorMessage = t('store.pages.alerts.error.buy.MAX_DISK_LIMIT', {
+                        required: data.required,
+                        available: data.available,
+                    });
+                    break;
+                case 'MAX_CPU_LIMIT':
+                    errorMessage = t('store.pages.alerts.error.buy.MAX_CPU_LIMIT', {
+                        required: data.required,
+                        available: data.available,
+                    });
+                    break;
+                case 'MAX_PORTS_LIMIT':
+                    errorMessage = t('store.pages.alerts.error.buy.MAX_PORTS_LIMIT', {
+                        required: data.required,
+                        available: data.available,
+                    });
+                    break;
+                case 'MAX_DATABASES_LIMIT':
+                    errorMessage = t('store.pages.alerts.error.buy.MAX_DATABASES_LIMIT', {
+                        required: data.required,
+                        available: data.available,
+                    });
+                    break;
+                case 'MAX_SERVER_SLOTS_LIMIT':
+                    errorMessage = t('store.pages.alerts.error.buy.MAX_SERVER_SLOTS_LIMIT', {
+                        required: data.required,
+                        available: data.available,
+                    });
+                    break;
+                case 'MAX_BACKUPS_LIMIT':
+                    errorMessage = t('store.pages.alerts.error.buy.MAX_BACKUPS_LIMIT', {
+                        required: data.required,
+                        available: data.available,
+                    });
+                    break;
                 default:
                     errorMessage = data.message || t('store.pages.alerts.error.generic');
             }
 
             showStatusMessage(errorMessage, 'error');
-
-            // Show error dialog for more details
-            Swal.fire({
-                title: t('store.pages.alerts.error.buy.title'),
-                html: t('store.pages.alerts.error.buy.description'),
-                icon: 'error',
-                confirmButtonText: t('store.pages.alerts.error.buy.confirmButtonText'),
-                cancelButtonText: t('store.pages.alerts.error.buy.cancelButtonText'),
-                confirmButtonColor: '#4f46e5',
-                cancelButtonColor: '#1f2937',
-            });
         }
     } catch (error) {
         console.error('Error purchasing item:', error);

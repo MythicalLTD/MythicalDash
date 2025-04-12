@@ -112,6 +112,87 @@ $router->post('/api/user/store/purchase', function (): void {
         return;
     }
 
+    // Check resource limits based on item type
+    switch ($itemId) {
+        case 'ram':
+            $maxRam = $config->getSetting(ConfigInterface::MAX_RAM, 1024);
+            if ($session->getInfo(UserColumns::MEMORY_LIMIT, false) >= $maxRam) {
+                $appInstance->BadRequest('You have reached the maximum RAM limit', [
+                    'error_code' => 'MAX_RAM_LIMIT',
+                    'required' => $maxRam,
+                    'available' => $session->getInfo(UserColumns::MEMORY_LIMIT, false),
+                ]);
+                return;
+            }
+            break;
+        case 'disk':
+            $maxDisk = $config->getSetting(ConfigInterface::MAX_DISK, 1024);
+            if ($session->getInfo(UserColumns::DISK_LIMIT, false) >= $maxDisk) {
+                $appInstance->BadRequest('You have reached the maximum disk limit', [
+                    'error_code' => 'MAX_DISK_LIMIT',
+                    'required' => $maxDisk,
+                    'available' => $session->getInfo(UserColumns::DISK_LIMIT, false),
+                ]);
+                return;
+            }
+            break;
+        case 'cpu':
+            $maxCpu = $config->getSetting(ConfigInterface::MAX_CPU, 100);
+            if ($session->getInfo(UserColumns::CPU_LIMIT, false) >= $maxCpu) {
+                $appInstance->BadRequest('You have reached the maximum CPU limit', [
+                    'error_code' => 'MAX_CPU_LIMIT',
+                    'required' => $maxCpu,
+                    'available' => $session->getInfo(UserColumns::CPU_LIMIT, false),
+                ]);
+                return;
+            }
+            break;
+        case 'server_slot':
+            $maxServerSlots = $config->getSetting(ConfigInterface::MAX_SERVER_SLOTS, 1);
+            if ($session->getInfo(UserColumns::SERVER_LIMIT, false) >= $maxServerSlots) {
+                $appInstance->BadRequest('You have reached the maximum server slots limit', [
+                    'error_code' => 'MAX_SERVER_SLOTS_LIMIT',
+                    'required' => $maxServerSlots,
+                    'available' => $session->getInfo(UserColumns::SERVER_LIMIT, false),
+                ]);
+                return;
+            }
+            break;
+        case 'server_backup':
+            $maxBackups = $config->getSetting(ConfigInterface::MAX_BACKUPS, 5);
+            if ($session->getInfo(UserColumns::BACKUP_LIMIT, false) >= $maxBackups) {
+                $appInstance->BadRequest('You have reached the maximum backups limit', [
+                    'error_code' => 'MAX_BACKUPS_LIMIT',
+                    'required' => $maxBackups,
+                    'available' => $session->getInfo(UserColumns::BACKUP_LIMIT, false),
+                ]);
+                return;
+            }
+            break;
+        case 'server_allocation':
+            $maxPorts = $config->getSetting(ConfigInterface::MAX_PORTS, 2);
+            if ($session->getInfo(UserColumns::ALLOCATION_LIMIT, false) >= $maxPorts) {
+                $appInstance->BadRequest('You have reached the maximum ports limit', [
+                    'error_code' => 'MAX_PORTS_LIMIT',
+                    'required' => $maxPorts,
+                    'available' => $session->getInfo(UserColumns::ALLOCATION_LIMIT, false),
+                ]);
+                return;
+            }
+            break;
+        case 'server_database':
+            $maxDatabases = $config->getSetting(ConfigInterface::MAX_DATABASES, 1);
+            if ($session->getInfo(UserColumns::DATABASE_LIMIT, false) >= $maxDatabases) {
+                $appInstance->BadRequest('You have reached the maximum databases limit', [
+                    'error_code' => 'MAX_DATABASES_LIMIT',
+                    'required' => $maxDatabases,
+                    'available' => $session->getInfo(UserColumns::DATABASE_LIMIT, false),
+                ]);
+                return;
+            }
+            break;
+    }
+
     // Process purchase
     try {
         // Deduct coins
