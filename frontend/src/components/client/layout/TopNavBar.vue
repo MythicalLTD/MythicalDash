@@ -49,6 +49,8 @@
 
             <!-- Right: Actions -->
             <div class="flex items-center gap-2">
+                <SocialMediaLinks class="hidden lg:flex" />
+
                 <button
                     @click="$emit('toggle-notifications')"
                     class="p-2 hover:bg-[#1a1a2e]/50 rounded-lg relative transition-colors duration-200"
@@ -102,6 +104,7 @@ import { useSettingsStore } from '@/stores/settings';
 const Settings = useSettingsStore();
 import { useI18n } from 'vue-i18n';
 import Session from '@/mythicaldash/Session';
+import SocialMediaLinks from './SocialMediaLinks.vue';
 
 const role =
     (Session.getInfo('role_real_name') ?? '').charAt(0).toUpperCase() +
