@@ -12,6 +12,7 @@
  */
 
 use MythicalDash\App;
+use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
@@ -100,4 +101,72 @@ $router->get('/api/user/auth/callback/discord/unlink', function () {
     $s->setInfo(UserColumns::DISCORD_EMAIL, null, false);
     $s->setInfo(UserColumns::DISCORD_LINKED, 'false', false);
     header('Location: /account');
+});
+
+$router->get('/api/user/auth/callback/discord/login', function () {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $config = $appInstance->getConfig();
+
+    if ($config->getSetting(ConfigInterface::DISCORD_ENABLED, 'false') === 'false' && $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '') === '' && $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '') === '' && $config->getSetting(ConfigInterface::DISCORD_LINK_ALLOWED, '') == 'true') {
+        App::NotFound('Discord is not enabled', []);
+    }
+
+    $appId = $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '');
+    $appSecret = $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '');
+    $url = $config->getSetting(ConfigInterface::APP_URL, '');
+    $redirectUri = $url . '/api/user/auth/callback/discord/login';
+
+    if (isset($_GET['code'])) {
+        $code = $_GET['code'];
+        $tokenUrl = 'https://discord.com/api/oauth2/token';
+        $data = [
+            'client_id' => $appId,
+            'client_secret' => $appSecret,
+            'grant_type' => 'authorization_code',
+            'code' => $code,
+            'redirect_uri' => $redirectUri,
+            'scope' => 'identify guilds email guilds.join',
+        ];
+        $options = [
+            'http' => [
+                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method' => 'POST',
+                'content' => http_build_query($data),
+            ],
+        ];
+        $context = stream_context_create($options);
+        $result = file_get_contents($tokenUrl, false, $context);
+        $accessToken = json_decode($result, true)['access_token'];
+
+        $userUrl = 'https://discord.com/api/users/@me';
+
+        $options = [
+            'http' => [
+                'header' => "Authorization: Bearer $accessToken\r\n",
+                'method' => 'GET',
+            ],
+        ];
+        $context = stream_context_create($options);
+        $result = file_get_contents($userUrl, false, $context);
+
+        $userInfo = json_decode($result, true);
+
+        $id = $userInfo['id'];
+
+        if (isset($userInfo)) {
+            if (User::exists(UserColumns::DISCORD_ID, $id)) {
+                $email = User::getInfo(User::getTokenFromUUID(User::getUUIDFromDiscordID($id)), UserColumns::EMAIL, false);
+                $password = User::getInfo(User::getTokenFromUUID(User::getUUIDFromDiscordID($id)), UserColumns::PASSWORD, true);
+                header('Location: ' . $url . '/auth/login?email=' . urlencode(base64_encode($email)) . '&password=' . urlencode(base64_encode($password)) . '&performLogin=true');
+                exit;
+            }
+        }
+        header('Location: ' . $url . '/api/user/auth/callback/discord/login');
+
+    } else {
+        $authorizeUrl = 'https://discord.com/api/oauth2/authorize?client_id=' . $appId . '&redirect_uri=' . urlencode($redirectUri) . '&response_type=code&scope=' . urlencode('identify guilds email guilds.join');
+        header('Location: ' . $authorizeUrl);
+    }
+
 });

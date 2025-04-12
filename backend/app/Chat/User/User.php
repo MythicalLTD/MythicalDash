@@ -514,6 +514,53 @@ class User extends Database
     }
 
     /**
+     * Get the UUID from the info.
+     *
+     * @param UserColumns|string $info The column name
+     * @param string $value The value
+     *
+     * @return string The UUID
+     */
+    public static function getUUIDFromInfo(UserColumns|string $info, string $value): string
+    {
+        try {
+            $con = self::getPdoConnection();
+            $stmt = $con->prepare('SELECT uuid FROM ' . self::TABLE_NAME . ' WHERE ' . $info . ' = :value');
+            $stmt->bindParam(':value', $value);
+            $stmt->execute();
+
+            return $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            Database::db_Error('Failed to uuid from info: ' . $e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
+     * Get the UUID from the discord id.
+     *
+     * @param string $discordID The discord id
+     *
+     * @return string The UUID
+     */
+    public static function getUUIDFromDiscordID(string $discordID): string
+    {
+        try {
+            $con = self::getPdoConnection();
+            $stmt = $con->prepare('SELECT uuid FROM ' . self::TABLE_NAME . ' WHERE discord_id = :discordID AND deleted = "false" LIMIT 1');
+            $stmt->bindParam(':discordID', $discordID);
+            $stmt->execute();
+
+            return $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            Database::db_Error('Failed to uuid from discord id: ' . $e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
      * Get the token from the email.
      *
      * @param string $email The email
