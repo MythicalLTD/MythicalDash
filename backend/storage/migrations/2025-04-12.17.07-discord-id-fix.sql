@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_users` CHANGE `discord_id` `discord_id` TEXT NULL DEFAULT NULL;

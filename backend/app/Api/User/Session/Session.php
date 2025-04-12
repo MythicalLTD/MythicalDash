@@ -161,6 +161,11 @@ $router->get('/api/user/session', function (): void {
             UserColumns::DATABASE_LIMIT,
             UserColumns::ALLOCATION_LIMIT,
             UserColumns::PTERODACTYL_USER_ID,
+
+            UserColumns::DISCORD_LINKED,
+            UserColumns::DISCORD_USERNAME,
+            UserColumns::DISCORD_EMAIL,
+            UserColumns::DISCORD_ID,
         ];
 
         $info = User::getInfoArray($accountToken, $columns, [

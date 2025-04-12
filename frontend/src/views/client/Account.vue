@@ -69,9 +69,10 @@ import {
     Mail as MailIcon,
     Bell as ActivityIcon,
     Key as ApiKeyIcon,
+    Link as LinkedAccountsIcon,
 } from 'lucide-vue-next';
 
-const activeTab = ref('Settings');
+const activeTab = ref(t('account.pages.index.tabs.settings'));
 
 const tabs = [
     { name: t('account.pages.index.tabs.settings'), icon: SettingsIcon },
@@ -79,6 +80,7 @@ const tabs = [
     { name: t('account.pages.index.tabs.emails'), icon: MailIcon },
     { name: t('account.pages.index.tabs.activity'), icon: ActivityIcon },
     { name: t('account.pages.index.tabs.apikey'), icon: ApiKeyIcon },
+    { name: t('account.pages.index.tabs.linked_accounts'), icon: LinkedAccountsIcon },
 ];
 </script>
 

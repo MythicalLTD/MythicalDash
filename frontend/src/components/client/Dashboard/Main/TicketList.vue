@@ -53,8 +53,8 @@ onMounted(fetchRecentTickets);
     <!-- Recent Tickets -->
     <CardComponent
         v-if="recentTickets.length > 0"
-        cardTitle="Recent Tickets"
-        cardDescription="View your recent tickets"
+        :cardTitle="t('Components.Tickets.title')"
+        :cardDescription="t('Components.Tickets.description')"
     >
         <div class="space-y-3">
             <div

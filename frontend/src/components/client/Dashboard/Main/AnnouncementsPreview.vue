@@ -1,5 +1,8 @@
 <template>
-    <CardComponent cardTitle="Latest Announcement" cardDescription="Stay up to date with our latest news">
+    <CardComponent
+        :cardTitle="t('Components.Announcements.Card.Info')"
+        :cardDescription="t('Components.Announcements.Card.InfoFull')"
+    >
         <div v-if="loading" class="flex justify-center items-center h-40">
             <div class="loader w-10 h-10 relative">
                 <div class="loader-ring"></div>

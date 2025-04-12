@@ -1,5 +1,8 @@
 <template>
-    <CardComponent cardTitle="Quick Links" cardDescription="Fast access to important areas">
+    <CardComponent
+        :cardTitle="t('Components.QuickLinks.title')"
+        :cardDescription="t('Components.QuickLinks.description')"
+    >
         <div class="quicklinks-container relative overflow-hidden">
             <!-- Background decoration -->
             <div class="absolute -top-20 -left-20 w-40 h-40 bg-indigo-500/5 rounded-full blur-2xl"></div>

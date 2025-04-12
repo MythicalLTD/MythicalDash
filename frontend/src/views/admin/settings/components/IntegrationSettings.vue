@@ -151,16 +151,22 @@
                         <p class="text-sm text-gray-400">
                             Connect your Discord server for user authentication and notifications.
                         </p>
+                        <div class="mt-2 p-3 bg-gray-900/50 rounded-lg border border-gray-700/50">
+                            <p class="text-sm text-gray-400 mb-1">OAuth2 Callback URL:</p>
+                            <code class="text-sm text-indigo-400 break-all"
+                                >{{ Settings.getSetting('app_url') }}/api/user/auth/callback/discord</code
+                            >
+                        </div>
                     </div>
-                    <div>
-                        <span
-                            :class="[
-                                'px-2 py-1 text-xs rounded-md',
-                                discordConnected ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400',
-                            ]"
+                    <div class="flex items-center gap-2">
+                        <button
+                            @click="goToDiscord"
+                            class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center"
                         >
-                            {{ discordConnected ? 'Connected' : 'Not Connected' }}
-                        </span>
+                            <SettingsIcon class="w-4 h-4 mr-1" />
+                            Discord Developer Portal
+                            <ChevronRightIcon class="w-4 h-4 ml-auto" />
+                        </button>
                     </div>
                 </div>
 
@@ -426,8 +432,9 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, defineEmits } from 'vue';
-import { EyeIcon, EyeOffIcon, FeatherIcon } from 'lucide-vue-next';
-
+import { EyeIcon, EyeOffIcon, FeatherIcon, ChevronRightIcon, Settings as SettingsIcon } from 'lucide-vue-next';
+import { useSettingsStore } from '@/stores/settings';
+const Settings = useSettingsStore();
 interface Props {
     settings: Record<string, string>;
 }
@@ -474,16 +481,6 @@ const pelicanConnected = computed(() => {
     return formData.value.pelican_base_url !== '';
 });
 
-// Computed property to check if Discord is connected
-const discordConnected = computed(() => {
-    return (
-        formData.value.discord_enabled === 'true' &&
-        formData.value.discord_server_id !== '' &&
-        formData.value.discord_client_id !== '' &&
-        formData.value.discord_client_secret !== ''
-    );
-});
-
 // Initialize form with settings values
 watch(
     () => props.settings,
@@ -520,5 +517,9 @@ watch(
 // Update a setting
 const updateSetting = (key: string, value: string) => {
     emit('update', key, value);
+};
+
+const goToDiscord = () => {
+    window.open('https://discord.com/developers/applications', '_blank');
 };
 </script>

@@ -164,6 +164,25 @@ class App extends \MythicalSystems\Utils\BungeeChatApi
                 $this->sendOutput($this->prefix . 'Failed to start watch process.');
             }
             exit;
+        } elseif ($cmdName == 'make:migration') {
+            $this->sendOutput('Enter migration name (e.g. add-user-table): ');
+            $migrationName = trim(fgets(STDIN));
+
+            if (empty($migrationName)) {
+                $this->sendOutput('Migration name is required.');
+                $this->sendOutput("\n");
+                exit;
+            }
+
+            $date = date('Y-m-d.H.i');
+            $filename = $date . '-' . $migrationName . '.sql';
+
+            $filepath = 'backend/storage/migrations/' . $filename;
+
+            file_put_contents($filepath, '');
+            $this->sendOutput('Created migration file: ' . $filename);
+            $this->sendOutput("\n");
+            exit;
         } elseif ($cmdName == 'push') {
             $process = popen('cd backend && export COMPOSER_ALLOW_SUPERUSER=1 && composer run lint 2>&1', 'r');
             if (is_resource($process)) {

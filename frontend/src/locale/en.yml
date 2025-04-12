@@ -20,6 +20,8 @@ Components:
                 Footer: 'Yay it worked ;)'
             Error: 'An error occurred. Please try again later.'
     QuickLinks:
+        title: 'Quick Links'
+        description: 'Fast access to important areas'
         tickets:
             title: 'Tickets'
             description: 'View and manage your tickets'
@@ -72,10 +74,13 @@ Components:
     Announcements:
         Title: 'Announcements'
         Card:
+            Info: 'Latest Announcement'
+            InfoFull: 'Stay up to date with our latest news'
             ReadMore: 'Read More'
             NoAnnouncements: 'No announcements yet'
     Tickets:
         title: 'Recent tickets'
+        description: 'View your recent tickets'
         viewMore: 'View more'
         status:
             Open: 'Open'
@@ -373,16 +378,47 @@ account:
             verified: 'Your account is verified'
             notVerified: 'Your account is not verified'
     pages:
-        index: 
-          title: "Account Management"
-          description: "View and manage your account settings and preferences"
-          tabs:
-            settings: "Settings"
-            security: "Security"
-            emails: "Emails"
-            activity: "Activity"
-            apikey: "API Key"
-
+        index:
+            title: 'Account Management'
+            description: 'View and manage your account settings and preferences'
+            tabs:
+                settings: 'Settings'
+                security: 'Security'
+                emails: 'Emails'
+                activity: 'Activity'
+                apikey: 'API Key'
+                linked_accounts: 'Linked Accounts'
+        linked_accounts:
+            title: Linked Accounts
+            description: Link your accounts to your profile
+            connect: 'Connect'
+            disconnect: 'Disconnect'
+            not_connected: 'Not Connected'
+            connected_as: 'Connected as'
+            connected_on: 'Connected on'
+            benefits:
+                title: Benefits
+                simplified_login:
+                    title: Simplified Login
+                    description: Simplify your login process by linking your accounts
+                enhanced_security:
+                    title: Enhanced Security
+                    description: Enhance your account security by linking your accounts
+                seamless_integration:
+                    title: Seamless Integration
+                    description: Seamlessly integrate your accounts to your profile
+            discord:
+                title: Discord
+                description: Link your Discord account to your profile
+                link: Link Discord
+            github:
+                title: GitHub
+                description: Link your GitHub account to your profile
+                link: Link GitHub
+            google:
+                title: Google
+                description: Link your Google account to your profile
+                link: Link Google
         settings:
             alerts:
                 success:
@@ -604,7 +640,7 @@ tickets:
                     reply_success: 'Reply submitted'
                     footer: 'Your reply has been sent, and the ticket has been updated'
             page:
-                goBack: "↪ Go back"
+                goBack: '↪ Go back'
                 createdBy: 'Created by'
                 department: 'Department'
                 priority: 'Priority'
@@ -622,26 +658,26 @@ tickets:
                 preview: 'Image Preview'
                 open_in_new_tab: 'Open in new tab'
                 messages: 'Messages'
-                response: "Response"
+                response: 'Response'
                 replyForm:
-                  title: Reply to Ticket
-                  description: 'Please provide as much detail as possible in your reply to help us assist you better. Include any relevant information or screenshots that might help resolve your issue.'
-                  forms: 
-                    send: 'Type your reply here..'
-                    attachments: 'Attachments (Optional)'
-                    click_to_upload: "Click to upload or drag and drop files here"
-                    formats: "PNG, JPG, GIF (MAX. 2MB)"
-                    submit: 'Submit'
-                    loading: 'Submitting...'
+                    title: Reply to Ticket
+                    description: 'Please provide as much detail as possible in your reply to help us assist you better. Include any relevant information or screenshots that might help resolve your issue.'
+                    forms:
+                        send: 'Type your reply here..'
+                        attachments: 'Attachments (Optional)'
+                        click_to_upload: 'Click to upload or drag and drop files here'
+                        formats: 'PNG, JPG, GIF (MAX. 2MB)'
+                        submit: 'Submit'
+                        loading: 'Submitting...'
                 status_replied: 'Replied'
                 reply_locked: "This ticket is closed so you can't reply to it"
-                buttons: 
-                  close: 'Close Ticket'
-                  reopen: 'Reopen Ticket'
-                  open: 'Open Ticket'
-                  waiting: 'Waiting for Reply'
-                  inprogress: 'In Progress'
-                  replied: 'Replied'
+                buttons:
+                    close: 'Close Ticket'
+                    reopen: 'Reopen Ticket'
+                    open: 'Open Ticket'
+                    waiting: 'Waiting for Reply'
+                    inprogress: 'In Progress'
+                    replied: 'Replied'
         tickets:
             title: Tickets
             actions:

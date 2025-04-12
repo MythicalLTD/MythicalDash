@@ -1,0 +1,1249 @@
+---
+#-------------------------------------------------------------#
+#
+# Componente Globale
+#
+# @public
+#
+#-------------------------------------------------------------#
+Components:
+    ErrorsPage:
+        Buttons:
+            GoBack: 'Înapoi'
+            GoHome: 'Acasă'
+    Global:
+        Navigation:
+            Loading: 'Se încarcă...'
+            Copy:
+                Title: 'Copiat'
+                Success: 'Copiat în clipboard ca un profesionist.'
+                Footer: 'Da, a funcționat ;)'
+            Error: 'A apărut o eroare. Vă rugăm să încercați din nou mai târziu.'
+    QuickLinks:
+        tickets:
+            title: 'Tichete'
+            description: 'Vizualizați și gestionați tichetele dvs.'
+        announcements:
+            title: 'Anunțuri'
+            description: 'Vizualizați cele mai recente anunțuri'
+        account:
+            title: 'Cont'
+            description: 'Actualizați setările contului dvs.'
+    ResourceCards:
+        title: 'Utilizare Resurse'
+        description: 'Vizualizați utilizarea resurselor și limitele dvs.'
+        mb: 'MB'
+        of: 'din'
+        RAM:
+            title: 'RAM'
+        CPU:
+            title: 'CPU'
+        DISK:
+            title: 'Disc'
+        SLOT:
+            title: 'Slot(uri) Server'
+        DATABASE:
+            title: 'Bază de date'
+        BACKUP:
+            title: 'Backup(uri) Server'
+        ALLOCATION:
+            title: 'Alocări Server'
+    ServerList:
+        title: 'Serverele Mele'
+        description: 'Gestionați infrastructura dvs. de gaming'
+        createServer: 'Creați Primul Server'
+        createServerButton: 'Creează Server'
+        noServers: 'Nu s-au găsit servere'
+        noServersDescription: 'Nu aveți încă niciun server.'
+        serverLimit: '{0} / {1} Servere'
+        newServer: 'Server Nou'
+        table:
+            name: 'Nume'
+            location: 'Locație'
+            egg: 'Egg'
+            memory: 'Memorie'
+            cpu: 'CPU'
+            disk: 'Disc'
+            actions: 'Acțiuni'
+    ManageAccount:
+        title: 'Profilul Meu'
+        description: 'Informațiile contului dvs.'
+        viewMore: 'Vezi mai mult'
+    Announcements:
+        Title: 'Anunțuri'
+        Card:
+            ReadMore: 'Citește mai mult'
+            NoAnnouncements: 'Încă nu există anunțuri'
+    Tickets:
+        title: 'Tichete recente'
+        viewMore: 'Vezi mai mult'
+        status:
+            Open: 'Deschis'
+            Closed: 'Închis'
+            Waiting: 'În așteptare'
+            Replied: 'Răspuns'
+            InProgress: 'În Progres'
+    QuickSearch:
+        title: 'Căutare Rapidă'
+        esc_key: 'Esc'
+        enter_key: 'Enter'
+        to_close: 'pentru a închide'
+        description: 'Căutați un server, tichet sau anunț'
+        notfound: 'Nu am putut găsi niciun rezultat pentru căutarea dvs.'
+        quickNav: 'Navigare Rapidă'
+        keyboardShortcuts: 'Scurtături Tastatură'
+        search: 'Căutare'
+        ctrl_key: 'Ctrl'
+        k_key: 'K'
+        d_key: 'D'
+        goToDashboard: 'Mergi la Panou de Control'
+
+    SupportPin:
+        title: 'PIN Suport'
+        copy: 'Copiază'
+        description: 'Acest PIN este utilizat pentru a vă verifica identitatea către echipa noastră de suport'
+        alerts:
+            success:
+                title: 'Succes'
+                pin_success: 'PIN de suport generat'
+                footer: 'PIN-ul dvs. de suport a fost generat'
+            error:
+                title: 'Eroare'
+                generic: 'A apărut o eroare. Vă rugăm să încercați din nou mai târziu'
+                footer: 'Vă rugăm să contactați suportul pentru asistență'
+
+#-------------------------------------------------------------#
+#
+# Pagini de Autentificare (/auth/*)
+#
+# @public
+#
+#-------------------------------------------------------------#
+dashboard:
+    title: Panou de Control
+
+auth:
+    logic:
+        errors:
+            footer: Vă rugăm să contactați suportul pentru asistență
+            title: Eroare Sesiune
+            expired: Sesiunea dvs. a expirat
+    pages:
+        sso:
+            page:
+                title: Autentificare Unică
+                subTitle: Autentificare Unică
+                form:
+                    name:
+                        label: Nume domeniu
+                        placeholder: Nume Organizație
+                        description: Aceasta este o funcție Enterprise. Vă rugăm să vă asigurați că introduceți numele companiei sau numele domeniului.
+                    login_button:
+                        label: Autentificare
+                        loading: Se redirecționează...
+                    normal_login:
+                        label: Nu sunteți o organizație sau domeniu?
+                        link: Autentificare
+        login:
+            components:
+                form:
+                    support_center: Centru de Suport
+            alerts:
+                success:
+                    title: Succes
+                    login_success: V-ați autentificat cu succes
+                    footer: Bine ați revenit!
+                error:
+                    title: Eroare de Autentificare
+                    missing_fields: Vă rugăm să completați toate câmpurile
+                    invalid_credentials: Credențiale invalide
+                    generic: A apărut o eroare. Vă rugăm să încercați din nou mai târziu
+                    cloudflare_error: Ați fost blocat de Cloudflare Turnstile
+                    footer: Vă rugăm să contactați suportul pentru asistență
+                    not_verified: Emailul dvs. nu este încă verificat
+                    banned: Contul dvs. a fost interzis permanent
+                    deleted: Contul dvs. a fost șters fie de dvs., fie de un administrator
+                    pterodactyl_user_not_found: Utilizatorul Pterodactyl nu a fost găsit.
+                    pterodactyl_error: Nu s-a putut înregistra utilizatorul în panoul Pterodactyl
+                    pterodactyl_not_enabled: Pterodactyl nu este activat
+            page:
+                title: Autentificare
+                subTitle: Autentificați-vă în contul dvs.
+                form:
+                    email:
+                        label: Email sau Nume de utilizator
+                        placeholder: Introduceți emailul sau numele de utilizator
+                    password:
+                        label: Parolă
+                        placeholder: Introduceți parola
+                    forgot_password: Ați uitat parola?
+                    login_button:
+                        label: Autentificare
+                        loading: Autentificare...
+                    register:
+                        label: Nu aveți un cont?
+                        link: Înregistrare
+        register:
+            alerts:
+                success:
+                    title: Succes
+                    register_success: V-ați înregistrat cu succes
+                    footer: Vă mulțumim că ne-ați ales!
+                error:
+                    title: Înregistrare Eșuată
+                    csrf_error: Nepotrivire token CSRF
+                    username_exists: Numele de utilizator există deja
+                    email_exists: Emailul există deja
+                    generic: A apărut o eroare. Vă rugăm să încercați din nou mai târziu
+                    cloudflare_error: Ați fost blocat de Cloudflare Turnstile
+                    pterodactyl_not_enabled: Pterodactyl nu este activat
+                    pterodactyl_error: Nu s-a putut înregistra utilizatorul în panoul Pterodactyl
+                    footer: Vă rugăm să contactați suportul pentru asistență
+            page:
+                title: Înregistrare
+                subTitle: Creați un cont nou
+                form:
+                    email:
+                        label: Email
+                        placeholder: Introduceți emailul dvs.
+                    firstName:
+                        label: Prenume
+                        placeholder: Introduceți prenumele dvs.
+                    lastName:
+                        label: Nume
+                        placeholder: Introduceți numele dvs.
+                    username:
+                        label: Nume de utilizator
+                        placeholder: Introduceți numele de utilizator
+                    password:
+                        label: Parolă
+                        placeholder: Introduceți parola
+                    confirm_password:
+                        label: Confirmă Parola
+                        placeholder: Confirmați parola
+                    register_button:
+                        label: Înregistrare
+                        loading: Înregistrare...
+                    login:
+                        label: Aveți deja un cont?
+                        link: Autentificare
+        forgot_password:
+            alerts:
+                success:
+                    title: Succes
+                    reset_success: Link de resetare parolă trimis
+                    footer: Verificați-vă emailul!
+                error:
+                    title: Eroare
+                    missing_fields: Vă rugăm să completați toate câmpurile
+                    email_not_found: Email negăsit
+                    generic: A apărut o eroare. Vă rugăm să încercați din nou mai târziu
+                    cloudflare_error: Ați fost blocat de Cloudflare Turnstile
+                    footer: Vă rugăm să contactați suportul pentru asistență
+            page:
+                title: Am uitat parola
+                subTitle: Resetați-vă parola
+                form:
+                    email:
+                        label: Email
+                        placeholder: Introduceți emailul dvs.
+                    reset_button:
+                        label: Resetare Parolă
+                        loading: Se trimite linkul de resetare...
+                    login:
+                        label: V-ați amintit parola?
+                        link: Autentificare
+        twofactor_verify:
+            alerts:
+                success:
+                    title: Succes
+                    verify_success: Autentificare cu doi factori verificată
+                    footer: Ați verificat cu succes Autentificarea cu doi factori
+                error:
+                    title: Eroare
+                    missing_fields: Vă rugăm să completați toate câmpurile
+                    invalid_code: Cod invalid
+                    generic: A apărut o eroare. Vă rugăm să încercați din nou mai târziu
+                    cloudflare_error: Ați fost blocat de Cloudflare Turnstile
+                    footer: Vă rugăm să contactați suportul pentru asistență
+            page:
+                title: Autentificare cu doi factori
+                subTitle: Verificați Autentificarea cu doi factori
+                form:
+                    code:
+                        label: Cod
+                        placeholder: Introduceți codul din aplicația de autentificare
+                    verify_button:
+                        label: Verifică
+                        loading: Verificare...
+        twofactor_setup:
+            alerts:
+                success:
+                    title: Succes
+                    setup_success: Autentificare cu doi factori configurată
+                    footer: Ați configurat cu succes Autentificarea cu doi factori
+                error:
+                    title: Eroare
+                    missing_fields: Vă rugăm să completați toate câmpurile
+                    invalid_code: Cod invalid
+                    generic: A apărut o eroare. Vă rugăm să încercați din nou mai târziu
+                    cloudflare_error: Ați fost blocat de Cloudflare Turnstile
+                    footer: Vă rugăm să contactați suportul pentru asistență
+            page:
+                title: Autentificare cu doi factori
+                subTitle: Configurați Autentificarea cu doi factori
+                form:
+                    secret:
+                        label: Secret
+                        placeholder: Aici este cheia dvs. secretă
+                    code:
+                        label: Cod
+                        placeholder: Introduceți codul din aplicația de autentificare
+                    setup_button:
+                        label: Configurare
+                        loading: Configurare...
+        reset_password:
+            alerts:
+                success:
+                    title: Succes
+                    reset_success: V-am resetat cu succes parola
+                    footer: Verificați-vă emailul!
+                error:
+                    title: Eroare
+                    missing_fields: Vă rugăm să completați toate câmpurile
+                    passwords_mismatch: Parolele nu se potrivesc
+                    generic: A apărut o eroare. Vă rugăm să încercați din nou mai târziu
+                    cloudflare_error: Ați fost blocat de Cloudflare Turnstile
+                    footer: Vă rugăm să contactați suportul pentru asistență
+                    invalid_code: Cod de resetare invalid
+            page:
+                title: Resetare Parolă
+                subTitle: Resetați-vă parola
+                form:
+                    password_new:
+                        label: Parolă Nouă
+                        placeholder: Introduceți noua parolă
+                    password_confirm:
+                        label: Confirmă Parola
+                        placeholder: Confirmați noua parolă
+                    reset_button:
+                        label: Resetare Parolă
+                        loading: Se aplică modificările...
+                    login:
+                        label: V-ați amintit parola?
+                        link: Autentificare
+#-------------------------------------------------------------#
+#
+# Pagini de Erori Globale
+#
+# @public
+#
+#-------------------------------------------------------------#
+errors:
+    forbidden:
+        title: 403 Interzis
+        message: >-
+            Stați pe loc, călător spațial! Nu aveți autorizația necesară
+            pentru a accesa această zonă.
+    notfound:
+        title: 404 Negăsit
+        message: >-
+            Nu am putut găsi pagina pe care o căutați. Este posibil să fi fost mutată sau
+            ștearsă.
+    servererror:
+        title: 500 Eroare Server
+        message: A apărut o eroare la noi. Vă rugăm să încercați din nou mai târziu.
+#-------------------------------------------------------------#
+#
+# Setări Cont (/account/*)
+#
+# @public
+#
+#-------------------------------------------------------------#
+account:
+    components:
+        header:
+            uuid: 'UUID:'
+            ip: 'Adresă IP'
+            first: 'Prima:'
+            current: 'Curentă:'
+            firstSeen: 'Prima Vizită'
+            lastSeen: 'Ultima Vizită'
+            verification: 'Verificare Cont'
+            verified: 'Contul dvs. este verificat'
+            notVerified: 'Contul dvs. nu este verificat'
+    pages:
+        index:
+            title: 'Gestionare Cont'
+            description: 'Vizualizați și gestionați setările și preferințele contului dvs.'
+            tabs:
+                settings: 'Setări'
+                security: 'Securitate'
+                emails: 'Email-uri'
+                activity: 'Activitate'
+                apikey: 'Cheie API'
+                linked_accounts: 'Conturi Legate'
+
+        settings:
+            alerts:
+                success:
+                    title: Succes
+                    update_success: Setări cont actualizate
+                    footer: Setările contului dvs. au fost actualizate
+                error:
+                    title: Eroare
+                    generic: A apărut o eroare. Vă rugăm să încercați din nou mai târziu
+                    email: Emailul există deja
+                    footer: Vă rugăm să contactați suportul pentru asistență
+            page:
+                title: Cont
+                subTitle: Gestionați informațiile personale și preferințele contului
+                form:
+                    profile:
+                        title: Informații Profil
+                        subTitle: Actualizați informațiile profilului contului dvs.
+                    email:
+                        label: Email
+                    firstName:
+                        label: Prenume
+                    lastName:
+                        label: Nume
+                    avatar:
+                        label: Avatar
+                    background:
+                        label: Fundal
+                    update_button:
+                        label: Salvează Modificările
+                        reset: Resetare
+                        loading: Se salvează...
+                    browserStorage:
+                        title: Stocare Browser
+                        subTitle: Gestionați stocarea locală a browserului și datele din cache
+                        currentStorageUsage: 'Utilizare Curentă Stocare'
+                        clearAllBrowserData: 'Șterge Toate Datele Browserului'
+                        totalBrowserStorage: 'Stocare totală browser utilizată de această aplicație'
+                        browserStorageDescription: 'Stocarea browserului include cookie-uri, stocare locală și date de sesiune și copia offline a aplicației.'
+                        clearAllBrowserDataButton: Șterge Toate Datele Browserului
+                        clearAllBrowserDataDescription: Aceasta va șterge toate datele stocate local, inclusiv preferințele și informațiile din cache. Această acțiune nu poate fi anulată.
+                delete:
+                    title: 'Dezactivare Cont'
+                    description: 'Odată ce vă dezactivați contul, nu mai există cale de întoarcere. Vă rugăm să fiți sigur.'
+                    button: 'Dezactivare Cont'
+                    warning:
+                        title: 'Avertisment'
+                        description: 'Nu fiți nesăbuit, nu puteți anula această acțiune, odată ce apăsați acest buton, nu mai există confirmare, contul dvs. va fi șters direct. Așadar, asigurați-vă că doriți să faceți acest lucru.'
+                clear:
+                    title: Date Aplicație
+                    subTitle: Gestionați și ștergeți datele aplicației în cazul în care vedeți date învechite.
+                    cache:
+                        title: Utilizare Cache
+                        total: 'Total date în cache: {totalSize}'
+                        button: 'Șterge Cache și Reîncarcă'
+                        description: 'Aceasta va șterge toate datele din cache și va reîncărca aplicația.'
+                        confirm: 'Da, șterge datele'
+                        cancel: 'Anulare'
+        emails:
+            alerts:
+                success:
+                    title: Succes
+                    update_success: Preferințe email actualizate
+                    footer: Preferințele dvs. de email au fost actualizate
+                error:
+                    title: Eroare
+                    generic: A apărut o eroare. Vă rugăm să încercați din nou mai târziu
+                    footer: Vă rugăm să contactați suportul pentru asistență
+            page:
+                title: Email-uri
+                subTitle: Vedeți email-urile dvs.!
+                description: 'Aceasta este o listă a email-urilor dvs. Puteți vizualiza detaliile fiecărui email făcând clic pe butonul de vizualizare.'
+                loading: Se încarcă email-urile...
+                loadingText: Se încarcă istoricul email-urilor dvs..
+                error: Eroare la încărcarea email-urilor
+                noMails:
+                    title: Nu s-au găsit email-uri
+                    description: Nu ați primit încă niciun email
+                table:
+                    columns:
+                        id: ID
+                        subject: Subiect
+                        date: Dată
+                        from: De la
+                        actions: Acțiuni
+                    empty: Nu s-au găsit email-uri
+                    results:
+                        viewButton: Vizualizare
+        security:
+            alerts:
+                success:
+                    title: Succes
+                    update_success: Setări de securitate actualizate
+                    footer: Setările dvs. de securitate au fost actualizate
+                error:
+                    title: Eroare
+                    generic: A apărut o eroare. Vă rugăm să încercați din nou mai târziu
+                    footer: Vă rugăm să contactați suportul pentru asistență
+            page:
+                title: Securitate Cont
+                subTitle: Gestionați setările de securitate ale contului și monitorizați activitatea de autentificare
+                securityStatus:
+                    title: Stare Securitate
+                    twofactor:
+                        title: Autentificare cu doi factori (2FA)
+                        active: Activă
+                        disabled: Dezactivată
+                        description:
+                            enabled: 'Contul dvs. are un nivel suplimentar de securitate.'
+                            disabled: 'Activați 2FA pentru securitate suplimentară.'
+                        button:
+                            disable: Dezactivare 2FA
+                            enable: Activare 2FA
+                        lastEnabled: 'Ultima Activare:'
+                        disableButton:
+                            label: Dezactivare
+                            loading: Se dezactivează...
+                    activeSessions:
+                        title: Sesiuni Active
+                        active: 1 Activă
+                        description: 'Sunteți conectat în prezent pe acest dispozitiv.'
+                        button:
+                            label: Deconectare de pe Toate Dispozitivele
+                            loading: Se deconectează...
+                    password:
+                        title: Parolă
+                        active: Activă
+                        lastChanged: 'Ultima Modificare:'
+                        changeButton:
+                            label: Schimbare Parolă
+                recommendations:
+                    title: Recomandări
+                    description: Îmbunătățiți securitatea contului dvs. cu aceste recomandări
+                    monitor:
+                        title: Monitorizați Activitatea de Autentificare
+                        description: Verificați regulat activitatea recentă de autentificare și raportați orice încercări suspecte.
+                    password:
+                        title: Utilizați o Parolă Puternică
+                        description: Creați o parolă unică de cel puțin 12 caractere cu un amestec de litere, cifre și simboluri.
+                    twofactor:
+                        enabled:
+                            title: Activați Autentificarea cu doi factori
+                            description: Adăugați un nivel suplimentar de securitate contului dvs. solicitând un cod de verificare pe lângă parolă.
+                            button:
+                                label: Activare
+                                loading: Se activează...
+                        disabled:
+                            title: Dezactivați Autentificarea cu doi factori
+                            description: Dezactivați 2FA pentru a pune contul dvs. într-o stare mai puțin sigură.
+                            button:
+                                label: Dezactivare
+                                loading: Se dezactivează...
+                cards:
+                    twofactor:
+                        title: Autentificare cu doi factori (2FA)
+                        subTitle: Doriți să vă asigurați că contul dvs. nu va fi furat?
+                        enable_button:
+                            description: '2FA este în prezent dezactivată. Activați-o pentru a vă securiza contul.'
+                            label: Activare
+                            loading: Se activează...
+                        disable_button:
+                            description: '2FA este în prezent activată. Dezactivați-o pentru a pune contul dvs. într-o stare mai puțin sigură.'
+                            label: Dezactivare
+                            loading: Se dezactivează...
+                    password:
+                        title: Schimbați-vă parola
+                        subTitle: Doriți să schimbați parola contului dvs.?
+                        change_button:
+                            label: Schimbare Parolă
+                            loading: Se schimbă...
+        apikey:
+            page:
+                title: Cheie API
+                subTitle: Gestionați cheia dvs. API
+                card:
+                    title: Cheie API
+                    description: Cheia dvs. API oferă acces la API-ul MythicalDash
+                    yourKey: Cheia dvs. API
+                    loading: Se încarcă cheia API...
+                    noApiKey: Nu este disponibilă nicio cheie API
+                    info: Această cheie oferă acces complet la contul dvs. prin API. Păstrați-o în siguranță și nu o împărtășiți niciodată public.
+                    resetKey: Resetare Cheie API
+                    apiDocumentation: Documentație API
+        activity:
+            page:
+                title: Activitate
+                subTitle: Vedeți activitatea dvs.!
+                description: 'Aceasta este o listă a activității dvs. recente. Puteți vizualiza detaliile fiecărei acțiuni făcând clic pe butonul de vizualizare.'
+                table:
+                    columns:
+                        action: Acțiune
+                        date: Dată
+                        ip: IP
+                    error: A apărut o eroare la preluarea activității dvs.
+                    noResults: Nu s-au găsit activități
+                    info: Istoricul activității dvs. va apărea aici
+                    results:
+                        viewButton: Vizualizare
+
+tickets:
+    pages:
+        ticket:
+            title: Tichet
+            subTitle: Vizualizați tichetul dvs.
+            alerts:
+                error:
+                    title: Eroare
+                    generic: 'A apărut o eroare. Vă rugăm să încercați din nou mai târziu'
+                    message_timeout: 'Nu s-a putut încărca tichetul. ID tichet invalid sau tichet negăsit.'
+                    footer: 'Vă rugăm să contactați suportul pentru asistență'
+                    failed_reply: 'Nu s-a putut trimite răspunsul'
+                    failed_status: 'Nu s-a putut actualiza starea tichetului'
+                    ticket_not_found: 'Tichet negăsit'
+                    maximum_files: 'Maximum 5 fișiere permise'
+                    file_too_large: 'Fișierul {file} este prea mare'
+                    invalid_file_type: 'Fișierul {file} trebuie să fie PNG, JPG sau GIF'
+                success:
+                    title: Succes
+                    reply_success: 'Răspuns trimis'
+                    footer: 'Răspunsul dvs. a fost trimis, iar tichetul a fost actualizat'
+            page:
+                goBack: '↪ Înapoi'
+                createdBy: 'Creat de'
+                department: 'Departament'
+                priority: 'Prioritate'
+                priority_high: 'Ridicată'
+                priority_medium: 'Medie'
+                priority_low: 'Scăzută'
+                status: 'Stare'
+                created: 'Creat'
+                description: 'Descriere'
+                attachments: 'Atașamente'
+                status_open: 'Deschis'
+                status_closed: 'Închis'
+                status_waiting: 'În așteptarea răspunsului'
+                status_inprogress: 'În Progres'
+                preview: 'Previzualizare imagine'
+                open_in_new_tab: 'Deschide în tab nou'
+                messages: 'Mesaje'
+                response: 'Răspuns'
+                replyForm:
+                    title: Răspunde la Tichet
+                    description: 'Vă rugăm să oferiți cât mai multe detalii posibil în răspunsul dvs. pentru a ne ajuta să vă asistăm mai bine. Includeți orice informații relevante sau capturi de ecran care ar putea ajuta la rezolvarea problemei dvs.'
+                    forms:
+                        send: 'Tastați răspunsul dvs. aici..'
+                        attachments: 'Atașamente (Opțional)'
+                        click_to_upload: 'Faceți clic pentru a încărca sau trageți și plasați fișiere aici'
+                        formats: 'PNG, JPG, GIF (MAX. 2MB)'
+                        submit: 'Trimite'
+                        loading: 'Se trimite...'
+                status_replied: 'Răspuns'
+                reply_locked: 'Acest tichet este închis, deci nu puteți răspunde la el'
+                buttons:
+                    close: 'Închide Tichet'
+                    reopen: 'Redeschide Tichet'
+                    open: 'Deschide Tichet'
+                    waiting: 'În așteptarea răspunsului'
+                    inprogress: 'În Progres'
+                    replied: 'Răspuns'
+        tickets:
+            title: Tichete
+            actions:
+                newTicket: 'Creează Tichet'
+                view: 'Vizualizare'
+            alerts:
+                error:
+                    generic: 'A apărut o eroare. Vă rugăm să încercați din nou mai târziu'
+            table:
+                title: 'Tichete'
+                subject: 'Subiect'
+                status: 'Stare'
+                priority: 'Prioritate'
+                department: 'Departament'
+                created: 'Creat'
+                actions: 'Acțiuni'
+            noTickets: 'Nu s-au găsit tichete'
+        create_ticket:
+            title: 'Tichet Nou'
+            subTitle: 'Creați un tichet nou'
+            form:
+                subject: 'Subiect'
+                department: 'Departament'
+                priority: 'Prioritate'
+                message: 'Mesaj'
+                submit: 'Trimite'
+                loading: 'Se trimite...'
+                reset: 'Resetare'
+                back: 'Înapoi'
+            types:
+                priority:
+                    low: 'Scăzută'
+                    medium: 'Medie'
+                    high: 'Ridicată'
+                    urgent: 'Urgentă'
+            alerts:
+                success:
+                    title: 'Succes'
+                    ticket_success: 'Tichet creat'
+                    footer: 'Tichetul dvs. a fost creat'
+                error:
+                    title: 'Eroare'
+                    generic: 'A apărut o eroare. Vă rugăm să încercați din nou mai târziu'
+                    footer: 'Vă rugăm să contactați suportul pentru asistență'
+                    department_not_found: 'Departament negăsit'
+                    department_id_missing: 'ID-ul departamentului lipsește'
+                    message_missing: 'Mesajul lipsește'
+                    subject_missing: 'Subiectul lipsește'
+                    limit_reached: 'Ați atins limita de tichete pe care le puteți crea'
+                    failed_to_create_ticket: 'Clusterul este indisponibil, încercați din nou mai târziu'
+
+components:
+    sidebar:
+        dashboard: Panou de Control
+        services: Servicii
+        orders: Comenzi
+        add_service: Adaugă Serviciu
+        all_services: Toate Serviciile
+        invoices: Facturi
+        tickets: Tichete
+        eula: EULA
+        announcements: Anunțuri
+        addons: Extensii
+        logs: Jurnale
+        settings: Setări
+        users: Utilizatori
+        apikeys: Chei API
+        support: Suport & Informații
+        open_ticket: Deschide Tichet
+        all_tickets: Toate Tichetele
+        knowledge: Bază de Cunoștințe
+        earn: Câștigă
+        afk: Recompense AFK
+        create: Creează Server
+        code_redemption: Răscumpărare Cod
+        j4r: Alătură-te pentru Recompense
+        referrals: Recomandări
+        l4r: Link pentru Recompense
+        store: Magazin
+        general: General
+    search:
+        placeholder: 'Căutare (Ctrl + K)'
+        no_results: 'Nu s-au găsit rezultate'
+        items:
+            dashboard: 'Accesați panoul de control principal'
+            services: 'Vizualizați și gestionați serviciile dvs.'
+            invoices: 'Accesați facturarea și facturile'
+            tickets: 'Vizualizați și gestionați tichetele de suport'
+            knowledge: 'Răsfoiți articole de ajutor și documentație'
+    notifications:
+        title: 'Notificări'
+        credits: 'Aveți {credits} credite rămase'
+        mark_all_read: 'Marchează toate ca citite'
+        mark_read: 'Marchează ca citit'
+        no_notifications: 'Nu s-au găsit notificări'
+        view_all: 'Vezi toate'
+    errors:
+        go_back: 'Înapoi'
+        go_home: 'Acasă'
+    dashboard:
+        title: 'Panoul Meu'
+        portal_home: 'Acasă Portal'
+        client_area: 'Zona Clientului'
+        welcome_back: 'Bine ați revenit'
+        stats:
+            services: 'Servicii'
+            unpaid_invoices: 'Facturi Neplătite'
+            tickets: 'Tichete'
+            orders: 'Comenzi'
+            coins: 'Monede'
+            servers: 'Servere'
+        billing:
+            title: 'Rezumat Facturare'
+            current_balance: 'Sold Curent'
+            next_payment: 'Următoarea Plată'
+            due_date: 'Data Scadentă'
+            add_funds: 'Adaugă Fonduri'
+    profile:
+        tickets: 'Tichete'
+        coins: 'Monede'
+        servers: 'Servere'
+        logout: 'Deconectare'
+        update: 'Actualizare'
+    loading:
+        title: 'Se încarcă...'
+        description: 'Se încarcă...'
+    table:
+        page: 'Pagina'
+        of: 'din'
+        results: 'rezultate'
+        pageSize: 'Dimensiune Pagină'
+        search: 'Căutare'
+        first: 'Prima'
+        previous: 'Anterioară'
+        next: 'Următoarea'
+        last: 'Ultima'
+        noResults: 'Nu s-au găsit rezultate'
+        view: 'Vizualizare'
+        readMore: 'Citește Mai Mult'
+        showing: 'Se afișează pagina: '
+        per_page: 'elemente pe pagină'
+        no_data_description: 'Ne pare rău, dar nu am putut găsi nicio dată pentru această pagină.'
+        no_data: 'Nu s-au găsit date'
+billing:
+    pages:
+        add_funds:
+            title: Adaugă Fonduri
+            back: Înapoi
+            form:
+                title: Adaugă Fonduri în Contul Tău
+                description: Selectați metoda de plată preferată și introduceți suma pe care doriți să o adăugați în contul dvs.
+                amount:
+                    label: Sumă
+                    placeholder: Introduceți suma
+                payment_method:
+                    label: Metodă de Plată
+                submit: Adaugă Fonduri
+                processing: Se procesează...
+            summary:
+                title: Rezumat Cont
+                current_balance: Sold Curent
+                info: Fondurile vor fi adăugate în contul dvs. imediat după procesarea cu succes a plății. Aceste fonduri pot fi utilizate pentru orice servicii sau produse din platforma noastră.
+            alerts:
+                error:
+                    title: Eroare
+                    missing_fields: Vă rugăm să completați toate câmpurile obligatorii.
+                    invalid_amount: Vă rugăm să introduceți o sumă validă mai mare decât 0.
+                    payment_failed: Procesarea plății a eșuat. Vă rugăm să încercați din nou.
+                    footer: Vă rugăm să contactați suportul pentru asistență.
+                    no_gateway: Nu s-a găsit nicio poartă de plată.
+                    notEnabled: Facturarea nu este activată pentru acest host!
+                success:
+                    title: Succes
+                    payment_processed: Plata a fost procesată cu succes. Fondurile dvs. au fost adăugate în cont.
+afk:
+    notEnabled:
+        title: 'Recompense AFK'
+        text: 'Recompensele AFK nu sunt activate pe acest host!'
+        button: 'Mergi la Panou de Control'
+    pages:
+        index:
+            title: 'Recompense AFK'
+            subTitle: 'Câștigați monede fiind AFK'
+            status: 'Stare:'
+            active: 'Activ'
+            inactive: 'Inactiv'
+            startafk: 'Începe AFK'
+            stopafk: 'Oprește AFK'
+            timeDate:
+                hours: 'Ore'
+                minutes: 'Minute'
+                seconds: 'Secunde'
+            totalCoins: 'Total Monede'
+            currentSession: 'Sesiunea Curentă'
+            coins: 'Monede'
+            totalAFKTime: 'Timp Total AFK'
+
+        afkpaused:
+            title: 'Sesiune AFK Întreruptă'
+            text: 'Sesiunea dvs. AFK a fost întreruptă deoarece ați trecut la altă filă sau ați minimizat fereastra. Vă rugăm să păstrați această filă activă pentru a continua să câștigați recompense.'
+            button: 'OK'
+        cannotstartafk:
+            title: 'Nu se poate începe AFK'
+            text: 'Vă rugăm să păstrați această filă activă pentru a începe să câștigați recompense AFK.'
+            button: 'OK'
+
+code_redemption:
+    notEnabled:
+        title: 'Răscumpărare Cod'
+        text: 'Răscumpărarea codurilor nu este activată pe acest host!'
+        button: 'Mergi la Panou de Control'
+    pages:
+        index:
+            title: 'Răscumpărare Cod'
+            subTitle: 'Răscumpărați codurile dvs.'
+            form:
+                label: 'Introduceți Codul de Răscumpărare'
+                placeholder: 'Introduceți codul dvs. aici'
+                redeem: 'Răscumpără Cod'
+                redeeming: 'Se răscumpără...'
+                currentBalance: 'Sold Curent'
+            social:
+                twitter:
+                    title: 'Twitter/X'
+                    description: 'Urmăriți-ne pe Twitter pentru distribuiri regulate de coduri și anunțuri.'
+                discord:
+                    title: 'Discord'
+                    description: 'Alăturați-vă serverului nostru Discord pentru distribuiri exclusive de coduri și suport comunitar.'
+                telegram:
+                    title: 'Telegram'
+                    description: 'Alăturați-vă canalului nostru Telegram pentru distribuiri exclusive de coduri și suport comunitar.'
+                events:
+                    title: 'Evenimente'
+                    description: 'Coduri speciale sunt lansate în timpul evenimentelor sezoniere și promoțiilor.'
+
+            alerts:
+                error:
+                    title: 'Eroare'
+                    generic: 'A apărut o eroare. Vă rugăm să încercați din nou mai târziu'
+                    footer: 'Vă rugăm să contactați suportul pentru asistență'
+                    button: 'OK'
+                success:
+                    title: 'Succes'
+                    code_redeemed: 'Cod răscumpărat cu succes'
+                    footer: 'Codul dvs. a fost răscumpărat'
+referrals:
+    notEnabled:
+        title: 'Recomandări'
+        text: 'Recomandările nu sunt activate pe acest host!'
+        button: 'Mergi la Panou de Control'
+    pages:
+        index:
+            title: 'Recomandări'
+            subTitle: 'Câștigați recompense recomandând prieteni'
+            form:
+                label: 'Introduceți Codul de Recomandare'
+                placeholder: 'Introduceți codul dvs. aici'
+                redeem: 'Răscumpără Cod'
+                redeeming: 'Se răscumpără...'
+            copy:
+                title: 'Link Copiat!'
+                text: 'Linkul dvs. de recomandare a fost copiat. Acum îl puteți lipi în Discord.'
+                button: 'OK'
+            error:
+                title: 'Eroare'
+                text: 'Nu s-au putut încărca recomandările'
+                button: 'OK'
+            body:
+                title: 'Linkul Dvs. Unic de Recomandare'
+                description: 'Împărtășiți acest link cu prietenii pentru a câștiga recompense când se înregistrează'
+                copy:
+                    title: 'Copiază Link Recomandare'
+                    text: 'Copiați linkul dvs. de recomandare în clipboard'
+                    copied: 'Copiat!'
+            social:
+                twitter: 'Twitter/X'
+                facebook: 'Facebook'
+                discord: 'Discord'
+                email: 'Email'
+            refferals:
+                title: 'Total Recomandări'
+                earned: 'Total Câștigat'
+                yourReferrals: 'Recomandările Dvs.'
+                loading: 'Se încarcă recomandările dvs...'
+                noReferrals: 'Nu s-au găsit recomandări'
+                noReferralsDescription: 'Împărtășiți linkul dvs. de recomandare cu prietenii pentru a începe să câștigați recompense!'
+                noEarnings: 'Nu s-au găsit câștiguri'
+                noEarningsDescription: 'Împărtășiți linkul dvs. de recomandare cu prietenii pentru a începe să câștigați recompense!'
+                table:
+                    user: 'Utilizator'
+                    date: 'Dată'
+                    status: 'Stare'
+                    reward: 'Recompensă'
+                    actions: 'Acțiuni'
+                sharelink:
+                    title: 'Cum funcționează?'
+                    description: 'Pași simpli pentru a câștiga din recomandări'
+                    steps:
+                        one:
+                            title: 'Împărtășiți Linkul Dvs.'
+                            id: '1'
+                            description: 'Copiați linkul dvs. unic de recomandare și împărtășiți-l cu prietenii'
+                        two:
+                            title: 'Obțineți Recomandări'
+                            id: '2'
+                            description: 'Recomandările dvs. vor câștiga recompense când se înregistrează'
+                        three:
+                            title: 'Câștigați Recompense'
+                            id: '3'
+                            description: 'Veți câștiga recompense când recomandările dvs. câștigă recompense'
+            share:
+                shareMessage: 'Alăturați-vă mie pe MythicalDash și obțineți recompense exclusive folosind linkul meu de recomandare!'
+                title: 'Împărtășiți Link Recomandare'
+                description: 'Împărtășiți linkul dvs. de recomandare cu prietenii și câștigați recompense!'
+                mailTitle: 'Împărtășiți Link Recomandare prin Email'
+                twitter:
+                    title: 'Twitter/X'
+                    description: 'Împărtășiți linkul dvs. de recomandare pe Twitter pentru distribuiri regulate de coduri și anunțuri.'
+create:
+    pages:
+        index:
+            title: 'Creează un Server Nou'
+            subTitle: 'Configurați și implementați noul dvs. server'
+            form:
+                label: 'Nume Server'
+                placeholder: 'Introduceți numele serverului dvs.'
+                submit: 'Creează Server'
+                description: 'Descriere'
+                descriptionPlaceholder: 'Introduceți descrierea serverului dvs.'
+                location: 'Locație Server'
+                locationPlaceholder: 'Selectați o locație'
+                category: 'Categorie Server'
+                categoryPlaceholder: 'Selectați o categorie'
+                egg: 'Versiune Server'
+                eggPlaceholder: 'Selectați o versiune'
+                memory: 'Memorie'
+                cpu: 'CPU'
+                disk: 'Disc'
+                databases: 'Baze de date'
+                backups: 'Backup-uri'
+                allocations: 'Alocări'
+                servers: 'Servere'
+                mb: 'MB'
+                p: '%'
+                of: 'din'
+                available: 'Disponibil'
+                depleted: 'Epuizat'
+            slots: 'Sloturi'
+            resources:
+                title: 'Disponibilitate Resurse'
+                available: 'Disponibil'
+                depleted: 'Epuizat'
+                memory: 'Memorie'
+                cpu: 'CPU'
+                disk: 'Disc'
+                slots: 'Sloturi'
+                databases: 'Baze de date'
+                backups: 'Backup-uri'
+                allocations: 'Alocări'
+                servers: 'Servere'
+                mb: 'MB'
+                of: 'din'
+                p: '%'
+        alerts:
+            error:
+                title: 'Eroare'
+                generic: 'A apărut o eroare. Vă rugăm să încercați din nou mai târziu'
+                footer: 'Vă rugăm să contactați suportul pentru asistență'
+                deploy:
+                    MISSING_REQUIRED_FIELDS: 'Câmpuri obligatorii lipsă'
+                    NAME_TOO_LONG: 'Numele serverului trebuie să aibă mai puțin de 32 de caractere'
+                    DESCRIPTION_TOO_LONG: 'Descrierea trebuie să aibă mai puțin de 255 de caractere'
+                    LOCATION_DOES_NOT_EXIST: 'Locația selectată nu există'
+                    CATEGORY_DOES_NOT_EXIST: 'Categoria selectată nu există'
+                    EGG_DOES_NOT_EXIST: 'Versiunea selectată nu există'
+                    MEMORY_TOO_LOW: 'Memoria trebuie să fie de cel puțin 256MB'
+                    CPU_TOO_LOW: 'CPU trebuie să fie de cel puțin 5%'
+                    DISK_TOO_LOW: 'Discul trebuie să fie de cel puțin 256MB'
+                    ALLOCATIONS_TOO_LOW: 'Alocările trebuie să fie cel puțin 1'
+                    PENDING_SERVER_CREATION_REQUEST: 'Aveți deja o cerere de creare a serverului în așteptare'
+                    NOT_ENOUGH_MEMORY: 'Nu aveți suficiente resurse de memorie'
+                    NOT_ENOUGH_DISK_SPACE: 'Nu aveți suficient spațiu pe disc'
+                    NOT_ENOUGH_CPU: 'Nu aveți suficiente resurse CPU'
+                    NOT_ENOUGH_DATABASES: 'Nu aveți suficiente resurse de baze de date'
+                    NOT_ENOUGH_BACKUPS: 'Nu aveți suficiente resurse de backup'
+                    NOT_ENOUGH_ALLOCATIONS: 'Nu aveți suficiente resurse de alocare'
+                    NOT_ENOUGH_SERVERS: 'Ați atins limita de servere'
+                    FAILED_TO_CREATE_SERVER_QUEUE_ITEM: 'Nu s-a putut crea elementul de coadă al serverului'
+            success:
+                title: 'Succes'
+                generic: 'Serverul dvs. a fost creat'
+                footer: 'Bucurați-vă de serverul dvs.!'
+update:
+    pages:
+        alerts:
+            error:
+                title: 'Eroare'
+                generic: 'A apărut o eroare. Vă rugăm să încercați din nou mai târziu'
+                delete: 'Aceasta va actualiza configurația serverului dvs. Această acțiune nu poate fi anulată!'
+                footer: 'Vă rugăm să contactați suportul pentru asistență'
+                confirmButtonText: 'OK'
+                cancelButtonText: 'Anulare'
+            success:
+                title: 'Succes'
+                generic: 'Serverul dvs. a fost actualizat'
+                footer: 'Server actualizat cu succes'
+                confirmButtonText: 'OK'
+        index:
+            title: 'Actualizare Server'
+            subTitle: 'Actualizați configurația serverului dvs.'
+            loading: 'Se încarcă datele serverului...'
+            form:
+                label: 'Nume Server'
+                placeholder: 'Introduceți numele serverului dvs.'
+                submit: 'Actualizare Server'
+                description: 'Descriere'
+                descriptionPlaceholder: 'Introduceți descrierea serverului dvs.'
+                location: 'Locație Server'
+                locationPlaceholder: 'Selectați o locație'
+                category: 'Categorie Server'
+                categoryPlaceholder: 'Selectați o categorie'
+                egg: 'Versiune Server'
+                eggPlaceholder: 'Selectați o versiune'
+                updateButton: 'Actualizare Server'
+                deleteButton: 'Ștergere Server'
+                resources:
+                    title: 'Disponibilitate Resurse'
+                    available: 'Disponibil'
+                    depleted: 'Epuizat'
+                    memory: 'Memorie'
+                    cpu: 'CPU'
+                    disk: 'Disc'
+                    slots: 'Sloturi'
+                    databases: 'Baze de date'
+                    backups: 'Backup-uri'
+                    allocations: 'Alocări'
+                    servers: 'Servere'
+                    mb: 'MB'
+                    of: 'din'
+                    p: '%'
+delete:
+    pages:
+        index:
+            title: 'Ștergere Server'
+            subTitle: 'Sigur doriți să ștergeți acest server?'
+            loading: 'Se încarcă datele serverului...'
+            unknownError: 'A apărut o eroare necunoscută'
+            warning: 'Avertisment'
+            type: 'Tip'
+            version: 'Versiune'
+            location: 'Locație'
+            card:
+                title: 'Confirmare'
+                description: 'Pentru a confirma, tastați numele serverului:'
+                placeholder: 'Tastați numele serverului pentru a confirma'
+            button:
+                delete: 'Șterge Server'
+                cancel: 'Anulare'
+            details:
+                title: 'Ștergerea acestui server este permanentă'
+                description: 'Această acțiune va șterge imediat și permanent serverul dvs. și toate datele asociate cu acesta, inclusiv:'
+                files: 'Toate fișierele stocate pe server'
+                databases: 'Toate bazele de date și conținutul acestora'
+                backups: 'Toate backup-urile'
+                configuration: 'Configurația serverului'
+                cannotBeUndone: 'Această acțiune nu poate fi anulată. Vă rugăm să fiți sigur.'
+        alerts:
+            error:
+                title: 'Eroare'
+                generic: 'A apărut o eroare. Vă rugăm să încercați din nou mai târziu'
+                footer: 'Vă rugăm să contactați suportul pentru asistență'
+                confirmation: 'Textul de confirmare nu se potrivește cu numele serverului'
+                confirmButtonText: 'OK'
+            success:
+                title: 'Succes'
+                generic: 'Serverul dvs. a fost șters'
+                footer: 'Cererea de ștergere a serverului a fost trimisă cu succes'
+                confirmButtonText: 'OK'
+
+store:
+    notEnabled:
+        title: 'Magazin'
+        text: 'Magazinul nu este activat pe acest host!'
+        footer: 'Vă rugăm să contactați suportul pentru asistență'
+        button: 'Mergi la Panou de Control'
+    pages:
+        alerts:
+            buy:
+                title: 'Doriți să cumpărați acest lucru?'
+                description: 'Sigur doriți să cumpărați acest lucru?'
+                confirmButtonText: 'OK'
+                cancelButtonText: 'Anulare'
+            error:
+                title: 'Eroare'
+                generic: 'A apărut o eroare. Vă rugăm să încercați din nou mai târziu'
+                notEnoughCoins: 'Nu aveți suficiente monede pentru această achiziție'
+                footer: 'Vă rugăm să contactați suportul pentru asistență'
+                buy:
+                    MISSING_ITEM_ID: 'ID-ul articolului este obligatoriu'
+                    EMPTY_ITEM_ID: 'ID-ul articolului nu poate fi gol'
+                    INVALID_ITEM_ID: 'ID articol invalid'
+                    INSUFFICIENT_COINS: 'Monede insuficiente, aveți nevoie de {0} și aveți {1}'
+                    STORE_NOT_ENABLED: 'Magazinul nu este activat'
+                    PURCHASE_FAILED: 'Nu s-a putut procesa achiziția'
+                    confirmButtonText: 'OK'
+                    cancelButtonText: 'Anulare'
+                    description: 'Vă rugăm să încercați din nou sau să contactați suportul dacă problema persistă.'
+        index:
+            title: 'Magazin'
+            subTitle: 'Cumpărați resurse și upgrade-uri pentru server'
+            loading: 'Se încarcă articolele din magazin...'
+            empty: 'Nu există articole disponibile în această categorie'
+            emptyDescription: 'Verificați mai târziu pentru articole noi'
+            cardYourBalance: 'Soldul Dvs.'
+            cardAvailableCoins: 'Monede disponibile pentru cheltuire'
+            cardCurrentBalance: 'Sold Curent'
+            addCredits: 'Adaugă Credite'
+            redeemCodes: 'Răscumpără Coduri'
+            earnMore: 'Câștigă Mai Mult'
+            buyButton: 'Cumpără'
+            insufficientButton: 'Monede Insuficiente'
+            howItWorks:
+                title: 'Cum Funcționează'
+                description: 'Cheltuiți monedele dvs. pe resurse și upgrade-uri pentru server'
+                steps:
+                    one:
+                        number: '1'
+                        title: 'Câștigă Monede'
+                        description: 'Completați sarcini în secțiunea Câștigă pentru a acumula monede'
+                    two:
+                        number: '2'
+                        title: 'Cheltuiți Monede'
+                        description: 'Cheltuiți monedele dvs. pe resurse și upgrade-uri pentru server'
+                    three:
+                        number: '3'
+                        title: 'Câștigă Mai Mult'
+                        description: 'Câștigați mai multe monede recomandând prieteni'
+                    four:
+                        number: '4'
+                        title: 'Livrare Instantă'
+                        description: 'Resursele sunt adăugate imediat în contul dvs.'
+
+            card:
+                title: 'Articole Disponibile'
+                description: 'Cheltuiți monedele dvs. pe resurse și upgrade-uri pentru server'
+            info:
+                buy:
+                    title: 'Confirmă Achiziția'
+                    description: 'Sigur doriți să achiziționați {0} pentru {1} monede?'
+                    confirmButtonText: 'Achiziționează'
+                    cancelButtonText: 'Anulare'
+                    success:
+                        title: 'Achiziție Reușită'
+                        description: 'Ați achiziționat cu succes {0}'
+                        confirmButtonText: 'OK'
+                ram:
+                    title: 'RAM Suplimentar'
+                    description: 'Măriți capacitatea de memorie a serverului dvs.'
+                    features:
+                        one: 'Alocare instantă'
+                        two: 'Scalare flexibilă'
+                        three: 'Nu necesită repornire'
+                disk:
+                    title: 'Stocare Suplimentară'
+                    description: 'Măriți capacitatea de stocare a serverului dvs.'
+                    features:
+                        one: 'Alocare instantă'
+                        two: 'Scalare flexibilă'
+                        three: 'Nu necesită repornire'
+                cpu:
+                    title: 'CPU Suplimentar'
+                    description: 'Măriți capacitatea CPU a serverului dvs.'
+                    features:
+                        one: 'Nuclee de înaltă performanță'
+                        two: 'Resurse dedicate'
+                        three: 'Scalare în timp real'
+                server_slot:
+                    title: 'Slot Server'
+                    description: 'Adăugați un server suplimentar în contul dvs.'
+                    features:
+                        one: 'Acces complet la server'
+                        two: 'Configurație personalizată'
+                        three: 'Implementare instantă'
+                server_backup:
+                    title: 'Slot Backup'
+                    description: 'Stocare de backup suplimentară pentru serverele dvs.'
+                    features:
+                        one: 'Backup-uri automate'
+                        two: 'Restaurare instantă'
+                        three: 'Stocare sigură'
+                server_allocation:
+                    title: 'Alocare Server'
+                    description: 'Alocare suplimentară de server pentru serverele dvs.'
+                    features:
+                        one: 'Alocare nelimitată'
+                        two: 'Scalare flexibilă'
+                        three: 'Nu necesită repornire'
+                server_database:
+                    title: 'Bază de Date'
+                    description: 'Bază de date suplimentară pentru serverele dvs.'
+                    features:
+                        one: 'MySQL/MariaDB'
+                        two: 'Backup-uri automate'
+                        three: 'Acces securizat'

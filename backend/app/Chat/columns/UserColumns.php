@@ -57,6 +57,12 @@ class UserColumns
 
     public const ID = 'id';
 
+    public const DISCORD_ID = 'discord_id';
+    public const DISCORD_USERNAME = 'discord_username';
+    public const DISCORD_GLOBAL_NAME = 'discord_global_name';
+    public const DISCORD_EMAIL = 'discord_email';
+    public const DISCORD_LINKED = 'discord_linked';
+
     /**
      * @return string[]
      */
@@ -96,6 +102,11 @@ class UserColumns
             self::ALLOCATION_LIMIT,
             self::MINUTES_AFK,
             self::LAST_SEEN_AFK,
+            self::DISCORD_ID,
+            self::DISCORD_USERNAME,
+            self::DISCORD_GLOBAL_NAME,
+            self::DISCORD_EMAIL,
+            self::DISCORD_LINKED,
         ];
     }
 }

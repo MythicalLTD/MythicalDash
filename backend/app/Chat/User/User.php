@@ -468,7 +468,7 @@ class User extends Database
      *
      * @return bool If the update was successful
      */
-    public static function updateInfo(string $token, UserColumns|string $info, string $value, bool $encrypted): bool
+    public static function updateInfo(string $token, UserColumns|string $info, ?string $value, bool $encrypted): bool
     {
         try {
             if (!in_array($info, UserColumns::getColumns())) {

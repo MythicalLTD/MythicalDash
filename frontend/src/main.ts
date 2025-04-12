@@ -7,6 +7,7 @@ import router from './router';
 import VueSweetalert2 from 'vue-sweetalert2';
 import { createI18n } from 'vue-i18n';
 import EN from '@/locale/en.yml';
+import RO from '@/locale/ro.yml';
 import './assets/sweetalert2.css';
 
 const app = createApp(App);
@@ -17,6 +18,7 @@ const i18n = createI18n({
     locale: locale,
     messages: {
         EN: EN,
+        RO: RO,
     },
 });
 
