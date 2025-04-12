@@ -1049,6 +1049,92 @@
                     </div>
                 </div>
             </div>
+            <!-- Block Resources -->
+            <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg font-medium text-white">Block Resources</h3>
+                        <p class="text-sm text-gray-400">Configure resource limits for users.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="block_ram" class="block text-sm font-medium text-gray-400 mb-1">RAM</label>
+                        <input
+                            id="block_ram"
+                            type="checkbox"
+                            v-model="formData.block_ram"
+                            @change="updateSetting('block_ram', formData.block_ram)"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">Block users from purchasing RAM.</p>
+                    </div>
+                    <div>
+                        <label for="block_disk" class="block text-sm font-medium text-gray-400 mb-1">Disk</label>
+                        <input
+                            id="block_disk"
+                            type="checkbox"
+                            v-model="formData.block_disk"
+                            @change="updateSetting('block_disk', formData.block_disk)"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">Block users from purchasing disk.</p>
+                    </div>
+                    <div>
+                        <label for="block_cpu" class="block text-sm font-medium text-gray-400 mb-1">CPU</label>
+                        <input
+                            id="block_cpu"
+                            type="checkbox"
+                            v-model="formData.block_cpu"
+                            @change="updateSetting('block_cpu', formData.block_cpu)"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">Block users from purchasing CPU.</p>
+                    </div>
+                    <div>
+                        <label for="block_ports" class="block text-sm font-medium text-gray-400 mb-1">Ports</label>
+                        <input
+                            id="block_ports"
+                            type="checkbox"
+                            v-model="formData.block_ports"
+                            @change="updateSetting('block_ports', formData.block_ports)"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">Block users from purchasing ports.</p>
+                    </div>
+                    <div>
+                        <label for="block_backups" class="block text-sm font-medium text-gray-400 mb-1">Backups</label>
+                        <input
+                            id="block_backups"
+                            type="checkbox"
+                            v-model="formData.block_backups"
+                            @change="updateSetting('block_backups', formData.block_backups)"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">Block users from purchasing backups.</p>
+                    </div>
+                    <div>
+                        <label for="block_databases" class="block text-sm font-medium text-gray-400 mb-1"
+                            >Databases</label
+                        >
+                        <input
+                            id="block_databases"
+                            type="checkbox"
+                            v-model="formData.block_databases"
+                            @change="updateSetting('block_databases', formData.block_databases)"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">Block users from purchasing databases.</p>
+                    </div>
+                    <div>
+                        <label for="block_server_slots" class="block text-sm font-medium text-gray-400 mb-1"
+                            >Server Slots</label
+                        >
+                        <input
+                            id="block_server_slots"
+                            type="checkbox"
+                            v-model="formData.block_server_slots"
+                            @change="updateSetting('block_server_slots', formData.block_server_slots)"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">Block users from purchasing server slots.</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Max Resources -->
             <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
                 <div class="flex justify-between items-start mb-4">
@@ -1213,6 +1299,13 @@ const formData = ref({
     default_databases: '1',
     default_server_slots: '1',
     default_backups: '5',
+    block_ram: 'false',
+    block_disk: 'false',
+    block_cpu: 'false',
+    block_ports: 'false',
+    block_databases: 'false',
+    block_server_slots: 'false',
+    block_backups: 'false',
 });
 
 // Computed properties for toggles
@@ -1352,6 +1445,13 @@ watch(
                 default_databases: newSettings['default_databases'] || '1',
                 default_server_slots: newSettings['default_server_slots'] || '1',
                 default_backups: newSettings['default_backups'] || '5',
+                block_ram: newSettings['block_ram'] || 'false',
+                block_disk: newSettings['block_disk'] || 'false',
+                block_cpu: newSettings['block_cpu'] || 'false',
+                block_ports: newSettings['block_ports'] || 'false',
+                block_databases: newSettings['block_databases'] || 'false',
+                block_server_slots: newSettings['block_server_slots'] || 'false',
+                block_backups: newSettings['block_backups'] || 'false',
             };
         }
     },

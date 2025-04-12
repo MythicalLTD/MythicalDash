@@ -49,44 +49,56 @@ $router->post('/api/user/store/purchase', function (): void {
             'effect' => function ($session) {
                 $session->setInfo(UserColumns::MEMORY_LIMIT, $session->getInfo(UserColumns::MEMORY_LIMIT, false) + 1024, false);
             },
+            'blocked' => $config->getSetting(ConfigInterface::BLOCK_RAM, 'false') === 'true'
         ],
         'disk' => [
             'price' => (int) $config->getSetting(ConfigInterface::STORE_DISK_PRICE, 200),
             'effect' => function ($session) {
                 $session->setInfo(UserColumns::DISK_LIMIT, $session->getInfo(UserColumns::DISK_LIMIT, false) + 1024, false);
             },
+            'blocked' => $config->getSetting(ConfigInterface::BLOCK_DISK, 'false') === 'true'
         ],
         'cpu' => [
             'price' => (int) $config->getSetting(ConfigInterface::STORE_CPU_PRICE, 300),
             'effect' => function ($session) {
                 $session->setInfo(UserColumns::CPU_LIMIT, $session->getInfo(UserColumns::CPU_LIMIT, false) + 100, false);
             },
+            'blocked' => $config->getSetting(ConfigInterface::BLOCK_CPU, 'false') === 'true'
         ],
         'server_slot' => [
             'price' => (int) $config->getSetting(ConfigInterface::STORE_SERVER_SLOT_PRICE, 500),
             'effect' => function ($session) {
                 $session->setInfo(UserColumns::SERVER_LIMIT, $session->getInfo(UserColumns::SERVER_LIMIT, false) + 1, false);
             },
+            'blocked' => $config->getSetting(ConfigInterface::BLOCK_SERVER_SLOTS, 'false') === 'true'
         ],
         'server_backup' => [
             'price' => (int) $config->getSetting(ConfigInterface::STORE_BACKUPS_PRICE, 150),
             'effect' => function ($session) {
                 $session->setInfo(UserColumns::BACKUP_LIMIT, $session->getInfo(UserColumns::BACKUP_LIMIT, false) + 1, false);
             },
+            'blocked' => $config->getSetting(ConfigInterface::BLOCK_BACKUPS, 'false') === 'true'
         ],
         'server_allocation' => [
             'price' => (int) $config->getSetting(ConfigInterface::STORE_PORTS_PRICE, 100),
             'effect' => function ($session) {
                 $session->setInfo(UserColumns::ALLOCATION_LIMIT, $session->getInfo(UserColumns::ALLOCATION_LIMIT, false) + 1, false);
             },
+            'blocked' => $config->getSetting(ConfigInterface::BLOCK_PORTS, 'false') === 'true'
         ],
         'server_database' => [
             'price' => (int) $config->getSetting(ConfigInterface::STORE_DATABASES_PRICE, 200),
             'effect' => function ($session) {
                 $session->setInfo(UserColumns::DATABASE_LIMIT, $session->getInfo(UserColumns::DATABASE_LIMIT, false) + 1, false);
             },
+            'blocked' => $config->getSetting(ConfigInterface::BLOCK_DATABASES, 'false') === 'true'
         ],
     ];
+
+    // Filter out blocked items
+    $items = array_filter($items, function($item) {
+        return !$item['blocked'];
+    });
 
     $itemId = $_POST['itemId'];
 

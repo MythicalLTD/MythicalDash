@@ -231,4 +231,15 @@ interface ConfigInterface
 	public const DEFAULT_DATABASES = 'default_databases';
 	public const DEFAULT_SERVER_SLOTS = 'default_server_slots';
 	public const DEFAULT_BACKUPS = 'default_backups';
+
+	/**
+	 * Block Resources.
+	 */
+	public const BLOCK_RAM = 'block_ram';
+	public const BLOCK_DISK = 'block_disk';
+	public const BLOCK_CPU = 'block_cpu';
+	public const BLOCK_PORTS = 'block_ports';
+	public const BLOCK_DATABASES = 'block_databases';
+	public const BLOCK_SERVER_SLOTS = 'block_server_slots';
+	public const BLOCK_BACKUPS = 'block_backups';
 }

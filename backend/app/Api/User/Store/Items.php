@@ -57,6 +57,56 @@ $router->get('/api/user/store/items', function (): void {
         ],
     ];
 
+    $filteredItems = [];
+    foreach ($items as $item) {
+        $skip = false;
+        
+        switch($item['id']) {
+            case 'ram':
+                if ($config->getSetting(ConfigInterface::BLOCK_RAM, 'false') === 'true') {
+                    $skip = true;
+                }
+                break;
+            case 'disk':
+                if ($config->getSetting(ConfigInterface::BLOCK_DISK, 'false') === 'true') {
+                    $skip = true; 
+                }
+                break;
+            case 'cpu':
+                if ($config->getSetting(ConfigInterface::BLOCK_CPU, 'false') === 'true') {
+                    $skip = true;
+                }
+                break;
+            case 'server_allocation':
+                if ($config->getSetting(ConfigInterface::BLOCK_PORTS, 'false') === 'true') {
+                    $skip = true;
+                }
+                break;
+            case 'server_database':
+                if ($config->getSetting(ConfigInterface::BLOCK_DATABASES, 'false') === 'true') {
+                    $skip = true;
+                }
+                break;
+            case 'server_slot':
+                if ($config->getSetting(ConfigInterface::BLOCK_SERVER_SLOTS, 'false') === 'true') {
+                    $skip = true;
+                }
+                break;
+            case 'server_backup':
+                if ($config->getSetting(ConfigInterface::BLOCK_BACKUPS, 'false') === 'true') {
+                    $skip = true;
+                }
+                break;
+        }
+
+        if (!$skip) {
+            $filteredItems[] = $item;
+        }
+    }
+
+    $items = $filteredItems;
+
+
     $appInstance->OK('Store items fetched successfully!', ['data' => [
         'items' => $items,
     ]]);

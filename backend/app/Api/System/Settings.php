@@ -174,6 +174,15 @@ $router->add('/api/system/settings', function (): void {
         ConfigInterface::DEFAULT_DATABASES => '1',
         ConfigInterface::DEFAULT_SERVER_SLOTS => '1',
         ConfigInterface::DEFAULT_BACKUPS => '5',
+
+        // Block Resources
+        ConfigInterface::BLOCK_RAM => 'false',
+        ConfigInterface::BLOCK_DISK => 'false',
+        ConfigInterface::BLOCK_CPU => 'false',
+        ConfigInterface::BLOCK_PORTS => 'false',
+        ConfigInterface::BLOCK_DATABASES => 'false',
+        ConfigInterface::BLOCK_SERVER_SLOTS => 'false',
+        ConfigInterface::BLOCK_BACKUPS => 'false',
     ];
 
     // Retrieve actual settings with defaults in a single array map
