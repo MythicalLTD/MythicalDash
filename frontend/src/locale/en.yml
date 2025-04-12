@@ -1292,3 +1292,63 @@ store:
                         one: 'MySQL/MariaDB'
                         two: 'Automated backups'
                         three: 'Secure access'
+
+l4r:
+    notEnabled:
+        title: 'Link For Rewards'
+        text: 'Link For Rewards is not enabled on this host!'
+        footer: 'Please contact support for assistance'
+        confirmButtonText: 'OK'
+    pages:
+        index:
+            title: 'Link For Rewards'
+            subTitle: 'Click any provider to complete offers and earn coins'
+            loading: 'Loading links...'
+            empty: 'No links found'
+            linkvertise:
+                title: 'Linkvertise'
+                tag: 'Fast & easy rewards'
+                description: 'Complete simple tasks through Linkvertise like surveys, watching videos, or visiting websites.'
+                reward: 'Win up to {0} coins'
+                button: 'Complete Offer'
+            shareus:
+                title: 'ShareUs'
+                tag: 'Popular link shortener'
+                description: 'Complete simple tasks through ShareUs like surveys, watching videos, or visiting websites.'
+                reward: 'Win up to {0} coins'
+                button: 'Complete Offer'
+            linkpays:
+                title: 'LinkPays'
+                tag: 'Higher rewards'
+                description: 'Complete simple tasks through LinkPays like surveys, watching videos, or visiting websites.'
+                reward: 'Win up to {0} coins'
+                button: 'Complete Offer'
+            gyanilinks:
+                title: 'Gyanilinks'
+                tag: 'Fast & easy rewards'
+                description: 'Complete simple tasks through Gyanilinks like surveys, watching videos, or visiting websites.'
+                reward: 'Win up to {0} coins'
+                button: 'Complete Offer'
+            yourStats:
+                title: 'Your Stats'
+                description: 'Link For Rewards statistics'
+                currentBalance: 'Coin Balance'
+            steps:
+                title: 'How It Works'
+                description: 'Complete link offers for rewards'
+                one:
+                    title: 'Choose a Provider'
+                    number: '1'
+                    description: 'Click on any of the link providers to get started'
+                two:
+                    title: 'Complete Offers'
+                    number: '2'
+                    description: 'Complete the offers to earn coins'
+                three:
+                    title: 'Earn Rewards'
+                    number: '3'
+                    description: 'Earn rewards for completing offers'
+                four:
+                    title: 'Get Rewarded'
+                    number: '4'
+                    description: 'Coins will be added to your account automatically'

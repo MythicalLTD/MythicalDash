@@ -1,14 +1,14 @@
 <template>
     <LayoutDashboard>
         <div class="p-6">
-            <h1 class="text-2xl font-bold text-white mb-6">Link For Rewards</h1>
+            <h1 class="text-2xl font-bold text-white mb-6">{{ t('l4r.pages.index.title') }}</h1>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Main L4R Content -->
                 <div class="lg:col-span-2">
                     <CardComponent
-                        cardTitle="Available Link Providers"
-                        cardDescription="Click any provider to complete offers and earn coins"
+                        :cardTitle="t('l4r.pages.index.title')"
+                        :cardDescription="t('l4r.pages.index.subTitle')"
                     >
                         <div class="relative overflow-hidden">
                             <!-- Background decorative elements -->
@@ -18,16 +18,9 @@
                             <div
                                 class="absolute -bottom-20 -left-20 w-40 h-40 bg-purple-500/5 rounded-full blur-2xl"
                             ></div>
-
                             <div class="relative z-10 p-6">
-                                <!-- Loading State -->
-                                <div v-if="isLoading" class="py-10 flex flex-col items-center justify-center">
-                                    <LoaderIcon class="w-12 h-12 text-indigo-500 animate-spin mb-3" />
-                                    <p class="text-gray-400">Loading link providers...</p>
-                                </div>
-
                                 <!-- Link Provider Cards -->
-                                <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <!-- Linkvertise -->
                                     <div
                                         v-if="Settings.getSetting('l4r_linkadvertise_enabled') === 'true'"
@@ -41,14 +34,17 @@
                                                     class="h-10 w-10 mr-3 rounded-lg"
                                                 />
                                                 <div>
-                                                    <h3 class="text-lg font-bold text-white">Linkvertise</h3>
-                                                    <span class="text-xs text-gray-400">Fast & easy rewards</span>
+                                                    <h3 class="text-lg font-bold text-white">
+                                                        {{ t('l4r.pages.index.linkvertise.title') }}
+                                                    </h3>
+                                                    <span class="text-xs text-gray-400">{{
+                                                        t('l4r.pages.index.linkvertise.tag')
+                                                    }}</span>
                                                 </div>
                                             </div>
 
                                             <p class="text-gray-300 text-sm mb-4">
-                                                Complete simple tasks through Linkvertise like surveys, watching videos,
-                                                or visiting websites.
+                                                {{ t('l4r.pages.index.linkvertise.description') }}
                                             </p>
 
                                             <div class="flex items-center justify-between">
@@ -56,14 +52,18 @@
                                                     class="flex items-center bg-indigo-900/40 text-indigo-400 px-3 py-1 rounded-full text-xs font-medium"
                                                 >
                                                     <Coins class="h-3 w-3 mr-1" />
-                                                    Up to 90 coins
+                                                    {{
+                                                        t('l4r.pages.index.linkvertise.reward', [
+                                                            Settings.getSetting('l4r_linkadvertise_coins_per_link'),
+                                                        ])
+                                                    }}
                                                 </div>
 
                                                 <button
                                                     @click="goToLinkProvider('linkvertise')"
                                                     class="px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-600 hover:bg-indigo-700 text-white"
                                                 >
-                                                    Go to Linkvertise
+                                                    {{ t('l4r.pages.index.linkvertise.button') }}
                                                 </button>
                                             </div>
                                         </div>
@@ -82,14 +82,17 @@
                                                     class="h-10 w-10 mr-3 rounded-lg"
                                                 />
                                                 <div>
-                                                    <h3 class="text-lg font-bold text-white">ShareUs</h3>
-                                                    <span class="text-xs text-gray-400">Popular link shortener</span>
+                                                    <h3 class="text-lg font-bold text-white">
+                                                        {{ t('l4r.pages.index.shareus.title') }}
+                                                    </h3>
+                                                    <span class="text-xs text-gray-400">
+                                                        {{ t('l4r.pages.index.shareus.tag') }}
+                                                    </span>
                                                 </div>
                                             </div>
 
                                             <p class="text-gray-300 text-sm mb-4">
-                                                Visit partner websites through ShareUs and earn coins for your time
-                                                exploring content.
+                                                {{ t('l4r.pages.index.shareus.description') }}
                                             </p>
 
                                             <div class="flex items-center justify-between">
@@ -97,14 +100,18 @@
                                                     class="flex items-center bg-indigo-900/40 text-indigo-400 px-3 py-1 rounded-full text-xs font-medium"
                                                 >
                                                     <Coins class="h-3 w-3 mr-1" />
-                                                    Up to 50 coins
+                                                    {{
+                                                        t('l4r.pages.index.shareus.reward', [
+                                                            Settings.getSetting('l4r_shareus_coins_per_link'),
+                                                        ])
+                                                    }}
                                                 </div>
 
                                                 <button
                                                     @click="goToLinkProvider('shareus')"
                                                     class="px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-600 hover:bg-indigo-700 text-white"
                                                 >
-                                                    Go to ShareUs
+                                                    {{ t('l4r.pages.index.shareus.button') }}
                                                 </button>
                                             </div>
                                         </div>
@@ -123,14 +130,17 @@
                                                     class="h-10 w-10 mr-3 rounded-lg"
                                                 />
                                                 <div>
-                                                    <h3 class="text-lg font-bold text-white">LinkPays</h3>
-                                                    <span class="text-xs text-gray-400">Higher rewards</span>
+                                                    <h3 class="text-lg font-bold text-white">
+                                                        {{ t('l4r.pages.index.linkpays.title') }}
+                                                    </h3>
+                                                    <span class="text-xs text-gray-400">
+                                                        {{ t('l4r.pages.index.linkpays.tag') }}
+                                                    </span>
                                                 </div>
                                             </div>
 
                                             <p class="text-gray-300 text-sm mb-4">
-                                                Download apps, complete offers, and earn higher rewards through LinkPays
-                                                network.
+                                                {{ t('l4r.pages.index.linkpays.description') }}
                                             </p>
 
                                             <div class="flex items-center justify-between">
@@ -138,14 +148,18 @@
                                                     class="flex items-center bg-indigo-900/40 text-indigo-400 px-3 py-1 rounded-full text-xs font-medium"
                                                 >
                                                     <Coins class="h-3 w-3 mr-1" />
-                                                    Up to 120 coins
+                                                    {{
+                                                        t('l4r.pages.index.linkpays.reward', [
+                                                            Settings.getSetting('l4r_linkpays_coins_per_link'),
+                                                        ])
+                                                    }}
                                                 </div>
 
                                                 <button
                                                     @click="goToLinkProvider('linkpays')"
                                                     class="px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-600 hover:bg-indigo-700 text-white"
                                                 >
-                                                    Go to LinkPays
+                                                    {{ t('l4r.pages.index.linkpays.button') }}
                                                 </button>
                                             </div>
                                         </div>
@@ -164,14 +178,17 @@
                                                     class="h-10 w-10 mr-3 rounded-lg"
                                                 />
                                                 <div>
-                                                    <h3 class="text-lg font-bold text-white">GyaniLinks</h3>
-                                                    <span class="text-xs text-gray-400">Quick & easy tasks</span>
+                                                    <h3 class="text-lg font-bold text-white">
+                                                        {{ t('l4r.pages.index.gyanilinks.title') }}
+                                                    </h3>
+                                                    <span class="text-xs text-gray-400">
+                                                        {{ t('l4r.pages.index.gyanilinks.tag') }}
+                                                    </span>
                                                 </div>
                                             </div>
 
                                             <p class="text-gray-300 text-sm mb-4">
-                                                Watch videos and complete simple tasks to earn coins through GyaniLinks
-                                                platform.
+                                                {{ t('l4r.pages.index.gyanilinks.description') }}
                                             </p>
 
                                             <div class="flex items-center justify-between">
@@ -179,55 +196,23 @@
                                                     class="flex items-center bg-indigo-900/40 text-indigo-400 px-3 py-1 rounded-full text-xs font-medium"
                                                 >
                                                     <Coins class="h-3 w-3 mr-1" />
-                                                    Up to 100 coins
+                                                    {{
+                                                        t('l4r.pages.index.gyanilinks.reward', [
+                                                            Settings.getSetting('l4r_gyanilinks_coins_per_link'),
+                                                        ])
+                                                    }}
                                                 </div>
 
                                                 <button
                                                     @click="goToLinkProvider('gyanilinks')"
                                                     class="px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-600 hover:bg-indigo-700 text-white"
                                                 >
-                                                    Go to GyaniLinks
+                                                    {{ t('l4r.pages.index.gyanilinks.button') }}
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Status Messages -->
-                                <transition
-                                    enter-active-class="transition-opacity duration-300"
-                                    leave-active-class="transition-opacity duration-300"
-                                    enter-from-class="opacity-0"
-                                    enter-to-class="opacity-100"
-                                    leave-from-class="opacity-100"
-                                    leave-to-class="opacity-0"
-                                >
-                                    <div
-                                        v-if="statusMessage.text"
-                                        :class="[
-                                            'p-4 rounded-lg mt-6',
-                                            statusMessage.type === 'success'
-                                                ? 'bg-emerald-900/30 border border-emerald-700/50 text-emerald-400'
-                                                : 'bg-red-900/30 border border-red-700/50 text-red-400',
-                                        ]"
-                                    >
-                                        <div class="flex items-start">
-                                            <div class="flex-shrink-0">
-                                                <CheckCircleIcon
-                                                    v-if="statusMessage.type === 'success'"
-                                                    class="h-5 w-5"
-                                                />
-                                                <AlertTriangleIcon v-else class="h-5 w-5" />
-                                            </div>
-                                            <div class="ml-3">
-                                                <p class="font-medium">{{ statusMessage.text }}</p>
-                                            </div>
-                                            <button @click="statusMessage.text = ''" class="ml-auto">
-                                                <XIcon class="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </transition>
                             </div>
                         </div>
                     </CardComponent>
@@ -236,7 +221,10 @@
                 <!-- Sidebar -->
                 <div class="space-y-6">
                     <!-- Stats Card -->
-                    <CardComponent cardTitle="Your Stats" cardDescription="Link For Rewards statistics">
+                    <CardComponent
+                        :cardTitle="t('l4r.pages.index.yourStats.title')"
+                        :cardDescription="t('l4r.pages.index.yourStats.description')"
+                    >
                         <div class="p-5 space-y-4">
                             <!-- Coin Balance -->
                             <div class="bg-gray-800/30 rounded-xl p-5 flex justify-between items-center">
@@ -247,7 +235,9 @@
                                         <Coins class="h-5 w-5 text-yellow-500" />
                                     </div>
                                     <div>
-                                        <div class="text-sm text-gray-400">Current Balance</div>
+                                        <div class="text-sm text-gray-400">
+                                            {{ t('l4r.pages.index.yourStats.currentBalance') }}
+                                        </div>
                                         <div class="text-2xl font-bold text-yellow-500">{{ totalCoins }}</div>
                                     </div>
                                 </div>
@@ -256,19 +246,24 @@
                     </CardComponent>
 
                     <!-- How It Works Card -->
-                    <CardComponent cardTitle="How It Works" cardDescription="Complete link offers for rewards">
+                    <CardComponent
+                        :cardTitle="t('l4r.pages.index.steps.title')"
+                        :cardDescription="t('l4r.pages.index.steps.description')"
+                    >
                         <div class="p-4 space-y-4">
                             <div class="bg-gray-800/30 p-4 rounded-lg">
                                 <div class="flex items-start mb-2">
                                     <div
                                         class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
                                     >
-                                        <span class="text-xs">1</span>
+                                        <span class="text-xs">{{ t('l4r.pages.index.steps.one.number') }}</span>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-medium text-white mb-1">Choose a Provider</h4>
+                                        <h4 class="text-sm font-medium text-white mb-1">
+                                            {{ t('l4r.pages.index.steps.one.title') }}
+                                        </h4>
                                         <p class="text-xs text-gray-400">
-                                            Click on any of the link providers to get started
+                                            {{ t('l4r.pages.index.steps.one.description') }}
                                         </p>
                                     </div>
                                 </div>
@@ -279,12 +274,14 @@
                                     <div
                                         class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
                                     >
-                                        <span class="text-xs">2</span>
+                                        <span class="text-xs">{{ t('l4r.pages.index.steps.two.number') }}</span>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-medium text-white mb-1">Complete Link Tasks</h4>
+                                        <h4 class="text-sm font-medium text-white mb-1">
+                                            {{ t('l4r.pages.index.steps.two.title') }}
+                                        </h4>
                                         <p class="text-xs text-gray-400">
-                                            Follow the instructions and navigate through the link shortener
+                                            {{ t('l4r.pages.index.steps.two.description') }}
                                         </p>
                                     </div>
                                 </div>
@@ -295,12 +292,14 @@
                                     <div
                                         class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
                                     >
-                                        <span class="text-xs">3</span>
+                                        <span class="text-xs">{{ t('l4r.pages.index.steps.three.number') }}</span>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-medium text-white mb-1">Verification</h4>
+                                        <h4 class="text-sm font-medium text-white mb-1">
+                                            {{ t('l4r.pages.index.steps.three.title') }}
+                                        </h4>
                                         <p class="text-xs text-gray-400">
-                                            Our system will automatically verify your completion
+                                            {{ t('l4r.pages.index.steps.three.description') }}
                                         </p>
                                     </div>
                                 </div>
@@ -311,12 +310,14 @@
                                     <div
                                         class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
                                     >
-                                        <span class="text-xs">4</span>
+                                        <span class="text-xs">{{ t('l4r.pages.index.steps.four.number') }}</span>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-medium text-white mb-1">Get Rewarded</h4>
+                                        <h4 class="text-sm font-medium text-white mb-1">
+                                            {{ t('l4r.pages.index.steps.four.title') }}
+                                        </h4>
                                         <p class="text-xs text-gray-400">
-                                            Coins will be added to your account automatically
+                                            {{ t('l4r.pages.index.steps.four.description') }}
                                         </p>
                                     </div>
                                 </div>
@@ -332,79 +333,34 @@
 <script setup lang="ts">
 import LayoutDashboard from '@/components/client/LayoutDashboard.vue';
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
-import { ref, onMounted } from 'vue';
-import {
-    Loader as LoaderIcon,
-    CheckCircle as CheckCircleIcon,
-    AlertTriangle as AlertTriangleIcon,
-    X as XIcon,
-    Coins,
-} from 'lucide-vue-next';
+import { ref } from 'vue';
+import { Coins } from 'lucide-vue-next';
 import Session from '@/mythicaldash/Session';
 import { useSettingsStore } from '@/stores/settings';
 import router from '@/router';
 import Swal from 'sweetalert2';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
-MythicalDOM.setPageTitle('Link For Rewards');
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const Settings = useSettingsStore();
+
+MythicalDOM.setPageTitle(t('l4r.pages.index.title'));
 
 // If L4R is disabled, redirect to dashboard
 if (Settings.getSetting('l4r_enabled') === 'false') {
     Swal.fire({
-        title: 'Link For Rewards',
-        text: 'Link For Rewards is not enabled on this host!',
+        title: t('l4r.notEnabled.title'),
+        text: t('l4r.notEnabled.text'),
         icon: 'error',
-        confirmButtonText: 'OK',
+        footer: t('l4r.notEnabled.footer'),
+        confirmButtonText: t('l4r.notEnabled.confirmButtonText'),
     });
     router.push('/dashboard');
 }
 
-// Provider URLs
-interface ProviderConfig {
-    name: string;
-    url: string;
-    maxReward: number;
-}
-
 // State
-const isLoading = ref(true);
 const totalCoins = ref(Session.getInfoInt('credits'));
-const statusMessage = ref({
-    type: 'success',
-    text: '',
-});
-
-// Provider configurations
-const providers: Record<string, ProviderConfig> = {
-    linkvertise: {
-        name: 'Linkvertise',
-        url: 'https://linkvertise.com/user/dashboard?referral=mythicaldash',
-        maxReward: 90,
-    },
-    shareus: {
-        name: 'ShareUs',
-        url: 'https://links.shareus.io/dashboard/assets/linksbyshareusfavicon-Bib5uv4j.png',
-        maxReward: 90,
-    },
-    linkpays: {
-        name: 'LinkPays',
-        url: 'https://linkpays.in/?ref=mythicaldash',
-        maxReward: 120,
-    },
-    gyanilinks: {
-        name: 'GyaniLinks',
-        url: 'https://gyanilinks.com/?ref=mythicaldash',
-        maxReward: 100,
-    },
-};
-
-// User statistics
-const stats = ref({
-    offersCompleted: 0,
-    totalEarned: 0,
-    completedToday: 0,
-});
 
 // Get logo for provider
 const getProviderLogo = (provider: string): string => {
@@ -420,77 +376,22 @@ const getProviderLogo = (provider: string): string => {
 
 // Go to link provider
 const goToLinkProvider = async (providerKey: string) => {
-    try {
-        const provider = providers[providerKey];
-        if (!provider) {
-            showStatusMessage('Invalid provider selected', 'error');
-            return;
-        }
+    if (providerKey === 'linkvertise') {
+        window.open('/api/user/earn/l4r/linkvertise/start');
+    }
 
-        if (providerKey === 'linkvertise') {
-            window.open('/api/user/earn/l4r/linkvertise/start');
-        }
+    if (providerKey === 'shareus') {
+        window.open('/api/user/earn/l4r/shareus/start');
+    }
 
-        if (providerKey === 'shareus') {
-            window.open('/api/user/earn/l4r/shareus/start');
-        }
+    if (providerKey === 'linkpays') {
+        window.open('/api/user/earn/l4r/linkpays/start');
+    }
 
-        if (providerKey === 'linkpays') {
-            window.open('/api/user/earn/l4r/linkpays/start');
-        }
-
-        if (providerKey === 'gyanilinks') {
-            window.open('/api/user/earn/l4r/gyanilinks/start');
-        }
-
-        // Show success message
-        showStatusMessage(`You've been redirected to ${provider.name}. Complete offers to earn rewards!`, 'success');
-    } catch (error) {
-        console.error('Error opening link provider:', error);
-        showStatusMessage('An error occurred while processing your request', 'error');
+    if (providerKey === 'gyanilinks') {
+        window.open('/api/user/earn/l4r/gyanilinks/start');
     }
 };
-
-// Show status message
-const showStatusMessage = (text: string, type: 'success' | 'error') => {
-    statusMessage.value = { text, type };
-
-    // Clear message after 5 seconds
-    setTimeout(() => {
-        statusMessage.value.text = '';
-    }, 5000);
-};
-
-// Load stats from API
-const loadStats = async () => {
-    isLoading.value = true;
-
-    try {
-        // In a real implementation, call the API
-        // const response = await fetch('/api/user/earn/l4r/stats');
-        // const data = await response.json();
-
-        // For demo purposes, we'll use mock data
-        setTimeout(() => {
-            // Mock stats
-            stats.value = {
-                offersCompleted: 12,
-                totalEarned: 450,
-                completedToday: 3,
-            };
-
-            isLoading.value = false;
-        }, 1000);
-    } catch (error) {
-        console.error('Error loading stats:', error);
-        showStatusMessage('An error occurred while loading your statistics', 'error');
-        isLoading.value = false;
-    }
-};
-
-onMounted(() => {
-    loadStats();
-});
 </script>
 
 <style scoped>
