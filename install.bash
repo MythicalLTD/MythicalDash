@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e  # Exit on error
 clear
 
 # Set colors for better readability
@@ -9,6 +10,13 @@ RED="\033[0;31m"
 PURPLE="\033[0;35m"
 NC="\033[0m" # No Color
 BOLD="\033[1m"
+
+# Function to handle errors
+handle_error() {
+    echo -e "\n${RED}┃ ERROR: ${1}${NC}"
+    echo -e "${YELLOW}┃ See error details above for troubleshooting.${NC}"
+    exit 1
+}
 
 # Check if mythicaldash is already installed
 INSTALL_FLAG="/opt/mythicaldash/.installed"
@@ -50,15 +58,15 @@ echo -e "
 
 echo -e "${PURPLE}┃${NC} ${BOLD}Step 1:${NC} Installing dependencies..."
 # Install the dependencies with output displayed
-apt update
-apt install sudo wget curl git zip unzip -y
+apt update || handle_error "Failed to update package lists"
+apt install sudo wget curl git zip unzip -y || handle_error "Failed to install dependencies"
 echo -e "${GREEN}┃${NC} Dependencies installed successfully!"
 
 echo -e "${PURPLE}┃${NC} ${BOLD}Step 2:${NC} Installing Docker..."
 # Install Docker if not installed
 if ! [ -x "$(command -v docker)" ]; then
-    curl -sSL https://get.docker.com/ | CHANNEL=stable bash
-    sudo systemctl enable --now docker
+    curl -sSL https://get.docker.com/ | CHANNEL=stable bash || handle_error "Failed to install Docker"
+    sudo systemctl enable --now docker || handle_error "Failed to start Docker service"
     echo -e "${GREEN}┃${NC} Docker installed successfully!"
 else
     echo -e "${GREEN}┃${NC} Docker is already installed!"
@@ -67,7 +75,7 @@ fi
 echo -e "${PURPLE}┃${NC} ${BOLD}Step 3:${NC} Installing Docker Compose..."
 # Install Docker Compose if not installed
 if ! [ -x "$(command -v docker-compose)" ]; then
-    apt install docker-compose -y
+    apt install docker-compose -y || handle_error "Failed to install Docker Compose"
     echo -e "${GREEN}┃${NC} Docker Compose installed successfully!"
 else
     echo -e "${GREEN}┃${NC} Docker Compose is already installed!"
@@ -93,72 +101,99 @@ fi
 
 echo -e "${PURPLE}┃${NC} ${BOLD}Step 4:${NC} Downloading MythicalDash files..."
 cd /opt/mythicaldash
-curl -Lo MythicalDash.zip https://github.com/MythicalLTD/MythicalDash-Nightly/releases/latest/download/MythicalDash.zip
+curl -Lo MythicalDash.zip https://github.com/MythicalLTD/MythicalDash-Nightly/releases/latest/download/MythicalDash.zip || handle_error "Failed to download MythicalDash files"
 echo -e "${GREEN}┃${NC} Download completed."
 
 echo -e "${PURPLE}┃${NC} ${BOLD}Step 5:${NC} Extracting files..."
-unzip -o MythicalDash.zip
+unzip -o MythicalDash.zip || handle_error "Failed to extract files"
 echo -e "${GREEN}┃${NC} Extraction completed."
 
-echo -e "${PURPLE}┃${NC} ${BOLD}Step 6:${NC} Preparing Docker environment..."
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 6:${NC} Creating required directories..."
+# Create necessary directories
+mkdir -p ./backend/storage/caches
+mkdir -p ./backend/storage/logs
+mkdir -p ./backend/public/attachments
+echo -e "${GREEN}┃${NC} Directories created."
+
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 7:${NC} Preparing Docker environment..."
 # Use the docker.env file instead of .env
 rm -rf ./backend/storage/.env
-cp ./backend/storage/.docker.env ./backend/storage/.env
+cp ./backend/storage/.docker.env ./backend/storage/.env || handle_error "Failed to set up environment file"
 echo -e "${GREEN}┃${NC} Docker environment prepared."
 
-echo -e "${PURPLE}┃${NC} ${BOLD}Step 7:${NC} Building Docker containers (this may take 5-10 minutes)..."
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 8:${NC} Building Docker containers (this may take 5-10 minutes)..."
 echo -e "${YELLOW}┃${NC} Please be patient while the containers are being built..."
 # Start the build process with visible output
-docker-compose --env-file ./backend/storage/.env up -d --build
+docker-compose --env-file ./backend/storage/.env up -d --build || handle_error "Docker build failed - see error output above"
 echo -e "${GREEN}┃${NC} Docker containers built and started successfully!"
 
-echo -e "${PURPLE}┃${NC} ${BOLD}Step 8:${NC} Setting correct permissions..."
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 9:${NC} Setting correct permissions..."
 # Set permissions with visible output
 chown -R www-data:www-data ./
 chmod -R 775 ./backend/storage
 chmod -R 775 ./backend/public/attachments
 echo -e "${GREEN}┃${NC} Permissions set successfully!"
 
-echo -e "${PURPLE}┃${NC} ${BOLD}Step 9:${NC} Updating internal packages..."
-# Update dependencies with visible output
-docker exec mythicaldash_backend bash -c "COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader"
-echo -e "${GREEN}┃${NC} Internal packages updated successfully!"
+# Verify container is running before proceeding
+if [ "$(docker ps -q -f name=mythicaldash_backend)" ]; then
+    echo -e "${PURPLE}┃${NC} ${BOLD}Step 10:${NC} Updating internal packages..."
+    # Update dependencies with visible output
+    docker exec mythicaldash_backend bash -c "COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader" || handle_error "Failed to update internal packages"
+    echo -e "${GREEN}┃${NC} Internal packages updated successfully!"
 
-# Check if the installation has already been completed
-INSTALL_FLAG=".installed"
+    # Check if the installation has already been completed
+    INSTALL_FLAG=".installed"
 
-if [ ! -f "$INSTALL_FLAG" ]; then
-    # Run the installation steps
-    touch "$INSTALL_FLAG"
-    echo -e "${PURPLE}┃${NC} ${BOLD}Step 10:${NC} Generating encryption keys..."
-    docker exec mythicaldash_backend bash -c "php mythicaldash keyRegen -force"
-    echo -e "${GREEN}┃${NC} Encryption keys generated successfully!"
+    if [ ! -f "$INSTALL_FLAG" ]; then
+        # Run the installation steps
+        touch "$INSTALL_FLAG"
+        echo -e "${PURPLE}┃${NC} ${BOLD}Step 11:${NC} Generating encryption keys..."
+        docker exec mythicaldash_backend bash -c "php mythicaldash keyRegen -force" || handle_error "Failed to generate encryption keys"
+        echo -e "${GREEN}┃${NC} Encryption keys generated successfully!"
+    else
+        echo -e "${YELLOW}┃${NC} MythicalDash already installed!"
+    fi
 else
-    echo -e "${YELLOW}┃${NC} MythicalDash already installed!"
+    handle_error "Backend container isn't running. Check Docker logs for more information."
 fi
 
-echo -e "${PURPLE}┃${NC} ${BOLD}Step 11:${NC} Waiting for database to be ready..."
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 12:${NC} Waiting for database to be ready..."
 # Wait for the database container to be ready with a progress indicator
+MAX_RETRIES=30
+RETRY_COUNT=0
+
 while [ "$(docker inspect -f '{{.State.Health.Status}}' mythicaldash_database 2>/dev/null)" != "healthy" ]; do
     echo -e "${YELLOW}┃${NC} Waiting for MySQL database to be ready... (this may take a minute)"
     sleep 5
+    RETRY_COUNT=$((RETRY_COUNT+1))
+    
+    if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+        handle_error "Database container failed to become healthy after $MAX_RETRIES retries"
+    fi
 done
 echo -e "${GREEN}┃${NC} MySQL database is ready!"
 
-echo -e "${PURPLE}┃${NC} ${BOLD}Step 12:${NC} Waiting for Redis to be ready..."
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 13:${NC} Waiting for Redis to be ready..."
 # Wait for Redis to be ready
+RETRY_COUNT=0
+
 while [ "$(docker inspect -f '{{.State.Health.Status}}' mythicaldash_redis 2>/dev/null)" != "healthy" ]; do
     echo -e "${YELLOW}┃${NC} Waiting for Redis to be ready... (this may take a minute)"
     sleep 5
+    RETRY_COUNT=$((RETRY_COUNT+1))
+    
+    if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+        handle_error "Redis container failed to become healthy after $MAX_RETRIES retries"
+    fi
 done
 echo -e "${GREEN}┃${NC} Redis is ready!"
 
-echo -e "${PURPLE}┃${NC} ${BOLD}Step 13:${NC} Running database migrations..."
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 14:${NC} Running database migrations..."
 # Run migrations with visible output
-docker exec mythicaldash_backend bash -c "php mythicaldash migrate"
+docker exec mythicaldash_backend bash -c "php mythicaldash migrate" || handle_error "Failed to run database migrations"
 echo -e "${GREEN}┃${NC} Database migrations completed successfully!"
 
-echo -e "${PURPLE}┃${NC} ${BOLD}Step 14:${NC} Cleaning up installation files..."
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 15:${NC} Cleaning up installation files..."
 # Clean up installation files
 rm -rf /opt/mythicaldash/MythicalDash.zip
 echo -e "${GREEN}┃${NC} Cleanup completed!"
