@@ -1,6 +1,14 @@
 #!/bin/bash
 clear
 
+# Set colors for better readability
+GREEN="\033[0;32m"
+CYAN="\033[0;36m"
+YELLOW="\033[1;33m"
+RED="\033[0;31m"
+PURPLE="\033[0;35m"
+NC="\033[0m" # No Color
+BOLD="\033[1m"
 
 # Check if mythicaldash is already installed
 INSTALL_FLAG="/opt/mythicaldash/.installed"
@@ -10,6 +18,7 @@ if [ -f "$INSTALL_FLAG" ]; then
     exit 0
 fi
 
+# Display banner
 echo -e "\n\x1b[35;1m
  ███▄ ▄███▓▓██   ██▓▄▄▄█████▓ ██░ ██  ██▓ ▄████▄   ▄▄▄       ██▓    
 ▓██▒▀█▀ ██▒ ▒██  ██▒▓  ██▒ ▓▒▓██░ ██▒▓██▒▒██▀ ▀█  ▒████▄    ▓██▒    
@@ -25,10 +34,9 @@ echo -e "\n\x1b[35;1m
 \x1b[0m"
 
 mkdir -p /opt/mythicaldash
-mkdir -p /opt/mythicaldash/installer_logs
 
 echo -e "
-\x1b[35;1m┃  Welcome to mythicaldash
+\x1b[35;1m┃  Welcome to mythicaldash
 \x1b[35;1m┃\x1b[0m
 \x1b[35;1m┃\x1b[0m Thanks for downloading mythicaldash! We're
 \x1b[35;1m┃\x1b[0m are so excited to have you here. If you have
@@ -40,34 +48,34 @@ echo -e "
 \x1b[35;1m┃ ☻ \x1b[0mhttps://discord.mythical.systems
 "
 
-printf "\n\x1b[2;1m┃\x1b[0;2m Installing dependencies. \x1b[0m"
-sleep 1
-# Install the dependencies
-apt install sudo wget curl git zip unzip -y >> /opt/mythicaldash/installer_logs/apt-logs.log 2>&1
-printf "\n\x1b[2;1m┃\x1b[0;2m Installed all dependencies. \x1b[0m"
-sleep 1
-printf "\n\x1b[2;1m┃\x1b[0;2m Installing docker. \x1b[0m"
-sleep 1
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 1:${NC} Installing dependencies..."
+# Install the dependencies with output displayed
+apt update
+apt install sudo wget curl git zip unzip -y
+echo -e "${GREEN}┃${NC} Dependencies installed successfully!"
+
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 2:${NC} Installing Docker..."
 # Install Docker if not installed
 if ! [ -x "$(command -v docker)" ]; then
-    curl -sSL https://get.docker.com/ | CHANNEL=stable bash >> /opt/mythicaldash/installer_logs/logs-docker-install.log 2>&1
-    sudo systemctl enable --now docker >> /opt/mythicaldash/installer_logs/docker-systemd.log 2>&1
+    curl -sSL https://get.docker.com/ | CHANNEL=stable bash
+    sudo systemctl enable --now docker
+    echo -e "${GREEN}┃${NC} Docker installed successfully!"
+else
+    echo -e "${GREEN}┃${NC} Docker is already installed!"
 fi
-printf "\n\x1b[2;1m┃\x1b[0;2m Installed docker. \x1b[0m"
-sleep 1
 
-printf "\n\x1b[2;1m┃\x1b[0;2m Installing docker-compose. \x1b[0m"
-sleep 1
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 3:${NC} Installing Docker Compose..."
 # Install Docker Compose if not installed
 if ! [ -x "$(command -v docker-compose)" ]; then
-    apt install docker-compose -y  >> /opt/mythicaldash/installer_logs/docker-compose-apt.log 2>&1
+    apt install docker-compose -y
+    echo -e "${GREEN}┃${NC} Docker Compose installed successfully!"
+else
+    echo -e "${GREEN}┃${NC} Docker Compose is already installed!"
 fi
-printf "\n\x1b[2;1m┃\x1b[0;2m Installed docker-compose. \x1b[0m"
-sleep 1
 
 clear
 echo -e "\n
-\x1b[35;1m┃  Software agreements
+\x1b[35;1m┃  Software agreements
 \x1b[35;1m┃\x1b[35
 \x1b[35;1m┃\x1b[0m By using mythicaldash you (the owner and
 \x1b[35;1m┃\x1b[0m ALL your clients) agree to our software
@@ -75,110 +83,104 @@ echo -e "\n
 \x1b[35;1m┃\x1b[35
 \x1b[35;1m┃\x1b[0m https://www.mythical.systems/eula
 "
-printf "\x1b[2;1m┃\x1b[0;2m Type 'AGREE' to continue and agree to our software agreements.\x1b[0m"
-printf "\n\x1b[2;1m┃\x1b[0;2m Type 'DISAGREE' to exit the installation.\x1b[0m"
+echo -e "${YELLOW}┃${NC} Type 'AGREE' to continue and agree to our software agreements."
+echo -e "${YELLOW}┃${NC} Type 'DISAGREE' to exit the installation."
 read -p " " AGREEMENT
 if [ "$AGREEMENT" != "AGREE" ]; then
     echo -e "\x1b[31;1m┃\x1b[0;31m You must agree to our software agreements to continue.\x1b[0m"
     exit 1
 fi
 
-printf "\n\x1b[2;1m┃\x1b[0;2m Downloading files.. \x1b[0m"
-sleep 1
-
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 4:${NC} Downloading MythicalDash files..."
 cd /opt/mythicaldash
-curl -Lo MythicalDash.zip https://github.com/MythicalLTD/MythicalDash-Nightly/releases/latest/download/MythicalDash.zip >> /opt/mythicaldash/installer_logs/download-log.log 2>&1 # TODO: Replace to the release channel!!
-unzip MythicalDash.zip >> /opt/mythicaldash/installer_logs/unzip-log.log 2>&1
-printf "\n\x1b[2;1m┃\x1b[0;2m Files downloaded. \x1b[0m"
-sleep 1
+curl -Lo MythicalDash.zip https://github.com/MythicalLTD/MythicalDash-Nightly/releases/latest/download/MythicalDash.zip
+echo -e "${GREEN}┃${NC} Download completed."
 
-printf "\n\x1b[2;1m┃\x1b[0;2m Preparing docker environment. \x1b[0m"
-sleep 1
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 5:${NC} Extracting files..."
+unzip -o MythicalDash.zip
+echo -e "${GREEN}┃${NC} Extraction completed."
 
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 6:${NC} Preparing Docker environment..."
+# Use the docker.env file instead of .env
 rm -rf ./backend/storage/.env
 cp ./backend/storage/.docker.env ./backend/storage/.env
+echo -e "${GREEN}┃${NC} Docker environment prepared."
 
-printf "\n\x1b[2;1m┃\x1b[0;2m Building docker image. (May take some time) [AVG 5m] \x1b[0m"
-sleep 1
-# Start the build process
-docker-compose --env-file ./backend/storage/.env up -d --build >> /opt/mythicaldash/installer_logs/logs-docker.log 2>&1
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 7:${NC} Building Docker containers (this may take 5-10 minutes)..."
+echo -e "${YELLOW}┃${NC} Please be patient while the containers are being built..."
+# Start the build process with visible output
+docker-compose --env-file ./backend/storage/.env up -d --build
+echo -e "${GREEN}┃${NC} Docker containers built and started successfully!"
 
-printf "\n\x1b[2;1m┃\x1b[0;2m Docker image built! \x1b[0m"
-sleep 1
-
-printf "\n\x1b[2;1m┃\x1b[0;2m Setting permissions.\x1b[0m"
-sleep 1
-# Set the right permissions
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 8:${NC} Setting correct permissions..."
+# Set permissions with visible output
 chown -R www-data:www-data ./
-chmod -R 777 ./
-printf "\n\x1b[2;1m┃\x1b[0;2m Permission set.\x1b[0m"
-sleep 1
+chmod -R 775 ./backend/storage
+chmod -R 775 ./backend/public/attachments
+echo -e "${GREEN}┃${NC} Permissions set successfully!"
 
-printf "\n\x1b[2;1m┃\x1b[0;2m Updating internal packages. \x1b[0m"
-sleep 1
-# Update dependencies
-docker exec mythicaldash_backend bash -c "COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader"  >> /opt/mythicaldash/installer_logs/composer-apt.log 2>&1
-printf "\n\x1b[2;1m┃\x1b[0;2m Updated internal packages. \x1b[0m"
-echo ""
-sleep 1
-# Reset the encryption key 
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 9:${NC} Updating internal packages..."
+# Update dependencies with visible output
+docker exec mythicaldash_backend bash -c "COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader"
+echo -e "${GREEN}┃${NC} Internal packages updated successfully!"
+
 # Check if the installation has already been completed
 INSTALL_FLAG=".installed"
 
 if [ ! -f "$INSTALL_FLAG" ]; then
     # Run the installation steps
     touch "$INSTALL_FLAG"
+    echo -e "${PURPLE}┃${NC} ${BOLD}Step 10:${NC} Generating encryption keys..."
     docker exec mythicaldash_backend bash -c "php mythicaldash keyRegen -force"
+    echo -e "${GREEN}┃${NC} Encryption keys generated successfully!"
 else
-printf "\n\x1b[2;1m┃\x1b[0;2m MythicalDash already installed!!!!! \x1b[0m"
+    echo -e "${YELLOW}┃${NC} MythicalDash already installed!"
 fi
 
-# Migrations
-# Wait for the database container to be ready
-while [ "$(docker inspect -f '{{.State.Health.Status}}' mythicaldash_database)" == "starting" ]; do
-    printf "\n\x1b[2;1m┃\x1b[0;2m Waiting for MySQL database to start \x1b[0m"
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 11:${NC} Waiting for database to be ready..."
+# Wait for the database container to be ready with a progress indicator
+while [ "$(docker inspect -f '{{.State.Health.Status}}' mythicaldash_database 2>/dev/null)" != "healthy" ]; do
+    echo -e "${YELLOW}┃${NC} Waiting for MySQL database to be ready... (this may take a minute)"
     sleep 5
 done
-printf "\n\x1b[2;1m┃\x1b[0;2m MySQL started and is ready to serve! \x1b[0m"
-sleep 2.5
+echo -e "${GREEN}┃${NC} MySQL database is ready!"
 
-while [ "$(docker inspect -f '{{.State.Health.Status}}' mythicaldash_redis)" == "starting" ]; do
-    printf "\n\x1b[2;1m┃\x1b[0;2m Waiting for Redis to start \x1b[0m"
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 12:${NC} Waiting for Redis to be ready..."
+# Wait for Redis to be ready
+while [ "$(docker inspect -f '{{.State.Health.Status}}' mythicaldash_redis 2>/dev/null)" != "healthy" ]; do
+    echo -e "${YELLOW}┃${NC} Waiting for Redis to be ready... (this may take a minute)"
     sleep 5
 done
-printf "\n\x1b[2;1m┃\x1b[0;2m Redis started and is ready to serve! \x1b[0m"
-sleep 2.5
+echo -e "${GREEN}┃${NC} Redis is ready!"
 
-printf "\n\x1b[2;1m┃\x1b[0;2m Running database migrations.. \x1b[0m"
-sleep 2.5
-echo ""
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 13:${NC} Running database migrations..."
+# Run migrations with visible output
 docker exec mythicaldash_backend bash -c "php mythicaldash migrate"
-printf "\n\x1b[2;1m┃\x1b[0;2m mythicaldash is up to date! \x1b[0m"
-sleep 1
+echo -e "${GREEN}┃${NC} Database migrations completed successfully!"
 
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 14:${NC} Cleaning up installation files..."
 # Clean up installation files
-printf "\n\x1b[2;1m┃\x1b[0;2m Cleaning up installation files.. \x1b[0m"
-sleep 1
 rm -rf /opt/mythicaldash/MythicalDash.zip
-rm -rf /opt/mythicaldash/installer_logs
+echo -e "${GREEN}┃${NC} Cleanup completed!"
 
-printf "\n\x1b[2;1m┃\x1b[0;2m Clean up completed. \x1b[0m"
-sleep 1
+# Get server IP address
+SERVER_IP=$(hostname -I | awk '{print $1}')
 
-echo -e "\n\x1b[32;1m┃ MythicalDash installation completed successfully! \x1b[0m"
-echo -e "\x1b[32;1m┃\x1b[0m"
-echo -e "\x1b[32;1m┃ You can now start using MythicalDash. \x1b[0m"
-echo -e "\x1b[32;1m┃\x1b[0m"
-echo -e "\x1b[32;1m┃ For more information, visit: \x1b[0m"
-echo -e "\x1b[32;1m┃\x1b[0m https://mythicaldash-v3.mythical.systems"
-echo -e "\x1b[32;1m┃\x1b[0m"
-echo -e "\x1b[32;1m┃ Thank you for choosing MythicalDash! \x1b[0m"
-echo -e "\x1b[32;1m┃\x1b[0m"
-echo -e "\x1b[36;1m┃ You can access it at: \x1b[32;1mhttp://$(hostname -I | awk '{print $1}'):9271 \x1b[0m"
-echo -e "\x1b[36;1m┃ Working directory: \x1b[32;1m/opt/mythicaldash \x1b[0m"
-echo -e "\x1b[36;1m┃ Channel: \x1b[32;1mdevelop (NO SUPPORT) \x1b[0m"
-echo -e "\x1b[36;1m┃ License: \x1b[32;1mfree (NO SUPPORT) \x1b[0m"
-echo -e "\x1b[32;1m┃\x1b[0m"
-echo -e "\x1b[32;1m┃ Make sure you read our docs on how to use a domain and SSL. \x1b[0m"
-echo -e "\x1b[32;1m┃ We recommend you use cloudflare tunnels for this installation."
-echo -e "\x1b[0m"
+# Installation completed message
+echo -e "\n${GREEN}┃ MythicalDash installation completed successfully! ${NC}"
+echo -e "${GREEN}┃${NC}"
+echo -e "${GREEN}┃ You can now start using MythicalDash. ${NC}"
+echo -e "${GREEN}┃${NC}"
+echo -e "${GREEN}┃ For more information, visit: ${NC}"
+echo -e "${GREEN}┃${NC} https://mythicaldash-v3.mythical.systems"
+echo -e "${GREEN}┃${NC}"
+echo -e "${GREEN}┃ Thank you for choosing MythicalDash! ${NC}"
+echo -e "${GREEN}┃${NC}"
+echo -e "${CYAN}┃ You can access it at: ${GREEN}http://${SERVER_IP}:9271 ${NC}"
+echo -e "${CYAN}┃ Working directory: ${GREEN}/opt/mythicaldash ${NC}"
+echo -e "${CYAN}┃ Channel: ${GREEN}develop (NO SUPPORT) ${NC}"
+echo -e "${CYAN}┃ License: ${GREEN}free (NO SUPPORT) ${NC}"
+echo -e "${GREEN}┃${NC}"
+echo -e "${GREEN}┃ Make sure you read our docs on how to use a domain and SSL. ${NC}"
+echo -e "${GREEN}┃ We recommend you use Cloudflare Tunnels for this installation.${NC}"
+echo -e "${NC}"

@@ -1,0 +1,88 @@
+services:
+  # Frontend Vue service
+  mythicaldash_frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mythicaldash_frontend
+    restart: unless-stopped
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - ./frontend.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - mythicaldash_network
+
+  # PHP Backend service with PHP-FPM
+  mythicaldash_backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mythicaldash_backend
+    restart: unless-stopped
+    volumes:
+      - ./backend:/var/www/html
+      - ./backend/storage/packages:/var/www/html/storage/packages
+    depends_on:
+      - mythicaldash_database
+      - mythicaldash_redis
+    networks:
+      - mythicaldash_network
+
+  # Main Nginx service
+  mythicaldash_nginx:
+    image: nginx:alpine
+    container_name: mythicaldash_nginx
+    restart: unless-stopped
+    ports:
+      - "9271:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./backend.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - mythicaldash_frontend
+      - mythicaldash_backend
+    networks:
+      - mythicaldash_network
+    
+  mythicaldash_database:
+    image: mariadb:latest
+    restart: unless-stopped
+    container_name: mythicaldash_database
+    volumes:
+      - ./dockerfiles/mariadb/data:/var/lib/mysql/
+    env_file:
+      - ./backend/storage/.env
+    environment:
+      MARIADB_ROOT_PASSWORD: "superlongquiery!!password"
+      MARIADB_DATABASE: ${DATABASE_DATABASE}
+      MARIADB_USER: ${DATABASE_USER}
+      MARIADB_PASSWORD: ${DATABASE_PASSWORD}
+    healthcheck:
+      test: mariadb-admin ping
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - mythicaldash_network
+    
+  mythicaldash_redis:
+    image: redis:7.0-alpine
+    container_name: mythicaldash_redis
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel notice --requirepass '${REDIS_PASSWORD}'
+    env_file:
+      - ./backend/storage/.env
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    healthcheck:
+      test: redis-cli -a $$REDIS_PASSWORD ping | grep PONG
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - mythicaldash_network
+
+networks:
+  mythicaldash_network:
+    driver: bridge

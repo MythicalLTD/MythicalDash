@@ -27,7 +27,7 @@ Contributions are always welcome! For guidelines on how to contribute, please se
 ## 🧪 Install (Only for Testing)
 
 ```bash
-bash <(curl https://raw.githubusercontent.com/MythicalLTD/MythicalDash/refs/heads/mythicaldash-v4/install.bash)
+bash <(curl https://raw.githubusercontent.com/MythicalLTD/MythicalDash/refs/heads/v3-remastered/install.bash)
 ```
 
 ---
