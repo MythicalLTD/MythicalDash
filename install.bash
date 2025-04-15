@@ -134,6 +134,8 @@ chmod -R 775 ./backend/storage
 chmod -R 775 ./backend/public/attachments
 echo -e "${GREEN}┃${NC} Permissions set successfully!"
 
+
+
 # Verify container is running before proceeding
 if [ "$(docker ps -q -f name=mythicaldash_backend)" ]; then
     echo -e "${PURPLE}┃${NC} ${BOLD}Step 10:${NC} Updating internal packages..."
