@@ -195,6 +195,14 @@ echo -e "${PURPLE}┃${NC} ${BOLD}Step 14:${NC} Running database migrations..."
 docker exec mythicaldash_backend bash -c "php mythicaldash migrate" || handle_error "Failed to run database migrations"
 echo -e "${GREEN}┃${NC} Database migrations completed successfully!"
 
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 15:${NC} Configuring server..."
+docker exec mythicaldash_backend bash -c "php mythicaldash pterodactyl configure" || handle_error "Failed to run database migrations"	
+echo -e "${GREEN}┃${NC} Server configured successfully!"
+
+echo -e "${PURPLE}┃${NC} ${BOLD}Step 16:${NC} Configuring server..."
+docker exec mythicaldash_backend bash -c "php mythicaldash setup" || handle_error "Failed to run database migrations"	
+echo -e "${GREEN}┃${NC} Server configured successfully!"
+
 echo -e "${PURPLE}┃${NC} ${BOLD}Step 15:${NC} Cleaning up installation files..."
 # Clean up installation files
 rm -rf /opt/mythicaldash/MythicalDash.zip
