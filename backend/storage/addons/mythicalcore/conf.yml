@@ -10,7 +10,7 @@ plugin:
     - NaysKutzu # The owner and author of the plugin
   icon: https://github.com/mythicalltd.png # The logo of the plugin
   dependencies: 
-    - composer=mythicalsystems/core # If you need a specific composer package
+    #- composer=mythicalsystems/core # If you need a specific composer package
     - php=8.1 # The minimum php version to run this
     - php-ext=pdo # The php extension this plugin needs
     #- plugin= # The plugin you need for this plugin to run as an example for your plugin you need mythicalcore :)
