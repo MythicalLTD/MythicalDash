@@ -4,7 +4,6 @@ import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
 import Button from '@/components/client/ui/Button.vue';
 import {
     Github as GithubIcon,
-    Mail as GoogleIcon,
     MessageSquare as DiscordIcon,
     Unlink as UnlinkIcon,
     Link as LinkIcon,
@@ -16,7 +15,7 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 
 // Types
-type Provider = 'discord' | 'github' | 'google';
+type Provider = 'discord' | 'github';
 
 interface LinkedAccount {
     id: string;
@@ -47,11 +46,6 @@ const linkedAccounts = ref<LinkedAccount[]>([
         provider: 'github',
         connected: false,
     },
-    {
-        id: 'google',
-        provider: 'google',
-        connected: false,
-    },
 ]);
 
 const isLoading = ref(true);
@@ -70,12 +64,6 @@ const providerConfigs: Record<Provider, ProviderConfig> = {
         icon: GithubIcon,
         color: 'bg-gray-700/10 text-gray-300',
         description: t('account.pages.linked_accounts.github.description'),
-    },
-    google: {
-        name: t('account.pages.linked_accounts.google.title'),
-        icon: GoogleIcon,
-        color: 'bg-red-500/10 text-red-400',
-        description: t('account.pages.linked_accounts.google.description'),
     },
 };
 
@@ -130,7 +118,15 @@ const fetchLinkedAccounts = async () => {
                     discordAccount.connectedAt = new Date().toISOString();
                 }
             }
-
+            if (Session.getInfo('github_linked') === 'true') {
+                const githubAccount = linkedAccounts.value.find((a) => a.provider === 'github');
+                if (githubAccount) {
+                    githubAccount.connected = true;
+                    githubAccount.username = Session.getInfo('github_username');
+                    githubAccount.email = Session.getInfo('github_email');
+                    githubAccount.connectedAt = new Date().toISOString();
+                }
+            }
             isLoading.value = false;
         }, 1000);
     } catch (err) {

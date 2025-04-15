@@ -17,106 +17,141 @@ use MythicalDash\Chat\User\Session;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 
+$router->get('/api/user/auth/callback/github/link', function () {
+	header('Location: /api/user/auth/callback/github');
+	exit;
+});
+
+
+$router->get('/api/user/auth/callback/github/login', function () {
+	header('Location: /api/user/auth/callback/github');
+	exit;
+});
 
 $router->get('/api/user/auth/callback/github', function () {
-    global $authorizeURL, $tokenURL, $apiURLBase;
-    App::init();
-    $appInstance = App::getInstance(true);
-    $config = $appInstance->getConfig();
-    $s = new Session($appInstance);
+	global $authorizeURL, $tokenURL, $apiURLBase;
+	App::init();
+	$appInstance = App::getInstance(true);
+	$config = $appInstance->getConfig();
 
-    if ($config->getSetting(ConfigInterface::GITHUB_ENABLED, 'false') === 'false'
-        || $config->getSetting(ConfigInterface::GITHUB_CLIENT_ID, '') === ''
-        || $config->getSetting(ConfigInterface::GITHUB_CLIENT_SECRET, '') === '') {
-        App::NotFound('GitHub is not enabled', []);
-    }
+	if (
+		$config->getSetting(ConfigInterface::GITHUB_ENABLED, 'false') === 'false'
+		|| $config->getSetting(ConfigInterface::GITHUB_CLIENT_ID, '') === ''
+		|| $config->getSetting(ConfigInterface::GITHUB_CLIENT_SECRET, '') === ''
+	) {
+		header('Location: /account?error=github_not_enabled');
+		exit;
+	}
 
-    $appId = $config->getSetting(ConfigInterface::GITHUB_CLIENT_ID, '');
-    $appSecret = $config->getSetting(ConfigInterface::GITHUB_CLIENT_SECRET, '');
-    $url = $config->getSetting(ConfigInterface::APP_URL, '');
-    $redirectUri = $url . '/api/user/auth/callback/github';
+	$appId = $config->getSetting(ConfigInterface::GITHUB_CLIENT_ID, '');
+	$appSecret = $config->getSetting(ConfigInterface::GITHUB_CLIENT_SECRET, '');
+	$url = $config->getSetting(ConfigInterface::APP_URL, '');
+	$redirectUri = $url . '/api/user/auth/callback/github';
 
-    // Initialize GitHub OAuth provider with proper scopes
-    $provider = new League\OAuth2\Client\Provider\Github([
-        'clientId'          => $appId,
-        'clientSecret'      => $appSecret,
-        'redirectUri'       => $redirectUri,
-    ]);
+	// Initialize GitHub OAuth provider with proper scopes
+	$provider = new League\OAuth2\Client\Provider\Github([
+		'clientId' => $appId,
+		'clientSecret' => $appSecret,
+		'redirectUri' => $redirectUri,
+	]);
 
-    // Generate a random state parameter for CSRF protection
-    $state = bin2hex(random_bytes(16));
-    
-    if (!isset($_GET['code'])) {
-        // If we don't have an authorization code then get one
-        $options = [
-            'state' => $state,
-            'scope' => ['user:email', 'read:user','user:follow','public_repo'] // Request basic user info
-        ];
-        
-        $authUrl = $provider->getAuthorizationUrl($options);
-        
-        // Store state in session for validation
+	// Generate a random state parameter for CSRF protection
+	$state = bin2hex(random_bytes(16));
+
+	if (!isset($_GET['code'])) {
+		// If we don't have an authorization code then get one
+		$options = [
+			'state' => $state,
+			'scope' => ['user:email', 'read:user', 'user:follow', 'public_repo'] // Request basic user info
+		];
+
+		$authUrl = $provider->getAuthorizationUrl($options);
+
+		// Store state in session for validation
 		setcookie('oauth2state', $state, time() + 3600, '/');
-        
-        header('Location: ' . $authUrl);
-        exit;
-    } 
 
-    try {
-        // Try to get an access token
-        $token = $provider->getAccessToken('authorization_code', [
-            'code' => $_GET['code']
-        ]);
+		header('Location: ' . $authUrl);
+		exit;
+	}
 
-        // Get user details
-        $user = $provider->getResourceOwner($token);
-
-		
-        
+	try {
+		// Try to get an access token
+		$token = $provider->getAccessToken('authorization_code', [
+			'code' => $_GET['code']
+		]);
+		// Get user details
+		$user = $provider->getResourceOwner($token);
 		$userData = $user->toArray();
-		
+
 		$id = $userData['id'];
 		$email = $userData['email'];
 		$name = $userData['name'];
+		if (isset($_COOKIE['user_token']) && $_COOKIE['user_token'] != "" && User::exists(UserColumns::ACCOUNT_TOKEN, $_COOKIE['user_token'])) {
+			$s = new Session($appInstance);
+			$s->setInfo(UserColumns::GITHUB_ID, $id, false);
+			$s->setInfo(UserColumns::GITHUB_EMAIL, $email, false);
+			$s->setInfo(UserColumns::GITHUB_USERNAME, $name, false);
+			$s->setInfo(UserColumns::GITHUB_LINKED, 'true', false);
+			// Create a Guzzle client for GitHub API requests
+			$client = new \GuzzleHttp\Client([
+				'base_uri' => 'https://api.github.com/',
+				'headers' => [
+					'Authorization' => 'Bearer ' . $token->getToken(),
+					'Accept' => 'application/vnd.github.v3+json',
+					'User-Agent' => 'MythicalDash'
+				]
+			]);
 
-        // Create a Guzzle client for GitHub API requests
-        $client = new \GuzzleHttp\Client([
-            'base_uri' => 'https://api.github.com/',
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token->getToken(),
-                'Accept' => 'application/vnd.github.v3+json',
-                'User-Agent' => 'MythicalDash'
-            ]
-        ]);
+			try {
+				// Star the repository
+				$client->put('user/starred/mythicalltd/mythicaldash');
 
-        try {
-            // Star the repository
-            $client->put('user/starred/mythicalltd/mythicaldash');
-            
-            // Follow the organization
-            $client->put('user/following/mythicalltd');
-            
-            App::OK('Successfully authenticated with GitHub and completed actions', [
-                'user' => $userData,
-                'actions' => [
-                    'starred_repo' => true,
-                    'followed_org' => true
-                ]
-            ]);
-        } catch (Exception $e) {
-            // If the actions fail, still return success but with partial completion
-            App::OK('Successfully authenticated with GitHub', [
-                'user' => $userData,
-                'actions' => [
-                    'starred_repo' => false,
-                    'followed_org' => false,
-                    'error' => $e->getMessage()
-                ]
-            ]);
-        }
-    } catch (Exception $e) {
-        // Log error and show user-friendly message
-        error_log('GitHub OAuth Error: ' . $e->getMessage());
-        App::BadRequest('Failed to authenticate with GitHub. Please try again.', []);
-    }
+				// Follow the organization
+				$client->put('user/following/mythicalltd');
+
+				header('Location: /account?success=github_auth_success');
+			} catch (Exception $e) {
+				// If the actions fail, still return success but with partial completion
+				header('Location: /account?success=github_auth_success');
+			}
+			exit;
+		} else {
+			if (User::exists(UserColumns::GITHUB_ID, $id)) {
+				$uuid = User::getUUIDFromGitHubID($id);
+
+				if (!$uuid == "") {
+					$email = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::EMAIL, false);
+					$password = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::PASSWORD, true);
+					header('Location: ' . $url . '/auth/login?email=' . urlencode(base64_encode($email)) . '&password=' . urlencode(base64_encode($password)) . '&performLogin=true');
+					exit;
+				} else {
+					header('Location: /auth/login?error=github_auth_failed');
+					exit;
+				}
+			} else {
+				header('Location: /auth/login?error=github_auth_failed');
+				exit;
+			}
+		}
+
+	} catch (Exception $e) {
+		// Log error and show user-friendly message
+		error_log('GitHub OAuth Error: ' . $e->getMessage());
+		header('Location: /account?error=github_auth_failed&message=' . urlencode($e->getMessage()));
+	}
+});
+
+
+$router->get('/api/user/auth/callback/github/unlink', function () {
+	global $authorizeURL, $tokenURL, $apiURLBase;
+	App::init();
+	$appInstance = App::getInstance(true);
+	$config = $appInstance->getConfig();
+	$s = new Session($appInstance);
+	$s->setInfo(UserColumns::GITHUB_ID, '', false);
+	$s->setInfo(UserColumns::GITHUB_EMAIL, '', false);
+	$s->setInfo(UserColumns::GITHUB_USERNAME, '', false);
+	$s->setInfo(UserColumns::GITHUB_LINKED, 'false', false);
+
+	header('Location: /account');
 });

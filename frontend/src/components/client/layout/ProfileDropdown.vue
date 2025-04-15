@@ -44,7 +44,7 @@ onMounted(async () => {
 });
 
 const handleLogout = () => {
-    location.href = '/api/user/auth/logout';
+    location.href = '/auth/logout';
 };
 </script>
 <template>

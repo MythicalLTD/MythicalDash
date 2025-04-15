@@ -20,6 +20,11 @@ const authRoutes: RouteRecordRaw[] = [
         },
     },
     {
+        path: '/auth/logout',
+        name: 'Logout',
+        component: () => import('@/views/client/auth/Logout.vue'),
+    },
+    {
         path: '/auth/forgot-password',
         name: 'Forgot Password',
         component: () => import('@/views/client/auth/ForgotPassword.vue'),
@@ -68,16 +73,6 @@ const authRoutes: RouteRecordRaw[] = [
         redirect: () => {
             window.location.href = '/api/auth/2fa/setup/kill';
             return '/api/auth/2fa/setup/kill';
-        },
-        meta: {
-            requiresAuth: true,
-        },
-    },
-    {
-        path: '/auth/logout',
-        redirect: () => {
-            window.location.href = '/api/user/auth/logout';
-            return '/api/user/auth/logout';
         },
         meta: {
             requiresAuth: true,

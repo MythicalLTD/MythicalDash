@@ -131,7 +131,7 @@ $router->add('/api/user/auth/login', function (): void {
     // Set cookie based on debug mode
     if (APP_DEBUG) {
         // Set the cookie to expire in 1 year if the app is in debug mode
-        setcookie('user_token', $loginResult, time() + 3600 * 31 * 360, '/');
+        setcookie('user_token', $loginResult, time() + 3600 * 31 * 3600, '/');
     } else {
         setcookie('user_token', $loginResult, time() + 3600, '/');
     }

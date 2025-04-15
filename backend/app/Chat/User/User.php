@@ -538,6 +538,28 @@ class User extends Database
     }
 
     /**
+     * Get the UUID from the github id.
+     *
+     * @param string $githubID The github id
+     *
+     * @return string The UUID
+     */
+	public static function getUUIDFromGitHubID(string $githubID): string
+	{
+		try {
+			$con = self::getPdoConnection();
+			$stmt = $con->prepare('SELECT uuid FROM ' . self::TABLE_NAME . ' WHERE github_id = :githubID AND deleted = "false" LIMIT 1');
+			$stmt->bindParam(':githubID', $githubID);
+			$stmt->execute();
+
+			return $stmt->fetchColumn();
+		} catch (\Exception $e) {
+			Database::db_Error('Failed to uuid from github id: ' . $e->getMessage());
+
+			return "";
+		}
+	}
+    /**
      * Get the UUID from the discord id.
      *
      * @param string $discordID The discord id
@@ -556,7 +578,7 @@ class User extends Database
         } catch (\Exception $e) {
             Database::db_Error('Failed to uuid from discord id: ' . $e->getMessage());
 
-            return null;
+            return "";
         }
     }
 

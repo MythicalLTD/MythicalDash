@@ -12,26 +12,10 @@
  */
 
 use MythicalDash\App;
+use MythicalDash\Hooks\MythicalSystems\Debugger;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
-
+Debugger::ShowAllErrors();
 $router->get('/api/user/auth/logout', function (): void {
     global $eventManager;
-    echo '<script>
-        localStorage.clear();
-        sessionStorage.clear();
-    </script>';
-    try {
-        setcookie('user_token', '', time() - 460800 * 460800 * 460800, '/');
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_unset();
-            session_destroy();
-        }
-        $eventManager->emit(AuthEvent::onAuthLogout(), ['login' => 'UNKNOWN', 'error_code' => 'SUCCESS']);
-        header('location: /auth/login?href=api');
-        exit;
-    } catch (Exception $e) {
-        $eventManager->emit(AuthEvent::onAuthLogout(), ['login' => 'UNKNOWN', 'error_code' => 'FAILED_TO_LOGOUT']);
-        App::getInstance(true)->getLogger()->error('Failed to logout user' . $e->getMessage());
-        header('location: /auth/login?href=api');
-    }
+	header('location: /auth/logout');
 });
