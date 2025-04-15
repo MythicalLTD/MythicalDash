@@ -10,6 +10,7 @@ import mythicalcloudRoutes from './mythicalcloud.ts';
 import queueRoutes from './queue.ts';
 import mailTemplatesRoutes from './mail-templates.ts';
 import settingsRoutes from './settings.ts';
+import serversRoutes from './servers.ts';
 import redeemRoutes from './redeems.ts';
 // Main admin dashboard route
 const mainAdminRoutes: RouteRecordRaw[] = [
@@ -39,6 +40,7 @@ const adminRoutes: RouteRecordRaw[] = [
     ...queueRoutes,
     ...mailTemplatesRoutes,
     ...redeemRoutes,
+    ...serversRoutes,
 ];
 
 export default adminRoutes;

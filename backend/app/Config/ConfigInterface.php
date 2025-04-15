@@ -209,7 +209,14 @@ interface ConfigInterface
     public const DISCORD_CLIENT_ID = 'discord_client_id';
     public const DISCORD_CLIENT_SECRET = 'discord_client_secret';
     public const DISCORD_LINK_ALLOWED = 'discord_link_allowed';
-    public const DISCORD_REGISTER_ALLOWED = 'discord_register_allowed';
+
+    /**
+     * Github Integration.
+     */
+    public const GITHUB_ENABLED = 'github_enabled';
+    public const GITHUB_CLIENT_ID = 'github_client_id';
+    public const GITHUB_CLIENT_SECRET = 'github_client_secret';
+    public const GITHUB_LINK_ALLOWED = 'github_link_allowed';
 
     /**
      * Max Resources.

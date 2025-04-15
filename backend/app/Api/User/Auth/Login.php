@@ -18,11 +18,11 @@ use MythicalDash\Mail\Mail;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\Servers\Server;
 use MythicalDash\Config\ConfigInterface;
-use MythicalSystems\CloudFlare\Turnstile;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
+use MythicalDash\Hooks\MythicalSystems\CloudFlare\Turnstile;
 
 $router->add('/api/user/auth/login', function (): void {
     global $eventManager;

@@ -13,10 +13,10 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\Session;
-use MythicalSystems\User\UUIDManager;
 use MythicalDash\Chat\Earn\Linkvertise;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Hooks\MythicalSystems\User\UUIDManager;
 
 $router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
     App::init();

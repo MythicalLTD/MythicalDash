@@ -31,7 +31,7 @@ class ServersResource extends PterodactylAdmin
      * @throws PermissionException
      * @throws RateLimitException
      */
-    public function listServers(int $page = 1, int $perPage = 50): array
+    public function listServers(int $page = 1, int $perPage = 250): array
     {
         try {
             return $this->request('GET', '/api/application/servers', [

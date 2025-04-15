@@ -20,7 +20,7 @@ class ServerCreationJob
 		$cron->runIfDue(function () {
 			$app = \MythicalDash\App::getInstance(false, true);
 			$logger = $app->getLogger();
-			$chat = new \MythicalSystems\Utils\BungeeChatApi;
+			$chat = new \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi;
 			$chat->sendOutputWithNewLine("&aServer creation job started");
 
 			// Get all pending servers from the queue

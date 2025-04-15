@@ -1,18 +1,28 @@
 <template>
     <div :style="{ height: height }" class="monaco-editor-container">
-        <Monaco
-            v-model:value="internalValue"
-            :theme="theme"
-            language="html"
-            :options="editorOptions"
-            @change="onChange"
-        />
+        <Suspense>
+            <template #default>
+                <MonacoEditor
+                    v-model:value="internalValue"
+                    :theme="theme"
+                    language="html"
+                    :options="editorOptions"
+                    @change="onChange"
+                />
+            </template>
+            <template #fallback>
+                <div class="flex items-center justify-center h-full bg-gray-800">
+                    <div class="text-gray-400">Loading editor...</div>
+                </div>
+            </template>
+        </Suspense>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, defineEmits } from 'vue';
-import Monaco from 'monaco-editor-vue3';
+import { ref, watch, onMounted, defineEmits, defineAsyncComponent } from 'vue';
+
+const MonacoEditor = defineAsyncComponent(() => import('monaco-editor-vue3'));
 
 const props = defineProps({
     modelValue: {

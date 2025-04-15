@@ -102,6 +102,7 @@ const dashBoard = ref({
         mail_templates_count: 0,
         settings_count: 0,
         redeem_codes_count: 0,
+        servers_count: 0,
     },
 });
 

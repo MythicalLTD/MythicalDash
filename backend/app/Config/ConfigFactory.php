@@ -14,7 +14,7 @@
 namespace MythicalDash\Config;
 
 use MythicalDash\App;
-use MythicalSystems\Utils\XChaCha20;
+use MythicalDash\Hooks\MythicalSystems\Utils\XChaCha20;
 
 class ConfigFactory
 {

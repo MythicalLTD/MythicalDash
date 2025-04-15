@@ -20,10 +20,10 @@ use MythicalDash\Chat\Database;
 use MythicalDash\Mail\templates\Verify;
 use MythicalDash\Mail\templates\NewLogin;
 use MythicalDash\Chat\columns\UserColumns;
-use MythicalSystems\CloudFlare\CloudFlare;
 use MythicalDash\Mail\templates\ResetPassword;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Chat\columns\EmailVerificationColumns;
+use MythicalDash\Hooks\MythicalSystems\CloudFlare\CloudFlare;
 
 class User extends Database
 {
@@ -50,7 +50,7 @@ class User extends Database
             /**
              * The UUID generation and logic.
              */
-            $uuidMngr = new \MythicalSystems\User\UUIDManager();
+            $uuidMngr = new \MythicalDash\Hooks\MythicalSystems\User\UUIDManager();
             $uuid = $uuidMngr->generateUUID();
             $token = App::getInstance(true)->encrypt(date('Y-m-d H:i:s') . $uuid . random_bytes(16) . base64_encode($email));
 

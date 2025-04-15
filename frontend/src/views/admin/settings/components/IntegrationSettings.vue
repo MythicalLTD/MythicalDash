@@ -139,7 +139,85 @@
                     </p>
                 </div>
             </div>
+            <!-- GitHub Integration -->
+            <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
+                <div class="flex items-center mb-4">
+                    <div class="flex-1">
+                        <h3 class="text-lg font-medium text-white flex items-center">
+                            <GithubIcon class="w-5 h-5 mr-2 text-gray-400" />
+                            GitHub Integration
+                        </h3>
+                        <p class="text-sm text-gray-400">
+                            Connect your GitHub account for user authentication and repository access.
+                        </p>
+                        <div class="mt-2 p-3 bg-gray-900/50 rounded-lg border border-gray-700/50">
+                            <p class="text-sm text-gray-400 mb-1">OAuth2 Callback URL:</p>
+                            <code class="text-sm text-indigo-400 break-all"
+                                >{{ Settings.getSetting('app_url') }}/api/user/auth/callback/github</code
+                            >
+                        </div>
+                    </div>
+                </div>
+                <button @click="goToGithub" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center">
+                    <SettingsIcon class="w-4 h-4 mr-1" />
+                    GitHub Developer Settings
+                    <ChevronRightIcon class="w-4 h-4 ml-auto" /></button
+                ><br />
+                <!-- Enable GitHub -->
+                <div class="mb-4">
+                    <label class="flex items-center space-x-2">
+                        <input
+                            type="checkbox"
+                            v-model="formData.github_enabled"
+                            @change="updateSetting('github_enabled', formData.github_enabled)"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
+                        <span class="text-sm text-gray-400">Enable GitHub Integration</span>
+                    </label>
+                </div>
 
+                <!-- Client ID -->
+                <div class="mb-4">
+                    <label for="github_client_id" class="block text-sm font-medium text-gray-400 mb-1">Client ID</label>
+                    <input
+                        id="github_client_id"
+                        type="text"
+                        v-model="formData.github_client_id"
+                        @change="updateSetting('github_client_id', formData.github_client_id)"
+                        class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        placeholder="Enter GitHub Client ID"
+                    />
+                </div>
+
+                <!-- Client Secret -->
+                <div class="mb-4">
+                    <label for="github_client_secret" class="block text-sm font-medium text-gray-400 mb-1"
+                        >Client Secret</label
+                    >
+                    <div class="relative">
+                        <input
+                            id="github_client_secret"
+                            v-model="formData.github_client_secret"
+                            @change="updateSetting('github_client_secret', formData.github_client_secret)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 pr-10 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="Enter GitHub Client Secret"
+                        />
+                    </div>
+                </div>
+
+                <!-- Allow Account Linking -->
+                <div class="mb-4">
+                    <label class="flex items-center space-x-2">
+                        <input
+                            type="checkbox"
+                            v-model="formData.github_link_allowed"
+                            @change="updateSetting('github_link_allowed', formData.github_link_allowed)"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
+                        <span class="text-sm text-gray-400">Allow users to link their GitHub accounts</span>
+                    </label>
+                </div>
+            </div>
             <!-- Discord Integration -->
             <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
                 <div class="flex items-center mb-4">
@@ -154,21 +232,19 @@
                         <div class="mt-2 p-3 bg-gray-900/50 rounded-lg border border-gray-700/50">
                             <p class="text-sm text-gray-400 mb-1">OAuth2 Callback URL:</p>
                             <code class="text-sm text-indigo-400 break-all"
-                                >{{ Settings.getSetting('app_url') }}/api/user/auth/callback/discord</code
+                                >{{ Settings.getSetting('app_url') }}/api/user/auth/callback/discord/link</code
+                            ><br />
+                            <code class="text-sm text-indigo-400 break-all"
+                                >{{ Settings.getSetting('app_url') }}/api/user/auth/callback/discord/login</code
                             >
                         </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button
-                            @click="goToDiscord"
-                            class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center"
-                        >
-                            <SettingsIcon class="w-4 h-4 mr-1" />
-                            Discord Developer Portal
-                            <ChevronRightIcon class="w-4 h-4 ml-auto" />
-                        </button>
-                    </div>
                 </div>
+                <button @click="goToDiscord" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center">
+                    <SettingsIcon class="w-4 h-4 mr-1" />
+                    Discord Developer Portal
+                    <ChevronRightIcon class="w-4 h-4 ml-auto" /></button
+                ><br />
 
                 <!-- Enable Discord -->
                 <div class="mb-4">
@@ -248,19 +324,6 @@
                             class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
                         />
                         <span class="text-sm text-gray-400">Allow users to link their Discord account</span>
-                    </label>
-                </div>
-
-                <!-- Register Allowed -->
-                <div class="mb-4">
-                    <label class="flex items-center space-x-2">
-                        <input
-                            type="checkbox"
-                            v-model="formData.discord_register_allowed"
-                            @change="updateSetting('discord_register_allowed', formData.discord_register_allowed)"
-                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                        />
-                        <span class="text-sm text-gray-400">Allow users to register with Discord</span>
                     </label>
                 </div>
             </div>
@@ -432,13 +495,22 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, defineEmits } from 'vue';
-import { EyeIcon, EyeOffIcon, FeatherIcon, ChevronRightIcon, Settings as SettingsIcon } from 'lucide-vue-next';
+import {
+    EyeIcon,
+    EyeOffIcon,
+    FeatherIcon,
+    ChevronRightIcon,
+    Settings as SettingsIcon,
+    GithubIcon,
+} from 'lucide-vue-next';
 import { useSettingsStore } from '@/stores/settings';
 const Settings = useSettingsStore();
 interface Props {
     settings: Record<string, string>;
 }
-
+const goToGithub = () => {
+    window.open('https://github.com/settings/developers', '_blank');
+};
 const props = defineProps<Props>();
 const emit = defineEmits(['update']);
 
@@ -453,7 +525,6 @@ const formData = ref({
     discord_client_id: '',
     discord_client_secret: '',
     discord_link_allowed: 'false',
-    discord_register_allowed: 'false',
     discord_invite_url: '',
     twitter_url: '',
     github_url: '',
@@ -465,6 +536,10 @@ const formData = ref({
     reddit_url: '',
     telegram_url: '',
     whatsapp_url: '',
+    github_enabled: 'false',
+    github_client_id: '',
+    github_client_secret: '',
+    github_link_allowed: 'false',
 });
 
 // UI state
@@ -496,7 +571,6 @@ watch(
                 discord_client_id: newSettings['discord_client_id'] || '',
                 discord_client_secret: newSettings['discord_client_secret'] || '',
                 discord_link_allowed: newSettings['discord_link_allowed'] || 'false',
-                discord_register_allowed: newSettings['discord_register_allowed'] || 'false',
                 discord_invite_url: newSettings['discord_invite_url'] || '',
                 twitter_url: newSettings['twitter_url'] || '',
                 github_url: newSettings['github_url'] || '',
@@ -508,6 +582,10 @@ watch(
                 reddit_url: newSettings['reddit_url'] || '',
                 telegram_url: newSettings['telegram_url'] || '',
                 whatsapp_url: newSettings['whatsapp_url'] || '',
+                github_enabled: newSettings['github_enabled'] || 'false',
+                github_client_id: newSettings['github_client_id'] || '',
+                github_client_secret: newSettings['github_client_secret'] || '',
+                github_link_allowed: newSettings['github_link_allowed'] || 'false',
             };
         }
     },

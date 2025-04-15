@@ -77,6 +77,8 @@ class Servers extends ServersResource
      * Get the server details for a server ID.
      *
      * @param int $serverId The ID of the server to get details for
+     *
+     * @return array The server details
      */
     public static function getServerPterodactylDetails(int $serverId): array
     {
@@ -148,6 +150,48 @@ class Servers extends ServersResource
             App::getInstance(true)->getLogger()->error('[Pterodactyl/Admin/Servers#serverExists] Failed to check server existence: ' . $e->getMessage());
 
             return false;
+        }
+    }
+
+    /**
+     * Suspend a server in Pterodactyl.
+     *
+     * @param int $serverId The ID of the server to suspend
+     */
+    public static function performSuspendServer(int $serverId): void
+    {
+        try {
+            $serversResource = new ServersResource(
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+            );
+
+            $serversResource->suspendServer($serverId);
+        } catch (ResourceNotFoundException $e) {
+            App::getInstance(true)->getLogger()->error('[Pterodactyl/Admin/Servers#performSuspendServer] Server not found: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            App::getInstance(true)->getLogger()->error('[Pterodactyl/Admin/Servers#performSuspendServer] Failed to suspend server: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Unsuspend a server in Pterodactyl.
+     *
+     * @param int $serverId The ID of the server to unsuspend
+     */
+    public static function performUnsuspendServer(int $serverId): void
+    {
+        try {
+            $serversResource = new ServersResource(
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+            );
+
+            $serversResource->unsuspendServer($serverId);
+        } catch (ResourceNotFoundException $e) {
+            App::getInstance(true)->getLogger()->error('[Pterodactyl/Admin/Servers#performUnsuspendServer] Server not found: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            App::getInstance(true)->getLogger()->error('[Pterodactyl/Admin/Servers#performUnsuspendServer] Failed to unsuspend server: ' . $e->getMessage());
         }
     }
 
@@ -235,6 +279,13 @@ class Servers extends ServersResource
         }
     }
 
+    /**
+     * Get the server count by location.
+     *
+     * @param int $locationId The ID of the location to get the server count for
+     *
+     * @return int The server count
+     */
     public static function getServerCountByLocation(int $locationId): int
     {
         $appInstance = App::getInstance(true);
@@ -256,6 +307,32 @@ class Servers extends ServersResource
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getServerCountByLocation] Location error:  ' . $e->getMessage(), false);
 
             return 0;
+        }
+    }
+
+    public static function getAllServers(): array
+    {
+        $appInstance = App::getInstance(true);
+
+        try {
+            $serversResource = new ServersResource(
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+            );
+
+            return $serversResource->listServers();
+        } catch (ResourceNotFoundException $e) {
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] User not found', false);
+
+            return [];
+        } catch (PterodactylException|ValidationException $e) {
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Failed to fetch user data', false);
+
+            return [];
+        } catch (\Throwable $e) {
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Unexpected error', false);
+
+            return [];
         }
     }
 

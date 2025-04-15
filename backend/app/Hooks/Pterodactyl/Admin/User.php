@@ -22,6 +22,16 @@ use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
 class User extends UsersResource
 {
+    /**
+     * Perform a login action on the Pterodactyl panel.
+     *
+     * @param string $pterodactylUserId The UUID of the user to login
+     * @param string $email The email of the user to login
+     * @param string $username The username of the user to login
+     * @param string $first_name The first name of the user to login
+     * @param string $last_name The last name of the user to login
+     * @param string $password The password of the user to login
+     */
     public static function performLogin(string $pterodactylUserId, string $email, string $username, string $first_name, string $last_name, string $password): void
     {
         $appInstance = App::getInstance(true);
@@ -60,6 +70,17 @@ class User extends UsersResource
         }
     }
 
+    /**
+     * Perform a register action on the Pterodactyl panel.
+     *
+     * @param string $first_name The first name of the user to register
+     * @param string $last_name The last name of the user to register
+     * @param string $username The username of the user to register
+     * @param string $email The email of the user to register
+     * @param string $password The password of the user to register
+     *
+     * @return int The user id of the user in the pterodactyl panel
+     */
     public static function performRegister(string $first_name, string $last_name, string $username, string $email, string $password): int
     {
         $appInstance = App::getInstance(true);
@@ -136,6 +157,16 @@ class User extends UsersResource
         }
     }
 
+    /**
+     * Perform an update user action on the Pterodactyl panel.
+     *
+     * @param int $userId The ID of the user to update
+     * @param string $username The username of the user to update
+     * @param string $first_name The first name of the user to update
+     * @param string $last_name The last name of the user to update
+     * @param string $email The email of the user to update
+     * @param string $password The password of the user to update
+     */
     public static function performUpdateUser(int $userId, string $username, string $first_name, string $last_name, string $email, string $password): void
     {
         $appInstance = App::getInstance(true);
@@ -156,6 +187,13 @@ class User extends UsersResource
         }
     }
 
+    /**
+     * Check if a user exists in the Pterodactyl panel.
+     *
+     * @param string $userId The UUID of the user to check
+     *
+     * @return bool True if the user exists, false otherwise
+     */
     public static function exists(string $userId): bool
     {
         $appInstance = App::getInstance(true);
@@ -174,12 +212,6 @@ class User extends UsersResource
      * @param string $username The username of the user
      *
      * @return int The user id of the user in the pterodactyl panel
-     */
-
-    /**
-     * Validate username according to Pterodactyl standards
-     * - Must be between 3 and 32 characters
-     * - Can only contain letters, numbers, dashes, and underscores.
      */
     private static function validateUsername(string $username): bool
     {

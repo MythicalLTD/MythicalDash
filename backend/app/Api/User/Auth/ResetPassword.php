@@ -15,13 +15,13 @@ use MythicalDash\App;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Verification;
 use MythicalDash\Config\ConfigInterface;
-use MythicalSystems\CloudFlare\Turnstile;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Chat\columns\EmailVerificationColumns;
+use MythicalDash\Hooks\MythicalSystems\CloudFlare\Turnstile;
 
 $router->get('/api/user/auth/reset', function (): void {
     global $eventManager;

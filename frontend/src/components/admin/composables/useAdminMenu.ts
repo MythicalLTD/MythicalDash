@@ -13,6 +13,7 @@ import {
     BellIcon,
     MailIcon,
     Coins as Coin,
+    Server as Servers,
 } from 'lucide-vue-next';
 import type { MenuGroup, ProfileMenuItem } from '../types';
 
@@ -28,6 +29,7 @@ interface DashboardCounts {
     mail_templates_count: number;
     settings_count: number;
     redeem_codes_count: number;
+    servers_count: number;
 }
 
 interface DashboardData {
@@ -109,6 +111,13 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     active: route.path === `${adminBaseUri}/server-queue`,
                     count: computed(() => dashBoard.value.count.server_queue_count || 0),
                     path: `${adminBaseUri}/server-queue`,
+                },
+                {
+                    name: 'Servers',
+                    icon: Servers,
+                    active: route.path === `${adminBaseUri}/servers`,
+                    count: computed(() => dashBoard.value.count.servers_count || 0),
+                    path: `${adminBaseUri}/servers`,
                 },
             ],
         },

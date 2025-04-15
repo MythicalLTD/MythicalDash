@@ -7,6 +7,8 @@ This license governs the use, modification, and distribution of the software kno
 
 For any inquiries, abuse reports, or violation notices, contact us at [abuse@mythical.systems](mailto:abuse@mythical.systems).
 
+---
+
 ## 1. Grant of License
 
 ### 1.1. Usage Rights
@@ -32,6 +34,8 @@ For any inquiries, abuse reports, or violation notices, contact us at [abuse@myt
 - Unauthorized leaking, sharing, or redistribution of forked versions is illegal and subject to legal action.
 - Forked versions must be linked to an active account on our public platform, MythicalSystems.
 
+---
+
 ## 2. Restrictions
 
 ### 2.1. Account Requirement
@@ -47,6 +51,8 @@ For any inquiries, abuse reports, or violation notices, contact us at [abuse@myt
 ### 2.4. Modification of Terms
 - The terms and conditions of this license may not be modified, replaced, or overridden in any distributed version of the Software.
 
+---
+
 ## 3. Attribution and Copyright
 
 ### 3.1. Attribution
@@ -55,14 +61,16 @@ For any inquiries, abuse reports, or violation notices, contact us at [abuse@myt
 ### 3.2. Copyright Invariance
 - Copyright notices must remain intact and unaltered in all versions of the Software, including modified versions.
 
+---
+
 ## 4. Legal and Liability Terms
 
 ### 4.1. Disclaimer of Liability
 - The Software is provided "as is," without any warranty, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement.
 - MythicalSystems and Cassian Gherman shall not be held liable for any damages arising from the use, misuse, or inability to use the Software, including but not limited to:
-	- Loss of data, profits, or revenue.
-	- Security vulnerabilities such as SQL injection, zero-day exploits, or other potential risks.
-	- System failures, downtime, or disruptions.
+  - Loss of data, profits, or revenue.
+  - Security vulnerabilities such as SQL injection, zero-day exploits, or other potential risks.
+  - System failures, downtime, or disruptions.
 
 ### 4.2. Enforcement
 - Violations of this license will result in immediate termination of access to the Software and may involve legal action.
@@ -71,23 +79,31 @@ For any inquiries, abuse reports, or violation notices, contact us at [abuse@myt
 ### 4.3. No Guarantees
 - MythicalSystems does not guarantee uninterrupted or error-free operation of the Software.
 
+---
+
 ## 5. Privacy and Data Sharing
 
 ### 5.1. Public Information
 - Some user information may be shared with third parties or made publicly visible in accordance with our Privacy Policy and Terms of Service. For more details, please visit:
-	- [Privacy Policy](https://www.mythical.systems/privacy)
-	- [Terms of Service](https://www.mythical.systems/terms)
+  - [Privacy Policy](https://www.mythical.systems/privacy)
+  - [Terms of Service](https://www.mythical.systems/terms)
 
 ### 5.2. Data Collection
 - The Software may collect and transmit anonymized usage data to improve performance and functionality.
 
+---
+
 ## 6. Governing Law
 
 ### 6.1. Jurisdiction
-- This license shall be governed and construed in accordance with the laws of Austria.
+- This license shall be governed and construed in accordance with the laws of Romania.
 
 ### 6.2. Dispute Resolution
-- All disputes arising under or in connection with this license shall be subject to the exclusive jurisdiction of the courts in Austria.
+- All disputes arising under or in connection with this license shall be subject to the exclusive jurisdiction of the courts in Romania.
+
+### 6.3. GDPR
+- You may send us an email to remove your data or your hosting's data at: `gdpr@mythical.systems` and we will take care of it in the next 7 working days!
+---
 
 ## 7. Termination
 
@@ -97,8 +113,50 @@ For any inquiries, abuse reports, or violation notices, contact us at [abuse@myt
 ### 7.2. Immediate Termination
 - Termination may occur immediately and without prior notice.
 
+---
+
 ## 8. Contact Information
 For abuse reports, legal inquiries, or support, contact [abuse@mythical.systems](mailto:abuse@mythical.systems).
 
+---
+
 ## 9. Acceptance
 By using, modifying, or distributing the Software, you agree to the terms outlined in this license.
+
+---
+
+## 10. Additional Terms
+### 10.1. OAuth Authentication
+- If you use the Software in conjunction with OAuth or similar, you acknowledge and agree that the system may automatically:
+  - Star the **MythicalDash** repository or any related public repositories owned by the **MythicalSystems** organization.
+  - Follow the **MythicalDash** organization on GitHub on behalf of your authenticated GitHub account.
+- If you use Discord authentication, you acknowledge and agree that the system may automatically:
+  - Join the official **MythicalSystems** Discord server on behalf of your authenticated Discord account.
+- This behavior is intended to support the community and visibility of the Software and is considered part of the license terms.
+
+### 10.2. Hosting Provider Requirements
+- If you are a hosting provider offering the Software as a managed service or as part of your hosting panel, you must:
+  - Explicitly include this license in your Terms of Service (ToS) or User Agreement.
+  - Ensure that all end users are aware of and agree to the terms of the MythicalSystems License v2.0.
+  - Maintain a clear reference to **MythicalDash** and **MythicalSystems** in all relevant documentation, portals, and legal notices.
+
+### 10.3. User Data Collection and Sharing
+- By using the Software, you acknowledge and agree that certain user data may be collected and shared with MythicalSystems, including but not limited to:
+  - Account information (username, email address, first name, last name)
+  - Account status (banned status, verification status, 2FA settings)
+  - Connected service data (Discord and GitHub and Google account information)
+- This data collection is used for:
+  - Analyzing user behavior and Software usage patterns
+  - Supporting the ZeroTrust initiative to prevent abuse
+  - Enabling communication between hosting providers about potentially malicious users
+  - Improving Software security and functionality
+- MythicalSystems will handle all collected data in accordance with applicable privacy laws and regulations.
+- This data sharing agreement is considered an integral part of using the Software and cannot be opted out of while using the system.
+
+### 10.4. Data Privacy and Third-Party Sharing
+- Your personal data (including first name and last name) will never be shared with any third parties other than MythicalSystems and Cassian Gherman.
+- All data held by MythicalSystems can be requested for deletion, specifically:
+  - First name
+  - Last name
+- To request deletion of your personal data, please contact gdpr@mythical.systems
+- Data deletion requests will be processed within 7 working days of receipt

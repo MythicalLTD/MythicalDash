@@ -63,6 +63,11 @@ class UserColumns
     public const DISCORD_EMAIL = 'discord_email';
     public const DISCORD_LINKED = 'discord_linked';
 
+    public const GITHUB_ID = 'github_id';
+    public const GITHUB_USERNAME = 'github_username';
+    public const GITHUB_EMAIL = 'github_email';
+    public const GITHUB_LINKED = 'github_linked';
+
     /**
      * @return string[]
      */
@@ -107,6 +112,10 @@ class UserColumns
             self::DISCORD_GLOBAL_NAME,
             self::DISCORD_EMAIL,
             self::DISCORD_LINKED,
+            self::GITHUB_ID,
+            self::GITHUB_USERNAME,
+            self::GITHUB_EMAIL,
+            self::GITHUB_LINKED,
         ];
     }
 }

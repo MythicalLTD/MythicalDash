@@ -151,7 +151,11 @@ $router->add('/api/system/settings', function (): void {
         ConfigInterface::DISCORD_SERVER_ID => '',
         ConfigInterface::DISCORD_CLIENT_ID => '',
         ConfigInterface::DISCORD_LINK_ALLOWED => 'false',
-        ConfigInterface::DISCORD_REGISTER_ALLOWED => 'false',
+
+        // Github Integration
+        ConfigInterface::GITHUB_ENABLED => 'false',
+        ConfigInterface::GITHUB_CLIENT_ID => '',
+        ConfigInterface::GITHUB_LINK_ALLOWED => 'false',
 
         // Max Resources
         ConfigInterface::MAX_RAM => '1024',

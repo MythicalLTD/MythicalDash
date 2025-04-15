@@ -17,7 +17,6 @@ use RateLimit\Rate;
 use MythicalDash\Chat\Database;
 use RateLimit\RedisRateLimiter;
 use MythicalDash\Hooks\MythicalAPP;
-use MythicalSystems\Utils\XChaCha20;
 use MythicalDash\Router\Router as rt;
 use MythicalDash\Config\ConfigFactory;
 use MythicalDash\Logger\LoggerFactory;
@@ -26,6 +25,7 @@ use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Hooks\LicenseValidator;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AppEvent;
+use MythicalDash\Hooks\MythicalSystems\Utils\XChaCha20;
 
 class App extends MythicalAPP
 {

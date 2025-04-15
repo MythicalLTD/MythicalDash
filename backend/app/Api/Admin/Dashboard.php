@@ -43,6 +43,7 @@ $router->get('/api/admin', function (): void {
             $mailTemplatesCount = Database::getTableRowCount('mythicaldash_mail_templates');
             $settingsCount = Database::getTableRowCount('mythicaldash_settings', false);
             $redeemCodesCount = Database::getTableRowCount('mythicaldash_redeem_codes');
+            $serversCount = Database::getTableRowCount('mythicaldash_servers');
 
             $appInstance->OK('Dashboard data retrieved successfully.', [
                 'core' => [
@@ -61,6 +62,7 @@ $router->get('/api/admin', function (): void {
                     'mail_templates_count' => $mailTemplatesCount,
                     'settings_count' => $settingsCount,
                     'redeem_codes_count' => $redeemCodesCount,
+                    'servers_count' => $serversCount,
                 ],
                 'etc' => [
                     'activity' => $activity,

@@ -13,11 +13,11 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\Session;
-use MythicalSystems\User\UUIDManager;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Services\LinkPays\LinkPays;
 use MythicalDash\Chat\Earn\LinkPays as LinkPaysDB;
+use MythicalDash\Hooks\MythicalSystems\User\UUIDManager;
 
 $router->get('/api/user/earn/l4r/linkpays/start', function (): void {
     App::init();

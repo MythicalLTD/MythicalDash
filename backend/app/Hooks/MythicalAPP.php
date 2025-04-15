@@ -13,7 +13,7 @@
 
 namespace MythicalDash\Hooks;
 
-class MythicalAPP extends \MythicalSystems\Api\Api
+class MythicalAPP extends MythicalSystems\Api\Api
 {
     /**
      * Return a 200 response.

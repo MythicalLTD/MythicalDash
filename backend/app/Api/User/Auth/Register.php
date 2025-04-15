@@ -14,12 +14,12 @@
 use MythicalDash\App;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Config\ConfigInterface;
-use MythicalSystems\CloudFlare\Turnstile;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Referral\ReferralUses;
 use MythicalDash\Chat\Referral\ReferralCodes;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
+use MythicalDash\Hooks\MythicalSystems\CloudFlare\Turnstile;
 
 $router->add('/api/user/auth/register', function (): void {
     global $eventManager;

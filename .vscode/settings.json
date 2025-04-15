@@ -138,4 +138,5 @@
 		"frontend/src/locale",
 		"backend/storage/packages/phpmailer/phpmailer/language"
 	],
+	"php.version": "8.4",
 }

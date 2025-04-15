@@ -15,7 +15,7 @@ namespace MythicalDash\Cli\Commands;
 
 use MythicalDash\Cli\App;
 use MythicalDash\Cli\CommandBuilder;
-use MythicalSystems\Utils\XChaCha20;
+use MythicalDash\Hooks\MythicalSystems\Utils\XChaCha20;
 
 class Setup extends App implements CommandBuilder
 {

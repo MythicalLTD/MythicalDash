@@ -13,11 +13,11 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\Session;
-use MythicalSystems\User\UUIDManager;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Services\ShareUS\ShareUS;
 use MythicalDash\Chat\Earn\ShareUS as ShareUSDB;
+use MythicalDash\Hooks\MythicalSystems\User\UUIDManager;
 
 $router->get('/api/user/earn/l4r/shareus/start', function (): void {
     App::init();
