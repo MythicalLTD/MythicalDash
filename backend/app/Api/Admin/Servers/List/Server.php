@@ -17,11 +17,16 @@ use MythicalDash\Chat\Eggs\Eggs;
 use MythicalDash\Chat\Eggs\EggCategories;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Locations\Locations;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Plugins\Events\Events\ServerEvent;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 $router->post('/api/admin/servers/toggle-suspend/(.*)', function (string $id): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
+    global $eventManager;
     $session = new MythicalDash\Chat\User\Session($appInstance);
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
         if (MythicalDash\Hooks\Pterodactyl\Admin\Servers::serverExists($id)) {
@@ -29,11 +34,29 @@ $router->post('/api/admin/servers/toggle-suspend/(.*)', function (string $id): v
             $suspended = $serverInfo['attributes']['suspended'];
             if ($suspended) {
                 MythicalDash\Hooks\Pterodactyl\Admin\Servers::performUnsuspendServer($id);
+                $eventManager->emit(ServerEvent::onServerRemoveSuspend(), [
+                    'server' => $serverInfo,
+                ]);
+                UserActivities::add(
+                    $session->getInfo(UserColumns::UUID, false),
+                    UserActivitiesTypes::$server_remove_suspend,
+                    CloudFlareRealIP::getRealIP(),
+                    "Unsuspended server $id"
+                );
                 $appInstance->OK('Server unsuspended successfully', [
                     'server' => $serverInfo,
                 ]);
             } else {
                 MythicalDash\Hooks\Pterodactyl\Admin\Servers::performSuspendServer($id);
+                $eventManager->emit(ServerEvent::onServerSuspend(), [
+                    'server' => $serverInfo,
+                ]);
+                UserActivities::add(
+                    $session->getInfo(UserColumns::UUID, false),
+                    UserActivitiesTypes::$server_suspend,
+                    CloudFlareRealIP::getRealIP(),
+                    "Suspended server $id"
+                );
                 $appInstance->OK('Server suspended successfully', [
                     'server' => $serverInfo,
                 ]);
@@ -55,6 +78,16 @@ $router->post('/api/admin/servers/delete/(.*)', function (string $id): void {
         if (MythicalDash\Hooks\Pterodactyl\Admin\Servers::serverExists($id)) {
             MythicalDash\Hooks\Pterodactyl\Admin\Servers::deletePterodactylServer($id);
             MythicalDash\Chat\Servers\Server::deleteServerByPterodactylId($id);
+            global $eventManager;
+            $eventManager->emit(ServerEvent::onServerDeleted(), [
+                'server' => $id,
+            ]);
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$server_delete,
+                CloudFlareRealIP::getRealIP(),
+                "Deleted server $id"
+            );
             $appInstance->OK('Server deleted successfully', []);
         } else {
             $appInstance->BadRequest('Server not found', ['error_code' => 'SERVER_NOT_FOUND']);

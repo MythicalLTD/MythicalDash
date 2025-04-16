@@ -55,6 +55,11 @@ class PluginManager
         }
     }
 
+    public function doesPluginExist(string $identifier): bool
+    {
+        return array_key_exists($identifier, $this->plugins);
+    }
+
     public function getEventManager(): PluginEvents
     {
         return new PluginEvents();

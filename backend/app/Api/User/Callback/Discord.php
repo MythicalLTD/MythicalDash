@@ -16,13 +16,17 @@ use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
+use MythicalDash\Plugins\Events\Events\DiscordEvent;
 
 $router->get('/api/user/auth/callback/discord/link', function () {
     App::init();
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
     $s = new Session($appInstance);
-
+    global $eventManager;
     if ($config->getSetting(ConfigInterface::DISCORD_ENABLED, 'false') === 'false' && $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '') === '' && $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '') === '' && $config->getSetting(ConfigInterface::DISCORD_LINK_ALLOWED, '') == 'true') {
         App::NotFound('Discord is not enabled', []);
     }
@@ -78,6 +82,15 @@ $router->get('/api/user/auth/callback/discord/link', function () {
             $s->setInfo(UserColumns::DISCORD_GLOBAL_NAME, $global_name, false);
             $s->setInfo(UserColumns::DISCORD_EMAIL, $email, false);
             $s->setInfo(UserColumns::DISCORD_LINKED, 'true', false);
+            $eventManager->emit(DiscordEvent::onDiscordLink(), [
+                'user' => $s->getInfo(UserColumns::UUID, false),
+            ]);
+            UserActivities::add(
+                $s->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$discord_link,
+                CloudFlareRealIP::getRealIP(),
+                "Linked Discord account: $id"
+            );
             header('Location: ' . $url . '/');
             exit;
         }
@@ -92,6 +105,7 @@ $router->get('/api/user/auth/callback/discord/link', function () {
 $router->get('/api/user/auth/callback/discord/unlink', function () {
     App::init();
     $appInstance = App::getInstance(true);
+    global $eventManager;
     $config = $appInstance->getConfig();
     $s = new Session($appInstance);
 
@@ -100,7 +114,17 @@ $router->get('/api/user/auth/callback/discord/unlink', function () {
     $s->setInfo(UserColumns::DISCORD_GLOBAL_NAME, null, false);
     $s->setInfo(UserColumns::DISCORD_EMAIL, null, false);
     $s->setInfo(UserColumns::DISCORD_LINKED, 'false', false);
+    $eventManager->emit(DiscordEvent::onDiscordUnlink(), [
+        'user' => $s->getInfo(UserColumns::UUID, false),
+    ]);
+    UserActivities::add(
+        $s->getInfo(UserColumns::UUID, false),
+        UserActivitiesTypes::$discord_unlink,
+        CloudFlareRealIP::getRealIP(),
+        'Unlinked Discord account'
+    );
     header('Location: /account');
+    exit;
 });
 
 $router->get('/api/user/auth/callback/discord/login', function () {
@@ -111,7 +135,7 @@ $router->get('/api/user/auth/callback/discord/login', function () {
     if ($config->getSetting(ConfigInterface::DISCORD_ENABLED, 'false') === 'false' && $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '') === '' && $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '') === '' && $config->getSetting(ConfigInterface::DISCORD_LINK_ALLOWED, '') == 'true') {
         App::NotFound('Discord is not enabled', []);
     }
-
+    global $eventManager;
     $appId = $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '');
     $appSecret = $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '');
     $url = $config->getSetting(ConfigInterface::APP_URL, '');
@@ -156,9 +180,19 @@ $router->get('/api/user/auth/callback/discord/login', function () {
 
         if (isset($userInfo)) {
             if (User::exists(UserColumns::DISCORD_ID, $id)) {
-                $email = User::getInfo(User::getTokenFromUUID(User::getUUIDFromDiscordID($id)), UserColumns::EMAIL, false);
-                $password = User::getInfo(User::getTokenFromUUID(User::getUUIDFromDiscordID($id)), UserColumns::PASSWORD, true);
+                $uuid = User::getUUIDFromDiscordID($id);
+                $email = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::EMAIL, false);
+                $password = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::PASSWORD, true);
                 header('Location: ' . $url . '/auth/login?email=' . urlencode(base64_encode($email)) . '&password=' . urlencode(base64_encode($password)) . '&performLogin=true');
+                $eventManager->emit(DiscordEvent::onDiscordLogin(), [
+                    'user' => $uuid,
+                ]);
+                UserActivities::add(
+                    $uuid,
+                    UserActivitiesTypes::$discord_login,
+                    CloudFlareRealIP::getRealIP(),
+                    'Logged in with Discord'
+                );
                 exit;
             }
             header('Location: ' . $url . '/auth/login?error=discord');

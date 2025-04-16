@@ -544,21 +544,22 @@ class User extends Database
      *
      * @return string The UUID
      */
-	public static function getUUIDFromGitHubID(string $githubID): string
-	{
-		try {
-			$con = self::getPdoConnection();
-			$stmt = $con->prepare('SELECT uuid FROM ' . self::TABLE_NAME . ' WHERE github_id = :githubID AND deleted = "false" LIMIT 1');
-			$stmt->bindParam(':githubID', $githubID);
-			$stmt->execute();
+    public static function getUUIDFromGitHubID(string $githubID): string
+    {
+        try {
+            $con = self::getPdoConnection();
+            $stmt = $con->prepare('SELECT uuid FROM ' . self::TABLE_NAME . ' WHERE github_id = :githubID AND deleted = "false" LIMIT 1');
+            $stmt->bindParam(':githubID', $githubID);
+            $stmt->execute();
 
-			return $stmt->fetchColumn();
-		} catch (\Exception $e) {
-			Database::db_Error('Failed to uuid from github id: ' . $e->getMessage());
+            return $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            Database::db_Error('Failed to uuid from github id: ' . $e->getMessage());
 
-			return "";
-		}
-	}
+            return '';
+        }
+    }
+
     /**
      * Get the UUID from the discord id.
      *
@@ -578,7 +579,7 @@ class User extends Database
         } catch (\Exception $e) {
             Database::db_Error('Failed to uuid from discord id: ' . $e->getMessage());
 
-            return "";
+            return '';
         }
     }
 
@@ -652,5 +653,17 @@ class User extends Database
 
             return null;
         }
+    }
+
+    /**
+     * Delete the user.
+     *
+     * @param string $token The token
+     *
+     * @return bool If the user was deleted
+     */
+    public static function delete(string $token): bool
+    {
+        return self::updateInfo($token, UserColumns::DELETED, 'true', false);
     }
 }

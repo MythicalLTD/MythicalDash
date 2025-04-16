@@ -9,6 +9,9 @@ plugin:
   author: 
     - NaysKutzu # The owner and author of the plugin
   icon: https://github.com/mythicalltd.png # The logo of the plugin
+  requiredConfigs:
+    - exampleconfig
+    - exampleconfig2
   dependencies: 
     #- composer=mythicalsystems/core # If you need a specific composer package
     - php=8.1 # The minimum php version to run this

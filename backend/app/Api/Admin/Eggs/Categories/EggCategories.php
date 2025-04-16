@@ -127,7 +127,6 @@ $router->post('/api/admin/egg-categories/create', function (): void {
                 'pterodactyl_nest_id' => $pterodactyl_nest_id,
                 'enabled' => $enabled,
             ]);
-
             $appInstance->OK('Egg category created', [
                 'category' => [
                     'name' => $name,

@@ -14,7 +14,10 @@
 use MythicalDash\App;
 use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\Announcements\Announcements;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Chat\Announcements\AnnouncementsTags;
 use MythicalDash\Chat\Announcements\AnnouncementsAssets;
 use MythicalDash\Plugins\Events\Events\AnnouncementsEvent;
@@ -72,6 +75,13 @@ $router->post('/api/admin/announcements/create', function () {
             'description' => $description,
         ]);
 
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$announcement_create,
+            CloudFlareRealIP::getRealIP(),
+            "Created announcement $id"
+        );
+
         $appInstance->OK(
             'Announcement created successfully.',
             [
@@ -120,6 +130,12 @@ $router->post('/api/admin/announcements/(.*)/update', function ($id) {
             'shortDescription' => $shortDescription,
             'description' => $description,
         ]);
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$announcement_update,
+            CloudFlareRealIP::getRealIP(),
+            "Updated announcement $id"
+        );
 
         $appInstance->OK('Announcement updated successfully.', [
             'announcement' => [
@@ -164,6 +180,12 @@ $router->post('/api/admin/announcements/(.*)/tags/add', function ($id) {
             'tagId' => $tagId,
             'announcementId' => $id,
         ]);
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$announcement_tag_create,
+            CloudFlareRealIP::getRealIP(),
+            "Created announcement tag $tagId"
+        );
 
         $appInstance->OK('Announcement tag created successfully.', ['id' => $tagId]);
     } else {
@@ -269,6 +291,12 @@ $router->post('/api/admin/announcements/(.*)/assets/add', function ($id) {
                 'announcementId' => $id,
                 'files' => $uploadedFiles,
             ]);
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$announcement_asset_create,
+                CloudFlareRealIP::getRealIP(),
+                "Created announcement asset $id"
+            );
 
             $appInstance->OK(200, [
                 'message' => 'Attachments uploaded successfully',
@@ -319,6 +347,12 @@ $router->post('/api/admin/announcements/(.*)/assets/(.*)/delete', function ($id,
                     'announcementId' => $id,
                     'assetId' => $assetId,
                 ]);
+                UserActivities::add(
+                    $session->getInfo(UserColumns::UUID, false),
+                    UserActivitiesTypes::$announcement_asset_delete,
+                    CloudFlareRealIP::getRealIP(),
+                    "Deleted announcement asset $assetId"
+                );
                 AnnouncementsAssets::delete((int) $assetId);
                 $appInstance->OK('Announcement asset deleted successfully.', ['id' => $assetId]);
             } else {
@@ -352,6 +386,12 @@ $router->post('/api/admin/announcements/(.*)/tags/(.*)/delete', function (int $i
             'announcementId' => $id,
             'tagId' => $tagId,
         ]);
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$announcement_tag_delete,
+            CloudFlareRealIP::getRealIP(),
+            "Deleted announcement tag $tagId"
+        );
 
         AnnouncementsTags::delete((int) $tagId);
 
@@ -389,6 +429,12 @@ $router->post('/api/admin/announcements/(.*)/delete', function ($id) {
             $eventManager->emit(AnnouncementsEvent::onDeleteAnnouncement(), [
                 'announcementId' => $id,
             ]);
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$announcement_delete,
+                CloudFlareRealIP::getRealIP(),
+                "Deleted announcement $id"
+            );
             Announcements::delete((int) $id);
             $appInstance->OK('Announcement deleted successfully.', ['id' => $id]);
         } else {

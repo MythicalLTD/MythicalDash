@@ -17,6 +17,9 @@ use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Mails;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Plugins\Events\Events\UserEvent;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 $router->get('/api/admin/users', function (): void {
     App::init();
@@ -126,6 +129,17 @@ $router->post('/api/admin/user/(.*)/update', function ($userId): void {
                 } else {
                     $encrypted = false;
                 }
+                UserActivities::add(
+                    $session->getInfo(UserColumns::UUID, false),
+                    UserActivitiesTypes::$admin_user_update,
+                    CloudFlareRealIP::getRealIP(),
+                    "Updated user $userId"
+                );
+
+                global $eventManager;
+                $eventManager->emit(UserEvent::onUserUpdate(), [
+                    'user' => $userId,
+                ]);
                 $token = User::getTokenFromUUID($userId);
                 if (User::updateInfo($token, $column, $value, $encrypted)) {
                     $appInstance->OK('User updated successfully.', ['error_code' => 'USER_UPDATED']);
@@ -155,6 +169,17 @@ $router->post('/api/admin/user/(.*)/delete', function ($userId): void {
         }
         if (User::exists(UserColumns::UUID, $userId)) {
             $token = User::getTokenFromUUID($userId);
+            User::delete($token);
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$admin_user_delete,
+                CloudFlareRealIP::getRealIP(),
+                "Deleted user $userId"
+            );
+            global $eventManager;
+            $eventManager->emit(UserEvent::onUserDelete(), [
+                'user' => $userId,
+            ]);
             $appInstance->OK('User deleted successfully.', ['error_code' => 'USER_DELETED']);
         } else {
             $appInstance->NotFound('User not found', ['error_code' => 'USER_NOT_FOUND']);

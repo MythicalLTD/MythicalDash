@@ -18,6 +18,7 @@ use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Referral\ReferralUses;
 use MythicalDash\Chat\Referral\ReferralCodes;
+use MythicalDash\Plugins\Events\Events\ReferralsEvent;
 
 $router->get('/api/user/earn/referrals', function (): void {
     App::init();
@@ -40,7 +41,11 @@ $router->get('/api/user/earn/referrals', function (): void {
     if (!$referralCode || empty($referralCode)) {
         $code = $session->getInfo(UserColumns::USERNAME, false) . '_' . $appInstance->generatePin();
         $newReferralId = ReferralCodes::create($uuid, $code);
-
+        global $eventManager;
+        $eventManager->emit(ReferralsEvent::onReferralCreated(), [
+            'user' => $uuid,
+            'referral_code' => $code,
+        ]);
         if (!$newReferralId) {
             $appInstance->BadRequest('Failed to create referral code', ['error_code' => 'REFERRALS_CREATE_FAILED']);
 

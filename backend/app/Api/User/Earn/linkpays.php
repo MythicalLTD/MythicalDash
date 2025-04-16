@@ -15,9 +15,13 @@ use MythicalDash\App;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\Services\LinkPays\LinkPays;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\Earn\LinkPays as LinkPaysDB;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Hooks\MythicalSystems\User\UUIDManager;
+use MythicalDash\Plugins\Events\Events\LinkForRewardEvent;
 
 $router->get('/api/user/earn/l4r/linkpays/start', function (): void {
     App::init();
@@ -26,7 +30,7 @@ $router->get('/api/user/earn/l4r/linkpays/start', function (): void {
     $appInstance->allowOnlyGET();
     $session = new Session($appInstance);
     header('Content-Type: text/html');
-
+    global $eventManager;
     // Check if LinkPays is enabled
     if ($config->getSetting(ConfigInterface::L4R_LINKPAYS_ENABLED, 'false') !== 'true') {
         header('Location: /earn/links?error=linkpays_not_enabled');
@@ -51,6 +55,10 @@ $router->get('/api/user/earn/l4r/linkpays/start', function (): void {
             if ($timeSinceLastLink < $coolDown) {
                 $waitTime = $coolDown - $timeSinceLastLink;
                 $waitMinutes = ceil($waitTime / 60);
+                $eventManager->emit(LinkForRewardEvent::onLinkCoolDownReached(), [
+                    'user' => $session->getInfo(UserColumns::UUID, false),
+                    'wait_time' => $waitMinutes,
+                ]);
                 ?>
 				?>
 				<!DOCTYPE html>
@@ -111,6 +119,10 @@ $router->get('/api/user/earn/l4r/linkpays/start', function (): void {
         }
 
         if ($dayCount >= $dayLimit) {
+            $eventManager->emit(LinkForRewardEvent::onLinkDailyLimitReached(), [
+                'user' => $session->getInfo(UserColumns::UUID, false),
+                'day_limit' => $dayLimit,
+            ]);
             ?>
 			<!DOCTYPE html>
 			<html>
@@ -186,6 +198,9 @@ $router->get('/api/user/earn/l4r/linkpays/start', function (): void {
     $ShareUSUUID = UUIDManager::generateUUID();
     $id = LinkPaysDB::create($ShareUSUUID, $session->getInfo(UserColumns::UUID, false));
     if ($id === 0) {
+        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+        ]);
         ?>
 		<!DOCTYPE html>
 		<html>
@@ -260,6 +275,10 @@ $router->get('/api/user/earn/l4r/linkpays/start', function (): void {
     try {
         $shareUS = new LinkPays($config->getSetting(ConfigInterface::L4R_LINKPAYS_API_KEY, ''));
         $link = $shareUS->getLink($finalLink);
+        $eventManager->emit(LinkForRewardEvent::onLinkForRewardCreated(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $ShareUSUUID,
+        ]);
         header('Location: ' . $link);
     } catch (Exception $e) {
         header('Location: /earn/links?error=linkpays_error');
@@ -275,6 +294,7 @@ $router->get('/api/user/earn/l4r/linkpays/earn/(.*)', function (string $code): v
     $appInstance->allowOnlyGET();
     $session = new Session($appInstance);
     $config = $appInstance->getConfig();
+    global $eventManager;
     // Check if LinkPays is enabled
     if ($config->getSetting(ConfigInterface::L4R_LINKPAYS_ENABLED, 'false') !== 'true') {
         header('Location: /earn/links');
@@ -288,30 +308,50 @@ $router->get('/api/user/earn/l4r/linkpays/earn/(.*)', function (string $code): v
     // Validate code format
     if (empty($code) || !preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', $code)) {
         header('Location: /earn/links?error=invalid_code');
+        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $code,
+        ]);
         exit;
     }
 
     $linkId = LinkPaysDB::convertCodeToId($code);
     if ($linkId === 0) {
         header('Location: /earn/links?error=invalid_code');
+        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $linkId,
+        ]);
         exit;
     }
 
     $link = LinkPaysDB::getById($linkId);
     if (empty($link)) {
         header('Location: /earn/links?error=invalid_code');
+        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $linkId,
+        ]);
         exit;
     }
 
     // Validate link ownership
     if ($link['user'] !== $session->getInfo(UserColumns::UUID, false)) {
         header('Location: /earn/links?error=invalid_ownership');
+        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $linkId,
+        ]);
         exit;
     }
 
     // Check if link is already completed
     if ($link['completed'] == 'true') {
         header('Location: /earn/links?error=already_completed');
+        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $linkId,
+        ]);
         exit;
     }
     // Get the time when the link was created
@@ -322,6 +362,10 @@ $router->get('/api/user/earn/l4r/linkpays/earn/(.*)', function (string $code): v
     // Check if user took less time than required
     if ($timeTaken < $minToComplete) {
         LinkPaysDB::delete($linkId);
+        $eventManager->emit(LinkForRewardEvent::onLinkToEarly(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $linkId,
+        ]);
         ?>
 		<!DOCTYPE html>
 		<html>
@@ -387,6 +431,16 @@ $router->get('/api/user/earn/l4r/linkpays/earn/(.*)', function (string $code): v
     // User took enough time, give them coins
     LinkPaysDB::markAsCompleted($linkId);
     $session->setInfo(UserColumns::CREDITS, (int) $session->getInfo(UserColumns::CREDITS, false) + (int) $coinsPerLink, false);
+    $eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
+        'user' => $session->getInfo(UserColumns::UUID, false),
+        'link' => $linkId,
+    ]);
+    UserActivities::add(
+        $session->getInfo(UserColumns::UUID, false),
+        UserActivitiesTypes::$user_redeemed_code,
+        CloudFlareRealIP::getRealIP(),
+        "Redeemed code: $code for $coinsPerLink credits"
+    );
     header('Location: /earn/links?success=true');
     exit;
 });

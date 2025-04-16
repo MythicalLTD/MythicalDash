@@ -19,7 +19,11 @@ use MythicalDash\Chat\Eggs\EggCategories;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Locations\Locations;
 use MythicalDash\Chat\Servers\ServerQueue;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
+use MythicalDash\Plugins\Events\Events\ServerEvent;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\ServerQueueEvent;
 
 // Update server
@@ -237,7 +241,18 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         $serverId = $server['attributes']['id'];
         $svAw1 = Servers::updatePterodactylServer($serverId, $updateData);
         $svAw2 = Servers::updatePterodactylServerDetails($serverId, $details);
-
+        global $eventManager;
+        $eventManager->emit(ServerEvent::onServerUpdated(), [
+            'server' => $server,
+            'updateData' => $updateData,
+            'details' => $details,
+        ]);
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$server_update,
+            CloudFlareRealIP::getRealIP(),
+            "Updated server $serverId"
+        );
         $appInstance->OK('Server updated successfully', [
             'build' => $updateData,
             'details' => $details,
@@ -283,6 +298,16 @@ $router->post('/api/user/server/(.*)/delete', function (string $id): void {
 
     try {
         Servers::deletePterodactylServer($serverId, false);
+        global $eventManager;
+        $eventManager->emit(ServerEvent::onServerDeleted(), [
+            'server' => $serverId,
+        ]);
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$server_delete,
+            CloudFlareRealIP::getRealIP(),
+            "Deleted server $serverId"
+        );
         $appInstance->OK('Server deleted successfully', []);
     } catch (Exception $e) {
         $appInstance->ServiceUnavailable('Error deleting server: ' . $e->getMessage(), ['error_code' => 'FAILED_TO_DELETE_SERVER']);
@@ -565,6 +590,12 @@ $router->post('/api/user/server/create', function (): void {
             'egg' => $egg_id,
             'status' => 'pending',
         ]);
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$server_create,
+            CloudFlareRealIP::getRealIP(),
+            "Created server queue item $sv"
+        );
 
         $appInstance->OK('Server queue item created successfully.', ['error_code' => 'SERVER_QUEUE_ITEM_CREATED', 'server_queue_item' => $sv]);
     } catch (Exception $e) {

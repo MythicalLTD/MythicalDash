@@ -135,7 +135,8 @@ $router->post('/api/user/ticket/(.*)/reply', function ($ticketId) {
         UserActivities::add(
             $uuid,
             UserActivitiesTypes::$ticket_reply,
-            CloudFlareRealIP::getRealIP()
+            CloudFlareRealIP::getRealIP(),
+            "Replied to ticket $ticketId"
         );
         $appInstance->OK(200, ['message' => 'Message sent']);
     } else {
@@ -182,7 +183,8 @@ $router->post('/api/user/ticket/(.*)/status', function ($ticketId) {
         UserActivities::add(
             $uuid,
             UserActivitiesTypes::$ticket_update,
-            CloudFlareRealIP::getRealIP()
+            CloudFlareRealIP::getRealIP(),
+            "Updated ticket $ticketId"
         );
         $appInstance->OK(200, ['message' => 'Ticket status updated']);
     } else {

@@ -19,6 +19,9 @@ use MythicalDash\Chat\Eggs\EggCategories;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Locations\Locations;
 use MythicalDash\Chat\Servers\ServerQueue;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\ServerQueueEvent;
 
 $router->get('/api/admin/server-queue', function (): void {
@@ -123,6 +126,12 @@ $router->post('/api/admin/server-queue/create', function (): void {
                                 'egg' => $egg,
                                 'status' => 'pending',
                             ]);
+                            UserActivities::add(
+                                $session->getInfo(UserColumns::UUID, false),
+                                UserActivitiesTypes::$admin_server_queue_create,
+                                CloudFlareRealIP::getRealIP(),
+                                "Created server queue item $sv"
+                            );
 
                             $appInstance->OK('Server queue item created successfully.', ['error_code' => 'SERVER_QUEUE_ITEM_CREATED', 'server_queue_item' => $sv]);
                         } else {
@@ -163,6 +172,12 @@ $router->post('/api/admin/server-queue/(.*)/update-status', function (string $id
                         'id' => $id,
                         'status' => $status,
                     ]);
+                    UserActivities::add(
+                        $session->getInfo(UserColumns::UUID, false),
+                        UserActivitiesTypes::$admin_server_queue_update,
+                        CloudFlareRealIP::getRealIP(),
+                        "Updated server queue item $id"
+                    );
                     $appInstance->OK('Server queue status updated successfully.', ['error_code' => 'SERVER_QUEUE_STATUS_UPDATED']);
                 } else {
                     $appInstance->BadRequest('Invalid status', ['error_code' => 'INVALID_STATUS']);
@@ -193,7 +208,12 @@ $router->post('/api/admin/server-queue/(.*)/delete', function (string $id): void
                 'id' => $id,
             ]);
             ServerQueue::delete($id);
-
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$admin_server_queue_delete,
+                CloudFlareRealIP::getRealIP(),
+                "Deleted server queue item $id"
+            );
             $appInstance->OK('Server queue deleted successfully.', ['error_code' => 'SERVER_QUEUE_DELETED']);
         } else {
             $appInstance->NotFound('Server queue not found', ['error_code' => 'SERVER_QUEUE_NOT_FOUND']);

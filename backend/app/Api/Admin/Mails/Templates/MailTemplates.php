@@ -15,6 +15,9 @@ use MythicalDash\App;
 use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Mails\MailTemplates;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\MailTemplatesEvent;
 
 $router->get('/api/admin/mail/mail-templates', function (): void {
@@ -88,6 +91,12 @@ $router->post('/api/admin/mail/mail-templates/create', function (): void {
                     'content' => $content,
                     'active' => $active,
                 ]);
+                UserActivities::add(
+                    $session->getInfo(UserColumns::UUID, false),
+                    UserActivitiesTypes::$mail_template_create,
+                    CloudFlareRealIP::getRealIP(),
+                    "Created mail template $name"
+                );
                 $appInstance->OK('Mail template created successfully.', ['mail_template' => $mailTemplates]);
             } else {
                 $appInstance->BadRequest('Failed to create mail template', ['error_code' => 'FAILED_TO_CREATE_MAIL_TEMPLATE']);
@@ -164,6 +173,12 @@ $router->post('/api/admin/mail/mail-templates/(.*)/update', function (string $id
                     'content' => $content,
                     'active' => $active,
                 ]);
+                UserActivities::add(
+                    $session->getInfo(UserColumns::UUID, false),
+                    UserActivitiesTypes::$mail_template_update,
+                    CloudFlareRealIP::getRealIP(),
+                    "Updated mail template $name"
+                );
                 $appInstance->OK('Mail template updated successfully.', ['mail_template' => $mailTemplates]);
             } else {
                 $appInstance->BadRequest('Failed to update mail template', ['error_code' => 'FAILED_TO_UPDATE_MAIL_TEMPLATE']);
@@ -193,6 +208,12 @@ $router->post('/api/admin/mail/mail-templates/(.*)/delete', function (string $id
         $eventManager->emit(MailTemplatesEvent::onDeleteMailTemplate(), [
             'id' => $id,
         ]);
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$mail_template_delete,
+            CloudFlareRealIP::getRealIP(),
+            "Deleted mail template $id"
+        );
 
         if (MailTemplates::delete($id)) {
             $appInstance->OK('Mail template deleted successfully.', ['mail_template' => $id]);

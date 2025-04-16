@@ -20,6 +20,7 @@ use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\Chat\Redeem\RedeemRedeems;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Plugins\Events\Events\RedeemEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 // User endpoint to redeem a code
@@ -38,12 +39,17 @@ $router->post('/api/user/earn/redeem', function (): void {
 
         return;
     }
+    global $eventManager;
 
     $code = $_POST['code'];
 
     // Check if code exists
     if (!RedeemCoins::existsByCode($code)) {
         $appInstance->BadRequest('Invalid redeem code', ['error_code' => 'INVALID_CODE']);
+        $eventManager->emit(RedeemEvent::onRedeemFailed(), [
+            'code' => $code,
+            'user' => $session->getInfo(UserColumns::UUID, false),
+        ]);
 
         return;
     }
@@ -55,12 +61,20 @@ $router->post('/api/user/earn/redeem', function (): void {
 
     if ($usesLeft <= 0) {
         $appInstance->BadRequest('This code has reached its usage limit', ['error_code' => 'CODE_DEPLETED']);
+        $eventManager->emit(RedeemEvent::onRedeemAlreadyRedeemed(), [
+            'code' => $code,
+            'user' => $session->getInfo(UserColumns::UUID, false),
+        ]);
 
         return;
     }
 
     if (RedeemRedeems::isCodeRedeemed($codeDB['id'], $session->getInfo(UserColumns::UUID, false))) {
         $appInstance->BadRequest('This code has already been redeemed', ['error_code' => 'CODE_ALREADY_REDEEMED']);
+        $eventManager->emit(RedeemEvent::onRedeemAlreadyRedeemed(), [
+            'code' => $code,
+            'user' => $session->getInfo(UserColumns::UUID, false),
+        ]);
 
         return;
     }
@@ -77,7 +91,11 @@ $router->post('/api/user/earn/redeem', function (): void {
         CloudFlareRealIP::getRealIP(),
         "Redeemed code: $code for $coinsToAdd credits"
     );
-
+    $eventManager->emit(RedeemEvent::onRedeemSuccess(), [
+        'code' => $code,
+        'user' => $session->getInfo(UserColumns::UUID, false),
+        'credits_added' => $coinsToAdd,
+    ]);
     $appInstance->OK('Code redeemed successfully', [
         'credits_added' => $coinsToAdd,
         'total_credits' => $newCredits,

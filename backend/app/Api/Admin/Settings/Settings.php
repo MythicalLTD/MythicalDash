@@ -14,6 +14,9 @@
 use MythicalDash\App;
 use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\SettingsEvent;
 
 $router->post('/api/admin/settings/update', function (): void {
@@ -38,6 +41,12 @@ $router->post('/api/admin/settings/update', function (): void {
                     'key' => $key,
                     'value' => $value,
                 ]);
+                UserActivities::add(
+                    $session->getInfo(UserColumns::UUID, false),
+                    UserActivitiesTypes::$admin_settings_update,
+                    CloudFlareRealIP::getRealIP(),
+                    "Updated setting $key"
+                );
                 $appInstance->OK('Settings updated successfully.', []);
             } else {
                 $appInstance->InternalServerError('Failed to update settings', ['error_code' => 'SERVICE_UNAVAILABLE']);

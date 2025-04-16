@@ -19,6 +19,7 @@ use MythicalDash\Chat\Referral\ReferralUses;
 use MythicalDash\Chat\Referral\ReferralCodes;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
+use MythicalDash\Plugins\Events\Events\ReferralsEvent;
 use MythicalDash\Hooks\MythicalSystems\CloudFlare\Turnstile;
 
 $router->add('/api/user/auth/register', function (): void {
@@ -142,6 +143,10 @@ $router->add('/api/user/auth/register', function (): void {
                 // Generate a referral code
                 $referralCode = $username . '_' . $appInstance->generatePin();
                 ReferralCodes::create($newUserUuid, $referralCode);
+                $eventManager->emit(ReferralsEvent::onReferralCreated(), [
+                    'user' => $newUserUuid,
+                    'referral_code' => $referralCode,
+                ]);
 
                 if (isset($_GET['ref']) && $_GET['ref'] != '') {
                     $referrerCode = ReferralCodes::getByCode($_GET['ref']);
@@ -151,7 +156,10 @@ $router->add('/api/user/auth/register', function (): void {
 
                     if ($referrerCode) {
                         ReferralUses::create($referrerCode['id'], $newUserUuid);
-
+                        $eventManager->emit(ReferralsEvent::onReferralRedeemed(), [
+                            'user' => $referrerUuid,
+                            'referral_code' => $_GET['ref'],
+                        ]);
                         $newUserBonus = intval($appInstance->getConfig()->getSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER, 15));
                         User::updateInfo($newUserToken, UserColumns::CREDITS, $newUserBonus, false);
 

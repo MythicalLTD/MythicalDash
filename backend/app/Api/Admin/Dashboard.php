@@ -44,6 +44,7 @@ $router->get('/api/admin', function (): void {
             $settingsCount = Database::getTableRowCount('mythicaldash_settings', false);
             $redeemCodesCount = Database::getTableRowCount('mythicaldash_redeem_codes');
             $serversCount = Database::getTableRowCount('mythicaldash_servers');
+            $pluginsCount = Database::getTableRowCount('mythicaldash_addons');
 
             $appInstance->OK('Dashboard data retrieved successfully.', [
                 'core' => [
@@ -63,6 +64,7 @@ $router->get('/api/admin', function (): void {
                     'settings_count' => $settingsCount,
                     'redeem_codes_count' => $redeemCodesCount,
                     'servers_count' => $serversCount,
+                    'plugins_count' => $pluginsCount,
                 ],
                 'etc' => [
                     'activity' => $activity,

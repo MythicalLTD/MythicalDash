@@ -11,10 +11,19 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-use MythicalDash\Hooks\MythicalSystems\Debugger;
+namespace MythicalDash\Plugins\Events\Events;
 
-Debugger::ShowAllErrors();
-$router->get('/api/user/auth/logout', function (): void {
-    global $eventManager;
-    header('location: /auth/logout');
-});
+use MythicalDash\Plugins\Events\PluginEvent;
+
+class AfkEvent implements PluginEvent
+{
+    public static function onAfk(): string
+    {
+        return 'afk::onAfk';
+    }
+
+    public static function onAfkEarly(): string
+    {
+        return 'afk::onAfkEarly';
+    }
+}

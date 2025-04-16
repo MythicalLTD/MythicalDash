@@ -615,6 +615,7 @@ account:
                         action: Action
                         date: Date
                         ip: IP
+                        context: Context
                     error: An error occurred while fetching your activity
                     noResults: No activities found
                     info: Your activity history will appear here

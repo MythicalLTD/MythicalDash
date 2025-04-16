@@ -18,6 +18,7 @@ use MythicalDash\Chat\Redeem\RedeemCoins;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Plugins\Events\Events\RedeemEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 // Get all redeem codes
@@ -63,6 +64,7 @@ $router->get('/api/admin/redeem/code/(.*)', function ($codeId): void {
 
 // Create a new redeem code
 $router->post('/api/admin/redeem/code/create', function (): void {
+    global $eventManager;
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
@@ -96,6 +98,13 @@ $router->post('/api/admin/redeem/code/create', function (): void {
                 CloudFlareRealIP::getRealIP(),
                 "Created redeem code: $code"
             );
+            global $eventManager;
+            $eventManager->emit(RedeemEvent::onRedeemCreate(), [
+                'code' => $code,
+                'coins' => $coins,
+                'uses' => $uses,
+                'enabled' => $enabled,
+            ]);
             $appInstance->OK('Redeem code created successfully.', [
                 'id' => $result,
             ]);
@@ -112,6 +121,7 @@ $router->post('/api/admin/redeem/code/(.*)/update', function ($codeId): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
+    global $eventManager;
     $session = new Session($appInstance);
 
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
@@ -152,6 +162,12 @@ $router->post('/api/admin/redeem/code/(.*)/update', function ($codeId): void {
                 CloudFlareRealIP::getRealIP(),
                 "Updated redeem code: $code"
             );
+            $eventManager->emit(RedeemEvent::onRedeemUpdate(), [
+                'code' => $code,
+                'coins' => $coins,
+                'uses' => $uses,
+                'enabled' => $enabled,
+            ]);
             $appInstance->OK('Redeem code updated successfully.', []);
         } else {
             $appInstance->InternalServerError('Failed to update redeem code', ['error_code' => 'UPDATE_CODE_FAILED']);
@@ -187,6 +203,10 @@ $router->post('/api/admin/redeem/code/(.*)/delete', function ($codeId): void {
                 CloudFlareRealIP::getRealIP(),
                 "Deleted redeem code: {$code['code']}"
             );
+            global $eventManager;
+            $eventManager->emit(RedeemEvent::onRedeemDelete(), [
+                'code' => $code['code'],
+            ]);
             $appInstance->OK('Redeem code deleted successfully.', []);
         } else {
             $appInstance->InternalServerError('Failed to delete redeem code', ['error_code' => 'DELETE_CODE_FAILED']);

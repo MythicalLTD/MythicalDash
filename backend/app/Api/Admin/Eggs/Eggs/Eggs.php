@@ -19,7 +19,6 @@ use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\Eggs\Eggs as EggManager;
 use MythicalDash\Hooks\Pterodactyl\Admin\Eggs;
-use MythicalDash\Hooks\Pterodactyl\Admin\Nests;
 use MythicalDash\Plugins\Events\Events\EggsEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 

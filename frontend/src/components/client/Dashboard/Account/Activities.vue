@@ -19,6 +19,7 @@ interface Activity {
     deleted: boolean | string;
     locked: boolean | string;
     date: string;
+    context: string;
 }
 
 const activities = ref<Activity[]>([]);
@@ -52,6 +53,13 @@ const columnsActivities = [
     {
         accessorKey: 'ip_address',
         header: t('account.pages.activity.page.table.columns.ip'),
+    },
+    {
+        accessorKey: 'context',
+        header: t('account.pages.activity.page.table.columns.context'),
+        cell: (info: { getValue: () => string | number | Date }) => {
+            return info.getValue();
+        },
     },
     {
         accessorKey: 'date',

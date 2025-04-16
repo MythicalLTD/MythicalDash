@@ -66,19 +66,69 @@ class UserActivitiesTypes
     public static string $admin_deleted_redeem_code = 'admin:redeem_code:delete';
 
     /**
-     * Get all types.
-     *
-     * @return array All types
+     * Discord & Github.
      */
-    public static function getTypes(): array
-    {
-        return [
-            self::$login,
-            self::$register,
-            self::$user_redeemed_code,
-            self::$admin_created_redeem_code,
-            self::$admin_updated_redeem_code,
-            self::$admin_deleted_redeem_code,
-        ];
-    }
+    public static string $discord_login = 'discord:login';
+    public static string $github_login = 'github:login';
+    public static string $discord_link = 'discord:link';
+    public static string $github_link = 'github:link';
+    public static string $discord_unlink = 'discord:unlink';
+    public static string $github_unlink = 'github:unlink';
+
+    /**
+     * Store.
+     */
+    public static string $store_buy = 'store:buy';
+
+    /**
+     * Servers.
+     */
+    public static string $server_suspend = 'server:suspend';
+    public static string $server_remove_suspend = 'server:remove_suspend';
+    public static string $server_delete = 'server:delete';
+    public static string $server_create = 'server:create';
+    public static string $server_update = 'server:update';
+
+    /**
+     * Plugins.
+     */
+    public static string $plugin_setting_update = 'plugin:setting_update';
+    public static string $plugin_setting_delete = 'plugin:setting_delete';
+
+    /**
+     * Mail Templates.
+     */
+    public static string $mail_template_create = 'mail_template:create';
+    public static string $mail_template_update = 'mail_template:update';
+    public static string $mail_template_delete = 'mail_template:delete';
+
+    /**
+     * Announcements.
+     */
+    public static string $announcement_create = 'announcement:create';
+    public static string $announcement_update = 'announcement:update';
+    public static string $announcement_delete = 'announcement:delete';
+    public static string $announcement_tag_create = 'announcement_tag:create';
+    public static string $announcement_tag_delete = 'announcement_tag:delete';
+    public static string $announcement_asset_create = 'announcement_asset:create';
+    public static string $announcement_asset_delete = 'announcement_asset:delete';
+
+    /**
+     * Server Queue.
+     */
+    public static string $admin_server_queue_create = 'admin:server_queue:create';
+    public static string $admin_server_queue_update = 'admin:server_queue:update';
+    public static string $admin_server_queue_delete = 'admin:server_queue:delete';
+
+    /**
+     * Settings.
+     */
+    public static string $admin_settings_update = 'admin:settings:update';
+
+    /**
+     * User.
+     */
+    public static string $admin_user_update = 'admin:user:update';
+    public static string $admin_user_delete = 'admin:user:delete';
+
 }

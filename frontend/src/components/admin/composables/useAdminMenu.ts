@@ -3,7 +3,6 @@ import {
     LayoutDashboard,
     Users,
     Database,
-    HardDrive,
     PaperclipIcon,
     InfoIcon,
     SettingsIcon,
@@ -14,6 +13,7 @@ import {
     MailIcon,
     Coins as Coin,
     Server as Servers,
+    Package as Plugins,
 } from 'lucide-vue-next';
 import type { MenuGroup, ProfileMenuItem } from '../types';
 
@@ -30,6 +30,7 @@ interface DashboardCounts {
     settings_count: number;
     redeem_codes_count: number;
     servers_count: number;
+    plugins_count: number;
 }
 
 interface DashboardData {
@@ -158,16 +159,17 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     count: computed(() => dashBoard.value.count.mail_templates_count || 0),
                 },
                 {
+                    name: 'Plugins',
+                    path: `${adminBaseUri}/plugins`,
+                    icon: Plugins,
+                    active: route.path === `${adminBaseUri}/plugins`,
+                    count: computed(() => dashBoard.value.count.plugins_count || 0),
+                },
+                {
                     name: 'MythicalCloud (Synced)',
                     path: `${adminBaseUri}/mythicalcloud`,
                     icon: Database,
                     active: route.path === `${adminBaseUri}/mythicalcloud`,
-                },
-                {
-                    name: 'Addons',
-                    path: `${adminBaseUri}/addons`,
-                    icon: HardDrive,
-                    active: route.path === `${adminBaseUri}/addons`,
                 },
             ],
         },

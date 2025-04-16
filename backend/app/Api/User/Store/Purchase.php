@@ -15,6 +15,10 @@ use MythicalDash\App;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Plugins\Events\Events\StoreEvent;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 $router->post('/api/user/store/purchase', function (): void {
     App::init();
@@ -219,6 +223,19 @@ $router->post('/api/user/store/purchase', function (): void {
 
         // Apply item effect
         $item['effect']($session);
+        global $eventManager;
+        $eventManager->emit(StoreEvent::onStoreBuy(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'item' => $itemId,
+            'price' => $price,
+        ]);
+
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$store_buy,
+            CloudFlareRealIP::getRealIP(),
+            "Purchased $itemId for $price coins"
+        );
 
         // Return success response
         $appInstance->OK('Purchase successful', [

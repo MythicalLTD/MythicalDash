@@ -103,6 +103,7 @@ const dashBoard = ref({
         settings_count: 0,
         redeem_codes_count: 0,
         servers_count: 0,
+        plugins_count: 0,
     },
 });
 

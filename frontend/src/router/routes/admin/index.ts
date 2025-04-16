@@ -12,6 +12,7 @@ import mailTemplatesRoutes from './mail-templates.ts';
 import settingsRoutes from './settings.ts';
 import serversRoutes from './servers.ts';
 import redeemRoutes from './redeems.ts';
+import pluginRoutes from './plugins.ts';
 // Main admin dashboard route
 const mainAdminRoutes: RouteRecordRaw[] = [
     {
@@ -41,6 +42,7 @@ const adminRoutes: RouteRecordRaw[] = [
     ...mailTemplatesRoutes,
     ...redeemRoutes,
     ...serversRoutes,
+    ...pluginRoutes,
 ];
 
 export default adminRoutes;

@@ -61,7 +61,9 @@ $router->post('/api/user/session/info/update', function (): void {
         $session->setInfo(UserColumns::EMAIL, $_POST['email'], false);
         $session->setInfo(UserColumns::AVATAR, $_POST['avatar'], false);
         $session->setInfo(UserColumns::BACKGROUND, $_POST['background'], false);
-        $eventManager->emit(UserEvent::onUserUpdate(), [$session->SESSION_KEY]);
+        $eventManager->emit(UserEvent::onUserUpdate(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+        ]);
         UserActivities::add(
             $session->getInfo(UserColumns::UUID, false),
             UserActivitiesTypes::$user_update,
