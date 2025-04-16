@@ -192,12 +192,20 @@ $router->add('/api/system/settings', function (): void {
         ConfigInterface::LEADERBOARD_ENABLED => 'false',
         ConfigInterface::LEADERBOARD_LIMIT => '15',
 
-		// Allow Tickets
-		ConfigInterface::ALLOW_TICKETS => 'false',
+        // Allow Tickets
+        ConfigInterface::ALLOW_TICKETS => 'false',
 
-		// Allow Servers
-		ConfigInterface::ALLOW_SERVERS => 'false',
-		
+        // Allow Servers
+        ConfigInterface::ALLOW_SERVERS => 'false',
+
+        // Allow Public Profiles
+        ConfigInterface::ALLOW_PUBLIC_PROFILES => 'false',
+
+        // Allow Coins Sharing
+        ConfigInterface::ALLOW_COINS_SHARING => 'false',
+        ConfigInterface::COINS_SHARE_MAX_AMOUNT => '100',
+        ConfigInterface::COINS_SHARE_MIN_AMOUNT => '1',
+        ConfigInterface::COINS_SHARE_FEE => '10',
     ];
 
     // Retrieve actual settings with defaults in a single array map

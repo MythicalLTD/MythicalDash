@@ -666,5 +666,4 @@ class User extends Database
     {
         return self::updateInfo($token, UserColumns::DELETED, 'true', false);
     }
-
 }

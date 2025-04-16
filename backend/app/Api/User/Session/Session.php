@@ -173,6 +173,7 @@ $router->get('/api/user/session', function (): void {
             UserColumns::GITHUB_USERNAME,
             UserColumns::GITHUB_EMAIL,
             UserColumns::GITHUB_ID,
+
         ];
 
         $info = User::getInfoArray($accountToken, $columns, [

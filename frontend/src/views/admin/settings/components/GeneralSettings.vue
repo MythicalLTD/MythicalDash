@@ -216,6 +216,86 @@
                         />
                     </div>
                 </div>
+
+                <!-- Allow Public Profiles -->
+                <div class="flex items-center justify-between p-4 bg-gray-800/30 border border-gray-700 rounded-lg">
+                    <div>
+                        <label for="allow_public_profiles" class="block text-sm font-medium text-white">
+                            Allow Public Profiles
+                        </label>
+                        <p class="mt-1 text-xs text-gray-400">Enable or disable public profiles globally</p>
+                    </div>
+                    <div class="flex items-center">
+                        <input
+                            id="allow_public_profiles"
+                            type="checkbox"
+                            v-model="formData.allow_public_profiles"
+                            @change="updateSetting('allow_public_profiles', formData.allow_public_profiles)"
+                            class="w-4 h-4 text-pink-500 border-gray-600 rounded focus:ring-pink-500 focus:ring-offset-gray-800 bg-gray-700"
+                        />
+                    </div>
+                </div>
+                <!-- Allow Coins Sharing -->
+                <div class="flex flex-col p-4 bg-gray-800/30 border border-gray-700 rounded-lg space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <label for="allow_coins_sharing" class="block text-sm font-medium text-white">
+                                Allow Coins Sharing
+                            </label>
+                            <p class="mt-1 text-xs text-gray-400">Enable or disable coins sharing globally</p>
+                        </div>
+                        <div class="flex items-center">
+                            <input
+                                id="allow_coins_sharing"
+                                type="checkbox"
+                                v-model="formData.allow_coins_sharing"
+                                @change="updateSetting('allow_coins_sharing', formData.allow_coins_sharing)"
+                                class="w-4 h-4 text-pink-500 border-gray-600 rounded focus:ring-pink-500 focus:ring-offset-gray-800 bg-gray-700"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label for="coins_share_max_amount" class="block text-sm font-medium text-gray-400">
+                                Maximum Amount
+                            </label>
+                            <input
+                                id="coins_share_max_amount"
+                                type="number"
+                                v-model="formData.coins_share_max_amount"
+                                @change="updateSetting('coins_share_max_amount', formData.coins_share_max_amount)"
+                                class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white focus:border-pink-500 focus:ring-pink-500 sm:text-sm"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="coins_share_min_amount" class="block text-sm font-medium text-gray-400">
+                                Minimum Amount
+                            </label>
+                            <input
+                                id="coins_share_min_amount"
+                                type="number"
+                                v-model="formData.coins_share_min_amount"
+                                @change="updateSetting('coins_share_min_amount', formData.coins_share_min_amount)"
+                                class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white focus:border-pink-500 focus:ring-pink-500 sm:text-sm"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="coins_share_fee" class="block text-sm font-medium text-gray-400">
+                                Share Fee (%)
+                            </label>
+                            <input
+                                id="coins_share_fee"
+                                type="number"
+                                v-model="formData.coins_share_fee"
+                                @change="updateSetting('coins_share_fee', formData.coins_share_fee)"
+                                class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white focus:border-pink-500 focus:ring-pink-500 sm:text-sm"
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- App Version (Display Only) -->
             <div class="pt-4 border-t border-gray-700">
@@ -258,6 +338,11 @@ const formData = ref({
     leaderboard_limit: '15',
     allow_tickets: 'false',
     allow_servers: 'false',
+    allow_public_profiles: 'false',
+    allow_coins_sharing: 'false',
+    coins_share_max_amount: '100',
+    coins_share_min_amount: '1',
+    coins_share_fee: '10',
 });
 
 // Timezone data
@@ -736,6 +821,11 @@ watch(
                 leaderboard_limit: newSettings['leaderboard_limit'] || '15',
                 allow_tickets: newSettings['allow_tickets'] || 'false',
                 allow_servers: newSettings['allow_servers'] || 'false',
+                allow_public_profiles: newSettings['allow_public_profiles'] || 'false',
+                allow_coins_sharing: newSettings['allow_coins_sharing'] || 'false',
+                coins_share_max_amount: newSettings['coins_share_max_amount'] || '100',
+                coins_share_min_amount: newSettings['coins_share_min_amount'] || '1',
+                coins_share_fee: newSettings['coins_share_fee'] || '10',
             };
         }
     },

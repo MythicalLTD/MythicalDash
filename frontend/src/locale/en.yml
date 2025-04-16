@@ -1357,15 +1357,14 @@ l4r:
 
 # Leaderboard translations
 leaderboard:
-    
     title: 'Leaderboard'
     description: 'See who tops our rankings across different categories'
     leaderboard: 'Leaderboard'
     currency: 'coins'
     notEnabled:
-      title: 'Leaderboard'
-      description: 'Leaderboard is not enabled on this host!'
-      button: 'Go to Dashboard'
+        title: 'Leaderboard'
+        description: 'Leaderboard is not enabled on this host!'
+        button: 'Go to Dashboard'
     error:
         title: 'Error Loading Leaderboard'
         generic: "We couldn't load the leaderboard data at this time"
@@ -1394,3 +1393,77 @@ leaderboard:
         gyanilinks: 'Links'
         linkpays: 'Links'
         referrals: 'Referrals'
+
+# Profile page translations
+profile:
+    title: 'User Profile'
+    verified: 'Verified'
+    banned: 'Banned'
+    gift_coins: 'Gift Coins'
+    error:
+        title: 'Error Loading Profile'
+        generic: "We couldn't load the profile data at this time"
+        failed_fetch: 'Failed to fetch profile data'
+        retry: 'Try Again'
+    gift:
+        title: 'Gift Coins'
+        description: 'Send coins to another user'
+        page_title: 'Gift Coins - {username}'
+        recipient: 'Gift to {username}'
+        your_balance: 'Your Balance'
+        amount: 'Amount'
+        amount_placeholder: 'Enter amount to gift'
+        max: 'Max'
+        min_amount: 'Min amount'
+        max_amount: 'Max amount'
+        fee_label: 'Transfer Fee'
+        fee_amount: 'Fee Amount'
+        total_cost: 'Total Cost'
+        fee_explanation: 'A fee is added to your transfer amount. The recipient will receive the full gift amount.'
+        cancel: 'Cancel'
+        send: 'Send Gift'
+        processing: 'Processing...'
+        success_message: 'Successfully sent {amount} coins to {username}'
+        error:
+            recipient_required: 'Recipient UUID is required'
+            user_not_found: 'User not found'
+            failed_fetch: 'Error fetching user'
+            failed_profile: 'Failed to load recipient profile'
+            failed_balance: 'Failed to fetch your balance'
+            invalid_amount: 'Invalid amount'
+            failed_send: 'Failed to send gift'
+            generic: 'An error occurred while sending gift'
+    stats:
+        title: 'User Statistics'
+        coins: 'Coins'
+        servers: 'Servers'
+        minutes_afk: 'Minutes AFK'
+        databases: 'Databases'
+    activity:
+        title: 'Activity'
+        first_seen: 'First Seen'
+        last_seen: 'Last Seen'
+        last_seen_afk: 'Last AFK'
+    social:
+        title: 'Social Accounts'
+        discord: 'Discord'
+        github: 'GitHub'
+    resources:
+        title: 'Resource Limits'
+        memory: 'Memory'
+        cpu: 'CPU'
+        disk: 'Disk'
+        servers: 'Servers'
+        backups: 'Backups'
+        databases: 'Databases'
+        allocations: 'Allocations'
+    account:
+        title: 'Account Information'
+        status: 'Status'
+        active: 'Active'
+        banned: 'Banned'
+        deleted: 'Deleted'
+        verification: 'Verification'
+        verified: 'Verified'
+        not_verified: 'Not Verified'
+        uuid: 'UUID'

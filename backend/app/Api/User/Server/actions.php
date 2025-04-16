@@ -15,13 +15,13 @@ use MythicalDash\App;
 use MythicalDash\Chat\Eggs\Eggs;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
+use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\Eggs\EggCategories;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Locations\Locations;
 use MythicalDash\Chat\Servers\ServerQueue;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
-use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 use MythicalDash\Plugins\Events\Events\ServerEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
@@ -384,11 +384,12 @@ $router->post('/api/user/server/create', function (): void {
     $appInstance = App::getInstance(true);
     $session = new Session($appInstance);
     $accountToken = $session->SESSION_KEY;
-	$config = $appInstance->getConfig();
-	if ($config->getSetting(ConfigInterface::ALLOW_SERVERS, 'false') == 'false') {
-		$appInstance->BadRequest('Server creation is not allowed', ['error_code' => 'SERVER_CREATION_NOT_ALLOWED']);
-		return;
-	}
+    $config = $appInstance->getConfig();
+    if ($config->getSetting(ConfigInterface::ALLOW_SERVERS, 'false') == 'false') {
+        $appInstance->BadRequest('Server creation is not allowed', ['error_code' => 'SERVER_CREATION_NOT_ALLOWED']);
+
+        return;
+    }
     if (
         !isset($_POST['name'])
         || !isset($_POST['description'])

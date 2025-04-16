@@ -264,4 +264,17 @@ interface ConfigInterface
      * Allow Servers.
      */
     public const ALLOW_SERVERS = 'allow_servers';
+
+    /**
+     * Allow Public Profiles.
+     */
+    public const ALLOW_PUBLIC_PROFILES = 'allow_public_profiles';
+
+    /**
+     * Allow Coins Sharing.
+     */
+    public const ALLOW_COINS_SHARING = 'allow_coins_sharing';
+    public const COINS_SHARE_MAX_AMOUNT = 'coins_share_max_amount';
+    public const COINS_SHARE_MIN_AMOUNT = 'coins_share_min_amount';
+    public const COINS_SHARE_FEE = 'coins_share_fee';
 }

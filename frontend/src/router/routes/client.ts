@@ -90,6 +90,22 @@ const clientRoutes: RouteRecordRaw[] = [
         },
     },
     {
+        path: '/profile/:uuid',
+        name: 'Profile',
+        component: () => import('@/views/client/profile/Profile.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
+        path: '/profile/:uuid/gift-coins',
+        name: 'Gift Coins',
+        component: () => import('@/views/client/profile/GiftCoins.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         path: '/',
         redirect: '/dashboard',
     },

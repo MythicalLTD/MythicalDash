@@ -12,9 +12,9 @@
  */
 
 use MythicalDash\App;
-use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Chat\Tickets\Tickets;
+use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Tickets\Departments;
 use MythicalDash\Chat\User\UserActivities;
@@ -41,6 +41,11 @@ $router->post('/api/user/ticket/create', function () {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new Session($appInstance);
+    $config = $appInstance->getConfig();
+
+    if ($config->getSetting(ConfigInterface::ALLOW_TICKETS, 'false') === 'false') {
+        $appInstance->BadRequest('Tickets are not enabled!', ['error_code' => 'TICKETS_NOT_ENABLED']);
+    }
 
     if (isset($_POST['department_id']) && $_POST['department_id'] != '') {
         $departmentId = $_POST['department_id'];
