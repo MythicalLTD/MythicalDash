@@ -218,8 +218,10 @@ import { useSound } from '@vueuse/sound';
 import failedAlertSfx from '@/assets/sounds/error.mp3';
 import successAlertSfx from '@/assets/sounds/success.mp3';
 import { useI18n } from 'vue-i18n';
+import { useSettingsStore } from '@/stores/settings';
 
 const { t } = useI18n();
+const Settings = useSettingsStore();
 
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);
@@ -520,6 +522,7 @@ const canCreateServer = computed(() => {
         form.allocations > 0 &&
         form.allocations <= resources.free.allocations &&
         resources.free.servers > 0 &&
+        Settings.getSetting('allow_servers') === 'true' &&
         (() => {
             const location = locations.value.find((location) => location.id === parseInt(form.location_id));
             return location ? location.used_slots < location.slots : false;

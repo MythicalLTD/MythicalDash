@@ -2,8 +2,11 @@
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
 import Tickets from '@/mythicaldash/Tickets';
 import Button from '@/components/client/ui/Button.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useSettingsStore } from '@/stores/settings';
+
+const Settings = useSettingsStore();
 
 interface Ticket {
     id: number;
@@ -11,6 +14,10 @@ interface Ticket {
     date: string;
     status: string;
 }
+
+const isTicketsEnabled = computed(() => {
+    return Settings.getSetting('allow_tickets') === 'true';
+});
 const { t } = useI18n();
 const recentTickets = ref<Ticket[]>([]);
 
@@ -52,7 +59,7 @@ onMounted(fetchRecentTickets);
 <template>
     <!-- Recent Tickets -->
     <CardComponent
-        v-if="recentTickets.length > 0"
+        v-if="recentTickets.length > 0 && isTicketsEnabled"
         :cardTitle="t('Components.Tickets.title')"
         :cardDescription="t('Components.Tickets.description')"
     >

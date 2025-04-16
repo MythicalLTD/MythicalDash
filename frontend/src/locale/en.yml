@@ -761,6 +761,7 @@ components:
         referrals: Referrals
         l4r: Link For Rewards
         store: Store
+        leaderboard: Leaderboard
         general: General
     search:
         placeholder: 'Search (Ctrl + K)'
@@ -1353,3 +1354,43 @@ l4r:
                     title: 'Get Rewarded'
                     number: '4'
                     description: 'Coins will be added to your account automatically'
+
+# Leaderboard translations
+leaderboard:
+    
+    title: 'Leaderboard'
+    description: 'See who tops our rankings across different categories'
+    leaderboard: 'Leaderboard'
+    currency: 'coins'
+    notEnabled:
+      title: 'Leaderboard'
+      description: 'Leaderboard is not enabled on this host!'
+      button: 'Go to Dashboard'
+    error:
+        title: 'Error Loading Leaderboard'
+        generic: "We couldn't load the leaderboard data at this time"
+        failed_fetch: 'Failed to fetch leaderboard data'
+        retry: 'Try Again'
+    no_data:
+        title: 'No Leaderboard Data'
+        message: 'There are no entries for this leaderboard category yet'
+    categories:
+        coins: 'Coins'
+        servers: 'Servers'
+        minutes_afk: 'AFK Time'
+        linkvertise: 'Linkvertise'
+        shareus: 'ShareUs'
+        gyanilinks: 'Gyanilinks'
+        linkpays: 'LinkPays'
+        referrals: 'Referrals'
+    table:
+        rank: 'Rank'
+        user: 'User'
+        coins: 'Coins'
+        servers: 'Servers'
+        minutes_afk: 'Minutes AFK'
+        linkvertise: 'Links'
+        shareus: 'Links'
+        gyanilinks: 'Links'
+        linkpays: 'Links'
+        referrals: 'Referrals'

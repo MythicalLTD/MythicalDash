@@ -249,4 +249,19 @@ interface ConfigInterface
     public const BLOCK_DATABASES = 'block_databases';
     public const BLOCK_SERVER_SLOTS = 'block_server_slots';
     public const BLOCK_BACKUPS = 'block_backups';
+
+    /**
+     * Leaderboard Configs.
+     */
+    public const LEADERBOARD_ENABLED = 'leaderboard_enabled';
+    public const LEADERBOARD_LIMIT = 'leaderboard_limit';
+
+    /**
+     * Allow Tickets.
+     */
+    public const ALLOW_TICKETS = 'allow_tickets';
+    /**
+     * Allow Servers.
+     */
+    public const ALLOW_SERVERS = 'allow_servers';
 }

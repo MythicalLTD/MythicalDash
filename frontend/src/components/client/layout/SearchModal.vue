@@ -190,6 +190,27 @@ interface SearchResult {
 
 const searchResults = ref<SearchResult[]>([]);
 const searchInput = ref<HTMLInputElement | null>(null);
+import { useSettingsStore } from '@/stores/settings';
+import {
+    AlertTriangle as AlertTriangleIcon,
+    Bell as BellIcon,
+    ShoppingCart as ShoppingCartIcon,
+    Clock as ClockIcon,
+    Gift as GiftIcon,
+    Users as UsersIcon,
+    UserPlus as UserPlusIcon,
+    Link as LinkIcon,
+} from 'lucide-vue-next';
+
+const Settings = useSettingsStore();
+
+// Check if features are enabled
+const isStoreEnabled = computed(() => Settings.getSetting('store_enabled') === 'true');
+const isAfkEnabled = computed(() => Settings.getSetting('afk_enabled') === 'true');
+const isCodeRedemptionEnabled = computed(() => Settings.getSetting('code_redemption_enabled') === 'true');
+const isJ4REnabled = computed(() => Settings.getSetting('j4r_enabled') === 'true');
+const isReferralsEnabled = computed(() => Settings.getSetting('referrals_enabled') === 'true');
+const isL4REnabled = computed(() => Settings.getSetting('l4r_enabled') === 'true');
 
 const searchableItems: SearchResult[] = [
     {
@@ -226,6 +247,114 @@ const searchableItems: SearchResult[] = [
         description: t('Components.QuickLinks.announcements.description'),
         href: '/announcements',
         icon: LayoutDashboardIcon,
+    },
+    {
+        id: 6,
+        title: t('Components.Leaderboard.title'),
+        description: t('Components.Leaderboard.description'),
+        href: '/leaderboard',
+        icon: LayoutDashboardIcon,
+    },
+    {
+        id: 7,
+        title: t('components.sidebar.create'),
+        description: t('components.sidebar.create'),
+        href: '/server/create',
+        icon: ServerIcon,
+    },
+    ...(isStoreEnabled.value
+        ? [
+              {
+                  id: 8,
+                  title: t('components.sidebar.store'),
+                  description: t('components.sidebar.store'),
+                  href: '/store',
+                  icon: ShoppingCartIcon,
+              },
+          ]
+        : []),
+    ...(isAfkEnabled.value
+        ? [
+              {
+                  id: 9,
+                  title: t('components.sidebar.afk'),
+                  description: t('components.sidebar.afk'),
+                  href: '/earn/afk',
+                  icon: ClockIcon,
+              },
+          ]
+        : []),
+    ...(isCodeRedemptionEnabled.value
+        ? [
+              {
+                  id: 10,
+                  title: t('components.sidebar.code_redemption'),
+                  description: t('components.sidebar.code_redemption'),
+                  href: '/earn/redeem',
+                  icon: GiftIcon,
+              },
+          ]
+        : []),
+    ...(isJ4REnabled.value
+        ? [
+              {
+                  id: 11,
+                  title: t('components.sidebar.j4r'),
+                  description: t('components.sidebar.j4r'),
+                  href: '/earn/j4r',
+                  icon: UsersIcon,
+              },
+          ]
+        : []),
+    ...(isReferralsEnabled.value
+        ? [
+              {
+                  id: 12,
+                  title: t('components.sidebar.referrals'),
+                  description: t('components.sidebar.referrals'),
+                  href: '/earn/referrals',
+                  icon: UserPlusIcon,
+              },
+          ]
+        : []),
+    ...(isL4REnabled.value
+        ? [
+              {
+                  id: 13,
+                  title: t('components.sidebar.l4r'),
+                  description: t('components.sidebar.l4r'),
+                  href: '/earn/links',
+                  icon: LinkIcon,
+              },
+          ]
+        : []),
+    {
+        id: 14,
+        title: t('components.sidebar.tickets'),
+        description: t('components.sidebar.tickets'),
+        href: '/ticket',
+        icon: TicketIcon,
+    },
+    {
+        id: 15,
+        title: t('components.sidebar.open_ticket'),
+        description: t('components.sidebar.open_ticket'),
+        href: '/ticket/create',
+        icon: AlertTriangleIcon,
+    },
+    {
+        id: 16,
+        title: t('components.sidebar.all_tickets'),
+        description: t('components.sidebar.all_tickets'),
+        href: '/ticket',
+        icon: TicketIcon,
+    },
+    {
+        id: 17,
+        title: t('components.sidebar.announcements'),
+        description: t('components.sidebar.announcements'),
+        href: '/announcements',
+        icon: BellIcon,
     },
 ];
 

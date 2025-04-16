@@ -60,6 +60,9 @@ import TheFooter from '@/components/admin/components/TheFooter.vue';
 // Import menu configuration
 import { useAdminMenu } from '@/components/admin/composables/useAdminMenu';
 import { useSearchResults } from '@/components/admin/composables/useSearchResults';
+import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
+
+MythicalDOM.setPageTitle('Admin');
 
 const Settings = useSettingsStore();
 const router = useRouter();

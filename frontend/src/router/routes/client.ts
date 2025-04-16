@@ -82,6 +82,14 @@ const clientRoutes: RouteRecordRaw[] = [
         },
     },
     {
+        path: '/leaderboard',
+        name: 'Leaderboard',
+        component: () => import('@/views/client/Leaderboard.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         path: '/',
         redirect: '/dashboard',
     },

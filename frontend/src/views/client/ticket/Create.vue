@@ -14,7 +14,9 @@ import { useI18n } from 'vue-i18n';
 import { useSound } from '@vueuse/sound';
 import { useRouter } from 'vue-router';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
+import { useSettingsStore } from '@/stores/settings';
 
+const Settings = useSettingsStore();
 const { t } = useI18n();
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);
@@ -207,7 +209,11 @@ const submitTicket = async () => {
 
                     <!-- Submit Button -->
                     <div class="flex justify-end">
-                        <Button type="submit" variant="primary" :disabled="loading">
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            :disabled="loading || Settings.getSetting('allow_tickets') === 'false'"
+                        >
                             <span v-if="loading">{{ t('tickets.pages.create_ticket.form.loading') }}</span>
                             <span v-else>{{ t('tickets.pages.create_ticket.form.submit') }}</span>
                         </Button>

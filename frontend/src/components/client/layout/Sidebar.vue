@@ -13,6 +13,7 @@ import {
     Link as LinkIcon,
     Home as HomeIcon,
     ShoppingCart as ShoppingCartIcon,
+    TrophyIcon as LeaderboardIcon,
 } from 'lucide-vue-next';
 import Translation from '@/mythicaldash/Translation';
 import { useSettingsStore } from '@/stores/settings';
@@ -49,6 +50,18 @@ const isL4REnabled = computed(() => {
 // Check if Store is enabled
 const isStoreEnabled = computed(() => {
     return Settings.getSetting('store_enabled') === 'true';
+});
+
+const isLeaderboardEnabled = computed(() => {
+    return Settings.getSetting('leaderboard_enabled') === 'true';
+});
+
+const isTicketsEnabled = computed(() => {
+    return Settings.getSetting('allow_tickets') === 'true';
+});
+
+const isServersEnabled = computed(() => {
+    return Settings.getSetting('allow_servers') === 'true';
 });
 
 defineProps<{
@@ -129,6 +142,42 @@ const storeMenuItem = {
     active: isActiveRoute(['/store']),
 };
 
+const leaderboardMenuItem = {
+    name: t('components.sidebar.leaderboard'),
+    icon: LeaderboardIcon,
+    href: '/leaderboard',
+    active: isActiveRoute(['/leaderboard']),
+};
+
+const ticketsMenuItem = {
+    name: t('components.sidebar.tickets'),
+    icon: TicketIcon,
+    href: '/ticket',
+    active: isActiveRoute(['/ticket']),
+    expanded: false,
+    subitems: [
+        {
+            name: Translation.getTranslation('components.sidebar.open_ticket'),
+            icon: AlertTriangleIcon,
+            href: '/ticket/create',
+            active: isActiveRoute(['/ticket/create']),
+        },
+        {
+            name: Translation.getTranslation('components.sidebar.all_tickets'),
+            icon: TicketIcon,
+            href: '/ticket',
+            active: isActiveRoute(['/ticket']),
+        },
+    ],
+};
+
+const serversMenuItem = {
+    name: t('components.sidebar.create'),
+    icon: ServerIcon,
+    href: '/server/create',
+    active: isActiveRoute(['/server/create']),
+};
+
 // Get the Earn section items based on which features are enabled
 const getEarnItems = computed(() => {
     const items: MenuItem[] = [];
@@ -161,12 +210,7 @@ const menuSections = ref<MenuSection[]>([
         title: t('components.sidebar.general'),
         items: [
             dashboardMenuItem,
-            {
-                name: t('components.sidebar.create'),
-                icon: ServerIcon,
-                href: '/server/create',
-                active: isActiveRoute(['/server/create']),
-            },
+            ...(isServersEnabled.value ? [serversMenuItem] : []),
             ...(isStoreEnabled.value ? [storeMenuItem] : []),
         ],
     },
@@ -177,33 +221,14 @@ const menuSections = ref<MenuSection[]>([
     {
         title: t('components.sidebar.support'),
         items: [
-            {
-                name: t('components.sidebar.tickets'),
-                icon: TicketIcon,
-                href: '/ticket',
-                active: isActiveRoute(['/ticket']),
-                expanded: false,
-                subitems: [
-                    {
-                        name: Translation.getTranslation('components.sidebar.open_ticket'),
-                        icon: AlertTriangleIcon,
-                        href: '/ticket/create',
-                        active: isActiveRoute(['/ticket/create']),
-                    },
-                    {
-                        name: Translation.getTranslation('components.sidebar.all_tickets'),
-                        icon: TicketIcon,
-                        href: '/ticket',
-                        active: isActiveRoute(['/ticket']),
-                    },
-                ],
-            },
+            ...(isTicketsEnabled.value ? [ticketsMenuItem] : []),
             {
                 name: Translation.getTranslation('components.sidebar.announcements'),
                 icon: BellIcon,
                 href: '/announcements',
                 active: isActiveRoute(['/announcements']),
             },
+            ...(isLeaderboardEnabled.value ? [leaderboardMenuItem] : []),
         ],
     },
 ]);

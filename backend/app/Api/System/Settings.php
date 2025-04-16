@@ -187,6 +187,17 @@ $router->add('/api/system/settings', function (): void {
         ConfigInterface::BLOCK_DATABASES => 'false',
         ConfigInterface::BLOCK_SERVER_SLOTS => 'false',
         ConfigInterface::BLOCK_BACKUPS => 'false',
+
+        // Leaderboard
+        ConfigInterface::LEADERBOARD_ENABLED => 'false',
+        ConfigInterface::LEADERBOARD_LIMIT => '15',
+
+		// Allow Tickets
+		ConfigInterface::ALLOW_TICKETS => 'false',
+
+		// Allow Servers
+		ConfigInterface::ALLOW_SERVERS => 'false',
+		
     ];
 
     // Retrieve actual settings with defaults in a single array map

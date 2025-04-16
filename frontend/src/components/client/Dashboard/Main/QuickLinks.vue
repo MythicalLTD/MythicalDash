@@ -49,23 +49,35 @@ import {
     Settings as SettingsIcon,
     ChevronRight as ChevronRightIcon,
 } from 'lucide-vue-next';
+import { useSettingsStore } from '@/stores/settings';
+import { computed } from 'vue';
+
+const Settings = useSettingsStore();
 
 const router = useRouter();
 const { t } = useI18n();
 
+const isTicketsEnabled = computed(() => {
+    return Settings.getSetting('allow_tickets') === 'true';
+});
+
 const quickLinks = [
-    {
-        name: t('Components.QuickLinks.tickets.title'),
-        description: t('Components.QuickLinks.tickets.description'),
-        href: '/ticket',
-        icon: TicketIcon,
-    },
     {
         name: t('Components.QuickLinks.announcements.title'),
         description: t('Components.QuickLinks.announcements.description'),
         href: '/announcements',
         icon: AnnouncementIcon,
     },
+    ...(isTicketsEnabled.value
+        ? [
+              {
+                  name: t('Components.QuickLinks.tickets.title'),
+                  description: t('Components.QuickLinks.tickets.description'),
+                  href: '/ticket',
+                  icon: TicketIcon,
+              },
+          ]
+        : []),
     {
         name: t('Components.QuickLinks.account.title'),
         description: t('Components.QuickLinks.account.description'),

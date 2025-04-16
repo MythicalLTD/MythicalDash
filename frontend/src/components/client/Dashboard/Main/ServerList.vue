@@ -13,9 +13,15 @@ import Servers from '@/mythicaldash/Pterodactyl/Servers';
 import Session from '@/mythicaldash/Session';
 import Swal from 'sweetalert2';
 import { useSettingsStore } from '@/stores/settings';
+import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
+
 const Settings = useSettingsStore();
 const pterodactylUrl = Settings.getSetting('pterodactyl_base_url');
-import { useI18n } from 'vue-i18n';
+
+const isServersEnabled = computed(() => {
+    return Settings.getSetting('allow_servers') === 'true';
+});
 
 const { t } = useI18n();
 
@@ -133,7 +139,10 @@ onMounted(() => {
             <div class="w-8 h-8 border-4 border-gray-700 border-t-indigo-500 rounded-full animate-spin"></div>
         </div>
 
-        <div v-else-if="servers.length === 0" class="flex flex-col items-center justify-center py-12 text-center">
+        <div
+            v-else-if="servers.length === 0 && isServersEnabled"
+            class="flex flex-col items-center justify-center py-12 text-center"
+        >
             <Server class="w-12 h-12 text-gray-600 mb-3" />
             <h3 class="text-gray-300 font-medium mb-1">{{ t('Components.ServerList.noServers') }}</h3>
             <p class="text-gray-500 text-sm mb-4">{{ t('Components.ServerList.noServersDescription') }}</p>
@@ -154,6 +163,7 @@ onMounted(() => {
                 </div>
                 <button
                     @click="createServer"
+                    v-if="isServersEnabled"
                     class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md transition-colors flex items-center gap-2"
                     :disabled="servers.length >= Session.getInfoInt('server_limit')"
                 >

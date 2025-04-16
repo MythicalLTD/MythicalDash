@@ -165,6 +165,7 @@
                             </div>
                             <RouterLink
                                 to="/store/add-credits"
+                                v-if="Settings.getSetting('credits_recharge_enabled') === 'true'"
                                 class="mt-4 bg-indigo-600/20 hover:bg-indigo-600/30 transition-all duration-200 rounded-lg p-4 flex items-center justify-center gap-2 group"
                             >
                                 <PlusIcon

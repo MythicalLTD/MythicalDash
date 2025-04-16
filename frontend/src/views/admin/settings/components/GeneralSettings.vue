@@ -132,6 +132,91 @@
                 </div>
             </div>
 
+            <!-- Leaderboard Settings -->
+            <div class="pt-4 border-t border-gray-700">
+                <h3 class="text-lg font-medium text-white mb-3">Leaderboard Settings</h3>
+            </div>
+
+            <!-- Leaderboard Settings -->
+            <div class="space-y-4">
+                <!-- Leaderboard Enabled -->
+                <div class="flex items-center justify-between p-4 bg-gray-800/30 border border-gray-700 rounded-lg">
+                    <div>
+                        <label for="leaderboard_enabled" class="block text-sm font-medium text-white">
+                            Leaderboard Enabled
+                        </label>
+                        <p class="mt-1 text-xs text-gray-400">Enable or disable the leaderboard feature globally</p>
+                    </div>
+                    <div class="flex items-center">
+                        <input
+                            id="leaderboard_enabled"
+                            type="checkbox"
+                            v-model="formData.leaderboard_enabled"
+                            @change="updateSetting('leaderboard_enabled', formData.leaderboard_enabled)"
+                            class="w-4 h-4 text-pink-500 border-gray-600 rounded focus:ring-pink-500 focus:ring-offset-gray-800 bg-gray-700"
+                        />
+                    </div>
+                </div>
+
+                <!-- Leaderboard Limit -->
+                <div class="p-4 bg-gray-800/30 border border-gray-700 rounded-lg">
+                    <div class="flex flex-col">
+                        <label for="leaderboard_limit" class="block text-sm font-medium text-white mb-1">
+                            Leaderboard Limit
+                        </label>
+                        <p class="text-xs text-gray-400 mb-3">Maximum number of entries to show on leaderboards</p>
+                        <input
+                            id="leaderboard_limit"
+                            type="number"
+                            min="5"
+                            max="100"
+                            v-model="formData.leaderboard_limit"
+                            @change="updateSetting('leaderboard_limit', formData.leaderboard_limit)"
+                            class="bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500 text-white"
+                        />
+                    </div>
+                </div>
+            </div>
+            <!-- Feature Settings -->
+            <div class="pt-4 border-t border-gray-700">
+                <h3 class="text-lg font-medium text-white mb-3">Feature Settings</h3>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Allow Tickets -->
+                <div class="flex items-center justify-between p-4 bg-gray-800/30 border border-gray-700 rounded-lg">
+                    <div>
+                        <label for="allow_tickets" class="block text-sm font-medium text-white"> Allow Tickets </label>
+                        <p class="mt-1 text-xs text-gray-400">Enable or disable the ticket system globally</p>
+                    </div>
+                    <div class="flex items-center">
+                        <input
+                            id="allow_tickets"
+                            type="checkbox"
+                            v-model="formData.allow_tickets"
+                            @change="updateSetting('allow_tickets', formData.allow_tickets)"
+                            class="w-4 h-4 text-pink-500 border-gray-600 rounded focus:ring-pink-500 focus:ring-offset-gray-800 bg-gray-700"
+                        />
+                    </div>
+                </div>
+
+                <!-- Allow Servers -->
+                <div class="flex items-center justify-between p-4 bg-gray-800/30 border border-gray-700 rounded-lg">
+                    <div>
+                        <label for="allow_servers" class="block text-sm font-medium text-white"> Allow Servers </label>
+                        <p class="mt-1 text-xs text-gray-400">Enable or disable server creation globally</p>
+                    </div>
+                    <div class="flex items-center">
+                        <input
+                            id="allow_servers"
+                            type="checkbox"
+                            v-model="formData.allow_servers"
+                            @change="updateSetting('allow_servers', formData.allow_servers)"
+                            class="w-4 h-4 text-pink-500 border-gray-600 rounded focus:ring-pink-500 focus:ring-offset-gray-800 bg-gray-700"
+                        />
+                    </div>
+                </div>
+            </div>
             <!-- App Version (Display Only) -->
             <div class="pt-4 border-t border-gray-700">
                 <div class="flex items-center justify-between">
@@ -169,6 +254,10 @@ const formData = ref({
     app_version: '',
     seo_description: '',
     seo_keywords: '',
+    leaderboard_enabled: 'false',
+    leaderboard_limit: '15',
+    allow_tickets: 'false',
+    allow_servers: 'false',
 });
 
 // Timezone data
@@ -643,6 +732,10 @@ watch(
                 app_version: newSettings['app_version'] || '',
                 seo_description: newSettings['seo_description'] || '',
                 seo_keywords: newSettings['seo_keywords'] || '',
+                leaderboard_enabled: newSettings['leaderboard_enabled'] || 'false',
+                leaderboard_limit: newSettings['leaderboard_limit'] || '15',
+                allow_tickets: newSettings['allow_tickets'] || 'false',
+                allow_servers: newSettings['allow_servers'] || 'false',
             };
         }
     },
