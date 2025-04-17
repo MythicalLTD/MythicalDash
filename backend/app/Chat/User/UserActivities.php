@@ -18,6 +18,13 @@ use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 class UserActivities extends Database
 {
+    public const TABLE_NAME = 'mythicaldash_users_activities';
+
+    public static function getTableName(): string
+    {
+        return self::TABLE_NAME;
+    }
+
     /**
      * Add user activity.
      *

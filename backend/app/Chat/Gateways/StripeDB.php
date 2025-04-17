@@ -19,6 +19,11 @@ class StripeDB extends Database
 {
     public const TABLE_NAME = 'mythicaldash_stripe_payments';
 
+    public static function getTableName(): string
+    {
+        return self::TABLE_NAME;
+    }
+
     /**
      * Create a new Stripe payment record.
      *

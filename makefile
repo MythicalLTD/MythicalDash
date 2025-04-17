@@ -83,13 +83,13 @@ release:
 	
 	@echo -e "${PURPLE}${INFO} Updating dependencies...${NC}"
 	@cd $(FRONTEND_DIR) && $(YARN) upgrade
-	@cd $(BACKEND_DIR) && $(COMPOSER) update --no-dev	
+	@cd $(BACKEND_DIR) && $(COMPOSER) update
 	@echo -e "${GREEN}${CHECK} Dependencies updated${NC}\n"
 	
 	@echo -e "${PURPLE}${INFO} Building applications...${NC}"
 	@cd $(FRONTEND_DIR) && $(YARN) build
 	@cd $(BACKEND_DIR) && $(COMPOSER) dump-autoload
-	@cd $(BACKEND_DIR) && $(COMPOSER) install --no-dev --optimize-autoloader
+	@cd $(BACKEND_DIR) && $(COMPOSER) install --optimize-autoloader
 	@echo -e "${GREEN}${CHECK} Build complete${NC}\n"
 	
 	@echo -e "${GREEN}${ROCKET} Release build successful!${NC}\n"

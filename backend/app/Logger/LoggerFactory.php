@@ -70,6 +70,15 @@ class LoggerFactory
         }
     }
 
+    public function getLogs(): array
+    {
+        $logs = file($this->logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+        return array_filter($logs, function ($log) {
+            return !str_contains($log, '[DEBUG]');
+        });
+    }
+
     private function getFormattedDate(): string
     {
         return date('Y-m-d H:i:s');

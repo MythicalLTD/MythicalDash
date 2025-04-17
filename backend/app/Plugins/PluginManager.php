@@ -55,6 +55,27 @@ class PluginManager
         }
     }
 
+    /**
+     * Get plugins without loading them - used for cron jobs.
+     *
+     * @return array List of plugin names without loading
+     */
+    public function getPluginsWithoutLoader(): array
+    {
+        try {
+            $pluginsDir = PluginHelper::getPluginsDir();
+            $allFiles = scandir($pluginsDir);
+
+            return array_values(array_filter($allFiles, function ($file) {
+                return !in_array($file, ['.', '..', '', '.gitignore', '.gitkeep']);
+            }));
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to get plugins without loader: ' . $e->getMessage());
+
+            return [];
+        }
+    }
+
     public function doesPluginExist(string $identifier): bool
     {
         return array_key_exists($identifier, $this->plugins);

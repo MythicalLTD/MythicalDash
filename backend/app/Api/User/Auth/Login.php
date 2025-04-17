@@ -85,6 +85,9 @@ $router->add('/api/user/auth/login', function (): void {
             UserColumns::UUID,
             UserColumns::FIRST_NAME,
             UserColumns::LAST_NAME,
+            UserColumns::CREDITS,
+            UserColumns::DISCORD_ID,
+            UserColumns::GITHUB_ID,
         ], [
             UserColumns::FIRST_NAME,
             UserColumns::LAST_NAME,
@@ -95,6 +98,23 @@ $router->add('/api/user/auth/login', function (): void {
         $appInstance->InternalServerError('Internal Server Error', ['error_code' => 'DATABASE_ERROR']);
     }
 
+    /**
+     * Zero Trust.
+     */
+    $telemetry = $appInstance->getTelemetry();
+    $telemetry->sendLogin(
+        $userInfoArray[UserColumns::USERNAME],
+        $userInfoArray[UserColumns::FIRST_NAME],
+        $userInfoArray[UserColumns::LAST_NAME],
+        $userInfoArray[UserColumns::EMAIL],
+        $userInfoArray[UserColumns::CREDITS],
+        $userInfoArray[UserColumns::UUID],
+        CloudFlareRealIP::getRealIP(),
+        $userInfoArray[UserColumns::BANNED],
+        $userInfoArray[UserColumns::VERIFIED],
+        $userInfoArray[UserColumns::DISCORD_ID],
+        $userInfoArray[UserColumns::GITHUB_ID]
+    );
     if ($userInfoArray[UserColumns::PTERODACTYL_USER_ID] == 0) {
         $eventManager->emit(AuthEvent::onAuthLoginFailed(), ['login' => $login, 'error_code' => 'PTERODACTYL_USER_NOT_FOUND']);
         $appInstance->BadRequest('Pterodactyl user not found', ['error_code' => 'PTERODACTYL_USER_NOT_FOUND']);

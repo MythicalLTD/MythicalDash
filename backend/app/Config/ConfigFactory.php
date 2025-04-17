@@ -62,6 +62,32 @@ class ConfigFactory
         return $fallback ?? null;
     }
 
+    public function getSettings(array $columns = []): array
+    {
+        $query = "SELECT name, value FROM {$this->table_name}";
+        if (!empty($columns)) {
+            $placeholders = array_fill(0, count($columns), '?');
+            $query .= ' WHERE name IN (' . implode(',', $placeholders) . ')';
+        }
+        $query .= ' ORDER BY name ASC';
+        $stmt = $this->db->prepare($query);
+        if (!empty($columns)) {
+            $stmt->execute($columns);
+        } else {
+            $stmt->execute();
+        }
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $settings = [];
+        foreach ($results as $result) {
+            $decrypted = XChaCha20::decrypt($result['value'], $this->encryption_key);
+            $settings[$result['name']] = $decrypted;
+            $this->cache[$result['name']] = $decrypted;
+        }
+
+        return $settings;
+    }
+
     /**
      * Set a setting in the database.
      *
@@ -90,6 +116,22 @@ class ConfigFactory
         return $result;
     }
 
+    /**
+     * ⚠️ DANGER ZONE - HANDLE WITH EXTREME CAUTION ⚠️.
+     *
+     * This function is used to dump all settings from the database.
+     *
+     * WARNING: This function will return ALL settings from the database in their decrypted form.
+     * This includes potentially sensitive information like API keys, tokens, and credentials.
+     *
+     * Only use this function for debugging purposes in a secure environment.
+     * Never expose this data publicly or log it to files that could be accessed by others.
+     *
+     * The settings are returned as a simple key-value array with no encryption.
+     * Be extremely careful with how you handle and store this data.
+     *
+     * @return array All settings from database in plain text
+     */
     public function dumpSettings(): array
     {
         $stmt = $this->db->prepare("SELECT * FROM {$this->table_name} ORDER BY name ASC");

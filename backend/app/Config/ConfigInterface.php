@@ -277,4 +277,15 @@ interface ConfigInterface
     public const COINS_SHARE_MAX_AMOUNT = 'coins_share_max_amount';
     public const COINS_SHARE_MIN_AMOUNT = 'coins_share_min_amount';
     public const COINS_SHARE_FEE = 'coins_share_fee';
+
+    /**
+     * Telemetry.
+     */
+    public const TELEMETRY_ENABLED = 'telemetry_enabled';
+    public const MYTHICAL_ZERO_TRUST_ENABLED = 'zero_trust_enabled';
+    public const MYTHICAL_ZERO_TRUST_SERVER_SCAN_TOOL_ENABLED = 'zero_trust_server_scan_tool_enabled';
+    public const MYTHICAL_ZERO_TRUST_WHITELIST_IPS_ENABLED = 'zero_trust_whitelist_ips_enabled';
+    public const MYTHICAL_ZERO_TRUST_BLOCK_TOR_ENABLED = 'zero_trust_block_tor_enabled';
+    public const MYTHICAL_ZERO_TRUST_ENHANCED_LOGGING_ENABLED = 'zero_trust_enhanced_logging_enabled';
+
 }

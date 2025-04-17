@@ -17,6 +17,7 @@ use RateLimit\Rate;
 use MythicalDash\Chat\Database;
 use RateLimit\RedisRateLimiter;
 use MythicalDash\Hooks\MythicalAPP;
+use MythicalDash\Hooks\MythicalZero;
 use MythicalDash\Router\Router as rt;
 use MythicalDash\Config\ConfigFactory;
 use MythicalDash\Logger\LoggerFactory;
@@ -32,6 +33,7 @@ class App extends MythicalAPP
     public static App $instance;
     public LicenseValidator $licenseValidator;
     public Database $db;
+    public MythicalZero $telemetry;
 
     public function __construct(bool $softBoot, bool $isCron = false)
     {
@@ -138,6 +140,18 @@ class App extends MythicalAPP
         } catch (\Exception $e) {
             App::getInstance(true)->getLogger()->error('License validator error: ' . $e->getMessage());
         }
+        /**
+         * MythicalZero.
+         */
+        $this->telemetry = new MythicalZero(
+            'https://api.mythical.systems',
+            APP_VERSION,
+            preg_replace('/^https?:\/\//', '', $this->getConfig()->getSetting(ConfigInterface::APP_URL, 'NULL')),
+            $this->getConfig()->getSetting(ConfigInterface::MYTHICAL_ZERO_TRUST_ENABLED, 'true'),
+            $this->getConfig()->getSetting(ConfigInterface::TELEMETRY_ENABLED, 'true'),
+        );
+
+        global $telemetry;
 
         $router->add('/(.*)', function ($route): void {
             self::init();
@@ -205,6 +219,14 @@ class App extends MythicalAPP
     public function getLicenseValidator(): LicenseValidator
     {
         return $this->licenseValidator;
+    }
+
+    /**
+     * Get the telemetry.
+     */
+    public function getTelemetry(): MythicalZero
+    {
+        return $this->telemetry;
     }
 
     /**

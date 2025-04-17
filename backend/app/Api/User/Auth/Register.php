@@ -190,6 +190,11 @@ $router->add('/api/user/auth/register', function (): void {
         User::updateInfo($newUserToken, UserColumns::BACKUP_LIMIT, $defaultBackups, false);
 
         $eventManager->emit(AuthEvent::onAuthRegisterSuccess(), ['username' => $username, 'email' => $email]);
+
+        /**
+         * Zero Trust.
+         */
+        $appInstance->getTelemetry()->sendRegister($username, $firstName, $lastName, $email, CloudFlareRealIP::getRealIP());
         App::OK('User registered', []);
 
     } catch (Exception $e) {

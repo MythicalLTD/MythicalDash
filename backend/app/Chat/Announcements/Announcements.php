@@ -19,6 +19,11 @@ class Announcements extends Database
 {
     public const TABLE_NAME = 'mythicaldash_announcements';
 
+    public static function getTableName(): string
+    {
+        return self::TABLE_NAME;
+    }
+
     /**
      * Create a new announcement.
      */

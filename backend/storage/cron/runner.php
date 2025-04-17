@@ -1,4 +1,6 @@
 <?php
+
+use MythicalDash\Plugins\PluginManager;
 define('APP_STARTUP', microtime(true));
 define('APP_START', microtime(true));
 define('APP_PUBLIC', __DIR__);
@@ -20,6 +22,10 @@ define('APP_UPSTREAM', 'github.com/mythicalltd/mythicaldash');
 require(__DIR__ . '/../packages/autoload.php');
 
 use MythicalDash\Cli\App;
+use MythicalDash\App as NormalApp;
+
+$pluginManager = new PluginManager();
+$app = new NormalApp(false,true);
 
 
 App::sendOutputWithNewLine('&7Starting MythicalDash cron runner.');

@@ -29,6 +29,11 @@ class User extends Database
 {
     public const TABLE_NAME = 'mythicaldash_users';
 
+    public static function getTableName(): string
+    {
+        return self::TABLE_NAME;
+    }
+
     /**
      * Register a new user in the database.
      *
