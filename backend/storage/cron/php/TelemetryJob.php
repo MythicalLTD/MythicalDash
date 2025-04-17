@@ -263,9 +263,47 @@ class TelemetryJob
 					$jsonData = json_encode($telemetryData, JSON_PRETTY_PRINT);
 					file_put_contents($dir . $fileName, $jsonData);
 	
-					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &eSending telemetry data...');
+					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &eSaving telemetry data...');
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &aTelemetry data has been processed and saved to: &f' . $fileName);
+
+
+					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &eSending telemetry data...');
+					try {
+						$ch = curl_init();
+						curl_setopt_array($ch, [
+							CURLOPT_URL => 'https://api.mythical.systems/v2/telemetry/mythicaldash/push',
+							CURLOPT_RETURNTRANSFER => true,
+							CURLOPT_POST => true,
+							CURLOPT_POSTFIELDS => $jsonData,
+							CURLOPT_HTTPHEADER => [
+								'Content-Type: application/json',
+								'Accept: application/json'
+							],
+							CURLOPT_TIMEOUT => 10,
+							CURLOPT_SSL_VERIFYPEER => true,
+							CURLOPT_SSL_VERIFYHOST => 2
+						]);
+
+						$response = curl_exec($ch);
+						
+						if (curl_errno($ch)) {
+							throw new \Exception('Curl error: ' . curl_error($ch));
+						}
+
+						$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+						curl_close($ch);
+
+						if ($httpCode >= 200 && $httpCode < 300) {
+							$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &aTelemetry data sent successfully');
+						} else {
+							throw new \Exception('HTTP error: ' . $httpCode . ' Response: ' . $response);
+						}
+
+					} catch (\Throwable $e) {
+						$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &cFailed to send telemetry data: ' . $e->getMessage());
+					}
 				}
+
 			});
 		} catch (\Throwable $e) {
 			echo $e->getMessage();

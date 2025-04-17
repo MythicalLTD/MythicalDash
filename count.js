@@ -9,7 +9,6 @@ const readFileAsync = promisify(fs.readFile);
 const VALID_EXTENSIONS = ['.vue', '.ts', '.js', '.php', '.css', '.yml', '.yaml', '.json', '.sql'];
 // Directories to exclude
 const EXCLUDED_DIRS = ['node_modules', 'vendor', 'cache', '.cache', 'packages','dist','assets'];
-
 // Process arguments
 const targetDir = process.argv[2] || '.';
 
@@ -21,6 +20,17 @@ const COMMENT_PATTERNS = {
   '.php': [/\/\/.*$/m, /\/\*[\s\S]*?\*\//g, /#.*$/m],
   '.css': [/\/\*[\s\S]*?\*\//g]
 };
+
+// Format number to human readable format (e.g. 1000 -> 1k)
+function formatNumber(num) {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'M';
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'k';
+  }
+  return num.toString();
+}
 
 async function countLinesInFile(filePath) {
   try {
@@ -88,15 +98,42 @@ async function main() {
   
   let totalFiles = 0;
   let totalLines = 0;
+
+  // Sort results by line count in descending order
+  const sortedResults = Object.entries(results).sort((a, b) => b[1].lines - a[1].lines);
   
-  Object.entries(results).forEach(([ext, { files, lines }]) => {
-    console.log(`${ext.padEnd(6)} | ${files.toString().padStart(6)} files | ${lines.toString().padStart(8)} lines`);
+  sortedResults.forEach(([ext, { files, lines }]) => {
+    console.log(`${ext.padEnd(6)} | ${formatNumber(files).padStart(6)} files | ${formatNumber(lines).padStart(8)} lines`);
     totalFiles += files;
     totalLines += lines;
   });
   
   console.log('-'.repeat(50));
-  console.log(`Total  | ${totalFiles.toString().padStart(6)} files | ${totalLines.toString().padStart(8)} lines`);
+  console.log(`Total  | ${formatNumber(totalFiles).padStart(6)} files | ${formatNumber(totalLines).padStart(8)} lines`);
+
+  // Store results in a JSON file
+  const resultsWithTotal = {
+    total: {
+      files: totalFiles,
+      lines: totalLines
+    }
+  };
+
+  // Add sorted results to JSON
+  sortedResults.forEach(([ext, data]) => {
+    resultsWithTotal[ext] = data;
+  });
+
+  const resultsDir = path.join(process.cwd(), 'count-results');
+  if (!fs.existsSync(resultsDir)) {
+    fs.mkdirSync(resultsDir);
+  }
+
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const resultsFile = path.join(resultsDir, `count-results-${timestamp}.json`);
+  
+  fs.writeFileSync(resultsFile, JSON.stringify(resultsWithTotal, null, 2));
+  console.log(`\nResults saved to: ${resultsFile}`);
 }
 
 main().catch(error => {

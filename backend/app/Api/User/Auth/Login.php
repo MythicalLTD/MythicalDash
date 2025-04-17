@@ -112,8 +112,8 @@ $router->add('/api/user/auth/login', function (): void {
         CloudFlareRealIP::getRealIP(),
         $userInfoArray[UserColumns::BANNED],
         $userInfoArray[UserColumns::VERIFIED],
-        $userInfoArray[UserColumns::DISCORD_ID],
-        $userInfoArray[UserColumns::GITHUB_ID]
+        $userInfoArray[UserColumns::DISCORD_ID] ?? '',
+        $userInfoArray[UserColumns::GITHUB_ID] ?? ''
     );
     if ($userInfoArray[UserColumns::PTERODACTYL_USER_ID] == 0) {
         $eventManager->emit(AuthEvent::onAuthLoginFailed(), ['login' => $login, 'error_code' => 'PTERODACTYL_USER_NOT_FOUND']);

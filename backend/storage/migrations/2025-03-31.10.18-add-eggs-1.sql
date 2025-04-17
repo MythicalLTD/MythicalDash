@@ -1,5 +1,5 @@
 CREATE TABLE
-	`mythicaldash`.`mythicaldash_eggs_categories` (
+	`mythicaldash_eggs_categories` (
 		`id` INT NOT NULL AUTO_INCREMENT,
 		`name` TEXT NOT NULL,
 		`description` TEXT NOT NULL,

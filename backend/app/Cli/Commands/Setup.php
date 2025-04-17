@@ -22,11 +22,6 @@ class Setup extends App implements CommandBuilder
     public static function execute(array $args): void
     {
         $cliApp = App::getInstance();
-        if (file_exists(__DIR__ . '/../../../storage/.env')) {
-            $cliApp->send('&aThe application is already setup!');
-            exit;
-        }
-
         self::createDBConnection($cliApp);
 
         $cliApp->send('&aThe application has been setup!');
@@ -45,10 +40,10 @@ class Setup extends App implements CommandBuilder
     public static function createDBConnection(App $cliApp): void
     {
         $defultEncryption = 'xchacha20';
-        $defultDBName = 'mythicaldash';
+        $defultDBName = 'mythicaldash_remastered';
         $defultDBHost = '127.0.0.1';
         $defultDBPort = '3306';
-        $defultDBUser = 'mythical';
+        $defultDBUser = 'mythicaldash_remastered';
         $defultDBPassword = '';
 
         $cliApp->send("&7Please enter the database encryption &8[&e$defultEncryption&8]&7");
@@ -90,7 +85,9 @@ DATABASE_USER=' . $defultDBUser . '
 DATABASE_PASSWORD=' . $defultDBPassword . '
 DATABASE_DATABASE=' . $defultDBName . '
 DATABASE_ENCRYPTION=' . $dbEncryption . '
-DATABASE_ENCRYPTION_KEY=' . XChaCha20::generateStrongKey(true) . '';
+DATABASE_ENCRYPTION_KEY=' . XChaCha20::generateStrongKey(true) . '
+REDIS_PASSWORD=eufefwefwefw
+REDIS_HOST=127.0.0.1';
 
         $cliApp->send('&aEnvironment file created successfully.');
         $cliApp->send('&aEncryption key generated successfully.');

@@ -45,7 +45,9 @@
                     class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                     placeholder="https://yourdomain.com"
                 />
-                <p class="mt-1 text-xs text-gray-500">The URL of your application. Must include http:// or https://.</p>
+                <p class="mt-1 text-xs text-gray-500">
+                    The URL of your application. Must NOT include http:// or https://.
+                </p>
             </div>
 
             <!-- App Timezone -->
