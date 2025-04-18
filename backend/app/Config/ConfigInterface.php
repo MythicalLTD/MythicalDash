@@ -288,4 +288,12 @@ interface ConfigInterface
     public const MYTHICAL_ZERO_TRUST_BLOCK_TOR_ENABLED = 'zero_trust_block_tor_enabled';
     public const MYTHICAL_ZERO_TRUST_ENHANCED_LOGGING_ENABLED = 'zero_trust_enhanced_logging_enabled';
 
+	/**
+	 * Server Renew
+	 */
+	public const SERVER_RENEW_ENABLED = 'server_renew_enabled';
+	public const SERVER_RENEW_COST = 'server_renew_cost';
+	public const SERVER_RENEW_DAYS = 'server_renew_days';
+	public const SERVER_RENEW_SEND_MAIL = 'server_renew_send_mail';
+
 }
