@@ -392,6 +392,9 @@ account:
                 apikey: 'API Key'
                 linked_accounts: 'Linked Accounts'
         linked_accounts:
+            errors:
+                title: "Woops, it looks like we don't support this provider yet."
+                connect: "Contact support if you think this is an error."
             title: Linked Accounts
             description: Link your accounts to your profile
             connect: 'Connect'

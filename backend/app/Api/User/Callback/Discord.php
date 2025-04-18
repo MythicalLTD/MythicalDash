@@ -27,8 +27,13 @@ $router->get('/api/user/auth/callback/discord/link', function () {
     $config = $appInstance->getConfig();
     $s = new Session($appInstance);
     global $eventManager;
-    if ($config->getSetting(ConfigInterface::DISCORD_ENABLED, 'false') === 'false' && $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '') === '' && $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '') === '' && $config->getSetting(ConfigInterface::DISCORD_LINK_ALLOWED, '') == 'true') {
-        App::NotFound('Discord is not enabled', []);
+    if (
+        $config->getSetting(ConfigInterface::DISCORD_ENABLED, 'false') === 'false'
+        || $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '') === ''
+        || $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '') === ''
+    ) {
+        header('Location: /account?error=discord_not_enabled');
+        exit;
     }
 
     $appId = $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '');
@@ -132,9 +137,15 @@ $router->get('/api/user/auth/callback/discord/login', function () {
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
 
-    if ($config->getSetting(ConfigInterface::DISCORD_ENABLED, 'false') === 'false' && $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '') === '' && $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '') === '' && $config->getSetting(ConfigInterface::DISCORD_LINK_ALLOWED, '') == 'true') {
-        App::NotFound('Discord is not enabled', []);
+    if (
+        $config->getSetting(ConfigInterface::DISCORD_ENABLED, 'false') === 'false'
+        || $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '') === ''
+        || $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '') === ''
+    ) {
+        header('Location: /account?error=discord_not_enabled');
+        exit;
     }
+	
     global $eventManager;
     $appId = $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '');
     $appSecret = $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '');
