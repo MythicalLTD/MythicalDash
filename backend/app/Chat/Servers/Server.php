@@ -90,20 +90,20 @@ class Server extends Database
      */
     public static function update(
         int $id,
-        string $expiresAt,
+        int $expiresAt,
         string $purge = 'false',
     ): bool {
         try {
             $dbConn = self::getPdoConnection();
             $sql = 'UPDATE ' . self::getTableName() . ' SET 
-                expires_at = :expires_at,
-                purge = :purge
+                expires_at = FROM_UNIXTIME(:expires_at),
+                `purge` = :purge 
                 WHERE id = :id AND deleted = "false"';
 
             $stmt = $dbConn->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':expires_at', $expiresAt);
-            $stmt->bindParam(':purge', $purge);
+            $stmt->bindParam(':purge', $purge, \PDO::PARAM_STR);
 
             return $stmt->execute();
         } catch (\Exception $e) {

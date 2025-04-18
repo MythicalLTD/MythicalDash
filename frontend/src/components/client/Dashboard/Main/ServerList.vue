@@ -7,6 +7,7 @@ import {
     Pencil as PencilIcon,
     Trash as TrashIcon,
     ExternalLink as ExternalLinkIcon,
+    RefreshCcw as RefreshCcwIcon,
 } from 'lucide-vue-next';
 import CardComponent from '../../ui/Card/CardComponent.vue';
 import Servers from '@/mythicaldash/Pterodactyl/Servers';
@@ -18,6 +19,7 @@ import { computed } from 'vue';
 
 const Settings = useSettingsStore();
 const pterodactylUrl = Settings.getSetting('pterodactyl_base_url');
+const serverRenewEnabled = Settings.getSetting('server_renew_enabled');
 
 const isServersEnabled = computed(() => {
     return Settings.getSetting('allow_servers') === 'true';
@@ -93,6 +95,10 @@ const fetchServers = async () => {
 // Add new methods
 const editServer = (identifier: string) => {
     router.push(`/server/${identifier}/update`);
+};
+
+const renewServer = (identifier: string) => {
+    router.push(`/server/${identifier}/renew`);
 };
 
 const deleteServer = async (identifier: string) => {
@@ -224,6 +230,14 @@ onMounted(() => {
                                         @click="editServer(server.id)"
                                     >
                                         <PencilIcon class="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        class="p-1.5 rounded-md text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
+                                        title="Renew Server"
+                                        v-if="serverRenewEnabled === 'true'"
+                                        @click="renewServer(server.id)"
+                                    >
+                                        <RefreshCcwIcon class="w-4 h-4" />
                                     </button>
                                     <button
                                         class="p-1.5 rounded-md text-gray-400 hover:text-red-400 hover:bg-gray-800/50 transition-colors"

@@ -41,4 +41,9 @@ class ServerEvent implements PluginEvent
     {
         return 'server::onServerRemoveSuspend';
     }
+
+    public static function onServerRenewed(): string
+    {
+        return 'server::onServerRenewed';
+    }
 }

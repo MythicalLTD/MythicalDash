@@ -430,7 +430,10 @@ $router->get('/api/user/earn/l4r/linkpays/earn/(.*)', function (string $code): v
 
     // User took enough time, give them coins
     LinkPaysDB::markAsCompleted($linkId);
-    $session->setInfo(UserColumns::CREDITS, (int) $session->getInfo(UserColumns::CREDITS, false) + (int) $coinsPerLink, false);
+    $currentCredits = (int) $session->getInfo(UserColumns::CREDITS, false);
+    $coinsToAdd = (int) $coinsPerLink;
+    $newTotal = (string)($currentCredits + $coinsToAdd);
+    $session->setInfo(UserColumns::CREDITS, (string)$newTotal, false);
     $eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
         'user' => $session->getInfo(UserColumns::UUID, false),
         'link' => $linkId,

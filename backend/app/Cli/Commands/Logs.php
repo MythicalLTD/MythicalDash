@@ -14,9 +14,9 @@
 namespace MythicalDash\Cli\Commands;
 
 use MythicalDash\Cli\App;
+use MythicalDash\App as MainApp;
 use MythicalDash\Cli\CommandBuilder;
 use MythicalDash\Services\Cloud\MythicalCloudLogs;
-use MythicalDash\App as MainApp;
 
 class Logs extends App implements CommandBuilder
 {
@@ -24,19 +24,19 @@ class Logs extends App implements CommandBuilder
     {
         $app = App::getInstance();
         $appInstance = MainApp::getInstance(true, false);
-        
+
         $app->send('&7Starting log upload process...');
         $appInstance->getLogger()->info('Initiating log upload to cloud storage');
 
         // Upload dashboard logs
         $dashboardLogsUrl = MythicalCloudLogs::uploadDashboardLogsToCloud();
-        
+
         // Upload web server logs
         $webServerLogsUrl = MythicalCloudLogs::uploadWebServerLogsToCloud();
 
         if ($dashboardLogsUrl && $webServerLogsUrl) {
             $appInstance->getLogger()->info('Successfully uploaded all logs to cloud storage');
-            
+
             $app->send('&aLogs successfully uploaded to cloud storage!');
             $app->send('&7Dashboard Logs: &d' . $dashboardLogsUrl);
             $app->send('&7Web Server Logs: &d' . $webServerLogsUrl);
@@ -44,12 +44,12 @@ class Logs extends App implements CommandBuilder
         } else {
             $appInstance->getLogger()->error('Failed to upload one or more log files to cloud storage');
             $app->send('&cError: Failed to upload logs to cloud storage');
-            
+
             if (!$dashboardLogsUrl) {
                 $app->send('&c- Dashboard logs upload failed');
             }
             if (!$webServerLogsUrl) {
-                $app->send('&c- Web server logs upload failed'); 
+                $app->send('&c- Web server logs upload failed');
             }
         }
     }

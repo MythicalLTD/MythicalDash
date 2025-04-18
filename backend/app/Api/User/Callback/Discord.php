@@ -145,7 +145,7 @@ $router->get('/api/user/auth/callback/discord/login', function () {
         header('Location: /account?error=discord_not_enabled');
         exit;
     }
-	
+
     global $eventManager;
     $appId = $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '');
     $appSecret = $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '');

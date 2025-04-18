@@ -25,6 +25,14 @@ const serverRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
         },
     },
+    {
+        path: '/server/:id/renew',
+        name: 'Renew Server',
+        component: () => import('@/views/client/server/Renew.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
 ];
 
 export default serverRoutes;

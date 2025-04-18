@@ -294,13 +294,13 @@ class App extends MythicalAPP
         return new LoggerFactory(__DIR__ . '/../storage/logs/mythicaldash.log');
     }
 
-	/**
-	 * Get the web server logger factory.
-	 */
-	public function getWebServerLogger(): LoggerFactory
-	{
-		return new LoggerFactory(__DIR__ . '/../storage/logs/mythicaldash-v3.log');
-	}
+    /**
+     * Get the web server logger factory.
+     */
+    public function getWebServerLogger(): LoggerFactory
+    {
+        return new LoggerFactory(__DIR__ . '/../storage/logs/mythicaldash-v3.log');
+    }
 
     /**
      * Get the instance of the App class.

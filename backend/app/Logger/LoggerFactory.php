@@ -76,8 +76,8 @@ class LoggerFactory
 
         if (!$isWebServer) {
             return array_filter($logs, function ($log) {
-				return !str_contains($log, '[DEBUG]');
-			});
+                return !str_contains($log, '[DEBUG]');
+            });
         }
 
         return $logs;
