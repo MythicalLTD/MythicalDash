@@ -238,6 +238,18 @@ class ServerCreationJob
 			if (isset($response['attributes']) && isset($response['attributes']['id'])) {
 				$chat->sendOutputWithNewLine($servePrefix . "&aServer created successfully with ID: " . $response['attributes']['id']);
 				Server::create($response['attributes']['id'], $id, $userUUID);
+				$isRenewal = $app->getConfig()->getSetting(ConfigInterface::SERVER_RENEW_ENABLED, 'false');
+				if ($isRenewal == 'true') {
+					$daysToAdd = $app->getConfig()->getSetting(ConfigInterface::SERVER_RENEW_DAYS, 30);
+					$serverInfoDb = Server::getByPterodactylId($response['attributes']['id']);
+					if ($serverInfoDb) {
+						$currentExpiresAt = strtotime($serverInfoDb['expires_at']);
+						$expirationTimestamp = $currentExpiresAt + ($daysToAdd * 86400); // Convert days to seconds
+					} else {
+						$expirationTimestamp = strtotime('+' . $daysToAdd . ' days');
+					}
+					Server::update($response['attributes']['id'], $expirationTimestamp, 'false');
+				}
 				ServerQueue::updateStatus($id, 'completed');
 				$chat->sendOutputWithNewLine($servePrefix . "&aServer information stored in database");
 				return true;

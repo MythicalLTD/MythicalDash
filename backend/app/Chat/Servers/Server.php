@@ -80,6 +80,30 @@ class Server extends Database
     }
 
     /**
+     * Get the expiration date of a server.
+     *
+     * @param int $id The ID of the server
+     *
+     * @return string The expiration date
+     */
+    public static function getExpirationDate(int $id): string
+    {
+        try {
+            $dbConn = self::getPdoConnection();
+            $sql = 'SELECT expires_at FROM ' . self::getTableName() . ' WHERE pterodactyl_id = :id AND deleted = "false"';
+            $stmt = $dbConn->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            return $stmt->fetchColumn() ?? '';
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get expiration date: ' . $e->getMessage());
+
+            return '';
+        }
+    }
+
+    /**
      * Update an existing server.
      *
      * @param int $id The ID of the server to update
