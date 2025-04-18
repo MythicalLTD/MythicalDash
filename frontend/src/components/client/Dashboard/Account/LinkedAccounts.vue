@@ -11,7 +11,9 @@ import {
 } from 'lucide-vue-next';
 import Session from '@/mythicaldash/Session';
 import { useI18n } from 'vue-i18n';
+import { useSettingsStore } from '@/stores/settings';
 
+const Settings = useSettingsStore();
 const { t } = useI18n();
 
 // Types
@@ -82,6 +84,19 @@ const formatDate = (dateString: string | undefined): string => {
 // API functions
 const connectAccount = async (provider: Provider) => {
     try {
+        if (
+            provider === 'discord' &&
+            (Settings.getSetting('discord_enabled') !== 'true' ||
+                Settings.getSetting('discord_link_allowed') !== 'true')
+        ) {
+            throw new Error('Discord linking is not enabled');
+        }
+        if (
+            provider === 'github' &&
+            (Settings.getSetting('github_enabled') !== 'true' || Settings.getSetting('github_link_allowed') !== 'true')
+        ) {
+            throw new Error('GitHub linking is not enabled');
+        }
         window.location.href = `/api/user/auth/callback/${provider}/link`;
     } catch (err) {
         console.error(`Error connecting ${provider} account:`, err);
