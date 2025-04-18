@@ -1,5 +1,5 @@
-# ==========================================
-# MythicalClient Build System
+# MythicalDash
+# MythicalDash Build System
 # ==========================================
 
 # Directory configurations
@@ -40,7 +40,7 @@ SHELL := /bin/bash
 
 # Default target
 help:
-	@echo -e "${BOLD}${BLUE}MythicalClient Build System${NC}"
+	@echo -e "${BOLD}${BLUE}MythicalDash Build System${NC}"
 	@echo -e "${CYAN}================================${NC}\n"
 	@echo -e "${BOLD}Available commands:${NC}"
 	@echo -e "  ${GREEN}make frontend${NC}    ${ROCKET} Builds the frontend for production"

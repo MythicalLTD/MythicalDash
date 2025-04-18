@@ -134,7 +134,7 @@ class App extends MythicalAPP
             if (!$this->licenseValidator->validate()) {
                 define('HAS_VALID_LICENSE', false);
             } else {
-                $this->getLogger()->debug('License is valid! Thank you for supporting the development of MythicalClient!');
+                $this->getLogger()->debug('License is valid! Thank you for supporting the development of MythicalDash!');
                 define('HAS_VALID_LICENSE', true);
             }
         } catch (\Exception $e) {
@@ -293,6 +293,14 @@ class App extends MythicalAPP
     {
         return new LoggerFactory(__DIR__ . '/../storage/logs/mythicaldash.log');
     }
+
+	/**
+	 * Get the web server logger factory.
+	 */
+	public function getWebServerLogger(): LoggerFactory
+	{
+		return new LoggerFactory(__DIR__ . '/../storage/logs/mythicaldash-v3.log');
+	}
 
     /**
      * Get the instance of the App class.
