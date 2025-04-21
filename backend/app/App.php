@@ -151,8 +151,11 @@ class App extends MythicalAPP
             $this->getConfig()->getSetting(ConfigInterface::TELEMETRY_ENABLED, 'true'),
         );
 
-        global $telemetry;
-
+		if ($this->getConfig()->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems') == 'https://mythicaldash-v3.mythical.systems') {
+			$appUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+			$this->getConfig()->setSetting(ConfigInterface::APP_URL, $appUrl);
+		}
+		
         $router->add('/(.*)', function ($route): void {
             self::init();
             self::NotFound('The api route does not exist!', ['error_code' => 'API_ROUTE_NOT_FOUND', 'route' => $route]);

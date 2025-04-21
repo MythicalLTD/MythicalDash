@@ -83,8 +83,8 @@ $router->add('/api/stripe/process', function (): void {
                 $checkout_session = Stripe\Checkout\Session::create([
                     'mode' => 'payment',
                     'customer_email' => $session->getInfo(UserColumns::EMAIL, false),
-                    'success_url' =>  $appInstance->getConfig()->getSetting(ConfigInterface::APP_URL, 'framework.mythical.systems') . '/api/stripe/processed?code=' . $code,
-                    'cancel_url' => $appInstance->getConfig()->getSetting(ConfigInterface::APP_URL, 'framework.mythical.systems') . '/api/stripe/cancelled',
+                    'success_url' =>  $appInstance->getConfig()->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems') . '/api/stripe/processed?code=' . $code,
+                    'cancel_url' => $appInstance->getConfig()->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems') . '/api/stripe/cancelled',
                     'line_items' => [
                         [
                             'quantity' => 1,

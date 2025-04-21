@@ -38,7 +38,7 @@ $router->get('/api/user/auth/callback/discord/link', function () {
 
     $appId = $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '');
     $appSecret = $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '');
-    $url = $config->getSetting(ConfigInterface::APP_URL, '');
+    $url = $config->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
     $redirectUri = $url . '/api/user/auth/callback/discord/link';
 
     if (isset($_GET['code'])) {
@@ -149,7 +149,7 @@ $router->get('/api/user/auth/callback/discord/login', function () {
     global $eventManager;
     $appId = $config->getSetting(ConfigInterface::DISCORD_CLIENT_ID, '');
     $appSecret = $config->getSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '');
-    $url = $config->getSetting(ConfigInterface::APP_URL, '');
+    $url = $config->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
     $redirectUri = $url . '/api/user/auth/callback/discord/login';
 
     if (isset($_GET['code'])) {

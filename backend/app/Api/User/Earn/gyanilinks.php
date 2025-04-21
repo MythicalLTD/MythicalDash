@@ -40,7 +40,7 @@ $router->get('/api/user/earn/l4r/gyanilinks/start', function (): void {
 
     $dayLimit = $config->getSetting(ConfigInterface::L4R_GYANILINKS_DAILY_LIMIT, 5);
     $coolDown = $config->getSetting(ConfigInterface::L4R_GYANILINKS_COOLDOWN_TIME, 3600);
-    $appUrl = $config->getSetting(ConfigInterface::APP_URL, 'https://app.mythicaldash.com');
+    $appUrl = $config->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
 
     $dayCount = 0;
     $links = GyaniLinksDB::getAllByUser($session->getInfo(UserColumns::UUID, false), 35);

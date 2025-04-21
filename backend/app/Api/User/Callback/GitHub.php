@@ -48,7 +48,7 @@ $router->get('/api/user/auth/callback/github', function () {
 
     $appId = $config->getSetting(ConfigInterface::GITHUB_CLIENT_ID, '');
     $appSecret = $config->getSetting(ConfigInterface::GITHUB_CLIENT_SECRET, '');
-    $url = $config->getSetting(ConfigInterface::APP_URL, '');
+    $url = $config->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
     $redirectUri = $url . '/api/user/auth/callback/github';
 
     // Initialize GitHub OAuth provider with proper scopes

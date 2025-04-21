@@ -50,7 +50,7 @@ class TelemetryJob
 				$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &7Status: ' . ($isEnabled ? '&aEnabled' : '&cDisabled'));
 	
 				if ($isEnabled) {
-					$appID = preg_replace('/^https?:\/\//', '', $config->getSetting(ConfigInterface::APP_URL, 'NULL'));
+					$appID = preg_replace('/^https?:\/\//', '', $config->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems'));
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &3App ID: &f' . $appID);
 					$servers = Database::getTableRowCount(Server::getTableName());
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &3Servers: &f' . $servers);
