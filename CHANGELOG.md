@@ -12,6 +12,7 @@
 - FUTURE: New `php mythicaldash logs` command! :)
 - FUTURE: Added `renewal` future 
 - FUTURE: More settings for referrals 
+- FUTURE: Now you can see the server build logs
 
 # Futures Removed:
 

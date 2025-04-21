@@ -104,6 +104,30 @@ class Server extends Database
     }
 
     /**
+     * Get the expiration timestamp of a server.
+     *
+     * @param int $id The ID of the server
+     *
+     * @return int|null The expiration timestamp or null if not found
+     */
+    public static function getExpirationTimestamp(int $id): ?int
+    {
+        try {
+            $dbConn = self::getPdoConnection();
+            $sql = 'SELECT UNIX_TIMESTAMP(expires_at) FROM ' . self::getTableName() . ' WHERE id = :id AND deleted = "false"';
+            $stmt = $dbConn->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            
+            $timestamp = $stmt->fetchColumn();
+            return $timestamp === false ? null : (int)$timestamp;
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get expiration timestamp: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Update an existing server.
      *
      * @param int $id The ID of the server to update

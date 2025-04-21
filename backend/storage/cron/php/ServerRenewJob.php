@@ -12,6 +12,7 @@ class ServerRenewJob
 
 	public static function run()
 	{
+		unlink(__DIR__.'/../../caches/cron/renew-worker.myc');
 		try {
 			$cron = new Cron('renew-worker', '1D');
 			$cron->runIfDue(function () {
