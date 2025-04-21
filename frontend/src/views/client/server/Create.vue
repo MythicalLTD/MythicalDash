@@ -414,7 +414,7 @@ const locationOptions = computed<SelectOption[]>(() => {
         label:
             `${location.name} - ${location.status} (${location.used_slots}/${location.slots} ` +
             t('create.pages.index.slots') +
-            `)`,
+            `) [${location.slots - location.used_slots} ${t('create.pages.index.form.available')}]`,
     }));
 });
 

@@ -80,6 +80,54 @@ class Server extends Database
     }
 
     /**
+     * Get the expiration date of a server.
+     *
+     * @param int $id The ID of the server
+     *
+     * @return string The expiration date
+     */
+    public static function getExpirationDate(int $id): string
+    {
+        try {
+            $dbConn = self::getPdoConnection();
+            $sql = 'SELECT expires_at FROM ' . self::getTableName() . ' WHERE pterodactyl_id = :id AND deleted = "false"';
+            $stmt = $dbConn->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            return $stmt->fetchColumn() ?? '';
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get expiration date: ' . $e->getMessage());
+
+            return '';
+        }
+    }
+
+    /**
+     * Get the expiration timestamp of a server.
+     *
+     * @param int $id The ID of the server
+     *
+     * @return int|null The expiration timestamp or null if not found
+     */
+    public static function getExpirationTimestamp(int $id): ?int
+    {
+        try {
+            $dbConn = self::getPdoConnection();
+            $sql = 'SELECT UNIX_TIMESTAMP(expires_at) FROM ' . self::getTableName() . ' WHERE id = :id AND deleted = "false"';
+            $stmt = $dbConn->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            
+            $timestamp = $stmt->fetchColumn();
+            return $timestamp === false ? null : (int)$timestamp;
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get expiration timestamp: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Update an existing server.
      *
      * @param int $id The ID of the server to update
@@ -90,20 +138,20 @@ class Server extends Database
      */
     public static function update(
         int $id,
-        string $expiresAt,
+        int $expiresAt,
         string $purge = 'false',
     ): bool {
         try {
             $dbConn = self::getPdoConnection();
             $sql = 'UPDATE ' . self::getTableName() . ' SET 
-                expires_at = :expires_at,
-                purge = :purge
+                expires_at = FROM_UNIXTIME(:expires_at),
+                `purge` = :purge 
                 WHERE id = :id AND deleted = "false"';
 
             $stmt = $dbConn->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':expires_at', $expiresAt);
-            $stmt->bindParam(':purge', $purge);
+            $stmt->bindParam(':purge', $purge, \PDO::PARAM_STR);
 
             return $stmt->execute();
         } catch (\Exception $e) {

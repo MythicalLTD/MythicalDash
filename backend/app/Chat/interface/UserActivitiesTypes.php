@@ -88,7 +88,7 @@ class UserActivitiesTypes
     public static string $server_delete = 'server:delete';
     public static string $server_create = 'server:create';
     public static string $server_update = 'server:update';
-
+    public static string $server_renew = 'server:renew';
     /**
      * Plugins.
      */

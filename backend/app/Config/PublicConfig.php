@@ -235,6 +235,12 @@ class PublicConfig extends ConfigFactory
             ConfigInterface::MYTHICAL_ZERO_TRUST_WHITELIST_IPS_ENABLED => 'false',
             ConfigInterface::MYTHICAL_ZERO_TRUST_BLOCK_TOR_ENABLED => 'false',
             ConfigInterface::MYTHICAL_ZERO_TRUST_ENHANCED_LOGGING_ENABLED => 'false',
+
+            // Server Renew
+            ConfigInterface::SERVER_RENEW_ENABLED => 'false',
+            ConfigInterface::SERVER_RENEW_COST => '100',
+            ConfigInterface::SERVER_RENEW_DAYS => '30',
+            ConfigInterface::SERVER_RENEW_SEND_MAIL => 'false',
         ];
 
     }

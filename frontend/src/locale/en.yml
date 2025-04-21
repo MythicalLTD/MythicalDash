@@ -394,7 +394,7 @@ account:
         linked_accounts:
             errors:
                 title: "Woops, it looks like we don't support this provider yet."
-                connect: "Contact support if you think this is an error."
+                connect: 'Contact support if you think this is an error.'
             title: Linked Accounts
             description: Link your accounts to your profile
             connect: 'Connect'
@@ -1470,3 +1470,52 @@ profile:
         verified: 'Verified'
         not_verified: 'Not Verified'
         uuid: 'UUID'
+
+renew:
+    pages:
+        index:
+            title: 'Renew Server'
+            subTitle: "Extend your server's lifetime"
+            loading: 'Loading server data...'
+            unknownError: 'An unknown error occurred'
+            type: 'Type'
+            version: 'Version'
+            location: 'Location'
+            expiresAt: 'Expires At'
+            expired: 'Expired'
+            renewalInfo: 'Renewal Information'
+            details:
+                title: 'Renewing your server'
+                description: 'Renewing your server will extend its lifetime and keep all your data intact.'
+                keepData: 'All files and data will be preserved'
+                keepSettings: 'Server settings will remain unchanged'
+                keepBackups: 'All backups will be maintained'
+                keepDatabases: 'Databases will be preserved'
+                confirmRenewal: 'Please confirm your renewal below'
+            cost:
+                title: 'Renewal Cost'
+                coins: 'coins'
+            duration:
+                title: 'Renewal Duration'
+                days: 'days'
+            yourBalance: 'Your Balance'
+            card:
+                title: 'Confirm Renewal'
+                description: 'To confirm, type the server name:'
+                placeholder: 'Type server name to confirm'
+            button:
+                renew: 'Renew Server'
+                cancel: 'Cancel'
+        alerts:
+            error:
+                title: 'Error'
+                generic: 'An error occurred. Please try again later'
+                footer: 'Please contact support for assistance'
+                confirmation: 'Confirmation text does not match server name'
+                confirmButtonText: 'OK'
+                insufficientCoins: 'You do not have enough coins to renew this server'
+            success:
+                title: 'Success'
+                generic: 'Your server has been renewed'
+                footer: 'Server renewal request submitted successfully'
+                confirmButtonText: 'OK'

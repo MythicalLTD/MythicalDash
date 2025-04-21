@@ -105,8 +105,8 @@ class MythicalZero
         string $ip,
         string $banned,
         string $verified,
-        string $discord_id = "",
-        string $github_id = "",
+        string $discord_id = '',
+        string $github_id = '',
     ): void {
         if (!$this->zeroTrustEnabled) {
             App::getInstance(true)->getLogger()->warning('Zero trust is not enabled, skipping login telemetry');

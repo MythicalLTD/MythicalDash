@@ -269,6 +269,127 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     }
 });
 
+// Renew server
+$router->post('/api/user/server/(.*)/renew', function (string $id): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $session = new Session($appInstance);
+    $config = $appInstance->getConfig();
+
+    // Check if server renewal is enabled
+    if ($config->getSetting(ConfigInterface::SERVER_RENEW_ENABLED, 'false') == 'false') {
+        $appInstance->BadRequest('Server renewal is not enabled', ['error_code' => 'SERVER_RENEWAL_NOT_ENABLED']);
+
+        return;
+    }
+
+    // Get server details
+    $server = Servers::getServerPterodactylDetails((int) $id);
+    if (!$server) {
+        $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
+
+        return;
+    }
+
+    // Verify ownership
+    $pterodactylUserId = $session->getInfo(UserColumns::PTERODACTYL_USER_ID, false);
+    $owner = $server['attributes']['user'];
+    if ($owner != $pterodactylUserId) {
+        $appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
+
+        return;
+    }
+
+    // Get server info from database
+    $serverId = $server['attributes']['id'];
+    $serverInfoDb = MythicalDash\Chat\Servers\Server::getByPterodactylId($serverId);
+    if (!$serverInfoDb) {
+        $appInstance->BadRequest('Server not found in database', ['error_code' => 'SERVER_NOT_FOUND_IN_DB']);
+
+        return;
+    }
+
+    // Get renewal settings
+    $server_renew_cost = (int) $config->getSetting(ConfigInterface::SERVER_RENEW_COST, 120);
+    $server_renew_days = (int) $config->getSetting(ConfigInterface::SERVER_RENEW_DAYS, 30);
+
+    // Validate renewal settings
+    if ($server_renew_cost <= 0) {
+        $appInstance->BadRequest('Invalid renewal cost configuration', ['error_code' => 'INVALID_RENEWAL_COST']);
+
+        return;
+    }
+
+    if ($server_renew_days <= 0) {
+        $appInstance->BadRequest('Invalid renewal days configuration', ['error_code' => 'INVALID_RENEWAL_DAYS']);
+
+        return;
+    }
+
+    // Check user balance
+    $userBalance = (int) $session->getInfo(UserColumns::CREDITS, false);
+    if ($userBalance < $server_renew_cost) {
+        $appInstance->BadRequest('You do not have enough credits to renew this server', ['error_code' => 'INSUFFICIENT_CREDITS']);
+
+        return;
+    }
+
+    // Calculate new expiration date
+    $currentExpiresAt = strtotime($serverInfoDb['expires_at']);
+    if ($currentExpiresAt === false) {
+        $appInstance->BadRequest('Invalid server expiration date', ['error_code' => 'INVALID_EXPIRATION_DATE']);
+
+        return;
+    }
+
+    $newExpiresAt = $currentExpiresAt + ($server_renew_days * 86400); // Convert days to seconds
+    $newExpiresAtFormatted = date('Y-m-d H:i:s', $newExpiresAt);
+
+    try {
+        // Update server expiration
+        if (!MythicalDash\Chat\Servers\Server::update($serverInfoDb['id'], $newExpiresAt)) {
+            throw new Exception('Failed to update server expiration');
+        }
+
+        // Deduct credits from user
+        $newBalance = $userBalance - $server_renew_cost;
+        $session->setInfo(UserColumns::CREDITS, $newBalance, false);
+
+        // Log activity
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$server_renew,
+            CloudFlareRealIP::getRealIP(),
+            "Renewed server $serverId for $server_renew_days days"
+        );
+
+        // Emit event
+        global $eventManager;
+        $eventManager->emit(ServerEvent::onServerRenewed(), [
+            'server' => $server,
+            'renewal_days' => $server_renew_days,
+            'cost' => $server_renew_cost,
+            'new_expires_at' => $newExpiresAtFormatted,
+        ]);
+
+        // Return success response
+        $appInstance->OK('Server renewed successfully', [
+            'server' => $serverInfoDb,
+            'renewal_details' => [
+                'days_added' => $server_renew_days,
+                'cost' => $server_renew_cost,
+                'new_expires_at' => $newExpiresAtFormatted,
+                'new_balance' => $newBalance,
+            ],
+        ]);
+
+    } catch (Exception $e) {
+        // Rollback transaction on error
+        $appInstance->ServiceUnavailable('Error renewing server: ' . $e->getMessage(), ['error_code' => 'FAILED_TO_RENEW_SERVER']);
+    }
+});
+
 // Delete server
 $router->post('/api/user/server/(.*)/delete', function (string $id): void {
     App::init();
@@ -645,6 +766,13 @@ $router->get('/api/user/server/(.*)', function (string $id): void {
     $nestId = $server['attributes']['relationships']['nest']['attributes']['id'];
     $nest = EggCategories::getByPterodactylNestId($nestId);
     $server['category'] = $nest;
+
+    if (MythicalDash\Chat\Servers\Server::doesServerExistByPterodactylId($id)) {
+        $serverInfoDb = MythicalDash\Chat\Servers\Server::getByPterodactylId($id);
+        $server['mythicaldash'] = $serverInfoDb;
+    } else {
+        $appInstance->BadRequest('Server not found in MythicalDash', ['error_code' => 'SERVER_NOT_FOUND_IN_MYTHICALDASH']);
+    }
 
     $appInstance->OK('Server details about server ' . $id, [
         'server' => $server,

@@ -836,6 +836,81 @@
                 </div>
             </div>
 
+            <!-- Server Renewals -->
+            <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg font-medium text-white">Server Renewals</h3>
+                        <p class="text-sm text-gray-400">Configure server renewal settings for users.</p>
+                    </div>
+                    <div class="ml-4 flex items-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="serverRenewEnabled"
+                                class="sr-only peer"
+                                @change="updateSetting('server_renew_enabled', serverRenewEnabled ? 'true' : 'false')"
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                        </label>
+                    </div>
+                </div>
+
+                <div v-if="serverRenewEnabled" class="space-y-4 mt-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="server_renew_cost" class="block text-sm font-medium text-gray-400 mb-1">
+                                Renewal Cost (coins)
+                            </label>
+                            <input
+                                id="server_renew_cost"
+                                type="number"
+                                v-model="formData.server_renew_cost"
+                                @change="updateSetting('server_renew_cost', formData.server_renew_cost)"
+                                class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            />
+                            <p class="mt-1 text-xs text-gray-500">Cost in coins to renew a server</p>
+                        </div>
+
+                        <div>
+                            <label for="server_renew_days" class="block text-sm font-medium text-gray-400 mb-1">
+                                Renewal Period (days)
+                            </label>
+                            <input
+                                id="server_renew_days"
+                                type="number"
+                                v-model="formData.server_renew_days"
+                                @change="updateSetting('server_renew_days', formData.server_renew_days)"
+                                class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            />
+                            <p class="mt-1 text-xs text-gray-500">Number of days added when renewing a server</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="serverRenewSendMail"
+                                class="sr-only peer"
+                                @change="
+                                    updateSetting('server_renew_send_mail', serverRenewSendMail ? 'true' : 'false')
+                                "
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                            <span class="ml-3 text-sm font-medium text-gray-400">Send Email Notifications</span>
+                        </label>
+                        <p class="mt-1 text-xs text-gray-500">
+                            Send email notifications when a server is about to expire
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Store -->
             <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
                 <div class="flex justify-between items-start mb-4">
@@ -955,6 +1030,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Default Resources -->
             <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
                 <div class="flex justify-between items-start mb-4">
@@ -1049,6 +1125,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Block Resources -->
             <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
                 <div class="flex justify-between items-start mb-4">
@@ -1279,10 +1356,10 @@ const formData = ref({
     l4r_gyanilinks_min_time_to_complete: '60',
     l4r_gyanilinks_time_to_expire: '3600',
     l4r_gyanilinks_cooldown_time: '3600',
-    referrals_enabled: 'false',
+    referrals_enabled: 'true',
     store_enabled: 'false',
-    early_supporters_enabled: 'false',
-    early_supporters_amount: '100',
+    early_supporters_enabled: 'true',
+    early_supporters_amount: '10',
     max_ram: '4096',
     max_disk: '10240',
     max_cpu: '100',
@@ -1290,8 +1367,8 @@ const formData = ref({
     max_databases: '5',
     max_server_slots: '3',
     max_backups: '5',
-    referrals_coins_per_referral: '35',
-    referrals_coins_per_referral_redeemer: '15',
+    referrals_coins_per_referral: '45',
+    referrals_coins_per_referral_redeemer: '25',
     default_ram: '1024',
     default_disk: '1024',
     default_cpu: '100',
@@ -1306,6 +1383,10 @@ const formData = ref({
     block_databases: 'false',
     block_server_slots: 'false',
     block_backups: 'false',
+    server_renew_enabled: 'false',
+    server_renew_cost: '100',
+    server_renew_days: '30',
+    server_renew_send_mail: 'false',
 });
 
 // Computed properties for toggles
@@ -1387,6 +1468,21 @@ const earlySupportersEnabled = computed({
     },
 });
 
+// Add server renewal computed properties
+const serverRenewEnabled = computed({
+    get: () => props.settings?.server_renew_enabled === 'true',
+    set: (value) => {
+        emit('update', 'server_renew_enabled', value ? 'true' : 'false');
+    },
+});
+
+const serverRenewSendMail = computed({
+    get: () => props.settings?.server_renew_send_mail === 'true',
+    set: (value) => {
+        emit('update', 'server_renew_send_mail', value ? 'true' : 'false');
+    },
+});
+
 // Initialize form with settings values
 watch(
     () => props.settings,
@@ -1425,10 +1521,10 @@ watch(
                 l4r_gyanilinks_min_time_to_complete: newSettings['l4r_gyanilinks_min_time_to_complete'] || '60',
                 l4r_gyanilinks_time_to_expire: newSettings['l4r_gyanilinks_time_to_expire'] || '3600',
                 l4r_gyanilinks_cooldown_time: newSettings['l4r_gyanilinks_cooldown_time'] || '3600',
-                referrals_enabled: newSettings['referrals_enabled'] || 'false',
+                referrals_enabled: newSettings['referrals_enabled'] || 'true',
                 store_enabled: newSettings['store_enabled'] || 'false',
-                early_supporters_enabled: newSettings['early_supporters_enabled'] || 'false',
-                early_supporters_amount: newSettings['early_supporters_amount'] || '100',
+                early_supporters_enabled: newSettings['early_supporters_enabled'] || 'true',
+                early_supporters_amount: newSettings['early_supporters_amount'] || '10',
                 max_ram: newSettings['max_ram'] || '4096',
                 max_disk: newSettings['max_disk'] || '10240',
                 max_cpu: newSettings['max_cpu'] || '100',
@@ -1436,8 +1532,8 @@ watch(
                 max_databases: newSettings['max_databases'] || '5',
                 max_server_slots: newSettings['max_server_slots'] || '3',
                 max_backups: newSettings['max_backups'] || '5',
-                referrals_coins_per_referral: newSettings['referrals_coins_per_referral'] || '35',
-                referrals_coins_per_referral_redeemer: newSettings['referrals_coins_per_referral_redeemer'] || '15',
+                referrals_coins_per_referral: newSettings['referrals_coins_per_referral'] || '45',
+                referrals_coins_per_referral_redeemer: newSettings['referrals_coins_per_referral_redeemer'] || '25',
                 default_ram: newSettings['default_ram'] || '1024',
                 default_disk: newSettings['default_disk'] || '1024',
                 default_cpu: newSettings['default_cpu'] || '100',
@@ -1452,6 +1548,10 @@ watch(
                 block_databases: newSettings['block_databases'] || 'false',
                 block_server_slots: newSettings['block_server_slots'] || 'false',
                 block_backups: newSettings['block_backups'] || 'false',
+                server_renew_enabled: newSettings['server_renew_enabled'] || 'false',
+                server_renew_cost: newSettings['server_renew_cost'] || '100',
+                server_renew_days: newSettings['server_renew_days'] || '30',
+                server_renew_send_mail: newSettings['server_renew_send_mail'] || 'false',
             };
         }
     },

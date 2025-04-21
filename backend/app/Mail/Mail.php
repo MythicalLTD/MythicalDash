@@ -33,6 +33,10 @@ class Mail
         // TODO: Add more drivers
         $appInstance = App::getInstance(true);
 
+        if (!self::isEnabled()) {
+            return;
+        }
+
         try {
             $appInstance->getLogger()->debug('Sending email to ' . $to);
             SMTPServer::send($to, $subject, $message);
