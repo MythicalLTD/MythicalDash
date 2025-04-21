@@ -1,4 +1,4 @@
-# v3-remastered 1.0.1
+# v3-remastered 1.0.0.1
 
 # Bugs Fixed:
 
@@ -19,3 +19,4 @@
 
 # Futures Removed:
 
+- REMOVED: MythicalCloud Backups (TEMP)
