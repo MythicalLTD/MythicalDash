@@ -32,6 +32,12 @@ class MythicalCloudLogs
                 return null;
             }
 
+            // Limit logs to 250 rows (keep the most recent logs)
+            if (count($logs) > 250) {
+                $logs = array_slice($logs, -250);
+                App::getInstance(true)->getLogger()->info('Logs truncated to 250 rows for upload');
+            }
+
             $route = 'https://api.mythical.systems/log';
 
             // Convert logs array to text with newlines
@@ -112,6 +118,12 @@ class MythicalCloudLogs
                 App::getInstance(true)->getLogger()->warning('No logs to upload');
 
                 return null;
+            }
+
+            // Limit logs to 250 rows (keep the most recent logs)
+            if (count($logs) > 250) {
+                $logs = array_slice($logs, -250);
+                App::getInstance(true)->getLogger()->info('Web server logs truncated to 250 rows for upload');
             }
 
             $route = 'https://api.mythical.systems/log';
