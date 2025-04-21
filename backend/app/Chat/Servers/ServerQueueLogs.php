@@ -105,12 +105,12 @@ class ServerQueueLogs extends Database
      *
      * @param int $buildId The ID of the build
      * @param string $log The log content
-     * 
+     *
      * @return int|false The ID of the newly created log entry, or false on failure
      */
     public static function create(
         int $buildId,
-        string $log
+        string $log,
     ): int|false {
         try {
             $dbConn = Database::getPdoConnection();
@@ -198,9 +198,9 @@ class ServerQueueLogs extends Database
     {
         try {
             $dbConn = Database::getPdoConnection();
-            
+
             $lockedValue = $locked ? 'true' : 'false';
-            
+
             $stmt = $dbConn->prepare('UPDATE ' . self::getTableName() . ' 
                 SET locked = :locked, updated_at = NOW() 
                 WHERE id = :id AND deleted = "false"');
@@ -215,7 +215,7 @@ class ServerQueueLogs extends Database
             return false;
         }
     }
-    
+
     /**
      * Set log entry purge status.
      *
@@ -228,9 +228,9 @@ class ServerQueueLogs extends Database
     {
         try {
             $dbConn = Database::getPdoConnection();
-            
+
             $purgeValue = $purge ? 'true' : 'false';
-            
+
             $stmt = $dbConn->prepare('UPDATE ' . self::getTableName() . ' 
                 SET purge = :purge, updated_at = NOW() 
                 WHERE id = :id AND deleted = "false"');
@@ -245,7 +245,7 @@ class ServerQueueLogs extends Database
             return false;
         }
     }
-    
+
     /**
      * Update log entry expiration date.
      *
@@ -273,7 +273,7 @@ class ServerQueueLogs extends Database
             return false;
         }
     }
-    
+
     /**
      * Get all expired logs that should be purged.
      *
@@ -299,7 +299,7 @@ class ServerQueueLogs extends Database
             return [];
         }
     }
-    
+
     /**
      * Check if a log entry exists.
      *
@@ -328,12 +328,12 @@ class ServerQueueLogs extends Database
 
     /**
      * Save logs from a server job.
-     * 
+     *
      * @param int $buildId The ID of the build
      * @param array $logs Array of log messages
      * @param bool $isPurge Whether to mark for purging
      * @param string|null $expirationDate Custom expiration date (null for default)
-     * 
+     *
      * @return int|false The ID of the newly created log entry, or false on failure
      */
     public static function saveJobLogs(int $buildId, array $logs, bool $isPurge = false, ?string $expirationDate = null): int|false
@@ -341,36 +341,36 @@ class ServerQueueLogs extends Database
         try {
             // Join log messages with newlines
             $logText = !empty($logs) ? implode("\n", $logs) : '';
-            
+
             // Create the log entry
             $logId = self::create($buildId, $logText);
-            
+
             if ($logId !== false) {
                 // Set purge status if needed
                 if ($isPurge) {
                     self::setPurge($logId, true);
                 }
-                
+
                 // Set custom expiration date if provided
                 if ($expirationDate !== null) {
                     self::updateExpiration($logId, $expirationDate);
                 }
             }
-            
+
             return $logId;
         } catch (\Exception $e) {
             self::db_Error('Failed to save job logs: ' . $e->getMessage());
-            
+
             return false;
         }
     }
-    
+
     /**
      * Append new log entries to an existing log.
-     * 
+     *
      * @param int $id The ID of the log entry
      * @param array|string $newLogs Array of log messages or a single string
-     * 
+     *
      * @return bool True on success, false on failure
      */
     public static function appendLogs(int $id, $newLogs): bool
@@ -378,61 +378,61 @@ class ServerQueueLogs extends Database
         try {
             // Get existing log
             $existingLog = self::getById($id);
-            
+
             if ($existingLog === null) {
                 return false;
             }
-            
+
             // Format new logs
             if (is_array($newLogs)) {
                 $newLogsText = implode("\n", $newLogs);
             } else {
                 $newLogsText = (string) $newLogs;
             }
-            
+
             // Combine existing and new logs
             $combinedLogs = $existingLog['log'] . "\n" . $newLogsText;
-            
+
             // Update the log entry
             return self::update($id, $combinedLogs);
         } catch (\Exception $e) {
             self::db_Error('Failed to append logs: ' . $e->getMessage());
-            
+
             return false;
         }
     }
-    
+
     /**
      * Create a log entry for a failed server operation.
-     * 
+     *
      * @param int $buildId The ID of the build
      * @param array $logs Array of log messages
      * @param string $errorMessage The error message
-     * 
+     *
      * @return int|false The ID of the newly created log entry, or false on failure
      */
     public static function logFailure(int $buildId, array $logs, string $errorMessage): int|false
     {
         try {
             // Add error message to logs
-            $logs[] = "ERROR: " . $errorMessage;
-            
+            $logs[] = 'ERROR: ' . $errorMessage;
+
             // Save logs with default 30-day expiration
             $expirationDate = date('Y-m-d H:i:s', strtotime('+30 days'));
-            
+
             return self::saveJobLogs($buildId, $logs, true, $expirationDate);
         } catch (\Exception $e) {
             self::db_Error('Failed to log failure: ' . $e->getMessage());
-            
+
             return false;
         }
     }
-    
+
     /**
      * Get the latest log for a build.
-     * 
+     *
      * @param int $buildId The ID of the build
-     * 
+     *
      * @return array|null The latest log entry or null if not found
      */
     public static function getLatestByBuild(int $buildId): ?array
@@ -443,7 +443,7 @@ class ServerQueueLogs extends Database
             $query = 'SELECT * FROM ' . self::getTableName() . ' 
                 WHERE build = :build AND deleted = "false" 
                 ORDER BY created_at DESC LIMIT 1';
-            
+
             $stmt = $dbConn->prepare($query);
             $stmt->bindParam(':build', $buildId);
             $stmt->execute();
@@ -457,4 +457,4 @@ class ServerQueueLogs extends Database
             return null;
         }
     }
-} 
+}

@@ -94,7 +94,7 @@ Components:
         enter_key: 'Entrée'
         to_close: 'Pour fermer'
         description: 'Rechercher un serveur, ticket, ou annonce.'
-        notfound: "Nous ne pouvons pas trouver de résultat pour votre recherche."
+        notfound: 'Nous ne pouvons pas trouver de résultat pour votre recherche.'
         quickNav: 'Navigation rapide'
         keyboardShortcuts: 'Raccourcis clavier'
         search: 'Rechercher'
@@ -259,7 +259,7 @@ auth:
                         label: Réinitialiser votre mot de passe.
                         loading: Envoie du lien de réinitialisation....
                     login:
-                        label: Vous vous souvenez de votre mot de passe? 
+                        label: Vous vous souvenez de votre mot de passe?
                         link: Connection
         twofactor_verify:
             alerts:
@@ -393,7 +393,7 @@ account:
                 linked_accounts: 'Compte liés'
         linked_accounts:
             errors:
-                title: "Woops, nous ne supportons pas ce service!"
+                title: 'Woops, nous ne supportons pas ce service!'
                 connect: "Contacter le support si vous penser que c'est une erreur."
             title: Compte lié
             description: Lié des comptes à votre profil
@@ -429,7 +429,7 @@ account:
             alerts:
                 success:
                     title: Succès
-                    update_success: Paramètres de votre compte mis à jour 
+                    update_success: Paramètres de votre compte mis à jour
                     footer: Les paramètres de votre compte ont été mis à jour
                 error:
                     title: Erreur
@@ -677,7 +677,7 @@ tickets:
                         submit: 'Envoyer'
                         loading: 'Envoie...'
                 status_replied: 'Répondu'
-                reply_locked: "Ce ticket est fermé vous ne pouvez plus répondre."
+                reply_locked: 'Ce ticket est fermé vous ne pouvez plus répondre.'
                 buttons:
                     close: 'Fermer le Ticket'
                     reopen: 'Rouvrir le Ticket'
@@ -735,7 +735,7 @@ tickets:
                     subject_missing: 'Sujet est manquant'
                     limit_reached: 'Vous avez atteint la limite de ticket que vous pouvez créé'
                     failed_to_create_ticket: 'Cluster down, réessayez plus tar'
-                    
+
 components:
     sidebar:
         dashboard: Tableau de bord
@@ -1072,7 +1072,7 @@ create:
                     NOT_ENOUGH_DATABASES: "Vous n'avez pas assez de base de données."
                     NOT_ENOUGH_BACKUPS: "Vous n'avez pas assez de backups."
                     NOT_ENOUGH_ALLOCATIONS: "Vous n'avez pas assez d'allocation de port"
-                    NOT_ENOUGH_SERVERS: "Vous avez atteint votre limite de serveur."
+                    NOT_ENOUGH_SERVERS: 'Vous avez atteint votre limite de serveur.'
                     FAILED_TO_CREATE_SERVER_QUEUE_ITEM: 'Une erreur est survenu lors de la mise en attente de la création de votre serveur.'
             success:
                 title: 'Succès'
@@ -1250,21 +1250,21 @@ store:
                         confirmButtonText: 'OK'
                 ram:
                     title: 'RAM Additionel'
-                    description: "Augmenter la capacité RAM de votre serveur"
+                    description: 'Augmenter la capacité RAM de votre serveur'
                     features:
                         one: 'Alocation instantanée'
                         two: "Mise à l'échelle flexible"
                         three: 'Pas de redémarrage nécessaire'
                 disk:
                     title: 'Stockage additionel'
-                    description: "Augmenter la capacité de stockage de votre serveur"
+                    description: 'Augmenter la capacité de stockage de votre serveur'
                     features:
                         one: 'Allocation instantanée'
                         two: "Mise a l'echelle flexible"
                         three: 'Aucun redémarrage requis'
                 cpu:
                     title: 'Processeur supplementaire'
-                    description: "Augmentez la capacité du processeur de votre serveur"
+                    description: 'Augmentez la capacité du processeur de votre serveur'
                     features:
                         one: 'Coeurs houtes performances'
                         two: 'Ressources dédiées'

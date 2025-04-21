@@ -118,11 +118,13 @@ class Server extends Database
             $stmt = $dbConn->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->execute();
-            
+
             $timestamp = $stmt->fetchColumn();
-            return $timestamp === false ? null : (int)$timestamp;
+
+            return $timestamp === false ? null : (int) $timestamp;
         } catch (\Exception $e) {
             self::db_Error('Failed to get expiration timestamp: ' . $e->getMessage());
+
             return null;
         }
     }

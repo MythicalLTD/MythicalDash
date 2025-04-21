@@ -51,6 +51,30 @@
             <div class="flex items-center gap-2">
                 <SocialMediaLinks class="hidden lg:flex" />
 
+                <!-- Language Selector -->
+                <div class="relative">
+                    <select
+                        v-model="locale"
+                        @change="changeLocale"
+                        class="appearance-none bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg pl-8 pr-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all duration-200 cursor-pointer hover:bg-[#1a1a2e]/50"
+                    >
+                        <option
+                            v-for="lang in availableLocales"
+                            :key="lang"
+                            :value="lang"
+                            class="bg-[#12121f] text-gray-200"
+                        >
+                            {{ lang }}
+                        </option>
+                    </select>
+                    <div class="absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <GlobeIcon class="w-4 h-4 text-gray-400" />
+                    </div>
+                    <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <ChevronDownIcon class="w-4 h-4 text-gray-400" />
+                    </div>
+                </div>
+
                 <button
                     @click="$emit('toggle-notifications')"
                     class="p-2 hover:bg-[#1a1a2e]/50 rounded-lg relative transition-colors duration-200"
@@ -99,6 +123,8 @@ import {
     User as UserIcon,
     Menu as MenuIcon,
     X as XIcon,
+    ChevronDown as ChevronDownIcon,
+    Globe as GlobeIcon,
 } from 'lucide-vue-next';
 import { useSettingsStore } from '@/stores/settings';
 const Settings = useSettingsStore();
@@ -109,7 +135,15 @@ import SocialMediaLinks from './SocialMediaLinks.vue';
 const role =
     (Session.getInfo('role_real_name') ?? '').charAt(0).toUpperCase() +
     (Session.getInfo('role_real_name') ?? '').slice(1);
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+const availableLocales = ['EN', 'RO', 'FR'];
+
+const changeLocale = (event: Event) => {
+    const target = event.target as HTMLSelectElement;
+    localStorage.setItem('locale', target.value);
+    window.location.reload();
+};
 
 defineProps<{
     isSidebarOpen: boolean;
@@ -137,5 +171,22 @@ const appName = Settings.getSetting('app_name');
 /* Input focus ring styling */
 input:focus {
     box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+/* Custom select styling */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    min-width: 80px;
+}
+
+select::-ms-expand {
+    display: none;
+}
+
+/* Hover effect for select */
+select:hover {
+    background-color: rgba(26, 26, 46, 0.5);
 }
 </style>

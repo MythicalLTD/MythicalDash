@@ -12,6 +12,7 @@
  */
 
 use MythicalDash\App;
+use MythicalDash\Chat\Servers\ServerQueueLogs;
 use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\Eggs\Eggs;
 use MythicalDash\Chat\User\User;
@@ -149,6 +150,19 @@ $router->post('/api/admin/server-queue/create', function (): void {
         } else {
             $appInstance->BadRequest('Invalid request parameters', ['error_code' => 'INVALID_REQUEST_PARAMETERS']);
         }
+    } else {
+        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
+    }
+});
+$router->get('/api/admin/server-queue/logs', function (): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    $session = new MythicalDash\Chat\User\Session($appInstance);
+
+    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+        $logs = ServerQueueLogs::getAll();
+        $appInstance->OK('Server queue logs retrieved successfully.', ['logs' => $logs]);
     } else {
         $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
     }
