@@ -135,6 +135,18 @@ class ServerQueue {
         });
         return await response.json();
     }
+
+    /**
+     * Get server queue logs
+     *
+     * @returns Promise with the logs
+     */
+    public static async getServerQueueLogs() {
+        const response = await fetch('/api/admin/server-queue/logs', {
+            method: 'GET',
+        });
+        return await response.json();
+    }
 }
 
 export default ServerQueue;

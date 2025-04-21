@@ -2,13 +2,22 @@
     <LayoutDashboard>
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-pink-400">Server Queue</h1>
-            <button
-                @click="goToCreation()"
-                class="bg-gradient-to-r from-pink-500 to-violet-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center"
-            >
-                <PlusIcon class="w-4 h-4 mr-2" />
-                Add Server to Queue
-            </button>
+            <div class="flex space-x-4">
+                <button
+                    @click="goToCreation()"
+                    class="bg-gradient-to-r from-pink-500 to-violet-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center"
+                >
+                    <PlusIcon class="w-4 h-4 mr-2" />
+                    Add Server to Queue
+                </button>
+                <router-link
+                    to="/mc-admin/server-queue/logs"
+                    class="bg-gray-800 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center"
+                >
+                    <FileTextIcon class="w-4 h-4 mr-2" />
+                    View Logs
+                </router-link>
+            </div>
         </div>
 
         <!-- Stats Cards -->
@@ -71,6 +80,7 @@ import {
     ClockIcon,
     LoaderIcon,
     AlertTriangleIcon,
+    FileTextIcon,
 } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 import ServerQueue from '@/mythicaldash/admin/ServerQueue';

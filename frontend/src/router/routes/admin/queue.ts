@@ -37,6 +37,15 @@ const queueRoutes: RouteRecordRaw[] = [
             requiresAdmin: true,
         },
     },
+    {
+        path: '/mc-admin/server-queue/logs',
+        name: 'admin-server-queue-logs',
+        component: () => import('@/views/admin/server-queue/Logs.vue'),
+        meta: {
+            requiresAuth: true,
+            requiresAdmin: true,
+        },
+    },
 ];
 
 export default queueRoutes;

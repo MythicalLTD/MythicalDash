@@ -12,7 +12,6 @@
  */
 
 use MythicalDash\App;
-use MythicalDash\Chat\Servers\ServerQueueLogs;
 use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\Eggs\Eggs;
 use MythicalDash\Chat\User\User;
@@ -22,6 +21,7 @@ use MythicalDash\Chat\Locations\Locations;
 use MythicalDash\Chat\Servers\ServerQueue;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Chat\Servers\ServerQueueLogs;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\ServerQueueEvent;
 

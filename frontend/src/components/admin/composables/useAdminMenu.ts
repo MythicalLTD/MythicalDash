@@ -2,7 +2,7 @@ import { ref, computed } from 'vue';
 import {
     LayoutDashboard,
     Users,
-    Database,
+    //Database,
     PaperclipIcon,
     InfoIcon,
     SettingsIcon,
@@ -14,6 +14,7 @@ import {
     Coins as Coin,
     Server as Servers,
     Package as Plugins,
+    LogsIcon,
 } from 'lucide-vue-next';
 import type { MenuGroup, ProfileMenuItem } from '../types';
 
@@ -111,7 +112,18 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     icon: ServerCrash,
                     active: route.path === `${adminBaseUri}/server-queue`,
                     count: computed(() => dashBoard.value.count.server_queue_count || 0),
-                    path: `${adminBaseUri}/server-queue`,
+                    subMenu: [
+                        {
+                            name: 'Server Queue',
+                            path: `${adminBaseUri}/server-queue`,
+                            icon: ServerCrash,
+                        },
+                        {
+                            name: 'Server Queue Logs',
+                            path: `${adminBaseUri}/server-queue/logs`,
+                            icon: LogsIcon,
+                        },
+                    ],
                 },
                 {
                     name: 'Servers',
@@ -165,12 +177,12 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     active: route.path === `${adminBaseUri}/plugins`,
                     count: computed(() => dashBoard.value.count.plugins_count || 0),
                 },
-                {
-                    name: 'MythicalCloud (Synced)',
-                    path: `${adminBaseUri}/mythicalcloud`,
-                    icon: Database,
-                    active: route.path === `${adminBaseUri}/mythicalcloud`,
-                },
+                //{
+                //    name: 'MythicalCloud (Synced)',
+                //    path: `${adminBaseUri}/mythicalcloud`,
+                //    icon: Database,
+                //    active: route.path === `${adminBaseUri}/mythicalcloud`,
+                //},
             ],
         },
     ]);

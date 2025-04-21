@@ -1,3 +1,4 @@
+---
 #-------------------------------------------------------------#
 #
 # Global Components
@@ -55,7 +56,7 @@ Components:
         createServer: 'Creați Primul Server'
         createServerButton: 'Creați Server'
         noServers: 'Nu s-au găsit servere'
-        noServersDescription: "Nu aveți încă niciun server."
+        noServersDescription: 'Nu aveți încă niciun server.'
         serverLimit: '{0} / {1} Servere'
         newServer: 'Server Nou'
         table:
@@ -93,7 +94,7 @@ Components:
         enter_key: 'Enter'
         to_close: 'pentru a închide'
         description: 'Căutați un server, tichet sau anunț'
-        notfound: "Nu am putut găsi niciun rezultat pentru căutarea dvs."
+        notfound: 'Nu am putut găsi niciun rezultat pentru căutarea dvs.'
         quickNav: 'Navigare Rapidă'
         keyboardShortcuts: 'Scurtături Tastatură'
         search: 'Căutare'
@@ -392,7 +393,7 @@ account:
                 linked_accounts: 'Conturi Conectate'
         linked_accounts:
             errors:
-                title: "Ups, se pare că nu suportăm încă acest furnizor."
+                title: 'Ups, se pare că nu suportăm încă acest furnizor.'
                 connect: 'Contactați suportul dacă credeți că aceasta este o eroare.'
             title: Conturi Conectate
             description: Conectați-vă conturile la profilul dvs.
@@ -471,7 +472,7 @@ account:
                     button: 'Dezactivare Cont'
                     warning:
                         title: 'Avertisment'
-                        description: "Nu fiți nesăbuit, nu puteți anula această acțiune, odată ce apăsați acest buton, nu mai există confirmare, contul dvs. va fi șters direct. Așadar, asigurați-vă că doriți să faceți acest lucru."
+                        description: 'Nu fiți nesăbuit, nu puteți anula această acțiune, odată ce apăsați acest buton, nu mai există confirmare, contul dvs. va fi șters direct. Așadar, asigurați-vă că doriți să faceți acest lucru.'
                 clear:
                     title: Date Aplicație
                     subTitle: Gestionați și ștergeți datele aplicației în cazul în care vedeți date învechite.
@@ -676,7 +677,7 @@ tickets:
                         submit: 'Trimite'
                         loading: 'Trimitere...'
                 status_replied: 'Răspuns'
-                reply_locked: "Acest tichet este închis, deci nu puteți răspunde la el"
+                reply_locked: 'Acest tichet este închis, deci nu puteți răspunde la el'
                 buttons:
                     close: 'Închide Tichet'
                     reopen: 'Redeschide Tichet'
@@ -1249,21 +1250,21 @@ store:
                         confirmButtonText: 'OK'
                 ram:
                     title: 'RAM Suplimentar'
-                    description: "Creșteți capacitatea de memorie a serverului dvs."
+                    description: 'Creșteți capacitatea de memorie a serverului dvs.'
                     features:
                         one: 'Alocare instantă'
                         two: 'Scalare flexibilă'
                         three: 'Nu necesită repornire'
                 disk:
                     title: 'Stocare Suplimentară'
-                    description: "Creșteți capacitatea de stocare a serverului dvs."
+                    description: 'Creșteți capacitatea de stocare a serverului dvs.'
                     features:
                         one: 'Alocare instantă'
                         two: 'Scalare flexibilă'
                         three: 'Nu necesită repornire'
                 cpu:
                     title: 'CPU Suplimentar'
-                    description: "Creșteți capacitatea CPU a serverului dvs."
+                    description: 'Creșteți capacitatea CPU a serverului dvs.'
                     features:
                         one: 'Nuclee de înaltă performanță'
                         two: 'Resurse dedicate'
@@ -1273,7 +1274,7 @@ store:
                     description: 'Adăugați un server suplimentar în contul dvs.'
                     features:
                         one: 'Acces complet la server'
-                        two: 'Configurație personalizată' 
+                        two: 'Configurație personalizată'
                         three: 'Implementare instantă'
                 server_backup:
                     title: 'Slot Backup'
@@ -1369,7 +1370,7 @@ leaderboard:
         button: 'Mergi la Panou de Control'
     error:
         title: 'Eroare la Încărcarea Clasamentului'
-        generic: "Nu am putut încărca datele clasamentului în acest moment"
+        generic: 'Nu am putut încărca datele clasamentului în acest moment'
         failed_fetch: 'Nu s-au putut prelua datele clasamentului'
         retry: 'Încercați din nou'
     no_data:
@@ -1404,7 +1405,7 @@ profile:
     gift_coins: 'Dăruiește Monede'
     error:
         title: 'Eroare la Încărcarea Profilului'
-        generic: "Nu am putut încărca datele profilului în acest moment"
+        generic: 'Nu am putut încărca datele profilului în acest moment'
         failed_fetch: 'Nu s-au putut prelua datele profilului'
         retry: 'Încercați din nou'
     gift:
@@ -1474,7 +1475,7 @@ renew:
     pages:
         index:
             title: 'Reînnoiește Server'
-            subTitle: "Extindeți durata de viață a serverului dvs."
+            subTitle: 'Extindeți durata de viață a serverului dvs.'
             loading: 'Se încarcă datele serverului...'
             unknownError: 'A apărut o eroare necunoscută'
             type: 'Tip'
