@@ -1,3 +1,16 @@
+# v3-remastered 1.0.0.2
+
+# Bugs Fixed:
+
+# Futures Added:
+
+- FUTURE: Added `php mythicaldash addon create` So you can create plugins 
+
+# Futures Removed:
+
+-----
+
+
 # v3-remastered 1.0.0.1
 
 # Bugs Fixed:
