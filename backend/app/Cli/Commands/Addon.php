@@ -37,6 +37,7 @@ class Addon extends App implements CommandBuilder
                     break;
                 case 'uninstall':
                     // Uninstall an addon.
+					self::uninstallPlugin();
                     break;
                 case 'list':
                     self::getInstance()->send('&5&lMythical&d&lDash &7- &d&lAddons');
@@ -47,7 +48,8 @@ class Addon extends App implements CommandBuilder
                         $name = $addonConfig['plugin']['name'];
                         $version = $addonConfig['plugin']['version'];
                         $description = $addonConfig['plugin']['description'];
-                        self::getInstance()->send("&7 - &b{$name} &8> &d{$version} &8> &7{$description}");
+						$identifier = $addonConfig['plugin']['identifier'];
+                        self::getInstance()->send("&7#&e{$identifier}&7 | &b{$name} &8> &d{$version} &8> &7{$description}");
                     }
                     self::getInstance()->send('');
                     break;
@@ -63,6 +65,72 @@ class Addon extends App implements CommandBuilder
             self::getInstance()->send('&cPlease provide a subcommand!');
         }
     }
+
+	public static function uninstallPlugin() : void {
+		self::getInstance()->send('&5&lMythical&d&lDash &7- &d&lAddons');
+		self::getInstance()->send('');
+		self::getInstance()->send('&7Please enter the plugin identifier:');
+		$identifier = trim(fgets(STDIN));
+
+		if (!file_exists(APP_ADDONS_DIR . '/' . $identifier)) {
+			self::getInstance()->send('&cPlugin not found!');
+			return;
+		}
+
+		self::getInstance()->send('&7Are you sure you want to uninstall this plugin? (y/n)');
+		$confirm = trim(fgets(STDIN));
+
+		if ($confirm !== 'y') {
+			self::getInstance()->send('&cUninstall cancelled!');
+			return;
+		}
+
+		// Load and call the plugin's uninstall method
+		$pluginDir = APP_ADDONS_DIR . '/' . $identifier;
+		$pluginFile = glob($pluginDir . '/*.php')[0] ?? null;
+		
+		if ($pluginFile) {
+			require_once $pluginFile;
+			$className = basename($pluginFile, '.php');
+			$namespace = "MythicalDash\\Addons\\" . $identifier;
+			$fullClassName = $namespace . "\\" . $className;
+			
+			if (class_exists($fullClassName) && method_exists($fullClassName, 'pluginUninstall')) {
+				$fullClassName::pluginUninstall();
+			}
+		}
+
+		// Remove the plugin directory
+		if (!self::removeDirectory($pluginDir)) {
+			self::getInstance()->send('&cFailed to uninstall plugin!');
+			return;
+		}
+
+		self::getInstance()->send('&aPlugin uninstalled successfully!');
+	}
+
+	private static function removeDirectory($dir) {
+		if (!file_exists($dir)) {
+			return true;
+		}
+
+		if (!is_dir($dir)) {
+			return unlink($dir);
+		}
+
+		foreach (scandir($dir) as $item) {
+			if ($item == '.' || $item == '..') {
+				continue;
+			}
+
+			if (!self::removeDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+				return false;
+			}
+		}
+
+		return rmdir($dir);
+	}
+
 	public static function createPlugin() : void {
 		self::getInstance()->send('&5&lMythical&d&lDash &7- &d&lAddons');
 		self::getInstance()->send('');
