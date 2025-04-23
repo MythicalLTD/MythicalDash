@@ -18,6 +18,8 @@ use MythicalDash\Cli\CommandBuilder;
 
 class Addon extends App implements CommandBuilder
 {
+	public const ADDON_PASSWORD = "mythicaldash_development_kit_2025_addon_password";
+
     public static function execute(array $args): void
     {
 
@@ -34,6 +36,7 @@ class Addon extends App implements CommandBuilder
             switch ($args[1]) {
                 case 'install':
                     // Install an addon.
+					self::installPlugin();
                     break;
                 case 'uninstall':
                     // Uninstall an addon.
@@ -57,6 +60,10 @@ class Addon extends App implements CommandBuilder
                     // Create an addon.
                     self::createPlugin();
                     break;
+				case 'export':
+					// Export an addon.
+					self::exportPlugin();
+					break;
                 default:
                     self::getInstance()->send('&cInvalid subcommand!');
                     break;
@@ -65,6 +72,146 @@ class Addon extends App implements CommandBuilder
             self::getInstance()->send('&cPlease provide a subcommand!');
         }
     }
+
+	public static function installPlugin() : void {
+		self::getInstance()->send('&5&lMythical&d&lDash &7- &d&lAddons');
+		self::getInstance()->send('');
+		self::getInstance()->send('&7Please enter the path to the .myd file:');
+		$workDir = getcwd();
+		$filePath = trim(fgets(STDIN));
+		$filePath = str_replace($workDir . '/', '', $filePath);
+		$filePath = $filePath . '.myd';
+
+		if (!file_exists($filePath)) {
+			self::getInstance()->send('&cFile not found! Looked in: ' . $workDir . '/' . $filePath);
+			return;
+		}
+
+		if (!preg_match('/\.myd$/', $filePath)) {
+			self::getInstance()->send('&cInvalid file format! File must end with .myd');
+			return;
+		}
+
+		// Create temporary directory for extraction
+		$tempDir = sys_get_temp_dir() . '/' . uniqid('mythicaldash_');
+		exec("mkdir -p " . escapeshellarg($tempDir));
+
+		// Extract the zip file with password
+		$unzipCommand = sprintf(
+			"unzip -P '%s' '%s' -d '%s'",
+			self::ADDON_PASSWORD,
+			$filePath,
+			$tempDir
+		);
+
+		exec($unzipCommand, $output, $returnCode);
+
+		if ($returnCode !== 0) {
+			self::getInstance()->send('&cFailed to extract plugin! Invalid password or corrupted file.');
+			self::getInstance()->send('&7Debug: ' . implode("\n", $output));
+			exec("rm -rf " . escapeshellarg($tempDir));
+			return;
+		}
+
+		// Read the plugin configuration
+		$configFile = $tempDir . '/conf.yml';
+		if (!file_exists($configFile)) {
+			self::getInstance()->send('&cInvalid plugin format! Missing conf.yml');
+			exec("rm -rf " . escapeshellarg($tempDir));
+			return;
+		}
+
+		$yaml = new \Symfony\Component\Yaml\Yaml();
+		$config = $yaml->parseFile($configFile);
+		$identifier = $config['plugin']['identifier'] ?? null;
+
+		if (!$identifier) {
+			self::getInstance()->send('&cInvalid plugin format! Missing identifier in conf.yml');
+			exec("rm -rf " . escapeshellarg($tempDir));
+			return;
+		}
+
+		// Check if plugin already exists
+		if (file_exists(APP_ADDONS_DIR . '/' . $identifier)) {
+			self::getInstance()->send('&cA plugin with this identifier already exists!');
+			exec("rm -rf " . escapeshellarg($tempDir));
+			return;
+		}
+
+		// Move the plugin to the addons directory
+		$pluginDir = APP_ADDONS_DIR . '/' . $identifier;
+		if (!mkdir($pluginDir, 0755, true)) {
+			self::getInstance()->send('&cFailed to create plugin directory!');
+			exec("rm -rf " . escapeshellarg($tempDir));
+			return;
+		}
+
+		exec("cp -r " . escapeshellarg($tempDir) . "/* " . escapeshellarg($pluginDir));
+
+		// Clean up temp directory
+		exec("rm -rf " . escapeshellarg($tempDir));
+
+		// Load and call the plugin's install method
+		$pluginFile = glob($pluginDir . '/*.php')[0] ?? null;
+		if ($pluginFile) {
+			require_once $pluginFile;
+			$className = basename($pluginFile, '.php');
+			$namespace = "MythicalDash\\Addons\\" . $identifier;
+			$fullClassName = $namespace . "\\" . $className;
+			
+			if (class_exists($fullClassName) && method_exists($fullClassName, 'pluginInstall')) {
+				$fullClassName::pluginInstall();
+			}
+		}
+
+		self::getInstance()->send('&aPlugin installed successfully!');
+	}
+
+	public static function exportPlugin() : void {
+		self::getInstance()->send('&5&lMythical&d&lDash &7- &d&lAddons');
+		self::getInstance()->send('');
+		self::getInstance()->send('&7Please enter the plugin identifier:');
+		$identifier = trim(fgets(STDIN));
+
+		if (!file_exists(APP_ADDONS_DIR . '/' . $identifier)) {
+			self::getInstance()->send('&cPlugin not found!');
+			return;
+		}
+		$workDir = getcwd();
+		$pluginDir = APP_ADDONS_DIR . '/' . $identifier;
+		$exportFile = $workDir . '/' . $identifier . '.myd';
+		if (file_exists($exportFile)) {
+			self::getInstance()->send('&cExport file already exists!');
+			self::getInstance()->send("&7Please delete before exporting again.");
+			return;
+		}
+		// Create temporary directory for zip creation
+		$tempDir = sys_get_temp_dir() . '/' . uniqid('mythicaldash_');
+		exec("mkdir -p " . escapeshellarg($tempDir));
+
+		// Copy plugin files to temp directory
+		exec("cp -r " . escapeshellarg($pluginDir) . "/* " . escapeshellarg($tempDir));
+
+		// Create zip file with password encryption using zip command
+		$zipCommand = sprintf(
+			"cd %s && zip -r -P %s %s *",
+			escapeshellarg($tempDir),
+			escapeshellarg(self::ADDON_PASSWORD),
+			escapeshellarg($exportFile)
+		);
+
+		exec($zipCommand, $output, $returnCode);
+
+		// Clean up temp directory
+		exec("rm -rf " . escapeshellarg($tempDir));
+
+		if ($returnCode !== 0) {
+			self::getInstance()->send('&cFailed to create export file!');
+			return;
+		}
+
+		self::getInstance()->send('&aPlugin exported successfully to: ' . $exportFile);
+	}
 
 	public static function uninstallPlugin() : void {
 		self::getInstance()->send('&5&lMythical&d&lDash &7- &d&lAddons');
@@ -282,6 +429,7 @@ class " . $name . " implements MythicalDashPlugin
             'uninstall ' => 'Uninstall an addon.',
             'list' => 'List all installed addons.',	
             'create' => 'Create a new addon.',
+			'export' => 'Export an addon.',
         ];
     }
 }

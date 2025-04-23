@@ -44,6 +44,11 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
 
             return;
         }
+		
+		$workingDir = getcwd();
+		if ($workingDir !== "/var/www/mythicaldash-v3") {
+			die("We detected that you are not running this command from the root directory of MythicalDash. Please run this command from the root directory.");
+		}
 
         $commandClass::execute($args);
     }

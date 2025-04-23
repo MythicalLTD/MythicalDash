@@ -1,0 +1,15 @@
+plugin:
+    name: ThisISATestPLugin
+    identifier: testplugin
+    description: MyTestPLugin
+    flags:
+        - hasEvents
+    version: 1.0.0
+    target: v3
+    author:
+        - NaysKutzu
+    icon: 'https://github.com/mythicalltd.png'
+    requiredConfigs: {  }
+    dependencies:
+        - php=8.1
+        - php-ext=pdo
