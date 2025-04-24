@@ -36,9 +36,11 @@ try {
     exit;
 }
 
-ini_set('expose_php', 'off');
-header_remove('X-Powered-By');
-header_remove('Server');
+if (!defined('IS_CLI')) {
+    ini_set('expose_php', 'off');
+    header_remove('X-Powered-By');
+    header_remove('Server');
+}
 
 if (!is_writable(__DIR__)) {
     $error = 'Please make sure the root directory is writable.';

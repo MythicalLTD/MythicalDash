@@ -15,6 +15,7 @@ define('APP_CRON_DIR', APP_PUBLIC.'/storage/cron/');
 define('SYSTEM_KERNEL_NAME', php_uname('s'));
 define('APP_VERSION', '3.0.0.1-remastered');
 define("TELEMETRY", true);
+define('IS_CLI', true);
 
 require_once APP_DIR . "/boot/kernel.php";
 try {
