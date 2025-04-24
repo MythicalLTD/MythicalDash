@@ -24,12 +24,10 @@ use MythicalDash\Cron\Cron;
 use MythicalDash\Chat\Servers\Server;
 use MythicalDash\Chat\Earn\LinkPays;
 use MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi;
-use MythicalDash\Logger\LoggerFactory;
 use MythicalDash\Plugins\PluginConfig;
-use MythicalDash\Plugins\PluginDB;
-use MythicalDash\Plugins\PluginManager;
+use MythicalDash\Cron\TimeTask;
 
-class TelemetryJob
+class TelemetryJob implements TimeTask
 {
 	public static function run()
 	{
@@ -111,6 +109,14 @@ class TelemetryJob
 					];
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &eFetching logs...');
 					$logs = $app->getLogger()->getLogs();
+					$webServerLogs = $app->getWebServerLogger()->getLogs();
+
+					if (count($logs) > 250) {
+						$logs = array_slice($logs, -250);
+					}
+					if (count($webServerLogs) > 250) {
+						$webServerLogs = array_slice($webServerLogs, -250);
+					}
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &3Logs: &f' . count($logs));
 	
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &eFetching public settings...');

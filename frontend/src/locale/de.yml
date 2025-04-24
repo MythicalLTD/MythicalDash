@@ -1,0 +1,1526 @@
+---
+#-------------------------------------------------------------#
+#
+# Globale Komponenten
+#
+# @public
+#
+#-------------------------------------------------------------#
+metadata:
+    name: 'German'
+    id: 'DE'
+    version: 1.0.0
+
+Components:
+    ErrorsPage:
+        Buttons:
+            GoBack: 'Zurück'
+            GoHome: 'Startseite'
+    Global:
+        Navigation:
+            Loading: 'Wird geladen...'
+            Copy:
+                Title: 'Kopiert'
+                Success: 'In die Zwischenablage kopiert wie ein Profi.'
+                Footer: 'Ja, es hat funktioniert ;)'
+            Error: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.'
+    QuickLinks:
+        title: 'Schnellzugriff'
+        description: 'Schneller Zugang zu wichtigen Bereichen'
+        tickets:
+            title: 'Tickets'
+            description: 'Tickets anzeigen und verwalten'
+        announcements:
+            title: 'Ankündigungen'
+            description: 'Neueste Ankündigungen anzeigen'
+        account:
+            title: 'Konto'
+            description: 'Kontoeinstellungen aktualisieren'
+    ResourceCards:
+        title: 'Ressourcennutzung'
+        description: 'Ressourcennutzung und -limits anzeigen'
+        mb: 'MB'
+        of: 'von'
+        RAM:
+            title: 'RAM'
+        CPU:
+            title: 'CPU'
+        DISK:
+            title: 'Festplatte'
+        SLOT:
+            title: 'Server-Slot(s)'
+        DATABASE:
+            title: 'Datenbank'
+        BACKUP:
+            title: 'Server-Backup(s)'
+        ALLOCATION:
+            title: 'Server-Zuweisung(en)'
+    ServerList:
+        title: 'Meine Server'
+        description: 'Verwalten Sie Ihre Gaming-Infrastruktur'
+        createServer: 'Erstellen Sie Ihren ersten Server'
+        createServerButton: 'Server erstellen'
+        noServers: 'Keine Server gefunden'
+        noServersDescription: 'Sie haben noch keine Server.'
+        serverLimit: '{0} / {1} Server'
+        newServer: 'Neuer Server'
+        table:
+            name: 'Name'
+            location: 'Standort'
+            egg: 'Egg'
+            memory: 'Arbeitsspeicher'
+            cpu: 'CPU'
+            disk: 'Festplatte'
+            actions: 'Aktionen'
+    ManageAccount:
+        title: 'Mein Profil'
+        description: 'Ihre Kontoinformationen'
+        viewMore: 'Mehr anzeigen'
+    Announcements:
+        Title: 'Ankündigungen'
+        Card:
+            Info: 'Neueste Ankündigung'
+            InfoFull: 'Bleiben Sie über unsere neuesten Nachrichten informiert'
+            ReadMore: 'Weiterlesen'
+            NoAnnouncements: 'Noch keine Ankündigungen'
+    Tickets:
+        title: 'Aktuelle Tickets'
+        description: 'Ihre aktuellen Tickets anzeigen'
+        viewMore: 'Mehr anzeigen'
+        status:
+            Open: 'Offen'
+            Closed: 'Geschlossen'
+            Waiting: 'Wartend'
+            Replied: 'Beantwortet'
+            InProgress: 'In Bearbeitung'
+    QuickSearch:
+        title: 'Schnellsuche'
+        esc_key: 'Esc'
+        enter_key: 'Enter'
+        to_close: 'zum Schließen'
+        description: 'Nach einem Server, Ticket oder einer Ankündigung suchen'
+        notfound: 'Wir konnten keine Ergebnisse für Ihre Suche finden.'
+        quickNav: 'Schnellnavigation'
+        keyboardShortcuts: 'Tastaturkürzel'
+        search: 'Suche'
+        ctrl_key: 'Strg'
+        k_key: 'K'
+        d_key: 'D'
+        goToDashboard: 'Zum Dashboard'
+
+    SupportPin:
+        title: 'Support-PIN'
+        copy: 'Kopieren'
+        description: 'Diese PIN wird verwendet, um Ihre Identität gegenüber unserem Support-Team zu verifizieren'
+        alerts:
+            success:
+                title: 'Erfolg'
+                pin_success: 'Support-PIN generiert'
+                footer: 'Ihre Support-PIN wurde generiert'
+            error:
+                title: 'Fehler'
+                generic: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut'
+                footer: 'Bitte kontaktieren Sie den Support für Hilfe'
+
+#-------------------------------------------------------------#
+#
+# Auth-Seiten (/auth/*)
+#
+# @public
+#
+#-------------------------------------------------------------#
+dashboard:
+    title: Dashboard
+
+auth:
+    logic:
+        errors:
+            footer: Bitte kontaktieren Sie den Support für Hilfe
+            title: Sitzungsfehler
+            expired: Ihre Sitzung ist abgelaufen
+    pages:
+        sso:
+            page:
+                title: Single Sign-On
+                subTitle: Single Sign-On
+                form:
+                    name:
+                        label: Domainname
+                        placeholder: Organisationsname
+                        description: Dies ist eine Enterprise-Funktion. Bitte stellen Sie sicher, dass Sie Ihren Firmennamen oder Domainnamen eingeben.
+                    login_button:
+                        label: Anmelden
+                        loading: Weiterleitung...
+                    normal_login:
+                        label: Keine Organisation oder Domain?
+                        link: Anmelden
+        login:
+            components:
+                form:
+                    support_center: Support-Center
+            alerts:
+                success:
+                    title: Erfolg
+                    login_success: Sie haben sich erfolgreich angemeldet
+                    footer: Willkommen zurück!
+                error:
+                    title: Anmeldefehler
+                    missing_fields: Bitte füllen Sie alle Felder aus
+                    invalid_credentials: Ungültige Anmeldedaten
+                    generic: Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut
+                    cloudflare_error: Sie wurden von Cloudflare Turnstile blockiert
+                    footer: Bitte kontaktieren Sie den Support für Hilfe
+                    not_verified: Ihre E-Mail-Adresse ist noch nicht verifiziert
+                    banned: Ihr Konto wurde dauerhaft gesperrt
+                    deleted: Ihr Konto wurde entweder von Ihnen oder einem Administrator gelöscht
+                    pterodactyl_user_not_found: Pterodactyl-Benutzer nicht gefunden.
+                    pterodactyl_error: Benutzer konnte nicht im Pterodactyl-Panel registriert werden
+                    pterodactyl_not_enabled: Pterodactyl ist nicht aktiviert
+            page:
+                title: Anmelden
+                subTitle: Bei Ihrem Konto anmelden
+                form:
+                    email:
+                        label: E-Mail oder Benutzername
+                        placeholder: Geben Sie Ihre E-Mail oder Ihren Benutzernamen ein
+                    password:
+                        label: Passwort
+                        placeholder: Geben Sie Ihr Passwort ein
+                    forgot_password: Passwort vergessen?
+                    login_button:
+                        label: Anmelden
+                        loading: Anmeldung...
+                    register:
+                        label: Noch kein Konto?
+                        link: Registrieren
+        register:
+            alerts:
+                success:
+                    title: Erfolg
+                    register_success: Sie haben sich erfolgreich registriert
+                    footer: Vielen Dank, dass Sie sich für uns entschieden haben!
+                error:
+                    title: Registrierung fehlgeschlagen
+                    csrf_error: CSRF-Token stimmt nicht überein
+                    username_exists: Benutzername existiert bereits
+                    email_exists: E-Mail existiert bereits
+                    generic: Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut
+                    cloudflare_error: Sie wurden von Cloudflare Turnstile blockiert
+                    pterodactyl_not_enabled: Pterodactyl ist nicht aktiviert
+                    pterodactyl_error: Benutzer konnte nicht im Pterodactyl-Panel registriert werden
+                    footer: Bitte kontaktieren Sie den Support für Hilfe
+            page:
+                title: Registrieren
+                subTitle: Neues Konto erstellen
+                form:
+                    email:
+                        label: E-Mail
+                        placeholder: Geben Sie Ihre E-Mail ein
+                    firstName:
+                        label: Vorname
+                        placeholder: Geben Sie Ihren Vornamen ein
+                    lastName:
+                        label: Nachname
+                        placeholder: Geben Sie Ihren Nachnamen ein
+                    username:
+                        label: Benutzername
+                        placeholder: Geben Sie Ihren Benutzernamen ein
+                    password:
+                        label: Passwort
+                        placeholder: Geben Sie Ihr Passwort ein
+                    confirm_password:
+                        label: Passwort bestätigen
+                        placeholder: Bestätigen Sie Ihr Passwort
+                    referralCode:
+                        label: Empfehlungscode
+                        placeholder: Geben Sie Ihren Empfehlungscode ein
+                    register_button:
+                        label: Registrieren
+                        loading: Registrierung...
+                    login:
+                        label: Bereits ein Konto?
+                        link: Anmelden
+        forgot_password:
+            alerts:
+                success:
+                    title: Erfolg
+                    reset_success: Link zum Zurücksetzen des Passworts gesendet
+                    footer: Überprüfen Sie Ihre E-Mail!
+                error:
+                    title: Fehler
+                    missing_fields: Bitte füllen Sie alle Felder aus
+                    email_not_found: E-Mail nicht gefunden
+                    generic: Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut
+                    cloudflare_error: Sie wurden von Cloudflare Turnstile blockiert
+                    footer: Bitte kontaktieren Sie den Support für Hilfe
+            page:
+                title: Passwort vergessen
+                subTitle: Passwort zurücksetzen
+                form:
+                    email:
+                        label: E-Mail
+                        placeholder: Geben Sie Ihre E-Mail ein
+                    reset_button:
+                        label: Passwort zurücksetzen
+                        loading: Sende Link zum Zurücksetzen...
+                    login:
+                        label: Passwort wieder eingefallen?
+                        link: Anmelden
+        twofactor_verify:
+            alerts:
+                success:
+                    title: Erfolg
+                    verify_success: Zwei-Faktor-Authentifizierung verifiziert
+                    footer: Sie haben die Zwei-Faktor-Authentifizierung erfolgreich verifiziert
+                error:
+                    title: Fehler
+                    missing_fields: Bitte füllen Sie alle Felder aus
+                    invalid_code: Ungültiger Code
+                    generic: Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut
+                    cloudflare_error: Sie wurden von Cloudflare Turnstile blockiert
+                    footer: Bitte kontaktieren Sie den Support für Hilfe
+            page:
+                title: Zwei-Faktor-Authentifizierung
+                subTitle: Zwei-Faktor-Authentifizierung verifizieren
+                form:
+                    code:
+                        label: Code
+                        placeholder: Geben Sie den Code aus Ihrer Authenticator-App ein
+                    verify_button:
+                        label: Verifizieren
+                        loading: Verifizierung...
+        twofactor_setup:
+            alerts:
+                success:
+                    title: Erfolg
+                    setup_success: Zwei-Faktor-Authentifizierung eingerichtet
+                    footer: Sie haben die Zwei-Faktor-Authentifizierung erfolgreich eingerichtet
+                error:
+                    title: Fehler
+                    missing_fields: Bitte füllen Sie alle Felder aus
+                    invalid_code: Ungültiger Code
+                    generic: Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut
+                    cloudflare_error: Sie wurden von Cloudflare Turnstile blockiert
+                    footer: Bitte kontaktieren Sie den Support für Hilfe
+            page:
+                title: Zwei-Faktor-Authentifizierung
+                subTitle: Zwei-Faktor-Authentifizierung einrichten
+                form:
+                    secret:
+                        label: Geheimschlüssel
+                        placeholder: Hier ist Ihr Geheimschlüssel
+                    code:
+                        label: Code
+                        placeholder: Geben Sie den Code aus Ihrer Authenticator-App ein
+                    setup_button:
+                        label: Einrichten
+                        loading: Einrichtung...
+        reset_password:
+            alerts:
+                success:
+                    title: Erfolg
+                    reset_success: Wir haben Ihr Passwort erfolgreich zurückgesetzt
+                    footer: Überprüfen Sie Ihre E-Mail!
+                error:
+                    title: Fehler
+                    missing_fields: Bitte füllen Sie alle Felder aus
+                    passwords_mismatch: Passwörter stimmen nicht überein
+                    generic: Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut
+                    cloudflare_error: Sie wurden von Cloudflare Turnstile blockiert
+                    footer: Bitte kontaktieren Sie den Support für Hilfe
+                    invalid_code: Ungültiger Reset-Code
+            page:
+                title: Passwort zurücksetzen
+                subTitle: Passwort zurücksetzen
+                form:
+                    password_new:
+                        label: Neues Passwort
+                        placeholder: Geben Sie Ihr neues Passwort ein
+                    password_confirm:
+                        label: Passwort bestätigen
+                        placeholder: Bestätigen Sie Ihr neues Passwort
+                    reset_button:
+                        label: Passwort zurücksetzen
+                        loading: Änderungen werden angewendet...
+                    login:
+                        label: Passwort wieder eingefallen?
+                        link: Anmelden
+#-------------------------------------------------------------#
+#
+# Globale Fehlerseiten
+#
+# @public
+#
+#-------------------------------------------------------------#
+errors:
+    forbidden:
+        title: 403 Verboten
+        message: >-
+            Halt, Weltraumreisender! Sie haben nicht die nötige
+            Berechtigung, um auf diesen Bereich zuzugreifen.
+    notfound:
+        title: 404 Nicht gefunden
+        message: >-
+            Wir konnten die gesuchte Seite nicht finden. Sie wurde möglicherweise verschoben oder
+            gelöscht.
+    servererror:
+        title: 500 Serverfehler
+        message: Ein Fehler ist auf unserer Seite aufgetreten. Bitte versuchen Sie es später erneut.
+#-------------------------------------------------------------#
+#
+# Kontoeinstellungen (/account/*)
+#
+# @public
+#
+#-------------------------------------------------------------#
+account:
+    components:
+        header:
+            uuid: 'UUID:'
+            ip: 'IP-Adresse'
+            first: 'Erste:'
+            current: 'Aktuelle:'
+            firstSeen: 'Zuerst gesehen'
+            lastSeen: 'Zuletzt gesehen'
+            verification: 'Kontoverifizierung'
+            verified: 'Ihr Konto ist verifiziert'
+            notVerified: 'Ihr Konto ist nicht verifiziert'
+    pages:
+        index:
+            title: 'Kontoverwaltung'
+            description: 'Kontoeinstellungen und -präferenzen anzeigen und verwalten'
+            tabs:
+                settings: 'Einstellungen'
+                security: 'Sicherheit'
+                emails: 'E-Mails'
+                activity: 'Aktivität'
+                apikey: 'API-Schlüssel'
+                linked_accounts: 'Verknüpfte Konten'
+        linked_accounts:
+            errors:
+                title: 'Hoppla, es sieht so aus, als würden wir diesen Anbieter noch nicht unterstützen.'
+                connect: 'Kontaktieren Sie den Support, wenn Sie glauben, dass dies ein Fehler ist.'
+            title: Verknüpfte Konten
+            description: Verknüpfen Sie Ihre Konten mit Ihrem Profil
+            connect: 'Verbinden'
+            disconnect: 'Trennen'
+            not_connected: 'Nicht verbunden'
+            connected_as: 'Verbunden als'
+            connected_on: 'Verbunden am'
+            benefits:
+                title: Vorteile
+                simplified_login:
+                    title: Vereinfachte Anmeldung
+                    description: Vereinfachen Sie Ihren Anmeldeprozess durch Verknüpfung Ihrer Konten
+                enhanced_security:
+                    title: Verbesserte Sicherheit
+                    description: Erhöhen Sie die Sicherheit Ihres Kontos durch Verknüpfung Ihrer Konten
+                seamless_integration:
+                    title: Nahtlose Integration
+                    description: Integrieren Sie Ihre Konten nahtlos in Ihr Profil
+            discord:
+                title: Discord
+                description: Verknüpfen Sie Ihr Discord-Konto mit Ihrem Profil
+                link: Discord verknüpfen
+            github:
+                title: GitHub
+                description: Verknüpfen Sie Ihr GitHub-Konto mit Ihrem Profil
+                link: GitHub verknüpfen
+            google:
+                title: Google
+                description: Verknüpfen Sie Ihr Google-Konto mit Ihrem Profil
+                link: Google verknüpfen
+        settings:
+            alerts:
+                success:
+                    title: Erfolg
+                    update_success: Kontoeinstellungen aktualisiert
+                    footer: Ihre Kontoeinstellungen wurden aktualisiert
+                error:
+                    title: Fehler
+                    generic: Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut
+                    email: E-Mail existiert bereits
+                    footer: Bitte kontaktieren Sie den Support für Hilfe
+            page:
+                title: Konto
+                subTitle: Verwalten Sie Ihre persönlichen Informationen und Kontoeinstellungen
+                form:
+                    profile:
+                        title: Profilinformationen
+                        subTitle: Aktualisieren Sie die Profilinformationen Ihres Kontos
+                    email:
+                        label: E-Mail
+                    firstName:
+                        label: Vorname
+                    lastName:
+                        label: Nachname
+                    avatar:
+                        label: Avatar
+                    background:
+                        label: Hintergrund
+                    update_button:
+                        label: Änderungen speichern
+                        reset: Zurücksetzen
+                        loading: Speichern...
+                    browserStorage:
+                        title: Browser-Speicher
+                        subTitle: Lokalen Browser-Speicher und zwischengespeicherte Daten verwalten
+                        currentStorageUsage: 'Aktuelle Speichernutzung'
+                        clearAllBrowserData: 'Alle Browser-Daten löschen'
+                        totalBrowserStorage: 'Gesamter von dieser Anwendung verwendeter Browser-Speicher'
+                        browserStorageDescription: 'Der Browser-Speicher umfasst Cookies, lokalen Speicher, Sitzungsdaten und die Offline-Kopie der Anwendung.'
+                        clearAllBrowserDataButton: Alle Browser-Daten löschen
+                        clearAllBrowserDataDescription: Dies löscht alle lokal gespeicherten Daten, einschließlich Einstellungen und zwischengespeicherte Informationen. Diese Aktion kann nicht rückgängig gemacht werden.
+                delete:
+                    title: 'Konto deaktivieren'
+                    description: 'Sobald Sie Ihr Konto deaktivieren, gibt es kein Zurück mehr. Bitte seien Sie sicher.'
+                    button: 'Konto deaktivieren'
+                    warning:
+                        title: 'Warnung'
+                        description: 'Seien Sie kein Idiot, Sie können diese Aktion nicht rückgängig machen. Wenn Sie diese Schaltfläche drücken, gibt es keine weitere Bestätigung, Ihr Konto wird sofort gelöscht. Stellen Sie also sicher, dass Sie dies wirklich tun möchten.'
+                clear:
+                    title: Anwendungsdaten
+                    subTitle: Verwalten und löschen Sie Anwendungsdaten, falls Sie veraltete Daten sehen.
+                    cache:
+                        title: Cache-Nutzung
+                        total: 'Gesamte zwischengespeicherte Daten: {totalSize}'
+                        button: 'Cache löschen & neu laden'
+                        description: 'Dies löscht alle zwischengespeicherten Daten und lädt die Anwendung neu.'
+                        confirm: 'Ja, Daten löschen'
+                        cancel: 'Abbrechen'
+        emails:
+            alerts:
+                success:
+                    title: Erfolg
+                    update_success: E-Mail-Einstellungen aktualisiert
+                    footer: Ihre E-Mail-Einstellungen wurden aktualisiert
+                error:
+                    title: Fehler
+                    generic: Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut
+                    footer: Bitte kontaktieren Sie den Support für Hilfe
+            page:
+                title: E-Mails
+                subTitle: Sehen Sie Ihre E-Mails!
+                description: 'Dies ist eine Liste Ihrer E-Mails. Sie können die Details jeder E-Mail anzeigen, indem Sie auf die Schaltfläche "Anzeigen" klicken.'
+                loading: E-Mails werden geladen...
+                loadingText: Ihr E-Mail-Verlauf wird geladen..
+                error: Fehler beim Laden der E-Mails
+                noMails:
+                    title: Keine E-Mails gefunden
+                    description: Sie haben noch keine E-Mails erhalten
+                table:
+                    columns:
+                        id: ID
+                        subject: Betreff
+                        date: Datum
+                        from: Von
+                        actions: Aktionen
+                    empty: Keine E-Mails gefunden
+                    results:
+                        viewButton: Anzeigen
+        security:
+            alerts:
+                success:
+                    title: Erfolg
+                    update_success: Sicherheitseinstellungen aktualisiert
+                    footer: Ihre Sicherheitseinstellungen wurden aktualisiert
+                error:
+                    title: Fehler
+                    generic: Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut
+                    footer: Bitte kontaktieren Sie den Support für Hilfe
+            page:
+                title: Kontosicherheit
+                subTitle: Verwalten Sie Ihre Kontosicherheitseinstellungen und überwachen Sie die Anmeldeaktivität
+                securityStatus:
+                    title: Sicherheitsstatus
+                    twofactor:
+                        title: Zwei-Faktor-Authentifizierung (2FA)
+                        active: Aktiv
+                        disabled: Deaktiviert
+                        description:
+                            enabled: 'Ihr Konto hat eine zusätzliche Sicherheitsebene.'
+                            disabled: 'Aktivieren Sie 2FA für zusätzliche Sicherheit.'
+                        button:
+                            disable: 2FA deaktivieren
+                            enable: 2FA aktivieren
+                        lastEnabled: 'Zuletzt aktiviert:'
+                        disableButton:
+                            label: Deaktivieren
+                            loading: Deaktivierung...
+                    activeSessions:
+                        title: Aktive Sitzungen
+                        active: 1 Aktiv
+                        description: 'Sie sind derzeit auf diesem Gerät angemeldet.'
+                        button:
+                            label: Alle Geräte abmelden
+                            loading: Abmeldung...
+                    password:
+                        title: Passwort
+                        active: Aktiv
+                        lastChanged: 'Zuletzt geändert:'
+                        changeButton:
+                            label: Passwort ändern
+                recommendations:
+                    title: Empfehlungen
+                    description: Verbessern Sie die Sicherheit Ihres Kontos mit diesen Empfehlungen
+                    monitor:
+                        title: Anmeldeaktivität überwachen
+                        description: Überprüfen Sie regelmäßig Ihre letzten Anmeldeaktivitäten und melden Sie verdächtige Versuche.
+                    password:
+                        title: Verwenden Sie ein starkes Passwort
+                        description: Erstellen Sie ein einzigartiges Passwort mit mindestens 12 Zeichen, das Buchstaben, Zahlen und Symbole enthält.
+                    twofactor:
+                        enabled:
+                            title: Zwei-Faktor-Authentifizierung aktivieren
+                            description: Fügen Sie Ihrem Konto eine zusätzliche Sicherheitsebene hinzu, indem Sie neben Ihrem Passwort einen Verifizierungscode anfordern.
+                            button:
+                                label: Aktivieren
+                                loading: Aktivierung...
+                        disabled:
+                            title: Zwei-Faktor-Authentifizierung deaktivieren
+                            description: Deaktivieren Sie 2FA, um Ihr Konto in einen weniger sicheren Zustand zu versetzen.
+                            button:
+                                label: Deaktivieren
+                                loading: Deaktivierung...
+                cards:
+                    twofactor:
+                        title: Zwei-Faktor-Authentifizierung (2FA)
+                        subTitle: Möchten Sie sicherstellen, dass Ihr Konto nicht gestohlen wird?
+                        enable_button:
+                            description: '2FA ist derzeit deaktiviert. Aktivieren Sie es, um Ihr Konto zu sichern.'
+                            label: Aktivieren
+                            loading: Aktivierung...
+                        disable_button:
+                            description: '2FA ist derzeit aktiviert. Deaktivieren Sie es, um Ihr Konto in einen weniger sicheren Zustand zu versetzen.'
+                            label: Deaktivieren
+                            loading: Deaktivierung...
+                    password:
+                        title: Passwort ändern
+                        subTitle: Möchten Sie das Passwort Ihres Kontos ändern?
+                        change_button:
+                            label: Passwort ändern
+                            loading: Änderung...
+        apikey:
+            page:
+                title: API-Schlüssel
+                subTitle: Verwalten Sie Ihren API-Schlüssel
+                card:
+                    title: API-Schlüssel
+                    description: Ihr API-Schlüssel bietet Zugriff auf die MythicalDash-API
+                    yourKey: Ihr API-Schlüssel
+                    loading: API-Schlüssel wird geladen...
+                    noApiKey: Kein API-Schlüssel verfügbar
+                    info: Dieser Schlüssel gewährt vollen Zugriff auf Ihr Konto über die API. Bewahren Sie ihn sicher auf und teilen Sie ihn niemals öffentlich.
+                    resetKey: API-Schlüssel zurücksetzen
+                    apiDocumentation: API-Dokumentation
+        activity:
+            page:
+                title: Aktivität
+                subTitle: Sehen Sie Ihre Aktivität!
+                description: 'Dies ist eine Liste Ihrer letzten Aktivitäten. Sie können die Details jeder Aktion anzeigen, indem Sie auf die Schaltfläche "Anzeigen" klicken.'
+                table:
+                    columns:
+                        action: Aktion
+                        date: Datum
+                        ip: IP
+                        context: Kontext
+                    error: Beim Abrufen Ihrer Aktivität ist ein Fehler aufgetreten
+                    noResults: Keine Aktivitäten gefunden
+                    info: Ihr Aktivitätsverlauf wird hier angezeigt
+                    results:
+                        viewButton: Anzeigen
+
+tickets:
+    pages:
+        ticket:
+            title: Ticket
+            subTitle: Ticket anzeigen
+            alerts:
+                error:
+                    title: Fehler
+                    generic: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut'
+                    message_timeout: 'Ticket konnte nicht geladen werden. Ungültige Ticket-ID oder Ticket nicht gefunden.'
+                    footer: 'Bitte kontaktieren Sie den Support für Hilfe'
+                    failed_reply: 'Antwort konnte nicht gesendet werden'
+                    failed_status: 'Ticket-Status konnte nicht aktualisiert werden'
+                    ticket_not_found: 'Ticket nicht gefunden'
+                    maximum_files: 'Maximal 5 Dateien erlaubt'
+                    file_too_large: 'Die Datei {file} ist zu groß'
+                    invalid_file_type: 'Die Datei {file} muss PNG, JPG oder GIF sein'
+                success:
+                    title: Erfolg
+                    reply_success: 'Antwort gesendet'
+                    footer: 'Ihre Antwort wurde gesendet und das Ticket wurde aktualisiert'
+            page:
+                goBack: '↪ Zurück'
+                createdBy: 'Erstellt von'
+                department: 'Abteilung'
+                priority: 'Priorität'
+                priority_high: 'Hoch'
+                priority_medium: 'Mittel'
+                priority_low: 'Niedrig'
+                status: 'Status'
+                created: 'Erstellt'
+                description: 'Beschreibung'
+                attachments: 'Anhänge'
+                status_open: 'Offen'
+                status_closed: 'Geschlossen'
+                status_waiting: 'Warten auf Antwort'
+                status_inprogress: 'In Bearbeitung'
+                preview: 'Bildvorschau'
+                open_in_new_tab: 'In neuem Tab öffnen'
+                messages: 'Nachrichten'
+                response: 'Antwort'
+                replyForm:
+                    title: Auf Ticket antworten
+                    description: 'Bitte geben Sie in Ihrer Antwort so viele Details wie möglich an, damit wir Ihnen besser helfen können. Fügen Sie alle relevanten Informationen oder Screenshots hinzu, die bei der Lösung Ihres Problems helfen könnten.'
+                    forms:
+                        send: 'Geben Sie hier Ihre Antwort ein..'
+                        attachments: 'Anhänge (Optional)'
+                        click_to_upload: 'Klicken Sie zum Hochladen oder ziehen Sie Dateien hierher'
+                        formats: 'PNG, JPG, GIF (MAX. 2MB)'
+                        submit: 'Absenden'
+                        loading: 'Wird gesendet...'
+                status_replied: 'Beantwortet'
+                reply_locked: 'Dieses Ticket ist geschlossen, daher können Sie nicht darauf antworten'
+                buttons:
+                    close: 'Ticket schließen'
+                    reopen: 'Ticket wieder öffnen'
+                    open: 'Ticket öffnen'
+                    waiting: 'Warten auf Antwort'
+                    inprogress: 'In Bearbeitung'
+                    replied: 'Beantwortet'
+        tickets:
+            title: Tickets
+            actions:
+                newTicket: 'Ticket erstellen'
+                view: 'Anzeigen'
+            alerts:
+                error:
+                    generic: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut'
+            table:
+                title: 'Tickets'
+                subject: 'Betreff'
+                status: 'Status'
+                priority: 'Priorität'
+                department: 'Abteilung'
+                created: 'Erstellt'
+                actions: 'Aktionen'
+            noTickets: 'Keine Tickets gefunden'
+        create_ticket:
+            title: 'Neues Ticket'
+            subTitle: 'Neues Ticket erstellen'
+            form:
+                subject: 'Betreff'
+                department: 'Abteilung'
+                priority: 'Priorität'
+                message: 'Nachricht'
+                submit: 'Absenden'
+                loading: 'Wird gesendet...'
+                reset: 'Zurücksetzen'
+                back: 'Zurück'
+            types:
+                priority:
+                    low: 'Niedrig'
+                    medium: 'Mittel'
+                    high: 'Hoch'
+                    urgent: 'Dringend'
+            alerts:
+                success:
+                    title: 'Erfolg'
+                    ticket_success: 'Ticket erstellt'
+                    footer: 'Ihr Ticket wurde erstellt'
+                error:
+                    title: 'Fehler'
+                    generic: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut'
+                    footer: 'Bitte kontaktieren Sie den Support für Hilfe'
+                    department_not_found: 'Abteilung nicht gefunden'
+                    department_id_missing: 'Abteilungs-ID fehlt'
+                    message_missing: 'Nachricht fehlt'
+                    subject_missing: 'Betreff fehlt'
+                    limit_reached: 'Sie haben die maximale Anzahl an Tickets erreicht, die Sie erstellen können'
+                    failed_to_create_ticket: 'Cluster ist ausgefallen, versuchen Sie es später erneut'
+
+components:
+    sidebar:
+        dashboard: Dashboard
+        services: Dienste
+        orders: Bestellungen
+        add_service: Dienst hinzufügen
+        all_services: Alle Dienste
+        invoices: Rechnungen
+        tickets: Tickets
+        eula: EULA
+        announcements: Ankündigungen
+        addons: Erweiterungen
+        logs: Protokolle
+        settings: Einstellungen
+        users: Benutzer
+        apikeys: API-Schlüssel
+        support: Support & Info
+        open_ticket: Ticket öffnen
+        all_tickets: Alle Tickets
+        knowledge: Wissensdatenbank
+        earn: Verdienen
+        afk: AFK-Belohnungen
+        create: Server erstellen
+        code_redemption: Code-Einlösung
+        j4r: Beitreten für Belohnungen
+        referrals: Empfehlungen
+        l4r: Link für Belohnungen
+        store: Shop
+        leaderboard: Bestenliste
+        general: Allgemein
+    search:
+        placeholder: 'Suchen (Strg + K)'
+        no_results: 'Keine Ergebnisse gefunden'
+        items:
+            dashboard: 'Auf Ihr Haupt-Dashboard zugreifen'
+            services: 'Ihre Dienste anzeigen und verwalten'
+            invoices: 'Auf Ihre Abrechnung und Rechnungen zugreifen'
+            tickets: 'Support-Tickets anzeigen und verwalten'
+            knowledge: 'Hilfe-Artikel und Dokumentation durchsuchen'
+    notifications:
+        title: 'Benachrichtigungen'
+        credits: 'Sie haben {credits} Guthaben übrig'
+        mark_all_read: 'Alle als gelesen markieren'
+        mark_read: 'Als gelesen markieren'
+        no_notifications: 'Keine Benachrichtigungen gefunden'
+        view_all: 'Alle anzeigen'
+    errors:
+        go_back: 'Zurück'
+        go_home: 'Startseite'
+    dashboard:
+        title: 'Mein Dashboard'
+        portal_home: 'Portal-Startseite'
+        client_area: 'Kundenbereich'
+        welcome_back: 'Willkommen zurück'
+        stats:
+            services: 'Dienste'
+            unpaid_invoices: 'Unbezahlte Rechnungen'
+            tickets: 'Tickets'
+            orders: 'Bestellungen'
+            coins: 'Münzen'
+            servers: 'Server'
+        billing:
+            title: 'Abrechnungsübersicht'
+            current_balance: 'Aktuelles Guthaben'
+            next_payment: 'Nächste Zahlung'
+            due_date: 'Fälligkeitsdatum'
+            add_funds: 'Guthaben hinzufügen'
+    profile:
+        tickets: 'Tickets'
+        coins: 'Münzen'
+        servers: 'Server'
+        logout: 'Abmelden'
+        update: 'Aktualisieren'
+    loading:
+        title: 'Wird geladen...'
+        description: 'Wird geladen...'
+    table:
+        page: 'Seite'
+        of: 'von'
+        results: 'Ergebnisse'
+        pageSize: 'Seitengröße'
+        search: 'Suchen'
+        first: 'Erste'
+        previous: 'Zurück'
+        next: 'Weiter'
+        last: 'Letzte'
+        noResults: 'Keine Ergebnisse gefunden'
+        view: 'Anzeigen'
+        readMore: 'Weiterlesen'
+        showing: 'Zeige Seite: '
+        per_page: 'Einträge pro Seite'
+        no_data_description: 'Es tut uns leid, aber wir konnten keine Daten für diese Seite finden.'
+        no_data: 'Keine Daten gefunden'
+billing:
+    pages:
+        add_funds:
+            title: Guthaben hinzufügen
+            back: Zurück
+            form:
+                title: Guthaben zu Ihrem Konto hinzufügen
+                description: Wählen Sie Ihre bevorzugte Zahlungsmethode und geben Sie den Betrag ein, den Sie Ihrem Konto hinzufügen möchten.
+                amount:
+                    label: Betrag
+                    placeholder: Betrag eingeben
+                payment_method:
+                    label: Zahlungsmethode
+                submit: Guthaben hinzufügen
+                processing: Verarbeitung...
+            summary:
+                title: Kontoübersicht
+                current_balance: Aktuelles Guthaben
+                info: Guthaben wird Ihrem Konto sofort nach erfolgreicher Zahlungsabwicklung gutgeschrieben. Dieses Guthaben kann für alle Dienste oder Produkte innerhalb unserer Plattform verwendet werden.
+            alerts:
+                error:
+                    title: Fehler
+                    missing_fields: Bitte füllen Sie alle erforderlichen Felder aus.
+                    invalid_amount: Bitte geben Sie einen gültigen Betrag größer als 0 ein.
+                    payment_failed: Zahlungsabwicklung fehlgeschlagen. Bitte versuchen Sie es erneut.
+                    footer: Bitte kontaktieren Sie den Support für Hilfe.
+                    no_gateway: Kein Zahlungs-Gateway gefunden.
+                    notEnabled: Abrechnung ist für diesen Host nicht aktiviert!
+                success:
+                    title: Erfolg
+                    payment_processed: Zahlung erfolgreich verarbeitet. Ihr Guthaben wurde Ihrem Konto gutgeschrieben.
+afk:
+    notEnabled:
+        title: 'AFK-Belohnungen'
+        text: 'AFK-Belohnungen sind auf diesem Host nicht aktiviert!'
+        button: 'Zum Dashboard'
+    pages:
+        index:
+            title: 'AFK-Belohnungen'
+            subTitle: 'Verdienen Sie Münzen, indem Sie AFK sind'
+            status: 'Status:'
+            active: 'Aktiv'
+            inactive: 'Inaktiv'
+            startafk: 'AFK starten'
+            stopafk: 'AFK stoppen'
+            timeDate:
+                hours: 'Stunden'
+                minutes: 'Minuten'
+                seconds: 'Sekunden'
+            totalCoins: 'Gesamte Münzen'
+            currentSession: 'Aktuelle Sitzung'
+            coins: 'Münzen'
+            totalAFKTime: 'Gesamte AFK-Zeit'
+
+        afkpaused:
+            title: 'AFK-Sitzung pausiert'
+            text: 'Ihre AFK-Sitzung wurde pausiert, weil Sie zu einem anderen Tab gewechselt oder das Fenster minimiert haben. Bitte halten Sie diesen Tab aktiv, um weiterhin Belohnungen zu erhalten.'
+            button: 'OK'
+        cannotstartafk:
+            title: 'AFK kann nicht gestartet werden'
+            text: 'Bitte halten Sie diesen Tab aktiv, um AFK-Belohnungen zu erhalten.'
+            button: 'OK'
+
+code_redemption:
+    notEnabled:
+        title: 'Code-Einlösung'
+        text: 'Code-Einlösung ist auf diesem Host nicht aktiviert!'
+        button: 'Zum Dashboard'
+    pages:
+        index:
+            title: 'Code-Einlösung'
+            subTitle: 'Lösen Sie Ihre Codes ein'
+            form:
+                label: 'Einlösecode eingeben'
+                placeholder: 'Geben Sie Ihren Code hier ein'
+                redeem: 'Code einlösen'
+                redeeming: 'Wird eingelöst...'
+                currentBalance: 'Aktuelles Guthaben'
+            social:
+                twitter:
+                    title: 'Twitter/X'
+                    description: 'Folgen Sie uns auf Twitter für regelmäßige Code-Veröffentlichungen und Ankündigungen.'
+                discord:
+                    title: 'Discord'
+                    description: 'Treten Sie unserem Discord-Server bei für exklusive Code-Veröffentlichungen und Community-Support.'
+                telegram:
+                    title: 'Telegram'
+                    description: 'Treten Sie unserem Telegram-Kanal bei für exklusive Code-Veröffentlichungen und Community-Support.'
+                events:
+                    title: 'Events'
+                    description: 'Spezielle Codes werden während saisonaler Events und Aktionen veröffentlicht.'
+
+            alerts:
+                error:
+                    title: 'Fehler'
+                    generic: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut'
+                    footer: 'Bitte kontaktieren Sie den Support für Hilfe'
+                    button: 'OK'
+                success:
+                    title: 'Erfolg'
+                    code_redeemed: 'Code erfolgreich eingelöst'
+                    footer: 'Ihr Code wurde eingelöst'
+referrals:
+    notEnabled:
+        title: 'Empfehlungen'
+        text: 'Empfehlungen sind auf diesem Host nicht aktiviert!'
+        button: 'Zum Dashboard'
+    pages:
+        index:
+            title: 'Empfehlungen'
+            subTitle: 'Verdienen Sie Belohnungen durch Empfehlungen von Freunden'
+            form:
+                label: 'Empfehlungscode eingeben'
+                placeholder: 'Geben Sie Ihren Code hier ein'
+                redeem: 'Code einlösen'
+                redeeming: 'Wird eingelöst...'
+            copy:
+                title: 'Link kopiert!'
+                text: 'Ihr Empfehlungslink wurde kopiert. Sie können ihn jetzt in Discord einfügen.'
+                button: 'OK'
+            error:
+                title: 'Fehler'
+                text: 'Empfehlungen konnten nicht geladen werden'
+                button: 'OK'
+            body:
+                title: 'Ihr einzigartiger Empfehlungslink'
+                description: 'Teilen Sie diesen Link mit Freunden, um Belohnungen zu erhalten, wenn sie sich anmelden'
+                copy:
+                    title: 'Empfehlungslink kopieren'
+                    text: 'Kopieren Sie Ihren Empfehlungslink in die Zwischenablage'
+                    copied: 'Kopiert!'
+            social:
+                twitter: 'Twitter/X'
+                facebook: 'Facebook'
+                discord: 'Discord'
+                email: 'E-Mail'
+            refferals:
+                title: 'Gesamte Empfehlungen'
+                earned: 'Insgesamt verdient'
+                yourReferrals: 'Ihre Empfehlungen'
+                loading: 'Ihre Empfehlungen werden geladen...'
+                noReferrals: 'Keine Empfehlungen gefunden'
+                noReferralsDescription: 'Teilen Sie Ihren Empfehlungslink mit Freunden, um Belohnungen zu erhalten!'
+                noEarnings: 'Keine Verdienste gefunden'
+                noEarningsDescription: 'Teilen Sie Ihren Empfehlungslink mit Freunden, um Belohnungen zu erhalten!'
+                table:
+                    user: 'Benutzer'
+                    date: 'Datum'
+                    status: 'Status'
+                    reward: 'Belohnung'
+                    actions: 'Aktionen'
+                sharelink:
+                    title: 'Wie funktioniert es?'
+                    description: 'Einfache Schritte zum Verdienen durch Empfehlungen'
+                    steps:
+                        one:
+                            title: 'Teilen Sie Ihren Link'
+                            id: '1'
+                            description: 'Kopieren Sie Ihren einzigartigen Empfehlungslink und teilen Sie ihn mit Freunden'
+                        two:
+                            title: 'Erhalten Sie Empfehlungen'
+                            id: '2'
+                            description: 'Ihre Empfehlungen erhalten Belohnungen, wenn sie sich anmelden'
+                        three:
+                            title: 'Verdienen Sie Belohnungen'
+                            id: '3'
+                            description: 'Sie erhalten Belohnungen, wenn Ihre Empfehlungen Belohnungen erhalten'
+            share:
+                shareMessage: 'Schließen Sie sich mir auf MythicalDash an und erhalten Sie exklusive Belohnungen mit meinem Empfehlungslink!'
+                title: 'Empfehlungslink teilen'
+                description: 'Teilen Sie Ihren Empfehlungslink mit Freunden und verdienen Sie Belohnungen!'
+                mailTitle: 'Empfehlungslink per E-Mail teilen'
+                twitter:
+                    title: 'Twitter/X'
+                    description: 'Teilen Sie Ihren Empfehlungslink auf Twitter für regelmäßige Code-Veröffentlichungen und Ankündigungen.'
+create:
+    pages:
+        index:
+            title: 'Neuen Server erstellen'
+            subTitle: 'Konfigurieren und stellen Sie Ihren neuen Server bereit'
+            form:
+                label: 'Servername'
+                placeholder: 'Geben Sie Ihren Servernamen ein'
+                submit: 'Server erstellen'
+                description: 'Beschreibung'
+                descriptionPlaceholder: 'Geben Sie Ihre Serverbeschreibung ein'
+                location: 'Serverstandort'
+                locationPlaceholder: 'Wählen Sie einen Standort'
+                category: 'Serverkategorie'
+                categoryPlaceholder: 'Wählen Sie eine Kategorie'
+                egg: 'Serverversion'
+                eggPlaceholder: 'Wählen Sie eine Version'
+                memory: 'Arbeitsspeicher'
+                cpu: 'CPU'
+                disk: 'Festplatte'
+                databases: 'Datenbanken'
+                backups: 'Backups'
+                allocations: 'Zuweisungen'
+                servers: 'Server'
+                mb: 'MB'
+                p: '%'
+                of: 'von'
+                available: 'Verfügbar'
+                depleted: 'Erschöpft'
+            slots: 'Slots'
+            resources:
+                title: 'Ressourcenverfügbarkeit'
+                available: 'Verfügbar'
+                depleted: 'Erschöpft'
+                memory: 'Arbeitsspeicher'
+                cpu: 'CPU'
+                disk: 'Festplatte'
+                slots: 'Slots'
+                databases: 'Datenbanken'
+                backups: 'Backups'
+                allocations: 'Zuweisungen'
+                servers: 'Server'
+                mb: 'MB'
+                of: 'von'
+                p: '%'
+        alerts:
+            error:
+                title: 'Fehler'
+                generic: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut'
+                footer: 'Bitte kontaktieren Sie den Support für Hilfe'
+                deploy:
+                    MISSING_REQUIRED_FIELDS: 'Erforderliche Felder fehlen'
+                    NAME_TOO_LONG: 'Servername muss weniger als 32 Zeichen haben'
+                    DESCRIPTION_TOO_LONG: 'Beschreibung muss weniger als 255 Zeichen haben'
+                    LOCATION_DOES_NOT_EXIST: 'Ausgewählter Standort existiert nicht'
+                    CATEGORY_DOES_NOT_EXIST: 'Ausgewählte Kategorie existiert nicht'
+                    EGG_DOES_NOT_EXIST: 'Ausgewählte Version existiert nicht'
+                    MEMORY_TOO_LOW: 'Arbeitsspeicher muss mindestens 256MB betragen'
+                    CPU_TOO_LOW: 'CPU muss mindestens 5% betragen'
+                    DISK_TOO_LOW: 'Festplatte muss mindestens 256MB betragen'
+                    ALLOCATIONS_TOO_LOW: 'Zuweisungen müssen mindestens 1 betragen'
+                    PENDING_SERVER_CREATION_REQUEST: 'Sie haben bereits eine ausstehende Serveranfrage'
+                    NOT_ENOUGH_MEMORY: 'Sie haben nicht genügend Arbeitsspeicherressourcen'
+                    NOT_ENOUGH_DISK_SPACE: 'Sie haben nicht genügend Festplattenressourcen'
+                    NOT_ENOUGH_CPU: 'Sie haben nicht genügend CPU-Ressourcen'
+                    NOT_ENOUGH_DATABASES: 'Sie haben nicht genügend Datenbankressourcen'
+                    NOT_ENOUGH_BACKUPS: 'Sie haben nicht genügend Backup-Ressourcen'
+                    NOT_ENOUGH_ALLOCATIONS: 'Sie haben nicht genügend Zuweisungsressourcen'
+                    NOT_ENOUGH_SERVERS: 'Sie haben Ihr Serverlimit erreicht'
+                    FAILED_TO_CREATE_SERVER_QUEUE_ITEM: 'Serverwarteschlangenelement konnte nicht erstellt werden'
+            success:
+                title: 'Erfolg'
+                generic: 'Ihr Server wurde erstellt'
+                footer: 'Viel Spaß mit Ihrem Server!'
+update:
+    pages:
+        alerts:
+            error:
+                title: 'Fehler'
+                generic: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut'
+                delete: 'Dies wird Ihre Serverkonfiguration aktualisieren. Diese Aktion kann nicht rückgängig gemacht werden!'
+                footer: 'Bitte kontaktieren Sie den Support für Hilfe'
+                confirmButtonText: 'OK'
+                cancelButtonText: 'Abbrechen'
+            success:
+                title: 'Erfolg'
+                generic: 'Ihr Server wurde aktualisiert'
+                footer: 'Server erfolgreich aktualisiert'
+                confirmButtonText: 'OK'
+        index:
+            title: 'Server aktualisieren'
+            subTitle: 'Aktualisieren Sie Ihre Serverkonfiguration'
+            loading: 'Serverdaten werden geladen...'
+            form:
+                label: 'Servername'
+                placeholder: 'Geben Sie Ihren Servernamen ein'
+                submit: 'Server aktualisieren'
+                description: 'Beschreibung'
+                descriptionPlaceholder: 'Geben Sie Ihre Serverbeschreibung ein'
+                location: 'Serverstandort'
+                locationPlaceholder: 'Wählen Sie einen Standort'
+                category: 'Serverkategorie'
+                categoryPlaceholder: 'Wählen Sie eine Kategorie'
+                egg: 'Serverversion'
+                eggPlaceholder: 'Wählen Sie eine Version'
+                updateButton: 'Server aktualisieren'
+                deleteButton: 'Server löschen'
+                resources:
+                    title: 'Ressourcenverfügbarkeit'
+                    available: 'Verfügbar'
+                    depleted: 'Erschöpft'
+                    memory: 'Arbeitsspeicher'
+                    cpu: 'CPU'
+                    disk: 'Festplatte'
+                    slots: 'Slots'
+                    databases: 'Datenbanken'
+                    backups: 'Backups'
+                    allocations: 'Zuweisungen'
+                    servers: 'Server'
+                    mb: 'MB'
+                    of: 'von'
+                    p: '%'
+delete:
+    pages:
+        index:
+            title: 'Server löschen'
+            subTitle: 'Sind Sie sicher, dass Sie diesen Server löschen möchten?'
+            loading: 'Serverdaten werden geladen...'
+            unknownError: 'Ein unbekannter Fehler ist aufgetreten'
+            warning: 'Warnung'
+            type: 'Typ'
+            version: 'Version'
+            location: 'Standort'
+            card:
+                title: 'Bestätigung'
+                description: 'Geben Sie zur Bestätigung den Servernamen ein:'
+                placeholder: 'Servernamen zur Bestätigung eingeben'
+            button:
+                delete: 'Server löschen'
+                cancel: 'Abbrechen'
+            details:
+                title: 'Das Löschen dieses Servers ist dauerhaft'
+                description: 'Diese Aktion wird Ihren Server und alle damit verbundenen Daten sofort und dauerhaft löschen, einschließlich:'
+                files: 'Alle auf dem Server gespeicherten Dateien'
+                databases: 'Alle Datenbanken und deren Inhalte'
+                backups: 'Alle Backups'
+                configuration: 'Serverkonfiguration'
+                cannotBeUndone: 'Diese Aktion kann nicht rückgängig gemacht werden. Bitte seien Sie sicher.'
+        alerts:
+            error:
+                title: 'Fehler'
+                generic: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut'
+                footer: 'Bitte kontaktieren Sie den Support für Hilfe'
+                confirmation: 'Bestätigungstext stimmt nicht mit dem Servernamen überein'
+                confirmButtonText: 'OK'
+            success:
+                title: 'Erfolg'
+                generic: 'Ihr Server wurde gelöscht'
+                footer: 'Serverlöschungsanfrage erfolgreich übermittelt'
+                confirmButtonText: 'OK'
+
+store:
+    notEnabled:
+        title: 'Shop'
+        text: 'Shop ist auf diesem Host nicht aktiviert!'
+        footer: 'Bitte kontaktieren Sie den Support für Hilfe'
+        button: 'Zum Dashboard'
+    pages:
+        alerts:
+            buy:
+                title: 'Möchten Sie dies kaufen?'
+                description: 'Sind Sie sicher, dass Sie dies kaufen möchten?'
+                confirmButtonText: 'OK'
+                cancelButtonText: 'Abbrechen'
+            error:
+                title: 'Fehler'
+                generic: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut'
+                notEnoughCoins: 'Sie haben nicht genügend Münzen für diesen Kauf'
+                footer: 'Bitte kontaktieren Sie den Support für Hilfe'
+                buy:
+                    MISSING_ITEM_ID: 'Artikel-ID ist erforderlich'
+                    EMPTY_ITEM_ID: 'Artikel-ID darf nicht leer sein'
+                    INVALID_ITEM_ID: 'Ungültige Artikel-ID'
+                    INSUFFICIENT_COINS: 'Unzureichende Münzen, Sie benötigen {0} und haben {1}'
+                    STORE_NOT_ENABLED: 'Shop ist nicht aktiviert'
+                    PURCHASE_FAILED: 'Kauf konnte nicht verarbeitet werden'
+                    MAX_RAM_LIMIT: 'Sie haben das maximale RAM-Limit erreicht.'
+                    MAX_DISK_LIMIT: 'Sie haben das maximale FESTPLATTEN-Limit erreicht.'
+                    MAX_CPU_LIMIT: 'Sie haben das maximale CPU-Limit erreicht.'
+                    MAX_PORTS_LIMIT: 'Sie haben das maximale PORT-Limit erreicht.'
+                    MAX_DATABASES_LIMIT: 'Sie haben das maximale DATENBANK-Limit erreicht.'
+                    MAX_SERVER_SLOTS_LIMIT: 'Sie haben das maximale SERVER-SLOT-Limit erreicht.'
+                    MAX_BACKUPS_LIMIT: 'Sie haben das maximale BACKUP-Limit erreicht.'
+                    confirmButtonText: 'OK'
+                    cancelButtonText: 'Abbrechen'
+                    description: 'Bitte versuchen Sie es erneut oder kontaktieren Sie den Support, wenn das Problem weiterhin besteht.'
+        index:
+            title: 'Shop'
+            subTitle: 'Kaufen Sie Serverressourcen und Upgrades'
+            loading: 'Shop-Artikel werden geladen...'
+            empty: 'Keine Artikel in dieser Kategorie verfügbar'
+            emptyDescription: 'Schauen Sie später nach neuen Artikeln'
+            cardYourBalance: 'Ihr Guthaben'
+            cardAvailableCoins: 'Verfügbare Münzen zum Ausgeben'
+            cardCurrentBalance: 'Aktuelles Guthaben'
+            addCredits: 'Guthaben hinzufügen'
+            redeemCodes: 'Codes einlösen'
+            earnMore: 'Mehr verdienen'
+            buyButton: 'Kaufen'
+            insufficientButton: 'Unzureichende Münzen'
+            howItWorks:
+                title: 'Wie es funktioniert'
+                description: 'Geben Sie Ihre Münzen für Serverressourcen und Upgrades aus'
+                steps:
+                    one:
+                        number: '1'
+                        title: 'Münzen verdienen'
+                        description: 'Erledigen Sie Aufgaben im Bereich Verdienen, um Münzen zu sammeln'
+                    two:
+                        number: '2'
+                        title: 'Münzen ausgeben'
+                        description: 'Geben Sie Ihre Münzen für Serverressourcen und Upgrades aus'
+                    three:
+                        number: '3'
+                        title: 'Mehr verdienen'
+                        description: 'Verdienen Sie mehr Münzen, indem Sie Freunde empfehlen'
+                    four:
+                        number: '4'
+                        title: 'Sofortige Lieferung'
+                        description: 'Ressourcen werden sofort Ihrem Konto hinzugefügt'
+
+            card:
+                title: 'Verfügbare Artikel'
+                description: 'Geben Sie Ihre Münzen für Serverressourcen und Upgrades aus'
+            info:
+                buy:
+                    title: 'Kauf bestätigen'
+                    description: 'Sind Sie sicher, dass Sie {0} für {1} Münzen kaufen möchten?'
+                    confirmButtonText: 'Kaufen'
+                    cancelButtonText: 'Abbrechen'
+                    success:
+                        title: 'Kauf erfolgreich'
+                        description: 'Sie haben {0} erfolgreich gekauft'
+                        confirmButtonText: 'OK'
+                ram:
+                    title: 'Zusätzlicher RAM'
+                    description: 'Erhöhen Sie die Speicherkapazität Ihres Servers'
+                    features:
+                        one: 'Sofortige Zuweisung'
+                        two: 'Flexible Skalierung'
+                        three: 'Kein Neustart erforderlich'
+                disk:
+                    title: 'Zusätzlicher Speicherplatz'
+                    description: 'Erhöhen Sie die Speicherkapazität Ihres Servers'
+                    features:
+                        one: 'Sofortige Zuweisung'
+                        two: 'Flexible Skalierung'
+                        three: 'Kein Neustart erforderlich'
+                cpu:
+                    title: 'Zusätzliche CPU'
+                    description: 'Erhöhen Sie die CPU-Kapazität Ihres Servers'
+                    features:
+                        one: 'Hochleistungskerne'
+                        two: 'Dedizierte Ressourcen'
+                        three: 'Echtzeit-Skalierung'
+                server_slot:
+                    title: 'Server-Slot'
+                    description: 'Fügen Sie einen zusätzlichen Server zu Ihrem Konto hinzu'
+                    features:
+                        one: 'Voller Serverzugriff'
+                        two: 'Benutzerdefinierte Konfiguration'
+                        three: 'Sofortige Bereitstellung'
+                server_backup:
+                    title: 'Backup-Slot'
+                    description: 'Zusätzlicher Backup-Speicher für Ihre Server'
+                    features:
+                        one: 'Automatisierte Backups'
+                        two: 'Sofortige Wiederherstellung'
+                        three: 'Sicherer Speicher'
+                server_allocation:
+                    title: 'Server-Zuweisung'
+                    description: 'Zusätzliche Serverzuweisung für Ihre Server'
+                    features:
+                        one: 'Unbegrenzte Zuweisung'
+                        two: 'Flexible Skalierung'
+                        three: 'Kein Neustart erforderlich'
+                server_database:
+                    title: 'Datenbank'
+                    description: 'Zusätzliche Datenbank für Ihre Server'
+                    features:
+                        one: 'MySQL/MariaDB'
+                        two: 'Automatisierte Backups'
+                        three: 'Sicherer Zugriff'
+
+l4r:
+    notEnabled:
+        title: 'Link für Belohnungen'
+        text: 'Link für Belohnungen ist auf diesem Host nicht aktiviert!'
+        footer: 'Bitte kontaktieren Sie den Support für Hilfe'
+        confirmButtonText: 'OK'
+    pages:
+        index:
+            title: 'Link für Belohnungen'
+            subTitle: 'Klicken Sie auf einen beliebigen Anbieter, um Angebote abzuschließen und Münzen zu verdienen'
+            loading: 'Links werden geladen...'
+            empty: 'Keine Links gefunden'
+            linkvertise:
+                title: 'Linkvertise'
+                tag: 'Schnelle & einfache Belohnungen'
+                description: 'Erledigen Sie einfache Aufgaben über Linkvertise wie Umfragen, Videos ansehen oder Websites besuchen.'
+                reward: 'Gewinnen Sie bis zu {0} Münzen'
+                button: 'Angebot abschließen'
+            shareus:
+                title: 'ShareUs'
+                tag: 'Beliebter Link-Verkürzer'
+                description: 'Erledigen Sie einfache Aufgaben über ShareUs wie Umfragen, Videos ansehen oder Websites besuchen.'
+                reward: 'Gewinnen Sie bis zu {0} Münzen'
+                button: 'Angebot abschließen'
+            linkpays:
+                title: 'LinkPays'
+                tag: 'Höhere Belohnungen'
+                description: 'Erledigen Sie einfache Aufgaben über LinkPays wie Umfragen, Videos ansehen oder Websites besuchen.'
+                reward: 'Gewinnen Sie bis zu {0} Münzen'
+                button: 'Angebot abschließen'
+            gyanilinks:
+                title: 'Gyanilinks'
+                tag: 'Schnelle & einfache Belohnungen'
+                description: 'Erledigen Sie einfache Aufgaben über Gyanilinks wie Umfragen, Videos ansehen oder Websites besuchen.'
+                reward: 'Gewinnen Sie bis zu {0} Münzen'
+                button: 'Angebot abschließen'
+            yourStats:
+                title: 'Ihre Statistiken'
+                description: 'Link für Belohnungen Statistiken'
+                currentBalance: 'Münzguthaben'
+            steps:
+                title: 'Wie es funktioniert'
+                description: 'Schließen Sie Link-Angebote für Belohnungen ab'
+                one:
+                    title: 'Wählen Sie einen Anbieter'
+                    number: '1'
+                    description: 'Klicken Sie auf einen der Link-Anbieter, um zu beginnen'
+                two:
+                    title: 'Angebote abschließen'
+                    number: '2'
+                    description: 'Schließen Sie die Angebote ab, um Münzen zu verdienen'
+                three:
+                    title: 'Belohnungen verdienen'
+                    number: '3'
+                    description: 'Verdienen Sie Belohnungen für das Abschließen von Angeboten'
+                four:
+                    title: 'Belohnungen erhalten'
+                    number: '4'
+                    description: 'Münzen werden automatisch Ihrem Konto gutgeschrieben'
+
+# Bestenliste-Übersetzungen
+leaderboard:
+    title: 'Bestenliste'
+    description: 'Sehen Sie, wer in unseren Rankings in verschiedenen Kategorien führt'
+    leaderboard: 'Bestenliste'
+    currency: 'Münzen'
+    notEnabled:
+        title: 'Bestenliste'
+        description: 'Bestenliste ist auf diesem Host nicht aktiviert!'
+        button: 'Zum Dashboard'
+    error:
+        title: 'Fehler beim Laden der Bestenliste'
+        generic: 'Wir konnten die Bestenlisten-Daten zu diesem Zeitpunkt nicht laden'
+        failed_fetch: 'Bestenlisten-Daten konnten nicht abgerufen werden'
+        retry: 'Erneut versuchen'
+    no_data:
+        title: 'Keine Bestenlisten-Daten'
+        message: 'Es gibt noch keine Einträge für diese Bestenlisten-Kategorie'
+    categories:
+        coins: 'Münzen'
+        servers: 'Server'
+        minutes_afk: 'AFK-Zeit'
+        linkvertise: 'Linkvertise'
+        shareus: 'ShareUs'
+        gyanilinks: 'Gyanilinks'
+        linkpays: 'LinkPays'
+        referrals: 'Empfehlungen'
+    table:
+        rank: 'Rang'
+        user: 'Benutzer'
+        coins: 'Münzen'
+        servers: 'Server'
+        minutes_afk: 'Minuten AFK'
+        linkvertise: 'Links'
+        shareus: 'Links'
+        gyanilinks: 'Links'
+        linkpays: 'Links'
+        referrals: 'Empfehlungen'
+
+# Profilseiten-Übersetzungen
+profile:
+    title: 'Benutzerprofil'
+    verified: 'Verifiziert'
+    banned: 'Gesperrt'
+    gift_coins: 'Münzen verschenken'
+    error:
+        title: 'Fehler beim Laden des Profils'
+        generic: 'Wir konnten die Profildaten zu diesem Zeitpunkt nicht laden'
+        failed_fetch: 'Profildaten konnten nicht abgerufen werden'
+        retry: 'Erneut versuchen'
+    gift:
+        title: 'Münzen verschenken'
+        description: 'Senden Sie Münzen an einen anderen Benutzer'
+        page_title: 'Münzen verschenken - {username}'
+        recipient: 'Geschenk an {username}'
+        your_balance: 'Ihr Guthaben'
+        amount: 'Betrag'
+        amount_placeholder: 'Zu verschenkenden Betrag eingeben'
+        max: 'Max'
+        min_amount: 'Mindestbetrag'
+        max_amount: 'Höchstbetrag'
+        fee_label: 'Überweisungsgebühr'
+        fee_amount: 'Gebührenbetrag'
+        total_cost: 'Gesamtkosten'
+        fee_explanation: 'Eine Gebühr wird zu Ihrem Überweisungsbetrag hinzugefügt. Der Empfänger erhält den vollen Geschenkbetrag.'
+        cancel: 'Abbrechen'
+        send: 'Geschenk senden'
+        processing: 'Verarbeitung...'
+        success_message: 'Erfolgreich {amount} Münzen an {username} gesendet'
+        error:
+            recipient_required: 'Empfänger-UUID ist erforderlich'
+            user_not_found: 'Benutzer nicht gefunden'
+            failed_fetch: 'Fehler beim Abrufen des Benutzers'
+            failed_profile: 'Empfängerprofil konnte nicht geladen werden'
+            failed_balance: 'Ihr Guthaben konnte nicht abgerufen werden'
+            invalid_amount: 'Ungültiger Betrag'
+            failed_send: 'Geschenk konnte nicht gesendet werden'
+            generic: 'Beim Senden des Geschenks ist ein Fehler aufgetreten'
+    stats:
+        title: 'Benutzerstatistiken'
+        coins: 'Münzen'
+        servers: 'Server'
+        minutes_afk: 'Minuten AFK'
+        databases: 'Datenbanken'
+    activity:
+        title: 'Aktivität'
+        first_seen: 'Zuerst gesehen'
+        last_seen: 'Zuletzt gesehen'
+        last_seen_afk: 'Letztes AFK'
+    social:
+        title: 'Soziale Konten'
+        discord: 'Discord'
+        github: 'GitHub'
+    resources:
+        title: 'Ressourcenlimits'
+        memory: 'Arbeitsspeicher'
+        cpu: 'CPU'
+        disk: 'Festplatte'
+        servers: 'Server'
+        backups: 'Backups'
+        databases: 'Datenbanken'
+        allocations: 'Zuweisungen'
+    account:
+        title: 'Kontoinformationen'
+        status: 'Status'
+        active: 'Aktiv'
+        banned: 'Gesperrt'
+        deleted: 'Gelöscht'
+        verification: 'Verifizierung'
+        verified: 'Verifiziert'
+        not_verified: 'Nicht verifiziert'
+        uuid: 'UUID'
+
+renew:
+    pages:
+        index:
+            title: 'Server verlängern'
+            subTitle: 'Verlängern Sie die Lebensdauer Ihres Servers'
+            loading: 'Serverdaten werden geladen...'
+            unknownError: 'Ein unbekannter Fehler ist aufgetreten'
+            type: 'Typ'
+            version: 'Version'
+            location: 'Standort'
+            expiresAt: 'Läuft ab am'
+            expired: 'Abgelaufen'
+            renewalInfo: 'Verlängerungsinformationen'
+            details:
+                title: 'Ihren Server verlängern'
+                description: 'Die Verlängerung Ihres Servers wird seine Lebensdauer verlängern und alle Ihre Daten intakt halten.'
+                keepData: 'Alle Dateien und Daten bleiben erhalten'
+                keepSettings: 'Servereinstellungen bleiben unverändert'
+                keepBackups: 'Alle Backups werden beibehalten'
+                keepDatabases: 'Datenbanken bleiben erhalten'
+                confirmRenewal: 'Bitte bestätigen Sie Ihre Verlängerung unten'
+            cost:
+                title: 'Verlängerungskosten'
+                coins: 'Münzen'
+            duration:
+                title: 'Verlängerungsdauer'
+                days: 'Tage'
+            yourBalance: 'Ihr Guthaben'
+            card:
+                title: 'Verlängerung bestätigen'
+                description: 'Geben Sie zur Bestätigung den Servernamen ein:'
+                placeholder: 'Servernamen zur Bestätigung eingeben'
+            button:
+                renew: 'Server verlängern'
+                cancel: 'Abbrechen'
+        alerts:
+            error:
+                title: 'Fehler'
+                generic: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut'
+                footer: 'Bitte kontaktieren Sie den Support für Hilfe'
+                confirmation: 'Bestätigungstext stimmt nicht mit dem Servernamen überein'
+                confirmButtonText: 'OK'
+                insufficientCoins: 'Sie haben nicht genügend Münzen, um diesen Server zu verlängern'
+            success:
+                title: 'Erfolg'
+                generic: 'Ihr Server wurde verlängert'
+                footer: 'Serververlängerungsanfrage erfolgreich übermittelt'
+                confirmButtonText: 'OK'

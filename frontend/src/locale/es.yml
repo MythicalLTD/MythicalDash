@@ -1,0 +1,1526 @@
+---
+#-------------------------------------------------------------#
+#
+# Componentes Globales
+#
+# @public
+#
+#-------------------------------------------------------------#
+metadata:
+    name: 'Spanish'
+    id: 'ES'
+    version: 1.0.0
+
+Components:
+    ErrorsPage:
+        Buttons:
+            GoBack: 'Volver'
+            GoHome: 'Inicio'
+    Global:
+        Navigation:
+            Loading: 'Cargando...'
+            Copy:
+                Title: 'Copiado'
+                Success: 'Copiado al portapapeles como un profesional.'
+                Footer: 'Sí, funcionó ;)'
+            Error: 'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.'
+    QuickLinks:
+        title: 'Enlaces Rápidos'
+        description: 'Acceso rápido a áreas importantes'
+        tickets:
+            title: 'Tickets'
+            description: 'Ver y gestionar tus tickets'
+        announcements:
+            title: 'Anuncios'
+            description: 'Ver los últimos anuncios'
+        account:
+            title: 'Cuenta'
+            description: 'Actualizar la configuración de tu cuenta'
+    ResourceCards:
+        title: 'Uso de Recursos'
+        description: 'Ver el uso de recursos y límites'
+        mb: 'MB'
+        of: 'de'
+        RAM:
+            title: 'RAM'
+        CPU:
+            title: 'CPU'
+        DISK:
+            title: 'Disco'
+        SLOT:
+            title: 'Ranura(s) de Servidor'
+        DATABASE:
+            title: 'Base de datos'
+        BACKUP:
+            title: 'Copia(s) de Seguridad del Servidor'
+        ALLOCATION:
+            title: 'Asignación(es) de Servidor'
+    ServerList:
+        title: 'Mis Servidores'
+        description: 'Gestiona tu infraestructura de juegos'
+        createServer: 'Crea tu Primer Servidor'
+        createServerButton: 'Crear Servidor'
+        noServers: 'No se encontraron servidores'
+        noServersDescription: 'Aún no tienes ningún servidor.'
+        serverLimit: '{0} / {1} Servidores'
+        newServer: 'Nuevo Servidor'
+        table:
+            name: 'Nombre'
+            location: 'Ubicación'
+            egg: 'Egg'
+            memory: 'Memoria'
+            cpu: 'CPU'
+            disk: 'Disco'
+            actions: 'Acciones'
+    ManageAccount:
+        title: 'Mi Perfil'
+        description: 'Tu información de cuenta'
+        viewMore: 'Ver más'
+    Announcements:
+        Title: 'Anuncios'
+        Card:
+            Info: 'Último Anuncio'
+            InfoFull: 'Mantente al día con nuestras últimas noticias'
+            ReadMore: 'Leer Más'
+            NoAnnouncements: 'Aún no hay anuncios'
+    Tickets:
+        title: 'Tickets recientes'
+        description: 'Ver tus tickets recientes'
+        viewMore: 'Ver más'
+        status:
+            Open: 'Abierto'
+            Closed: 'Cerrado'
+            Waiting: 'En espera'
+            Replied: 'Respondido'
+            InProgress: 'En Progreso'
+    QuickSearch:
+        title: 'Búsqueda Rápida'
+        esc_key: 'Esc'
+        enter_key: 'Enter'
+        to_close: 'para cerrar'
+        description: 'Buscar un servidor, ticket o anuncio'
+        notfound: 'No pudimos encontrar resultados para tu búsqueda.'
+        quickNav: 'Navegación Rápida'
+        keyboardShortcuts: 'Atajos de Teclado'
+        search: 'Buscar'
+        ctrl_key: 'Ctrl'
+        k_key: 'K'
+        d_key: 'D'
+        goToDashboard: 'Ir al Panel'
+
+    SupportPin:
+        title: 'PIN de Soporte'
+        copy: 'Copiar'
+        description: 'Este PIN se utiliza para verificar tu identidad ante nuestro equipo de soporte'
+        alerts:
+            success:
+                title: 'Éxito'
+                pin_success: 'PIN de soporte generado'
+                footer: 'Tu PIN de soporte ha sido generado'
+            error:
+                title: 'Error'
+                generic: 'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde'
+                footer: 'Por favor, contacta con soporte para obtener ayuda'
+
+#-------------------------------------------------------------#
+#
+# Páginas de Autenticación (/auth/*)
+#
+# @public
+#
+#-------------------------------------------------------------#
+dashboard:
+    title: Panel
+
+auth:
+    logic:
+        errors:
+            footer: Por favor, contacta con soporte para obtener ayuda
+            title: Error de Sesión
+            expired: Tu sesión ha expirado
+    pages:
+        sso:
+            page:
+                title: Inicio de Sesión Único
+                subTitle: Inicio de Sesión Único
+                form:
+                    name:
+                        label: Nombre de dominio
+                        placeholder: Nombre de la Organización
+                        description: Esta es una función empresarial. Asegúrate de introducir el nombre de tu empresa o nombre de dominio.
+                    login_button:
+                        label: Iniciar Sesión
+                        loading: Redirigiendo...
+                    normal_login:
+                        label: ¿No eres una organización o dominio?
+                        link: Iniciar Sesión
+        login:
+            components:
+                form:
+                    support_center: Centro de Soporte
+            alerts:
+                success:
+                    title: Éxito
+                    login_success: Has iniciado sesión correctamente
+                    footer: ¡Bienvenido de nuevo!
+                error:
+                    title: Error de Inicio de Sesión
+                    missing_fields: Por favor, completa todos los campos
+                    invalid_credentials: Credenciales inválidas
+                    generic: Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde
+                    cloudflare_error: Has sido bloqueado por Cloudflare Turnstile
+                    footer: Por favor, contacta con soporte para obtener ayuda
+                    not_verified: Tu correo electrónico aún no está verificado
+                    banned: Tu cuenta ha sido prohibida permanentemente
+                    deleted: Tu cuenta ha sido eliminada por ti o por un administrador
+                    pterodactyl_user_not_found: Usuario de Pterodactyl no encontrado.
+                    pterodactyl_error: No se pudo registrar al usuario en el panel de Pterodactyl
+                    pterodactyl_not_enabled: Pterodactyl no está habilitado
+            page:
+                title: Iniciar Sesión
+                subTitle: Inicia sesión en tu cuenta
+                form:
+                    email:
+                        label: Correo o Nombre de usuario
+                        placeholder: Introduce tu correo o nombre de usuario
+                    password:
+                        label: Contraseña
+                        placeholder: Introduce tu contraseña
+                    forgot_password: ¿Olvidaste la contraseña?
+                    login_button:
+                        label: Iniciar Sesión
+                        loading: Iniciando sesión...
+                    register:
+                        label: ¿No tienes una cuenta?
+                        link: Registrarse
+        register:
+            alerts:
+                success:
+                    title: Éxito
+                    register_success: Te has registrado correctamente
+                    footer: ¡Gracias por elegirnos!
+                error:
+                    title: Registro Fallido
+                    csrf_error: Error de token CSRF
+                    username_exists: El nombre de usuario ya existe
+                    email_exists: El correo ya existe
+                    generic: Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde
+                    cloudflare_error: Has sido bloqueado por Cloudflare Turnstile
+                    pterodactyl_not_enabled: Pterodactyl no está habilitado
+                    pterodactyl_error: No se pudo registrar al usuario en el panel de Pterodactyl
+                    footer: Por favor, contacta con soporte para obtener ayuda
+            page:
+                title: Registrarse
+                subTitle: Crear una nueva cuenta
+                form:
+                    email:
+                        label: Correo
+                        placeholder: Introduce tu correo
+                    firstName:
+                        label: Nombre
+                        placeholder: Introduce tu nombre
+                    lastName:
+                        label: Apellido
+                        placeholder: Introduce tu apellido
+                    username:
+                        label: Nombre de usuario
+                        placeholder: Introduce tu nombre de usuario
+                    password:
+                        label: Contraseña
+                        placeholder: Introduce tu contraseña
+                    confirm_password:
+                        label: Confirmar Contraseña
+                        placeholder: Confirma tu contraseña
+                    referralCode:
+                        label: Código de Referencia
+                        placeholder: Introduce tu código de referencia
+                    register_button:
+                        label: Registrarse
+                        loading: Registrando...
+                    login:
+                        label: ¿Ya tienes una cuenta?
+                        link: Iniciar Sesión
+        forgot_password:
+            alerts:
+                success:
+                    title: Éxito
+                    reset_success: Enlace de restablecimiento de contraseña enviado
+                    footer: ¡Revisa tu correo!
+                error:
+                    title: Error
+                    missing_fields: Por favor, completa todos los campos
+                    email_not_found: Correo no encontrado
+                    generic: Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde
+                    cloudflare_error: Has sido bloqueado por Cloudflare Turnstile
+                    footer: Por favor, contacta con soporte para obtener ayuda
+            page:
+                title: Olvidé mi Contraseña
+                subTitle: Restablecer tu contraseña
+                form:
+                    email:
+                        label: Correo
+                        placeholder: Introduce tu correo
+                    reset_button:
+                        label: Restablecer Contraseña
+                        loading: Enviando enlace de restablecimiento...
+                    login:
+                        label: ¿Recordaste tu contraseña?
+                        link: Iniciar Sesión
+        twofactor_verify:
+            alerts:
+                success:
+                    title: Éxito
+                    verify_success: Autenticación de Dos Factores verificada
+                    footer: Has verificado correctamente la Autenticación de Dos Factores
+                error:
+                    title: Error
+                    missing_fields: Por favor, completa todos los campos
+                    invalid_code: Código inválido
+                    generic: Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde
+                    cloudflare_error: Has sido bloqueado por Cloudflare Turnstile
+                    footer: Por favor, contacta con soporte para obtener ayuda
+            page:
+                title: Autenticación de Dos Factores
+                subTitle: Verificar Autenticación de Dos Factores
+                form:
+                    code:
+                        label: Código
+                        placeholder: Introduce el código de tu aplicación de autenticación
+                    verify_button:
+                        label: Verificar
+                        loading: Verificando...
+        twofactor_setup:
+            alerts:
+                success:
+                    title: Éxito
+                    setup_success: Autenticación de Dos Factores configurada
+                    footer: Has configurado correctamente la Autenticación de Dos Factores
+                error:
+                    title: Error
+                    missing_fields: Por favor, completa todos los campos
+                    invalid_code: Código inválido
+                    generic: Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde
+                    cloudflare_error: Has sido bloqueado por Cloudflare Turnstile
+                    footer: Por favor, contacta con soporte para obtener ayuda
+            page:
+                title: Autenticación de Dos Factores
+                subTitle: Configurar Autenticación de Dos Factores
+                form:
+                    secret:
+                        label: Secreto
+                        placeholder: Aquí está tu clave secreta
+                    code:
+                        label: Código
+                        placeholder: Introduce el código de tu aplicación de autenticación
+                    setup_button:
+                        label: Configurar
+                        loading: Configurando...
+        reset_password:
+            alerts:
+                success:
+                    title: Éxito
+                    reset_success: Hemos restablecido tu contraseña correctamente
+                    footer: ¡Revisa tu correo!
+                error:
+                    title: Error
+                    missing_fields: Por favor, completa todos los campos
+                    passwords_mismatch: Las contraseñas no coinciden
+                    generic: Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde
+                    cloudflare_error: Has sido bloqueado por Cloudflare Turnstile
+                    footer: Por favor, contacta con soporte para obtener ayuda
+                    invalid_code: Código de restablecimiento inválido
+            page:
+                title: Restablecer Contraseña
+                subTitle: Restablecer tu contraseña
+                form:
+                    password_new:
+                        label: Nueva Contraseña
+                        placeholder: Introduce tu nueva contraseña
+                    password_confirm:
+                        label: Confirmar Contraseña
+                        placeholder: Confirma tu nueva contraseña
+                    reset_button:
+                        label: Restablecer Contraseña
+                        loading: Aplicando cambios...
+                    login:
+                        label: ¿Recordaste tu contraseña?
+                        link: Iniciar Sesión
+#-------------------------------------------------------------#
+#
+# Páginas de Errores Globales
+#
+# @public
+#
+#-------------------------------------------------------------#
+errors:
+    forbidden:
+        title: 403 Prohibido
+        message: >-
+            ¡Detente ahí, viajero espacial! No tienes la autorización
+            necesaria para acceder a esta área.
+    notfound:
+        title: 404 No Encontrado
+        message: >-
+            No pudimos encontrar la página que estabas buscando. Puede que haya sido movida o
+            eliminada.
+    servererror:
+        title: 500 Error del Servidor
+        message: Ha ocurrido un error en nuestro sistema. Por favor, inténtelo de nuevo más tarde.
+#-------------------------------------------------------------#
+#
+# Configuración de Cuenta (/account/*)
+#
+# @public
+#
+#-------------------------------------------------------------#
+account:
+    components:
+        header:
+            uuid: 'UUID:'
+            ip: 'Dirección IP'
+            first: 'Primera:'
+            current: 'Actual:'
+            firstSeen: 'Visto por primera vez'
+            lastSeen: 'Visto por última vez'
+            verification: 'Verificación de Cuenta'
+            verified: 'Tu cuenta está verificada'
+            notVerified: 'Tu cuenta no está verificada'
+    pages:
+        index:
+            title: 'Gestión de Cuenta'
+            description: 'Ver y gestionar la configuración y preferencias de tu cuenta'
+            tabs:
+                settings: 'Configuración'
+                security: 'Seguridad'
+                emails: 'Correos'
+                activity: 'Actividad'
+                apikey: 'Clave API'
+                linked_accounts: 'Cuentas Vinculadas'
+        linked_accounts:
+            errors:
+                title: 'Vaya, parece que aún no admitimos este proveedor.'
+                connect: 'Contacta con soporte si crees que esto es un error.'
+            title: Cuentas Vinculadas
+            description: Vincula tus cuentas a tu perfil
+            connect: 'Conectar'
+            disconnect: 'Desconectar'
+            not_connected: 'No Conectado'
+            connected_as: 'Conectado como'
+            connected_on: 'Conectado el'
+            benefits:
+                title: Beneficios
+                simplified_login:
+                    title: Inicio de Sesión Simplificado
+                    description: Simplifica tu proceso de inicio de sesión vinculando tus cuentas
+                enhanced_security:
+                    title: Seguridad Mejorada
+                    description: Mejora la seguridad de tu cuenta vinculando tus cuentas
+                seamless_integration:
+                    title: Integración Perfecta
+                    description: Integra perfectamente tus cuentas a tu perfil
+            discord:
+                title: Discord
+                description: Vincula tu cuenta de Discord a tu perfil
+                link: Vincular Discord
+            github:
+                title: GitHub
+                description: Vincula tu cuenta de GitHub a tu perfil
+                link: Vincular GitHub
+            google:
+                title: Google
+                description: Vincula tu cuenta de Google a tu perfil
+                link: Vincular Google
+        settings:
+            alerts:
+                success:
+                    title: Éxito
+                    update_success: Configuración de cuenta actualizada
+                    footer: La configuración de tu cuenta ha sido actualizada
+                error:
+                    title: Error
+                    generic: Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde
+                    email: El correo ya existe
+                    footer: Por favor, contacta con soporte para obtener ayuda
+            page:
+                title: Cuenta
+                subTitle: Gestiona tu información personal y preferencias de cuenta
+                form:
+                    profile:
+                        title: Información de Perfil
+                        subTitle: Actualiza la información de perfil de tu cuenta
+                    email:
+                        label: Correo
+                    firstName:
+                        label: Nombre
+                    lastName:
+                        label: Apellido
+                    avatar:
+                        label: Avatar
+                    background:
+                        label: Fondo
+                    update_button:
+                        label: Guardar Cambios
+                        reset: Restablecer
+                        loading: Guardando...
+                    browserStorage:
+                        title: Almacenamiento del Navegador
+                        subTitle: Gestiona el almacenamiento local del navegador y los datos en caché
+                        currentStorageUsage: 'Uso Actual de Almacenamiento'
+                        clearAllBrowserData: 'Borrar Todos los Datos del Navegador'
+                        totalBrowserStorage: 'Almacenamiento total del navegador utilizado por esta aplicación'
+                        browserStorageDescription: 'El almacenamiento del navegador incluye cookies, almacenamiento local, datos de sesión y la copia sin conexión de la aplicación.'
+                        clearAllBrowserDataButton: Borrar Todos los Datos del Navegador
+                        clearAllBrowserDataDescription: Esto borrará todos los datos almacenados localmente, incluidas las preferencias y la información en caché. Esta acción no se puede deshacer.
+                delete:
+                    title: 'Desactivar Cuenta'
+                    description: 'Una vez que desactives tu cuenta, no hay vuelta atrás. Por favor, asegúrate.'
+                    button: 'Desactivar Cuenta'
+                    warning:
+                        title: 'Advertencia'
+                        description: 'No seas tonto, no puedes deshacer esta acción. Una vez que presiones este botón, no habrá más confirmación, tu cuenta se eliminará directamente. Así que asegúrate de que quieres hacer esto.'
+                clear:
+                    title: Datos de la Aplicación
+                    subTitle: Gestiona y borra los datos de la aplicación en caso de que veas datos obsoletos.
+                    cache:
+                        title: Uso de Caché
+                        total: 'Datos en caché totales: {totalSize}'
+                        button: 'Borrar Caché y Recargar'
+                        description: 'Esto borrará todos los datos en caché y recargará la aplicación.'
+                        confirm: 'Sí, borrar datos'
+                        cancel: 'Cancelar'
+        emails:
+            alerts:
+                success:
+                    title: Éxito
+                    update_success: Preferencias de correo actualizadas
+                    footer: Tus preferencias de correo han sido actualizadas
+                error:
+                    title: Error
+                    generic: Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde
+                    footer: Por favor, contacta con soporte para obtener ayuda
+            page:
+                title: Correos
+                subTitle: ¡Mira tus correos!
+                description: 'Esta es una lista de tus correos. Puedes ver los detalles de cada correo haciendo clic en el botón de ver.'
+                loading: Cargando correos...
+                loadingText: Cargando tu historial de correos..
+                error: Error al cargar correos
+                noMails:
+                    title: No se encontraron correos
+                    description: Aún no has recibido ningún correo
+                table:
+                    columns:
+                        id: ID
+                        subject: Asunto
+                        date: Fecha
+                        from: De
+                        actions: Acciones
+                    empty: No se encontraron correos
+                    results:
+                        viewButton: Ver
+        security:
+            alerts:
+                success:
+                    title: Éxito
+                    update_success: Configuración de seguridad actualizada
+                    footer: Tu configuración de seguridad ha sido actualizada
+                error:
+                    title: Error
+                    generic: Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde
+                    footer: Por favor, contacta con soporte para obtener ayuda
+            page:
+                title: Seguridad de la Cuenta
+                subTitle: Gestiona la configuración de seguridad de tu cuenta y monitorea la actividad de inicio de sesión
+                securityStatus:
+                    title: Estado de Seguridad
+                    twofactor:
+                        title: Autenticación de Dos Factores (2FA)
+                        active: Activo
+                        disabled: Desactivado
+                        description:
+                            enabled: 'Tu cuenta tiene una capa adicional de seguridad.'
+                            disabled: 'Habilita 2FA para mayor seguridad.'
+                        button:
+                            disable: Desactivar 2FA
+                            enable: Habilitar 2FA
+                        lastEnabled: 'Última Activación:'
+                        disableButton:
+                            label: Desactivar
+                            loading: Desactivando...
+                    activeSessions:
+                        title: Sesiones Activas
+                        active: 1 Activa
+                        description: 'Actualmente has iniciado sesión en este dispositivo.'
+                        button:
+                            label: Cerrar Sesión en Todos los Dispositivos
+                            loading: Cerrando sesión...
+                    password:
+                        title: Contraseña
+                        active: Activa
+                        lastChanged: 'Último Cambio:'
+                        changeButton:
+                            label: Cambiar Contraseña
+                recommendations:
+                    title: Recomendaciones
+                    description: Mejora la seguridad de tu cuenta con estas recomendaciones
+                    monitor:
+                        title: Monitorear Actividad de Inicio de Sesión
+                        description: Revisa regularmente tu actividad de inicio de sesión reciente e informa cualquier intento sospechoso.
+                    password:
+                        title: Usar una Contraseña Fuerte
+                        description: Crea una contraseña única de al menos 12 caracteres con una combinación de letras, números y símbolos.
+                    twofactor:
+                        enabled:
+                            title: Habilitar Autenticación de Dos Factores
+                            description: Añade una capa adicional de seguridad a tu cuenta requiriendo un código de verificación además de tu contraseña.
+                            button:
+                                label: Habilitar
+                                loading: Habilitando...
+                        disabled:
+                            title: Desactivar Autenticación de Dos Factores
+                            description: Desactiva 2FA para poner tu cuenta en un estado menos seguro.
+                            button:
+                                label: Desactivar
+                                loading: Desactivando...
+                cards:
+                    twofactor:
+                        title: Autenticación de Dos Factores (2FA)
+                        subTitle: ¿Quieres asegurarte de que tu cuenta no sea robada?
+                        enable_button:
+                            description: '2FA está actualmente desactivado. Habilítalo para asegurar tu cuenta.'
+                            label: Habilitar
+                            loading: Habilitando...
+                        disable_button:
+                            description: '2FA está actualmente habilitado. Desactívalo para poner tu cuenta en un estado menos seguro.'
+                            label: Desactivar
+                            loading: Desactivando...
+                    password:
+                        title: Cambiar tu contraseña
+                        subTitle: ¿Quieres cambiar la contraseña de tu cuenta?
+                        change_button:
+                            label: Cambiar Contraseña
+                            loading: Cambiando...
+        apikey:
+            page:
+                title: Clave API
+                subTitle: Gestiona tu clave API
+                card:
+                    title: Clave API
+                    description: Tu clave API proporciona acceso a la API de MythicalDash
+                    yourKey: Tu Clave API
+                    loading: Cargando clave API...
+                    noApiKey: No hay clave API disponible
+                    info: Esta clave otorga acceso completo a tu cuenta a través de la API. Mantenla segura y nunca la compartas públicamente.
+                    resetKey: Restablecer Clave API
+                    apiDocumentation: Documentación de la API
+        activity:
+            page:
+                title: Actividad
+                subTitle: ¡Mira tu actividad!
+                description: 'Esta es una lista de tu actividad reciente. Puedes ver los detalles de cada acción haciendo clic en el botón de ver.'
+                table:
+                    columns:
+                        action: Acción
+                        date: Fecha
+                        ip: IP
+                        context: Contexto
+                    error: Ha ocurrido un error al obtener tu actividad
+                    noResults: No se encontraron actividades
+                    info: Tu historial de actividad aparecerá aquí
+                    results:
+                        viewButton: Ver
+
+tickets:
+    pages:
+        ticket:
+            title: Ticket
+            subTitle: Ver tu ticket
+            alerts:
+                error:
+                    title: Error
+                    generic: 'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde'
+                    message_timeout: 'No se pudo cargar el ticket. ID de ticket inválido o ticket no encontrado.'
+                    footer: 'Por favor, contacta con soporte para obtener ayuda'
+                    failed_reply: 'No se pudo enviar la respuesta'
+                    failed_status: 'No se pudo actualizar el estado del ticket'
+                    ticket_not_found: 'Ticket no encontrado'
+                    maximum_files: 'Máximo 5 archivos permitidos'
+                    file_too_large: 'El archivo {file} es demasiado grande'
+                    invalid_file_type: 'El archivo {file} debe ser PNG, JPG o GIF'
+                success:
+                    title: Éxito
+                    reply_success: 'Respuesta enviada'
+                    footer: 'Tu respuesta ha sido enviada y el ticket ha sido actualizado'
+            page:
+                goBack: '↪ Volver'
+                createdBy: 'Creado por'
+                department: 'Departamento'
+                priority: 'Prioridad'
+                priority_high: 'Alta'
+                priority_medium: 'Media'
+                priority_low: 'Baja'
+                status: 'Estado'
+                created: 'Creado'
+                description: 'Descripción'
+                attachments: 'Adjuntos'
+                status_open: 'Abierto'
+                status_closed: 'Cerrado'
+                status_waiting: 'Esperando Respuesta'
+                status_inprogress: 'En Progreso'
+                preview: 'Vista Previa de Imagen'
+                open_in_new_tab: 'Abrir en nueva pestaña'
+                messages: 'Mensajes'
+                response: 'Respuesta'
+                replyForm:
+                    title: Responder al Ticket
+                    description: 'Por favor, proporciona tantos detalles como sea posible en tu respuesta para ayudarnos a asistirte mejor. Incluye cualquier información relevante o capturas de pantalla que puedan ayudar a resolver tu problema.'
+                    forms:
+                        send: 'Escribe tu respuesta aquí..'
+                        attachments: 'Adjuntos (Opcional)'
+                        click_to_upload: 'Haz clic para subir o arrastra y suelta archivos aquí'
+                        formats: 'PNG, JPG, GIF (MÁX. 2MB)'
+                        submit: 'Enviar'
+                        loading: 'Enviando...'
+                status_replied: 'Respondido'
+                reply_locked: 'Este ticket está cerrado, por lo que no puedes responder a él'
+                buttons:
+                    close: 'Cerrar Ticket'
+                    reopen: 'Reabrir Ticket'
+                    open: 'Abrir Ticket'
+                    waiting: 'Esperando Respuesta'
+                    inprogress: 'En Progreso'
+                    replied: 'Respondido'
+        tickets:
+            title: Tickets
+            actions:
+                newTicket: 'Crear Ticket'
+                view: 'Ver'
+            alerts:
+                error:
+                    generic: 'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde'
+            table:
+                title: 'Tickets'
+                subject: 'Asunto'
+                status: 'Estado'
+                priority: 'Prioridad'
+                department: 'Departamento'
+                created: 'Creado'
+                actions: 'Acciones'
+            noTickets: 'No se encontraron tickets'
+        create_ticket:
+            title: 'Nuevo Ticket'
+            subTitle: 'Crear un nuevo ticket'
+            form:
+                subject: 'Asunto'
+                department: 'Departamento'
+                priority: 'Prioridad'
+                message: 'Mensaje'
+                submit: 'Enviar'
+                loading: 'Enviando...'
+                reset: 'Restablecer'
+                back: 'Volver'
+            types:
+                priority:
+                    low: 'Baja'
+                    medium: 'Media'
+                    high: 'Alta'
+                    urgent: 'Urgente'
+            alerts:
+                success:
+                    title: 'Éxito'
+                    ticket_success: 'Ticket creado'
+                    footer: 'Tu ticket ha sido creado'
+                error:
+                    title: 'Error'
+                    generic: 'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde'
+                    footer: 'Por favor, contacta con soporte para obtener ayuda'
+                    department_not_found: 'Departamento no encontrado'
+                    department_id_missing: 'Falta el ID del departamento'
+                    message_missing: 'Falta el mensaje'
+                    subject_missing: 'Falta el asunto'
+                    limit_reached: 'Has alcanzado el límite de tickets que puedes crear'
+                    failed_to_create_ticket: 'El clúster está caído, inténtalo de nuevo más tarde'
+
+components:
+    sidebar:
+        dashboard: Panel
+        services: Servicios
+        orders: Pedidos
+        add_service: Añadir Servicio
+        all_services: Todos los Servicios
+        invoices: Facturas
+        tickets: Tickets
+        eula: EULA
+        announcements: Anuncios
+        addons: Complementos
+        logs: Registros
+        settings: Configuración
+        users: Usuarios
+        apikeys: Claves API
+        support: Soporte e Información
+        open_ticket: Abrir Ticket
+        all_tickets: Todos los Tickets
+        knowledge: Base de Conocimientos
+        earn: Ganar
+        afk: Recompensas AFK
+        create: Crear Servidor
+        code_redemption: Canjear Código
+        j4r: Unirse para Recompensas
+        referrals: Referencias
+        l4r: Link para Recompensas
+        store: Tienda
+        leaderboard: Tabla de Clasificación
+        general: General
+    search:
+        placeholder: 'Buscar (Ctrl + K)'
+        no_results: 'No se encontraron resultados'
+        items:
+            dashboard: 'Acceder a tu panel principal'
+            services: 'Ver y gestionar tus servicios'
+            invoices: 'Acceder a tu facturación y facturas'
+            tickets: 'Ver y gestionar tickets de soporte'
+            knowledge: 'Explorar artículos de ayuda y documentación'
+    notifications:
+        title: 'Notificaciones'
+        credits: 'Tienes {credits} créditos restantes'
+        mark_all_read: 'Marcar todo como leído'
+        mark_read: 'Marcar como leído'
+        no_notifications: 'No se encontraron notificaciones'
+        view_all: 'Ver todo'
+    errors:
+        go_back: 'Volver'
+        go_home: 'Inicio'
+    dashboard:
+        title: 'Mi Panel'
+        portal_home: 'Inicio del Portal'
+        client_area: 'Área de Cliente'
+        welcome_back: 'Bienvenido de nuevo'
+        stats:
+            services: 'Servicios'
+            unpaid_invoices: 'Facturas sin Pagar'
+            tickets: 'Tickets'
+            orders: 'Pedidos'
+            coins: 'Monedas'
+            servers: 'Servidores'
+        billing:
+            title: 'Resumen de Facturación'
+            current_balance: 'Saldo Actual'
+            next_payment: 'Próximo Pago'
+            due_date: 'Fecha de Vencimiento'
+            add_funds: 'Añadir Fondos'
+    profile:
+        tickets: 'Tickets'
+        coins: 'Monedas'
+        servers: 'Servidores'
+        logout: 'Cerrar Sesión'
+        update: 'Actualizar'
+    loading:
+        title: 'Cargando...'
+        description: 'Cargando...'
+    table:
+        page: 'Página'
+        of: 'de'
+        results: 'resultados'
+        pageSize: 'Tamaño de Página'
+        search: 'Buscar'
+        first: 'Primera'
+        previous: 'Anterior'
+        next: 'Siguiente'
+        last: 'Última'
+        noResults: 'No se encontraron resultados'
+        view: 'Ver'
+        readMore: 'Leer Más'
+        showing: 'Mostrando página: '
+        per_page: 'elementos por página'
+        no_data_description: 'Lo sentimos, pero no pudimos encontrar datos para esta página.'
+        no_data: 'No se encontraron datos'
+billing:
+    pages:
+        add_funds:
+            title: Añadir Fondos
+            back: Volver
+            form:
+                title: Añadir Fondos a Tu Cuenta
+                description: Selecciona tu método de pago preferido e introduce la cantidad que deseas añadir a tu cuenta.
+                amount:
+                    label: Cantidad
+                    placeholder: Introducir cantidad
+                payment_method:
+                    label: Método de Pago
+                submit: Añadir Fondos
+                processing: Procesando...
+            summary:
+                title: Resumen de Cuenta
+                current_balance: Saldo Actual
+                info: Los fondos se añadirán a tu cuenta inmediatamente después del procesamiento exitoso del pago. Estos fondos pueden ser utilizados para cualquier servicio o producto dentro de nuestra plataforma.
+            alerts:
+                error:
+                    title: Error
+                    missing_fields: Por favor, completa todos los campos requeridos.
+                    invalid_amount: Por favor, introduce una cantidad válida mayor que 0.
+                    payment_failed: Procesamiento de pago fallido. Por favor, inténtalo de nuevo.
+                    footer: Por favor, contacta con soporte para obtener ayuda.
+                    no_gateway: No se encontró pasarela de pago.
+                    notEnabled: ¡La facturación no está habilitada para este host!
+                success:
+                    title: Éxito
+                    payment_processed: Pago procesado con éxito. Tus fondos han sido añadidos a tu cuenta.
+afk:
+    notEnabled:
+        title: 'Recompensas AFK'
+        text: '¡Las recompensas AFK no están habilitadas en este host!'
+        button: 'Ir al Panel'
+    pages:
+        index:
+            title: 'Recompensas AFK'
+            subTitle: 'Gana monedas estando AFK'
+            status: 'Estado:'
+            active: 'Activo'
+            inactive: 'Inactivo'
+            startafk: 'Iniciar AFK'
+            stopafk: 'Detener AFK'
+            timeDate:
+                hours: 'Horas'
+                minutes: 'Minutos'
+                seconds: 'Segundos'
+            totalCoins: 'Total de Monedas'
+            currentSession: 'Sesión Actual'
+            coins: 'Monedas'
+            totalAFKTime: 'Tiempo Total AFK'
+
+        afkpaused:
+            title: 'Sesión AFK Pausada'
+            text: 'Tu sesión AFK ha sido pausada porque cambiaste a otra pestaña o minimizaste la ventana. Por favor, mantén esta pestaña activa para seguir ganando recompensas.'
+            button: 'OK'
+        cannotstartafk:
+            title: 'No se puede iniciar AFK'
+            text: 'Por favor, mantén esta pestaña activa para comenzar a ganar recompensas AFK.'
+            button: 'OK'
+
+code_redemption:
+    notEnabled:
+        title: 'Canje de Código'
+        text: '¡El canje de código no está habilitado en este host!'
+        button: 'Ir al Panel'
+    pages:
+        index:
+            title: 'Canje de Código'
+            subTitle: 'Canjea tus códigos'
+            form:
+                label: 'Introducir Código de Canje'
+                placeholder: 'Introduce tu código aquí'
+                redeem: 'Canjear Código'
+                redeeming: 'Canjeando...'
+                currentBalance: 'Saldo Actual'
+            social:
+                twitter:
+                    title: 'Twitter/X'
+                    description: 'Síguenos en Twitter para obtener lanzamientos regulares de códigos y anuncios.'
+                discord:
+                    title: 'Discord'
+                    description: 'Únete a nuestro servidor de Discord para obtener lanzamientos exclusivos de códigos y soporte comunitario.'
+                telegram:
+                    title: 'Telegram'
+                    description: 'Únete a nuestro canal de Telegram para obtener lanzamientos exclusivos de códigos y soporte comunitario.'
+                events:
+                    title: 'Eventos'
+                    description: 'Se lanzan códigos especiales durante eventos estacionales y promociones.'
+
+            alerts:
+                error:
+                    title: 'Error'
+                    generic: 'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde'
+                    footer: 'Por favor, contacta con soporte para obtener ayuda'
+                    button: 'OK'
+                success:
+                    title: 'Éxito'
+                    code_redeemed: 'Código canjeado con éxito'
+                    footer: 'Tu código ha sido canjeado'
+referrals:
+    notEnabled:
+        title: 'Referencias'
+        text: '¡Las referencias no están habilitadas en este host!'
+        button: 'Ir al Panel'
+    pages:
+        index:
+            title: 'Referencias'
+            subTitle: 'Gana recompensas refiriendo amigos'
+            form:
+                label: 'Introducir Código de Referencia'
+                placeholder: 'Introduce tu código aquí'
+                redeem: 'Canjear Código'
+                redeeming: 'Canjeando...'
+            copy:
+                title: '¡Enlace Copiado!'
+                text: 'Tu enlace de referencia ha sido copiado. Ahora puedes pegarlo en Discord.'
+                button: 'OK'
+            error:
+                title: 'Error'
+                text: 'No se pudieron cargar las referencias'
+                button: 'OK'
+            body:
+                title: 'Tu Enlace de Referencia Único'
+                description: 'Comparte este enlace con amigos para ganar recompensas cuando se registren'
+                copy:
+                    title: 'Copiar Enlace de Referencia'
+                    text: 'Copia tu enlace de referencia al portapapeles'
+                    copied: '¡Copiado!'
+            social:
+                twitter: 'Twitter/X'
+                facebook: 'Facebook'
+                discord: 'Discord'
+                email: 'Correo'
+            refferals:
+                title: 'Total de Referencias'
+                earned: 'Total Ganado'
+                yourReferrals: 'Tus Referencias'
+                loading: 'Cargando tus referencias...'
+                noReferrals: 'No se encontraron referencias'
+                noReferralsDescription: '¡Comparte tu enlace de referencia con amigos para comenzar a ganar recompensas!'
+                noEarnings: 'No se encontraron ganancias'
+                noEarningsDescription: '¡Comparte tu enlace de referencia con amigos para comenzar a ganar recompensas!'
+                table:
+                    user: 'Usuario'
+                    date: 'Fecha'
+                    status: 'Estado'
+                    reward: 'Recompensa'
+                    actions: 'Acciones'
+                sharelink:
+                    title: '¿Cómo funciona?'
+                    description: 'Pasos fáciles para ganar con referencias'
+                    steps:
+                        one:
+                            title: 'Comparte Tu Enlace'
+                            id: '1'
+                            description: 'Copia tu enlace de referencia único y compártelo con amigos'
+                        two:
+                            title: 'Obtén Referencias'
+                            id: '2'
+                            description: 'Tus referencias ganarán recompensas cuando se registren'
+                        three:
+                            title: 'Gana Recompensas'
+                            id: '3'
+                            description: 'Ganarás recompensas cuando tus referencias ganen recompensas'
+            share:
+                shareMessage: '¡Únete a mí en MythicalDash y obtén recompensas exclusivas usando mi enlace de referencia!'
+                title: 'Compartir Enlace de Referencia'
+                description: '¡Comparte tu enlace de referencia con amigos y gana recompensas!'
+                mailTitle: 'Compartir Enlace de Referencia por Correo'
+                twitter:
+                    title: 'Twitter/X'
+                    description: 'Comparte tu enlace de referencia en Twitter para obtener lanzamientos regulares de códigos y anuncios.'
+create:
+    pages:
+        index:
+            title: 'Crear un Nuevo Servidor'
+            subTitle: 'Configura y despliega tu nuevo servidor'
+            form:
+                label: 'Nombre del Servidor'
+                placeholder: 'Introduce el nombre de tu servidor'
+                submit: 'Crear Servidor'
+                description: 'Descripción'
+                descriptionPlaceholder: 'Introduce la descripción de tu servidor'
+                location: 'Ubicación del Servidor'
+                locationPlaceholder: 'Selecciona una ubicación'
+                category: 'Categoría del Servidor'
+                categoryPlaceholder: 'Selecciona una categoría'
+                egg: 'Versión del Servidor'
+                eggPlaceholder: 'Selecciona una versión'
+                memory: 'Memoria'
+                cpu: 'CPU'
+                disk: 'Disco'
+                databases: 'Bases de datos'
+                backups: 'Copias de seguridad'
+                allocations: 'Asignaciones'
+                servers: 'Servidores'
+                mb: 'MB'
+                p: '%'
+                of: 'de'
+                available: 'Disponible'
+                depleted: 'Agotado'
+            slots: 'Ranuras'
+            resources:
+                title: 'Disponibilidad de Recursos'
+                available: 'Disponible'
+                depleted: 'Agotado'
+                memory: 'Memoria'
+                cpu: 'CPU'
+                disk: 'Disco'
+                slots: 'Ranuras'
+                databases: 'Bases de datos'
+                backups: 'Copias de seguridad'
+                allocations: 'Asignaciones'
+                servers: 'Servidores'
+                mb: 'MB'
+                of: 'de'
+                p: '%'
+        alerts:
+            error:
+                title: 'Error'
+                generic: 'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde'
+                footer: 'Por favor, contacta con soporte para obtener ayuda'
+                deploy:
+                    MISSING_REQUIRED_FIELDS: 'Faltan campos requeridos'
+                    NAME_TOO_LONG: 'El nombre del servidor debe tener menos de 32 caracteres'
+                    DESCRIPTION_TOO_LONG: 'La descripción debe tener menos de 255 caracteres'
+                    LOCATION_DOES_NOT_EXIST: 'La ubicación seleccionada no existe'
+                    CATEGORY_DOES_NOT_EXIST: 'La categoría seleccionada no existe'
+                    EGG_DOES_NOT_EXIST: 'La versión seleccionada no existe'
+                    MEMORY_TOO_LOW: 'La memoria debe ser de al menos 256MB'
+                    CPU_TOO_LOW: 'La CPU debe ser de al menos 5%'
+                    DISK_TOO_LOW: 'El disco debe ser de al menos 256MB'
+                    ALLOCATIONS_TOO_LOW: 'Las asignaciones deben ser de al menos 1'
+                    PENDING_SERVER_CREATION_REQUEST: 'Ya tienes una solicitud de creación de servidor pendiente'
+                    NOT_ENOUGH_MEMORY: 'No tienes suficientes recursos de memoria'
+                    NOT_ENOUGH_DISK_SPACE: 'No tienes suficiente espacio en disco'
+                    NOT_ENOUGH_CPU: 'No tienes suficientes recursos de CPU'
+                    NOT_ENOUGH_DATABASES: 'No tienes suficientes recursos de bases de datos'
+                    NOT_ENOUGH_BACKUPS: 'No tienes suficientes recursos de copias de seguridad'
+                    NOT_ENOUGH_ALLOCATIONS: 'No tienes suficientes recursos de asignación'
+                    NOT_ENOUGH_SERVERS: 'Has alcanzado tu límite de servidores'
+                    FAILED_TO_CREATE_SERVER_QUEUE_ITEM: 'No se pudo crear el elemento de cola del servidor'
+            success:
+                title: 'Éxito'
+                generic: 'Tu servidor ha sido creado'
+                footer: '¡Disfruta de tu servidor!'
+update:
+    pages:
+        alerts:
+            error:
+                title: 'Error'
+                generic: 'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde'
+                delete: '¡Esto actualizará la configuración de tu servidor. Esta acción no se puede deshacer!'
+                footer: 'Por favor, contacta con soporte para obtener ayuda'
+                confirmButtonText: 'OK'
+                cancelButtonText: 'Cancelar'
+            success:
+                title: 'Éxito'
+                generic: 'Tu servidor ha sido actualizado'
+                footer: 'Servidor actualizado con éxito'
+                confirmButtonText: 'OK'
+        index:
+            title: 'Actualizar Servidor'
+            subTitle: 'Actualiza la configuración de tu servidor'
+            loading: 'Cargando datos del servidor...'
+            form:
+                label: 'Nombre del Servidor'
+                placeholder: 'Introduce el nombre de tu servidor'
+                submit: 'Actualizar Servidor'
+                description: 'Descripción'
+                descriptionPlaceholder: 'Introduce la descripción de tu servidor'
+                location: 'Ubicación del Servidor'
+                locationPlaceholder: 'Selecciona una ubicación'
+                category: 'Categoría del Servidor'
+                categoryPlaceholder: 'Selecciona una categoría'
+                egg: 'Versión del Servidor'
+                eggPlaceholder: 'Selecciona una versión'
+                updateButton: 'Actualizar Servidor'
+                deleteButton: 'Eliminar Servidor'
+                resources:
+                    title: 'Disponibilidad de Recursos'
+                    available: 'Disponible'
+                    depleted: 'Agotado'
+                    memory: 'Memoria'
+                    cpu: 'CPU'
+                    disk: 'Disco'
+                    slots: 'Ranuras'
+                    databases: 'Bases de datos'
+                    backups: 'Copias de seguridad'
+                    allocations: 'Asignaciones'
+                    servers: 'Servidores'
+                    mb: 'MB'
+                    of: 'de'
+                    p: '%'
+delete:
+    pages:
+        index:
+            title: 'Eliminar Servidor'
+            subTitle: '¿Estás seguro de que quieres eliminar este servidor?'
+            loading: 'Cargando datos del servidor...'
+            unknownError: 'Ha ocurrido un error desconocido'
+            warning: 'Advertencia'
+            type: 'Tipo'
+            version: 'Versión'
+            location: 'Ubicación'
+            card:
+                title: 'Confirmación'
+                description: 'Para confirmar, escribe el nombre del servidor:'
+                placeholder: 'Escribe el nombre del servidor para confirmar'
+            button:
+                delete: 'Eliminar Servidor'
+                cancel: 'Cancelar'
+            details:
+                title: 'Eliminar este servidor es permanente'
+                description: 'Esta acción eliminará inmediata y permanentemente tu servidor y todos los datos asociados con él, incluyendo:'
+                files: 'Todos los archivos almacenados en el servidor'
+                databases: 'Todas las bases de datos y sus contenidos'
+                backups: 'Todas las copias de seguridad'
+                configuration: 'Configuración del servidor'
+                cannotBeUndone: 'Esta acción no se puede deshacer. Por favor, asegúrate.'
+        alerts:
+            error:
+                title: 'Error'
+                generic: 'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde'
+                footer: 'Por favor, contacta con soporte para obtener ayuda'
+                confirmation: 'El texto de confirmación no coincide con el nombre del servidor'
+                confirmButtonText: 'OK'
+            success:
+                title: 'Éxito'
+                generic: 'Tu servidor ha sido eliminado'
+                footer: 'Solicitud de eliminación de servidor enviada con éxito'
+                confirmButtonText: 'OK'
+
+store:
+    notEnabled:
+        title: 'Tienda'
+        text: '¡La tienda no está habilitada en este host!'
+        footer: 'Por favor, contacta con soporte para obtener ayuda'
+        button: 'Ir al Panel'
+    pages:
+        alerts:
+            buy:
+                title: '¿Quieres comprar esto?'
+                description: '¿Estás seguro de que quieres comprar esto?'
+                confirmButtonText: 'OK'
+                cancelButtonText: 'Cancelar'
+            error:
+                title: 'Error'
+                generic: 'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde'
+                notEnoughCoins: 'No tienes suficientes monedas para esta compra'
+                footer: 'Por favor, contacta con soporte para obtener ayuda'
+                buy:
+                    MISSING_ITEM_ID: 'Se requiere ID del artículo'
+                    EMPTY_ITEM_ID: 'El ID del artículo no puede estar vacío'
+                    INVALID_ITEM_ID: 'ID de artículo inválido'
+                    INSUFFICIENT_COINS: 'Monedas insuficientes, necesitas {0} y tienes {1}'
+                    STORE_NOT_ENABLED: 'La tienda no está habilitada'
+                    PURCHASE_FAILED: 'No se pudo procesar la compra'
+                    MAX_RAM_LIMIT: 'Has alcanzado el límite máximo de RAM.'
+                    MAX_DISK_LIMIT: 'Has alcanzado el límite máximo de DISCO.'
+                    MAX_CPU_LIMIT: 'Has alcanzado el límite máximo de CPU.'
+                    MAX_PORTS_LIMIT: 'Has alcanzado el límite máximo de PUERTOS.'
+                    MAX_DATABASES_LIMIT: 'Has alcanzado el límite máximo de BASES DE DATOS.'
+                    MAX_SERVER_SLOTS_LIMIT: 'Has alcanzado el límite máximo de RANURAS DE SERVIDOR.'
+                    MAX_BACKUPS_LIMIT: 'Has alcanzado el límite máximo de COPIAS DE SEGURIDAD.'
+                    confirmButtonText: 'OK'
+                    cancelButtonText: 'Cancelar'
+                    description: 'Por favor, inténtalo de nuevo o contacta con soporte si el problema persiste.'
+        index:
+            title: 'Tienda'
+            subTitle: 'Compra recursos y mejoras para el servidor'
+            loading: 'Cargando artículos de la tienda...'
+            empty: 'No hay artículos disponibles en esta categoría'
+            emptyDescription: 'Vuelve más tarde para ver nuevos artículos'
+            cardYourBalance: 'Tu Saldo'
+            cardAvailableCoins: 'Monedas disponibles para gastar'
+            cardCurrentBalance: 'Saldo Actual'
+            addCredits: 'Añadir Créditos'
+            redeemCodes: 'Canjear Códigos'
+            earnMore: 'Ganar Más'
+            buyButton: 'Comprar'
+            insufficientButton: 'Monedas Insuficientes'
+            howItWorks:
+                title: 'Cómo Funciona'
+                description: 'Gasta tus monedas en recursos y mejoras para el servidor'
+                steps:
+                    one:
+                        number: '1'
+                        title: 'Ganar Monedas'
+                        description: 'Completa tareas en la sección Ganar para acumular monedas'
+                    two:
+                        number: '2'
+                        title: 'Gastar Monedas'
+                        description: 'Gasta tus monedas en recursos y mejoras para el servidor'
+                    three:
+                        number: '3'
+                        title: 'Ganar Más'
+                        description: 'Gana más monedas refiriendo amigos'
+                    four:
+                        number: '4'
+                        title: 'Entrega Instantánea'
+                        description: 'Los recursos se añaden inmediatamente a tu cuenta'
+
+            card:
+                title: 'Artículos Disponibles'
+                description: 'Gasta tus monedas en recursos y mejoras para el servidor'
+            info:
+                buy:
+                    title: 'Confirmar Compra'
+                    description: '¿Estás seguro de que quieres comprar {0} por {1} monedas?'
+                    confirmButtonText: 'Comprar'
+                    cancelButtonText: 'Cancelar'
+                    success:
+                        title: 'Compra Exitosa'
+                        description: 'Has comprado con éxito {0}'
+                        confirmButtonText: 'OK'
+                ram:
+                    title: 'RAM Adicional'
+                    description: 'Aumenta la capacidad de memoria de tu servidor'
+                    features:
+                        one: 'Asignación instantánea'
+                        two: 'Escalado flexible'
+                        three: 'No requiere reinicio'
+                disk:
+                    title: 'Almacenamiento Adicional'
+                    description: 'Aumenta la capacidad de almacenamiento de tu servidor'
+                    features:
+                        one: 'Asignación instantánea'
+                        two: 'Escalado flexible'
+                        three: 'No requiere reinicio'
+                cpu:
+                    title: 'CPU Adicional'
+                    description: 'Aumenta la capacidad de CPU de tu servidor'
+                    features:
+                        one: 'Núcleos de alto rendimiento'
+                        two: 'Recursos dedicados'
+                        three: 'Escalado en tiempo real'
+                server_slot:
+                    title: 'Ranura de Servidor'
+                    description: 'Añade un servidor adicional a tu cuenta'
+                    features:
+                        one: 'Acceso completo al servidor'
+                        two: 'Configuración personalizada'
+                        three: 'Despliegue instantáneo'
+                server_backup:
+                    title: 'Ranura de Copia de Seguridad'
+                    description: 'Almacenamiento adicional de copias de seguridad para tus servidores'
+                    features:
+                        one: 'Copias de seguridad automatizadas'
+                        two: 'Restauración instantánea'
+                        three: 'Almacenamiento seguro'
+                server_allocation:
+                    title: 'Asignación de Servidor'
+                    description: 'Asignación adicional de servidor para tus servidores'
+                    features:
+                        one: 'Asignación ilimitada'
+                        two: 'Escalado flexible'
+                        three: 'No requiere reinicio'
+                server_database:
+                    title: 'Base de Datos'
+                    description: 'Base de datos adicional para tus servidores'
+                    features:
+                        one: 'MySQL/MariaDB'
+                        two: 'Copias de seguridad automatizadas'
+                        three: 'Acceso seguro'
+
+l4r:
+    notEnabled:
+        title: 'Link para Recompensas'
+        text: '¡Link para Recompensas no está habilitado en este host!'
+        footer: 'Por favor, contacta con soporte para obtener ayuda'
+        confirmButtonText: 'OK'
+    pages:
+        index:
+            title: 'Link para Recompensas'
+            subTitle: 'Haz clic en cualquier proveedor para completar ofertas y ganar monedas'
+            loading: 'Cargando links...'
+            empty: 'No se encontraron links'
+            linkvertise:
+                title: 'Linkvertise'
+                tag: 'Recompensas rápidas y fáciles'
+                description: 'Completa tareas simples a través de Linkvertise como encuestas, ver videos o visitar sitios web.'
+                reward: 'Gana hasta {0} monedas'
+                button: 'Completar Oferta'
+            shareus:
+                title: 'ShareUs'
+                tag: 'Acortador de links popular'
+                description: 'Completa tareas simples a través de ShareUs como encuestas, ver videos o visitar sitios web.'
+                reward: 'Gana hasta {0} monedas'
+                button: 'Completar Oferta'
+            linkpays:
+                title: 'LinkPays'
+                tag: 'Recompensas más altas'
+                description: 'Completa tareas simples a través de LinkPays como encuestas, ver videos o visitar sitios web.'
+                reward: 'Gana hasta {0} monedas'
+                button: 'Completar Oferta'
+            gyanilinks:
+                title: 'Gyanilinks'
+                tag: 'Recompensas rápidas y fáciles'
+                description: 'Completa tareas simples a través de Gyanilinks como encuestas, ver videos o visitar sitios web.'
+                reward: 'Gana hasta {0} monedas'
+                button: 'Completar Oferta'
+            yourStats:
+                title: 'Tus Estadísticas'
+                description: 'Estadísticas de Link para Recompensas'
+                currentBalance: 'Saldo de Monedas'
+            steps:
+                title: 'Cómo Funciona'
+                description: 'Completa ofertas de links para recompensas'
+                one:
+                    title: 'Elige un Proveedor'
+                    number: '1'
+                    description: 'Haz clic en cualquiera de los proveedores de links para comenzar'
+                two:
+                    title: 'Completa Ofertas'
+                    number: '2'
+                    description: 'Completa las ofertas para ganar monedas'
+                three:
+                    title: 'Gana Recompensas'
+                    number: '3'
+                    description: 'Gana recompensas por completar ofertas'
+                four:
+                    title: 'Recibe Recompensas'
+                    number: '4'
+                    description: 'Las monedas se añadirán a tu cuenta automáticamente'
+
+# Traducciones de la Tabla de Clasificación
+leaderboard:
+    title: 'Tabla de Clasificación'
+    description: 'Mira quién lidera nuestros rankings en diferentes categorías'
+    leaderboard: 'Tabla de Clasificación'
+    currency: 'monedas'
+    notEnabled:
+        title: 'Tabla de Clasificación'
+        description: '¡La tabla de clasificación no está habilitada en este host!'
+        button: 'Ir al Panel'
+    error:
+        title: 'Error al Cargar la Tabla de Clasificación'
+        generic: 'No pudimos cargar los datos de la tabla de clasificación en este momento'
+        failed_fetch: 'No se pudieron obtener los datos de la tabla de clasificación'
+        retry: 'Intentar de Nuevo'
+    no_data:
+        title: 'No Hay Datos de la Tabla de Clasificación'
+        message: 'Aún no hay entradas para esta categoría de la tabla de clasificación'
+    categories:
+        coins: 'Monedas'
+        servers: 'Servidores'
+        minutes_afk: 'Tiempo AFK'
+        linkvertise: 'Linkvertise'
+        shareus: 'ShareUs'
+        gyanilinks: 'Gyanilinks'
+        linkpays: 'LinkPays'
+        referrals: 'Referencias'
+    table:
+        rank: 'Rango'
+        user: 'Usuario'
+        coins: 'Monedas'
+        servers: 'Servidores'
+        minutes_afk: 'Minutos AFK'
+        linkvertise: 'Links'
+        shareus: 'Links'
+        gyanilinks: 'Links'
+        linkpays: 'Links'
+        referrals: 'Referencias'
+
+# Traducciones de la página de perfil
+profile:
+    title: 'Perfil de Usuario'
+    verified: 'Verificado'
+    banned: 'Prohibido'
+    gift_coins: 'Regalar Monedas'
+    error:
+        title: 'Error al Cargar el Perfil'
+        generic: 'No pudimos cargar los datos del perfil en este momento'
+        failed_fetch: 'No se pudieron obtener los datos del perfil'
+        retry: 'Intentar de Nuevo'
+    gift:
+        title: 'Regalar Monedas'
+        description: 'Enviar monedas a otro usuario'
+        page_title: 'Regalar Monedas - {username}'
+        recipient: 'Regalo para {username}'
+        your_balance: 'Tu Saldo'
+        amount: 'Cantidad'
+        amount_placeholder: 'Introduce la cantidad a regalar'
+        max: 'Máx'
+        min_amount: 'Cantidad mínima'
+        max_amount: 'Cantidad máxima'
+        fee_label: 'Tarifa de Transferencia'
+        fee_amount: 'Cantidad de la Tarifa'
+        total_cost: 'Costo Total'
+        fee_explanation: 'Se añade una tarifa a tu cantidad de transferencia. El destinatario recibirá la cantidad completa del regalo.'
+        cancel: 'Cancelar'
+        send: 'Enviar Regalo'
+        processing: 'Procesando...'
+        success_message: 'Se enviaron con éxito {amount} monedas a {username}'
+        error:
+            recipient_required: 'Se requiere UUID del destinatario'
+            user_not_found: 'Usuario no encontrado'
+            failed_fetch: 'Error al obtener usuario'
+            failed_profile: 'No se pudo cargar el perfil del destinatario'
+            failed_balance: 'No se pudo obtener tu saldo'
+            invalid_amount: 'Cantidad inválida'
+            failed_send: 'No se pudo enviar el regalo'
+            generic: 'Ha ocurrido un error al enviar el regalo'
+    stats:
+        title: 'Estadísticas de Usuario'
+        coins: 'Monedas'
+        servers: 'Servidores'
+        minutes_afk: 'Minutos AFK'
+        databases: 'Bases de datos'
+    activity:
+        title: 'Actividad'
+        first_seen: 'Visto por primera vez'
+        last_seen: 'Visto por última vez'
+        last_seen_afk: 'Último AFK'
+    social:
+        title: 'Cuentas Sociales'
+        discord: 'Discord'
+        github: 'GitHub'
+    resources:
+        title: 'Límites de Recursos'
+        memory: 'Memoria'
+        cpu: 'CPU'
+        disk: 'Disco'
+        servers: 'Servidores'
+        backups: 'Copias de seguridad'
+        databases: 'Bases de datos'
+        allocations: 'Asignaciones'
+    account:
+        title: 'Información de Cuenta'
+        status: 'Estado'
+        active: 'Activo'
+        banned: 'Prohibido'
+        deleted: 'Eliminado'
+        verification: 'Verificación'
+        verified: 'Verificado'
+        not_verified: 'No Verificado'
+        uuid: 'UUID'
+
+renew:
+    pages:
+        index:
+            title: 'Renovar Servidor'
+            subTitle: 'Extiende la vida útil de tu servidor'
+            loading: 'Cargando datos del servidor...'
+            unknownError: 'Ha ocurrido un error desconocido'
+            type: 'Tipo'
+            version: 'Versión'
+            location: 'Ubicación'
+            expiresAt: 'Expira El'
+            expired: 'Expirado'
+            renewalInfo: 'Información de Renovación'
+            details:
+                title: 'Renovando tu servidor'
+                description: 'Renovar tu servidor extenderá su vida útil y mantendrá todos tus datos intactos.'
+                keepData: 'Todos los archivos y datos se conservarán'
+                keepSettings: 'La configuración del servidor permanecerá sin cambios'
+                keepBackups: 'Se mantendrán todas las copias de seguridad'
+                keepDatabases: 'Se conservarán las bases de datos'
+                confirmRenewal: 'Por favor, confirma tu renovación a continuación'
+            cost:
+                title: 'Costo de Renovación'
+                coins: 'monedas'
+            duration:
+                title: 'Duración de la Renovación'
+                days: 'días'
+            yourBalance: 'Tu Saldo'
+            card:
+                title: 'Confirmar Renovación'
+                description: 'Para confirmar, escribe el nombre del servidor:'
+                placeholder: 'Escribe el nombre del servidor para confirmar'
+            button:
+                renew: 'Renovar Servidor'
+                cancel: 'Cancelar'
+        alerts:
+            error:
+                title: 'Error'
+                generic: 'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde'
+                footer: 'Por favor, contacta con soporte para obtener ayuda'
+                confirmation: 'El texto de confirmación no coincide con el nombre del servidor'
+                confirmButtonText: 'OK'
+                insufficientCoins: 'No tienes suficientes monedas para renovar este servidor'
+            success:
+                title: 'Éxito'
+                generic: 'Tu servidor ha sido renovado'
+                footer: 'Solicitud de renovación de servidor enviada con éxito'
+                confirmButtonText: 'OK'

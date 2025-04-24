@@ -4,8 +4,9 @@ namespace MythicalDash\Cron;
 
 use MythicalDash\Config\ConfigInterface;
 use Exception;
+use MythicalDash\Cron\TimeTask;
 
-class ServerRenewJob
+class ServerRenewJob implements TimeTask
 {
 	private const MAX_RETRIES = 3;
 	private const RETRY_DELAY = 5; // seconds

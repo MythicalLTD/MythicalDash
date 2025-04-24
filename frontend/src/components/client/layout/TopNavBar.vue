@@ -137,12 +137,12 @@ const role =
     (Session.getInfo('role_real_name') ?? '').slice(1);
 const { t, locale } = useI18n();
 
-const availableLocales = ['EN', 'RO', 'FR'];
+const availableLocales = ['EN', 'RO', 'FR', 'DE', 'ES', 'MD'];
 
 const changeLocale = (event: Event) => {
     const target = event.target as HTMLSelectElement;
     localStorage.setItem('locale', target.value);
-    window.location.reload();
+    window.location.href = '/';
 };
 
 defineProps<{

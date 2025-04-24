@@ -6,6 +6,11 @@
 # @public
 #
 #-------------------------------------------------------------#
+metadata:
+    name: 'Romanian'
+    id: 'RO'
+    version: 1.0.0
+
 Components:
     ErrorsPage:
         Buttons:

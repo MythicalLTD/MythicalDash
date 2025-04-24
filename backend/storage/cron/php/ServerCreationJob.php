@@ -12,8 +12,9 @@ use MythicalDash\Chat\User\User;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Services\Pterodactyl\Admin\Resources\NestsResource;
 use MythicalDash\Services\Pterodactyl\Admin\Resources\ServersResource;
+use MythicalDash\Cron\TimeTask;
 
-class ServerCreationJob
+class ServerCreationJob implements TimeTask
 {
 	private static $logs = [];
 	private static $currentBuildId = null;

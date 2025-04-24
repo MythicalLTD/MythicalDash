@@ -6,6 +6,11 @@
 # @public
 #
 #-------------------------------------------------------------#
+metadata:
+    name: 'French'
+    id: 'FR'
+    version: 1.0.0
+
 Components:
     ErrorsPage:
         Buttons:

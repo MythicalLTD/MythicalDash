@@ -1,0 +1,1525 @@
+---
+#-------------------------------------------------------------#
+#
+# 全局组件
+#
+# @public
+#
+#-------------------------------------------------------------#
+
+metadata:
+    name: 'Mandarin'
+    id: 'MD'
+    version: 1.0.0
+
+Components:
+    ErrorsPage:
+        Buttons:
+            GoBack: '返回'
+            GoHome: '首页'
+    Global:
+        Navigation:
+            Loading: '加载中...'
+            Copy:
+                Title: '已复制'
+                Success: '已专业地复制到剪贴板。'
+                Footer: '是的，复制成功 ;)'
+            Error: '发生错误。请稍后再试。'
+    QuickLinks:
+        title: '快速链接'
+        description: '快速访问重要区域'
+        tickets:
+            title: '工单'
+            description: '查看和管理您的工单'
+        announcements:
+            title: '公告'
+            description: '查看最新公告'
+        account:
+            title: '账户'
+            description: '更新您的账户设置'
+    ResourceCards:
+        title: '资源使用'
+        description: '查看您的资源使用情况和限制'
+        mb: 'MB'
+        of: '/'
+        RAM:
+            title: '内存'
+        CPU:
+            title: 'CPU'
+        DISK:
+            title: '硬盘'
+        SLOT:
+            title: '服务器槽位'
+        DATABASE:
+            title: '数据库'
+        BACKUP:
+            title: '服务器备份'
+        ALLOCATION:
+            title: '服务器分配'
+    ServerList:
+        title: '我的服务器'
+        description: '管理您的游戏基础设施'
+        createServer: '创建您的第一个服务器'
+        createServerButton: '创建服务器'
+        noServers: '未找到服务器'
+        noServersDescription: '您还没有任何服务器。'
+        serverLimit: '{0} / {1} 服务器'
+        newServer: '新服务器'
+        table:
+            name: '名称'
+            location: '位置'
+            egg: '模板'
+            memory: '内存'
+            cpu: 'CPU'
+            disk: '硬盘'
+            actions: '操作'
+    ManageAccount:
+        title: '我的个人资料'
+        description: '您的账户信息'
+        viewMore: '查看更多'
+    Announcements:
+        Title: '公告'
+        Card:
+            Info: '最新公告'
+            InfoFull: '了解我们的最新消息'
+            ReadMore: '阅读更多'
+            NoAnnouncements: '暂无公告'
+    Tickets:
+        title: '最近工单'
+        description: '查看您的最近工单'
+        viewMore: '查看更多'
+        status:
+            Open: '开放'
+            Closed: '已关闭'
+            Waiting: '等待中'
+            Replied: '已回复'
+            InProgress: '处理中'
+    QuickSearch:
+        title: '快速搜索'
+        esc_key: 'Esc'
+        enter_key: 'Enter'
+        to_close: '关闭'
+        description: '搜索服务器、工单或公告'
+        notfound: '我们找不到您搜索的结果。'
+        quickNav: '快速导航'
+        keyboardShortcuts: '键盘快捷键'
+        search: '搜索'
+        ctrl_key: 'Ctrl'
+        k_key: 'K'
+        d_key: 'D'
+        goToDashboard: '前往仪表板'
+
+    SupportPin:
+        title: '支持PIN码'
+        copy: '复制'
+        description: '此PIN码用于向我们的支持团队验证您的身份'
+        alerts:
+            success:
+                title: '成功'
+                pin_success: '支持PIN码已生成'
+                footer: '您的支持PIN码已生成'
+            error:
+                title: '错误'
+                generic: '发生错误。请稍后再试'
+                footer: '请联系支持获取帮助'
+
+#-------------------------------------------------------------#
+#
+# 认证页面 (/auth/*)
+#
+# @public
+#
+#-------------------------------------------------------------#
+dashboard:
+    title: 仪表板
+
+auth:
+    logic:
+        errors:
+            footer: 请联系支持获取帮助
+            title: 会话错误
+            expired: 您的会话已过期
+    pages:
+        sso:
+            page:
+                title: 单点登录
+                subTitle: 单点登录
+                form:
+                    name:
+                        label: 域名
+                        placeholder: 组织名称
+                        description: 这是一个企业功能。请确保输入您的公司名称或域名。
+                    login_button:
+                        label: 登录
+                        loading: 重定向中...
+                    normal_login:
+                        label: 不是组织或域名？
+                        link: 登录
+        login:
+            components:
+                form:
+                    support_center: 支持中心
+            alerts:
+                success:
+                    title: 成功
+                    login_success: 您已成功登录
+                    footer: 欢迎回来！
+                error:
+                    title: 登录错误
+                    missing_fields: 请填写所有字段
+                    invalid_credentials: 凭据无效
+                    generic: 发生错误。请稍后再试
+                    cloudflare_error: 您已被Cloudflare Turnstile阻止
+                    footer: 请联系支持获取帮助
+                    not_verified: 您的电子邮件尚未验证
+                    banned: 您的账户已被永久禁止
+                    deleted: 您的账户已被您或管理员删除
+                    pterodactyl_user_not_found: 未找到Pterodactyl用户。
+                    pterodactyl_error: 无法在Pterodactyl面板中注册用户
+                    pterodactyl_not_enabled: Pterodactyl未启用
+            page:
+                title: 登录
+                subTitle: 登录到您的账户
+                form:
+                    email:
+                        label: 电子邮件或用户名
+                        placeholder: 输入您的电子邮件或用户名
+                    password:
+                        label: 密码
+                        placeholder: 输入您的密码
+                    forgot_password: 忘记密码？
+                    login_button:
+                        label: 登录
+                        loading: 登录中...
+                    register:
+                        label: 没有账户？
+                        link: 注册
+        register:
+            alerts:
+                success:
+                    title: 成功
+                    register_success: 您已成功注册
+                    footer: 感谢您选择我们！
+                error:
+                    title: 注册失败
+                    csrf_error: CSRF令牌不匹配
+                    username_exists: 用户名已存在
+                    email_exists: 电子邮件已存在
+                    generic: 发生错误。请稍后再试
+                    cloudflare_error: 您已被Cloudflare Turnstile阻止
+                    pterodactyl_not_enabled: Pterodactyl未启用
+                    pterodactyl_error: 无法在Pterodactyl面板中注册用户
+                    footer: 请联系支持获取帮助
+            page:
+                title: 注册
+                subTitle: 创建新账户
+                form:
+                    email:
+                        label: 电子邮件
+                        placeholder: 输入您的电子邮件
+                    firstName:
+                        label: 名字
+                        placeholder: 输入您的名字
+                    lastName:
+                        label: 姓氏
+                        placeholder: 输入您的姓氏
+                    username:
+                        label: 用户名
+                        placeholder: 输入您的用户名
+                    password:
+                        label: 密码
+                        placeholder: 输入您的密码
+                    confirm_password:
+                        label: 确认密码
+                        placeholder: 确认您的密码
+                    referralCode:
+                        label: 推荐码
+                        placeholder: 输入您的推荐码
+                    register_button:
+                        label: 注册
+                        loading: 注册中...
+                    login:
+                        label: 已有账户？
+                        link: 登录
+        forgot_password:
+            alerts:
+                success:
+                    title: 成功
+                    reset_success: 密码重置链接已发送
+                    footer: 请检查您的电子邮件！
+                error:
+                    title: 错误
+                    missing_fields: 请填写所有字段
+                    email_not_found: 未找到电子邮件
+                    generic: 发生错误。请稍后再试
+                    cloudflare_error: 您已被Cloudflare Turnstile阻止
+                    footer: 请联系支持获取帮助
+            page:
+                title: 忘记密码
+                subTitle: 重置您的密码
+                form:
+                    email:
+                        label: 电子邮件
+                        placeholder: 输入您的电子邮件
+                    reset_button:
+                        label: 重置密码
+                        loading: 发送重置链接...
+                    login:
+                        label: 记起密码了？
+                        link: 登录
+        twofactor_verify:
+            alerts:
+                success:
+                    title: 成功
+                    verify_success: 两因素认证已验证
+                    footer: 您已成功验证两因素认证
+                error:
+                    title: 错误
+                    missing_fields: 请填写所有字段
+                    invalid_code: 代码无效
+                    generic: 发生错误。请稍后再试
+                    cloudflare_error: 您已被Cloudflare Turnstile阻止
+                    footer: 请联系支持获取帮助
+            page:
+                title: 两因素认证
+                subTitle: 验证两因素认证
+                form:
+                    code:
+                        label: 代码
+                        placeholder: 输入您的认证应用中的代码
+                    verify_button:
+                        label: 验证
+                        loading: 验证中...
+        twofactor_setup:
+            alerts:
+                success:
+                    title: 成功
+                    setup_success: 两因素认证已设置
+                    footer: 您已成功设置两因素认证
+                error:
+                    title: 错误
+                    missing_fields: 请填写所有字段
+                    invalid_code: 代码无效
+                    generic: 发生错误。请稍后再试
+                    cloudflare_error: 您已被Cloudflare Turnstile阻止
+                    footer: 请联系支持获取帮助
+            page:
+                title: 两因素认证
+                subTitle: 设置两因素认证
+                form:
+                    secret:
+                        label: 密钥
+                        placeholder: 这是您的密钥
+                    code:
+                        label: 代码
+                        placeholder: 输入您的认证应用中的代码
+                    setup_button:
+                        label: 设置
+                        loading: 设置中...
+        reset_password:
+            alerts:
+                success:
+                    title: 成功
+                    reset_success: 我们已成功重置您的密码
+                    footer: 请检查您的电子邮件！
+                error:
+                    title: 错误
+                    missing_fields: 请填写所有字段
+                    passwords_mismatch: 密码不匹配
+                    generic: 发生错误。请稍后再试
+                    cloudflare_error: 您已被Cloudflare Turnstile阻止
+                    footer: 请联系支持获取帮助
+                    invalid_code: 重置代码无效
+            page:
+                title: 重置密码
+                subTitle: 重置您的密码
+                form:
+                    password_new:
+                        label: 新密码
+                        placeholder: 输入您的新密码
+                    password_confirm:
+                        label: 确认密码
+                        placeholder: 确认您的新密码
+                    reset_button:
+                        label: 重置密码
+                        loading: 应用更改...
+                    login:
+                        label: 记起密码了？
+                        link: 登录
+#-------------------------------------------------------------#
+#
+# 全局错误页面
+#
+# @public
+#
+#-------------------------------------------------------------#
+errors:
+    forbidden:
+        title: 403 禁止访问
+        message: >-
+            停下来，太空旅行者！您没有访问此区域的必要授权。
+    notfound:
+        title: 404 未找到
+        message: >-
+            我们找不到您正在寻找的页面。它可能已被移动或删除。
+    servererror:
+        title: 500 服务器错误
+        message: 我们这边出现了错误。请稍后再试。
+#-------------------------------------------------------------#
+#
+# 账户设置 (/account/*)
+#
+# @public
+#
+#-------------------------------------------------------------#
+account:
+    components:
+        header:
+            uuid: 'UUID:'
+            ip: 'IP地址'
+            first: '首次:'
+            current: '当前:'
+            firstSeen: '首次访问'
+            lastSeen: '最后访问'
+            verification: '账户验证'
+            verified: '您的账户已验证'
+            notVerified: '您的账户未验证'
+    pages:
+        index:
+            title: '账户管理'
+            description: '查看和管理您的账户设置和偏好'
+            tabs:
+                settings: '设置'
+                security: '安全'
+                emails: '电子邮件'
+                activity: '活动'
+                apikey: 'API密钥'
+                linked_accounts: '关联账户'
+        linked_accounts:
+            errors:
+                title: '哎呀，看起来我们还不支持这个提供商。'
+                connect: '如果您认为这是错误，请联系支持。'
+            title: 关联账户
+            description: 将您的账户关联到您的个人资料
+            connect: '连接'
+            disconnect: '断开连接'
+            not_connected: '未连接'
+            connected_as: '已连接为'
+            connected_on: '连接于'
+            benefits:
+                title: 好处
+                simplified_login:
+                    title: 简化登录
+                    description: 通过关联您的账户简化登录过程
+                enhanced_security:
+                    title: 增强安全性
+                    description: 通过关联您的账户增强账户安全性
+                seamless_integration:
+                    title: 无缝集成
+                    description: 将您的账户无缝集成到您的个人资料
+            discord:
+                title: Discord
+                description: 将您的Discord账户关联到您的个人资料
+                link: 连接Discord
+            github:
+                title: GitHub
+                description: 将您的GitHub账户关联到您的个人资料
+                link: 连接GitHub
+            google:
+                title: Google
+                description: 将您的Google账户关联到您的个人资料
+                link: 连接Google
+        settings:
+            alerts:
+                success:
+                    title: 成功
+                    update_success: 账户设置已更新
+                    footer: 您的账户设置已更新
+                error:
+                    title: 错误
+                    generic: 发生错误。请稍后再试
+                    email: 电子邮件已存在
+                    footer: 请联系支持获取帮助
+            page:
+                title: 账户
+                subTitle: 管理您的个人信息和账户偏好
+                form:
+                    profile:
+                        title: 个人资料信息
+                        subTitle: 更新您的账户个人资料信息
+                    email:
+                        label: 电子邮件
+                    firstName:
+                        label: 名字
+                    lastName:
+                        label: 姓氏
+                    avatar:
+                        label: 头像
+                    background:
+                        label: 背景
+                    update_button:
+                        label: 保存更改
+                        reset: 重置
+                        loading: 保存中...
+                    browserStorage:
+                        title: 浏览器存储
+                        subTitle: 管理浏览器本地存储和缓存数据
+                        currentStorageUsage: '当前存储使用量'
+                        clearAllBrowserData: '清除所有浏览器数据'
+                        totalBrowserStorage: '此应用程序使用的总浏览器存储'
+                        browserStorageDescription: '浏览器存储包括cookie、本地存储、会话数据和应用程序的离线副本。'
+                        clearAllBrowserDataButton: 清除所有浏览器数据
+                        clearAllBrowserDataDescription: 这将清除所有本地存储的数据，包括偏好和缓存信息。此操作无法撤销。
+                delete:
+                    title: '停用账户'
+                    description: '一旦您停用您的账户，就没有回头路了。请确保您确定。'
+                    button: '停用账户'
+                    warning:
+                        title: '警告'
+                        description: '不要愚蠢，您无法撤销此操作，一旦您点击此按钮，就没有更多确认，您的账户将直接被删除。所以请确保您想要这样做。'
+                clear:
+                    title: 应用程序数据
+                    subTitle: 如果您看到过时的数据，请管理和清除应用程序数据。
+                    cache:
+                        title: 缓存使用量
+                        total: '总缓存数据: {totalSize}'
+                        button: '清除缓存并重新加载'
+                        description: '这将清除所有缓存数据并重新加载应用程序。'
+                        confirm: '是的，清除数据'
+                        cancel: '取消'
+        emails:
+            alerts:
+                success:
+                    title: 成功
+                    update_success: 电子邮件偏好已更新
+                    footer: 您的电子邮件偏好已更新
+                error:
+                    title: 错误
+                    generic: 发生错误。请稍后再试
+                    footer: 请联系支持获取帮助
+            page:
+                title: 电子邮件
+                subTitle: 查看您的电子邮件！
+                description: '这是您的电子邮件列表。您可以通过点击查看按钮查看每封电子邮件的详细信息。'
+                loading: 加载电子邮件...
+                loadingText: 加载您的电子邮件历史记录..
+                error: 加载电子邮件时出错
+                noMails:
+                    title: 未找到电子邮件
+                    description: 您尚未收到任何电子邮件
+                table:
+                    columns:
+                        id: ID
+                        subject: 主题
+                        date: 日期
+                        from: 发件人
+                        actions: 操作
+                    empty: 未找到电子邮件
+                    results:
+                        viewButton: 查看
+        security:
+            alerts:
+                success:
+                    title: 成功
+                    update_success: 安全设置已更新
+                    footer: 您的安全设置已更新
+                error:
+                    title: 错误
+                    generic: 发生错误。请稍后再试
+                    footer: 请联系支持获取帮助
+            page:
+                title: 账户安全
+                subTitle: 管理您的账户安全设置并监控登录活动
+                securityStatus:
+                    title: 安全状态
+                    twofactor:
+                        title: 两因素认证 (2FA)
+                        active: 已激活
+                        disabled: 已禁用
+                        description:
+                            enabled: '您的账户有额外的安全层。'
+                            disabled: '启用2FA以获得额外安全性。'
+                        button:
+                            disable: 禁用2FA
+                            enable: 启用2FA
+                        lastEnabled: '上次启用:'
+                        disableButton:
+                            label: 禁用
+                            loading: 禁用中...
+                    activeSessions:
+                        title: 活动会话
+                        active: 1个活动
+                        description: '您当前已在此设备上登录。'
+                        button:
+                            label: 登出所有设备
+                            loading: 登出中...
+                    password:
+                        title: 密码
+                        active: 已激活
+                        lastChanged: '上次更改:'
+                        changeButton:
+                            label: 更改密码
+                recommendations:
+                    title: 建议
+                    description: 使用这些建议增强您的账户安全性
+                    monitor:
+                        title: 监控登录活动
+                        description: 定期检查您的最近登录活动，并报告任何可疑尝试。
+                    password:
+                        title: 使用强密码
+                        description: 创建一个至少12个字符的唯一密码，包含字母、数字和符号的组合。
+                    twofactor:
+                        enabled:
+                            title: 启用两因素认证
+                            description: 通过要求验证码和密码，为您的账户添加额外的安全层。
+                            button:
+                                label: 启用
+                                loading: 启用中...
+                        disabled:
+                            title: 禁用两因素认证
+                            description: 禁用2FA会使您的账户处于较不安全的状态。
+                            button:
+                                label: 禁用
+                                loading: 禁用中...
+                cards:
+                    twofactor:
+                        title: 两因素认证 (2FA)
+                        subTitle: 想确保您的账户不被盗？
+                        enable_button:
+                            description: '2FA当前已禁用。启用它以保护您的账户。'
+                            label: 启用
+                            loading: 启用中...
+                        disable_button:
+                            description: '2FA当前已启用。禁用它会使您的账户处于较不安全的状态。'
+                            label: 禁用
+                            loading: 禁用中...
+                    password:
+                        title: 更改您的密码
+                        subTitle: 想更改您的账户密码？
+                        change_button:
+                            label: 更改密码
+                            loading: 更改中...
+        apikey:
+            page:
+                title: API密钥
+                subTitle: 管理您的API密钥
+                card:
+                    title: API密钥
+                    description: 您的API密钥提供对MythicalDash API的访问
+                    yourKey: 您的API密钥
+                    loading: 加载API密钥...
+                    noApiKey: 没有可用的API密钥
+                    info: 此密钥通过API提供对您账户的完全访问权限。请保持安全，切勿公开分享。
+                    resetKey: 重置API密钥
+                    apiDocumentation: API文档
+        activity:
+            page:
+                title: 活动
+                subTitle: 查看您的活动！
+                description: '这是您最近活动的列表。您可以通过点击查看按钮查看每个操作的详细信息。'
+                table:
+                    columns:
+                        action: 操作
+                        date: 日期
+                        ip: IP
+                        context: 上下文
+                    error: 获取您的活动时出错
+                    noResults: 未找到活动
+                    info: 您的活动历史将显示在这里
+                    results:
+                        viewButton: 查看
+
+tickets:
+    pages:
+        ticket:
+            title: 工单
+            subTitle: 查看您的工单
+            alerts:
+                error:
+                    title: 错误
+                    generic: '发生错误。请稍后再试'
+                    message_timeout: '无法加载工单。工单ID无效或未找到工单。'
+                    footer: '请联系支持获取帮助'
+                    failed_reply: '无法发送回复'
+                    failed_status: '无法更新工单状态'
+                    ticket_not_found: '未找到工单'
+                    maximum_files: '最多允许5个文件'
+                    file_too_large: '文件 {file} 太大'
+                    invalid_file_type: '文件 {file} 必须是PNG、JPG或GIF'
+                success:
+                    title: 成功
+                    reply_success: '回复已发送'
+                    footer: '您的回复已发送，工单已更新'
+            page:
+                goBack: '↪ 返回'
+                createdBy: '创建者'
+                department: '部门'
+                priority: '优先级'
+                priority_high: '高'
+                priority_medium: '中'
+                priority_low: '低'
+                status: '状态'
+                created: '创建时间'
+                description: '描述'
+                attachments: '附件'
+                status_open: '开放'
+                status_closed: '已关闭'
+                status_waiting: '等待回复'
+                status_inprogress: '处理中'
+                preview: '图片预览'
+                open_in_new_tab: '在新标签页中打开'
+                messages: '消息'
+                response: '回复'
+                replyForm:
+                    title: 回复工单
+                    description: '请在您的回复中提供尽可能多的详细信息，以帮助我们更好地为您提供帮助。包括任何相关信息或截图，这可能有助于解决您的问题。'
+                    forms:
+                        send: '在此输入您的回复..'
+                        attachments: '附件（可选）'
+                        click_to_upload: '点击上传或拖放文件到这里'
+                        formats: 'PNG、JPG、GIF（最大2MB）'
+                        submit: '发送'
+                        loading: '发送中...'
+                status_replied: '已回复'
+                reply_locked: '此工单已关闭，因此您无法回复'
+                buttons:
+                    close: '关闭工单'
+                    reopen: '重新打开工单'
+                    open: '打开工单'
+                    waiting: '等待回复'
+                    inprogress: '处理中'
+                    replied: '已回复'
+        tickets:
+            title: 工单
+            actions:
+                newTicket: '创建工单'
+                view: '查看'
+            alerts:
+                error:
+                    generic: '发生错误。请稍后再试'
+            table:
+                title: '工单'
+                subject: '主题'
+                status: '状态'
+                priority: '优先级'
+                department: '部门'
+                created: '创建时间'
+                actions: '操作'
+            noTickets: '未找到工单'
+        create_ticket:
+            title: '新工单'
+            subTitle: '创建新工单'
+            form:
+                subject: '主题'
+                department: '部门'
+                priority: '优先级'
+                message: '消息'
+                submit: '发送'
+                loading: '发送中...'
+                reset: '重置'
+                back: '返回'
+            types:
+                priority:
+                    low: '低'
+                    medium: '中'
+                    high: '高'
+                    urgent: '紧急'
+            alerts:
+                success:
+                    title: '成功'
+                    ticket_success: '工单已创建'
+                    footer: '您的工单已创建'
+                error:
+                    title: '错误'
+                    generic: '发生错误。请稍后再试'
+                    footer: '请联系支持获取帮助'
+                    department_not_found: '未找到部门'
+                    department_id_missing: '缺少部门ID'
+                    message_missing: '缺少消息'
+                    subject_missing: '缺少主题'
+                    limit_reached: '您已达到可以创建的工单限制'
+                    failed_to_create_ticket: '集群已关闭，请稍后再试'
+
+components:
+    sidebar:
+        dashboard: 仪表板
+        services: 服务
+        orders: 订单
+        add_service: 添加服务
+        all_services: 所有服务
+        invoices: 发票
+        tickets: 工单
+        eula: 用户协议
+        announcements: 公告
+        addons: 插件
+        logs: 日志
+        settings: 设置
+        users: 用户
+        apikeys: API密钥
+        support: 支持与信息
+        open_ticket: 打开工单
+        all_tickets: 所有工单
+        knowledge: 知识库
+        earn: 赚取
+        afk: AFK奖励
+        create: 创建服务器
+        code_redemption: 兑换码
+        j4r: 加入获取奖励
+        referrals: 推荐
+        l4r: 链接获取奖励
+        store: 商店
+        leaderboard: 排行榜
+        general: 通用
+    search:
+        placeholder: '搜索 (Ctrl + K)'
+        no_results: '未找到结果'
+        items:
+            dashboard: '访问您的主仪表板'
+            services: '查看和管理您的服务'
+            invoices: '访问您的账单和发票'
+            tickets: '查看和管理支持工单'
+            knowledge: '浏览帮助文章和文档'
+    notifications:
+        title: '通知'
+        credits: '您有 {credits} 余额'
+        mark_all_read: '标记所有为已读'
+        mark_read: '标记为已读'
+        no_notifications: '未找到通知'
+        view_all: '查看全部'
+    errors:
+        go_back: '返回'
+        go_home: '首页'
+    dashboard:
+        title: '我的仪表板'
+        portal_home: '门户首页'
+        client_area: '客户区域'
+        welcome_back: '欢迎回来'
+        stats:
+            services: '服务'
+            unpaid_invoices: '未付发票'
+            tickets: '工单'
+            orders: '订单'
+            coins: '硬币'
+            servers: '服务器'
+        billing:
+            title: '账单摘要'
+            current_balance: '当前余额'
+            next_payment: '下次付款'
+            due_date: '到期日'
+            add_funds: '添加资金'
+    profile:
+        tickets: '工单'
+        coins: '硬币'
+        servers: '服务器'
+        logout: '登出'
+        update: '更新'
+    loading:
+        title: '加载中...'
+        description: '加载中...'
+    table:
+        page: '页面'
+        of: '/'
+        results: '结果'
+        pageSize: '页面大小'
+        search: '搜索'
+        first: '首页'
+        previous: '上一页'
+        next: '下一页'
+        last: '末页'
+        noResults: '未找到结果'
+        view: '查看'
+        readMore: '阅读更多'
+        showing: '显示页面: '
+        per_page: '每页项目'
+        no_data_description: '抱歉，我们找不到此页面的数据。'
+        no_data: '未找到数据'
+billing:
+    pages:
+        add_funds:
+            title: 添加资金
+            back: 返回
+            form:
+                title: 向您的账户添加资金
+                description: 选择您首选的支付方式并输入您想添加到账户的金额。
+                amount:
+                    label: 金额
+                    placeholder: 输入金额
+                payment_method:
+                    label: 支付方式
+                submit: 添加资金
+                processing: 处理中...
+            summary:
+                title: 账户摘要
+                current_balance: 当前余额
+                info: 成功处理付款后，资金将立即添加到您的账户。这些资金可用于我们平台上的任何服务或产品。
+            alerts:
+                error:
+                    title: 错误
+                    missing_fields: 请填写所有必填字段。
+                    invalid_amount: 请输入大于0的有效金额。
+                    payment_failed: 支付处理失败。请重试。
+                    footer: 请联系支持获取帮助。
+                    no_gateway: 未找到支付网关。
+                    notEnabled: 此主机未启用账单功能！
+                success:
+                    title: 成功
+                    payment_processed: 支付已成功处理。您的资金已添加到您的账户。
+afk:
+    notEnabled:
+        title: 'AFK奖励'
+        text: '此主机未启用AFK奖励！'
+        button: '前往仪表板'
+    pages:
+        index:
+            title: 'AFK奖励'
+            subTitle: '通过AFK赚取硬币'
+            status: '状态:'
+            active: '活动'
+            inactive: '非活动'
+            startafk: '开始AFK'
+            stopafk: '停止AFK'
+            timeDate:
+                hours: '小时'
+                minutes: '分钟'
+                seconds: '秒'
+            totalCoins: '总硬币'
+            currentSession: '当前会话'
+            coins: '硬币'
+            totalAFKTime: '总AFK时间'
+
+        afkpaused:
+            title: 'AFK会话已暂停'
+            text: '您的AFK会话已暂停，因为您切换到了另一个标签页或最小化了窗口。请保持此标签页活动以继续赚取奖励。'
+            button: '确定'
+        cannotstartafk:
+            title: '无法开始AFK'
+            text: '请保持此标签页活动以开始赚取AFK奖励。'
+            button: '确定'
+
+code_redemption:
+    notEnabled:
+        title: '兑换码'
+        text: '此主机未启用兑换码功能！'
+        button: '前往仪表板'
+    pages:
+        index:
+            title: '兑换码'
+            subTitle: '兑换您的代码'
+            form:
+                label: '输入兑换码'
+                placeholder: '在此输入您的代码'
+                redeem: '兑换代码'
+                redeeming: '兑换中...'
+                currentBalance: '当前余额'
+            social:
+                twitter:
+                    title: 'Twitter/X'
+                    description: '关注我们的Twitter获取定期代码发布和公告。'
+                discord:
+                    title: 'Discord'
+                    description: '加入我们的Discord服务器获取独家代码发布和社区支持。'
+                telegram:
+                    title: 'Telegram'
+                    description: '加入我们的Telegram频道获取独家代码发布和社区支持。'
+                events:
+                    title: '活动'
+                    description: '在季节性活动和促销期间会发布特殊代码。'
+
+            alerts:
+                error:
+                    title: '错误'
+                    generic: '发生错误。请稍后再试'
+                    footer: '请联系支持获取帮助'
+                    button: '确定'
+                success:
+                    title: '成功'
+                    code_redeemed: '代码兑换成功'
+                    footer: '您的代码已兑换'
+referrals:
+    notEnabled:
+        title: '推荐'
+        text: '此主机未启用推荐功能！'
+        button: '前往仪表板'
+    pages:
+        index:
+            title: '推荐'
+            subTitle: '通过推荐朋友赚取奖励'
+            form:
+                label: '输入推荐码'
+                placeholder: '在此输入您的代码'
+                redeem: '兑换代码'
+                redeeming: '兑换中...'
+            copy:
+                title: '链接已复制！'
+                text: '您的推荐链接已复制。现在您可以将其粘贴到Discord中。'
+                button: '确定'
+            error:
+                title: '错误'
+                text: '无法加载推荐'
+                button: '确定'
+            body:
+                title: '您的唯一推荐链接'
+                description: '与朋友分享此链接，当他们注册时赚取奖励'
+                copy:
+                    title: '复制推荐链接'
+                    text: '将您的推荐链接复制到剪贴板'
+                    copied: '已复制！'
+            social:
+                twitter: 'Twitter/X'
+                facebook: 'Facebook'
+                discord: 'Discord'
+                email: '电子邮件'
+            refferals:
+                title: '总推荐'
+                earned: '总赚取'
+                yourReferrals: '您的推荐'
+                loading: '加载您的推荐...'
+                noReferrals: '未找到推荐'
+                noReferralsDescription: '与朋友分享您的推荐链接开始赚取奖励！'
+                noEarnings: '未找到收益'
+                noEarningsDescription: '与朋友分享您的推荐链接开始赚取奖励！'
+                table:
+                    user: '用户'
+                    date: '日期'
+                    status: '状态'
+                    reward: '奖励'
+                    actions: '操作'
+                sharelink:
+                    title: '如何运作？'
+                    description: '通过推荐赚取的简单步骤'
+                    steps:
+                        one:
+                            title: '分享您的链接'
+                            id: '1'
+                            description: '复制您的唯一推荐链接并与朋友分享'
+                        two:
+                            title: '获得推荐'
+                            id: '2'
+                            description: '当您的推荐注册时，他们将赚取奖励'
+                        three:
+                            title: '赚取奖励'
+                            id: '3'
+                            description: '当您的推荐赚取奖励时，您也将赚取奖励'
+            share:
+                shareMessage: '加入我在MythicalDash上，使用我的推荐链接获取独家奖励！'
+                title: '分享推荐链接'
+                description: '与朋友分享您的推荐链接并赚取奖励！'
+                mailTitle: '通过电子邮件分享推荐链接'
+                twitter:
+                    title: 'Twitter/X'
+                    description: '在Twitter上分享您的推荐链接获取定期代码发布和公告。'
+create:
+    pages:
+        index:
+            title: '创建新服务器'
+            subTitle: '配置并部署您的新服务器'
+            form:
+                label: '服务器名称'
+                placeholder: '输入您的服务器名称'
+                submit: '创建服务器'
+                description: '描述'
+                descriptionPlaceholder: '输入您的服务器描述'
+                location: '服务器位置'
+                locationPlaceholder: '选择位置'
+                category: '服务器类别'
+                categoryPlaceholder: '选择类别'
+                egg: '服务器版本'
+                eggPlaceholder: '选择版本'
+                memory: '内存'
+                cpu: 'CPU'
+                disk: '硬盘'
+                databases: '数据库'
+                backups: '备份'
+                allocations: '分配'
+                servers: '服务器'
+                mb: 'MB'
+                p: '%'
+                of: '/'
+                available: '可用'
+                depleted: '已耗尽'
+            slots: '槽位'
+            resources:
+                title: '资源可用性'
+                available: '可用'
+                depleted: '已耗尽'
+                memory: '内存'
+                cpu: 'CPU'
+                disk: '硬盘'
+                slots: '槽位'
+                databases: '数据库'
+                backups: '备份'
+                allocations: '分配'
+                servers: '服务器'
+                mb: 'MB'
+                of: '/'
+                p: '%'
+        alerts:
+            error:
+                title: '错误'
+                generic: '发生错误。请稍后再试'
+                footer: '请联系支持获取帮助'
+                deploy:
+                    MISSING_REQUIRED_FIELDS: '缺少必填字段'
+                    NAME_TOO_LONG: '服务器名称必须少于32个字符'
+                    DESCRIPTION_TOO_LONG: '描述必须少于255个字符'
+                    LOCATION_DOES_NOT_EXIST: '所选位置不存在'
+                    CATEGORY_DOES_NOT_EXIST: '所选类别不存在'
+                    EGG_DOES_NOT_EXIST: '所选版本不存在'
+                    MEMORY_TOO_LOW: '内存必须至少为256MB'
+                    CPU_TOO_LOW: 'CPU必须至少为5%'
+                    DISK_TOO_LOW: '硬盘必须至少为256MB'
+                    ALLOCATIONS_TOO_LOW: '分配必须至少为1'
+                    PENDING_SERVER_CREATION_REQUEST: '您已有待处理的服务器创建请求'
+                    NOT_ENOUGH_MEMORY: '您没有足够的内存资源'
+                    NOT_ENOUGH_DISK_SPACE: '您没有足够的硬盘空间'
+                    NOT_ENOUGH_CPU: '您没有足够的CPU资源'
+                    NOT_ENOUGH_DATABASES: '您没有足够的数据库资源'
+                    NOT_ENOUGH_BACKUPS: '您没有足够的备份资源'
+                    NOT_ENOUGH_ALLOCATIONS: '您没有足够的分配资源'
+                    NOT_ENOUGH_SERVERS: '您已达到服务器限制'
+                    FAILED_TO_CREATE_SERVER_QUEUE_ITEM: '无法创建服务器队列项'
+            success:
+                title: '成功'
+                generic: '您的服务器已创建'
+                footer: '享受您的服务器！'
+update:
+    pages:
+        alerts:
+            error:
+                title: '错误'
+                generic: '发生错误。请稍后再试'
+                delete: '这将更新您的服务器配置。此操作无法撤销！'
+                footer: '请联系支持获取帮助'
+                confirmButtonText: '确定'
+                cancelButtonText: '取消'
+            success:
+                title: '成功'
+                generic: '您的服务器已更新'
+                footer: '服务器更新成功'
+                confirmButtonText: '确定'
+        index:
+            title: '更新服务器'
+            subTitle: '更新您的服务器配置'
+            loading: '加载服务器数据...'
+            form:
+                label: '服务器名称'
+                placeholder: '输入您的服务器名称'
+                submit: '更新服务器'
+                description: '描述'
+                descriptionPlaceholder: '输入您的服务器描述'
+                location: '服务器位置'
+                locationPlaceholder: '选择位置'
+                category: '服务器类别'
+                categoryPlaceholder: '选择类别'
+                egg: '服务器版本'
+                eggPlaceholder: '选择版本'
+                updateButton: '更新服务器'
+                deleteButton: '删除服务器'
+                resources:
+                    title: '资源可用性'
+                    available: '可用'
+                    depleted: '已耗尽'
+                    memory: '内存'
+                    cpu: 'CPU'
+                    disk: '硬盘'
+                    slots: '槽位'
+                    databases: '数据库'
+                    backups: '备份'
+                    allocations: '分配'
+                    servers: '服务器'
+                    mb: 'MB'
+                    of: '/'
+                    p: '%'
+delete:
+    pages:
+        index:
+            title: '删除服务器'
+            subTitle: '您确定要删除此服务器吗？'
+            loading: '加载服务器数据...'
+            unknownError: '发生未知错误'
+            warning: '警告'
+            type: '类型'
+            version: '版本'
+            location: '位置'
+            card:
+                title: '确认'
+                description: '要确认，请输入服务器名称：'
+                placeholder: '输入服务器名称以确认'
+            button:
+                delete: '删除服务器'
+                cancel: '取消'
+            details:
+                title: '删除此服务器是永久性的'
+                description: '此操作将立即永久删除您的服务器及其所有相关数据，包括：'
+                files: '服务器上存储的所有文件'
+                databases: '所有数据库及其内容'
+                backups: '所有备份'
+                configuration: '服务器配置'
+                cannotBeUndone: '此操作无法撤销。请确保您确定。'
+        alerts:
+            error:
+                title: '错误'
+                generic: '发生错误。请稍后再试'
+                footer: '请联系支持获取帮助'
+                confirmation: '确认文本与服务器名称不匹配'
+                confirmButtonText: '确定'
+            success:
+                title: '成功'
+                generic: '您的服务器已删除'
+                footer: '服务器删除请求已成功提交'
+                confirmButtonText: '确定'
+
+store:
+    notEnabled:
+        title: '商店'
+        text: '此主机未启用商店功能！'
+        footer: '请联系支持获取帮助'
+        button: '前往仪表板'
+    pages:
+        alerts:
+            buy:
+                title: '您想购买这个吗？'
+                description: '您确定要购买这个吗？'
+                confirmButtonText: '确定'
+                cancelButtonText: '取消'
+            error:
+                title: '错误'
+                generic: '发生错误。请稍后再试'
+                notEnoughCoins: '您没有足够的硬币进行此购买'
+                footer: '请联系支持获取帮助'
+                buy:
+                    MISSING_ITEM_ID: '需要物品ID'
+                    EMPTY_ITEM_ID: '物品ID不能为空'
+                    INVALID_ITEM_ID: '无效的物品ID'
+                    INSUFFICIENT_COINS: '硬币不足，您需要 {0} 但只有 {1}'
+                    STORE_NOT_ENABLED: '商店未启用'
+                    PURCHASE_FAILED: '无法处理购买'
+                    MAX_RAM_LIMIT: '您已达到最大内存限制。'
+                    MAX_DISK_LIMIT: '您已达到最大硬盘限制。'
+                    MAX_CPU_LIMIT: '您已达到最大CPU限制。'
+                    MAX_PORTS_LIMIT: '您已达到最大端口限制。'
+                    MAX_DATABASES_LIMIT: '您已达到最大数据库限制。'
+                    MAX_SERVER_SLOTS_LIMIT: '您已达到最大服务器槽位限制。'
+                    MAX_BACKUPS_LIMIT: '您已达到最大备份限制。'
+                    confirmButtonText: '确定'
+                    cancelButtonText: '取消'
+                    description: '请重试或如果问题持续存在，请联系支持。'
+        index:
+            title: '商店'
+            subTitle: '购买服务器资源和升级'
+            loading: '加载商店物品...'
+            empty: '此类别中没有可用物品'
+            emptyDescription: '稍后再来查看新物品'
+            cardYourBalance: '您的余额'
+            cardAvailableCoins: '可用于消费的硬币'
+            cardCurrentBalance: '当前余额'
+            addCredits: '添加积分'
+            redeemCodes: '兑换代码'
+            earnMore: '赚取更多'
+            buyButton: '购买'
+            insufficientButton: '硬币不足'
+            howItWorks:
+                title: '如何运作'
+                description: '将您的硬币用于服务器资源和升级'
+                steps:
+                    one:
+                        number: '1'
+                        title: '赚取硬币'
+                        description: '完成赚取部分的任务以积累硬币'
+                    two:
+                        number: '2'
+                        title: '消费硬币'
+                        description: '将您的硬币用于服务器资源和升级'
+                    three:
+                        number: '3'
+                        title: '赚取更多'
+                        description: '通过推荐朋友赚取更多硬币'
+                    four:
+                        number: '4'
+                        title: '即时交付'
+                        description: '资源会立即添加到您的账户'
+
+            card:
+                title: '可用物品'
+                description: '将您的硬币用于服务器资源和升级'
+            info:
+                buy:
+                    title: '确认购买'
+                    description: '您确定要以 {1} 硬币购买 {0} 吗？'
+                    confirmButtonText: '购买'
+                    cancelButtonText: '取消'
+                    success:
+                        title: '购买成功'
+                        description: '您已成功购买 {0}'
+                        confirmButtonText: '确定'
+                ram:
+                    title: '额外内存'
+                    description: '增加您服务器的内存容量'
+                    features:
+                        one: '即时分配'
+                        two: '灵活扩展'
+                        three: '无需重启'
+                disk:
+                    title: '额外存储'
+                    description: '增加您服务器的存储容量'
+                    features:
+                        one: '即时分配'
+                        two: '灵活扩展'
+                        three: '无需重启'
+                cpu:
+                    title: '额外CPU'
+                    description: '增加您服务器的CPU容量'
+                    features:
+                        one: '高性能核心'
+                        two: '专用资源'
+                        three: '实时扩展'
+                server_slot:
+                    title: '服务器槽位'
+                    description: '向您的账户添加额外服务器'
+                    features:
+                        one: '完全服务器访问'
+                        two: '自定义配置'
+                        three: '即时部署'
+                server_backup:
+                    title: '备份槽位'
+                    description: '为您的服务器提供额外备份存储'
+                    features:
+                        one: '自动备份'
+                        two: '即时恢复'
+                        three: '安全存储'
+                server_allocation:
+                    title: '服务器分配'
+                    description: '为您的服务器提供额外服务器分配'
+                    features:
+                        one: '无限分配'
+                        two: '灵活扩展'
+                        three: '无需重启'
+                server_database:
+                    title: '数据库'
+                    description: '为您的服务器提供额外数据库'
+                    features:
+                        one: 'MySQL/MariaDB'
+                        two: '自动备份'
+                        three: '安全访问'
+
+l4r:
+    notEnabled:
+        title: '链接获取奖励'
+        text: '此主机未启用链接获取奖励功能！'
+        footer: '请联系支持获取帮助'
+        confirmButtonText: '确定'
+    pages:
+        index:
+            title: '链接获取奖励'
+            subTitle: '点击任何提供商完成优惠并赚取硬币'
+            loading: '加载链接...'
+            empty: '未找到链接'
+            linkvertise:
+                title: 'Linkvertise'
+                tag: '快速简单的奖励'
+                description: '通过Linkvertise完成简单任务，如调查、观看视频或访问网站。'
+                reward: '赚取高达 {0} 硬币'
+                button: '完成优惠'
+            shareus:
+                title: 'ShareUs'
+                tag: '流行的链接缩短器'
+                description: '通过ShareUs完成简单任务，如调查、观看视频或访问网站。'
+                reward: '赚取高达 {0} 硬币'
+                button: '完成优惠'
+            linkpays:
+                title: 'LinkPays'
+                tag: '更高奖励'
+                description: '通过LinkPays完成简单任务，如调查、观看视频或访问网站。'
+                reward: '赚取高达 {0} 硬币'
+                button: '完成优惠'
+            gyanilinks:
+                title: 'Gyanilinks'
+                tag: '快速简单的奖励'
+                description: '通过Gyanilinks完成简单任务，如调查、观看视频或访问网站。'
+                reward: '赚取高达 {0} 硬币'
+                button: '完成优惠'
+            yourStats:
+                title: '您的统计'
+                description: '链接获取奖励统计'
+                currentBalance: '硬币余额'
+            steps:
+                title: '如何运作'
+                description: '完成链接优惠获取奖励'
+                one:
+                    title: '选择提供商'
+                    number: '1'
+                    description: '点击任何链接提供商开始'
+                two:
+                    title: '完成优惠'
+                    number: '2'
+                    description: '完成优惠以赚取硬币'
+                three:
+                    title: '赚取奖励'
+                    number: '3'
+                    description: '通过完成优惠赚取奖励'
+                four:
+                    title: '接收奖励'
+                    number: '4'
+                    description: '硬币将自动添加到您的账户'
+
+# 排行榜翻译
+leaderboard:
+    title: '排行榜'
+    description: '查看谁在不同类别中领先'
+    leaderboard: '排行榜'
+    currency: '硬币'
+    notEnabled:
+        title: '排行榜'
+        description: '此主机未启用排行榜功能！'
+        button: '前往仪表板'
+    error:
+        title: '加载排行榜时出错'
+        generic: '我们目前无法加载排行榜数据'
+        failed_fetch: '无法获取排行榜数据'
+        retry: '重试'
+    no_data:
+        title: '没有排行榜数据'
+        message: '此排行榜类别尚无条目'
+    categories:
+        coins: '硬币'
+        servers: '服务器'
+        minutes_afk: 'AFK时间'
+        linkvertise: 'Linkvertise'
+        shareus: 'ShareUs'
+        gyanilinks: 'Gyanilinks'
+        linkpays: 'LinkPays'
+        referrals: '推荐'
+    table:
+        rank: '排名'
+        user: '用户'
+        coins: '硬币'
+        servers: '服务器'
+        minutes_afk: 'AFK分钟'
+        linkvertise: '链接'
+        shareus: '链接'
+        gyanilinks: '链接'
+        linkpays: '链接'
+        referrals: '推荐'
+
+# 个人资料页面翻译
+profile:
+    title: '用户个人资料'
+    verified: '已验证'
+    banned: '已禁止'
+    gift_coins: '赠送硬币'
+    error:
+        title: '加载个人资料时出错'
+        generic: '我们目前无法加载个人资料数据'
+        failed_fetch: '无法获取个人资料数据'
+        retry: '重试'
+    gift:
+        title: '赠送硬币'
+        description: '向其他用户发送硬币'
+        page_title: '赠送硬币 - {username}'
+        recipient: '赠送给 {username}'
+        your_balance: '您的余额'
+        amount: '金额'
+        amount_placeholder: '输入要赠送的金额'
+        max: '最大'
+        min_amount: '最小金额'
+        max_amount: '最大金额'
+        fee_label: '转账费用'
+        fee_amount: '费用金额'
+        total_cost: '总成本'
+        fee_explanation: '转账金额会收取费用。接收者将收到全额礼物。'
+        cancel: '取消'
+        send: '发送礼物'
+        processing: '处理中...'
+        success_message: '成功向 {username} 发送了 {amount} 硬币'
+        error:
+            recipient_required: '需要接收者UUID'
+            user_not_found: '未找到用户'
+            failed_fetch: '获取用户时出错'
+            failed_profile: '无法加载接收者个人资料'
+            failed_balance: '无法获取您的余额'
+            invalid_amount: '无效金额'
+            failed_send: '无法发送礼物'
+            generic: '发送礼物时出错'
+    stats:
+        title: '用户统计'
+        coins: '硬币'
+        servers: '服务器'
+        minutes_afk: 'AFK分钟'
+        databases: '数据库'
+    activity:
+        title: '活动'
+        first_seen: '首次访问'
+        last_seen: '最后访问'
+        last_seen_afk: '最后AFK'
+    social:
+        title: '社交账户'
+        discord: 'Discord'
+        github: 'GitHub'
+    resources:
+        title: '资源限制'
+        memory: '内存'
+        cpu: 'CPU'
+        disk: '硬盘'
+        servers: '服务器'
+        backups: '备份'
+        databases: '数据库'
+        allocations: '分配'
+    account:
+        title: '账户信息'
+        status: '状态'
+        active: '活跃'
+        banned: '已禁止'
+        deleted: '已删除'
+        verification: '验证'
+        verified: '已验证'
+        not_verified: '未验证'
+        uuid: 'UUID'
+
+renew:
+    pages:
+        index:
+            title: '续订服务器'
+            subTitle: '延长您服务器的使用寿命'
+            loading: '加载服务器数据...'
+            unknownError: '发生未知错误'
+            type: '类型'
+            version: '版本'
+            location: '位置'
+            expiresAt: '到期时间'
+            expired: '已过期'
+            renewalInfo: '续订信息'
+            details:
+                title: '续订您的服务器'
+                description: '续订您的服务器将延长其使用寿命并保持所有数据完好无损。'
+                keepData: '所有文件和数据将被保留'
+                keepSettings: '服务器设置将保持不变'
+                keepBackups: '所有备份将被保留'
+                keepDatabases: '数据库将被保留'
+                confirmRenewal: '请在下方确认您的续订'
+            cost:
+                title: '续订费用'
+                coins: '硬币'
+            duration:
+                title: '续订期限'
+                days: '天'
+            yourBalance: '您的余额'
+            card:
+                title: '确认续订'
+                description: '要确认，请输入服务器名称：'
+                placeholder: '输入服务器名称以确认'
+            button:
+                renew: '续订服务器'
+                cancel: '取消'
+        alerts:
+            error:
+                title: '错误'
+                generic: '发生错误。请稍后再试'
+                footer: '请联系支持获取帮助'
+                confirmation: '确认文本与服务器名称不匹配'
+                confirmButtonText: '确定'
+                insufficientCoins: '您没有足够的硬币来续订此服务器'
+            success:
+                title: '成功'
+                generic: '您的服务器已续订'
+                footer: '服务器续订请求已成功提交'
+                confirmButtonText: '确定'
