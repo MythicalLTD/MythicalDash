@@ -18,8 +18,8 @@ $router->add('/api/system/license', function (): void {
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
 
-    $licenseValidator = $appInstance->getLicenseValidator();
-    if ($licenseValidator->validate()) {
+    $LegacyLicenseValidator = $appInstance->getLegacyLicenseValidator();
+    if ($LegacyLicenseValidator->validate()) {
         App::OK('License is valid!', ['valid' => true]);
     } else {
         App::OK('License is invalid!', ['valid' => false]);

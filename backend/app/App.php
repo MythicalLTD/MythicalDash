@@ -23,7 +23,7 @@ use MythicalDash\Config\ConfigFactory;
 use MythicalDash\Logger\LoggerFactory;
 use RateLimit\Exception\LimitExceeded;
 use MythicalDash\Config\ConfigInterface;
-use MythicalDash\Hooks\LicenseValidator;
+use MythicalDash\Hooks\LegacyLicenseValidator;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AppEvent;
 use MythicalDash\Hooks\MythicalSystems\Utils\XChaCha20;
@@ -31,7 +31,7 @@ use MythicalDash\Hooks\MythicalSystems\Utils\XChaCha20;
 class App extends MythicalAPP
 {
     public static App $instance;
-    public LicenseValidator $licenseValidator;
+    public LegacyLicenseValidator $LegacyLicenseValidator;
     public Database $db;
     public MythicalZero $telemetry;
 
@@ -130,8 +130,8 @@ class App extends MythicalAPP
             /**
              * License validator.
              */
-            $this->licenseValidator = new LicenseValidator($this->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'));
-            if (!$this->licenseValidator->validate()) {
+            $this->LegacyLicenseValidator = new LegacyLicenseValidator($this->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'));
+            if (!$this->LegacyLicenseValidator->validate()) {
                 define('HAS_VALID_LICENSE', false);
             } else {
                 $this->getLogger()->debug('License is valid! Thank you for supporting the development of MythicalDash!');
@@ -219,9 +219,9 @@ class App extends MythicalAPP
     /**
      * Get the license validator.
      */
-    public function getLicenseValidator(): LicenseValidator
+    public function getLegacyLicenseValidator(): LegacyLicenseValidator
     {
-        return $this->licenseValidator;
+        return $this->LegacyLicenseValidator;
     }
 
     /**

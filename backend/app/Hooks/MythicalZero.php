@@ -67,11 +67,11 @@ class MythicalZero
 
         try {
             $encryptedData = [
-                'username' => EncryptionHandler::encrypt($username, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'first_name' => EncryptionHandler::encrypt($firstName, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'last_name' => EncryptionHandler::encrypt($lastName, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'email' => EncryptionHandler::encrypt($email, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'ip' => EncryptionHandler::encrypt($ip, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
+                'username' => $username,
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'email' => $email,
+                'ip' => $ip,
             ];
             App::getInstance(true)->getLogger()->debug('Sending registration telemetry: ' . json_encode($encryptedData));
             $this->sendTelemetry(MythicalZeroType::$register, $encryptedData);
@@ -116,17 +116,17 @@ class MythicalZero
 
         try {
             $encryptedData = [
-                'username' => EncryptionHandler::encrypt($username, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'first_name' => EncryptionHandler::encrypt($first_name, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'last_name' => EncryptionHandler::encrypt($last_name, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'email' => EncryptionHandler::encrypt($email, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'credits' => EncryptionHandler::encrypt($credits, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'uuid' => EncryptionHandler::encrypt($uuid, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'ip' => EncryptionHandler::encrypt($ip, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'banned' => EncryptionHandler::encrypt($banned, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'verified' => EncryptionHandler::encrypt($verified, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'discord_id' => EncryptionHandler::encrypt($discord_id, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
-                'github_id' => EncryptionHandler::encrypt($github_id, 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F'),
+                'username' => $username,
+                'first_name' => $first_name,
+                'last_name' => $last_name,
+                'email' => $email,
+                'credits' => $credits,
+                'uuid' => $uuid,
+                'ip' => $ip,
+                'banned' => $banned,
+                'verified' => $verified,
+                'discord_id' => $discord_id,
+                'github_id' => $github_id,
             ];
             App::getInstance(true)->getLogger()->debug('Sending login telemetry: ' . json_encode($encryptedData));
             $this->sendTelemetry(MythicalZeroType::$login, $encryptedData);

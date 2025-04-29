@@ -124,116 +124,7 @@ class TelemetryJob implements TimeTask
 					$publicSettings = $config->getSettings(array_keys($publicSettings));
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &3Public settings: &f' . count($publicSettings));
 					$dateNow = date('Y-m-d H:i:s');
-					
-	
-					$systemInfo = [];
-					try {
-						// Basic PHP info that's safe to collect
-						$systemInfo['php_version'] = PHP_VERSION;
-						$systemInfo['os'] = PHP_OS;
-						$systemInfo['memory_usage'] = memory_get_usage(true);
-						
-						// PHP INI settings - only collect non-sensitive configs
-						$safeIniSettings = [
-							'memory_limit',
-							'max_execution_time', 
-							'max_input_time',
-							'upload_max_filesize',
-							'post_max_size',
-							'max_input_vars',
-							'default_charset',
-							'date.timezone'
-						];
-						
-						foreach ($safeIniSettings as $setting) {
-							try {
-								$value = ini_get($setting);
-								if ($value !== false) {
-									$systemInfo[str_replace('.', '_', $setting)] = $value;
-								} else {
-									$systemInfo[str_replace('.', '_', $setting)] = 'unknown';
-								}
-							} catch (\Throwable $e) {
-								$systemInfo[str_replace('.', '_', $setting)] = 'unknown';
-							}
-						}
 
-						// Safely get loaded extensions
-						try {
-							$extensions = get_loaded_extensions();
-							if (is_array($extensions)) {
-								$systemInfo['loaded_extensions'] = $extensions;
-							} else {
-								$systemInfo['loaded_extensions'] = [];
-							}
-						} catch (\Throwable $e) {
-							$systemInfo['loaded_extensions'] = [];
-						}
-
-						// Only collect non-sensitive server variables
-						$safeServerVars = [
-							'SERVER_SOFTWARE',
-							'SERVER_PROTOCOL',
-							'REQUEST_SCHEME',
-							'SERVER_PORT'
-						];
-						
-						foreach ($safeServerVars as $var) {
-							$systemInfo[strtolower($var)] = $_SERVER[$var] ?? 'unknown';
-						}
-
-						// Basic PHP info
-						$systemInfo['server_api'] = PHP_SAPI;
-						$systemInfo['zend_version'] = zend_version();
-
-						// Check opcache safely
-						try {
-							$systemInfo['opcache_enabled'] = function_exists('opcache_get_status');
-						} catch (\Throwable $e) {
-							$systemInfo['opcache_enabled'] = false;
-						}
-
-						// Get MySQL version through PDO if available
-						try {
-							if (class_exists('PDO')) {
-								$systemInfo['mysql_version'] = Database::runSQL('SELECT VERSION()');
-							} else {
-								$systemInfo['mysql_version'] = 'unknown';
-							}
-						} catch (\Throwable $e) {
-							$systemInfo['mysql_version'] = 'unknown';
-						}
-
-						// Memory info
-						$systemInfo['memory_limit'] = ini_get('memory_limit');
-						$systemInfo['memory_usage_bytes'] = memory_get_usage(true);
-						$systemInfo['memory_peak_usage_bytes'] = memory_get_peak_usage(true);
-
-						// Safe disk space check using PHP built-in
-						try {
-							if (function_exists('disk_free_space')) {
-								$systemInfo['disk_free_space'] = @disk_free_space(__DIR__);
-							} else {
-								$systemInfo['disk_free_space'] = -1;
-							}
-						} catch (\Throwable $e) {
-							$systemInfo['disk_free_space'] = -1;
-						}
-
-						try {
-							if (function_exists('disk_total_space')) {
-								$systemInfo['disk_total_space'] = @disk_total_space(__DIR__);
-							} else {
-								$systemInfo['disk_total_space'] = -1; 
-							}
-						} catch (\Throwable $e) {
-							$systemInfo['disk_total_space'] = -1;
-						}
-	
-					} catch (\Throwable $e) {
-						// If anything fails, log it but continue with partial data
-						$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &cWarning: Some system info collection failed: ' . $e->getMessage());
-					}
 	
 					$telemetryData = [
 						'appID' => $appID,
@@ -241,7 +132,6 @@ class TelemetryJob implements TimeTask
 						'numeric_data' => $numeric_data,
 						'public_settings' => $publicSettings,
 						'logs' => $logs,
-						'system_info' => $systemInfo,
 						'addons' => [],
 					];
 					

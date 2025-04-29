@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, watch, onMounted, onUnmounted } from 'vue';
 import Layout from '@/components/client/Layout.vue';
 import FormCard from '@/components/client/Auth/FormCard.vue';
 import FormInput from '@/components/client/Auth/FormInput.vue';
@@ -29,6 +29,93 @@ const form = reactive({
     password: '',
     turnstileResponse: '',
     referralCode: '',
+});
+
+// Add email suggestions
+const emailSuggestions = ref<string[]>([]);
+const showSuggestions = ref(false);
+const commonDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'protonmail.com'];
+
+const generateUsername = () => {
+    const adjectives = ['happy', 'clever', 'brave', 'swift', 'bright', 'calm', 'eager', 'fair', 'kind', 'lively'];
+    const nouns = ['panda', 'tiger', 'eagle', 'dolphin', 'wolf', 'phoenix', 'dragon', 'lion', 'bear', 'fox'];
+    const numbers = Math.floor(Math.random() * 1000);
+    const randomAdj = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+    form.username = `${randomAdj}${randomNoun}${numbers}`;
+};
+
+const generatePassword = () => {
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+    const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+    const allChars = uppercase + lowercase + numbers + symbols;
+    let password = '';
+
+    // Ensure at least one of each character type
+    password += uppercase[Math.floor(Math.random() * uppercase.length)];
+    password += lowercase[Math.floor(Math.random() * lowercase.length)];
+    password += numbers[Math.floor(Math.random() * numbers.length)];
+    password += symbols[Math.floor(Math.random() * symbols.length)];
+
+    // Fill the rest randomly
+    for (let i = 4; i < 16; i++) {
+        password += allChars[Math.floor(Math.random() * allChars.length)];
+    }
+
+    // Shuffle the password
+    password = password
+        .split('')
+        .sort(() => Math.random() - 0.5)
+        .join('');
+
+    form.password = password;
+};
+
+const updateEmailSuggestions = (email: string) => {
+    const [localPart] = email.split('@');
+    if (localPart) {
+        emailSuggestions.value = commonDomains.map((domain) => `${localPart}@${domain}`);
+        showSuggestions.value = true;
+    } else {
+        emailSuggestions.value = [];
+        showSuggestions.value = false;
+    }
+};
+
+const hideSuggestions = () => {
+    showSuggestions.value = false;
+};
+
+// Watch for email changes
+watch(
+    () => form.email,
+    (newEmail) => {
+        updateEmailSuggestions(newEmail);
+    },
+);
+
+// Add click outside listener
+onMounted(() => {
+    document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (!target.closest('.email-suggestions-container')) {
+            hideSuggestions();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            hideSuggestions();
+        }
+    });
+});
+
+onUnmounted(() => {
+    document.removeEventListener('click', hideSuggestions);
+    document.removeEventListener('keydown', hideSuggestions);
 });
 
 if (router.currentRoute.value.query.ref) {
@@ -121,26 +208,58 @@ const handleSubmit = async () => {
                     required
                 />
             </div>
-            <FormInput
-                id="username"
-                :label="t('auth.pages.register.page.form.username.label')"
-                v-model="form.username"
-                :placeholder="t('auth.pages.register.page.form.username.placeholder')"
-                required
-            />
-            <FormInput
-                id="email"
-                :label="t('auth.pages.register.page.form.email.label')"
-                v-model="form.email"
-                :placeholder="t('auth.pages.register.page.form.email.placeholder')"
-                type="email"
-                required
-            />
+            <div class="relative">
+                <FormInput
+                    id="username"
+                    :label="t('auth.pages.register.page.form.username.label')"
+                    v-model="form.username"
+                    :placeholder="t('auth.pages.register.page.form.username.placeholder')"
+                    required
+                />
+                <button
+                    type="button"
+                    @click="generateUsername"
+                    class="absolute right-2 top-8 px-2 py-1 text-sm bg-purple-600 hover:bg-purple-700 text-white rounded transition-colors"
+                >
+                    Generate
+                </button>
+            </div>
+            <div class="relative">
+                <FormInput
+                    id="email"
+                    :label="t('auth.pages.register.page.form.email.label')"
+                    v-model="form.email"
+                    :placeholder="t('auth.pages.register.page.form.email.placeholder')"
+                    type="email"
+                    required
+                />
+                <div
+                    v-if="showSuggestions && emailSuggestions.length > 0"
+                    class="email-suggestions-container absolute left-full ml-2 top-0 w-48 bg-gray-800 rounded-md shadow-lg z-10"
+                >
+                    <ul class="py-1">
+                        <li
+                            v-for="suggestion in emailSuggestions"
+                            :key="suggestion"
+                            @click="
+                                form.email = suggestion;
+                                hideSuggestions();
+                            "
+                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 cursor-pointer"
+                        >
+                            {{ suggestion }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
             <div class="flex items-center justify-between mb-2">
                 <label class="block text-sm text-gray-400">{{
                     t('auth.pages.register.page.form.password.label')
                 }}</label>
+                <button type="button" @click="generatePassword" class="text-sm text-purple-400 hover:text-purple-300">
+                    Generate Password
+                </button>
             </div>
 
             <FormInput

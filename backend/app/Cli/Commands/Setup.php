@@ -95,5 +95,7 @@ REDIS_HOST=127.0.0.1';
         $envFile = fopen(__DIR__ . '/../../../storage/.env', 'w');
         fwrite($envFile, $envTemplate);
         fclose($envFile);
+
+        $cliApp->send('&aEnvironment file created successfully.');
     }
 }

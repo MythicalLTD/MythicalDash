@@ -1,0 +1,18 @@
+plugin:
+    name: MythicalCloud
+    identifier: mythicalcloud
+    description: 'The mythicalcloud server as a mythicaldash plugin :)'
+    flags:
+        - hasEvents
+    version: 1.0.0
+    target: v3
+    author:
+        - NaysKutzu
+    icon: 'https://github.com/mythicalltd.png'
+    requiredConfigs: 
+        - MAX_UPLOADS_PER_USER
+        - MAX_UPLOAD_SIZE
+        - MAX_USER_SIZE
+    dependencies:
+        - php=8.1
+        - php-ext=pdo

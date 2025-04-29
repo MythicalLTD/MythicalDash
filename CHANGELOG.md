@@ -22,7 +22,9 @@
 - Feature: Added translations for German
 - Feature: Added translations for Spanish
 - Feature: Added translations for Mandarin
-
+- Feature: Added a password generator on register form.
+- Feature: Added a username generator on the register form.
+- Feature: Added a email suggestion on the register form
 
 # Features Removed:
 

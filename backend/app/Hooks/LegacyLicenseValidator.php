@@ -17,7 +17,7 @@ use MythicalDash\App;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
-class LicenseValidator
+class LegacyLicenseValidator
 {
     private const PRODUCT_ID = 3;
     private const API_URL = 'https://activation.mythical.systems';

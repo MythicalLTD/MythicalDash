@@ -1,12 +1,12 @@
 <?php
 
-namespace MythicalDash\Addons\testplugin;
+namespace MythicalDash\Addons\mythicalcloud;
 
 use MythicalDash\Plugins\Events\Events\AppEvent;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
 use MythicalDash\Plugins\MythicalDashPlugin;
 
-class ThisISATestPLugin implements MythicalDashPlugin
+class MythicalCloud implements MythicalDashPlugin
 {
 	/**
 	 * @inheritDoc
