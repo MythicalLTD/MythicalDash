@@ -13,7 +13,6 @@
 
 namespace MythicalDash\Hooks;
 
-use MythicalDash\App;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -25,7 +24,7 @@ class LicenseSystem
         'LICENSE_KEY_EXPIRED',
         'LICENSE_KEY_INACTIVE',
         'LICENSE_KEY_DELETED',
-        'LICENSE_KEY_LOCKED'
+        'LICENSE_KEY_LOCKED',
     ];
     private const CACHE_DIR = __DIR__ . '/../../storage/caches/licenses/';
     private const CACHE_TTL = 3600; // 1 hour cache
@@ -39,12 +38,14 @@ class LicenseSystem
     }
 
     /**
-     * Validates a license key by making an API call or retrieving from cache
+     * Validates a license key by making an API call or retrieving from cache.
      *
      * @param string $licenseKey The license key to validate
      * @param string $instanceUrl The instance URL to validate against
-     * @return array Returns an array containing validation status and data
+     *
      * @throws \Exception If the API call fails or returns an error
+     *
+     * @return array Returns an array containing validation status and data
      */
     public function validateLicense(string $licenseKey, string $instanceUrl): array
     {
@@ -53,11 +54,11 @@ class LicenseSystem
         // Try to get from cache first
         if (file_exists($cacheFile)) {
             $cacheData = json_decode(file_get_contents($cacheFile), true);
-            
+
             // Check if cache is still valid
             if (isset($cacheData['expires_at']) && $cacheData['expires_at'] > time()) {
                 $data = $cacheData['data'];
-                
+
                 // Validate cached data against instance URL
                 $instanceInfo = $data['data']['instance'] ?? [];
                 $instanceUrlLicense = $instanceInfo['instanceUrl'];
@@ -69,7 +70,7 @@ class LicenseSystem
                 return [
                     'valid' => true,
                     'data' => $data['data'],
-                    'cached' => true
+                    'cached' => true,
                 ];
             }
         }
@@ -77,9 +78,9 @@ class LicenseSystem
         try {
             $client = new Client();
             $response = $client->get(self::API_BASE_URL . '/license/' . $licenseKey . '/info');
-            
+
             $data = json_decode($response->getBody()->getContents(), true);
-            
+
             if (!isset($data['success']) || !$data['success']) {
                 throw new \Exception($data['error'] ?? 'Unknown error occurred');
             }
@@ -117,14 +118,14 @@ class LicenseSystem
             // Cache the valid license data
             $cacheData = [
                 'data' => $data,
-                'expires_at' => time() + self::CACHE_TTL
+                'expires_at' => time() + self::CACHE_TTL,
             ];
             file_put_contents($cacheFile, json_encode($cacheData));
 
             return [
                 'valid' => true,
                 'data' => $data['data'],
-                'cached' => false
+                'cached' => false,
             ];
 
         } catch (GuzzleException $e) {
@@ -133,29 +134,31 @@ class LicenseSystem
     }
 
     /**
-     * Get cached license information
+     * Get cached license information.
      *
      * @param string $licenseKey The license key to retrieve
+     *
      * @return array|null Returns the cached license data or null if not found
      */
     public function getCachedLicense(string $licenseKey): ?array
     {
         $cacheFile = self::CACHE_DIR . md5($licenseKey) . '.json';
-        
+
         if (file_exists($cacheFile)) {
             $cacheData = json_decode(file_get_contents($cacheFile), true);
             if (isset($cacheData['expires_at']) && $cacheData['expires_at'] > time()) {
                 return $cacheData['data'];
             }
         }
-        
+
         return null;
     }
 
     /**
-     * Clear cached license information
+     * Clear cached license information.
      *
      * @param string $licenseKey The license key to clear from cache
+     *
      * @return bool Returns true if the cache was cleared successfully
      */
     public function clearLicenseCache(string $licenseKey): bool
@@ -164,6 +167,7 @@ class LicenseSystem
         if (file_exists($cacheFile)) {
             return unlink($cacheFile);
         }
+
         return false;
     }
 }

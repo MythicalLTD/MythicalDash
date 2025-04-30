@@ -206,7 +206,7 @@ $router->get('/api/user/auth/callback/discord/login', function () {
                 );
                 exit;
             }
-			$appInstance->getLogger()->error('Discord login failed for user: ' . $id . ' with context: ' . json_encode($userInfo));
+            $appInstance->getLogger()->error('Discord login failed for user: ' . $id . ' with context: ' . json_encode($userInfo));
             header('Location: ' . $url . '/auth/login?error=discord');
             exit;
 

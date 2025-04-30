@@ -27,7 +27,7 @@ export class LicenseServer {
             }
 
             // If no cache or expired, fetch from server
-            const response = await fetch('/api/system/license');
+            const response = await fetch('/api/system/license/branding-removal');
             const data: LicenseResponse = await response.json();
 
             // Cache the result

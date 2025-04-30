@@ -255,7 +255,7 @@
                     </div>
 
                     <!-- License Warning -->
-                    <div v-if="!formData.license_key" class="mb-4">
+                    <div class="mb-4">
                         <div
                             class="flex items-start text-yellow-500 bg-yellow-500/10 p-3 rounded-lg border border-yellow-500/20"
                         >
@@ -532,39 +532,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- License Key Section -->
-            <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
-                <h3 class="text-lg font-medium text-white mb-1">License Key</h3>
-                <p class="text-sm text-gray-400 mb-4">
-                    Your MythicalDash license key that validates your installation.
-                </p>
-
-                <div>
-                    <label for="license_key" class="block text-sm font-medium text-gray-400 mb-1">License Key</label>
-                    <div class="relative">
-                        <input
-                            id="license_key"
-                            :type="showLicenseKey ? 'text' : 'password'"
-                            v-model="formData.license_key"
-                            @change="updateSetting('license_key', formData.license_key)"
-                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 pr-10 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            placeholder="XXXX-XXXX-XXXX-XXXX"
-                        />
-                        <button
-                            type="button"
-                            @click="showLicenseKey = !showLicenseKey"
-                            class="absolute inset-y-0 right-0 pr-3 flex items-center"
-                        >
-                            <EyeIcon v-if="showLicenseKey" class="h-5 w-5 text-gray-400" />
-                            <EyeOffIcon v-else class="h-5 w-5 text-gray-400" />
-                        </button>
-                    </div>
-                    <p class="mt-1 text-xs text-gray-500">
-                        Enter your MythicalDash license key. If you don't have one, please contact support.
-                    </p>
-                </div>
-            </div>
         </div>
     </div>
 </template>
@@ -584,12 +551,10 @@ const emit = defineEmits(['update']);
 const formData = ref({
     turnstile_key_pub: '',
     turnstile_key_priv: '',
-    license_key: '',
 });
 
 // Show/hide sensitive data
 const showSecretKey = ref(false);
-const showLicenseKey = ref(false);
 
 // Computed property for turnstile enabled state
 const turnstileEnabled = computed({
@@ -663,7 +628,6 @@ watch(
             formData.value = {
                 turnstile_key_pub: newSettings['turnstile_key_pub'] || '',
                 turnstile_key_priv: newSettings['turnstile_key_priv'] || '',
-                license_key: newSettings['license_key'] || '',
             };
         }
     },

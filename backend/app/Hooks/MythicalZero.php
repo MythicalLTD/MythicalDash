@@ -14,6 +14,7 @@
 namespace MythicalDash\Hooks;
 
 use MythicalDash\App;
+
 class MythicalZero
 {
     private string $url;
@@ -21,7 +22,8 @@ class MythicalZero
     private string $instanceId;
     private bool $zeroTrustEnabled;
     private bool $telemetryEnabled;
-	private string $licenseKey;
+    private string $licenseKey;
+
     /**
      * Telemetry service constructor.
      *
@@ -35,14 +37,14 @@ class MythicalZero
         string $url,
         string $version,
         string $instanceId,
-		string $licenseKey,
+        string $licenseKey,
         string $zeroTrustEnabled,
         string $telemetryEnabled,
     ) {
         $this->url = rtrim($url, '/');
         $this->version = $version;
         $this->instanceId = $instanceId;
-		$this->licenseKey = $licenseKey;
+        $this->licenseKey = $licenseKey;
         $this->zeroTrustEnabled = $zeroTrustEnabled === 'true';
         $this->telemetryEnabled = $telemetryEnabled === 'true';
     }
@@ -60,20 +62,21 @@ class MythicalZero
     {
         if (!$this->zeroTrustEnabled) {
             App::getInstance(true)->getLogger()->warning('Zero trust is not enabled, skipping registration telemetry');
+
             return;
         }
 
         try {
             $client = new \GuzzleHttp\Client();
             $headers = [
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ];
             $body = json_encode([
                 'username' => $username,
                 'email' => $email,
                 'first_name' => $firstName,
                 'last_name' => $lastName,
-                'ip' => $ip
+                'ip' => $ip,
             ]);
 
             $request = new \GuzzleHttp\Psr7\Request(
@@ -124,13 +127,14 @@ class MythicalZero
     ): void {
         if (!$this->zeroTrustEnabled) {
             App::getInstance(true)->getLogger()->warning('Zero trust is not enabled, skipping login telemetry');
+
             return;
         }
 
         try {
             $client = new \GuzzleHttp\Client();
             $headers = [
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ];
             $body = json_encode([
                 'username' => $username,
@@ -143,7 +147,7 @@ class MythicalZero
                 'banned' => $banned,
                 'verified' => $verified,
                 'discord_id' => $discord_id,
-                'github_id' => $github_id
+                'github_id' => $github_id,
             ]);
 
             $request = new \GuzzleHttp\Psr7\Request(
