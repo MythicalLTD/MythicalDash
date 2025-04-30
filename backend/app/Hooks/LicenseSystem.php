@@ -19,70 +19,151 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class LicenseSystem
 {
-	private const API_BASE_URL = 'https://mymythicalid.mythical.systems/api/system';
-	private const ERROR_CODES = [
-		'LICENSE_KEY_DOES_NOT_EXIST',
-		'LICENSE_KEY_EXPIRED',
-		'LICENSE_KEY_INACTIVE',
-		'LICENSE_KEY_DELETED',
-		'LICENSE_KEY_LOCKED'
-	];
+    private const API_BASE_URL = 'https://mymythicalid.mythical.systems/api/system';
+    private const ERROR_CODES = [
+        'LICENSE_KEY_DOES_NOT_EXIST',
+        'LICENSE_KEY_EXPIRED',
+        'LICENSE_KEY_INACTIVE',
+        'LICENSE_KEY_DELETED',
+        'LICENSE_KEY_LOCKED'
+    ];
+    private const CACHE_DIR = __DIR__ . '/../../storage/caches/licenses/';
+    private const CACHE_TTL = 3600; // 1 hour cache
 
-	/**
-	 * Validates a license key by making an API call
-	 *
-	 * @param string $licenseKey The license key to validate
-	 * @return array Returns an array containing validation status and data
-	 * @throws \Exception If the API call fails or returns an error
-	 */
-	public function validateLicense(string $licenseKey, string $instanceUrl): array
-	{
-		try {
-			$client = new Client();
-			$response = $client->get(self::API_BASE_URL . '/license/' . $licenseKey . '/info');
-			
-			$data = json_decode($response->getBody()->getContents(), true);
-			
-			if (!isset($data['success']) || !$data['success']) {
-				throw new \Exception($data['error'] ?? 'Unknown error occurred');
-			}
+    public function __construct()
+    {
+        // Ensure cache directory exists
+        if (!is_dir(self::CACHE_DIR)) {
+            mkdir(self::CACHE_DIR, 0755, true);
+        }
+    }
 
-			// Check if the license is valid based on the response
-			if ($data['code'] !== 200) {
-				throw new \Exception('Invalid license response');
-			}
+    /**
+     * Validates a license key by making an API call or retrieving from cache
+     *
+     * @param string $licenseKey The license key to validate
+     * @param string $instanceUrl The instance URL to validate against
+     * @return array Returns an array containing validation status and data
+     * @throws \Exception If the API call fails or returns an error
+     */
+    public function validateLicense(string $licenseKey, string $instanceUrl): array
+    {
+        $cacheFile = self::CACHE_DIR . md5($licenseKey) . '.json';
 
-			// Check if the license key info indicates any issues
-			$licenseInfo = $data['data']['license_key_info'] ?? [];
-			if ($licenseInfo['deleted'] === 'true') {
-				throw new \Exception('LICENSE_KEY_DELETED');
-			}
-			if ($licenseInfo['locked'] === 'true') {
-				throw new \Exception('LICENSE_KEY_LOCKED');
-			}
-			if ($licenseInfo['status'] !== 'active') {
-				throw new \Exception('LICENSE_KEY_INACTIVE');
-			}
+        // Try to get from cache first
+        if (file_exists($cacheFile)) {
+            $cacheData = json_decode(file_get_contents($cacheFile), true);
+            
+            // Check if cache is still valid
+            if (isset($cacheData['expires_at']) && $cacheData['expires_at'] > time()) {
+                $data = $cacheData['data'];
+                
+                // Validate cached data against instance URL
+                $instanceInfo = $data['data']['instance'] ?? [];
+                $instanceUrlLicense = $instanceInfo['instanceUrl'];
 
-			// Check if the license has expired
-			$expiresAt = strtotime($licenseInfo['expires_at']);
-			if ($expiresAt < time()) {
-				throw new \Exception('LICENSE_KEY_EXPIRED');
-			}
-			$instanceInfo = $data['data']['instance'] ?? [];
-			$instanceUrlLicense = $instanceInfo['instanceUrl'];
+                if ($instanceUrlLicense !== $instanceUrl) {
+                    throw new \Exception('LICENSE_KEY_INSTANCE_URL_MISMATCH');
+                }
 
-			if ($instanceUrlLicense !== $instanceUrl) {
-				throw new \Exception('LICENSE_KEY_INSTANCE_URL_MISMATCH');
-			}
+                return [
+                    'valid' => true,
+                    'data' => $data['data'],
+                    'cached' => true
+                ];
+            }
+        }
 
-			return [
-				'valid' => true,
-				'data' => $data['data'],
-			];
+        try {
+            $client = new Client();
+            $response = $client->get(self::API_BASE_URL . '/license/' . $licenseKey . '/info');
+            
+            $data = json_decode($response->getBody()->getContents(), true);
+            
+            if (!isset($data['success']) || !$data['success']) {
+                throw new \Exception($data['error'] ?? 'Unknown error occurred');
+            }
 
-		} catch (GuzzleException $e) {
-			throw new \Exception('Failed to validate license: ' . $e->getMessage());
-		}
-	}
+            // Check if the license is valid based on the response
+            if ($data['code'] !== 200) {
+                throw new \Exception('Invalid license response');
+            }
+
+            // Check if the license key info indicates any issues
+            $licenseInfo = $data['data']['license_key_info'] ?? [];
+            if ($licenseInfo['deleted'] === 'true') {
+                throw new \Exception('LICENSE_KEY_DELETED');
+            }
+            if ($licenseInfo['locked'] === 'true') {
+                throw new \Exception('LICENSE_KEY_LOCKED');
+            }
+            if ($licenseInfo['status'] !== 'active') {
+                throw new \Exception('LICENSE_KEY_INACTIVE');
+            }
+
+            // Check if the license has expired
+            $expiresAt = strtotime($licenseInfo['expires_at']);
+            if ($expiresAt < time()) {
+                throw new \Exception('LICENSE_KEY_EXPIRED');
+            }
+
+            $instanceInfo = $data['data']['instance'] ?? [];
+            $instanceUrlLicense = $instanceInfo['instanceUrl'];
+
+            if ($instanceUrlLicense !== $instanceUrl) {
+                throw new \Exception('LICENSE_KEY_INSTANCE_URL_MISMATCH');
+            }
+
+            // Cache the valid license data
+            $cacheData = [
+                'data' => $data,
+                'expires_at' => time() + self::CACHE_TTL
+            ];
+            file_put_contents($cacheFile, json_encode($cacheData));
+
+            return [
+                'valid' => true,
+                'data' => $data['data'],
+                'cached' => false
+            ];
+
+        } catch (GuzzleException $e) {
+            throw new \Exception('Failed to validate license: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get cached license information
+     *
+     * @param string $licenseKey The license key to retrieve
+     * @return array|null Returns the cached license data or null if not found
+     */
+    public function getCachedLicense(string $licenseKey): ?array
+    {
+        $cacheFile = self::CACHE_DIR . md5($licenseKey) . '.json';
+        
+        if (file_exists($cacheFile)) {
+            $cacheData = json_decode(file_get_contents($cacheFile), true);
+            if (isset($cacheData['expires_at']) && $cacheData['expires_at'] > time()) {
+                return $cacheData['data'];
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Clear cached license information
+     *
+     * @param string $licenseKey The license key to clear from cache
+     * @return bool Returns true if the cache was cleared successfully
+     */
+    public function clearLicenseCache(string $licenseKey): bool
+    {
+        $cacheFile = self::CACHE_DIR . md5($licenseKey) . '.json';
+        if (file_exists($cacheFile)) {
+            return unlink($cacheFile);
+        }
+        return false;
+    }
 }

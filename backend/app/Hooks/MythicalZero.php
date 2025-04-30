@@ -14,9 +14,6 @@
 namespace MythicalDash\Hooks;
 
 use MythicalDash\App;
-use MythicalDash\Hooks\Telemetry\MythicalZeroType;
-use MythicalDash\Hooks\MythicalSystems\Utils\EncryptionHandler;
-
 class MythicalZero
 {
     private string $url;
@@ -24,7 +21,7 @@ class MythicalZero
     private string $instanceId;
     private bool $zeroTrustEnabled;
     private bool $telemetryEnabled;
-
+	private string $licenseKey;
     /**
      * Telemetry service constructor.
      *
@@ -38,12 +35,14 @@ class MythicalZero
         string $url,
         string $version,
         string $instanceId,
+		string $licenseKey,
         string $zeroTrustEnabled,
         string $telemetryEnabled,
     ) {
         $this->url = rtrim($url, '/');
         $this->version = $version;
         $this->instanceId = $instanceId;
+		$this->licenseKey = $licenseKey;
         $this->zeroTrustEnabled = $zeroTrustEnabled === 'true';
         $this->telemetryEnabled = $telemetryEnabled === 'true';
     }
@@ -61,20 +60,35 @@ class MythicalZero
     {
         if (!$this->zeroTrustEnabled) {
             App::getInstance(true)->getLogger()->warning('Zero trust is not enabled, skipping registration telemetry');
-
             return;
         }
 
         try {
-            $encryptedData = [
+            $client = new \GuzzleHttp\Client();
+            $headers = [
+                'Content-Type' => 'application/json'
+            ];
+            $body = json_encode([
                 'username' => $username,
+                'email' => $email,
                 'first_name' => $firstName,
                 'last_name' => $lastName,
-                'email' => $email,
-                'ip' => $ip,
-            ];
-            App::getInstance(true)->getLogger()->debug('Sending registration telemetry: ' . json_encode($encryptedData));
-            $this->sendTelemetry(MythicalZeroType::$register, $encryptedData);
+                'ip' => $ip
+            ]);
+
+            $request = new \GuzzleHttp\Psr7\Request(
+                'PUT',
+                $this->url . '/api/system/license/' . $this->licenseKey . '/mythicalzero/user/register',
+                $headers,
+                $body
+            );
+
+            try {
+                $response = $client->sendAsync($request)->wait();
+                App::getInstance(true)->getLogger()->debug('Registration telemetry sent successfully: ' . $response->getBody());
+            } catch (\Exception $e) {
+                App::getInstance(true)->getLogger()->error('Failed to send registration telemetry: ' . $e->getMessage());
+            }
         } catch (\Exception $e) {
             App::getInstance(true)->getLogger()->error('Failed to send registration telemetry: ' . $e->getMessage());
         }
@@ -110,118 +124,43 @@ class MythicalZero
     ): void {
         if (!$this->zeroTrustEnabled) {
             App::getInstance(true)->getLogger()->warning('Zero trust is not enabled, skipping login telemetry');
-
             return;
         }
 
         try {
-            $encryptedData = [
+            $client = new \GuzzleHttp\Client();
+            $headers = [
+                'Content-Type' => 'application/json'
+            ];
+            $body = json_encode([
                 'username' => $username,
+                'email' => $email,
                 'first_name' => $first_name,
                 'last_name' => $last_name,
-                'email' => $email,
+                'ip' => $ip,
                 'credits' => $credits,
                 'uuid' => $uuid,
-                'ip' => $ip,
                 'banned' => $banned,
                 'verified' => $verified,
                 'discord_id' => $discord_id,
-                'github_id' => $github_id,
-            ];
-            App::getInstance(true)->getLogger()->debug('Sending login telemetry: ' . json_encode($encryptedData));
-            $this->sendTelemetry(MythicalZeroType::$login, $encryptedData);
+                'github_id' => $github_id
+            ]);
+
+            $request = new \GuzzleHttp\Psr7\Request(
+                'PUT',
+                $this->url . '/api/system/license/' . $this->licenseKey . '/mythicalzero/user/login',
+                $headers,
+                $body
+            );
+
+            try {
+                $response = $client->sendAsync($request)->wait();
+                App::getInstance(true)->getLogger()->debug('Login telemetry sent successfully: ' . $response->getBody());
+            } catch (\Exception $e) {
+                App::getInstance(true)->getLogger()->error('Failed to send login telemetry: ' . $e->getMessage());
+            }
         } catch (\Exception $e) {
             App::getInstance(true)->getLogger()->error('Failed to send login telemetry: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * Send telemetry data to the server.
-     *
-     * @param MythicalZeroType|string $type Type of telemetry event
-     * @param array $data Additional data to send
-     */
-    private function sendTelemetry(MythicalZeroType|string $type, array $data = []): void
-    {
-        if (!$this->telemetryEnabled) {
-            return;
-        }
-
-        try {
-            $params = $this->buildTelemetryParams($type, $data);
-            $url = $this->buildTelemetryUrl($params);
-            App::getInstance(true)->getLogger()->debug('Sending telemetry: ' . $url);
-            $this->sendRequest($url);
-        } catch (\Exception $e) {
-            App::getInstance(true)->getLogger()->error('Failed to send telemetry: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Build telemetry parameters.
-     *
-     * @param MythicalZeroType|string $type Type of telemetry event
-     * @param array $data Additional data
-     *
-     * @return array Parameters for the request
-     */
-    private function buildTelemetryParams(MythicalZeroType|string $type, array $data): array
-    {
-        return [
-            'authKey' => 'AxWTnecj85SI4bG6rIP8bvw2uCF7W5MmkJcQIkrYS80MzeTraQWyICL690XOio8F',
-            'clientId' => $this->instanceId,
-            'action' => $type,
-            'version' => $this->version,
-            'additionalData' => $data,
-            'osName' => php_uname('s') ?? 'Unknown',
-            'kernelName' => php_uname('r') ?? 'Unknown',
-            'cpuArchitecture' => php_uname('m') ?? 'Unknown',
-            'osArchitecture' => PHP_INT_SIZE === 8 ? '64-bit' : '32-bit',
-        ];
-    }
-
-    /**
-     * Build the telemetry URL with query parameters.
-     *
-     * @param array $params Query parameters
-     *
-     * @return string Complete URL
-     */
-    private function buildTelemetryUrl(array $params): string
-    {
-        return $this->url . '/v2/telemetry/mythicaldash?' . http_build_query($params);
-    }
-
-    /**
-     * Send HTTP request using cURL.
-     *
-     * @param string $url Target URL
-     */
-    private function sendRequest(string $url): void
-    {
-        $ch = curl_init();
-
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPGET => true,
-            CURLOPT_HTTPHEADER => [
-                'Accept: application/json',
-            ],
-            CURLOPT_TIMEOUT => 3,
-            CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_SSL_VERIFYHOST => 2,
-        ]);
-
-        // Execute request in background
-        if (function_exists('curl_exec')) {
-            curl_exec($ch);
-        }
-
-        if (curl_errno($ch)) {
-            App::getInstance(true)->getLogger()->error('Telemetry request failed: ' . curl_error($ch));
-        }
-
-        curl_close($ch);
     }
 }

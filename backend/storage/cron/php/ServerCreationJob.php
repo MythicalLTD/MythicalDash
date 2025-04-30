@@ -20,7 +20,7 @@ class ServerCreationJob implements TimeTask
 	private static $currentBuildId = null;
 	private static $logId = null;
 
-	public static function run()
+	public function run()
 	{
 		$cron = new Cron('service-worker', '1M');
 		$cron->runIfDue(function () {

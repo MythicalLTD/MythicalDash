@@ -2,6 +2,8 @@
 
 namespace MythicalDash\Cron;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use MythicalDash\Chat\Announcements\Announcements;
 use MythicalDash\Chat\Database;
 use MythicalDash\Chat\Earn\GyaniLinks;
@@ -29,7 +31,7 @@ use MythicalDash\Cron\TimeTask;
 
 class TelemetryJob implements TimeTask
 {
-	public static function run()
+	public function run()
 	{
 		$cron = new Cron('telemetry-job', '1D');
 		try {
@@ -37,16 +39,16 @@ class TelemetryJob implements TimeTask
 				$app = \MythicalDash\App::getInstance(false, true);
 				$chat = new BungeeChatApi();
 				$config = $app->getConfig();
-	
+
 				$isEnabled = $config->getSetting(ConfigInterface::TELEMETRY_ENABLED, 'true');
 				if ($isEnabled === 'true') {
 					$isEnabled = true;
 				} else {
 					$isEnabled = false;
 				}
-	
+
 				$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &7Status: ' . ($isEnabled ? '&aEnabled' : '&cDisabled'));
-	
+
 				if ($isEnabled) {
 					$appID = preg_replace('/^https?:\/\//', '', $config->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems'));
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &3App ID: &f' . $appID);
@@ -86,7 +88,7 @@ class TelemetryJob implements TimeTask
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &3Referrals Users: &f' . $referralsUsers);
 					$configs = Database::getTableRowCount('mythicaldash_settings', true);
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &3Configs: &f' . $configs);
-	
+
 					$numeric_data = [
 						'servers' => $servers,
 						'users' => $users,
@@ -118,14 +120,14 @@ class TelemetryJob implements TimeTask
 						$webServerLogs = array_slice($webServerLogs, -250);
 					}
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &3Logs: &f' . count($logs));
-	
+
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &eFetching public settings...');
 					$publicSettings = PublicConfig::getPublicSettingsWithDefaults();
 					$publicSettings = $config->getSettings(array_keys($publicSettings));
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &3Public settings: &f' . count($publicSettings));
 					$dateNow = date('Y-m-d H:i:s');
 
-	
+
 					$telemetryData = [
 						'appID' => $appID,
 						'date' => $dateNow,
@@ -134,11 +136,11 @@ class TelemetryJob implements TimeTask
 						'logs' => $logs,
 						'addons' => [],
 					];
-					
+
 					global $pluginManager;
 
 					$addons = $pluginManager->getPluginsWithoutLoader();
-					
+
 					foreach ($addons as $addon) {
 						$addonConfig = PluginConfig::getConfig($addon);
 						$telemetryData['addons'][] = [
@@ -146,54 +148,42 @@ class TelemetryJob implements TimeTask
 							'config' => $addonConfig,
 						];
 					}
-	
+
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &ePreparing telemetry data...');
 					$fileName = 'telemetry-' . $appID . '-' . date('Y-m-d') . '.json';
 					$dir = APP_CACHE_DIR . '/telemetry/';
-	
+
 					if (!file_exists($dir)) {
 						mkdir($dir, 0755, true);
 					}
-	
+
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &eSaving telemetry data...');
 					$jsonData = json_encode($telemetryData, JSON_PRETTY_PRINT);
 					file_put_contents($dir . $fileName, $jsonData);
-	
+
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &eSaving telemetry data...');
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &aTelemetry data has been processed and saved to: &f' . $fileName);
 
 
 					$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &eSending telemetry data...');
 					try {
-						$ch = curl_init();
-						curl_setopt_array($ch, [
-							CURLOPT_URL => 'https://api.mythical.systems/v2/telemetry/mythicaldash/push',
-							CURLOPT_RETURNTRANSFER => true,
-							CURLOPT_POST => true,
-							CURLOPT_POSTFIELDS => $jsonData,
-							CURLOPT_HTTPHEADER => [
-								'Content-Type: application/json',
-								'Accept: application/json'
-							],
-							CURLOPT_TIMEOUT => 10,
-							CURLOPT_SSL_VERIFYPEER => true,
-							CURLOPT_SSL_VERIFYHOST => 2
-						]);
+						$licenseKey = $config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
 
-						$response = curl_exec($ch);
-						
-						if (curl_errno($ch)) {
-							throw new \Exception('Curl error: ' . curl_error($ch));
+						if ($licenseKey === 'NULL') {
+							$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &cNo license key found');
+							return;
 						}
 
-						$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-						curl_close($ch);
+						$client = new Client();
+						$headers = [
+							'Content-Type' => 'application/json'
+						];
+						$body = json_encode($telemetryData);
+						$request = new Request('PUT', 'https://mymythicalid.mythical.systems/api/system/license/' . $licenseKey . '/telemetry', $headers, $body);
+						$res = $client->sendAsync($request)->wait();
+						$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &aTelemetry data sent successfully: ' . $res->getBody());
 
-						if ($httpCode >= 200 && $httpCode < 300) {
-							$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &aTelemetry data sent successfully');
-						} else {
-							throw new \Exception('HTTP error: ' . $httpCode . ' Response: ' . $response);
-						}
+
 
 					} catch (\Throwable $e) {
 						$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &cFailed to send telemetry data: ' . $e->getMessage());

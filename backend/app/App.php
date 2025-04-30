@@ -27,6 +27,7 @@ use MythicalDash\Hooks\LegacyLicenseValidator;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AppEvent;
 use MythicalDash\Hooks\MythicalSystems\Utils\XChaCha20;
+use MythicalDash\Hooks\LicenseSystem;
 
 class App extends MythicalAPP
 {
@@ -144,17 +145,13 @@ class App extends MythicalAPP
          * MythicalZero.
          */
         $this->telemetry = new MythicalZero(
-            'https://api.mythical.systems',
+            'https://mymythicalid.mythical.systems',
             APP_VERSION,
             preg_replace('/^https?:\/\//', '', $this->getConfig()->getSetting(ConfigInterface::APP_URL, 'NULL')),
-            $this->getConfig()->getSetting(ConfigInterface::MYTHICAL_ZERO_TRUST_ENABLED, 'true'),
+			$this->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'),
+			$this->getConfig()->getSetting(ConfigInterface::MYTHICAL_ZERO_TRUST_ENABLED, 'true'),
             $this->getConfig()->getSetting(ConfigInterface::TELEMETRY_ENABLED, 'true'),
         );
-
-        if ($this->getConfig()->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems') == 'https://mythicaldash-v3.mythical.systems') {
-            $appUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-            $this->getConfig()->setSetting(ConfigInterface::APP_URL, $appUrl);
-        }
 
         $router->add('/(.*)', function ($route): void {
             self::init();
@@ -358,215 +355,5 @@ class App extends MythicalAPP
     public function generatePin(): int
     {
         return random_int(100000, 999999);
-    }
-
-    /**
-     * Generate a performance heatmap of the application.
-     * Tracks execution time, memory usage, and frequency of function calls.
-     *
-     * @param int $duration Duration in seconds to collect data
-     * @param array $options Additional options for heatmap generation
-     *
-     * @return array Heatmap data containing performance metrics
-     */
-    public function heatmap(int $duration = 60, array $options = []): array
-    {
-        $startTime = microtime(true);
-        $heatmapData = [
-            'timestamp' => date('Y-m-d H:i:s'),
-            'duration' => $duration,
-            'metrics' => [
-                'memory' => [],
-                'cpu' => [],
-                'io' => [],
-                'database' => [],
-                'function_calls' => [],
-            ],
-            'hotspots' => [],
-        ];
-
-        // Memory usage tracking
-        $heatmapData['metrics']['memory'] = [
-            'peak' => memory_get_peak_usage(true),
-            'current' => memory_get_usage(true),
-            'limit' => ini_get('memory_limit'),
-        ];
-
-        // CPU load
-        if (function_exists('sys_getloadavg')) {
-            $heatmapData['metrics']['cpu'] = sys_getloadavg();
-        }
-
-        // Database metrics if available
-        if (isset($this->db)) {
-            try {
-                $stmt = $this->db->getPdo()->query('SHOW STATUS');
-                $dbMetrics = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
-                $heatmapData['metrics']['database'] = [
-                    'connections' => $dbMetrics['Threads_connected'] ?? 0,
-                    'queries' => $dbMetrics['Questions'] ?? 0,
-                    'slow_queries' => $dbMetrics['Slow_queries'] ?? 0,
-                ];
-            } catch (\Exception $e) {
-                $heatmapData['metrics']['database'] = ['error' => $e->getMessage()];
-            }
-        }
-
-        // I/O operations
-        if (function_exists('disk_free_space')) {
-            $heatmapData['metrics']['io'] = [
-                'disk_free' => disk_free_space('/'),
-                'disk_total' => disk_total_space('/'),
-            ];
-        }
-
-        return $heatmapData;
-    }
-
-    /**
-     * Generate a comprehensive health report of the application.
-     * Checks various system components and dependencies.
-     *
-     * @return array Health status of various system components
-     */
-    public function healthdump(): array
-    {
-        $health = [
-            'timestamp' => date('Y-m-d H:i:s'),
-            'status' => 'healthy',
-            'components' => [],
-        ];
-
-        // Check PHP version and extensions
-        $health['components']['php'] = [
-            'version' => PHP_VERSION,
-            'extensions' => get_loaded_extensions(),
-            'memory_limit' => ini_get('memory_limit'),
-            'max_execution_time' => ini_get('max_execution_time'),
-        ];
-
-        // Check database connection
-        if (isset($this->db)) {
-            try {
-                $this->db->getPdo()->query('SELECT 1');
-                $health['components']['database'] = [
-                    'status' => 'connected',
-                    'type' => $this->db->getPdo()->getAttribute(\PDO::ATTR_DRIVER_NAME),
-                ];
-            } catch (\Exception $e) {
-                $health['components']['database'] = [
-                    'status' => 'error',
-                    'message' => $e->getMessage(),
-                ];
-                $health['status'] = 'degraded';
-            }
-        }
-
-        // Check Redis if enabled
-        if (defined('REDIS_ENABLED') && REDIS_ENABLED) {
-            try {
-                $redis = new \Redis();
-                $redis->connect($_ENV['REDIS_HOST'] ?? 'localhost');
-                $health['components']['redis'] = [
-                    'status' => 'connected',
-                    'version' => $redis->info()['redis_version'],
-                ];
-            } catch (\Exception $e) {
-                $health['components']['redis'] = [
-                    'status' => 'error',
-                    'message' => $e->getMessage(),
-                ];
-                $health['status'] = 'degraded';
-            }
-        }
-
-        // Check disk space
-        $health['components']['disk'] = [
-            'free_space' => disk_free_space('/'),
-            'total_space' => disk_total_space('/'),
-            'usage_percentage' => round((1 - disk_free_space('/') / disk_total_space('/')) * 100, 2),
-        ];
-
-        return $health;
-    }
-
-    /**
-     * Generate a core dump of the application's current state.
-     * Captures detailed debug information for troubleshooting.
-     *
-     * @param bool $includeEnv Whether to include environment variables
-     * @param bool $includeSensitive Whether to include sensitive data (use with caution)
-     *
-     * @return array Detailed application state information
-     */
-    public function coreDump(bool $includeEnv = false, bool $includeSensitive = false): array
-    {
-        $dump = [
-            'timestamp' => date('Y-m-d H:i:s'),
-            'process' => [
-                'pid' => getmypid(),
-                'user' => get_current_user(),
-                'memory_usage' => memory_get_usage(true),
-                'peak_memory_usage' => memory_get_peak_usage(true),
-            ],
-            'runtime' => [
-                'php_version' => PHP_VERSION,
-                'sapi' => PHP_SAPI,
-                'os' => PHP_OS,
-                'extensions' => get_loaded_extensions(),
-                'ini_settings' => ini_get_all(null, false),
-            ],
-            'stack_trace' => $this->getDebugBacktrace(),
-            'errors' => [],
-        ];
-
-        // Capture error log if available
-        $errorLog = ini_get('error_log');
-        if ($errorLog && file_exists($errorLog)) {
-            $dump['errors'] = array_slice(file($errorLog), -100); // Last 100 lines
-        }
-
-        // Include environment variables if requested
-        if ($includeEnv) {
-            $dump['environment'] = $_ENV;
-            if (!$includeSensitive) {
-                // Remove sensitive data
-                foreach ($dump['environment'] as $key => &$value) {
-                    if (preg_match('/(password|key|secret|token)/i', $key)) {
-                        $value = '******';
-                    }
-                }
-            }
-        }
-
-        // Add loaded classes and interfaces
-        $dump['classes'] = [
-            'declared' => get_declared_classes(),
-            'interfaces' => get_declared_interfaces(),
-        ];
-
-        return $dump;
-    }
-
-    /**
-     * Get a cleaned up debug backtrace.
-     *
-     * @return array Formatted backtrace information
-     */
-    private function getDebugBacktrace(): array
-    {
-        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        $cleanTrace = [];
-
-        foreach ($trace as $call) {
-            $cleanTrace[] = [
-                'file' => $call['file'] ?? 'unknown',
-                'line' => $call['line'] ?? 0,
-                'function' => $call['function'] ?? 'unknown',
-                'class' => $call['class'] ?? null,
-            ];
-        }
-
-        return $cleanTrace;
     }
 }

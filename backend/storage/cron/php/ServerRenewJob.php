@@ -11,9 +11,8 @@ class ServerRenewJob implements TimeTask
 	private const MAX_RETRIES = 3;
 	private const RETRY_DELAY = 5; // seconds
 
-	public static function run()
+	public function run()
 	{
-		unlink(__DIR__.'/../../caches/cron/renew-worker.myc');
 		try {
 			$cron = new Cron('renew-worker', '1D');
 			$cron->runIfDue(function () {
