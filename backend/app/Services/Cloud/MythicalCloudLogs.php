@@ -14,6 +14,9 @@
 namespace MythicalDash\Services\Cloud;
 
 use MythicalDash\App;
+use MythicalDash\Chat\Database;
+use MythicalDash\Config\ConfigFactory;
+use MythicalDash\Config\ConfigInterface;
 
 class MythicalCloudLogs
 {
@@ -22,10 +25,21 @@ class MythicalCloudLogs
      *
      * @return string|null Returns the log URL on success, null on failure
      */
-    public static function uploadDashboardLogsToCloud(): ?string
+
+	public static function uploadDashboardLogsToCloud(): ?string
     {
         try {
-            $logs = App::getInstance(true, false)->getLogger()->getLogs();
+			$appInstance = App::getInstance(true, false);
+            $logs = $appInstance->getLogger()->getLogs(false);
+			$appInstance->loadEnv();
+            $db = new Database(
+                $_ENV['DATABASE_HOST'],
+                $_ENV['DATABASE_DATABASE'],
+                $_ENV['DATABASE_USER'],
+                $_ENV['DATABASE_PASSWORD']
+            );
+            $config = new ConfigFactory($db->getPdo());
+
             if (empty($logs)) {
                 App::getInstance(true)->getLogger()->warning('No logs to upload');
 
@@ -35,52 +49,29 @@ class MythicalCloudLogs
             // Limit logs to 250 rows (keep the most recent logs)
             if (count($logs) > 250) {
                 $logs = array_slice($logs, -250);
-                App::getInstance(true)->getLogger()->info('Logs truncated to 250 rows for upload');
+                App::getInstance(true)->getLogger()->debug('Web server logs truncated to 250 rows for upload');
             }
 
-            $route = 'https://api.mythical.systems/log';
+            $client = new \GuzzleHttp\Client();
+            $headers = [
+                'Content-Type' => 'application/json',
+            ];
 
-            // Convert logs array to text with newlines
-            $logsText = implode("\n", $logs);
-
-            $ch = curl_init($route);
-            if ($ch === false) {
-                App::getInstance(true)->getLogger()->error('Failed to initialize cURL');
-
-                return null;
-            }
-
-            curl_setopt_array($ch, [
-                CURLOPT_CUSTOMREQUEST => 'PUT',
-                CURLOPT_POSTFIELDS => $logsText,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HTTPHEADER => [
-                    'Content-Type: text/plain',
-                    'Content-Length: ' . strlen($logsText),
-                ],
-                CURLOPT_TIMEOUT => 10,
-                CURLOPT_SSL_VERIFYPEER => true,
-                CURLOPT_SSL_VERIFYHOST => 2,
+            $body = json_encode([
+                'logs' => $logs,
             ]);
 
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            $curlError = curl_error($ch);
-            curl_close($ch);
+            $request = new \GuzzleHttp\Psr7\Request(
+                'PUT',
+                'https://mymythicalid.mythical.systems/api/system/license/'.$config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL').'/logs',
+                $headers,
+                $body
+            );
 
-            if ($response === false) {
-                App::getInstance(true)->getLogger()->error('cURL error: ' . $curlError);
+            $response = $client->sendAsync($request)->wait();
+            $responseBody = $response->getBody()->getContents();
 
-                return null;
-            }
-
-            if ($httpCode !== 200) {
-                App::getInstance(true)->getLogger()->error('HTTP error: ' . $httpCode);
-
-                return null;
-            }
-
-            $responseData = json_decode($response, true);
+            $responseData = json_decode($responseBody, true);
             if ($responseData === null) {
                 App::getInstance(true)->getLogger()->error('Failed to decode response JSON');
 
@@ -92,16 +83,14 @@ class MythicalCloudLogs
 
                 return null;
             }
+			if (!isset($responseData['logs'])) {
+				App::getInstance(true)->getLogger()->error('No log URL in response');
 
-            if (!isset($responseData['user_url'])) {
-                App::getInstance(true)->getLogger()->error('No log URL in response');
+				return null;
+			}
+            App::getInstance(true)->getLogger()->debug('Web server logs uploaded successfully');
 
-                return null;
-            }
-
-            App::getInstance(true)->getLogger()->info('Logs uploaded successfully to: ' . $responseData['user_url']);
-
-            return $responseData['user_url'];
+            return $responseData['logs'];
 
         } catch (\Exception $e) {
             App::getInstance(true)->getLogger()->error('Failed to upload logs: ' . $e->getMessage());
@@ -113,7 +102,17 @@ class MythicalCloudLogs
     public static function uploadWebServerLogsToCloud(): ?string
     {
         try {
-            $logs = App::getInstance(true, false)->getWebServerLogger()->getLogs(true);
+			$appInstance = App::getInstance(true, false);
+			$logs = $appInstance->getWebServerLogger()->getLogs(true);
+			$appInstance->loadEnv();
+            $db = new Database(
+                $_ENV['DATABASE_HOST'],
+                $_ENV['DATABASE_DATABASE'],
+                $_ENV['DATABASE_USER'],
+                $_ENV['DATABASE_PASSWORD']
+            );
+            $config = new ConfigFactory($db->getPdo());
+
             if (empty($logs)) {
                 App::getInstance(true)->getLogger()->warning('No logs to upload');
 
@@ -123,52 +122,29 @@ class MythicalCloudLogs
             // Limit logs to 250 rows (keep the most recent logs)
             if (count($logs) > 250) {
                 $logs = array_slice($logs, -250);
-                App::getInstance(true)->getLogger()->info('Web server logs truncated to 250 rows for upload');
+                App::getInstance(true)->getLogger()->debug('Web server logs truncated to 250 rows for upload');
             }
 
-            $route = 'https://api.mythical.systems/log';
+            $client = new \GuzzleHttp\Client();
+            $headers = [
+                'Content-Type' => 'application/json',
+            ];
 
-            // Convert logs array to text with newlines
-            $logsText = implode("\n", $logs);
-
-            $ch = curl_init($route);
-            if ($ch === false) {
-                App::getInstance(true)->getLogger()->error('Failed to initialize cURL');
-
-                return null;
-            }
-
-            curl_setopt_array($ch, [
-                CURLOPT_CUSTOMREQUEST => 'PUT',
-                CURLOPT_POSTFIELDS => $logsText,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HTTPHEADER => [
-                    'Content-Type: text/plain',
-                    'Content-Length: ' . strlen($logsText),
-                ],
-                CURLOPT_TIMEOUT => 10,
-                CURLOPT_SSL_VERIFYPEER => true,
-                CURLOPT_SSL_VERIFYHOST => 2,
+            $body = json_encode([
+                'logs' => $logs,
             ]);
 
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            $curlError = curl_error($ch);
-            curl_close($ch);
+            $request = new \GuzzleHttp\Psr7\Request(
+                'PUT',
+                'https://mymythicalid.mythical.systems/api/system/license/'.$config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL').'/logs',
+                $headers,
+                $body
+            );
 
-            if ($response === false) {
-                App::getInstance(true)->getLogger()->error('cURL error: ' . $curlError);
+            $response = $client->sendAsync($request)->wait();
+            $responseBody = $response->getBody()->getContents();
 
-                return null;
-            }
-
-            if ($httpCode !== 200) {
-                App::getInstance(true)->getLogger()->error('HTTP error: ' . $httpCode);
-
-                return null;
-            }
-
-            $responseData = json_decode($response, true);
+            $responseData = json_decode($responseBody, true);
             if ($responseData === null) {
                 App::getInstance(true)->getLogger()->error('Failed to decode response JSON');
 
@@ -180,16 +156,14 @@ class MythicalCloudLogs
 
                 return null;
             }
+			if (!isset($responseData['logs'])) {
+				App::getInstance(true)->getLogger()->error('No log URL in response');
 
-            if (!isset($responseData['user_url'])) {
-                App::getInstance(true)->getLogger()->error('No log URL in response');
+				return null;
+			}
+            App::getInstance(true)->getLogger()->debug('Web server logs uploaded successfully');
 
-                return null;
-            }
-
-            App::getInstance(true)->getLogger()->info('Logs uploaded successfully to: ' . $responseData['user_url']);
-
-            return $responseData['user_url'];
+            return $responseData['logs'];
 
         } catch (\Exception $e) {
             App::getInstance(true)->getLogger()->error('Failed to upload logs: ' . $e->getMessage());

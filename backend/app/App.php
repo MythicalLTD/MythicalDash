@@ -13,19 +13,18 @@
 
 namespace MythicalDash;
 
-use MythicalDash\Hooks\LicenseSystem;
 use RateLimit\Rate;
 use MythicalDash\Chat\Database;
 use RateLimit\RedisRateLimiter;
 use MythicalDash\Hooks\MythicalAPP;
 use MythicalDash\Hooks\MythicalZero;
+use MythicalDash\Hooks\LicenseSystem;
 use MythicalDash\Router\Router as rt;
 use MythicalDash\Config\ConfigFactory;
 use MythicalDash\Logger\LoggerFactory;
 use RateLimit\Exception\LimitExceeded;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
-use MythicalDash\Hooks\LegacyLicenseValidator;
 use MythicalDash\Plugins\Events\Events\AppEvent;
 use MythicalDash\Hooks\MythicalSystems\Utils\XChaCha20;
 
@@ -33,7 +32,7 @@ class App extends MythicalAPP
 {
     public static App $instance;
     public Database $db;
-	public LicenseSystem $LicenseSystem;
+    public LicenseSystem $LicenseSystem;
     public MythicalZero $telemetry;
 
     public function __construct(bool $softBoot, bool $isCron = false)
@@ -128,19 +127,26 @@ class App extends MythicalAPP
         $eventManager->emit(AppEvent::onRouterReady(), [$router]);
 
         try {
-			$this->LicenseSystem = new LicenseSystem();
-			try {
-				if (!$this->LicenseSystem->validateLicense($this->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $this->getConfig()->getSetting(ConfigInterface::APP_URL, 'true'))) {
-					define('HAS_VALID_LICENSE', false);
-				} else {
-					define('HAS_VALID_LICENSE', true);
-				}
-			} catch (\Exception $e) {
-				define('HAS_VALID_LICENSE', false);
-			}
+            $this->LicenseSystem = new LicenseSystem();
+            try {
+                if (!$this->LicenseSystem->validateLicense($this->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $this->getConfig()->getSetting(ConfigInterface::APP_URL, 'true'))) {
+                    define('HAS_VALID_LICENSE', false);
+                } else {
+                    define('HAS_VALID_LICENSE', true);
+                }
+            } catch (\Exception $e) {
+                define('HAS_VALID_LICENSE', false);
+            }
         } catch (\Exception $e) {
             App::getInstance(true)->getLogger()->error('License validator error: ' . $e->getMessage());
         }
+
+        if (!HAS_VALID_LICENSE) {
+            self::getLogger()->error('License is invalid!');
+            self::ServiceUnavailable('License is invalid!', ['error_code' => 'LICENSE_INVALID']);
+            exit;
+        }
+
         /**
          * MythicalZero.
          */
@@ -152,7 +158,6 @@ class App extends MythicalAPP
             $this->getConfig()->getSetting(ConfigInterface::MYTHICAL_ZERO_TRUST_ENABLED, 'true'),
             $this->getConfig()->getSetting(ConfigInterface::TELEMETRY_ENABLED, 'true'),
         );
-
         $router->add('/(.*)', function ($route): void {
             self::init();
             self::NotFound('The api route does not exist!', ['error_code' => 'API_ROUTE_NOT_FOUND', 'route' => $route]);
@@ -221,10 +226,10 @@ class App extends MythicalAPP
         return $this->telemetry;
     }
 
-	public function getLicenseSystem(): LicenseSystem
-	{
-		return $this->LicenseSystem;
-	}
+    public function getLicenseSystem(): LicenseSystem
+    {
+        return $this->LicenseSystem;
+    }
 
     /**
      * Update the value of an environment variable.

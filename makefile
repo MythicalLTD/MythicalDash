@@ -11,6 +11,7 @@ YARN = yarn
 NPM = npm
 PHP = php
 COMPOSER = composer
+SED = sed
 
 # Colors and formatting
 RED = \033[0;31m
@@ -32,11 +33,13 @@ CLEAN = 🧹
 PACKAGE = 📦
 BUILD = 🔨
 SERVER = 🌐
+PROD = 🛡️
+DEV = 🔍
 
 # Make sure we use bash
 SHELL := /bin/bash
 
-.PHONY: help frontend backend dev release install clean test
+.PHONY: help frontend backend dev release install clean test set-prod set-dev
 
 # Default target
 help:
@@ -48,7 +51,8 @@ help:
 	@echo -e "  ${GREEN}make release${NC}     ${PACKAGE} Prepares a full release build"
 	@echo -e "  ${GREEN}make install${NC}     ${INFO} Installs all dependencies"
 	@echo -e "  ${GREEN}make clean${NC}       ${CLEAN} Cleans all build artifacts"
-	@echo -e "  ${GREEN}make test${NC}        ${CHECK} Runs all tests\n"
+	@echo -e "  ${GREEN}make test${NC}        ${CHECK} Runs all tests"
+	@echo -e "  ${GREEN}make set-prod${NC}    ${PROD} Sets APP_DEBUG to false for production\n"
 	@echo -e "${YELLOW}Use 'make <command>' to execute a command${NC}\n"
 
 # Frontend tasks
@@ -124,3 +128,18 @@ test:
 	@echo -e "${GREEN}${INFO} Running backend tests...${NC}"
 	@cd $(BACKEND_DIR) && $(COMPOSER) test
 	@echo -e "${GREEN}${CHECK} All tests complete!${NC}\n"
+
+# Set production mode
+set-prod:
+	@echo -e "\n${BOLD}${BLUE}Setting Production Mode${NC} ${PROD}"
+	@echo -e "${CYAN}=======================${NC}"
+	@echo -e "${GREEN}${INFO} Setting APP_DEBUG to false...${NC}"
+	@find $(BACKEND_DIR) -type f -name "*.php" -exec $(SED) -i 's/define('\''APP_DEBUG'\'', true);/define('\''APP_DEBUG'\'', false);/g' {} +
+	@echo -e "${GREEN}${CHECK} Production mode set successfully!${NC}\n"
+
+set-dev:
+	@echo -e "\n${BOLD}${BLUE}Setting Development Mode${NC} ${DEV}"
+	@echo -e "${CYAN}=======================${NC}"
+	@echo -e "${GREEN}${INFO} Setting APP_DEBUG to true...${NC}"
+	@find $(BACKEND_DIR) -type f -name "*.php" -exec $(SED) -i 's/define('\''APP_DEBUG'\'', false);/define('\''APP_DEBUG'\'', true);/g' {} +
+	@echo -e "${GREEN}${CHECK} Development mode set successfully!${NC}\n"

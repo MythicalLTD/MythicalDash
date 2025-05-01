@@ -88,7 +88,7 @@ class MythicalZero
 
             try {
                 $response = $client->sendAsync($request)->wait();
-                App::getInstance(true)->getLogger()->debug('Registration telemetry sent successfully: ' . $response->getBody());
+                App::getInstance(true)->getLogger()->debug('Registration telemetry sent successfully');
             } catch (\Exception $e) {
                 App::getInstance(true)->getLogger()->error('Failed to send registration telemetry: ' . $e->getMessage());
             }
@@ -159,7 +159,7 @@ class MythicalZero
 
             try {
                 $response = $client->sendAsync($request)->wait();
-                App::getInstance(true)->getLogger()->debug('Login telemetry sent successfully: ' . $response->getBody());
+                App::getInstance(true)->getLogger()->debug('Login telemetry sent successfully');
             } catch (\Exception $e) {
                 App::getInstance(true)->getLogger()->error('Failed to send login telemetry: ' . $e->getMessage());
             }

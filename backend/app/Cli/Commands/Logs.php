@@ -14,7 +14,6 @@
 namespace MythicalDash\Cli\Commands;
 
 use MythicalDash\Cli\App;
-use MythicalDash\App as MainApp;
 use MythicalDash\Cli\CommandBuilder;
 use MythicalDash\Services\Cloud\MythicalCloudLogs;
 
@@ -23,10 +22,11 @@ class Logs extends App implements CommandBuilder
     public static function execute(array $args): void
     {
         $app = App::getInstance();
-        $appInstance = MainApp::getInstance(true, false);
+		define('APP_DEBUG', false);
+		$appInstance = \MythicalDash\App::getInstance(false, true);
 
         $app->send('&7Starting log upload process...');
-        $appInstance->getLogger()->info('Initiating log upload to cloud storage');
+        $appInstance->getLogger()->debug('Initiating log upload to cloud storage');
 
         // Upload dashboard logs
         $dashboardLogsUrl = MythicalCloudLogs::uploadDashboardLogsToCloud();
@@ -35,7 +35,7 @@ class Logs extends App implements CommandBuilder
         $webServerLogsUrl = MythicalCloudLogs::uploadWebServerLogsToCloud();
 
         if ($dashboardLogsUrl && $webServerLogsUrl) {
-            $appInstance->getLogger()->info('Successfully uploaded all logs to cloud storage');
+            $appInstance->getLogger()->debug('Successfully uploaded all logs to cloud storage');
 
             $app->send('&aLogs successfully uploaded to cloud storage!');
             $app->send('&7Dashboard Logs: &d' . $dashboardLogsUrl);
