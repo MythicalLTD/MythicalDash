@@ -69,16 +69,17 @@ class LoggerFactory
             $this->appendLog('[DEBUG] [' . $caller . '] ' . $message);
         }
     }
+
     public function getLogs(bool $isWebServer = false): array
     {
         $logs = file($this->logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        
+
         if (!$isWebServer) {
             return array_filter($logs, function ($log) {
                 return !str_contains($log, '[DEBUG]');
             });
         }
-        
+
         return $logs;
     }
 

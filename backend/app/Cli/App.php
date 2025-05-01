@@ -23,7 +23,7 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
 
     public function __construct(string $commandName, array $args)
     {
-		
+
         $this->handleCustomCommands($commandName, $args);
         self::$instance = $this;
 

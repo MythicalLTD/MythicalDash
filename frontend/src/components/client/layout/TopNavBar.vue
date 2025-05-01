@@ -2,7 +2,7 @@
     <nav class="fixed top-0 left-0 right-0 h-16 bg-[#0a0a0f]/95 backdrop-blur-md border-b border-[#2a2a3f]/30 z-30">
         <div class="h-full px-4 flex items-center justify-between">
             <!-- Left: Logo & Menu Button -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 flex-shrink-0">
                 <button
                     class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-colors duration-200"
                     @click="$emit('toggle-sidebar')"
@@ -23,16 +23,16 @@
                 </div>
             </div>
 
-            <!-- Search Bar (Desktop) -->
-            <div class="hidden lg:block absolute left-1/2 transform -translate-x-1/2">
-                <div class="relative group">
+            <!-- Center: Search Bar (Desktop) -->
+            <div class="hidden lg:flex flex-1 justify-center">
+                <div class="relative group w-72">
                     <SearchIcon
                         class="absolute left-3 top-2.5 h-5 w-5 text-gray-400 group-hover:text-indigo-400 transition-colors duration-200"
                     />
                     <input
                         type="text"
                         :placeholder="t('components.search.placeholder')"
-                        class="px-10 py-2 w-72 bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50"
+                        class="px-10 py-2 w-full bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50"
                         @click="$emit('toggle-search')"
                         readonly
                     />
@@ -48,7 +48,7 @@
             </button>
 
             <!-- Right: Actions -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-shrink-0">
                 <SocialMediaLinks class="hidden lg:flex" />
 
                 <!-- Language Selector -->

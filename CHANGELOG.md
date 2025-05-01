@@ -11,6 +11,9 @@
 - BUG: Fixed a bug where telemetry will fail if log is bigger than 250!
 - BUG: Fixed a small bug with crons running in the main thread!
 - BUG: Cli was trying to set a header!
+- BUG: Fixed renewals running every s
+- BUG: Fixed Mail spam bugs
+- BUG: Fixed a bug where social media icons are over the search bar
 
 # Features Added:
 
@@ -25,18 +28,20 @@
 - Feature: Added a password generator on register form.
 - Feature: Added a username generator on the register form.
 - Feature: Added a email suggestion on the register form
+- Feature: Added new cloud system for logs
+- Feature: Added new license key system
+- Feature: Removed unused files
+- Feature: Debug logs are not saved anymore if the app is built into production
+- Feature: Better telemetry sending
+- Feature: License Keys are now required to use the app
+- Feature: You can now create plugins via the cli!
+- Feature: Better MythicalZero logic!
 
 # Features Removed:
 
------
-
-# Bugs Fixed:
-
-# Features Added:
-
-- Features: Added `php mythicaldash addon create` So you can create plugins 
-
-# Features Removed:
+- Ability to use the dashboard with no license
+- Ability to change the license key in the settings
+- Ability to disable telemetry for non paid people 
 
 -----
 

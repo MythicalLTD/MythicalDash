@@ -25,13 +25,12 @@ class MythicalCloudLogs
      *
      * @return string|null Returns the log URL on success, null on failure
      */
-
-	public static function uploadDashboardLogsToCloud(): ?string
+    public static function uploadDashboardLogsToCloud(): ?string
     {
         try {
-			$appInstance = App::getInstance(true, false);
+            $appInstance = App::getInstance(true, false);
             $logs = $appInstance->getLogger()->getLogs(false);
-			$appInstance->loadEnv();
+            $appInstance->loadEnv();
             $db = new Database(
                 $_ENV['DATABASE_HOST'],
                 $_ENV['DATABASE_DATABASE'],
@@ -63,7 +62,7 @@ class MythicalCloudLogs
 
             $request = new \GuzzleHttp\Psr7\Request(
                 'PUT',
-                'https://mymythicalid.mythical.systems/api/system/license/'.$config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL').'/logs',
+                'https://mymythicalid.mythical.systems/api/system/license/' . $config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL') . '/logs',
                 $headers,
                 $body
             );
@@ -83,11 +82,11 @@ class MythicalCloudLogs
 
                 return null;
             }
-			if (!isset($responseData['logs'])) {
-				App::getInstance(true)->getLogger()->error('No log URL in response');
+            if (!isset($responseData['logs'])) {
+                App::getInstance(true)->getLogger()->error('No log URL in response');
 
-				return null;
-			}
+                return null;
+            }
             App::getInstance(true)->getLogger()->debug('Web server logs uploaded successfully');
 
             return $responseData['logs'];
@@ -102,9 +101,9 @@ class MythicalCloudLogs
     public static function uploadWebServerLogsToCloud(): ?string
     {
         try {
-			$appInstance = App::getInstance(true, false);
-			$logs = $appInstance->getWebServerLogger()->getLogs(true);
-			$appInstance->loadEnv();
+            $appInstance = App::getInstance(true, false);
+            $logs = $appInstance->getWebServerLogger()->getLogs(true);
+            $appInstance->loadEnv();
             $db = new Database(
                 $_ENV['DATABASE_HOST'],
                 $_ENV['DATABASE_DATABASE'],
@@ -136,7 +135,7 @@ class MythicalCloudLogs
 
             $request = new \GuzzleHttp\Psr7\Request(
                 'PUT',
-                'https://mymythicalid.mythical.systems/api/system/license/'.$config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL').'/logs',
+                'https://mymythicalid.mythical.systems/api/system/license/' . $config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL') . '/logs',
                 $headers,
                 $body
             );
@@ -156,11 +155,11 @@ class MythicalCloudLogs
 
                 return null;
             }
-			if (!isset($responseData['logs'])) {
-				App::getInstance(true)->getLogger()->error('No log URL in response');
+            if (!isset($responseData['logs'])) {
+                App::getInstance(true)->getLogger()->error('No log URL in response');
 
-				return null;
-			}
+                return null;
+            }
             App::getInstance(true)->getLogger()->debug('Web server logs uploaded successfully');
 
             return $responseData['logs'];
