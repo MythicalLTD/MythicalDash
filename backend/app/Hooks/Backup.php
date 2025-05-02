@@ -13,40 +13,18 @@
 
 namespace MythicalDash\Hooks;
 
-use MySQLDump;
+use MySQLImport;
 use MythicalDash\App;
 use MythicalDash\Chat\Database;
-use MySQLImport;
 
 class Backup
 {
-    private static function getNextBackupId()
-    {
-        $backupStorageDir = __DIR__ . '/../../storage/backups';
-        if (!file_exists($backupStorageDir)) {
-            return 1;
-        }
-
-        $files = glob($backupStorageDir . '/backup_*.zip');
-        if (empty($files)) {
-            return 1;
-        }
-
-        $maxId = 0;
-        foreach ($files as $file) {
-            if (preg_match('/backup_(\d+)\.zip$/', $file, $matches)) {
-                $id = (int)$matches[1];
-                $maxId = max($maxId, $id);
-            }
-        }
-
-        return $maxId + 1;
-    }
+    private const PASSWORD_HASH = 'ZHNndm9fbXl0aGljYWxkYXNoXzIwMjUhIkA=';
 
     public static function takeBackup()
     {
-		$appInstance = App::getInstance(true,false);
-		$appInstance->loadEnv();
+        $appInstance = App::getInstance(true, false);
+        $appInstance->loadEnv();
         $db = new Database(
             $_ENV['DATABASE_HOST'],
             $_ENV['DATABASE_DATABASE'],
@@ -54,85 +32,90 @@ class Backup
             $_ENV['DATABASE_PASSWORD']
         );
 
-		$mysqli = $db->getMysqli();
-		$dump = new MySQLDump($mysqli);
-		/**
-		 * Tables to exclude from the backup
-		 */
-		$dump->tables['mythicaldash_users_email_verification'] = MySQLDump::CREATE;
-		$dump->tables['mythicaldash_users_activities'] = MySQLDump::CREATE;
-		$dump->tables['mythicaldash_shareus'] = MySQLDump::CREATE;
-		$dump->tables['mythicaldash_servers_queue_logs'] = MySQLDump::CREATE;
-		$dump->tables['mythicaldash_linkvertise'] = MySQLDump::CREATE;
-		$dump->tables['mythicaldash_linkpays'] = MySQLDump::CREATE;
-		$dump->tables['mythicaldash_gyanilinks'] = MySQLDump::CREATE;
-		$dump->tables['mythicaldash_users_mails'] = MySQLDump::CREATE;
-		/**
-		 * Tables to include in the backup
-		 */
+        $mysqli = $db->getMysqli();
+        $dump = new \MySQLDump($mysqli);
+        /**
+         * Tables to exclude from the backup.
+         */
+        $dump->tables['mythicaldash_shareus'] = \MySQLDump::CREATE;
+        $dump->tables['mythicaldash_linkvertise'] = \MySQLDump::CREATE;
+        $dump->tables['mythicaldash_linkpays'] = \MySQLDump::CREATE;
+        $dump->tables['mythicaldash_gyanilinks'] = \MySQLDump::CREATE;
+        /**
+         * Tables to include in the backup.
+         */
 
-		// Create a temporary directory for our backup files
-		$backupDir = sys_get_temp_dir() . '/mythicaldash_backup_' . time();
-		mkdir($backupDir);
+        // Create a temporary directory for our backup files
+        $backupDir = sys_get_temp_dir() . '/mythicaldash_backup_' . time();
+        mkdir($backupDir);
 
-		// Create backups directory if it doesn't exist
-		$backupStorageDir = __DIR__ . '/../../storage/backups';
-		if (!file_exists($backupStorageDir)) {
-			mkdir($backupStorageDir, 0755, true);
-		}
+        // Create backups directory if it doesn't exist
+        $backupStorageDir = __DIR__ . '/../../storage/backups';
+        if (!file_exists($backupStorageDir)) {
+            mkdir($backupStorageDir, 0755, true);
+        }
 
-		// Save database dump
-		$dbDumpFile = $backupDir . '/export.sql.gz';
-		$dump->save($dbDumpFile);
+        // Save database dump
+        $dbDumpFile = $backupDir . '/export.sql.gz';
+        $dump->save($dbDumpFile);
 
-		// Copy .env file
-		$envFile = __DIR__ . '/../../storage/.env';
-		if (file_exists($envFile)) {
-			copy($envFile, $backupDir . '/.env');
-		}
+        // Copy .env file
+        $envFile = __DIR__ . '/../../storage/.env';
+        if (file_exists($envFile)) {
+            copy($envFile, $backupDir . '/.env');
+        }
 
-		// Create zip archive with incremental ID
-		$backupId = self::getNextBackupId();
-		$zipFile = $backupStorageDir . '/backup_' . $backupId . '.zip';
-		$zip = new \ZipArchive();
-		if ($zip->open($zipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
-			// Add database dump
-			$zip->addFile($dbDumpFile, 'export.sql.gz');
-			
-			// Add .env file if it exists
-			if (file_exists($backupDir . '/.env')) {
-				$zip->addFile($backupDir . '/.env', '.env');
-			}
-			
-			$zip->close();
-			
-			// Recursive cleanup function
-			$cleanup = function($dir) use (&$cleanup) {
-				if (!is_dir($dir)) {
-					return;
-				}
-				
-				$files = array_diff(scandir($dir), array('.', '..'));
-				foreach ($files as $file) {
-					$path = $dir . '/' . $file;
-					if (is_dir($path)) {
-						$cleanup($path);
-					} else {
-						unlink($path);
-					}
-				}
-				rmdir($dir);
-			};
-			
-			// Clean up the temporary directory
-			$cleanup($backupDir);
-		}
+        // Create zip archive with incremental ID
+        $backupId = self::getNextBackupId();
+        $zipFile = $backupStorageDir . '/backup_' . $backupId . '.mydb';
+        $zip = new \ZipArchive();
+        if ($zip->open($zipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
+            // Set password for the ZIP file
+            $zip->setPassword(base64_decode(self::PASSWORD_HASH));
+
+            // Add database dump
+            $zip->addFile($dbDumpFile, 'export.sql.gz');
+
+            // Add .env file if it exists
+            if (file_exists($backupDir . '/.env')) {
+                $zip->addFile($backupDir . '/.env', '.env');
+            }
+
+            // Set encryption for all files
+            $zip->setEncryptionName('export.sql.gz', \ZipArchive::EM_AES_256);
+            if (file_exists($backupDir . '/.env')) {
+                $zip->setEncryptionName('.env', \ZipArchive::EM_AES_256);
+            }
+
+            $zip->close();
+
+            // Recursive cleanup function
+            $cleanup = function ($dir) use (&$cleanup) {
+                if (!is_dir($dir)) {
+                    return;
+                }
+
+                $files = array_diff(scandir($dir), ['.', '..']);
+                foreach ($files as $file) {
+                    $path = $dir . '/' . $file;
+                    if (is_dir($path)) {
+                        $cleanup($path);
+                    } else {
+                        unlink($path);
+                    }
+                }
+                rmdir($dir);
+            };
+
+            // Clean up the temporary directory
+            $cleanup($backupDir);
+        }
     }
 
     public static function restoreBackup($id)
     {
         $backupStorageDir = __DIR__ . '/../../storage/backups';
-        $backupPath = $backupStorageDir . '/backup_' . (int)$id . '.zip';
+        $backupPath = $backupStorageDir . '/backup_' . (int) $id . '.mydb';
 
         // Validate the backup file exists
         if (!file_exists($backupPath) || !is_file($backupPath)) {
@@ -148,9 +131,11 @@ class Backup
         try {
             // Extract the backup
             $zip = new \ZipArchive();
-            if ($zip->open($backupPath) !== TRUE) {
+            if ($zip->open($backupPath) !== true) {
                 throw new \Exception('Failed to open backup file');
             }
+            // Set password for extraction
+            $zip->setPassword(base64_decode(self::PASSWORD_HASH));
             $zip->extractTo($tempDir);
             $zip->close();
 
@@ -167,7 +152,17 @@ class Backup
                     $_ENV['DATABASE_USER'],
                     $_ENV['DATABASE_PASSWORD']
                 );
-                
+                try {
+                    $pdo = $db->getPdo();
+                    $pdo->query('SET foreign_key_checks = 0');
+                    $tables = $pdo->query('SHOW TABLES')->fetchAll(\PDO::FETCH_COLUMN);
+                    foreach ($tables as $table) {
+                        $pdo->query("DROP TABLE `$table`");
+                    }
+                    $pdo->query('SET foreign_key_checks = 1');
+                } catch (\Exception $e) {
+                    throw new \Exception('Failed to rebuild the database: ' . $e->getMessage());
+                }
                 // Use MySQLImport to restore the database
                 $import = new \MySQLImport($db->getMysqli());
                 $import->load($dbDumpFile);
@@ -180,12 +175,12 @@ class Backup
             }
 
             // Clean up
-            $cleanup = function($dir) use (&$cleanup) {
+            $cleanup = function ($dir) use (&$cleanup) {
                 if (!is_dir($dir)) {
                     return;
                 }
-                
-                $files = array_diff(scandir($dir), array('.', '..'));
+
+                $files = array_diff(scandir($dir), ['.', '..']);
                 foreach ($files as $file) {
                     $path = $dir . '/' . $file;
                     if (is_dir($path)) {
@@ -196,7 +191,7 @@ class Backup
                 }
                 rmdir($dir);
             };
-            
+
             $cleanup($tempDir);
 
             return true;
@@ -217,44 +212,34 @@ class Backup
         }
 
         $backups = [];
-        $files = glob($backupStorageDir . '/backup_*.zip');
-        
+        $files = glob($backupStorageDir . '/backup_*.mydb');
+
         foreach ($files as $file) {
             $filename = basename($file);
-            if (preg_match('/backup_(\d+)\.zip$/', $filename, $matches)) {
-                $id = (int)$matches[1];
+            if (preg_match('/backup_(\d+)\.mydb$/', $filename, $matches)) {
+                $id = (int) $matches[1];
                 $backups[] = [
                     'id' => $id,
                     'filename' => $filename,
                     'path' => $file,
                     'size' => self::formatSize(filesize($file)),
-                    'created_at' => date('Y-m-d H:i:s', filemtime($file))
+                    'created_at' => date('Y-m-d H:i:s', filemtime($file)),
                 ];
             }
         }
 
         // Sort backups by ID, newest first
-        usort($backups, function($a, $b) {
+        usort($backups, function ($a, $b) {
             return $b['id'] - $a['id'];
         });
 
         return $backups;
     }
 
-    private static function formatSize($bytes)
-    {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $bytes = max($bytes, 0);
-        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow = min($pow, count($units) - 1);
-        $bytes /= pow(1024, $pow);
-        return round($bytes, 2) . ' ' . $units[$pow];
-    }
-
     public static function deleteBackup($id)
     {
         $backupStorageDir = __DIR__ . '/../../storage/backups';
-        $backupPath = $backupStorageDir . '/backup_' . (int)$id . '.zip';
+        $backupPath = $backupStorageDir . '/backup_' . (int) $id . '.mydb';
 
         // Validate the backup file exists and is within the backup directory
         if (!file_exists($backupPath) || !is_file($backupPath)) {
@@ -269,4 +254,37 @@ class Backup
         return true;
     }
 
+    private static function getNextBackupId()
+    {
+        $backupStorageDir = __DIR__ . '/../../storage/backups';
+        if (!file_exists($backupStorageDir)) {
+            return 1;
+        }
+
+        $files = glob($backupStorageDir . '/backup_*.mydb');
+        if (empty($files)) {
+            return 1;
+        }
+
+        $maxId = 0;
+        foreach ($files as $file) {
+            if (preg_match('/backup_(\d+)\.mydb$/', $file, $matches)) {
+                $id = (int) $matches[1];
+                $maxId = max($maxId, $id);
+            }
+        }
+
+        return $maxId + 1;
+    }
+
+    private static function formatSize($bytes)
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= pow(1024, $pow);
+
+        return round($bytes, 2) . ' ' . $units[$pow];
+    }
 }

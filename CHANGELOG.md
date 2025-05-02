@@ -36,6 +36,10 @@
 - Feature: License Keys are now required to use the app
 - Feature: You can now create plugins via the cli!
 - Feature: Better MythicalZero logic!
+- Feature: You can now take snapshots!
+- Feature: You can now list snapshots!
+- Feature: You can now revert from snapshots!
+- Feature: You can now delete snapshost!
 
 # Features Removed:
 

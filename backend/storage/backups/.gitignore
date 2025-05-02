@@ -1,3 +1,4 @@
 *.sql
 *.sql.gz
 *.zip
+*.mydb

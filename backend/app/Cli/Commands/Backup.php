@@ -22,7 +22,7 @@ class Backup extends App implements CommandBuilder
     {
         $app = App::getInstance();
 
-		if (count($args) > 0) {
+        if (count($args) > 0) {
             switch ($args[1]) {
                 case 'take':
                     // Install an addon.
@@ -47,21 +47,24 @@ class Backup extends App implements CommandBuilder
         }
     }
 
-    public static function takeBackup(App $app) : void {
-		$app->send('&aTaking backup...');
-		\MythicalDash\Hooks\Backup::takeBackup();
-		$app->send('&aBackup created successfully!');
+    public static function takeBackup(App $app): void
+    {
+        $app->send('&aTaking backup...');
+        \MythicalDash\Hooks\Backup::takeBackup();
+        $app->send('&aBackup created successfully!');
     }
 
-    public static function removeBackup(array $args) : void {
+    public static function removeBackup(array $args): void
+    {
         $app = App::getInstance();
-        
+
         if (!isset($args[2])) {
             $app->send('&cPlease provide a backup ID to remove!');
+
             return;
         }
 
-        $backupId = (int)$args[2];
+        $backupId = (int) $args[2];
         try {
             \MythicalDash\Hooks\Backup::deleteBackup($backupId);
             $app->send('&aBackup #' . $backupId . ' has been removed successfully!');
@@ -70,20 +73,22 @@ class Backup extends App implements CommandBuilder
         }
     }
 
-    public static function listBackups() : void {
+    public static function listBackups(): void
+    {
         $app = App::getInstance();
-        
+
         try {
             $backups = \MythicalDash\Hooks\Backup::getBackups();
-            
+
             if (empty($backups)) {
                 $app->send('&7No backups found.');
+
                 return;
             }
 
             $app->send('&7Available backups:');
             $app->send('&7----------------------------------------');
-            
+
             foreach ($backups as $backup) {
                 $app->send(sprintf(
                     '&e#%d &7- &a%s &7- &b%s &7- &d%s',
@@ -93,30 +98,33 @@ class Backup extends App implements CommandBuilder
                     $backup['created_at']
                 ));
             }
-            
+
             $app->send('&7----------------------------------------');
         } catch (\Exception $e) {
             $app->send('&cFailed to list backups: ' . $e->getMessage());
         }
     }
 
-    public static function restoreBackup(array $args) : void {
+    public static function restoreBackup(array $args): void
+    {
         $app = App::getInstance();
-        
+
         if (!isset($args[2])) {
             $app->send('&cPlease provide a backup ID to restore!');
+
             return;
         }
 
-        $backupId = (int)$args[2];
-        
+        $backupId = (int) $args[2];
+
         // Confirm restoration
         $app->send('&cWARNING: This will overwrite your current database and .env file!');
         $app->send('&7Are you sure you want to restore backup #' . $backupId . '? [y/N]');
         $answer = strtolower(trim(readline('> ')));
-        
+
         if ($answer !== 'y') {
             $app->send('&cRestore cancelled.');
+
             return;
         }
 
@@ -138,10 +146,10 @@ class Backup extends App implements CommandBuilder
     public static function getSubCommands(): array
     {
         return [
-			'take' => 'Take a backup of the server',
-			'rm' => 'Remove a backup of the server',
-			'ls' => 'List all backups of the server',
-			'restore' => 'Restore a backup of the server',
-		];
+            'take' => 'Take a backup of the server',
+            'rm' => 'Remove a backup of the server',
+            'ls' => 'List all backups of the server',
+            'restore' => 'Restore a backup of the server',
+        ];
     }
 }
