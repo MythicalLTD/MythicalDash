@@ -22,7 +22,7 @@
                 :filtered-results="filteredResults"
                 :is-profile-open="isProfileOpen"
                 :profile-menu="profileMenu"
-                :session="Session"
+                :session="{ getInfo: (key: string) => Session.getInfo(key) }"
                 @update:search-query="searchQuery = $event"
                 @update:is-search-focused="isSearchFocused = $event"
                 @update:is-profile-open="isProfileOpen = $event"

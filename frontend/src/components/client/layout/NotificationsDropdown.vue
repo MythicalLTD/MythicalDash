@@ -2,17 +2,21 @@
     <Transition name="dropdown">
         <div
             v-if="isOpen"
-            class="absolute top-16 right-4 w-80 bg-[#0a0a0f]/95 backdrop-blur-md border border-[#2a2a3f]/30 rounded-xl shadow-2xl z-50 overflow-hidden"
+            class="absolute top-16 right-4 w-80 bg-[#0a0a0f]/95 backdrop-blur-md border border-[#2a2a3f]/30 rounded-xl shadow-2xl z-50 overflow-hidden hover:border-[#2a2a3f]/50 transition-all duration-200"
             @click.stop
         >
             <!-- Header -->
-            <div class="p-4 border-b border-[#2a2a3f]/30 flex items-center justify-between">
+            <div
+                class="p-4 border-b border-[#2a2a3f]/30 flex items-center justify-between bg-gradient-to-br from-[#1a1a2e]/50 to-transparent"
+            >
                 <h3 class="font-medium text-gray-200 flex items-center gap-2">
                     <BellIcon class="h-4 w-4 text-indigo-400" />
                     {{ t('components.notifications.title') }}
                 </h3>
                 <div class="flex items-center gap-2">
-                    <button class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors duration-200">
+                    <button
+                        class="text-xs text-indigo-400 hover:text-indigo-300 transition-all duration-200 hover:scale-105"
+                    >
                         {{ t('components.notifications.mark_all_read') }}
                     </button>
                 </div>
@@ -26,23 +30,27 @@
                     <div
                         v-for="notification in notifications"
                         :key="notification.id"
-                        class="flex items-start gap-3 p-4 hover:bg-[#1a1a2e]/50 transition-colors duration-200 cursor-pointer"
+                        class="flex items-start gap-3 p-4 hover:bg-[#1a1a2e]/50 transition-all duration-200 cursor-pointer transform hover:translate-x-1"
                     >
-                        <div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0 transition-all duration-200 group-hover:bg-indigo-500/20"
+                        >
                             <component :is="notification.icon" class="h-5 w-5 text-indigo-400" />
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="font-medium text-gray-200">{{ notification.title }}</p>
                             <p class="text-sm text-gray-400 mt-0.5">{{ notification.time }}</p>
                         </div>
-                        <div class="w-2 h-2 rounded-full bg-indigo-500 mt-2"></div>
+                        <div class="w-2 h-2 rounded-full bg-indigo-500 mt-2 animate-pulse"></div>
                     </div>
                 </div>
 
                 <!-- Empty State -->
                 <div v-else class="p-8 text-center">
                     <div class="flex flex-col items-center">
-                        <div class="w-16 h-16 rounded-full bg-[#1a1a2e]/50 flex items-center justify-center mb-4">
+                        <div
+                            class="w-16 h-16 rounded-full bg-[#1a1a2e]/50 flex items-center justify-center mb-4 transition-all duration-200 hover:bg-[#1a1a2e]/70"
+                        >
                             <BellOffIcon class="h-8 w-8 text-gray-500" />
                         </div>
                         <p class="text-gray-300 font-medium mb-1">
@@ -55,7 +63,10 @@
 
             <!-- Footer -->
             <div class="p-3 bg-[#1a1a2e]/30 text-center border-t border-[#2a2a3f]/30">
-                <a href="#" class="text-sm text-indigo-400 hover:text-indigo-300 transition-colors duration-200">
+                <a
+                    href="#"
+                    class="text-sm text-indigo-400 hover:text-indigo-300 transition-all duration-200 hover:scale-105 inline-block"
+                >
                     {{ t('components.notifications.view_all') }}
                 </a>
             </div>
@@ -120,9 +131,33 @@ const notifications = [
 }
 
 /* Smooth transitions */
-.transition-colors {
-    transition-property: background-color, border-color, color, fill, stroke;
+.transition-all {
+    transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 200ms;
+}
+
+/* Hover effects */
+.hover\:scale-105:hover {
+    transform: scale(1.05);
+}
+
+.hover\:translate-x-1:hover {
+    transform: translateX(0.25rem);
+}
+
+/* Animation for notification dot */
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 </style>

@@ -48,23 +48,23 @@ const handleLogout = () => {
 };
 </script>
 <template>
-    <Transition name="dropdown">
+    <Transition name="dropdown" mode="out-in">
         <div
             v-if="isOpen"
-            class="absolute top-16 right-4 w-80 bg-[#0a0a0f]/95 backdrop-blur-md border border-[#2a2a3f]/30 rounded-xl shadow-2xl z-50 overflow-hidden"
+            class="absolute top-16 right-4 w-80 bg-[#0a0a0f]/95 backdrop-blur-md border border-[#2a2a3f]/30 rounded-xl shadow-2xl z-50 overflow-hidden transition-all duration-200 ease-in-out hover:border-[#2a2a3f]/50"
             @click.stop
         >
             <!-- User Profile Section -->
-            <div class="p-5 border-b border-[#2a2a3f]/30">
+            <div class="p-5 border-b border-[#2a2a3f]/30 bg-gradient-to-br from-[#1a1a2e]/50 to-transparent">
                 <div class="flex items-center gap-4">
-                    <div class="relative">
+                    <div class="relative group">
                         <div
-                            class="h-14 w-14 rounded-lg bg-gradient-to-tr from-indigo-500/20 to-blue-500/20 flex items-center justify-center ring-2 ring-indigo-500/20 overflow-hidden"
+                            class="h-14 w-14 rounded-lg bg-gradient-to-tr from-indigo-500/20 to-blue-500/20 flex items-center justify-center ring-2 ring-indigo-500/20 overflow-hidden transition-all duration-300 group-hover:ring-indigo-500/40 group-hover:scale-105"
                         >
                             <img :src="userInfo.avatar" alt="User Avatar" class="h-full w-full object-cover" />
                         </div>
                         <div
-                            class="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-green-500 ring-2 ring-[#0a0a0f]"
+                            class="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-green-500 ring-2 ring-[#0a0a0f] animate-pulse"
                         ></div>
                     </div>
                     <div class="flex-1 min-w-0">
@@ -73,7 +73,7 @@ const handleLogout = () => {
                         </h3>
                         <p class="text-sm text-gray-400 truncate">{{ userInfo.email }}</p>
                         <div
-                            class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/20 text-indigo-400"
+                            class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 transition-colors duration-200"
                         >
                             {{ userInfo.roleName }}
                         </div>
@@ -84,19 +84,19 @@ const handleLogout = () => {
             <!-- Quick Stats -->
             <div class="grid grid-cols-3 gap-1 p-3 border-b border-[#2a2a3f]/30 bg-[#1a1a2e]/30">
                 <div
-                    class="text-center p-2 rounded-lg hover:bg-[#2a2a3f]/30 transition-colors duration-200 cursor-pointer"
+                    class="text-center p-2 rounded-lg hover:bg-[#2a2a3f]/30 transition-all duration-200 cursor-pointer transform hover:scale-105"
                 >
                     <p class="text-lg font-semibold text-indigo-400">{{ stats.tickets }}</p>
                     <p class="text-xs text-gray-400">{{ $t('components.profile.tickets') }}</p>
                 </div>
                 <div
-                    class="text-center p-2 rounded-lg hover:bg-[#2a2a3f]/30 transition-colors duration-200 cursor-pointer"
+                    class="text-center p-2 rounded-lg hover:bg-[#2a2a3f]/30 transition-all duration-200 cursor-pointer transform hover:scale-105"
                 >
                     <p class="text-lg font-semibold text-indigo-400">{{ stats.coins }}</p>
                     <p class="text-xs text-gray-400">{{ $t('components.profile.coins') }}</p>
                 </div>
                 <div
-                    class="text-center p-2 rounded-lg hover:bg-[#2a2a3f]/30 transition-colors duration-200 cursor-pointer"
+                    class="text-center p-2 rounded-lg hover:bg-[#2a2a3f]/30 transition-all duration-200 cursor-pointer transform hover:scale-105"
                 >
                     <p class="text-lg font-semibold text-indigo-400">{{ stats.servers }}</p>
                     <p class="text-xs text-gray-400">{{ $t('components.profile.servers') }}</p>
@@ -109,10 +109,10 @@ const handleLogout = () => {
                     v-for="item in profileMenu"
                     :key="item.name"
                     :to="item.href"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[#1a1a2e]/70 transition-colors duration-200 group"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[#1a1a2e]/70 transition-all duration-200 group transform hover:translate-x-1"
                 >
                     <div
-                        class="w-8 h-8 rounded-lg bg-[#1a1a2e]/50 flex items-center justify-center group-hover:bg-indigo-500/10"
+                        class="w-8 h-8 rounded-lg bg-[#1a1a2e]/50 flex items-center justify-center group-hover:bg-indigo-500/10 transition-all duration-200"
                     >
                         <component
                             :is="item.icon"
@@ -125,10 +125,10 @@ const handleLogout = () => {
                 <!-- Logout Button -->
                 <button
                     @click="handleLogout"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-red-500/10 text-gray-300 hover:text-red-400 transition-colors duration-200 group mt-2"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-red-500/10 text-gray-300 hover:text-red-400 transition-all duration-200 group mt-2 transform hover:translate-x-1"
                 >
                     <div
-                        class="w-8 h-8 rounded-lg bg-[#1a1a2e]/50 flex items-center justify-center group-hover:bg-red-500/10"
+                        class="w-8 h-8 rounded-lg bg-[#1a1a2e]/50 flex items-center justify-center group-hover:bg-red-500/10 transition-all duration-200"
                     >
                         <LogOutIcon
                             class="h-4 w-4 text-gray-400 group-hover:text-red-400 transition-colors duration-200"
@@ -139,10 +139,18 @@ const handleLogout = () => {
             </div>
 
             <!-- Footer -->
-            <div v-if="showAd" class="p-3 bg-[#1a1a2e]/30 text-center text-xs text-gray-500">
+            <div
+                v-if="showAd"
+                class="p-3 bg-[#1a1a2e]/30 text-center text-xs text-gray-500 border-t border-[#2a2a3f]/30"
+            >
                 <p>
                     Made with ❤️ by
-                    <a href="https://mythical.systems" target="_blank" class="text-indigo-400">MythicalSystems</a>
+                    <a
+                        href="https://mythical.systems"
+                        target="_blank"
+                        class="text-indigo-400 hover:text-indigo-300 transition-colors duration-200"
+                        >MythicalSystems</a
+                    >
                 </p>
             </div>
         </div>
@@ -167,9 +175,33 @@ const handleLogout = () => {
 }
 
 /* Smooth transitions */
-.transition-colors {
-    transition-property: background-color, border-color, color, fill, stroke;
+.transition-all {
+    transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 200ms;
+}
+
+/* Hover effects */
+.hover\:scale-105:hover {
+    transform: scale(1.05);
+}
+
+.hover\:translate-x-1:hover {
+    transform: translateX(0.25rem);
+}
+
+/* Animation for online status */
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 </style>

@@ -81,7 +81,7 @@ $router->get('/api/admin/backup/create', function (): void {
     global $pluginManager, $eventManager;
     $session = new MythicalDash\Chat\User\Session($appInstance);
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-        UserActivities::add($session->getInfo(UserColumns::UUID, false),UserActivitiesTypes::$admin_backup_create, CloudFlareRealIP::getRealIP(), 'Created backup');
+        UserActivities::add($session->getInfo(UserColumns::UUID, false), UserActivitiesTypes::$admin_backup_create, CloudFlareRealIP::getRealIP(), 'Created backup');
         $eventManager->emit(BackupEvent::onCreateBackup(), []);
         $backup = Backup::takeBackup();
         $appInstance->OK('Backup created successfully', ['backup' => $backup]);

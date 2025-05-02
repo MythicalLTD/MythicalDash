@@ -4,19 +4,21 @@
             <!-- Left: Logo & Menu Button -->
             <div class="flex items-center gap-3 flex-shrink-0">
                 <button
-                    class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-colors duration-200"
+                    class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-all duration-200 hover:scale-105"
                     @click="$emit('toggle-sidebar')"
                 >
                     <MenuIcon v-if="!isSidebarOpen" class="w-5 h-5" />
                     <XIcon v-else class="w-5 h-5" />
                 </button>
 
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 flex items-center justify-center bg-[#1a1a2e]/30 rounded-lg">
+                <div class="flex items-center gap-2 group">
+                    <div
+                        class="w-8 h-8 flex items-center justify-center bg-[#1a1a2e]/30 rounded-lg transition-all duration-200 group-hover:bg-indigo-500/10 group-hover:scale-105"
+                    >
                         <img :src="appLogo" alt="MythicalDash" class="h-6 w-6" />
                     </div>
                     <span
-                        class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent"
+                        class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent transition-all duration-200 group-hover:from-indigo-300 group-hover:to-indigo-500"
                     >
                         {{ appName }}
                     </span>
@@ -27,12 +29,12 @@
             <div class="hidden lg:flex flex-1 justify-center">
                 <div class="relative group w-72">
                     <SearchIcon
-                        class="absolute left-3 top-2.5 h-5 w-5 text-gray-400 group-hover:text-indigo-400 transition-colors duration-200"
+                        class="absolute left-3 top-2.5 h-5 w-5 text-gray-400 group-hover:text-indigo-400 transition-all duration-200"
                     />
                     <input
                         type="text"
                         :placeholder="t('components.search.placeholder')"
-                        class="px-10 py-2 w-full bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50"
+                        class="px-10 py-2 w-full bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 hover:bg-[#1a1a2e]/40"
                         @click="$emit('toggle-search')"
                         readonly
                     />
@@ -41,7 +43,7 @@
 
             <!-- Search Icon (Mobile) -->
             <button
-                class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-colors duration-200"
+                class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-all duration-200 hover:scale-105"
                 @click="$emit('toggle-search')"
             >
                 <SearchIcon class="w-5 h-5" />
@@ -52,11 +54,11 @@
                 <SocialMediaLinks class="hidden lg:flex" />
 
                 <!-- Language Selector -->
-                <div class="relative">
+                <div class="relative group">
                     <select
                         v-model="locale"
                         @change="changeLocale"
-                        class="appearance-none bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg pl-8 pr-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all duration-200 cursor-pointer hover:bg-[#1a1a2e]/50"
+                        class="appearance-none bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg pl-8 pr-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all duration-200 cursor-pointer hover:bg-[#1a1a2e]/50 group-hover:border-indigo-500/30"
                     >
                         <option
                             v-for="lang in availableLocales"
@@ -67,48 +69,57 @@
                             {{ lang }}
                         </option>
                     </select>
-                    <div class="absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <div
+                        class="absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none transition-all duration-200 group-hover:text-indigo-400"
+                    >
                         <GlobeIcon class="w-4 h-4 text-gray-400" />
                     </div>
-                    <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <div
+                        class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none transition-all duration-200 group-hover:text-indigo-400"
+                    >
                         <ChevronDownIcon class="w-4 h-4 text-gray-400" />
                     </div>
                 </div>
 
                 <button
                     @click="$emit('toggle-notifications')"
-                    class="p-2 hover:bg-[#1a1a2e]/50 rounded-lg relative transition-colors duration-200"
+                    class="p-2 hover:bg-[#1a1a2e]/50 rounded-lg relative transition-all duration-200 hover:scale-105"
                 >
                     <BellIcon class="w-5 h-5" />
                     <span
-                        class="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full ring-4 ring-[#0a0a0f]/95"
+                        class="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full ring-4 ring-[#0a0a0f]/95 animate-pulse"
                     ></span>
                 </button>
 
                 <button
                     @click="$emit('toggle-profile')"
-                    class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-colors duration-200"
+                    class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-all duration-200 hover:scale-105"
                 >
                     <UserIcon class="w-5 h-5" />
                 </button>
 
                 <button
                     @click="$emit('toggle-profile')"
-                    class="hidden lg:flex items-center gap-3 px-3 py-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-colors duration-200"
+                    class="hidden lg:flex items-center gap-3 px-3 py-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-all duration-200 group"
                 >
                     <div class="relative">
                         <img
                             :src="Session.getInfo('avatar')"
                             alt="Profile"
-                            class="w-8 h-8 rounded-lg ring-2 ring-[#2a2a3f]/30"
+                            class="w-8 h-8 rounded-lg ring-2 ring-[#2a2a3f]/30 transition-all duration-200 group-hover:ring-indigo-500/30 group-hover:scale-105"
                         />
                         <div
-                            class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-[#0a0a0f]/95"
+                            class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-[#0a0a0f]/95 animate-pulse"
                         ></div>
                     </div>
                     <div class="flex flex-col items-start">
-                        <span class="text-sm font-medium text-gray-200">{{ Session.getInfo('username') }}</span>
-                        <span class="text-xs text-gray-400">{{ role }}</span>
+                        <span
+                            class="text-sm font-medium text-gray-200 group-hover:text-gray-100 transition-colors duration-200"
+                            >{{ Session.getInfo('username') }}</span
+                        >
+                        <span class="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-200">{{
+                            role
+                        }}</span>
                     </div>
                 </button>
             </div>
@@ -161,9 +172,9 @@ const appName = Settings.getSetting('app_name');
     background-clip: text;
 }
 
-/* Smooth hover transitions */
-.transition-colors {
-    transition-property: background-color, border-color, color, fill, stroke;
+/* Smooth transitions */
+.transition-all {
+    transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 200ms;
 }
@@ -188,5 +199,25 @@ select::-ms-expand {
 /* Hover effect for select */
 select:hover {
     background-color: rgba(26, 26, 46, 0.5);
+}
+
+/* Animation for notification dot */
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Scale effect for buttons */
+.hover\:scale-105:hover {
+    transform: scale(1.05);
 }
 </style>

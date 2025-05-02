@@ -239,7 +239,7 @@ const toggleSubitems = (item: MenuItem) => {
 </script>
 <template>
     <aside
-        class="fixed top-0 left-0 h-full w-64 bg-[#0a0a0f]/95 backdrop-blur-md border-r border-[#2a2a3f]/30 transform transition-transform duration-200 ease-in-out z-50 lg:translate-x-0 lg:z-20"
+        class="fixed top-0 left-0 h-full w-64 bg-[#0a0a0f]/95 backdrop-blur-md border-r border-[#2a2a3f]/30 transform transition-all duration-300 ease-in-out z-50 lg:translate-x-0 lg:z-20 hover:border-[#2a2a3f]/50"
         :class="isSidebarOpen ? 'translate-x-0' : '-translate-x-full'"
     >
         <!-- Sidebar Content -->
@@ -249,23 +249,35 @@ const toggleSubitems = (item: MenuItem) => {
                     <div v-for="(section, index) in menuSections" :key="index" class="mb-6">
                         <!-- Only show the Earn section if it has items -->
                         <template v-if="section.title !== 'Earn' || section.items.length > 0">
-                            <div class="text-xs uppercase tracking-wider text-gray-500 font-medium px-4 mb-2">
-                                {{ section.title }}
+                            <div
+                                class="text-xs uppercase tracking-wider text-gray-500 font-medium px-4 mb-2 flex items-center gap-2"
+                            >
+                                <div
+                                    class="h-px flex-1 bg-gradient-to-r from-transparent via-[#2a2a3f]/30 to-transparent"
+                                ></div>
+                                <span class="px-2">{{ section.title }}</span>
+                                <div
+                                    class="h-px flex-1 bg-gradient-to-r from-transparent via-[#2a2a3f]/30 to-transparent"
+                                ></div>
                             </div>
                             <div class="space-y-1">
                                 <template v-for="item in section.items" :key="item.name">
                                     <div v-if="item.subitems">
                                         <button
                                             @click="toggleSubitems(item)"
-                                            class="w-full flex items-center justify-between gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-colors duration-200"
+                                            class="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg hover:bg-[#1a1a2e]/50 transition-all duration-200 group"
                                             :class="{ 'bg-indigo-500/10 text-indigo-400': item.active }"
                                         >
                                             <div class="flex items-center gap-3">
-                                                <component :is="item.icon" class="w-5 h-5" />
-                                                {{ item.name }}
+                                                <div
+                                                    class="w-8 h-8 rounded-lg bg-[#1a1a2e]/50 flex items-center justify-center transition-all duration-200 group-hover:bg-indigo-500/10"
+                                                >
+                                                    <component :is="item.icon" class="w-4 h-4" />
+                                                </div>
+                                                <span class="text-sm font-medium">{{ item.name }}</span>
                                             </div>
                                             <ChevronDownIcon
-                                                class="w-4 h-4 transition-transform duration-200"
+                                                class="w-4 h-4 transition-transform duration-200 text-gray-400 group-hover:text-indigo-400"
                                                 :class="{ 'rotate-180': item.expanded }"
                                             />
                                         </button>
@@ -287,18 +299,25 @@ const toggleSubitems = (item: MenuItem) => {
                                                         >
                                                             <button
                                                                 @click="toggleSubitems(subitem)"
-                                                                class="w-full flex items-center justify-between gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-colors duration-200 text-sm"
+                                                                class="w-full flex items-center justify-between gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-all duration-200 text-sm group"
                                                                 :class="{
                                                                     'bg-indigo-500/10 text-indigo-400': subitem.active,
                                                                 }"
                                                             >
                                                                 <div class="flex items-center gap-3">
-                                                                    <component :is="subitem.icon" class="w-4 h-4" />
+                                                                    <div
+                                                                        class="w-7 h-7 rounded-lg bg-[#1a1a2e]/50 flex items-center justify-center transition-all duration-200 group-hover:bg-indigo-500/10"
+                                                                    >
+                                                                        <component
+                                                                            :is="subitem.icon"
+                                                                            class="w-3.5 h-3.5"
+                                                                        />
+                                                                    </div>
                                                                     {{ subitem.name }}
                                                                 </div>
                                                                 <ChevronDownIcon
                                                                     v-if="subitem.subitems.length"
-                                                                    class="w-4 h-4 transition-transform duration-200"
+                                                                    class="w-4 h-4 transition-transform duration-200 text-gray-400 group-hover:text-indigo-400"
                                                                     :class="{ 'rotate-180': subitem.expanded }"
                                                                 />
                                                             </button>
@@ -321,22 +340,26 @@ const toggleSubitems = (item: MenuItem) => {
                                                                         v-for="category in subitem.subitems || []"
                                                                         :key="category.name"
                                                                         :to="category.href"
-                                                                        class="group relative flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-colors duration-200 text-sm"
+                                                                        class="group relative flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-all duration-200 text-sm"
                                                                         :class="{
                                                                             'bg-indigo-500/10 text-indigo-400':
                                                                                 category.active,
                                                                         }"
                                                                     >
-                                                                        <component
-                                                                            :is="category.icon"
-                                                                            class="w-4 h-4"
-                                                                        />
+                                                                        <div
+                                                                            class="w-7 h-7 rounded-lg bg-[#1a1a2e]/50 flex items-center justify-center transition-all duration-200 group-hover:bg-indigo-500/10"
+                                                                        >
+                                                                            <component
+                                                                                :is="category.icon"
+                                                                                class="w-3.5 h-3.5"
+                                                                            />
+                                                                        </div>
                                                                         {{ category.name }}
 
                                                                         <!-- Tooltip -->
                                                                         <div
                                                                             v-if="category.tooltip"
-                                                                            class="absolute left-full ml-2 px-3 py-1.5 bg-[#1a1a2e] border border-[#2a2a3f]/30 text-white text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 pointer-events-none backdrop-blur-md"
+                                                                            class="absolute left-full ml-2 px-3 py-1.5 bg-[#1a1a2e] border border-[#2a2a3f]/30 text-white text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200 z-50 pointer-events-none backdrop-blur-md shadow-lg transform group-hover:translate-x-1"
                                                                         >
                                                                             {{ category.tooltip }}
                                                                         </div>
@@ -348,12 +371,16 @@ const toggleSubitems = (item: MenuItem) => {
                                                         <RouterLink
                                                             v-else
                                                             :to="subitem.href"
-                                                            class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-colors duration-200 text-sm"
+                                                            class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-all duration-200 text-sm group"
                                                             :class="{
                                                                 'bg-indigo-500/10 text-indigo-400': subitem.active,
                                                             }"
                                                         >
-                                                            <component :is="subitem.icon" class="w-4 h-4" />
+                                                            <div
+                                                                class="w-7 h-7 rounded-lg bg-[#1a1a2e]/50 flex items-center justify-center transition-all duration-200 group-hover:bg-indigo-500/10"
+                                                            >
+                                                                <component :is="subitem.icon" class="w-3.5 h-3.5" />
+                                                            </div>
                                                             {{ subitem.name }}
                                                         </RouterLink>
                                                     </div>
@@ -364,11 +391,15 @@ const toggleSubitems = (item: MenuItem) => {
                                     <RouterLink
                                         v-else
                                         :to="item.href"
-                                        class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-colors duration-200"
+                                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-[#1a1a2e]/50 transition-all duration-200 group"
                                         :class="{ 'bg-indigo-500/10 text-indigo-400': item.active }"
                                     >
-                                        <component :is="item.icon" class="w-5 h-5" />
-                                        {{ item.name }}
+                                        <div
+                                            class="w-8 h-8 rounded-lg bg-[#1a1a2e]/50 flex items-center justify-center transition-all duration-200 group-hover:bg-indigo-500/10"
+                                        >
+                                            <component :is="item.icon" class="w-4 h-4" />
+                                        </div>
+                                        <span class="text-sm font-medium">{{ item.name }}</span>
                                     </RouterLink>
                                 </template>
                             </div>
@@ -409,9 +440,37 @@ const toggleSubitems = (item: MenuItem) => {
 }
 
 /* Smooth transitions */
-.transition-colors {
-    transition-property: background-color, border-color, color, fill, stroke;
+.transition-all {
+    transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 200ms;
+}
+
+/* Hover effects */
+.hover\:translate-x-1:hover {
+    transform: translateX(0.25rem);
+}
+
+/* Active state glow effect */
+.bg-indigo-500\/10 {
+    box-shadow: 0 0 15px -3px rgba(99, 102, 241, 0.1);
+}
+
+/* Gradient line animation */
+@keyframes gradientLine {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.bg-gradient-to-r {
+    background-size: 200% 100%;
+    animation: gradientLine 3s ease infinite;
 }
 </style>

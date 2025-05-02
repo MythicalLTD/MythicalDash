@@ -248,13 +248,7 @@ const searchableItems: SearchResult[] = [
         href: '/announcements',
         icon: LayoutDashboardIcon,
     },
-    {
-        id: 6,
-        title: t('Components.Leaderboard.title'),
-        description: t('Components.Leaderboard.description'),
-        href: '/leaderboard',
-        icon: LayoutDashboardIcon,
-    },
+
     {
         id: 7,
         title: t('components.sidebar.create'),
