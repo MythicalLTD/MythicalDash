@@ -1,165 +1,187 @@
 <template>
     <LayoutDashboard>
         <div class="space-y-6">
-            <!-- Welcome Header with Layout Controls -->
+            <!-- Welcome Header -->
             <div
-                class="flex flex-col md:flex-row md:items-center md:justify-between bg-gradient-to-r from-gray-900/70 to-gray-800/50 backdrop-blur-md rounded-xl p-6 border border-gray-800/30"
+                class="bg-gradient-to-r from-gray-900/70 to-gray-800/50 backdrop-blur-md rounded-xl p-6 border border-gray-800/30"
             >
-                <div>
-                    <h1 class="text-3xl font-bold mb-2">Welcome to {{ Settings.getSetting('debug_name') }}!</h1>
-                    <p class="text-gray-400">Version: {{ Settings.getSetting('debug_version') }}</p>
-                </div>
-                <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
-                    <button
-                        @click="refreshData"
-                        class="flex items-center gap-2 px-4 py-2 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/30 rounded-lg transition-all duration-200"
-                        :class="{ 'opacity-50 cursor-wait': isRefreshing }"
-                    >
-                        <RefreshCcw v-if="!isRefreshing" class="w-4 h-4 text-gray-400" />
-                        <Loader v-else class="w-4 h-4 text-gray-400 animate-spin" />
-                        <span class="text-sm text-gray-300">Refresh</span>
-                    </button>
-                    <button
-                        @click="toggleLayoutMode"
-                        class="flex items-center gap-2 px-4 py-2 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/30 rounded-lg transition-all duration-200"
-                        :class="{ 'bg-indigo-600/30 border-indigo-500/30': layoutActive }"
-                    >
-                        <GripVertical class="w-4 h-4" :class="layoutActive ? 'text-indigo-400' : 'text-gray-400'" />
-                        <span class="text-sm" :class="layoutActive ? 'text-indigo-300' : 'text-gray-300'">
-                            {{ layoutActive ? 'Layout Mode' : 'Customize Layout' }}
-                        </span>
-                    </button>
-                    <RouterLink
-                        to="/mc-admin/settings"
-                        class="flex items-center gap-2 px-4 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-700/30 rounded-lg transition-all duration-200"
-                    >
-                        <SettingsIcon2 class="w-4 h-4 text-indigo-400" />
-                        <span class="text-sm text-gray-300">Settings</span>
-                    </RouterLink>
-                </div>
-            </div>
-
-            <!-- Layout Controls (only visible in layout mode) -->
-            <div
-                v-if="layoutActive"
-                class="bg-indigo-900/30 backdrop-blur-md rounded-xl p-4 border border-indigo-800/30 animate-fadeIn"
-            >
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                     <div>
-                        <h2 class="text-lg font-medium text-white mb-1">Layout Customization Mode</h2>
-                        <p class="text-indigo-200/80 text-sm">
-                            Drag widgets to reposition them or resize by dragging the corners.
-                        </p>
+                        <h1 class="text-3xl font-bold mb-2">Welcome to {{ Settings.getSetting('debug_name') }}!</h1>
+                        <p class="text-gray-400">Version: {{ Settings.getSetting('debug_version') }}</p>
                     </div>
-                    <div class="flex gap-3">
+                    <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
                         <button
-                            @click="saveWidgetLayout"
-                            class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200"
+                            @click="refreshData"
+                            class="flex items-center gap-2 px-4 py-2 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/30 rounded-lg transition-all duration-200"
+                            :class="{ 'opacity-50 cursor-wait': isRefreshing }"
                         >
-                            <CheckCircle class="w-4 h-4" />
-                            <span>Save Layout</span>
+                            <RefreshCcw v-if="!isRefreshing" class="w-4 h-4 text-gray-400" />
+                            <Loader v-else class="w-4 h-4 text-gray-400 animate-spin" />
+                            <span class="text-sm text-gray-300">Refresh</span>
                         </button>
-                        <button
-                            @click="resetWidgetLayout"
-                            class="flex items-center gap-2 px-4 py-2 bg-transparent hover:bg-white/10 text-white border border-white/30 rounded-lg transition-colors duration-200"
+                        <RouterLink
+                            to="/mc-admin/settings"
+                            class="flex items-center gap-2 px-4 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-700/30 rounded-lg transition-all duration-200"
                         >
-                            <RefreshCcw class="w-4 h-4" />
-                            <span>Reset to Default</span>
-                        </button>
+                            <SettingsIcon2 class="w-4 h-4 text-indigo-400" />
+                            <span class="text-sm text-gray-300">Settings</span>
+                        </RouterLink>
                     </div>
                 </div>
             </div>
 
-            <!-- Dashboard Grid with Widgets -->
-            <div class="grid grid-cols-12 gap-4 relative dashboard-grid" :class="{ 'layout-active': layoutActive }">
-                <!-- Widget for Stats Cards -->
-                <div
-                    v-for="widget in widgets"
-                    :key="widget.id"
-                    class="dashboard-widget transition-all duration-300"
-                    :class="{
-                        'col-span-12': widget.cols === 12,
-                        'col-span-6': widget.cols === 6,
-                        'col-span-4': widget.cols === 4,
-                        'col-span-3': widget.cols === 3,
-                        'dashboard-widget-draggable': layoutActive,
-                        'dashboard-widget-dragging': isDragging && layoutActive,
-                        'ring-2 ring-indigo-500/50 shadow-lg': layoutActive,
-                    }"
-                    :style="{
-                        order: widget.y * 12 + widget.x,
-                        gridColumnStart: widget.x + 1,
-                        gridColumnEnd: widget.x + widget.cols + 1,
-                    }"
-                    @mousedown="layoutActive && onDragStart(widget.id, $event)"
-                    @mouseup="layoutActive && onDragEnd()"
-                    @mousemove="layoutActive && isDragging && onDragMove($event)"
-                >
-                    <!-- Widget Header -->
-                    <div
-                        class="dashboard-widget-header bg-gray-800/80 rounded-t-xl p-3 border border-gray-800/30 flex items-center justify-between"
-                    >
-                        <h3 class="font-medium text-gray-100">{{ widget.title }}</h3>
-                        <div class="flex items-center gap-2">
-                            <!-- Widget Controls (only visible in layout mode) -->
-                            <div v-if="layoutActive" class="flex items-center mr-2">
-                                <button
-                                    class="p-1 hover:bg-gray-700/50 rounded-md text-gray-400 hover:text-gray-300 transition-colors duration-200"
-                                    @click="() => onWidgetResize(widget.id, widget.cols === 12 ? 6 : 12, widget.rows)"
+            <!-- Main Dashboard Grid -->
+            <div class="grid grid-cols-12 gap-6">
+                <!-- Left Column -->
+                <div class="col-span-12 lg:col-span-8 space-y-6">
+                    <!-- Stats Overview -->
+                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                        <div class="p-4 border-b border-gray-800/30">
+                            <h2 class="text-lg font-medium text-white">System Overview</h2>
+                        </div>
+                        <div class="p-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div
+                                    v-for="(stat, index) in statsCards"
+                                    :key="index"
+                                    class="bg-gray-800/80 backdrop-blur-md rounded-xl p-5 border border-gray-800/50 hover:border-indigo-500/30 transition-all duration-300"
                                 >
-                                    <Maximize2 v-if="widget.cols < 12" class="w-4 h-4" />
-                                    <Minimize2 v-else class="w-4 h-4" />
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <div
+                                            class="w-10 h-10 rounded-lg flex items-center justify-center"
+                                            :class="stat.iconBg"
+                                        >
+                                            <component :is="stat.icon" class="w-5 h-5" :class="stat.iconColor" />
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-400">{{ stat.title }}</h3>
+                                            <p class="text-xl font-bold" :class="stat.valueColor">{{ stat.value }}</p>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="mt-3 pt-3 border-t border-gray-700/20 flex items-center justify-between"
+                                    >
+                                        <span class="text-xs text-gray-500">{{ stat.description }}</span>
+                                        <RouterLink
+                                            :to="stat.link"
+                                            class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1"
+                                        >
+                                            View All
+                                            <ArrowRight class="w-3 h-3" />
+                                        </RouterLink>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GitHub Stats -->
+                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                        <div class="p-4 border-b border-gray-800/30">
+                            <h2 class="text-lg font-medium text-white">GitHub Repository</h2>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center gap-4 mb-6">
+                                <img
+                                    :src="dashboardData.github_data?.owner?.avatar_url"
+                                    :alt="dashboardData.github_data?.owner?.login"
+                                    class="w-16 h-16 rounded-xl"
+                                />
+                                <div>
+                                    <h3 class="text-xl font-semibold text-white mb-1">
+                                        {{ dashboardData.github_data?.name }}
+                                    </h3>
+                                    <p class="text-gray-400">{{ dashboardData.github_data?.description }}</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                <div class="bg-gray-800/80 rounded-xl p-4">
+                                    <div class="text-2xl font-bold text-white mb-1">
+                                        {{ dashboardData.github_data?.stargazers_count }}
+                                    </div>
+                                    <div class="text-sm text-gray-400">Stars</div>
+                                </div>
+                                <div class="bg-gray-800/80 rounded-xl p-4">
+                                    <div class="text-2xl font-bold text-white mb-1">
+                                        {{ dashboardData.github_data?.forks_count }}
+                                    </div>
+                                    <div class="text-sm text-gray-400">Forks</div>
+                                </div>
+                                <div class="bg-gray-800/80 rounded-xl p-4">
+                                    <div class="text-2xl font-bold text-white mb-1">
+                                        {{ dashboardData.github_data?.open_issues_count }}
+                                    </div>
+                                    <div class="text-sm text-gray-400">Open Issues</div>
+                                </div>
+                            </div>
+                            <a
+                                :href="dashboardData.github_data?.html_url"
+                                target="_blank"
+                                class="flex items-center justify-center gap-2 w-full mt-6 py-3 bg-gray-700/50 hover:bg-gray-700/70 rounded-xl transition-colors duration-200"
+                            >
+                                <Github class="w-5 h-5" />
+                                <span>View on GitHub</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                        <div class="p-4 border-b border-gray-800/30">
+                            <h2 class="text-lg font-medium text-white">Recent Activity</h2>
+                        </div>
+                        <div class="p-4">
+                            <div class="space-y-3">
+                                <div
+                                    v-for="activity in displayedActivities"
+                                    :key="activity.id"
+                                    class="bg-gray-800/80 rounded-xl p-4 hover:bg-gray-700/50 transition-colors duration-200"
+                                >
+                                    <div class="flex items-start justify-between">
+                                        <div>
+                                            <p class="text-sm font-medium text-white">{{ activity.action }}</p>
+                                            <p class="text-xs text-gray-400">{{ activity.context }}</p>
+                                        </div>
+                                        <div class="text-xs text-gray-500">
+                                            {{ new Date(activity.date).toLocaleString() }}
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 flex items-center gap-2">
+                                        <span
+                                            class="text-xs px-2 py-1 rounded-full"
+                                            :class="{
+                                                'bg-blue-500/20 text-blue-400': activity.action.includes('settings'),
+                                                'bg-green-500/20 text-green-400': activity.action.includes('login'),
+                                                'bg-amber-500/20 text-amber-400': activity.action.includes('update'),
+                                            }"
+                                        >
+                                            {{ activity.action.split(':')[0] }}
+                                        </span>
+                                        <span class="text-xs text-gray-500">{{ activity.ip_address }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="hasMoreActivities" class="mt-4 flex justify-center">
+                                <button
+                                    @click="loadMoreActivities"
+                                    class="px-4 py-2 bg-gray-700/50 hover:bg-gray-700/70 rounded-lg text-sm text-gray-300 transition-colors duration-200"
+                                >
+                                    Load More
                                 </button>
                             </div>
-                            <button
-                                class="p-1 hover:bg-gray-700/50 rounded-md text-gray-400 hover:text-gray-300 transition-colors duration-200"
-                                @click="toggleWidgetCollapse(widget.id)"
-                            >
-                                <Minimize2 v-if="!widget.collapsed" class="w-4 h-4" />
-                                <Maximize2 v-else class="w-4 h-4" />
-                            </button>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Widget Content -->
-                    <div
-                        v-if="!widget.collapsed"
-                        class="dashboard-widget-content bg-gray-800/50 rounded-b-xl border-x border-b border-gray-800/30 p-4"
-                    >
-                        <!-- Stats Overview -->
-                        <div v-if="widget.id === 'stats'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div
-                                v-for="(stat, index) in statsCards"
-                                :key="index"
-                                class="bg-gray-800/80 backdrop-blur-md rounded-xl p-5 border border-gray-800/50 hover:border-indigo-500/30 transition-all duration-300"
-                            >
-                                <div class="flex items-center gap-3 mb-3">
-                                    <div
-                                        class="w-10 h-10 rounded-lg flex items-center justify-center"
-                                        :class="stat.iconBg"
-                                    >
-                                        <component :is="stat.icon" class="w-5 h-5" :class="stat.iconColor" />
-                                    </div>
-                                    <div>
-                                        <h3 class="text-sm font-medium text-gray-400">{{ stat.title }}</h3>
-                                        <p class="text-xl font-bold" :class="stat.valueColor">{{ stat.value }}</p>
-                                    </div>
-                                </div>
-                                <div class="mt-3 pt-3 border-t border-gray-700/20 flex items-center justify-between">
-                                    <span class="text-xs text-gray-500">{{ stat.description }}</span>
-                                    <RouterLink
-                                        :to="stat.link"
-                                        class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1"
-                                    >
-                                        View All
-                                        <ArrowRight class="w-3 h-3" />
-                                    </RouterLink>
-                                </div>
-                            </div>
+                <!-- Right Column -->
+                <div class="col-span-12 lg:col-span-4 space-y-6">
+                    <!-- System Updates -->
+                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                        <div class="p-4 border-b border-gray-800/30">
+                            <h2 class="text-lg font-medium text-white">System Updates</h2>
                         </div>
-
-                        <!-- System Updates -->
-                        <div v-if="widget.id === 'system-updates'">
+                        <div class="p-4">
                             <div class="flex items-center justify-between mb-4">
                                 <div>
                                     <p class="text-gray-300 font-medium">Current Version</p>
@@ -167,61 +189,176 @@
                                         {{ Settings.getSetting('debug_version') }}
                                     </p>
                                 </div>
-                                <div class="bg-green-500/10 text-green-400 rounded-full px-3 py-1 text-xs">
-                                    Up to date
+                                <div
+                                    class="rounded-full px-3 py-1 text-xs"
+                                    :class="{
+                                        'bg-green-500/10 text-green-400': isUpToDate,
+                                        'bg-amber-500/10 text-amber-400': !isUpToDate,
+                                    }"
+                                >
+                                    {{ isUpToDate ? 'Up to date' : 'Update available' }}
                                 </div>
                             </div>
-                            <p class="text-gray-400 text-sm">
-                                Your system is running the latest version. The last update check was performed today.
+                            <p v-if="isUpToDate" class="text-gray-400 text-sm mb-4">
+                                Your system is running the latest version. The last update check was performed
+                                {{ lastCheckTime }}.
+                            </p>
+                            <p v-else class="text-amber-400 text-sm mb-4">
+                                A new version ({{ latestVersion }}) is available. Please update your system.
                             </p>
                             <button
-                                class="w-full mt-4 py-2.5 bg-gray-700/50 hover:bg-gray-700/70 border border-gray-700/30 rounded-lg transition-all duration-200 text-sm text-gray-300"
+                                @click="checkForUpdates"
+                                :disabled="isChecking"
+                                class="w-full py-2.5 bg-gray-700/50 hover:bg-gray-700/70 border border-gray-700/30 rounded-lg transition-all duration-200 text-sm text-gray-300 flex items-center justify-center gap-2"
                             >
-                                Check for Updates
+                                <Loader v-if="isChecking" class="w-4 h-4 animate-spin" />
+                                <RefreshCcw v-else class="w-4 h-4" />
+                                {{ isChecking ? 'Checking...' : 'Check for Updates' }}
                             </button>
                         </div>
+                    </div>
 
-                        <!-- Support & Resources -->
-                        <div v-if="widget.id === 'support-resources'" class="divide-y divide-gray-700/30">
-                            <a
-                                v-for="(resource, index) in supportResources"
-                                :key="index"
-                                :href="resource.link"
-                                target="_blank"
-                                class="flex items-center justify-between py-3 first:pt-0 hover:bg-gray-700/20 transition-colors duration-200 px-2 rounded-lg"
-                            >
-                                <div class="flex items-center">
-                                    <component :is="resource.icon" class="w-5 h-5 mr-3" :class="resource.iconColor" />
-                                    <span class="text-sm text-gray-300">{{ resource.title }}</span>
-                                </div>
-                                <ExternalLink class="w-4 h-4 text-gray-500" />
-                            </a>
+                    <!-- Support & Resources -->
+                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                        <div class="p-4 border-b border-gray-800/30">
+                            <h2 class="text-lg font-medium text-white">Support & Resources</h2>
                         </div>
+                        <div class="p-4">
+                            <div class="space-y-2">
+                                <a
+                                    v-for="(resource, index) in supportResources"
+                                    :key="index"
+                                    :href="resource.link"
+                                    target="_blank"
+                                    class="flex items-center justify-between p-3 hover:bg-gray-700/20 transition-colors duration-200 rounded-lg"
+                                >
+                                    <div class="flex items-center">
+                                        <component
+                                            :is="resource.icon"
+                                            class="w-5 h-5 mr-3"
+                                            :class="resource.iconColor"
+                                        />
+                                        <span class="text-sm text-gray-300">{{ resource.title }}</span>
+                                    </div>
+                                    <ExternalLink class="w-4 h-4 text-gray-500" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
 
-                        <!-- Premium Upgrade -->
-                        <div v-if="widget.id === 'premium-upgrade'">
-                            <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between">
-                                <div class="mb-4 md:mb-0">
-                                    <h2 class="text-xl font-bold text-white mb-2">Upgrade to Premium Edition</h2>
-                                    <p class="text-indigo-200/90 max-w-2xl">
-                                        Get access to additional features, priority support, and advanced customization
-                                        options.
-                                    </p>
+                    <!-- Premium Upgrade -->
+                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                        <div class="p-4 border-b border-gray-800/30">
+                            <h2 class="text-lg font-medium text-white">Premium Edition</h2>
+                        </div>
+                        <div class="p-4">
+                            <div class="mb-4">
+                                <p class="text-indigo-200/90">
+                                    Get access to additional features, priority support, and advanced customization
+                                    options.
+                                </p>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <a
+                                    href="https://www.mythical.systems/premium"
+                                    target="_blank"
+                                    class="flex items-center justify-center gap-2 w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-lg shadow-indigo-900/30 transition-all duration-200"
+                                >
+                                    <Sparkles class="w-4 h-4" />
+                                    <span>Upgrade Now</span>
+                                </a>
+                                <button
+                                    class="w-full py-2.5 bg-transparent hover:bg-white/10 text-white border border-white/30 rounded-lg transition-all duration-200"
+                                >
+                                    Learn More
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                        <div class="p-4 border-b border-gray-800/30">
+                            <h2 class="text-lg font-medium text-white">Quick Actions</h2>
+                        </div>
+                        <div class="p-4">
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <button
+                                    class="flex flex-col items-center justify-center p-4 bg-gray-800/80 rounded-xl hover:bg-gray-700/50 transition-colors duration-200"
+                                >
+                                    <Server class="w-6 h-6 text-blue-400 mb-2" />
+                                    <span class="text-sm text-gray-300">Add Server</span>
+                                </button>
+                                <button
+                                    class="flex flex-col items-center justify-center p-4 bg-gray-800/80 rounded-xl hover:bg-gray-700/50 transition-colors duration-200"
+                                >
+                                    <Users class="w-6 h-6 text-green-400 mb-2" />
+                                    <span class="text-sm text-gray-300">New User</span>
+                                </button>
+                                <button
+                                    class="flex flex-col items-center justify-center p-4 bg-gray-800/80 rounded-xl hover:bg-gray-700/50 transition-colors duration-200"
+                                >
+                                    <Ticket class="w-6 h-6 text-amber-400 mb-2" />
+                                    <span class="text-sm text-gray-300">New Ticket</span>
+                                </button>
+                                <button
+                                    class="flex flex-col items-center justify-center p-4 bg-gray-800/80 rounded-xl hover:bg-gray-700/50 transition-colors duration-200"
+                                >
+                                    <SettingsIcon2 class="w-6 h-6 text-purple-400 mb-2" />
+                                    <span class="text-sm text-gray-300">Settings</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Modal -->
+        <div v-if="showActivityModal" class="fixed inset-0 z-50 overflow-y-auto">
+            <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                    <div class="absolute inset-0 bg-gray-900/80 backdrop-blur-sm"></div>
+                </div>
+
+                <div
+                    class="inline-block align-bottom bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full"
+                >
+                    <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-medium text-white">Activity Log</h3>
+                            <button @click="showActivityModal = false" class="text-gray-400 hover:text-gray-300">
+                                <X class="w-5 h-5" />
+                            </button>
+                        </div>
+                        <!-- Activity List -->
+                        <div class="space-y-3 max-h-[60vh] overflow-y-auto">
+                            <div
+                                v-for="activity in displayedActivities"
+                                :key="activity.id"
+                                class="bg-gray-700/30 rounded-lg p-4 hover:bg-gray-700/50 transition-colors duration-200"
+                            >
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-white">{{ activity.action }}</p>
+                                        <p class="text-xs text-gray-400">{{ activity.context }}</p>
+                                    </div>
+                                    <div class="text-xs text-gray-500">
+                                        {{ new Date(activity.date).toLocaleString() }}
+                                    </div>
                                 </div>
-                                <div class="flex gap-3">
-                                    <a
-                                        href="https://www.mythical.systems/premium"
-                                        target="_blank"
-                                        class="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-lg shadow-indigo-900/30 transition-all duration-200"
+                                <div class="mt-2 flex items-center gap-2">
+                                    <span
+                                        class="text-xs px-2 py-1 rounded-full"
+                                        :class="{
+                                            'bg-blue-500/20 text-blue-400': activity.action.includes('settings'),
+                                            'bg-green-500/20 text-green-400': activity.action.includes('login'),
+                                            'bg-amber-500/20 text-amber-400': activity.action.includes('update'),
+                                        }"
                                     >
-                                        <Sparkles class="w-4 h-4" />
-                                        <span>Upgrade Now</span>
-                                    </a>
-                                    <button
-                                        class="px-5 py-2.5 bg-transparent hover:bg-white/10 text-white border border-white/30 rounded-lg transition-all duration-200"
-                                    >
-                                        Learn More
-                                    </button>
+                                        {{ activity.action.split(':')[0] }}
+                                    </span>
+                                    <span class="text-xs text-gray-500">{{ activity.ip_address }}</span>
                                 </div>
                             </div>
                         </div>
@@ -233,14 +370,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, reactive } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import {
-    CheckCircle,
     Heart,
     Users,
     Ticket,
     Server,
-    Bell,
     RefreshCcw,
     Loader,
     ArrowRight,
@@ -249,10 +384,9 @@ import {
     MessageCircle,
     Github,
     Sparkles,
-    GripVertical,
-    Maximize2,
-    Minimize2,
     Settings as SettingsIcon2,
+    Clock,
+    X,
 } from 'lucide-vue-next';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import { useSettingsStore } from '@/stores/settings';
@@ -261,6 +395,32 @@ import { RouterLink } from 'vue-router';
 
 const Settings = useSettingsStore();
 const isRefreshing = ref(false);
+
+// Add interfaces for GitHub data and activity
+interface GitHubOwner {
+    login: string;
+    avatar_url: string;
+}
+
+interface GitHubData {
+    name: string;
+    description: string;
+    owner: GitHubOwner;
+    stargazers_count: number;
+    forks_count: number;
+    open_issues_count: number;
+    html_url: string;
+}
+
+interface Activity {
+    id: number;
+    user: string;
+    action: string;
+    ip_address: string;
+    date: string;
+    context: string;
+}
+
 const dashboardData = ref({
     counts: {
         user_count: 0,
@@ -272,154 +432,75 @@ const dashboardData = ref({
         server_queue_count: 0,
         mail_templates_count: 0,
         settings_count: 0,
+        addons_count: 0,
+        roles_count: 0,
+        plugins_count: 0,
+        servers_count: 0,
+        redeem_codes_count: 0,
     },
+    github_data: null as GitHubData | null,
+    activity: [] as Activity[],
 });
 
-// Widget interface
-interface Widget {
-    id: string;
-    title: string;
-    cols: number;
-    rows: number;
-    x: number;
-    y: number;
-    minRows: number;
-    minCols: number;
-    draggable: boolean;
-    resizable: boolean;
-    component: string;
-    collapsed: boolean;
-}
+// Activity display
+const activitiesPerLoad = ref(5);
+const displayedActivities = ref<Activity[]>([]);
 
-// Widgets state
-const widgets = reactive<Widget[]>([
-    {
-        id: 'stats',
-        title: 'Stats Overview',
-        cols: 12,
-        rows: 1,
-        x: 0,
-        y: 0,
-        minRows: 1,
-        minCols: 6,
-        draggable: true,
-        resizable: true,
-        component: 'stats-overview',
-        collapsed: false,
-    },
-    {
-        id: 'system-updates',
-        title: 'System Updates',
-        cols: 4,
-        rows: 2,
-        x: 0,
-        y: 1,
-        minRows: 2,
-        minCols: 3,
-        draggable: true,
-        resizable: true,
-        component: 'system-updates',
-        collapsed: false,
-    },
-    {
-        id: 'support-resources',
-        title: 'Support & Resources',
-        cols: 4,
-        rows: 3,
-        x: 4,
-        y: 1,
-        minRows: 2,
-        minCols: 3,
-        draggable: true,
-        resizable: true,
-        component: 'support-resources',
-        collapsed: false,
-    },
-    {
-        id: 'premium-upgrade',
-        title: 'Premium Upgrade',
-        cols: 12,
-        rows: 1,
-        x: 0,
-        y: 4,
-        minRows: 1,
-        minCols: 6,
-        draggable: true,
-        resizable: true,
-        component: 'premium-upgrade',
-        collapsed: false,
-    },
-]);
-
-const layoutActive = ref(false);
-const isDragging = ref(false);
-const activeWidget = ref<string | null>(null);
-const dragStart = reactive({
-    x: 0,
-    y: 0,
-    gridX: 0,
-    gridY: 0,
+// Computed property to check if there are more activities to load
+const hasMoreActivities = computed(() => {
+    return displayedActivities.value.length < dashboardData.value.activity.length;
 });
 
-const toggleWidgetCollapse = (id: string): void => {
-    const widget = widgets.find((w) => w.id === id);
-    if (widget) {
-        widget.collapsed = !widget.collapsed;
+// Method to load more activities
+const loadMoreActivities = () => {
+    const currentLength = displayedActivities.value.length;
+    const newActivities = dashboardData.value.activity.slice(currentLength, currentLength + activitiesPerLoad.value);
+    displayedActivities.value = [...displayedActivities.value, ...newActivities];
+};
+
+// Version check
+const isUpToDate = ref(true);
+const isChecking = ref(false);
+const latestVersion = ref('');
+const lastCheckTime = ref('never');
+
+const checkForUpdates = async () => {
+    isChecking.value = true;
+    try {
+        const response = await fetch('https://api.github.com/repos/mythicalltd/mythicaldash/releases/latest');
+        const data = await response.json();
+        const currentVersion = Settings.getSetting('debug_version');
+        latestVersion.value = data.tag_name;
+
+        // Simple string comparison - if they are exactly the same, we're up to date
+        isUpToDate.value = currentVersion === latestVersion.value;
+
+        console.log('Current version:', currentVersion);
+        console.log('Latest version:', latestVersion.value);
+        console.log('Is up to date:', isUpToDate.value);
+
+        lastCheckTime.value = 'just now';
+    } catch (error) {
+        console.error('Failed to check for updates:', error);
+    } finally {
+        isChecking.value = false;
     }
 };
 
-const toggleLayoutMode = (): void => {
-    layoutActive.value = !layoutActive.value;
-};
-
-const saveWidgetLayout = (): void => {
-    // Here you would save the layout to user preferences/localStorage
-    localStorage.setItem('dashboardLayout', JSON.stringify(widgets));
-    layoutActive.value = false;
-};
-
-const resetWidgetLayout = (): void => {
-    // Reset to default layout
-    // In a real implementation, you would restore from defaults
-    layoutActive.value = false;
-    // Reload the page to restore defaults
-    window.location.reload();
-};
-
-// Load dashboard data
+// Check for updates on mount
 onMounted(async () => {
     try {
-        // Check if there's a saved layout
-        const savedLayout = localStorage.getItem('dashboardLayout');
-        if (savedLayout) {
-            const parsedLayout = JSON.parse(savedLayout);
-            // Update positions but keep the widget definitions
-            widgets.forEach((widget) => {
-                const saved = parsedLayout.find((w: Widget) => w.id === widget.id);
-                if (saved) {
-                    widget.x = saved.x;
-                    widget.y = saved.y;
-                    widget.cols = saved.cols;
-                    widget.rows = saved.rows;
-                    widget.collapsed = saved.collapsed || false;
-                }
-            });
-        }
-
         const data = await Dashboard.get();
         dashboardData.value = {
-            counts: data.count || {
-                user_count: 0,
-                locations_count: 0,
-                tickets_count: 0,
-                eggs_count: 0,
-                departments_count: 0,
-                announcements_count: 0,
-                server_queue_count: 0,
-                mail_templates_count: 0,
-                settings_count: 0,
-            },
+            counts: data.count || dashboardData.value.counts,
+            github_data: data.core?.github_data || null,
+            activity: data.etc?.activity || [],
         };
+        // Initialize displayed activities
+        displayedActivities.value = dashboardData.value.activity.slice(0, activitiesPerLoad.value);
+
+        // Check for updates
+        await checkForUpdates();
     } catch (error) {
         console.error('Failed to load dashboard data:', error);
     }
@@ -432,7 +513,11 @@ const refreshData = async () => {
         const data = await Dashboard.get();
         dashboardData.value = {
             counts: data.count || dashboardData.value.counts,
+            github_data: data.core?.github_data || null,
+            activity: data.etc?.activity || [],
         };
+        // Reset displayed activities
+        displayedActivities.value = dashboardData.value.activity.slice(0, activitiesPerLoad.value);
     } catch (error) {
         console.error('Failed to refresh dashboard data:', error);
     } finally {
@@ -464,23 +549,23 @@ const statsCards = computed(() => [
     },
     {
         title: 'Servers',
-        value: dashboardData.value.counts.locations_count,
+        value: dashboardData.value.counts.servers_count,
         icon: Server,
         iconBg: 'bg-emerald-500/20',
         iconColor: 'text-emerald-400',
         valueColor: 'text-emerald-400',
-        description: 'Active server locations',
-        link: '/mc-admin/locations',
+        description: 'Active servers',
+        link: '/mc-admin/servers',
     },
     {
-        title: 'Announcements',
-        value: dashboardData.value.counts.announcements_count,
-        icon: Bell,
+        title: 'Queue',
+        value: dashboardData.value.counts.server_queue_count,
+        icon: Clock,
         iconBg: 'bg-purple-500/20',
         iconColor: 'text-purple-400',
         valueColor: 'text-purple-400',
-        description: 'Published announcements',
-        link: '/mc-admin/announcements',
+        description: 'Servers in queue',
+        link: '/mc-admin/queue',
     },
 ]);
 
@@ -512,115 +597,11 @@ const supportResources = [
     },
 ];
 
-// Calculate grid position from mouse coordinates
-const calculateGridPosition = (clientX: number, clientY: number): { x: number; y: number } => {
-    // This is a simplified implementation
-    // In a real application, you'd calculate based on the grid's actual dimensions and position
-    const gridElement = document.querySelector('.dashboard-grid');
-    if (!gridElement) return { x: 0, y: 0 };
-
-    const rect = gridElement.getBoundingClientRect();
-    const gridWidth = rect.width;
-    const gridX = Math.floor(((clientX - rect.left) / gridWidth) * 12);
-    const gridY = Math.floor((clientY - rect.top) / 50); // Approximate row height
-
-    return {
-        x: Math.max(0, Math.min(11, gridX)),
-        y: Math.max(0, gridY),
-    };
-};
-
-// Function to start dragging
-const onDragStart = (id: string, event: MouseEvent): void => {
-    if (!layoutActive.value) return;
-
-    isDragging.value = true;
-    activeWidget.value = id;
-
-    // Remember start position
-    dragStart.x = event.clientX;
-    dragStart.y = event.clientY;
-
-    const widget = widgets.find((w) => w.id === id);
-    if (widget) {
-        dragStart.gridX = widget.x;
-        dragStart.gridY = widget.y;
-    }
-
-    // Add event listeners for document-level dragging
-    document.addEventListener('mousemove', onDragMove);
-    document.addEventListener('mouseup', onDragEnd);
-};
-
-// Function to handle dragging
-const onDragMove = (event: MouseEvent): void => {
-    if (!isDragging.value || !activeWidget.value) return;
-
-    // Prevent default to avoid text selection during drag
-    event.preventDefault();
-
-    // Calculate grid position from mouse coordinates
-    const { x, y } = calculateGridPosition(event.clientX, event.clientY);
-
-    // Update widget position
-    const widget = widgets.find((w) => w.id === activeWidget.value);
-    if (widget) {
-        // Calculate new position, clamping to grid boundaries
-        const newX = Math.max(0, Math.min(12 - widget.cols, x));
-        const newY = Math.max(0, y);
-
-        // Update widget position if it's changed
-        if (widget.x !== newX || widget.y !== newY) {
-            widget.x = newX;
-            widget.y = newY;
-        }
-    }
-};
-
-// Function to end dragging
-const onDragEnd = (): void => {
-    if (!isDragging.value) return;
-
-    isDragging.value = false;
-    activeWidget.value = null;
-
-    // Remove document-level event listeners
-    document.removeEventListener('mousemove', onDragMove);
-    document.removeEventListener('mouseup', onDragEnd);
-
-    // Save layout after dragging
-    if (layoutActive.value) {
-        saveWidgetLayout();
-    }
-};
-
-// Function to handle widget resize
-const onWidgetResize = (id: string, cols: number, rows: number): void => {
-    const widget = widgets.find((w) => w.id === id);
-    if (widget) {
-        widget.cols = Math.max(widget.minCols, Math.min(12, cols));
-        widget.rows = Math.max(widget.minRows, rows);
-
-        // Make sure widget still fits in grid after resize
-        if (widget.x + widget.cols > 12) {
-            widget.x = 12 - widget.cols;
-        }
-    }
-};
+// Add new refs for modal
+const showActivityModal = ref(false);
 </script>
 
 <style scoped>
-/* Add custom animations and styles */
-@keyframes pulse {
-    0%,
-    100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.7;
-    }
-}
-
 @keyframes spin {
     from {
         transform: rotate(0deg);
@@ -630,74 +611,11 @@ const onWidgetResize = (id: string, cols: number, rows: number): void => {
     }
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
 .animate-spin {
     animation: spin 1s linear infinite;
 }
 
-.animate-fadeIn {
-    animation: fadeIn 0.3s ease-in-out;
-}
-
 .bg-gradient-to-r {
     background-image: linear-gradient(to right, var(--tw-gradient-stops));
-}
-
-/* Dashboard Widget Styling */
-.dashboard-widget {
-    transition: all 0.3s ease;
-}
-
-.dashboard-widget-draggable {
-    cursor: move;
-}
-
-.dashboard-widget-dragging {
-    opacity: 0.7;
-    transform: scale(1.02);
-    z-index: 10;
-}
-
-.dashboard-widget-header {
-    cursor: pointer;
-}
-
-/* For a more interactive drag experience, you would need JavaScript drag and drop implementation */
-.dashboard-widget:hover .dashboard-widget-header {
-    background-color: rgba(31, 41, 55, 0.9);
-}
-
-/* Mouse drag interaction helpers */
-.dashboard-grid {
-    position: relative;
-}
-
-.dashboard-grid::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    z-index: 0;
-    background:
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 8.33% 30px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.dashboard-grid.layout-active::after {
-    opacity: 1;
 }
 </style>

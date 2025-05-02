@@ -29,7 +29,7 @@ class Addon extends App implements CommandBuilder
         require __DIR__ . '/../../../boot/kernel.php';
         global $pluginManager;
         define('APP_ADDONS_DIR', __DIR__ . '/../../../storage/addons');
-        define('APP_DEBUG', true);
+        define('APP_DEBUG', false);
         $pluginManager->loadKernel();
 
         if (count($args) > 0) {
