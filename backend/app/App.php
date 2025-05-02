@@ -289,6 +289,14 @@ class App extends MythicalAPP
     }
 
     /**
+     * Get the database.
+     */
+    public function getDatabase(): Database
+    {
+        return $this->db;
+    }
+
+    /**
      * Get the logger factory.
      */
     public function getLogger(): LoggerFactory

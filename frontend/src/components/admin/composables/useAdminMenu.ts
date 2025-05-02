@@ -16,6 +16,8 @@ import {
     Package as Plugins,
     LogsIcon,
     Database,
+    HeartHandshakeIcon,
+    Cloud,
 } from 'lucide-vue-next';
 import type { MenuGroup, ProfileMenuItem } from '../types';
 
@@ -53,6 +55,12 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     path: `${adminBaseUri}`,
                     icon: LayoutDashboard,
                     active: route.path === `${adminBaseUri}`,
+                },
+                {
+                    name: 'Health',
+                    path: `${adminBaseUri}/health`,
+                    icon: HeartHandshakeIcon,
+                    active: route.path === `${adminBaseUri}/health`,
                 },
             ],
         },
@@ -179,12 +187,12 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     active: route.path === `${adminBaseUri}/plugins`,
                     count: computed(() => dashBoard.value.count.plugins_count || 0),
                 },
-                //{
-                //    name: 'MythicalCloud (Synced)',
-                //    path: `${adminBaseUri}/mythicalcloud`,
-                //    icon: Database,
-                //    active: route.path === `${adminBaseUri}/mythicalcloud`,
-                //},
+                {
+                    name: 'MythicalCloud',
+                    path: `${adminBaseUri}/mythicalcloud`,
+                    icon: Cloud,
+                    active: route.path === `${adminBaseUri}/mythicalcloud`,
+                },
                 {
                     name: 'Backups',
                     path: `${adminBaseUri}/backups`,

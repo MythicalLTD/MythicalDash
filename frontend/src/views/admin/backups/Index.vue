@@ -22,7 +22,7 @@
 import { ref, onMounted, h } from 'vue';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
-import { PlusIcon, LoaderCircle, DownloadIcon, TrashIcon } from 'lucide-vue-next';
+import { PlusIcon, LoaderCircle, DownloadIcon, TrashIcon, CloudUploadIcon } from 'lucide-vue-next';
 import Swal from 'sweetalert2';
 import type { SweetAlertOptions } from 'sweetalert2';
 
@@ -74,6 +74,15 @@ const columns = [
                         onClick: () => restoreBackup(backup),
                     },
                     [h(DownloadIcon, { class: 'w-4 h-4' })],
+                ),
+                h(
+                    'button',
+                    {
+                        class: 'p-1 text-gray-400 hover:text-blue-400 transition-colors',
+                        title: 'Upload to Cloud',
+                        onClick: () => uploadToCloud(backup),
+                    },
+                    [h(CloudUploadIcon, { class: 'w-4 h-4' })],
                 ),
                 h(
                     'button',
@@ -388,6 +397,79 @@ const confirmDelete = async (backup: Backup) => {
             icon: 'error',
             title: 'Error',
             text: 'Error deleting backup: ' + error,
+            confirmButtonColor: '#EC4899',
+        });
+    }
+};
+
+const uploadToCloud = async (backup: Backup) => {
+    const result = await Swal.fire({
+        title: 'Upload to MythicalCloud?',
+        text: `Upload backup "${backup.filename}" to MythicalCloud storage?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Yes, upload it!',
+    });
+
+    if (!result.isConfirmed) {
+        return;
+    }
+
+    // Show loading screen
+    Swal.fire({
+        title: 'Uploading Backup',
+        html: `
+            <div class="flex flex-col items-center justify-center space-y-4">
+                <div class="relative w-24 h-24">
+                    <div class="absolute inset-0 border-4 border-blue-500/20 rounded-full"></div>
+                    <div class="absolute inset-0 border-4 border-blue-500 rounded-full animate-spin border-t-transparent"></div>
+                </div>
+                <div class="text-center space-y-2">
+                    <p class="text-lg font-medium text-gray-200">Uploading to MythicalCloud...</p>
+                    <p class="text-sm text-gray-400">This may take a few moments</p>
+                </div>
+            </div>
+        `,
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        },
+    });
+
+    try {
+        const response = await fetch(`/api/admin/backup/${backup.id}/upload-to-cloud`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to upload backup to cloud');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Upload Successful',
+                text: 'Backup has been uploaded to MythicalCloud successfully.',
+                confirmButtonColor: '#EC4899',
+            });
+        } else {
+            throw new Error(data.message || 'Failed to upload backup to cloud');
+        }
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Upload Failed',
+            text: typeof error === 'string' ? error : (error as Error).message,
             confirmButtonColor: '#EC4899',
         });
     }

@@ -42,6 +42,9 @@
 - Feature: You can onw delete snapshots!
 - Feature: Plugins can hook into backups!
 - Feature: Daily backups of the instance!
+- Feature: Added a health page!
+- Feature: Add a option to upload logs from health page!
+- Feature: MythicalCloud (Upload,Download,List,Purge) your backups in the cloud!
 
 # Features Removed:
 

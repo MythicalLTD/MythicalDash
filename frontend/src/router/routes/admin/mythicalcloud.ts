@@ -1,9 +1,9 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-const locationRoutes: RouteRecordRaw[] = [
+const mythicalcloudRoutes: RouteRecordRaw[] = [
     {
         path: '/mc-admin/mythicalcloud',
-        name: 'Admin MythicalCloud',
+        name: 'MythicalCloud',
         component: () => import('@/views/admin/mythicalcloud/Index.vue'),
         meta: {
             requiresAuth: true,
@@ -12,4 +12,4 @@ const locationRoutes: RouteRecordRaw[] = [
     },
 ];
 
-export default locationRoutes;
+export default mythicalcloudRoutes;

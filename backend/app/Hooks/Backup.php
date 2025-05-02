@@ -280,6 +280,14 @@ class Backup
         return true;
     }
 
+    public static function exists(int $id): bool
+    {
+        $backupStorageDir = __DIR__ . '/../../storage/backups';
+        $backupPath = $backupStorageDir . '/backup_' . $id . '.mydb';
+
+        return file_exists($backupPath) && is_file($backupPath);
+    }
+
     private static function getNextBackupId()
     {
         $backupStorageDir = __DIR__ . '/../../storage/backups';

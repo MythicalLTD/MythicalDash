@@ -25,6 +25,15 @@ const mainAdminRoutes: RouteRecordRaw[] = [
             requiresAdmin: true,
         },
     },
+    {
+        path: '/mc-admin/health',
+        name: 'Health',
+        component: () => import('@/views/admin/health/Health.vue'),
+        meta: {
+            requiresAuth: true,
+            requiresAdmin: true,
+        },
+    },
 ];
 
 // Combine all admin routes

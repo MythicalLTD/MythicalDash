@@ -139,4 +139,8 @@
 		"backend/storage/packages/phpmailer/phpmailer/language"
 	],
 	"php.version": "8.4",
+	"php.stubs": [
+		"*",
+		"opcache"
+	],
 }
