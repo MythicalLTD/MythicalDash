@@ -41,7 +41,7 @@ $router->get('/api/admin/backup/(.*)/restore', function (string $backupId): void
     global $pluginManager;
     $session = new MythicalDash\Chat\User\Session($appInstance);
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-        UserActivities::add(UserActivitiesTypes::$admin_backup_restore, $session->getInfo(UserColumns::UUID, false), CloudFlareRealIP::getRealIP(), 'Restored backup ' . $backupId);
+        UserActivities::add($session->getInfo(UserColumns::UUID, false), UserActivitiesTypes::$admin_backup_restore, CloudFlareRealIP::getRealIP(), 'Restored backup ' . $backupId);
         $backup = Backup::restoreBackup($backupId);
 
         if ($backup) {
@@ -61,7 +61,7 @@ $router->get('/api/admin/backup/(.*)/delete', function (string $backupId): void 
     global $pluginManager, $eventManager;
     $session = new MythicalDash\Chat\User\Session($appInstance);
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-        UserActivities::add(UserActivitiesTypes::$admin_backup_delete, $session->getInfo(UserColumns::UUID, false), CloudFlareRealIP::getRealIP(), 'Deleted backup ' . $backupId);
+        UserActivities::add($session->getInfo(UserColumns::UUID, false), UserActivitiesTypes::$admin_backup_delete, CloudFlareRealIP::getRealIP(), 'Deleted backup ' . $backupId);
         $backup = Backup::deleteBackup($backupId);
         $eventManager->emit(BackupEvent::onDeleteBackup(), ['backupId' => $backupId]);
         if ($backup) {
@@ -81,7 +81,7 @@ $router->get('/api/admin/backup/create', function (): void {
     global $pluginManager, $eventManager;
     $session = new MythicalDash\Chat\User\Session($appInstance);
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-        UserActivities::add(UserActivitiesTypes::$admin_backup_create, $session->getInfo(UserColumns::UUID, false), CloudFlareRealIP::getRealIP(), 'Created backup');
+        UserActivities::add($session->getInfo(UserColumns::UUID, false),UserActivitiesTypes::$admin_backup_create, CloudFlareRealIP::getRealIP(), 'Created backup');
         $eventManager->emit(BackupEvent::onCreateBackup(), []);
         $backup = Backup::takeBackup();
         $appInstance->OK('Backup created successfully', ['backup' => $backup]);

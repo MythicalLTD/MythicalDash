@@ -165,6 +165,6 @@ class Cron
      */
     private function getStoragePath(): string
     {
-        return APP_CACHE_DIR . "/cron/{$this->identifier}.myc";
+        return APP_CACHE_DIR . "/cron/{$this->identifier}.mydtt";
     }
 }

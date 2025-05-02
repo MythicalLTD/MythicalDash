@@ -296,4 +296,8 @@ interface ConfigInterface
     public const SERVER_RENEW_DAYS = 'server_renew_days';
     public const SERVER_RENEW_SEND_MAIL = 'server_renew_send_mail';
 
+    /**
+     * Daily Backup.
+     */
+    public const DAILY_BACKUP_ENABLED = 'daily_backup_enabled';
 }

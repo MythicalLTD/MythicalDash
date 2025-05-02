@@ -241,6 +241,9 @@ class PublicConfig extends ConfigFactory
             ConfigInterface::SERVER_RENEW_COST => '100',
             ConfigInterface::SERVER_RENEW_DAYS => '30',
             ConfigInterface::SERVER_RENEW_SEND_MAIL => 'false',
+
+            // Daily Backup
+            ConfigInterface::DAILY_BACKUP_ENABLED => 'false',
         ];
 
     }

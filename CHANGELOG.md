@@ -39,7 +39,9 @@
 - Feature: You can now take snapshots!
 - Feature: You can now list snapshots!
 - Feature: You can now revert from snapshots!
-- Feature: You can now delete snapshost!
+- Feature: You can onw delete snapshots!
+- Feature: Plugins can hook into backups!
+- Feature: Daily backups of the instance!
 
 # Features Removed:
 
