@@ -13,6 +13,7 @@ import settingsRoutes from './settings.ts';
 import serversRoutes from './servers.ts';
 import redeemRoutes from './redeems.ts';
 import pluginRoutes from './plugins.ts';
+import backupsRoutes from './backups.ts';
 // Main admin dashboard route
 const mainAdminRoutes: RouteRecordRaw[] = [
     {
@@ -43,6 +44,7 @@ const adminRoutes: RouteRecordRaw[] = [
     ...redeemRoutes,
     ...serversRoutes,
     ...pluginRoutes,
+    ...backupsRoutes,
 ];
 
 export default adminRoutes;

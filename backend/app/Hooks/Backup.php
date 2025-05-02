@@ -21,7 +21,7 @@ class Backup
 {
     private const PASSWORD_HASH = 'ZHNndm9fbXl0aGljYWxkYXNoXzIwMjUhIkA=';
 
-    public static function takeBackup()
+    public static function takeBackup(): array
     {
         $appInstance = App::getInstance(true, false);
         $appInstance->loadEnv();
@@ -47,12 +47,16 @@ class Backup
 
         // Create a temporary directory for our backup files
         $backupDir = sys_get_temp_dir() . '/mythicaldash_backup_' . time();
-        mkdir($backupDir);
+        if (!mkdir($backupDir)) {
+            throw new \Exception('Failed to create temporary directory');
+        }
 
         // Create backups directory if it doesn't exist
         $backupStorageDir = __DIR__ . '/../../storage/backups';
         if (!file_exists($backupStorageDir)) {
-            mkdir($backupStorageDir, 0755, true);
+            if (!mkdir($backupStorageDir, 0755, true)) {
+                throw new \Exception('Failed to create backup storage directory');
+            }
         }
 
         // Save database dump
@@ -62,54 +66,76 @@ class Backup
         // Copy .env file
         $envFile = __DIR__ . '/../../storage/.env';
         if (file_exists($envFile)) {
-            copy($envFile, $backupDir . '/.env');
+            if (!copy($envFile, $backupDir . '/.env')) {
+                throw new \Exception('Failed to copy .env file');
+            }
         }
 
         // Create zip archive with incremental ID
         $backupId = self::getNextBackupId();
         $zipFile = $backupStorageDir . '/backup_' . $backupId . '.mydb';
         $zip = new \ZipArchive();
-        if ($zip->open($zipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
-            // Set password for the ZIP file
-            $zip->setPassword(base64_decode(self::PASSWORD_HASH));
 
-            // Add database dump
-            $zip->addFile($dbDumpFile, 'export.sql.gz');
-
-            // Add .env file if it exists
-            if (file_exists($backupDir . '/.env')) {
-                $zip->addFile($backupDir . '/.env', '.env');
-            }
-
-            // Set encryption for all files
-            $zip->setEncryptionName('export.sql.gz', \ZipArchive::EM_AES_256);
-            if (file_exists($backupDir . '/.env')) {
-                $zip->setEncryptionName('.env', \ZipArchive::EM_AES_256);
-            }
-
-            $zip->close();
-
-            // Recursive cleanup function
-            $cleanup = function ($dir) use (&$cleanup) {
-                if (!is_dir($dir)) {
-                    return;
-                }
-
-                $files = array_diff(scandir($dir), ['.', '..']);
-                foreach ($files as $file) {
-                    $path = $dir . '/' . $file;
-                    if (is_dir($path)) {
-                        $cleanup($path);
-                    } else {
-                        unlink($path);
-                    }
-                }
-                rmdir($dir);
-            };
-
-            // Clean up the temporary directory
-            $cleanup($backupDir);
+        if ($zip->open($zipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            throw new \Exception('Failed to create zip archive');
         }
+
+        // Set password for the ZIP file
+        $zip->setPassword(base64_decode(self::PASSWORD_HASH));
+
+        // Add database dump
+        if (!$zip->addFile($dbDumpFile, 'export.sql.gz')) {
+            throw new \Exception('Failed to add database dump to zip');
+        }
+
+        // Add .env file if it exists
+        if (file_exists($backupDir . '/.env')) {
+            if (!$zip->addFile($backupDir . '/.env', '.env')) {
+                throw new \Exception('Failed to add .env file to zip');
+            }
+        }
+
+        // Set encryption for all files
+        if (!$zip->setEncryptionName('export.sql.gz', \ZipArchive::EM_AES_256)) {
+            throw new \Exception('Failed to encrypt database dump');
+        }
+
+        if (file_exists($backupDir . '/.env')) {
+            if (!$zip->setEncryptionName('.env', \ZipArchive::EM_AES_256)) {
+                throw new \Exception('Failed to encrypt .env file');
+            }
+        }
+
+        if (!$zip->close()) {
+            throw new \Exception('Failed to close zip archive');
+        }
+
+        // Recursive cleanup function
+        $cleanup = function ($dir) use (&$cleanup) {
+            if (!is_dir($dir)) {
+                return;
+            }
+
+            $files = array_diff(scandir($dir), ['.', '..']);
+            foreach ($files as $file) {
+                $path = $dir . '/' . $file;
+                if (is_dir($path)) {
+                    $cleanup($path);
+                } else {
+                    unlink($path);
+                }
+            }
+            rmdir($dir);
+        };
+
+        // Clean up the temporary directory
+        $cleanup($backupDir);
+
+        return [
+            'id' => $backupId,
+            'filename' => $zipFile,
+            'size' => self::formatSize(filesize($zipFile)),
+        ];
     }
 
     public static function restoreBackup($id)

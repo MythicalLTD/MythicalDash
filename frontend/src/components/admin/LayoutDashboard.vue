@@ -107,6 +107,7 @@ const dashBoard = ref({
         redeem_codes_count: 0,
         servers_count: 0,
         plugins_count: 0,
+        backups_count: 0,
     },
 });
 

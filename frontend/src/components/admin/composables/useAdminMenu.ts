@@ -15,6 +15,7 @@ import {
     Server as Servers,
     Package as Plugins,
     LogsIcon,
+    Database,
 } from 'lucide-vue-next';
 import type { MenuGroup, ProfileMenuItem } from '../types';
 
@@ -32,6 +33,7 @@ interface DashboardCounts {
     redeem_codes_count: number;
     servers_count: number;
     plugins_count: number;
+    backups_count: number;
 }
 
 interface DashboardData {
@@ -183,6 +185,13 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                 //    icon: Database,
                 //    active: route.path === `${adminBaseUri}/mythicalcloud`,
                 //},
+                {
+                    name: 'Backups',
+                    path: `${adminBaseUri}/backups`,
+                    icon: Database,
+                    active: route.path === `${adminBaseUri}/backups`,
+                    count: computed(() => dashBoard.value.count.backups_count || 0),
+                },
             ],
         },
     ]);

@@ -131,4 +131,11 @@ class UserActivitiesTypes
     public static string $admin_user_update = 'admin:user:update';
     public static string $admin_user_delete = 'admin:user:delete';
 
+    /**
+     * Backups.
+     */
+    public static string $admin_backup_create = 'admin:backup:create';
+    public static string $admin_backup_restore = 'admin:backup:restore';
+    public static string $admin_backup_delete = 'admin:backup:delete';
+
 }
