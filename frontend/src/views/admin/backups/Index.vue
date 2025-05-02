@@ -213,7 +213,7 @@ const restoreBackup = async (backup: Backup) => {
             }
             return null;
         },
-    } as SweetAlertOptions);
+    } as unknown as SweetAlertOptions);
 
     if (!answer || parseInt(answer) !== correctAnswer) {
         Swal.fire({
