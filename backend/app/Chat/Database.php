@@ -18,6 +18,12 @@ use PDO;
 class Database
 {
     private $pdo;
+	private $mysqli;
+	private $host;
+	private $dbName;
+	private $username;
+	private $password;
+
 
     /**
      * Database constructor.
@@ -38,12 +44,22 @@ class Database
         } catch (\PDOException $e) {
             throw new \Exception('Connection failed: ' . $e->getMessage());
         }
+
+		$this->host = $host;
+		$this->dbName = $dbName;
+		$this->username = $username;
+		$this->password = $password;
     }
 
     public function getPdo(): \PDO
     {
         return $this->pdo;
     }
+
+    public function getMysqli(): \mysqli
+    {
+		return new \mysqli($this->host, $this->username, $this->password, $this->dbName);
+	}
 
     /**
      * Get the PDO connection.

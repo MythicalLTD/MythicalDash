@@ -43,18 +43,7 @@ class Addon extends App implements CommandBuilder
                     self::uninstallPlugin();
                     break;
                 case 'list':
-                    self::getInstance()->send('&5&lMythical&d&lDash &7- &d&lAddons');
-                    self::getInstance()->send('');
-                    $addons = $pluginManager->getLoadedMemoryPlugins();
-                    foreach ($addons as $plugin) {
-                        $addonConfig = \MythicalDash\Plugins\PluginConfig::getConfig($plugin);
-                        $name = $addonConfig['plugin']['name'];
-                        $version = $addonConfig['plugin']['version'];
-                        $description = $addonConfig['plugin']['description'];
-                        $identifier = $addonConfig['plugin']['identifier'];
-                        self::getInstance()->send("&7#&e{$identifier}&7 | &b{$name} &8> &d{$version} &8> &7{$description}");
-                    }
-                    self::getInstance()->send('');
+                    self::list();
                     break;
                 case 'create':
                     // Create an addon.
@@ -72,6 +61,23 @@ class Addon extends App implements CommandBuilder
             self::getInstance()->send('&cPlease provide a subcommand!');
         }
     }
+
+	public static function list() : void {
+		global $pluginManager;
+
+		self::getInstance()->send('&5&lMythical&d&lDash &7- &d&lAddons');
+		self::getInstance()->send('');
+		$addons = $pluginManager->getLoadedMemoryPlugins();
+		foreach ($addons as $plugin) {
+			$addonConfig = \MythicalDash\Plugins\PluginConfig::getConfig($plugin);
+			$name = $addonConfig['plugin']['name'];
+			$version = $addonConfig['plugin']['version'];
+			$description = $addonConfig['plugin']['description'];
+			$identifier = $addonConfig['plugin']['identifier'];
+			self::getInstance()->send("&7#&e{$identifier}&7 | &b{$name} &8> &d{$version} &8> &7{$description}");
+		}
+		self::getInstance()->send('');
+	}
 
     public static function installPlugin(): void
     {
