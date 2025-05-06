@@ -176,13 +176,13 @@ class TelemetryJob implements TimeTask
 
 						$client = new Client();
 						$headers = [
-							'Content-Type' => 'application/json'
+							'Content-Type' => 'application/json',
+							'User-Agent' => 'MythicalDash/3.0'
 						];
 						$body = json_encode($telemetryData);
 						$request = new Request('PUT', 'https://mymythicalid.mythical.systems/api/system/license/' . $licenseKey . '/telemetry', $headers, $body);
 						$res = $client->sendAsync($request)->wait();
 						$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &aTelemetry data sent successfully: ' . $res->getBody());
-
 
 
 					} catch (\Throwable $e) {

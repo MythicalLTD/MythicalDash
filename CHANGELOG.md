@@ -1,5 +1,11 @@
-# v3-remastered 1.0.0.2
+# v3-remastered 1.0.0.3
 
+# Bugs Fixed:
+
+- BUG: License check goes over ipv4 :(
+- BUG: License check doesn't have a user agent!
+- BUG: Telemetry didn't have a user agent!
+- BUG: Cloud didn't have a user agent!
 
 -----
 

@@ -46,6 +46,10 @@ class MythicalCloud
                 'PUT',
                 "https://mymythicalid.mythical.systems/api/system/cloud/license/{$licenseKey}/cloud/backup",
                 [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'User-Agent' => 'MythicalDash/1.0',
+                    ],
                     'multipart' => [
                         [
                             'name' => 'backup',
@@ -101,7 +105,13 @@ class MythicalCloud
 
             $response = $client->request(
                 'GET',
-                "https://mymythicalid.mythical.systems/api/system/cloud/license/{$licenseKey}/backups"
+                "https://mymythicalid.mythical.systems/api/system/cloud/license/{$licenseKey}/backups",
+                [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'User-Agent' => 'MythicalDash/1.0',
+                    ],
+                ]
             );
 
             $responseData = json_decode($response->getBody()->getContents(), true);
@@ -138,7 +148,13 @@ class MythicalCloud
 
             $response = $client->request(
                 'GET',
-                "https://mymythicalid.mythical.systems/api/system/cloud/license/{$licenseKey}/backup/{$backupId}/info"
+                "https://mymythicalid.mythical.systems/api/system/cloud/license/{$licenseKey}/backup/{$backupId}/info",
+                [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'User-Agent' => 'MythicalDash/1.0',
+                    ],
+                ]
             );
 
             $responseData = json_decode($response->getBody()->getContents(), true);
@@ -175,7 +191,13 @@ class MythicalCloud
 
             $response = $client->request(
                 'DELETE',
-                "https://mymythicalid.mythical.systems/api/system/cloud/license/{$licenseKey}/backup/{$backupId}"
+                "https://mymythicalid.mythical.systems/api/system/cloud/license/{$licenseKey}/backup/{$backupId}",
+                [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'User-Agent' => 'MythicalDash/1.0',
+                    ],
+                ]
             );
 
             $responseData = json_decode($response->getBody()->getContents(), true);
@@ -211,7 +233,13 @@ class MythicalCloud
 
             $response = $client->request(
                 'DELETE',
-                "https://mymythicalid.mythical.systems/api/system/cloud/license/{$licenseKey}/backups"
+                "https://mymythicalid.mythical.systems/api/system/cloud/license/{$licenseKey}/backups",
+                [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'User-Agent' => 'MythicalDash/1.0',
+                    ],
+                ]
             );
 
             $responseData = json_decode($response->getBody()->getContents(), true);
@@ -249,7 +277,13 @@ class MythicalCloud
 
             $response = $client->request(
                 'GET',
-                "https://mymythicalid.mythical.systems/api/system/cloud/license/{$licenseKey}/backup/{$backupId}/download"
+                "https://mymythicalid.mythical.systems/api/system/cloud/license/{$licenseKey}/backup/{$backupId}/download",
+                [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'User-Agent' => 'MythicalDash/1.0',
+                    ],
+                ]
             );
 
             $contents = $response->getBody()->getContents();

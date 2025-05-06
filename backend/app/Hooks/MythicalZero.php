@@ -70,6 +70,7 @@ class MythicalZero
             $client = new \GuzzleHttp\Client();
             $headers = [
                 'Content-Type' => 'application/json',
+                'User-Agent' => 'MythicalDash-Telemetry/' . $this->version . ' (Instance: ' . $this->instanceId . ')',
             ];
             $body = json_encode([
                 'username' => $username,
@@ -135,6 +136,7 @@ class MythicalZero
             $client = new \GuzzleHttp\Client();
             $headers = [
                 'Content-Type' => 'application/json',
+                'User-Agent' => 'MythicalDash-Telemetry/' . $this->version . ' (Instance: ' . $this->instanceId . ')',
             ];
             $body = json_encode([
                 'username' => $username,
