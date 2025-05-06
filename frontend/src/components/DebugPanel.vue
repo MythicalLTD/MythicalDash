@@ -214,6 +214,227 @@
                             <div class="font-mono text-sm break-all">{{ log.message }}</div>
                         </div>
                     </div>
+
+                    <!-- App Tab -->
+                    <div v-if="activeTab === 'app'" class="space-y-4">
+                        <div class="bg-gray-900/50 rounded-lg p-3 border border-gray-700/50">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="text-sm font-medium">JavaScript Terminal</h4>
+                                <button
+                                    @click="clearTerminal"
+                                    class="p-1 text-gray-400 hover:text-white transition-colors rounded hover:bg-gray-700/50"
+                                    title="Clear Terminal"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="h-4 w-4"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div
+                                class="bg-gray-900 rounded-lg p-3 font-mono text-sm h-[300px] overflow-y-auto custom-scrollbar mb-2"
+                            >
+                                <div v-for="(entry, index) in terminalHistory" :key="index" class="mb-2">
+                                    <div v-if="entry.type === 'input'" class="text-blue-400">
+                                        <span class="text-gray-500">></span> {{ entry.content }}
+                                    </div>
+                                    <div v-else-if="entry.type === 'output'" class="text-gray-300">
+                                        {{ entry.content }}
+                                    </div>
+                                    <div v-else-if="entry.type === 'error'" class="text-red-400">
+                                        {{ entry.content }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <input
+                                    v-model="terminalInput"
+                                    @keydown.enter="executeTerminalCommand"
+                                    type="text"
+                                    class="flex-1 bg-gray-800 text-white rounded px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Enter JavaScript code..."
+                                />
+                                <button
+                                    @click="executeTerminalCommand"
+                                    class="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors"
+                                >
+                                    Execute
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Storage Tab -->
+                    <div v-if="activeTab === 'storage'" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Cookies -->
+                            <div class="bg-gray-900/50 rounded-lg p-3 border border-gray-700/50">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="text-sm font-medium">Cookies</h4>
+                                    <button
+                                        @click="refreshCookies"
+                                        class="p-1 text-gray-400 hover:text-white transition-colors rounded hover:bg-gray-700/50"
+                                        title="Refresh"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="space-y-2">
+                                    <div
+                                        v-for="(value, name) in cookies"
+                                        :key="name"
+                                        class="bg-gray-800/50 p-2 rounded text-xs"
+                                    >
+                                        <div class="font-mono text-yellow-400">{{ name }}</div>
+                                        <div class="text-gray-400 text-xs mt-1 break-all">{{ value }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- LocalStorage -->
+                            <div class="bg-gray-900/50 rounded-lg p-3 border border-gray-700/50">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="text-sm font-medium">LocalStorage</h4>
+                                    <button
+                                        @click="refreshLocalStorage"
+                                        class="p-1 text-gray-400 hover:text-white transition-colors rounded hover:bg-gray-700/50"
+                                        title="Refresh"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="space-y-2">
+                                    <div
+                                        v-for="(value, key) in localStorage"
+                                        :key="key"
+                                        class="bg-gray-800/50 p-2 rounded text-xs"
+                                    >
+                                        <div class="font-mono text-purple-400">{{ key }}</div>
+                                        <div class="text-gray-400 text-xs mt-1 break-all">{{ value }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div v-if="activeTab === 'settings'" class="space-y-4">
+                        <div class="bg-gray-900/50 rounded-lg p-3 border border-gray-700/50">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="text-sm font-medium">Application Settings</h4>
+                                <button
+                                    @click="refreshSettings"
+                                    class="p-1 text-gray-400 hover:text-white transition-colors rounded hover:bg-gray-700/50"
+                                    title="Refresh"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="h-4 w-4"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Settings Categories -->
+                            <div class="space-y-4">
+                                <!-- General Settings -->
+                                <div class="bg-gray-800/50 rounded-lg p-3">
+                                    <h5 class="text-sm font-medium text-blue-400 mb-2">General Settings</h5>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div v-for="(value, key) in generalSettings" :key="key" class="text-xs">
+                                            <span class="text-gray-400">{{ key }}:</span>
+                                            <span class="text-white ml-1">{{ value }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Company Information -->
+                                <div class="bg-gray-800/50 rounded-lg p-3">
+                                    <h5 class="text-sm font-medium text-green-400 mb-2">Company Information</h5>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div v-for="(value, key) in companySettings" :key="key" class="text-xs">
+                                            <span class="text-gray-400">{{ key }}:</span>
+                                            <span class="text-white ml-1">{{ value }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Server Settings -->
+                                <div class="bg-gray-800/50 rounded-lg p-3">
+                                    <h5 class="text-sm font-medium text-yellow-400 mb-2">Server Settings</h5>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div v-for="(value, key) in serverSettings" :key="key" class="text-xs">
+                                            <span class="text-gray-400">{{ key }}:</span>
+                                            <span class="text-white ml-1">{{ value }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Feature Flags -->
+                                <div class="bg-gray-800/50 rounded-lg p-3">
+                                    <h5 class="text-sm font-medium text-purple-400 mb-2">Feature Flags</h5>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div v-for="(value, key) in featureFlags" :key="key" class="text-xs">
+                                            <span class="text-gray-400">{{ key }}:</span>
+                                            <span
+                                                :class="value === 'true' ? 'text-green-400' : 'text-red-400'"
+                                                class="ml-1"
+                                                >{{ value }}</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Debug Information -->
+                                <div class="bg-gray-800/50 rounded-lg p-3">
+                                    <h5 class="text-sm font-medium text-red-400 mb-2">Debug Information</h5>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div v-for="(value, key) in debugSettings" :key="key" class="text-xs">
+                                            <span class="text-gray-400">{{ key }}:</span>
+                                            <span class="text-white ml-1">{{ value }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -222,7 +443,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
-import type { NetworkLog, ErrorLog, ConsoleLog } from '../types/debug';
+import type { NetworkLog, ErrorLog, ConsoleLog, AppSettings } from '../types/debug';
 
 export default defineComponent({
     name: 'DebugPanel',
@@ -234,11 +455,26 @@ export default defineComponent({
         const consoleLogs = ref<ConsoleLog[]>([]);
         const expandedRequests = ref<Record<number, boolean>>({});
         const expandedResponses = ref<Record<number, boolean>>({});
+        const appFunctions = ref<Record<string, { description: string }>>({});
+        const appClasses = ref<Record<string, { description: string }>>({});
+        const cookies = ref<Record<string, string>>({});
+        const localStorage = ref<Record<string, string>>({});
+        const terminalInput = ref('');
+        const terminalHistory = ref<Array<{ type: 'input' | 'output' | 'error'; content: string }>>([]);
+        const settings = ref<AppSettings | null>(null);
+        const generalSettings = ref<Record<string, string>>({});
+        const companySettings = ref<Record<string, string>>({});
+        const serverSettings = ref<Record<string, string>>({});
+        const featureFlags = ref<Record<string, string>>({});
+        const debugSettings = ref<Record<string, string>>({});
 
         const debugTabs = [
             { id: 'network', name: 'Network' },
             { id: 'errors', name: 'Errors' },
             { id: 'console', name: 'Console' },
+            { id: 'app', name: 'App' },
+            { id: 'storage', name: 'Storage' },
+            { id: 'settings', name: 'Settings' },
         ];
 
         const getLogCount = (tabId: string): number => {
@@ -297,8 +533,152 @@ export default defineComponent({
             }
         };
 
+        const refreshCookies = (): void => {
+            const cookieString = document.cookie;
+            const cookiePairs = cookieString.split(';');
+            const cookieObj: Record<string, string> = {};
+
+            cookiePairs.forEach((pair) => {
+                const [name, value] = pair.trim().split('=');
+                if (name && value) {
+                    cookieObj[name] = decodeURIComponent(value);
+                }
+            });
+
+            cookies.value = cookieObj;
+        };
+
+        const refreshLocalStorage = (): void => {
+            const storageObj: Record<string, string> = {};
+            for (let i = 0; i < window.localStorage.length; i++) {
+                const key = window.localStorage.key(i);
+                if (key) {
+                    storageObj[key] = window.localStorage.getItem(key) || '';
+                }
+            }
+            localStorage.value = storageObj;
+        };
+
+        const executeTerminalCommand = (): void => {
+            if (!terminalInput.value.trim()) return;
+
+            // Add input to history
+            terminalHistory.value.push({
+                type: 'input',
+                content: terminalInput.value,
+            });
+
+            try {
+                // Execute the code
+                const result = new Function(terminalInput.value)();
+
+                // Add output to history
+                terminalHistory.value.push({
+                    type: 'output',
+                    content: result !== undefined ? String(result) : 'undefined',
+                });
+            } catch (error) {
+                // Add error to history
+                terminalHistory.value.push({
+                    type: 'error',
+                    content: error instanceof Error ? error.message : String(error),
+                });
+            }
+
+            // Clear input
+            terminalInput.value = '';
+        };
+
+        const clearTerminal = (): void => {
+            terminalHistory.value = [];
+        };
+
+        const categorizeSettings = (settings: AppSettings): void => {
+            const value = settings.value;
+
+            // General Settings
+            generalSettings.value = {
+                'App Name': value.app_name,
+                'App Version': value.app_version,
+                'App Language': value.app_lang,
+                'App Timezone': value.app_timezone,
+                'App URL': value.app_url,
+                Currency: value.currency,
+                'Currency Symbol': value.currency_symbol,
+            };
+
+            // Company Settings
+            companySettings.value = {
+                'Company Name': value.company_name,
+                'Company Address': value.company_address,
+                'Company City': value.company_city,
+                'Company State': value.company_state,
+                'Company Country': value.company_country,
+                'Company ZIP': value.company_zip,
+                'Company VAT': value.company_vat,
+            };
+
+            // Server Settings
+            serverSettings.value = {
+                'Default CPU': value.default_cpu,
+                'Default RAM': value.default_ram,
+                'Default Disk': value.default_disk,
+                'Default Ports': value.default_ports,
+                'Default Databases': value.default_databases,
+                'Default Backups': value.default_backups,
+                'Default Server Slots': value.default_server_slots,
+                'Server Renew Days': value.server_renew_days,
+                'Server Renew Cost': value.server_renew_cost,
+            };
+
+            // Feature Flags
+            featureFlags.value = {
+                'AFK Enabled': value.afk_enabled,
+                'Allow Coins Sharing': value.allow_coins_sharing,
+                'Allow Public Profiles': value.allow_public_profiles,
+                'Allow Servers': value.allow_servers,
+                'Allow Tickets': value.allow_tickets,
+                'Code Redemption': value.code_redemption_enabled,
+                'Credits Recharge': value.credits_recharge_enabled,
+                'Early Supporters': value.early_supporters_enabled,
+                Leaderboard: value.leaderboard_enabled,
+                Referrals: value.referrals_enabled,
+                'Server Renew': value.server_renew_enabled,
+                Store: value.store_enabled,
+                'Zero Trust': value.zero_trust_enabled,
+            };
+
+            // Debug Settings
+            debugSettings.value = {
+                'Debug Mode': value.debug_debug ? 'true' : 'false',
+                'Debug Version': value.debug_version,
+                'Debug OS': value.debug_os,
+                'Debug OS Kernel': value.debug_os_kernel,
+                'Debug Name': value.debug_name,
+                Telemetry: value.debug_telemetry ? 'true' : 'false',
+                'Use Redis': value.debug?.useRedis ? 'true' : 'false',
+                'Rate Limit': value.debug?.rateLimit?.enabled ? 'true' : 'false',
+                'Rate Limit Amount': value.debug?.rateLimit?.limit?.toString() || 'N/A',
+            };
+        };
+
+        const refreshSettings = (): void => {
+            const settingsStr = window.localStorage.getItem('mythicaldash_settings_cache');
+            if (settingsStr) {
+                try {
+                    settings.value = JSON.parse(settingsStr) as AppSettings;
+                    categorizeSettings(settings.value);
+                } catch (error) {
+                    console.error('Failed to parse settings:', error);
+                }
+            }
+        };
+
         onMounted(() => {
             window.addEventListener('keydown', handleKeyDown);
+            refreshCookies();
+            refreshLocalStorage();
+            refreshSettings();
         });
 
         onUnmounted(() => {
@@ -314,6 +694,12 @@ export default defineComponent({
             consoleLogs,
             expandedRequests,
             expandedResponses,
+            appFunctions,
+            appClasses,
+            cookies,
+            localStorage,
+            terminalInput,
+            terminalHistory,
             addLog,
             clearLogs,
             getLogCount,
@@ -321,6 +707,17 @@ export default defineComponent({
             toggleDebugMode,
             toggleRequestBody,
             toggleResponseBody,
+            refreshCookies,
+            refreshLocalStorage,
+            executeTerminalCommand,
+            clearTerminal,
+            settings,
+            generalSettings,
+            companySettings,
+            serverSettings,
+            featureFlags,
+            debugSettings,
+            refreshSettings,
         };
     },
 });

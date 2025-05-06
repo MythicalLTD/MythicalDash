@@ -49,6 +49,7 @@
 		"vue-router": "^4.4.5",
 		"vue-sweetalert2": "^5.0.11",
 		"vue-tsc": "^2.1.10",
-		"vue-turnstile": "^1.0.11"
+		"vue-turnstile": "^1.0.11",
+		"web-vitals": "^4.2.4"
 	}
 }

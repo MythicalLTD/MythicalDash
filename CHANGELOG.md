@@ -7,6 +7,8 @@
 - BUG: Telemetry didn't have a user agent!
 - BUG: Cloud didn't have a user agent!
 - BUG: Fixed a bug where delete requests awaited an json when it doesn't need to!
+- BUG: Fixed the: Failed to get table row count: SQLSTATE[42S22]
+
 
 # Features Added:
 
@@ -15,6 +17,9 @@
 - Feature: If no error codes defined into translation use the api response!
 - Feature: Now you can customize the error page for (rate limited, license key, backend down)
 - Feature: Sessions were reworked!
+- Feature: Allow custom css and custom js!
+- Feature: Support for terminal access in production for debug mode!
+- Feature: Better optimization!
 
 
 # Features Removed:

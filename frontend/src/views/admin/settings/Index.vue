@@ -77,6 +77,11 @@
                 <div v-show="activeTab === 'billing'" class="space-y-6">
                     <BillingSettings :settings="settings" @update="updateSettings" />
                 </div>
+
+                <!-- Custom Code Settings -->
+                <div v-show="activeTab === 'custom-code'" class="space-y-6">
+                    <CustomCodeSettings :settings="settings" @update="updateSettings" />
+                </div>
             </div>
         </div>
     </LayoutDashboard>
@@ -94,6 +99,7 @@ import {
     Briefcase as BriefcaseIcon,
     FileText as FileTextIcon,
     CreditCard as CreditCardIcon,
+    Code as CodeIcon,
     LoaderIcon,
 } from 'lucide-vue-next';
 
@@ -105,6 +111,7 @@ import IntegrationSettings from './components/IntegrationSettings.vue';
 import EarnSettings from './components/EarnSettings.vue';
 import BillingSettings from './components/BillingSettings.vue';
 import LegalSettings from './components/LegalSettings.vue';
+import CustomCodeSettings from './components/CustomCodeSettings.vue';
 
 // Settings tabs
 const tabs = [
@@ -115,6 +122,7 @@ const tabs = [
     { id: 'earn', name: 'Earn & Rewards', icon: BriefcaseIcon },
     { id: 'legal', name: 'Legal', icon: FileTextIcon },
     { id: 'billing', name: 'Billing', icon: CreditCardIcon },
+    { id: 'custom-code', name: 'Custom Code', icon: CodeIcon },
 ];
 
 // State setup

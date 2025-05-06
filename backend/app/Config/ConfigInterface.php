@@ -300,4 +300,10 @@ interface ConfigInterface
      * Daily Backup.
      */
     public const DAILY_BACKUP_ENABLED = 'daily_backup_enabled';
+
+    /**
+     * Custom CSS and JS.
+     */
+    public const CUSTOM_CSS = 'custom_css';
+    public const CUSTOM_JS = 'custom_js';
 }

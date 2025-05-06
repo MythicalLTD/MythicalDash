@@ -73,15 +73,18 @@
 
                     <div>
                         <label for="pterodactyl_location_id" class="block text-sm font-medium text-gray-400 mb-1">
-                            Pterodactyl Location ID
+                            Pterodactyl Location
                         </label>
-                        <input
+                        <select
                             id="pterodactyl_location_id"
                             v-model="locationForm.pterodactyl_location_id"
-                            type="number"
                             class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            placeholder="e.g. 1"
-                        />
+                        >
+                            <option v-for="location in pterodactylLocations" :key="location.id" :value="location.id">
+                                {{ location.short }}
+                            </option>
+                        </select>
+                        <p class="text-xs text-gray-400 mt-1">This is used to identify the Pterodactyl location</p>
                     </div>
 
                     <div>
@@ -141,6 +144,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import { ArrowLeftIcon, SaveIcon, LoaderIcon } from 'lucide-vue-next';
+import Locations from '@/mythicaldash/admin/Locations';
 
 const router = useRouter();
 const route = useRoute();
@@ -166,8 +170,22 @@ const locationForm = ref({
     slots: 15,
 });
 
+interface PterodactylLocation {
+    id: number;
+    short: string;
+    long: string;
+    created_at: string;
+    updated_at: string;
+}
+
+const pterodactylLocations = ref<PterodactylLocation[]>([]);
+
 onMounted(async () => {
     try {
+        // Fetch Pterodactyl locations
+        const locationsResponse = await Locations.getPterodactylLocations();
+        pterodactylLocations.value = locationsResponse.locations;
+
         // Fetch location data from API
         await fetchLocationData();
     } catch (err) {

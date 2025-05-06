@@ -244,6 +244,10 @@ class PublicConfig extends ConfigFactory
 
             // Daily Backup
             ConfigInterface::DAILY_BACKUP_ENABLED => 'false',
+
+            // Custom CSS and JS
+            ConfigInterface::CUSTOM_CSS => '',
+            ConfigInterface::CUSTOM_JS => '',
         ];
 
     }
