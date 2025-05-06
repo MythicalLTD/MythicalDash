@@ -27,18 +27,28 @@ class NodesResource extends PterodactylAdmin
     /**
      * List all nodes.
      *
+     * @param int $page Page number for pagination
+     * @param int $perPage Number of items per page
+     * @param array $includes Additional data to include in the response (allocations, location, servers)
+     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws RateLimitException
      */
-    public function listNodes(int $page = 1, int $perPage = 50): array
+    public function listNodes(int $page = 1, int $perPage = 50, array $includes = ['allocations', 'location', 'servers']): array
     {
         try {
+            $query = [
+                'page' => $page,
+                'per_page' => $perPage,
+            ];
+
+            if (!empty($includes)) {
+                $query['include'] = implode(',', $includes);
+            }
+
             return $this->request('GET', '/api/application/nodes', [
-                'query' => [
-                    'page' => $page,
-                    'per_page' => $perPage,
-                ],
+                'query' => $query,
             ]);
         } catch (ClientException $e) {
             $response = $e->getResponse();
@@ -238,14 +248,20 @@ class NodesResource extends PterodactylAdmin
      * @throws ResourceNotFoundException
      * @throws RateLimitException
      */
-    public function listAllocations(int $nodeId, int $page = 1, int $perPage = 50): array
+    public function listAllocations(int $nodeId, int $page = 1, int $perPage = 50, array $includes = ['node','server']): array
     {
         try {
+            $query = [
+                'page' => $page,
+                'per_page' => $perPage,
+            ];
+
+            if (!empty($includes)) {
+                $query['include'] = implode(',', $includes);
+            }
+
             return $this->request('GET', "/api/application/nodes/{$nodeId}/allocations", [
-                'query' => [
-                    'page' => $page,
-                    'per_page' => $perPage,
-                ],
+                'query' => $query,
             ]);
         } catch (ClientException $e) {
             $response = $e->getResponse();

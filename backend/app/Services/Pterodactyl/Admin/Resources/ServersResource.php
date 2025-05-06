@@ -69,13 +69,15 @@ class ServersResource extends PterodactylAdmin
      * @throws ResourceNotFoundException
      * @throws RateLimitException
      */
-    public function getServer(int $serverId): array
+    public function getServer(int $serverId, array $includes = ['allocations', 'user', 'subusers', 'pack', 'nest', 'egg', 'variables', 'location', 'node', 'databases']): array
     {
         try {
+            $query = [
+                'include' => implode(',', $includes),
+            ];
+
             return $this->request('GET', "/api/application/servers/{$serverId}", [
-                'query' => [
-                    'include' => 'allocations,user,subusers,pack,nest,egg,variables,location,node,databases',
-                ],
+                'query' => $query,
             ]);
         } catch (ClientException $e) {
             $response = $e->getResponse();

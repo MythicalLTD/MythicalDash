@@ -26,14 +26,20 @@ class UsersResource extends PterodactylAdmin
      *
      * @throws PterodactylException
      */
-    public function listUsers(int $page = 1, int $perPage = 50): array
+    public function listUsers(int $page = 1, int $perPage = 50, array $includes = ['servers']): array
     {
         try {
+            $query = [
+                'page' => $page,
+                'per_page' => $perPage,
+            ];
+
+            if (!empty($includes)) {
+                $query['include'] = implode(',', $includes);
+            }
+
             return $this->request('GET', '/api/application/users', [
-                'query' => [
-                    'page' => $page,
-                    'per_page' => $perPage,
-                ],
+                'query' => $query,
             ]);
         } catch (ClientException $e) {
             throw new PterodactylException('Failed to retrieve users list: ' . $e->getMessage());
@@ -150,6 +156,13 @@ class UsersResource extends PterodactylAdmin
         }
     }
 
+	/**
+	 * Find a user by email.
+	 *
+	 * @param string $email Email address to search for
+	 * @return array User data
+	 * @throws PterodactylException
+	 */
     public function findUserByEmail(string $email): array
     {
         try {
@@ -170,6 +183,13 @@ class UsersResource extends PterodactylAdmin
         }
     }
 
+	/**
+	 * Find a user by username.
+	 *
+	 * @param string $username Username to search for
+	 * @return array User data
+	 * @throws PterodactylException
+	 */
     public function findUserByUsername(string $username): array
     {
         try {
@@ -189,6 +209,13 @@ class UsersResource extends PterodactylAdmin
         }
     }
 
+	/**
+	 * Find a user by uuid.
+	 *
+	 * @param string $uuid UUID to search for
+	 * @return array User data
+	 * @throws PterodactylException
+	 */
     public function findUserByUuid(string $uuid): array
     {
         try {
@@ -208,6 +235,13 @@ class UsersResource extends PterodactylAdmin
         }
     }
 
+	/**
+	 * Find a user by external id.
+	 *
+	 * @param string $externalId External ID to search for
+	 * @return array User data
+	 * @throws PterodactylException
+	 */
     public function findUserByExternalId(string $externalId): array
     {
         try {
@@ -224,49 +258,6 @@ class UsersResource extends PterodactylAdmin
             return $response['data'][0];
         } catch (ClientException $e) {
             throw new PterodactylException('Failed to find user by external id: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * List all users with their servers.
-     *
-     * @param int $page Page number
-     * @param int $perPage Items per page
-     * @param array $filters Optional filters (email, uuid, username, external_id)
-     * @param string $sortBy Sort by field (id or uuid)
-     *
-     * @throws PterodactylException
-     */
-    public function listUsersWithServers(
-        int $page = 1,
-        int $perPage = 50,
-        array $filters = [],
-        string $sortBy = 'id',
-    ): array {
-        try {
-            $query = [
-                'page' => $page,
-                'per_page' => $perPage,
-                'include' => 'servers',
-            ];
-
-            // Add any provided filters
-            foreach ($filters as $key => $value) {
-                if (in_array($key, ['email', 'uuid', 'username', 'external_id'])) {
-                    $query["filter[$key]"] = $value;
-                }
-            }
-
-            // Add sorting if valid
-            if (in_array($sortBy, ['id', 'uuid'])) {
-                $query['sort'] = $sortBy;
-            }
-
-            return $this->request('GET', '/api/application/users', [
-                'query' => $query,
-            ]);
-        } catch (ClientException $e) {
-            throw new PterodactylException('Failed to retrieve users with servers: ' . $e->getMessage());
         }
     }
 }

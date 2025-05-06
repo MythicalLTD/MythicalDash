@@ -17,7 +17,6 @@ use GuzzleHttp\Exception\ClientException;
 use MythicalDash\Services\Pterodactyl\Admin\PterodactylAdmin;
 use MythicalDash\Services\Pterodactyl\Exceptions\RateLimitException;
 use MythicalDash\Services\Pterodactyl\Exceptions\PermissionException;
-use MythicalDash\Services\Pterodactyl\Exceptions\ValidationException;
 use MythicalDash\Services\Pterodactyl\Exceptions\AuthenticationException;
 use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 
@@ -30,14 +29,20 @@ class NestsResource extends PterodactylAdmin
      * @throws PermissionException
      * @throws RateLimitException
      */
-    public function listNests(int $page = 1, int $perPage = 50): array
+    public function listNests(int $page = 1, int $perPage = 50, array $includes = ['eggs', 'servers']): array
     {
         try {
+            $query = [
+                'page' => $page,
+                'per_page' => $perPage,
+            ];
+
+            if (!empty($includes)) {
+                $query['include'] = implode(',', $includes);
+            }
+
             return $this->request('GET', '/api/application/nests', [
-                'query' => [
-                    'page' => $page,
-                    'per_page' => $perPage,
-                ],
+                'query' => $query,
             ]);
         } catch (ClientException $e) {
             $response = $e->getResponse();
@@ -68,10 +73,16 @@ class NestsResource extends PterodactylAdmin
      * @throws ResourceNotFoundException
      * @throws RateLimitException
      */
-    public function getNest(int $nestId): array
+    public function getNest(int $nestId, array $includes = ['eggs', 'servers']): array
     {
         try {
-            return $this->request('GET', "/api/application/nests/{$nestId}");
+            $query = [
+                'include' => implode(',', $includes),
+            ];
+
+            return $this->request('GET', "/api/application/nests/{$nestId}", [
+                'query' => $query,
+            ]);
         } catch (ClientException $e) {
             $response = $e->getResponse();
             $statusCode = $response->getStatusCode();
@@ -98,21 +109,32 @@ class NestsResource extends PterodactylAdmin
     }
 
     /**
-     * List eggs in a nest.
+     * List all eggs in a nest.
      *
+     * @param int $nestId The ID of the nest
+     * @param int $page Page number for pagination
+     * @param int $perPage Number of items per page
+     * @param array $includes Additional data to include in the response (nest, servers, config, script, variables)
+     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
      * @throws RateLimitException
      */
-    public function listEggs(int $nestId, int $page = 1, int $perPage = 50): array
+    public function listEggs(int $nestId, int $page = 1, int $perPage = 50, array $includes = ['nest', 'servers', 'config', 'script', 'variables']): array
     {
         try {
+            $query = [
+                'page' => $page,
+                'per_page' => $perPage,
+            ];
+
+            if (!empty($includes)) {
+                $query['include'] = implode(',', $includes);
+            }
+
             return $this->request('GET', "/api/application/nests/{$nestId}/eggs", [
-                'query' => [
-                    'page' => $page,
-                    'per_page' => $perPage,
-                ],
+                'query' => $query,
             ]);
         } catch (ClientException $e) {
             $response = $e->getResponse();
@@ -142,267 +164,26 @@ class NestsResource extends PterodactylAdmin
     /**
      * Get a specific egg.
      *
+     * @param int $nestId The ID of the nest
+     * @param int $eggId The ID of the egg
+     * @param array $includes Additional data to include in the response (nest, servers, config, script, variables)
+     * @return array
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
      * @throws RateLimitException
      */
-    public function getEgg(int $nestId, int $eggId): array
+    public function getEgg(int $nestId, int $eggId, array $includes = ['nest', 'servers', 'config', 'script', 'variables']): array
     {
         try {
-            return $this->request('GET', "/api/application/nests/{$nestId}/eggs/{$eggId}?include=variables");
-        } catch (ClientException $e) {
-            $response = $e->getResponse();
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode === 401) {
-                throw AuthenticationException::invalidCredentials();
+            $query = [];
+            if (!empty($includes)) {
+                $query['include'] = implode(',', $includes);
             }
 
-            if ($statusCode === 403) {
-                throw PermissionException::adminRequired();
-            }
-
-            if ($statusCode === 404) {
-                throw ResourceNotFoundException::forResource('egg', (string) $eggId);
-            }
-
-            if ($statusCode === 429) {
-                $retryAfter = (int) $response->getHeaderLine('Retry-After');
-                throw RateLimitException::withRetryAfter($retryAfter);
-            }
-
-            throw $e;
-        }
-    }
-
-    /**
-     * Create a new nest.
-     *
-     * @throws AuthenticationException
-     * @throws PermissionException
-     * @throws ValidationException
-     * @throws RateLimitException
-     */
-    public function createNest(string $name, string $description): array
-    {
-        try {
-            return $this->request('POST', '/api/application/nests', [
-                'json' => [
-                    'name' => $name,
-                    'description' => $description,
-                ],
+            return $this->request('GET', "/api/application/nests/{$nestId}/eggs/{$eggId}", [
+                'query' => $query,
             ]);
-        } catch (ClientException $e) {
-            $response = $e->getResponse();
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode === 401) {
-                throw AuthenticationException::invalidCredentials();
-            }
-
-            if ($statusCode === 403) {
-                throw PermissionException::adminRequired();
-            }
-
-            if ($statusCode === 422) {
-                $errors = json_decode($response->getBody()->getContents(), true);
-                throw ValidationException::withErrors($errors['errors'] ?? []);
-            }
-
-            if ($statusCode === 429) {
-                $retryAfter = (int) $response->getHeaderLine('Retry-After');
-                throw RateLimitException::withRetryAfter($retryAfter);
-            }
-
-            throw $e;
-        }
-    }
-
-    /**
-     * Update a nest.
-     *
-     * @throws AuthenticationException
-     * @throws PermissionException
-     * @throws ResourceNotFoundException
-     * @throws ValidationException
-     * @throws RateLimitException
-     */
-    public function updateNest(int $nestId, array $data): array
-    {
-        try {
-            return $this->request('PATCH', "/api/application/nests/{$nestId}", [
-                'json' => $data,
-            ]);
-        } catch (ClientException $e) {
-            $response = $e->getResponse();
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode === 401) {
-                throw AuthenticationException::invalidCredentials();
-            }
-
-            if ($statusCode === 403) {
-                throw PermissionException::adminRequired();
-            }
-
-            if ($statusCode === 404) {
-                throw ResourceNotFoundException::forResource('nest', (string) $nestId);
-            }
-
-            if ($statusCode === 422) {
-                $errors = json_decode($response->getBody()->getContents(), true);
-                throw ValidationException::withErrors($errors['errors'] ?? []);
-            }
-
-            if ($statusCode === 429) {
-                $retryAfter = (int) $response->getHeaderLine('Retry-After');
-                throw RateLimitException::withRetryAfter($retryAfter);
-            }
-
-            throw $e;
-        }
-    }
-
-    /**
-     * Delete a nest.
-     *
-     * @throws AuthenticationException
-     * @throws PermissionException
-     * @throws ResourceNotFoundException
-     * @throws RateLimitException
-     */
-    public function deleteNest(int $nestId): array
-    {
-        try {
-            return $this->request('DELETE', "/api/application/nests/{$nestId}");
-        } catch (ClientException $e) {
-            $response = $e->getResponse();
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode === 401) {
-                throw AuthenticationException::invalidCredentials();
-            }
-
-            if ($statusCode === 403) {
-                throw PermissionException::adminRequired();
-            }
-
-            if ($statusCode === 404) {
-                throw ResourceNotFoundException::forResource('nest', (string) $nestId);
-            }
-
-            if ($statusCode === 429) {
-                $retryAfter = (int) $response->getHeaderLine('Retry-After');
-                throw RateLimitException::withRetryAfter($retryAfter);
-            }
-
-            throw $e;
-        }
-    }
-
-    /**
-     * Create a new egg.
-     *
-     * @throws AuthenticationException
-     * @throws PermissionException
-     * @throws ResourceNotFoundException
-     * @throws ValidationException
-     * @throws RateLimitException
-     */
-    public function createEgg(int $nestId, array $data): array
-    {
-        try {
-            return $this->request('POST', "/api/application/nests/{$nestId}/eggs", [
-                'json' => $data,
-            ]);
-        } catch (ClientException $e) {
-            $response = $e->getResponse();
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode === 401) {
-                throw AuthenticationException::invalidCredentials();
-            }
-
-            if ($statusCode === 403) {
-                throw PermissionException::adminRequired();
-            }
-
-            if ($statusCode === 404) {
-                throw ResourceNotFoundException::forResource('nest', (string) $nestId);
-            }
-
-            if ($statusCode === 422) {
-                $errors = json_decode($response->getBody()->getContents(), true);
-                throw ValidationException::withErrors($errors['errors'] ?? []);
-            }
-
-            if ($statusCode === 429) {
-                $retryAfter = (int) $response->getHeaderLine('Retry-After');
-                throw RateLimitException::withRetryAfter($retryAfter);
-            }
-
-            throw $e;
-        }
-    }
-
-    /**
-     * Update an egg.
-     *
-     * @throws AuthenticationException
-     * @throws PermissionException
-     * @throws ResourceNotFoundException
-     * @throws ValidationException
-     * @throws RateLimitException
-     */
-    public function updateEgg(int $nestId, int $eggId, array $data): array
-    {
-        try {
-            return $this->request('PATCH', "/api/application/nests/{$nestId}/eggs/{$eggId}", [
-                'json' => $data,
-            ]);
-        } catch (ClientException $e) {
-            $response = $e->getResponse();
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode === 401) {
-                throw AuthenticationException::invalidCredentials();
-            }
-
-            if ($statusCode === 403) {
-                throw PermissionException::adminRequired();
-            }
-
-            if ($statusCode === 404) {
-                throw ResourceNotFoundException::forResource('egg', (string) $eggId);
-            }
-
-            if ($statusCode === 422) {
-                $errors = json_decode($response->getBody()->getContents(), true);
-                throw ValidationException::withErrors($errors['errors'] ?? []);
-            }
-
-            if ($statusCode === 429) {
-                $retryAfter = (int) $response->getHeaderLine('Retry-After');
-                throw RateLimitException::withRetryAfter($retryAfter);
-            }
-
-            throw $e;
-        }
-    }
-
-    /**
-     * Delete an egg.
-     *
-     * @throws AuthenticationException
-     * @throws PermissionException
-     * @throws ResourceNotFoundException
-     * @throws RateLimitException
-     */
-    public function deleteEgg(int $nestId, int $eggId): array
-    {
-        try {
-            return $this->request('DELETE', "/api/application/nests/{$nestId}/eggs/{$eggId}");
         } catch (ClientException $e) {
             $response = $e->getResponse();
             $statusCode = $response->getStatusCode();

@@ -30,14 +30,20 @@ class LocationsResource extends PterodactylAdmin
      * @throws PermissionException
      * @throws RateLimitException
      */
-    public function listLocations(int $page = 1, int $perPage = 50): array
+    public function listLocations(int $page = 1, int $perPage = 50, array $includes = ['nodes', 'servers']): array
     {
         try {
+            $query = [
+                'page' => $page,
+                'per_page' => $perPage,
+            ];
+
+            if (!empty($includes)) {
+                $query['include'] = implode(',', $includes);
+            }
+
             return $this->request('GET', '/api/application/locations', [
-                'query' => [
-                    'page' => $page,
-                    'per_page' => $perPage,
-                ],
+                'query' => $query,
             ]);
         } catch (ClientException $e) {
             $response = $e->getResponse();

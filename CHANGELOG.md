@@ -6,6 +6,13 @@
 - BUG: License check doesn't have a user agent!
 - BUG: Telemetry didn't have a user agent!
 - BUG: Cloud didn't have a user agent!
+- BUG: Fixed a bug where delete requests awaited an json when it doesn't need to!
+
+# Features Added:
+
+- Feature: Optimized how the pterodactyl wrapper works!
+
+# Features Removed:
 
 -----
 
