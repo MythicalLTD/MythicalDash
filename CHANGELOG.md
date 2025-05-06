@@ -13,6 +13,8 @@
 - Feature: Optimized how the pterodactyl wrapper works!
 - Feature: Added a debug menu (Shift+I)
 - Feature: If no error codes defined into translation use the api response!
+- Feature: Now you can customize the error page for (rate limited, license key, backend down)
+- Feature: Sessions were reworked!
 
 
 # Features Removed:

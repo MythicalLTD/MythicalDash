@@ -22,7 +22,7 @@ class Logs extends App implements CommandBuilder
     public static function execute(array $args): void
     {
         $app = App::getInstance();
-        define('APP_DEBUG', false);
+        define('APP_DEBUG', true);
         $appInstance = \MythicalDash\App::getInstance(false, true);
 
         $app->send('&7Starting log upload process...');
