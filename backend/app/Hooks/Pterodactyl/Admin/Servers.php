@@ -203,7 +203,7 @@ class Servers extends ServersResource
      *
      * @return array The deletion result
      */
-    public static function deletePterodactylServer(int $serverId, bool $force = false): array
+    public static function deletePterodactylServer(int $serverId, bool $force = false): array|null
     {
         try {
             $serversResource = new ServersResource(

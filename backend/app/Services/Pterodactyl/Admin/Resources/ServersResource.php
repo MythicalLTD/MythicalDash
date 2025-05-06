@@ -314,7 +314,7 @@ class ServersResource extends PterodactylAdmin
      * @throws ResourceNotFoundException
      * @throws RateLimitException
      */
-    public function deleteServer(int $serverId, bool $force = false): array
+    public function deleteServer(int $serverId, bool $force = false): array|null
     {
         $endpoint = "/api/application/servers/{$serverId}";
         if ($force) {
