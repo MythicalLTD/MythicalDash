@@ -203,7 +203,7 @@ class Servers extends ServersResource
      *
      * @return array The deletion result
      */
-    public static function deletePterodactylServer(int $serverId, bool $force = false): array|null
+    public static function deletePterodactylServer(int $serverId, bool $force = false): void
     {
         try {
             $serversResource = new ServersResource(
@@ -211,11 +211,9 @@ class Servers extends ServersResource
                 App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
-            return $serversResource->deleteServer($serverId, $force);
+            $serversResource->deleteServer($serverId, $force);
         } catch (\Throwable $e) {
             App::getInstance(true)->getLogger()->error('[Pterodactyl/Admin/Servers#deleteServer] Failed to delete server: ' . $e->getMessage());
-
-            return ['success' => false, 'error' => $e->getMessage()];
         }
     }
 
@@ -350,7 +348,14 @@ class Servers extends ServersResource
 
         // Create cache directory if it doesn't exist
         if (!is_dir(self::CACHE_DIR)) {
-            mkdir(self::CACHE_DIR, 0755, true);
+            try {
+                mkdir(self::CACHE_DIR, 0755, true);
+            } catch (\Throwable $e) {
+                // Directory might have been created by another process
+                if (!is_dir(self::CACHE_DIR)) {
+                    $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Failed to create cache directory: ' . $e->getMessage());
+                }
+            }
         }
 
         $cacheFile = self::CACHE_DIR . '/user_' . $pterodactylUserId . '.json';

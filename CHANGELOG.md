@@ -11,6 +11,9 @@
 # Features Added:
 
 - Feature: Optimized how the pterodactyl wrapper works!
+- Feature: Added a debug menu (Shift+I)
+- Feature: If no error codes defined into translation use the api response!
+
 
 # Features Removed:
 

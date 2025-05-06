@@ -156,13 +156,15 @@ class UsersResource extends PterodactylAdmin
         }
     }
 
-	/**
-	 * Find a user by email.
-	 *
-	 * @param string $email Email address to search for
-	 * @return array User data
-	 * @throws PterodactylException
-	 */
+    /**
+     * Find a user by email.
+     *
+     * @param string $email Email address to search for
+     *
+     * @throws PterodactylException
+     *
+     * @return array User data
+     */
     public function findUserByEmail(string $email): array
     {
         try {
@@ -183,13 +185,15 @@ class UsersResource extends PterodactylAdmin
         }
     }
 
-	/**
-	 * Find a user by username.
-	 *
-	 * @param string $username Username to search for
-	 * @return array User data
-	 * @throws PterodactylException
-	 */
+    /**
+     * Find a user by username.
+     *
+     * @param string $username Username to search for
+     *
+     * @throws PterodactylException
+     *
+     * @return array User data
+     */
     public function findUserByUsername(string $username): array
     {
         try {
@@ -209,13 +213,15 @@ class UsersResource extends PterodactylAdmin
         }
     }
 
-	/**
-	 * Find a user by uuid.
-	 *
-	 * @param string $uuid UUID to search for
-	 * @return array User data
-	 * @throws PterodactylException
-	 */
+    /**
+     * Find a user by uuid.
+     *
+     * @param string $uuid UUID to search for
+     *
+     * @throws PterodactylException
+     *
+     * @return array User data
+     */
     public function findUserByUuid(string $uuid): array
     {
         try {
@@ -235,13 +241,15 @@ class UsersResource extends PterodactylAdmin
         }
     }
 
-	/**
-	 * Find a user by external id.
-	 *
-	 * @param string $externalId External ID to search for
-	 * @return array User data
-	 * @throws PterodactylException
-	 */
+    /**
+     * Find a user by external id.
+     *
+     * @param string $externalId External ID to search for
+     *
+     * @throws PterodactylException
+     *
+     * @return array User data
+     */
     public function findUserByExternalId(string $externalId): array
     {
         try {

@@ -115,7 +115,7 @@ class NestsResource extends PterodactylAdmin
      * @param int $page Page number for pagination
      * @param int $perPage Number of items per page
      * @param array $includes Additional data to include in the response (nest, servers, config, script, variables)
-     * @return array
+     *
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException
@@ -167,7 +167,7 @@ class NestsResource extends PterodactylAdmin
      * @param int $nestId The ID of the nest
      * @param int $eggId The ID of the egg
      * @param array $includes Additional data to include in the response (nest, servers, config, script, variables)
-     * @return array
+     *
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws ResourceNotFoundException

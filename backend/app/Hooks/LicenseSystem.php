@@ -77,12 +77,12 @@ class LicenseSystem
 
         try {
             $client = new Client([
-                'force_ip_resolve' => 'v4'
+                'force_ip_resolve' => 'v4',
             ]);
             $response = $client->get(self::API_BASE_URL . '/license/' . $licenseKey . '/info', [
                 'headers' => [
-                    'MythicalDash-Install' => 'true'
-                ]
+                    'MythicalDash-Install' => 'true',
+                ],
             ]);
 
             $data = json_decode($response->getBody()->getContents(), true);

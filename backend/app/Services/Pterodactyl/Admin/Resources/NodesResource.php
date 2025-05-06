@@ -30,7 +30,7 @@ class NodesResource extends PterodactylAdmin
      * @param int $page Page number for pagination
      * @param int $perPage Number of items per page
      * @param array $includes Additional data to include in the response (allocations, location, servers)
-     * @return array
+     *
      * @throws AuthenticationException
      * @throws PermissionException
      * @throws RateLimitException
@@ -248,7 +248,7 @@ class NodesResource extends PterodactylAdmin
      * @throws ResourceNotFoundException
      * @throws RateLimitException
      */
-    public function listAllocations(int $nodeId, int $page = 1, int $perPage = 50, array $includes = ['node','server']): array
+    public function listAllocations(int $nodeId, int $page = 1, int $perPage = 50, array $includes = ['node', 'server']): array
     {
         try {
             $query = [

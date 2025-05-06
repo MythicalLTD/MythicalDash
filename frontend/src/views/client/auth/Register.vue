@@ -164,7 +164,7 @@ const handleSubmit = async () => {
                 Swal.fire({
                     icon: 'error',
                     title: t('auth.pages.register.alerts.error.title'),
-                    text: t('auth.pages.register.alerts.error.generic'),
+                    text: response.message,
                     showConfirmButton: true,
                     footer: t('auth.pages.register.alerts.error.footer'),
                 });

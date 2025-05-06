@@ -594,14 +594,14 @@ const purchaseItem = async (item: StoreItem) => {
                     });
                     break;
                 default:
-                    errorMessage = data.message || t('store.pages.alerts.error.generic');
+                    errorMessage = data.message;
             }
 
             showStatusMessage(errorMessage, 'error');
         }
     } catch (error) {
         console.error('Error purchasing item:', error);
-        showStatusMessage(t('store.pages.alerts.error.generic'), 'error');
+        showStatusMessage(t('store.pages.alerts.error.generic') + ' ' + error, 'error');
     }
 };
 

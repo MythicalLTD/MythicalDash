@@ -314,14 +314,14 @@ class ServersResource extends PterodactylAdmin
      * @throws ResourceNotFoundException
      * @throws RateLimitException
      */
-    public function deleteServer(int $serverId, bool $force = false): array|null
+    public function deleteServer(int $serverId, bool $force = false): void
     {
         $endpoint = "/api/application/servers/{$serverId}";
         if ($force) {
             $endpoint .= '/force';
         }
         try {
-            return $this->request('DELETE', $endpoint);
+            $this->request('DELETE', $endpoint);
         } catch (ClientException $e) {
             $response = $e->getResponse();
             $statusCode = $response->getStatusCode();

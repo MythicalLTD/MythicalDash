@@ -180,7 +180,8 @@ onMounted(async () => {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to load server data');
+            const data = await response.json();
+            throw new Error(data.message || 'Failed to load server data');
         }
 
         const data = await response.json();
@@ -188,7 +189,7 @@ onMounted(async () => {
         if (data.success) {
             serverDetails.value = data.server;
         } else {
-            throw new Error(data.message || 'Failed to load server data');
+            throw new Error(data.message);
         }
     } catch (error) {
         console.error('Error loading server data:', error);
@@ -252,19 +253,19 @@ const deleteServer = async () => {
             Swal.fire({
                 icon: 'error',
                 title: t('delete.pages.alerts.error.title'),
-                text: data.message || t('delete.pages.alerts.error.generic'),
+                text: data.message,
                 footer: t('delete.pages.alerts.error.footer'),
                 confirmButtonText: t('delete.pages.alerts.error.confirmButtonText'),
                 showConfirmButton: true,
             });
         }
-    } catch (error) {
+    } catch (error: unknown) {
         console.error('Error deleting server:', error);
         playError();
         Swal.fire({
             icon: 'error',
             title: t('delete.pages.alerts.error.title'),
-            text: t('delete.pages.alerts.error.generic') + ' ' + error,
+            text: error instanceof Error ? error.message : t('delete.pages.alerts.error.generic'),
             footer: t('delete.pages.alerts.error.footer'),
             confirmButtonText: t('delete.pages.alerts.error.confirmButtonText'),
             showConfirmButton: true,
