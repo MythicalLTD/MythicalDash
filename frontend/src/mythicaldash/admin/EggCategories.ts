@@ -77,13 +77,14 @@ class EggCategories {
         description: string,
         pterodactylNestId: number,
         enabled: string = 'true',
+        image_id: number | null,
     ) {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
         formData.append('pterodactyl_nest_id', pterodactylNestId.toString());
         formData.append('enabled', enabled.toString());
-
+        formData.append('image_id', image_id?.toString() || 'null');
         const response = await fetch('/api/admin/egg-categories/create', {
             method: 'POST',
             body: formData,
@@ -110,6 +111,7 @@ class EggCategories {
         pterodactylNestId: number,
         enabled: boolean = true,
         locked: boolean = false,
+        image_id: number | null,
     ) {
         const formData = new FormData();
         formData.append('name', name);
@@ -117,6 +119,7 @@ class EggCategories {
         formData.append('pterodactyl_nest_id', pterodactylNestId.toString());
         formData.append('enabled', enabled.toString());
         formData.append('locked', locked.toString());
+        formData.append('image_id', image_id?.toString() || 'null');
 
         const response = await fetch(`/api/admin/egg-categories/${id}/update`, {
             method: 'POST',

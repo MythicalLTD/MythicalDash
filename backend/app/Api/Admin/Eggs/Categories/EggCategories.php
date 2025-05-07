@@ -86,17 +86,23 @@ $router->post('/api/admin/egg-categories/create', function (): void {
     );
 
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['pterodactyl_nest_id'])) {
+        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['pterodactyl_nest_id']) && isset($_POST['image_id'])) {
             $name = $_POST['name'];
             $description = $_POST['description'];
             $pterodactyl_nest_id = $_POST['pterodactyl_nest_id'];
             $enabled = isset($_POST['enabled']) ? filter_var($_POST['enabled'], FILTER_VALIDATE_BOOLEAN) : true;
-
-            if ($name == '' || $description == '' || $pterodactyl_nest_id == '') {
+            $image_id = $_POST['image_id'];
+            if ($name == '' || $description == '' || $pterodactyl_nest_id == '' || $image_id == '') {
                 $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
 
                 return;
             }
+
+			if ($image_id == "null") {
+				$image_id = null;
+			} else {
+				$image_id = intval($image_id);
+			}
 
             $pterodactyl_nest_id = intval($pterodactyl_nest_id);
 
@@ -112,7 +118,7 @@ $router->post('/api/admin/egg-categories/create', function (): void {
                 return;
             }
 
-            $id = EggCategories::create($name, $description, $pterodactyl_nest_id, $enabled);
+            $id = EggCategories::create($name, $description, $pterodactyl_nest_id, $enabled, $image_id);
             if ($id == 0) {
                 $appInstance->BadRequest('Failed to create egg category', ['error_code' => 'ERROR_FAILED_TO_CREATE_CATEGORY']);
 
@@ -151,16 +157,22 @@ $router->post('/api/admin/egg-categories/(.*)/update', function ($id): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['enabled'])) {
+        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['enabled']) && isset($_POST['image_id'])) {
             $name = $_POST['name'];
             $description = $_POST['description'];
             $enabled = $_POST['enabled'];
-
-            if ($name == '' || $description == '' || $enabled == '') {
+            $image_id = $_POST['image_id'];
+            if ($name == '' || $description == '' || $enabled == '' || $image_id == '') {
                 $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
 
                 return;
             }
+
+			if ($image_id == "null") {
+				$image_id = null;
+			} else {
+				$image_id = intval($image_id);
+			}
 
             if (!EggCategories::exists($id)) {
                 $appInstance->BadRequest('Egg category not found', ['error_code' => 'ERROR_CATEGORY_NOT_FOUND']);
@@ -168,7 +180,7 @@ $router->post('/api/admin/egg-categories/(.*)/update', function ($id): void {
                 return;
             }
 
-            $updated = EggCategories::update($id, $name, $description, $enabled);
+            $updated = EggCategories::update($id, $name, $description, $enabled, $image_id);
             if (!$updated) {
                 $appInstance->BadRequest('Failed to update egg category', ['error_code' => 'ERROR_FAILED_TO_UPDATE_CATEGORY']);
 

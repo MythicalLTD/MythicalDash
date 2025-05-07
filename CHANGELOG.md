@@ -28,6 +28,7 @@
 - Feature: Eggs support images now!
 - Feature: Eggs support vip only users now!
 - Feature: Locations support vip only users now!
+- Feature: Brand server creation page!
 
 # Features Removed:
 

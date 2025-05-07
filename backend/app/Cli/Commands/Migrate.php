@@ -43,7 +43,6 @@ class Migrate extends App implements CommandBuilder
         try {
             $query = $db->getPdo()->query("SHOW TABLES LIKE 'mythicaldash_migrations'");
             if ($query->rowCount() > 0) {
-                $cliApp->send('&7The migrations table already exists!');
             } else {
                 $db->getPdo()->exec(statement: $sqlScript);
                 $cliApp->send('&7The migrations table has been created!');
@@ -79,7 +78,6 @@ class Migrate extends App implements CommandBuilder
             $migrationExists = $stmt->fetchColumn();
 
             if ($migrationExists > 0) {
-                $cliApp->send("&7Migration already executed: &e$migrationName");
                 continue;
             }
 
@@ -110,6 +108,7 @@ class Migrate extends App implements CommandBuilder
             }
         }
         $cliApp->send('&aAll migrations have been executed!');
+		$cliApp->send('&aPlease restart the server to apply the changes!');
     }
 
     public static function getDescription(): string

@@ -60,16 +60,27 @@
                         </p>
                     </div>
 
-                    <div class="flex flex-col space-y-4">
-                        <div class="flex items-center">
-                            <input
-                                id="enabled"
-                                v-model="categoryForm.enabled"
-                                type="checkbox"
-                                class="w-4 h-4 text-pink-500 bg-gray-800 border-gray-700 rounded focus:ring-pink-500"
-                            />
-                            <label for="enabled" class="ml-2 text-sm font-medium text-gray-400">Enabled</label>
-                            <p class="text-xs text-gray-400 ml-6">If enabled, this category will be visible to users</p>
+                    <div>
+                        <label for="image" class="block text-sm font-medium text-gray-400 mb-1">Category Image</label>
+                        <div class="flex flex-col space-y-4">
+                            <select
+                                id="image"
+                                v-model="categoryForm.image_id"
+                                class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            >
+                                <option :value="null">Select an image</option>
+                                <option v-for="image in images" :key="image.id" :value="image.id">
+                                    {{ image.name }}
+                                </option>
+                            </select>
+                            <div v-if="loadingImages" class="text-gray-400">Loading images...</div>
+                            <div v-if="categoryForm.image_id" class="mt-2">
+                                <img
+                                    :src="images.find((img) => img.id === categoryForm.image_id)?.image"
+                                    alt="Category preview"
+                                    class="w-32 h-32 object-cover rounded-lg"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -98,7 +109,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import { ArrowLeftIcon, SaveIcon, LoaderIcon } from 'lucide-vue-next';
@@ -119,6 +130,7 @@ const categoryForm = ref({
     description: '',
     pterodactyl_nest_id: 0,
     enabled: 'true',
+    image_id: null as number | null,
 });
 
 interface PterodactylNest {
@@ -129,7 +141,46 @@ interface PterodactylNest {
     updated_at: string;
 }
 
+interface Image {
+    id: number;
+    name: string;
+    image: string;
+    created_at: string;
+    updated_at: string;
+}
+
 const pterodactylNests = ref<PterodactylNest[]>([]);
+const images = ref<Image[]>([]);
+const loadingImages = ref(true);
+
+// Fetch images from API
+const fetchImages = async () => {
+    loadingImages.value = true;
+    try {
+        const response = await fetch('/api/admin/images', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch images');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            images.value = data.images;
+        } else {
+            console.error('Failed to load images:', data.message);
+        }
+    } catch (error) {
+        console.error('Error fetching images:', error);
+    } finally {
+        loadingImages.value = false;
+    }
+};
 
 EggCategories.getPterodactylNests().then((response) => {
     if (response.success) {
@@ -146,6 +197,7 @@ const saveCategory = async () => {
             categoryForm.value.description,
             categoryForm.value.pterodactyl_nest_id,
             categoryForm.value.enabled,
+            categoryForm.value.image_id,
         );
 
         if (response.success) {
@@ -203,4 +255,8 @@ const saveCategory = async () => {
         loading.value = false;
     }
 };
+
+onMounted(async () => {
+    await fetchImages();
+});
 </script>

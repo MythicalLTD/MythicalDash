@@ -45,23 +45,23 @@ class EggCategories extends Database
      * @param string $description The description of the category
      * @param int $pterodactylNestId The Pterodactyl nest ID
      * @param bool $enabled Whether the category is enabled
-     * @param bool $locked Whether the category is locked
+     * @param int $imageId The ID of the image to use for the category
      *
      * @return int The ID of the category
      */
-    public static function create(string $name, string $description, int $pterodactylNestId, bool $enabled = true, bool $locked = false): int
+    public static function create(string $name, string $description, int $pterodactylNestId, bool $enabled = true, int $imageId = null): int
     {
         try {
             $dbConn = Database::getPdoConnection();
             $stmt = $dbConn->prepare('INSERT INTO ' . self::getTableName() . ' 
-                (name, description, pterodactyl_nest_id, enabled) 
-                VALUES (:name, :description, :pterodactyl_nest_id, :enabled)');
+                (name, description, pterodactyl_nest_id, enabled, image_id) 
+                VALUES (:name, :description, :pterodactyl_nest_id, :enabled, :image_id)');
 
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':pterodactyl_nest_id', $pterodactylNestId);
             $stmt->bindParam(':enabled', $enabled, \PDO::PARAM_BOOL);
-
+            $stmt->bindParam(':image_id', $imageId);
             $stmt->execute();
 
             return $dbConn->lastInsertId();
@@ -82,7 +82,7 @@ class EggCategories extends Database
      *
      * @return bool True if the category was updated successfully, false otherwise
      */
-    public static function update(int $id, string $name, string $description, string $enabled): bool
+    public static function update(int $id, string $name, string $description, string $enabled, int $imageId = null): bool
     {
         try {
             if (!self::exists($id)) {
@@ -93,14 +93,14 @@ class EggCategories extends Database
 
             $dbConn = Database::getPdoConnection();
             $stmt = $dbConn->prepare('UPDATE ' . self::getTableName() . ' 
-                SET name = :name, description = :description, enabled = :enabled, updated_at = NOW() 
+                SET name = :name, description = :description, enabled = :enabled, image_id = :image_id, updated_at = NOW() 
                 WHERE id = :id AND deleted = "false"');
 
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':enabled', $enabled);
-
+            $stmt->bindParam(':image_id', $imageId);
             return $stmt->execute();
         } catch (\Exception $e) {
             self::db_Error('Failed to update egg category: ' . $e->getMessage());

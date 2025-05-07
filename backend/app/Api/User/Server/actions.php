@@ -13,6 +13,7 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\Eggs\Eggs;
+use MythicalDash\Chat\Images\Image;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Config\ConfigInterface;
@@ -489,7 +490,15 @@ $router->get('/api/user/server/create', function (): void {
 
     foreach ($locations as &$location) {
         $location['used_slots'] = Servers::getServerCountByLocation($location['pterodactyl_location_id']);
+		$location['image'] = Image::get((int) $location['image_id']);
     }
+
+	foreach ($structuredCategories as &$category) {
+		foreach ($category['eggs'] as &$egg) {
+			$egg['image'] = Image::get((int) $egg['image_id']);
+		}
+		$category['image'] = Image::get((int) $category['image_id']);
+	}
 
     $appInstance->OK('Server Creation', [
         'locations' => $locations,

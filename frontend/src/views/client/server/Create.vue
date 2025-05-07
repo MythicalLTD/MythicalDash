@@ -6,200 +6,458 @@
             <p class="text-gray-400">{{ t('create.pages.index.subTitle') }}</p>
         </div>
 
-        <!-- Resource Overview -->
-        <CardComponent :card-title="t('create.pages.index.resources.title')" class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div
-                    v-for="(resource, key) in resourceItems"
-                    :key="key"
-                    class="p-3 bg-[#0a0a15]/50 rounded-lg border border-[#1a1a2f]/30"
-                >
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-gray-400 text-sm">{{ resource.label }}</span>
-                        <span
-                            class="text-xs px-2 py-0.5 rounded-full"
-                            :class="
-                                resources.free[key] > 0
-                                    ? 'bg-green-900/30 text-green-400'
-                                    : 'bg-red-900/30 text-red-400'
-                            "
-                        >
-                            {{
-                                resources.free[key] > 0
-                                    ? t('create.pages.index.resources.available')
-                                    : t('create.pages.index.resources.depleted')
-                            }}
-                        </span>
+        <!-- Progress Steps -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div v-for="(step, index) in steps" :key="index" class="flex items-center">
+                    <div
+                        class="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200"
+                        :class="[
+                            currentStep > index
+                                ? 'bg-indigo-500 text-white'
+                                : currentStep === index
+                                  ? 'bg-indigo-500 text-white ring-4 ring-indigo-500/20'
+                                  : 'bg-[#1a1a2f] text-gray-400',
+                        ]"
+                    >
+                        <span class="text-sm font-medium">{{ index + 1 }}</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-200 font-medium">{{
-                            formatResource(resources.free[key], resource.unit)
-                        }}</span>
-                        <span class="text-gray-500 text-xs"
-                            >{{ t('create.pages.index.resources.of') }}
-                            {{ formatResource(resources.total[key], resource.unit) }}</span
-                        >
-                    </div>
-                    <div class="w-full bg-[#030305] rounded-full h-1.5 mt-2">
-                        <div
-                            class="h-1.5 rounded-full"
-                            :class="resources.free[key] > 0 ? 'bg-indigo-500' : 'bg-red-500'"
-                            :style="`width: ${calculatePercentage(resources.used[key], resources.total[key])}%`"
-                        ></div>
-                    </div>
+                    <div
+                        v-if="index < steps.length - 1"
+                        class="w-24 h-0.5 mx-2"
+                        :class="currentStep > index ? 'bg-indigo-500' : 'bg-[#1a1a2f]'"
+                    ></div>
                 </div>
             </div>
-        </CardComponent>
+            <div class="flex justify-between mt-2">
+                <span
+                    v-for="(step, index) in steps"
+                    :key="index"
+                    class="text-sm font-medium"
+                    :class="currentStep === index ? 'text-indigo-400' : 'text-gray-500'"
+                >
+                    {{ step }}
+                </span>
+            </div>
+        </div>
 
+        <!-- Step Content -->
         <form @submit.prevent="createServer">
-            <!-- Server Details -->
-            <CardComponent card-title="Server Details" class="mb-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Left Column - Name and Description -->
-                    <div class="space-y-4">
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-300 mb-2">{{
-                                t('create.pages.index.form.label')
-                            }}</label>
+            <!-- Step 1: Server Details -->
+            <div v-if="currentStep === 0" class="animate-fade-in">
+                <CardComponent card-title="Server Details" class="mb-6">
+                    <div class="max-w-2xl mx-auto space-y-6">
+                        <!-- Server Name -->
+                        <div class="transform transition-all duration-300 hover:scale-[1.02]">
+                            <label for="name" class="block text-lg font-medium text-gray-200 mb-2">
+                                {{ t('create.pages.index.form.label') }}
+                            </label>
                             <TextInput
                                 id="name"
                                 v-model="form.name"
                                 :placeholder="t('create.pages.index.form.placeholder')"
+                                class="w-full text-lg py-3"
                                 required
                             />
                         </div>
 
-                        <div>
-                            <label for="description" class="block text-sm font-medium text-gray-300 mb-2">{{
-                                t('create.pages.index.form.description')
-                            }}</label>
+                        <!-- Server Description -->
+                        <div class="transform transition-all duration-300 hover:scale-[1.02]">
+                            <label for="description" class="block text-lg font-medium text-gray-200 mb-2">
+                                {{ t('create.pages.index.form.description') }}
+                            </label>
                             <TextArea
                                 id="description"
                                 v-model="form.description"
                                 :placeholder="t('create.pages.index.form.descriptionPlaceholder')"
-                                :rows="3"
+                                :rows="4"
+                                class="w-full text-lg"
                             />
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="mt-8 p-4 bg-[#0a0a15]/50 rounded-lg border border-[#1a1a2f]/30">
+                            <div class="flex items-start space-x-3">
+                                <div class="flex items-center h-5">
+                                    <input
+                                        id="terms"
+                                        v-model="form.acceptedTerms"
+                                        type="checkbox"
+                                        class="w-4 h-4 text-indigo-500 border-gray-600 rounded focus:ring-indigo-500 focus:ring-offset-gray-800"
+                                        required
+                                    />
+                                </div>
+                                <div class="text-sm text-gray-400">
+                                    <label for="terms" class="font-medium text-gray-300">
+                                        I accept the terms and conditions
+                                    </label>
+                                    <p class="mt-1">
+                                        By creating a server, you agree to our
+                                        <a
+                                            :href="termsUrl"
+                                            target="_blank"
+                                            class="text-indigo-400 hover:text-indigo-300"
+                                            >Terms of Service</a
+                                        >
+                                        and
+                                        <a
+                                            :href="privacyUrl"
+                                            target="_blank"
+                                            class="text-indigo-400 hover:text-indigo-300"
+                                            >Privacy Policy</a
+                                        >. Please review them before proceeding.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </CardComponent>
+            </div>
+
+            <!-- Step 2: Category Selection -->
+            <div v-if="currentStep === 1" class="animate-fade-in">
+                <CardComponent card-title="Select Category" class="mb-6">
+                    <div v-if="categories.length === 0" class="text-center py-12 animate-fade-in">
+                        <div class="w-16 h-16 mx-auto mb-4 text-gray-500">
+                            <FolderOpen class="w-12 h-12 mx-auto" />
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-300 mb-2">No Categories Available</h3>
+                        <p class="text-gray-500">There are no server categories available at the moment.</p>
+                    </div>
+                    <div v-else class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div
+                            v-for="category in categories"
+                            :key="category.id"
+                            class="relative group cursor-pointer transform transition-all duration-300 hover:scale-[1.02]"
+                            @click="
+                                form.category_id = category.id.toString();
+                                updateEggs();
+                            "
+                        >
+                            <div
+                                class="relative overflow-hidden rounded-lg border transition-all duration-300"
+                                :class="
+                                    form.category_id === category.id.toString()
+                                        ? 'border-indigo-500 ring-2 ring-indigo-500'
+                                        : 'border-[#1a1a2f]/30 hover:border-indigo-500/50'
+                                "
+                            >
+                                <img
+                                    :src="category.image?.image || '/images/default-category.jpg'"
+                                    :alt="category.name"
+                                    class="w-full h-40 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                />
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                ></div>
+                                <div
+                                    class="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
+                                >
+                                    <div class="bg-black/50 backdrop-blur-sm rounded-lg p-3">
+                                        <h3 class="text-white font-medium">{{ category.name }}</h3>
+                                        <p class="text-gray-400 text-sm line-clamp-2">{{ category.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </CardComponent>
+            </div>
+
+            <!-- Step 3: Location Selection -->
+            <div v-if="currentStep === 2" class="animate-fade-in">
+                <CardComponent card-title="Select Location" class="mb-6">
+                    <div v-if="locations.length === 0" class="text-center py-12 animate-fade-in">
+                        <div class="w-16 h-16 mx-auto mb-4 text-gray-500">
+                            <Server class="w-12 h-12 mx-auto" />
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-300 mb-2">No Locations Available</h3>
+                        <p class="text-gray-500">There are no server locations available at the moment.</p>
+                    </div>
+                    <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div
+                            v-for="location in locations"
+                            :key="location.id"
+                            class="relative group cursor-pointer transform transition-all duration-300 hover:scale-[1.02]"
+                            @click="form.location_id = location.id.toString()"
+                        >
+                            <div
+                                class="relative overflow-hidden rounded-lg border transition-all duration-300"
+                                :class="
+                                    form.location_id === location.id.toString()
+                                        ? 'border-indigo-500 ring-2 ring-indigo-500'
+                                        : 'border-[#1a1a2f]/30 hover:border-indigo-500/50'
+                                "
+                            >
+                                <img
+                                    :src="location.image?.image || '/images/default-location.jpg'"
+                                    :alt="location.name"
+                                    class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                />
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                ></div>
+                                <div
+                                    class="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
+                                >
+                                    <div class="bg-black/50 backdrop-blur-sm rounded-lg p-3">
+                                        <h3 class="text-white font-medium">{{ location.name }}</h3>
+                                        <p class="text-gray-400 text-sm line-clamp-2">{{ location.description }}</p>
+                                        <div class="flex items-center justify-between mt-2">
+                                            <span class="text-xs text-gray-400">
+                                                {{ location.used_slots }}/{{ location.slots }}
+                                                {{ t('create.pages.index.slots') }}
+                                            </span>
+                                            <div class="flex items-center space-x-2">
+                                                <span
+                                                    class="text-xs px-2 py-0.5 rounded-full transform transition-all duration-300"
+                                                    :class="
+                                                        location.status === 'online'
+                                                            ? 'bg-green-900/30 text-green-400'
+                                                            : 'bg-red-900/30 text-red-400'
+                                                    "
+                                                >
+                                                    {{ location.status }}
+                                                </span>
+                                                <span
+                                                    v-if="locationPings[location.id] !== undefined"
+                                                    class="text-xs px-2 py-0.5 rounded-full flex items-center space-x-1"
+                                                    :class="
+                                                        locationPings[location.id] < 0
+                                                            ? 'bg-red-900/30 text-red-400'
+                                                            : locationPings[location.id] < 100
+                                                              ? 'bg-green-900/30 text-green-400'
+                                                              : locationPings[location.id] < 200
+                                                                ? 'bg-yellow-900/30 text-yellow-400'
+                                                                : 'bg-red-900/30 text-red-400'
+                                                    "
+                                                >
+                                                    <Wifi class="w-3 h-3" />
+                                                    <span>{{
+                                                        locationPings[location.id] < 0
+                                                            ? 'N/A'
+                                                            : `${locationPings[location.id]}ms`
+                                                    }}</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </CardComponent>
+            </div>
+
+            <!-- Step 4: Egg Selection -->
+            <div v-if="currentStep === 3" class="animate-fade-in">
+                <CardComponent card-title="Select Server Type" class="mb-6">
+                    <div v-if="availableEggs.length === 0" class="text-center py-12 animate-fade-in">
+                        <div class="w-16 h-16 mx-auto mb-4 text-gray-500">
+                            <Box class="w-12 h-12 mx-auto" />
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-300 mb-2">No Server Types Available</h3>
+                        <p class="text-gray-500">Please select a category first to view available server types.</p>
+                    </div>
+                    <div v-else class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div
+                            v-for="egg in availableEggs"
+                            :key="egg.id"
+                            class="relative group cursor-pointer transform transition-all duration-300 hover:scale-[1.02]"
+                            @click="form.egg_id = egg.id.toString()"
+                        >
+                            <div
+                                class="relative overflow-hidden rounded-lg border transition-all duration-300"
+                                :class="
+                                    form.egg_id === egg.id.toString()
+                                        ? 'border-indigo-500 ring-2 ring-indigo-500'
+                                        : 'border-[#1a1a2f]/30 hover:border-indigo-500/50'
+                                "
+                            >
+                                <img
+                                    :src="egg.image?.image || '/images/default-egg.jpg'"
+                                    :alt="egg.name"
+                                    class="w-full h-40 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                />
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                ></div>
+                                <div
+                                    class="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
+                                >
+                                    <div class="bg-black/50 backdrop-blur-sm rounded-lg p-3">
+                                        <h3 class="text-white font-medium">{{ egg.name }}</h3>
+                                        <p class="text-gray-400 text-sm line-clamp-2">{{ egg.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </CardComponent>
+            </div>
+
+            <!-- Step 5: Resource Allocation -->
+            <div v-if="currentStep === 4" class="animate-fade-in">
+                <CardComponent card-title="Resource Allocation" class="mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Memory -->
+                        <div
+                            class="bg-[#0a0a15]/50 rounded-lg border border-[#1a1a2f]/30 p-4 transform transition-all duration-300 hover:scale-[1.02]"
+                        >
+                            <div class="flex items-center space-x-2 mb-4">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                                    <component :is="getResourceIcon('memory')" class="w-5 h-5 text-indigo-400" />
+                                </div>
+                                <div>
+                                    <label for="memory" class="block text-sm font-medium text-gray-300">
+                                        {{ t('create.pages.index.resources.memory') }}
+                                    </label>
+                                    <span class="text-xs text-gray-500"
+                                        >({{ t('create.pages.index.form.available') }}: {{ resources.free.memory }}
+                                        {{ t('create.pages.index.resources.mb') }})</span
+                                    >
+                                </div>
+                            </div>
+                            <TextInput id="memory" v-model="memoryModel" type="number" required />
+                        </div>
+
+                        <!-- CPU -->
+                        <div
+                            class="bg-[#0a0a15]/50 rounded-lg border border-[#1a1a2f]/30 p-4 transform transition-all duration-300 hover:scale-[1.02]"
+                        >
+                            <div class="flex items-center space-x-2 mb-4">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                                    <component :is="getResourceIcon('cpu')" class="w-5 h-5 text-indigo-400" />
+                                </div>
+                                <div>
+                                    <label for="cpu" class="block text-sm font-medium text-gray-300">
+                                        {{ t('create.pages.index.resources.cpu') }}
+                                    </label>
+                                    <span class="text-xs text-gray-500"
+                                        >({{ t('create.pages.index.form.available') }}: {{ resources.free.cpu }}
+                                        {{ t('create.pages.index.resources.p') }})</span
+                                    >
+                                </div>
+                            </div>
+                            <TextInput id="cpu" v-model="cpuModel" type="number" required />
+                        </div>
+
+                        <!-- Disk -->
+                        <div
+                            class="bg-[#0a0a15]/50 rounded-lg border border-[#1a1a2f]/30 p-4 transform transition-all duration-300 hover:scale-[1.02]"
+                        >
+                            <div class="flex items-center space-x-2 mb-4">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                                    <component :is="getResourceIcon('disk')" class="w-5 h-5 text-indigo-400" />
+                                </div>
+                                <div>
+                                    <label for="disk" class="block text-sm font-medium text-gray-300">
+                                        {{ t('create.pages.index.resources.disk') }}
+                                    </label>
+                                    <span class="text-xs text-gray-500"
+                                        >({{ t('create.pages.index.form.available') }}: {{ resources.free.disk }}
+                                        {{ t('create.pages.index.resources.mb') }})</span
+                                    >
+                                </div>
+                            </div>
+                            <TextInput id="disk" v-model="diskModel" type="number" required />
                         </div>
                     </div>
 
-                    <!-- Right Column - Location and Type -->
-                    <div class="space-y-4">
-                        <div>
-                            <label for="location" class="block text-sm font-medium text-gray-300 mb-2">{{
-                                t('create.pages.index.form.location')
-                            }}</label>
-                            <SelectInput
-                                id="location"
-                                v-model="form.location_id"
-                                :options="locationOptions"
-                                :placeholder="t('create.pages.index.form.locationPlaceholder')"
-                            />
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                        <!-- Databases -->
+                        <div
+                            class="bg-[#0a0a15]/50 rounded-lg border border-[#1a1a2f]/30 p-4 transform transition-all duration-300 hover:scale-[1.02]"
+                        >
+                            <div class="flex items-center space-x-2 mb-4">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                                    <component :is="getResourceIcon('databases')" class="w-5 h-5 text-indigo-400" />
+                                </div>
+                                <div>
+                                    <label for="databases" class="block text-sm font-medium text-gray-300">
+                                        {{ t('create.pages.index.resources.databases') }}
+                                    </label>
+                                    <span class="text-xs text-gray-500"
+                                        >({{ t('create.pages.index.form.available') }}:
+                                        {{ resources.free.databases }})</span
+                                    >
+                                </div>
+                            </div>
+                            <TextInput id="databases" v-model="databasesModel" type="number" required />
                         </div>
 
-                        <div>
-                            <label for="category" class="block text-sm font-medium text-gray-300 mb-2">{{
-                                t('create.pages.index.form.category')
-                            }}</label>
-                            <SelectInput
-                                id="category"
-                                v-model="form.category_id"
-                                :options="categoryOptions"
-                                :placeholder="t('create.pages.index.form.categoryPlaceholder')"
-                                @update:modelValue="updateEggs"
-                            />
+                        <!-- Backups -->
+                        <div
+                            class="bg-[#0a0a15]/50 rounded-lg border border-[#1a1a2f]/30 p-4 transform transition-all duration-300 hover:scale-[1.02]"
+                        >
+                            <div class="flex items-center space-x-2 mb-4">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                                    <component :is="getResourceIcon('backups')" class="w-5 h-5 text-indigo-400" />
+                                </div>
+                                <div>
+                                    <label for="backups" class="block text-sm font-medium text-gray-300">
+                                        {{ t('create.pages.index.resources.backups') }}
+                                    </label>
+                                    <span class="text-xs text-gray-500"
+                                        >({{ t('create.pages.index.form.available') }}:
+                                        {{ resources.free.backups }})</span
+                                    >
+                                </div>
+                            </div>
+                            <TextInput id="backups" v-model="backupsModel" type="number" required />
                         </div>
 
-                        <div>
-                            <label for="egg" class="block text-sm font-medium text-gray-300 mb-2">{{
-                                t('create.pages.index.form.egg')
-                            }}</label>
-                            <SelectInput
-                                id="egg"
-                                v-model="form.egg_id"
-                                :options="eggOptions"
-                                :placeholder="t('create.pages.index.form.eggPlaceholder')"
-                            />
+                        <!-- Allocations -->
+                        <div
+                            class="bg-[#0a0a15]/50 rounded-lg border border-[#1a1a2f]/30 p-4 transform transition-all duration-300 hover:scale-[1.02]"
+                        >
+                            <div class="flex items-center space-x-2 mb-4">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                                    <component :is="getResourceIcon('allocations')" class="w-5 h-5 text-indigo-400" />
+                                </div>
+                                <div>
+                                    <label for="allocations" class="block text-sm font-medium text-gray-300">
+                                        {{ t('create.pages.index.resources.allocations') }}
+                                    </label>
+                                    <span class="text-xs text-gray-500"
+                                        >({{ t('create.pages.index.form.available') }}:
+                                        {{ resources.free.allocations }})</span
+                                    >
+                                </div>
+                            </div>
+                            <TextInput id="allocations" v-model="allocationsModel" type="number" required />
                         </div>
                     </div>
+                </CardComponent>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between mt-6">
+                <Button
+                    v-if="currentStep > 0"
+                    type="button"
+                    text="Previous"
+                    @click="currentStep--"
+                    class="bg-[#1a1a2f] hover:bg-[#1a1a2f]/80 transform transition-all duration-300 hover:scale-105"
+                />
+                <div class="flex space-x-4">
+                    <Button
+                        v-if="currentStep < steps.length - 1"
+                        type="button"
+                        text="Next"
+                        @click="nextStep"
+                        :disabled="!canProceed"
+                        class="transform transition-all duration-300 hover:scale-105"
+                    />
+                    <Button
+                        v-else
+                        type="submit"
+                        text="Create Server"
+                        :disabled="!canCreateServer"
+                        :loading="isSubmitting"
+                        class="transform transition-all duration-300 hover:scale-105"
+                    />
                 </div>
-            </CardComponent>
-
-            <!-- Resource Allocation -->
-            <CardComponent card-title="Resource Allocation" class="mb-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Memory -->
-                    <div>
-                        <label for="memory" class="block text-sm font-medium text-gray-300 mb-2">
-                            {{ t('create.pages.index.resources.memory') }} ({{ t('create.pages.index.resources.mb') }})
-                            <span class="text-xs text-gray-500"
-                                >({{ t('create.pages.index.form.available') }}: {{ resources.free.memory }})</span
-                            >
-                        </label>
-                        <TextInput id="memory" v-model="memoryModel" type="number" required />
-                    </div>
-
-                    <!-- CPU -->
-                    <div>
-                        <label for="cpu" class="block text-sm font-medium text-gray-300 mb-2">
-                            {{ t('create.pages.index.resources.cpu') }} ({{ t('create.pages.index.resources.p') }})
-                            <span class="text-xs text-gray-500"
-                                >({{ t('create.pages.index.form.available') }}: {{ resources.free.cpu }})</span
-                            >
-                        </label>
-                        <TextInput id="cpu" v-model="cpuModel" type="number" required />
-                    </div>
-
-                    <!-- Disk -->
-                    <div>
-                        <label for="disk" class="block text-sm font-medium text-gray-300 mb-2">
-                            {{ t('create.pages.index.resources.disk') }} ({{ t('create.pages.index.resources.mb') }})
-                            <span class="text-xs text-gray-500"
-                                >({{ t('create.pages.index.form.available') }}: {{ resources.free.disk }})</span
-                            >
-                        </label>
-                        <TextInput id="disk" v-model="diskModel" type="number" required />
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-                    <!-- Databases -->
-                    <div>
-                        <label for="databases" class="block text-sm font-medium text-gray-300 mb-2">
-                            {{ t('create.pages.index.resources.databases') }}
-                            <span class="text-xs text-gray-500"
-                                >({{ t('create.pages.index.form.available') }}: {{ resources.free.databases }})</span
-                            >
-                        </label>
-                        <TextInput id="databases" v-model="databasesModel" type="number" required />
-                    </div>
-
-                    <!-- Backups -->
-                    <div>
-                        <label for="backups" class="block text-sm font-medium text-gray-300 mb-2">
-                            {{ t('create.pages.index.resources.backups') }}
-                            <span class="text-xs text-gray-500"
-                                >({{ t('create.pages.index.form.available') }}: {{ resources.free.backups }})</span
-                            >
-                        </label>
-                        <TextInput id="backups" v-model="backupsModel" type="number" required />
-                    </div>
-
-                    <!-- Allocations -->
-                    <div>
-                        <label for="allocations" class="block text-sm font-medium text-gray-300 mb-2">
-                            {{ t('create.pages.index.resources.allocations') }}
-                            <span class="text-xs text-gray-500"
-                                >({{ t('create.pages.index.form.available') }}: {{ resources.free.allocations }})</span
-                            >
-                        </label>
-                        <TextInput id="allocations" v-model="allocationsModel" type="number" required />
-                    </div>
-                </div>
-            </CardComponent>
-
-            <!-- Submit Button -->
-            <div class="flex justify-end">
-                <Button type="submit" text="Create Server" :disabled="!canCreateServer" :loading="isSubmitting" />
             </div>
         </form>
     </LayoutDashboard>
@@ -210,7 +468,7 @@ import { ref, reactive, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import LayoutDashboard from '@/components/client/LayoutDashboard.vue';
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
-import { TextInput, TextArea, SelectInput } from '@/components/client/ui/TextForms';
+import { TextInput, TextArea } from '@/components/client/ui/TextForms';
 import Button from '@/components/client/ui/Button.vue';
 import Swal from 'sweetalert2';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
@@ -219,9 +477,13 @@ import failedAlertSfx from '@/assets/sounds/error.mp3';
 import successAlertSfx from '@/assets/sounds/success.mp3';
 import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '@/stores/settings';
+import { Cpu, HardDrive, Database, Archive, Server, FolderOpen, Box, Wifi } from 'lucide-vue-next';
 
 const { t } = useI18n();
 const Settings = useSettingsStore();
+
+const termsUrl = Settings.getSetting('legal_tos_url');
+const privacyUrl = Settings.getSetting('legal_privacy_url');
 
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);
@@ -232,6 +494,13 @@ const router = useRouter();
 const isSubmitting = ref(false);
 
 // Define interfaces for the API data
+
+interface Image {
+    id: number;
+    name: string;
+    image: string;
+}
+
 interface Location {
     id: number;
     name: string;
@@ -242,6 +511,7 @@ interface Location {
     node_ip: string;
     status: string;
     deleted: string;
+    image: Image;
     locked: string;
     updated_at: string;
     created_at: string;
@@ -256,6 +526,7 @@ interface Egg {
     enabled: string;
     deleted: string;
     locked: string;
+    image: Image;
     updated_at: string;
     created_at: string;
 }
@@ -268,6 +539,7 @@ interface Category {
     enabled: string;
     deleted: string;
     locked: string;
+    image: Image;
     updated_at: string;
     created_at: string;
     eggs: Egg[];
@@ -289,16 +561,6 @@ function convertToNumber(value: string): number {
 
 function convertToString(value: number): string {
     return value.toString();
-}
-
-interface Resource {
-    label: string;
-    unit: string;
-}
-
-interface SelectOption {
-    value: string;
-    label: string;
 }
 
 // Server creation data
@@ -339,16 +601,6 @@ const resources = reactive<{
     },
 });
 
-const resourceItems: Record<keyof ResourceLimits, Resource> = {
-    memory: { label: t('create.pages.index.resources.memory'), unit: t('create.pages.index.resources.mb') },
-    disk: { label: t('create.pages.index.resources.disk'), unit: t('create.pages.index.resources.mb') },
-    cpu: { label: t('create.pages.index.resources.cpu'), unit: t('create.pages.index.resources.p') },
-    databases: { label: t('create.pages.index.resources.databases'), unit: '' },
-    backups: { label: t('create.pages.index.resources.backups'), unit: '' },
-    allocations: { label: t('create.pages.index.resources.allocations'), unit: '' },
-    servers: { label: t('create.pages.index.resources.servers'), unit: '' },
-};
-
 // Form data
 const form = reactive({
     name: '',
@@ -362,6 +614,7 @@ const form = reactive({
     databases: 1,
     backups: 1,
     allocations: 1,
+    acceptedTerms: false,
 });
 
 // Create computed properties for number inputs to handle string-number conversion
@@ -407,32 +660,34 @@ const allocationsModel = computed({
     },
 });
 
-// Options for select inputs
-const locationOptions = computed<SelectOption[]>(() => {
-    return locations.value.map((location) => ({
-        value: location.id.toString(),
-        label:
-            `${location.name} - ${location.status} (${location.used_slots}/${location.slots} ` +
-            t('create.pages.index.slots') +
-            `) [${location.slots - location.used_slots} ${t('create.pages.index.form.available')}]`,
-    }));
-});
+// Add ping calculation function
+const calculatePing = async (ip: string): Promise<number> => {
+    try {
+        const startTime = performance.now();
+        const response = await fetch(`/api/system/ping?host=${ip}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const endTime = performance.now();
 
-const categoryOptions = computed<SelectOption[]>(() => {
-    return categories.value.map((category) => ({
-        value: category.id.toString(),
-        label: category.name,
-    }));
-});
+        if (!response.ok) {
+            return -1;
+        }
 
-const eggOptions = computed<SelectOption[]>(() => {
-    return availableEggs.value.map((egg) => ({
-        value: egg.id.toString(),
-        label: egg.name,
-    }));
-});
+        const data = await response.json();
+        return data.ping || Math.round(endTime - startTime);
+    } catch (error) {
+        console.error('Error calculating ping:', error);
+        return -1;
+    }
+};
 
-// Load server creation data
+// Add ping state
+const locationPings = reactive<Record<number, number>>({});
+
+// Modify the onMounted function to calculate pings
 onMounted(async () => {
     try {
         const response = await fetch('/api/user/server/create', {
@@ -463,6 +718,11 @@ onMounted(async () => {
             if (data.total_resources) resources.total = data.total_resources;
             if (data.free_resources) resources.free = data.free_resources;
 
+            // Calculate pings for all locations
+            for (const location of locations.value) {
+                locationPings[location.id] = await calculatePing(location.node_ip);
+            }
+
             // Set default values based on available resources
             form.memory = Math.min(1024, resources.free.memory);
             form.cpu = Math.min(100, resources.free.cpu);
@@ -489,17 +749,6 @@ const updateEggs = () => {
     const category = categories.value.find((c) => c.id === parseInt(form.category_id));
     availableEggs.value = category ? category.eggs || [] : [];
     form.egg_id = ''; // Reset egg selection
-};
-
-// Format resource display
-const formatResource = (value: number, unit: string): string => {
-    return unit ? `${value} ${unit}` : `${value}`;
-};
-
-// Calculate percentage for resource usage bars
-const calculatePercentage = (used: number, total: number): number => {
-    if (total <= 0) return 0;
-    return Math.min(100, Math.round((used / total) * 100));
 };
 
 // Check if server can be created
@@ -580,6 +829,7 @@ const createServer = async () => {
             }).then(() => {
                 router.push('/dashboard'); // Redirect to servers list
             });
+            router.push('/dashboard');
         } else {
             const errorCode = data.error_code as keyof typeof errorMessages;
             const errorMessages = {
@@ -627,6 +877,46 @@ const createServer = async () => {
         });
     } finally {
         isSubmitting.value = false;
+    }
+};
+
+const currentStep = ref(0);
+const steps = ['Server Details', 'Select Category', 'Select Location', 'Select Server Type', 'Resource Allocation'];
+
+// Get resource icon based on type
+const getResourceIcon = (type: keyof ResourceLimits) => {
+    const icons = {
+        memory: Cpu,
+        cpu: Cpu,
+        disk: HardDrive,
+        databases: Database,
+        backups: Archive,
+        allocations: Server,
+        servers: Server,
+    };
+    return icons[type] || Server;
+};
+
+// Check if can proceed to next step
+const canProceed = computed(() => {
+    switch (currentStep.value) {
+        case 0:
+            return form.name.trim() !== '' && form.acceptedTerms;
+        case 1:
+            return form.category_id !== '';
+        case 2:
+            return form.location_id !== '';
+        case 3:
+            return form.egg_id !== '';
+        default:
+            return true;
+    }
+});
+
+// Navigate to next step
+const nextStep = () => {
+    if (currentStep.value < steps.length - 1) {
+        currentStep.value++;
     }
 };
 </script>

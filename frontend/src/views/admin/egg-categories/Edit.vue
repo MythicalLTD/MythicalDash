@@ -60,6 +60,30 @@
                         <p class="text-xs text-gray-400 mt-1">Nest ID cannot be changed after creation</p>
                     </div>
 
+                    <div>
+                        <label for="image" class="block text-sm font-medium text-gray-400 mb-1">Category Image</label>
+                        <div class="flex flex-col space-y-4">
+                            <select
+                                id="image"
+                                v-model="categoryForm.image_id"
+                                class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            >
+                                <option :value="null">Select an image</option>
+                                <option v-for="image in images" :key="image.id" :value="image.id">
+                                    {{ image.name }}
+                                </option>
+                            </select>
+                            <div v-if="loadingImages" class="text-gray-400">Loading images...</div>
+                            <div v-if="categoryForm.image_id" class="mt-2">
+                                <img
+                                    :src="images.find((img) => img.id === categoryForm.image_id)?.image"
+                                    alt="Category preview"
+                                    class="w-32 h-32 object-cover rounded-lg"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="flex flex-col space-y-4">
                         <div class="flex items-center">
                             <input
@@ -125,6 +149,15 @@ interface Category {
     enabled: string;
     created_at: string;
     updated_at: string;
+    image_id: number | null;
+}
+
+interface Image {
+    id: number;
+    name: string;
+    image: string;
+    created_at: string;
+    updated_at: string;
 }
 
 // Form state
@@ -133,7 +166,40 @@ const categoryForm = ref({
     description: '',
     pterodactyl_nest_id: '',
     enabled: false,
+    image_id: null as number | null,
 });
+
+const images = ref<Image[]>([]);
+const loadingImages = ref(true);
+
+// Fetch images from API
+const fetchImages = async () => {
+    loadingImages.value = true;
+    try {
+        const response = await fetch('/api/admin/images', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch images');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            images.value = data.images;
+        } else {
+            console.error('Failed to load images:', data.message);
+        }
+    } catch (error) {
+        console.error('Error fetching images:', error);
+    } finally {
+        loadingImages.value = false;
+    }
+};
 
 const fetchCategory = async () => {
     loading.value = true;
@@ -147,6 +213,7 @@ const fetchCategory = async () => {
                     description: foundCategory.description,
                     pterodactyl_nest_id: foundCategory.pterodactyl_nest_id,
                     enabled: foundCategory.enabled === 'true',
+                    image_id: foundCategory.image_id,
                 };
             } else {
                 router.push('/mc-admin/egg-categories');
@@ -177,6 +244,8 @@ const updateCategory = async () => {
             categoryForm.value.description,
             parseInt(categoryForm.value.pterodactyl_nest_id),
             categoryForm.value.enabled,
+            false,
+            categoryForm.value.image_id,
         );
 
         if (response.success) {
@@ -234,7 +303,8 @@ const updateCategory = async () => {
     }
 };
 
-onMounted(() => {
-    fetchCategory();
+onMounted(async () => {
+    await fetchImages();
+    await fetchCategory();
 });
 </script>

@@ -1082,7 +1082,7 @@ create:
             success:
                 title: 'Success'
                 generic: 'Your server has been created'
-                footer: 'Enjoy your server!'
+                footer: 'Keep in mind that it can take up to 5 minutes for your server to be ready'
 update:
     pages:
         alerts:
