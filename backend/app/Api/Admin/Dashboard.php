@@ -31,21 +31,22 @@ $router->get('/api/admin', function (): void {
             $github_data = new GitHub();
             $github_data = $github_data->getRepoData();
             $activity = UserActivities::getAll(150);
-            $userCount = Database::getTableRowCount('mythicaldash_users');
-            $addonsCount = Database::getTableRowCount('mythicaldash_addons');
-            $rolesCount = Database::getTableRowCount('mythicaldash_roles');
-            $locationsCount = Database::getTableRowCount('mythicaldash_locations');
-            $ticketsCount = Database::getTableRowCount('mythicaldash_tickets');
-            $eggsCount = Database::getTableRowCount('mythicaldash_eggs');
-            $departmentsCount = Database::getTableRowCount('mythicaldash_departments');
-            $announcementsCount = Database::getTableRowCount('mythicaldash_announcements');
-            $serverQueueCount = Database::getTableRowCount('mythicaldash_servers_queue');
-            $mailTemplatesCount = Database::getTableRowCount('mythicaldash_mail_templates');
-            $settingsCount = Database::getTableRowCount('mythicaldash_settings', false);
-            $redeemCodesCount = Database::getTableRowCount('mythicaldash_redeem_codes');
-            $serversCount = Database::getTableRowCount('mythicaldash_servers');
-            $pluginsCount = Database::getTableRowCount('mythicaldash_addons');
-
+            $userCount = Database::getTableRowCount('mythicaldash_users', true);
+            $addonsCount = Database::getTableRowCount('mythicaldash_addons', true);
+            $rolesCount = Database::getTableRowCount('mythicaldash_roles', true);
+            $locationsCount = Database::getTableRowCount('mythicaldash_locations', true);
+            $ticketsCount = Database::getTableRowCount('mythicaldash_tickets', true);
+            $eggsCount = Database::getTableRowCount('mythicaldash_eggs', true);
+            $departmentsCount = Database::getTableRowCount('mythicaldash_departments', true);
+            $announcementsCount = Database::getTableRowCount('mythicaldash_announcements', true);
+            $serverQueueCount = Database::getTableRowCount('mythicaldash_servers_queue', true);
+            $mailTemplatesCount = Database::getTableRowCount('mythicaldash_mail_templates', true);
+            $settingsCount = Database::getTableRowCount('mythicaldash_settings', true);
+            $redeemCodesCount = Database::getTableRowCount('mythicaldash_redeem_codes', true);
+            $serversCount = Database::getTableRowCount('mythicaldash_servers', true);
+            $pluginsCount = Database::getTableRowCount('mythicaldash_addons', true);
+            $imagesCount = Database::getTableRowCount('mythicaldash_image_db', true);
+            $redirectLinksCount = Database::getTableRowCount('mythicaldash_redirect_links', true);
             $appInstance->OK('Dashboard data retrieved successfully.', [
                 'core' => [
                     'github_data' => $github_data,
@@ -65,6 +66,8 @@ $router->get('/api/admin', function (): void {
                     'redeem_codes_count' => $redeemCodesCount,
                     'servers_count' => $serversCount,
                     'plugins_count' => $pluginsCount,
+                    'images_count' => $imagesCount,
+                    'redirect_links_count' => $redirectLinksCount,
                 ],
                 'etc' => [
                     'activity' => $activity,

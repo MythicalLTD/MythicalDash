@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_eggs` ADD `image` TEXT NULL DEFAULT NULL AFTER `category`;

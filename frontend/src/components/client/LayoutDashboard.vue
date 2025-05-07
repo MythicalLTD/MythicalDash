@@ -36,6 +36,7 @@ const isSearchOpen = ref(false);
 const isNotificationsOpen = ref(false);
 const isReloading = ref(false);
 const isProfileOpen = ref(false);
+const isOffline = ref(false);
 
 // Toggle functions
 const toggleSidebar = () => {
@@ -117,11 +118,18 @@ const handleVisibilityChange = () => {
     document.title = document.hidden ? `${document.title} - Inactive` : document.title.replace(' - Inactive', '');
 };
 
+const handleOnlineStatus = () => {
+    isOffline.value = !navigator.onLine;
+};
+
 // Lifecycle hooks
 onMounted(() => {
     document.addEventListener('click', handleClickOutside);
     document.addEventListener('keydown', handleKeydown);
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('online', handleOnlineStatus);
+    window.addEventListener('offline', handleOnlineStatus);
+    isOffline.value = !navigator.onLine;
 
     if (sessionStorage.getItem('firstLoad') === null) {
         loading.value = true;
@@ -138,6 +146,8 @@ onUnmounted(() => {
     document.removeEventListener('click', handleClickOutside);
     document.removeEventListener('keydown', handleKeydown);
     document.removeEventListener('visibilitychange', handleVisibilityChange);
+    window.removeEventListener('online', handleOnlineStatus);
+    window.removeEventListener('offline', handleOnlineStatus);
 });
 
 // Computed properties
@@ -196,6 +206,39 @@ const reloadUserData = async () => {
 <template>
     <ReloadAnimation :isReloading="isReloading" />
     <div class="min-h-screen bg-[#030305] relative overflow-hidden">
+        <!-- Connection Failed Screen -->
+        <div
+            v-if="isOffline"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-[#030305]/95 backdrop-blur-lg"
+        >
+            <div class="text-center p-8">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-8 w-8 text-red-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-semibold text-white mb-2">Connection Lost</h2>
+                <p class="text-gray-400 mb-4">Please check your internet connection and try again.</p>
+                <button
+                    @click="reloadUserData"
+                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                    Retry Connection
+                </button>
+            </div>
+        </div>
+
         <!-- Background elements -->
         <div class="absolute inset-0 bg-gradient-to-b from-[#030305] via-[#0a0a15] to-[#030305]">
             <div class="stars"></div>

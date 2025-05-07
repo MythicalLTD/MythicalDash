@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import {
     useVueTable,
     FlexRender,
@@ -33,11 +33,27 @@ import CardComponent from '../Card/CardComponent.vue';
 
 const sorting = ref<SortingState>([]);
 const filter = ref('');
+const pagination = ref({
+    pageIndex: 0,
+    pageSize: 10,
+});
+
+// Watch for data changes and reset pagination
+watch(
+    () => props.data,
+    (newData) => {
+        data.value = newData;
+        pagination.value.pageIndex = 0;
+    },
+    { deep: true },
+);
 
 const { t } = useI18n();
 
 const table = useVueTable({
-    data: data,
+    get data() {
+        return data.value;
+    },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     columns: props.columns as ColumnDef<unknown, any>[],
     getCoreRowModel: getCoreRowModel(),
@@ -51,15 +67,18 @@ const table = useVueTable({
         get globalFilter() {
             return filter.value;
         },
+        get pagination() {
+            return pagination.value;
+        },
     },
     onSortingChange: (updaterOrValue) => {
         sorting.value = typeof updaterOrValue === 'function' ? updaterOrValue(sorting.value) : updaterOrValue;
     },
-    initialState: {
-        pagination: {
-            pageSize: 10,
-        },
+    onPaginationChange: (updaterOrValue) => {
+        pagination.value = typeof updaterOrValue === 'function' ? updaterOrValue(pagination.value) : updaterOrValue;
     },
+    manualPagination: false,
+    pageCount: -1,
 });
 </script>
 
@@ -161,14 +180,6 @@ const table = useVueTable({
             <!-- Pagination -->
             <div class="flex items-center justify-between mt-4">
                 <div class="flex items-center gap-2">
-                    <select
-                        v-model="table.getState().pagination.pageSize"
-                        class="px-3 py-2 bg-[#1a1a2e]/50 border border-[#2a2a3f]/30 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all duration-200"
-                    >
-                        <option v-for="pageSize in [10, 20, 30, 40, 50]" :key="pageSize" :value="pageSize">
-                            {{ pageSize }} {{ t('components.table.per_page') }}
-                        </option>
-                    </select>
                     <span class="text-sm text-gray-400">
                         {{ t('components.table.showing') }}
                         {{ table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1 }} -

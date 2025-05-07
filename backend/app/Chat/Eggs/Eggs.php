@@ -33,24 +33,27 @@ class Eggs extends Database
      * @param int $categoryId The category ID this egg belongs to
      * @param int $pterodactylEggId The Pterodactyl egg ID
      * @param string $enabled Whether the egg is enabled ("true" or "false")
+     * @param int|null $imageId The ID of the image to associate with the egg
+     * @param string $vipOnly Whether the egg is VIP only ("true" or "false")
      *
      * @return int|false The ID of the newly created egg, or false on failure
      */
-    public static function create(string $name, string $description, int $categoryId, int $pterodactylEggId, string $enabled = 'false'): int|false
+    public static function create(string $name, string $description, int $categoryId, int $pterodactylEggId, string $enabled = 'false', ?int $imageId = null, string $vipOnly = 'false'): int|false
     {
         try {
             $dbConn = Database::getPdoConnection();
 
             $stmt = $dbConn->prepare('INSERT INTO ' . self::getTableName() . ' 
-                (name, description, category, pterodactyl_egg_id, enabled) 
-                VALUES (:name, :description, :category, :pterodactyl_egg_id, :enabled)');
+                (name, description, category, pterodactyl_egg_id, enabled, image_id, vip_only) 
+                VALUES (:name, :description, :category, :pterodactyl_egg_id, :enabled, :image_id, :vip_only)');
 
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':category', $categoryId);
             $stmt->bindParam(':pterodactyl_egg_id', $pterodactylEggId);
             $stmt->bindParam(':enabled', $enabled);
-
+            $stmt->bindParam(':image_id', $imageId);
+            $stmt->bindParam(':vip_only', $vipOnly);
             $stmt->execute();
 
             return (int) $dbConn->lastInsertId();
@@ -70,17 +73,20 @@ class Eggs extends Database
      * @param int $categoryId The new category ID
      * @param int $pterodactylEggId The new Pterodactyl egg ID
      * @param string $enabled The new enabled status ("true" or "false")
+     * @param int|null $imageId The ID of the image to associate with the egg
+     * @param string $vipOnly Whether the egg is VIP only ("true" or "false")
      *
      * @return bool True on success, false on failure
      */
-    public static function update(int $id, string $name, string $description, int $categoryId, int $pterodactylEggId, string $enabled = 'false'): bool
+    public static function update(int $id, string $name, string $description, int $categoryId, int $pterodactylEggId, string $enabled = 'false', ?int $imageId = null, string $vipOnly = 'false'): bool
     {
         try {
             $dbConn = Database::getPdoConnection();
 
             $stmt = $dbConn->prepare('UPDATE ' . self::getTableName() . ' 
                 SET name = :name, description = :description, category = :category, 
-                pterodactyl_egg_id = :pterodactyl_egg_id, enabled = :enabled, updated_at = NOW() 
+                pterodactyl_egg_id = :pterodactyl_egg_id, enabled = :enabled, image_id = :image_id, 
+                vip_only = :vip_only, updated_at = NOW() 
                 WHERE id = :id AND deleted = "false"');
 
             $stmt->bindParam(':id', $id);
@@ -89,6 +95,8 @@ class Eggs extends Database
             $stmt->bindParam(':category', $categoryId);
             $stmt->bindParam(':pterodactyl_egg_id', $pterodactylEggId);
             $stmt->bindParam(':enabled', $enabled);
+            $stmt->bindParam(':image_id', $imageId);
+            $stmt->bindParam(':vip_only', $vipOnly);
 
             return $stmt->execute();
         } catch (\Exception $e) {

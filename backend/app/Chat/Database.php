@@ -81,10 +81,10 @@ class Database
      *
      * @param string $table the table name
      */
-    public static function getTableRowCount(string $table, bool $includeDeleted = false): int
+    public static function getTableRowCount(string $table, bool $adminSide = false): int
     {
         try {
-            if ($includeDeleted) {
+            if ($adminSide) {
                 $query = self::getPdoConnection()->query('SELECT COUNT(*) FROM ' . $table . ' WHERE deleted = "false"');
             } else {
                 $query = self::getPdoConnection()->query('SELECT COUNT(*) FROM ' . $table);

@@ -78,6 +78,40 @@
                         required
                     ></textarea>
                 </div>
+                <div>
+                    <label for="vip_only" class="block text-sm font-medium text-gray-300 mb-1">VIP Only</label>
+                    <select
+                        id="vip_only"
+                        v-model="eggForm.vip"
+                        class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    >
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="image" class="block text-sm font-medium text-gray-300 mb-1">Egg Image</label>
+                    <div class="flex flex-col space-y-4">
+                        <select
+                            id="image"
+                            v-model="eggForm.image_id"
+                            class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        >
+                            <option :value="null">Select an image</option>
+                            <option v-for="image in images" :key="image.id" :value="image.id">
+                                {{ image.name }}
+                            </option>
+                        </select>
+                        <div v-if="loadingImages" class="text-gray-400">Loading images...</div>
+                        <div v-if="eggForm.image_id" class="mt-2">
+                            <img
+                                :src="images.find((img) => img.id === eggForm.image_id)?.image"
+                                alt="Egg preview"
+                                class="w-32 h-32 object-cover rounded-lg"
+                            />
+                        </div>
+                    </div>
+                </div>
 
                 <div class="flex justify-end">
                     <button
@@ -119,6 +153,8 @@ const eggForm = ref({
     category: 0,
     pterodactyl_egg_id: 0,
     enabled: 'false',
+    image_id: null as number | null,
+    vip: 'false',
 });
 
 interface Category {
@@ -138,8 +174,18 @@ interface PterodactylEgg {
     description: string;
 }
 
+interface Image {
+    id: number;
+    name: string;
+    image: string;
+    created_at: string;
+    updated_at: string;
+}
+
 const categories = ref<Category[]>([]);
 const pterodactylEggs = ref<PterodactylEgg[]>([]);
+const images = ref<Image[]>([]);
+const loadingImages = ref(true);
 const selectedNestId = ref<number | null>(null);
 
 // Fetch categories
@@ -163,6 +209,35 @@ const fetchPterodactylEggs = async (nestId: number) => {
         }
     } catch (error) {
         console.error('Error fetching Pterodactyl eggs:', error);
+    }
+};
+
+// Fetch images from API
+const fetchImages = async () => {
+    loadingImages.value = true;
+    try {
+        const response = await fetch('/api/admin/images', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch images');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            images.value = data.images;
+        } else {
+            console.error('Failed to load images:', data.message);
+        }
+    } catch (error) {
+        console.error('Error fetching images:', error);
+    } finally {
+        loadingImages.value = false;
     }
 };
 
@@ -190,6 +265,8 @@ const saveEgg = async () => {
             eggForm.value.category,
             eggForm.value.pterodactyl_egg_id,
             eggForm.value.enabled,
+            eggForm.value.image_id,
+            eggForm.value.vip,
         );
 
         if (response.success) {
@@ -227,6 +304,7 @@ const saveEgg = async () => {
 
 onMounted(async () => {
     await fetchCategories();
+    await fetchImages();
 });
 
 // Watch for category changes

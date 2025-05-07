@@ -53,7 +53,9 @@ class Locations extends Database
             $stmt->bindParam(':pterodactyl_location_id', $pterodactylLocationId);
             $stmt->execute();
 
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            return $result === false ? null : $result;
         } catch (\Exception $e) {
             self::db_Error('Failed to get location by Pterodactyl location ID: ' . $e->getMessage());
 
@@ -70,20 +72,24 @@ class Locations extends Database
      * @param string $nodeIp The IP address of the node
      * @param string $status The status of the location
      * @param int $slots The number of slots available for the location
+     * @param int|null $imageId The ID of the image to use for the location
+     * @param string $vipOnly Whether the location is VIP only ("true" or "false")
      *
      * @return int The ID of the location
      */
-    public static function create(string $name, string $description, int $pterodactylLocationId, string $nodeIp, string $status = 'active', int $slots = 15): int
+    public static function create(string $name, string $description, int $pterodactylLocationId, string $nodeIp, string $status = 'active', int $slots = 15, ?int $imageId = null, string $vipOnly = 'false'): int
     {
         try {
             $dbConn = Database::getPdoConnection();
-            $stmt = $dbConn->prepare('INSERT INTO ' . self::getTableName() . ' (name, description, pterodactyl_location_id, node_ip, status, slots) VALUES (:name, :description, :pterodactyl_location_id, :node_ip, :status, :slots)');
+            $stmt = $dbConn->prepare('INSERT INTO ' . self::getTableName() . ' (name, description, pterodactyl_location_id, node_ip, image_id, status, slots, vip_only) VALUES (:name, :description, :pterodactyl_location_id, :node_ip, :image_id, :status, :slots, :vip_only)');
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':pterodactyl_location_id', $pterodactylLocationId);
             $stmt->bindParam(':node_ip', $nodeIp);
             $stmt->bindParam(':status', $status);
             $stmt->bindParam(':slots', $slots);
+            $stmt->bindParam(':image_id', $imageId, \PDO::PARAM_INT);
+            $stmt->bindParam(':vip_only', $vipOnly);
 
             $stmt->execute();
 
@@ -104,10 +110,12 @@ class Locations extends Database
      * @param string $nodeIp The new IP address of the node
      * @param string $status The new status of the location
      * @param int $slots The new number of slots available for the location
+     * @param int|null $imageId The ID of the image to use for the location
+     * @param string $vipOnly Whether the location is VIP only ("true" or "false")
      *
      * @return bool True if the location was updated successfully, false otherwise
      */
-    public static function update(int $id, string $name, string $description, string $nodeIp, string $status, int $slots = 15): bool
+    public static function update(int $id, string $name, string $description, string $nodeIp, string $status, int $slots = 15, ?int $imageId = null, string $vipOnly = 'false'): bool
     {
         try {
             if (!self::exists($id)) {
@@ -117,13 +125,15 @@ class Locations extends Database
             }
 
             $dbConn = Database::getPdoConnection();
-            $stmt = $dbConn->prepare('UPDATE ' . self::getTableName() . ' SET name = :name, description = :description, node_ip = :node_ip, status = :status, slots = :slots WHERE id = :id');
+            $stmt = $dbConn->prepare('UPDATE ' . self::getTableName() . ' SET name = :name, description = :description, node_ip = :node_ip, image_id = :image_id, status = :status, slots = :slots, vip_only = :vip_only WHERE id = :id');
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':node_ip', $nodeIp);
+            $stmt->bindParam(':image_id', $imageId, \PDO::PARAM_INT);
             $stmt->bindParam(':status', $status);
             $stmt->bindParam(':slots', $slots);
+            $stmt->bindParam(':vip_only', $vipOnly);
 
             return $stmt->execute();
         } catch (\Exception $e) {
@@ -143,17 +153,9 @@ class Locations extends Database
     public static function delete(int $id): bool
     {
         try {
-            if (!self::exists($id)) {
-                self::db_Error('Location does not exist but tried to delete it: ' . $id);
+            Database::markRecordAsDeleted(self::getTableName(), $id);
 
-                return false;
-            }
-
-            $dbConn = Database::getPdoConnection();
-            $stmt = $dbConn->prepare('DELETE FROM ' . self::getTableName() . ' WHERE id = :id');
-            $stmt->bindParam(':id', $id);
-
-            return $stmt->execute();
+            return true;
         } catch (\Exception $e) {
             self::db_Error('Failed to delete location: ' . $e->getMessage());
 
@@ -172,7 +174,7 @@ class Locations extends Database
     {
         try {
             $dbConn = Database::getPdoConnection();
-            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE id = :id');
+            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE id = :id AND deleted = "false"');
             $stmt->bindParam(':id', $id);
             $stmt->execute();
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -196,7 +198,7 @@ class Locations extends Database
     {
         try {
             $dbConn = Database::getPdoConnection();
-            $stmt = $dbConn->prepare('SELECT COUNT(*) FROM ' . self::getTableName() . ' WHERE id = :id');
+            $stmt = $dbConn->prepare('SELECT COUNT(*) FROM ' . self::getTableName() . ' WHERE id = :id AND deleted = "false"');
             $stmt->bindParam(':id', $id);
             $stmt->execute();
 
@@ -220,7 +222,7 @@ class Locations extends Database
     {
         try {
             $dbConn = Database::getPdoConnection();
-            $stmt = $dbConn->prepare('SELECT COUNT(*) FROM ' . self::getTableName() . ' WHERE pterodactyl_location_id = :pterodactyl_location_id');
+            $stmt = $dbConn->prepare('SELECT COUNT(*) FROM ' . self::getTableName() . ' WHERE pterodactyl_location_id = :pterodactyl_location_id AND deleted = "false"');
             $stmt->bindParam(':pterodactyl_location_id', $pterodactylLocationId);
             $stmt->execute();
 
@@ -243,7 +245,7 @@ class Locations extends Database
     {
         try {
             $dbConn = Database::getPdoConnection();
-            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE status = :status');
+            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE status = :status AND deleted = "false"');
             $stmt->bindParam(':status', $status);
             $stmt->execute();
 

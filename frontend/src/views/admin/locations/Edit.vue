@@ -110,6 +110,30 @@
                             {{ new Date(locationForm.updated_at).toLocaleString() }}
                         </div>
                     </div>
+
+                    <div>
+                        <label for="image" class="block text-sm font-medium text-gray-400 mb-1">Location Image</label>
+                        <div class="flex flex-col space-y-4">
+                            <select
+                                id="image"
+                                v-model="locationForm.image_id"
+                                class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            >
+                                <option :value="null">Select an image</option>
+                                <option v-for="image in images" :key="image.id" :value="image.id">
+                                    {{ image.name }}
+                                </option>
+                            </select>
+                            <div v-if="loadingImages" class="text-gray-400">Loading images...</div>
+                            <div v-if="locationForm.image_id" class="mt-2">
+                                <img
+                                    :src="images.find((img) => img.id === locationForm.image_id)?.image"
+                                    alt="Location preview"
+                                    class="w-32 h-32 object-cover rounded-lg"
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div v-if="successMessage" class="bg-green-500/20 text-green-400 p-4 rounded-lg mb-6">
@@ -168,6 +192,7 @@ const locationForm = ref({
     created_at: '',
     updated_at: '',
     slots: 15,
+    image_id: null as number | null,
 });
 
 interface PterodactylLocation {
@@ -180,11 +205,54 @@ interface PterodactylLocation {
 
 const pterodactylLocations = ref<PterodactylLocation[]>([]);
 
+interface Image {
+    id: number;
+    name: string;
+    image: string;
+    created_at: string;
+    updated_at: string;
+}
+
+const images = ref<Image[]>([]);
+const loadingImages = ref(true);
+
+// Fetch images from API
+const fetchImages = async () => {
+    loadingImages.value = true;
+    try {
+        const response = await fetch('/api/admin/images', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch images');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            images.value = data.images;
+        } else {
+            console.error('Failed to load images:', data.message);
+        }
+    } catch (error) {
+        console.error('Error fetching images:', error);
+    } finally {
+        loadingImages.value = false;
+    }
+};
+
 onMounted(async () => {
     try {
         // Fetch Pterodactyl locations
         const locationsResponse = await Locations.getPterodactylLocations();
         pterodactylLocations.value = locationsResponse.locations;
+
+        // Fetch images
+        await fetchImages();
 
         // Fetch location data from API
         await fetchLocationData();
@@ -226,6 +294,7 @@ const fetchLocationData = async () => {
                 created_at: string;
                 updated_at: string;
                 slots: number;
+                image_id: number | null;
             }
 
             // Find the location with the matching ID
@@ -249,6 +318,7 @@ const fetchLocationData = async () => {
                 created_at: location.created_at,
                 updated_at: location.updated_at,
                 slots: location.slots,
+                image_id: location.image_id,
             };
         } else {
             error.value = data.message || 'Failed to load location data';
@@ -272,8 +342,14 @@ const updateLocation = async () => {
         formData.append('node_ip', locationForm.value.node_ip);
         formData.append('status', locationForm.value.status);
         formData.append('slots', locationForm.value.slots.toString());
+
         if (locationForm.value.pterodactyl_location_id) {
             formData.append('pterodactyl_location_id', locationForm.value.pterodactyl_location_id.toString());
+        }
+        if (locationForm.value.image_id) {
+            formData.append('image_id', locationForm.value.image_id.toString());
+        } else {
+            formData.append('image_id', 'null');
         }
 
         // Send update request to API

@@ -141,17 +141,22 @@ $router->post('/api/admin/eggs/create', function (): void {
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['category'])) {
+        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['category']) && isset($_POST['pterodactyl_egg_id'])) {
             $name = $_POST['name'];
             $description = $_POST['description'];
             $category = $_POST['category'];
             $enabled = $_POST['enabled'] ?? 'false';
+            $vipOnly = $_POST['vip_only'] ?? 'false';
             $pterodactylEggId = $_POST['pterodactyl_egg_id'];
-
-            if ($name == '' || $description == '' || $category == '' || $pterodactylEggId == '') {
+            $imageId = $_POST['image_id'];
+            if ($name == '' || $description == '' || $category == '' || $pterodactylEggId == '' || $imageId == '') {
                 $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
             }
-
+            if ($imageId == 'null') {
+                $imageId = null;
+            } else {
+                $imageId = intval($imageId);
+            }
             $category = intval($category);
             $pterodactylEggId = intval($pterodactylEggId);
 
@@ -170,7 +175,12 @@ $router->post('/api/admin/eggs/create', function (): void {
                 $enabled = 'false';
             }
 
-            $id = EggManager::create($name, $description, $category, (int) $pterodactylEggId, $enabled);
+            // Validate vip_only value
+            if ($vipOnly !== 'true' && $vipOnly !== 'false') {
+                $vipOnly = 'false';
+            }
+
+            $id = EggManager::create($name, $description, $category, (int) $pterodactylEggId, $enabled, $imageId, $vipOnly);
             if (!$id) {
                 $appInstance->BadRequest('Failed to create egg', ['error_code' => 'ERROR_FAILED_TO_CREATE_EGG']);
             }
@@ -188,6 +198,7 @@ $router->post('/api/admin/eggs/create', function (): void {
                 'description' => $description,
                 'category' => $category,
                 'enabled' => $enabled,
+                'vip_only' => $vipOnly,
                 'pterodactyl_egg_id' => $pterodactylEggId,
             ]);
 
@@ -197,6 +208,7 @@ $router->post('/api/admin/eggs/create', function (): void {
                     'description' => $description,
                     'category' => $category,
                     'enabled' => $enabled,
+                    'vip_only' => $vipOnly,
                     'id' => $id,
                 ],
             ]);
@@ -215,21 +227,25 @@ $router->post('/api/admin/eggs/(.*)/update', function ($id): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['category']) && isset($_POST['enabled'])) {
+        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['category']) && isset($_POST['enabled']) && isset($_POST['pterodactyl_egg_id'])) {
             $name = $_POST['name'];
             $description = $_POST['description'];
             $category = $_POST['category'];
             $enabled = $_POST['enabled'];
+            $vipOnly = $_POST['vip_only'] ?? 'false';
             $pterodactylEggId = $_POST['pterodactyl_egg_id'];
-
-            if ($name == '' || $description == '' || $category == '' || $enabled == '' || $pterodactylEggId == '') {
+            $imageId = $_POST['image_id'];
+            if ($name == '' || $description == '' || $category == '' || $enabled == '' || $pterodactylEggId == '' || $imageId == '') {
                 $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
-
+            }
+            if ($imageId == 'null') {
+                $imageId = null;
+            } else {
+                $imageId = intval($imageId);
             }
 
             if (!EggManager::exists($id)) {
                 $appInstance->BadRequest('Egg not found', ['error_code' => 'ERROR_EGG_NOT_FOUND']);
-
             }
 
             $category = intval($category);
@@ -238,7 +254,6 @@ $router->post('/api/admin/eggs/(.*)/update', function ($id): void {
             // Validate category exists
             if (!EggCategories::exists($category)) {
                 $appInstance->BadRequest('Invalid category ID', ['error_code' => 'ERROR_INVALID_CATEGORY_ID']);
-
             }
 
             // Validate Pterodactyl egg exists
@@ -251,10 +266,14 @@ $router->post('/api/admin/eggs/(.*)/update', function ($id): void {
                 $enabled = 'false';
             }
 
-            $updated = EggManager::update($id, $name, $description, $category, $pterodactylEggId, $enabled);
+            // Validate vip_only value
+            if ($vipOnly !== 'true' && $vipOnly !== 'false') {
+                $vipOnly = 'false';
+            }
+
+            $updated = EggManager::update($id, $name, $description, $category, $pterodactylEggId, $enabled, $imageId, $vipOnly);
             if (!$updated) {
                 $appInstance->BadRequest('Failed to update egg', ['error_code' => 'ERROR_FAILED_TO_UPDATE_EGG']);
-
             }
 
             UserActivities::add(
@@ -270,6 +289,7 @@ $router->post('/api/admin/eggs/(.*)/update', function ($id): void {
                 'description' => $description,
                 'category' => $category,
                 'enabled' => $enabled,
+                'vip_only' => $vipOnly,
                 'pterodactyl_egg_id' => $pterodactylEggId,
             ]);
 
@@ -279,6 +299,7 @@ $router->post('/api/admin/eggs/(.*)/update', function ($id): void {
                     'description' => $description,
                     'category' => $category,
                     'enabled' => $enabled,
+                    'vip_only' => $vipOnly,
                     'id' => $id,
                     'pterodactyl_egg_id' => $pterodactylEggId,
                 ],

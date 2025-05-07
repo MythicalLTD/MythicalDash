@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_eggs` ADD `vip_only` ENUM('false','true') NOT NULL DEFAULT 'false' AFTER `image_id`;

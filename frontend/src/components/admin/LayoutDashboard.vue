@@ -108,6 +108,8 @@ const dashBoard = ref({
         servers_count: 0,
         plugins_count: 0,
         backups_count: 0,
+        images_count: 0,
+        redirect_links_count: 0,
     },
 });
 

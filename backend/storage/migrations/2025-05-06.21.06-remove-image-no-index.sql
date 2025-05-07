@@ -1,0 +1,1 @@
+-- Removing this file as the indexes don't exist and we're handling the image changes in 2025-05-06.21.07-create-image-index-eggs-and-locations.sql

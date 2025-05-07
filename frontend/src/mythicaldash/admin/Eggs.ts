@@ -41,6 +41,8 @@ class Eggs {
         categoryId: number,
         pterodactylEggId: number,
         enabled: string = 'false',
+        image_id: number | null,
+        vip: string = 'false',
     ) {
         const formData = new FormData();
         formData.append('name', name);
@@ -48,7 +50,8 @@ class Eggs {
         formData.append('category', categoryId.toString());
         formData.append('pterodactyl_egg_id', pterodactylEggId.toString());
         formData.append('enabled', enabled);
-
+        formData.append('image_id', image_id?.toString() || 'null');
+        formData.append('vip', vip);
         const response = await fetch('/api/admin/eggs/create', {
             method: 'POST',
             body: formData,
@@ -75,6 +78,8 @@ class Eggs {
         categoryId: number,
         pterodactylEggId: number,
         enabled: string = 'false',
+        image_id: number | null,
+        vip: string = 'false',
     ) {
         const formData = new FormData();
         formData.append('name', name);
@@ -82,7 +87,8 @@ class Eggs {
         formData.append('category', categoryId.toString());
         formData.append('pterodactyl_egg_id', pterodactylEggId.toString());
         formData.append('enabled', enabled);
-
+        formData.append('image_id', image_id?.toString() || 'null');
+        formData.append('vip', vip);
         const response = await fetch(`/api/admin/eggs/${id}/update`, {
             method: 'POST',
             body: formData,

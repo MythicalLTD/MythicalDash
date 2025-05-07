@@ -14,6 +14,8 @@ import serversRoutes from './servers.ts';
 import redeemRoutes from './redeems.ts';
 import pluginRoutes from './plugins.ts';
 import backupsRoutes from './backups.ts';
+import imagesRoutes from './images.ts';
+import redirectLinks from './redirectLinks.ts';
 // Main admin dashboard route
 const mainAdminRoutes: RouteRecordRaw[] = [
     {
@@ -54,6 +56,8 @@ const adminRoutes: RouteRecordRaw[] = [
     ...serversRoutes,
     ...pluginRoutes,
     ...backupsRoutes,
+    ...imagesRoutes,
+    ...redirectLinks,
 ];
 
 export default adminRoutes;

@@ -30,6 +30,7 @@ class Locations {
         nodeIp: string,
         status: string,
         slots: number,
+        image_id: number | null,
     ) {
         const formData = new FormData();
         formData.append('name', name);
@@ -38,7 +39,7 @@ class Locations {
         formData.append('node_ip', nodeIp);
         formData.append('status', status);
         formData.append('slots', slots.toString());
-
+        formData.append('image_id', image_id?.toString() || 'null');
         const response = await fetch('/api/admin/locations/create', {
             method: 'POST',
             body: formData,

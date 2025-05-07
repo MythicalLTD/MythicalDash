@@ -8,7 +8,8 @@
 - BUG: Cloud didn't have a user agent!
 - BUG: Fixed a bug where delete requests awaited an json when it doesn't need to!
 - BUG: Fixed the: Failed to get table row count: SQLSTATE[42S22]
-
+- BUG: Fixed a bug where items in the admin menu will also count deleted records!
+- BUG: Fixed the bug with the tables count per page!
 
 # Features Added:
 
@@ -20,7 +21,13 @@
 - Feature: Allow custom css and custom js!
 - Feature: Support for terminal access in production for debug mode!
 - Feature: Better optimization!
-
+- Feature: Better server list :)
+- Feature: Image upload!
+- Feature: Meta Links (Redirects on path)
+- Feature: Locations support images now!
+- Feature: Eggs support images now!
+- Feature: Eggs support vip only users now!
+- Feature: Locations support vip only users now!
 
 # Features Removed:
 

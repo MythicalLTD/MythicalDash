@@ -12,16 +12,14 @@
  */
 
 use MythicalDash\App;
-use MythicalDash\Config\ConfigInterface;
+use MythicalDash\Chat\RedirectLinks\RedirectLink;
 
-$router->add('/api/system/custom.js', function () {
+$router->get('/api/system/redirect-links', function () {
     App::init();
     $appInstance = App::getInstance(true);
-    $config = $appInstance->getConfig();
+    $appInstance->allowOnlyGET();
 
-    $customJs = $config->getSetting(ConfigInterface::CUSTOM_JS, '');
+    $redirectLinks = RedirectLink::getAll();
+    $appInstance->OK('Redirect links fetched successfully', ['redirect_links' => $redirectLinks]);
 
-    header('Content-Type: application/javascript');
-
-    echo $customJs;
 });

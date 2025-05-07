@@ -1524,3 +1524,12 @@ renew:
                 generic: 'Your server has been renewed'
                 footer: 'Server renewal request submitted successfully'
                 confirmButtonText: 'OK'
+
+# Redirect translations
+redirect:
+    title: 'Redirecting...'
+    message: 'You will be redirected to the following URL:'
+    countdown: 'Redirecting in {seconds} seconds'
+    go_now: 'Go Now'
+common:
+    loading: 'Loading...'

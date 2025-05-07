@@ -18,6 +18,8 @@ import {
     Database,
     HeartHandshakeIcon,
     Cloud,
+    Image as ImageIcon,
+    LinkIcon,
 } from 'lucide-vue-next';
 import type { MenuGroup, ProfileMenuItem } from '../types';
 
@@ -36,6 +38,8 @@ interface DashboardCounts {
     servers_count: number;
     plugins_count: number;
     backups_count: number;
+    images_count: number;
+    redirect_links_count: number;
 }
 
 interface DashboardData {
@@ -173,13 +177,7 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     active: route.path === `${adminBaseUri}/settings`,
                     count: computed(() => dashBoard.value.count.settings_count || 0),
                 },
-                {
-                    name: 'Mail Templates',
-                    path: `${adminBaseUri}/mail-templates`,
-                    icon: MailIcon,
-                    active: route.path === `${adminBaseUri}/mail-templates`,
-                    count: computed(() => dashBoard.value.count.mail_templates_count || 0),
-                },
+
                 {
                     name: 'Plugins',
                     path: `${adminBaseUri}/plugins`,
@@ -199,6 +197,32 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     icon: Database,
                     active: route.path === `${adminBaseUri}/backups`,
                     count: computed(() => dashBoard.value.count.backups_count || 0),
+                },
+            ],
+        },
+        {
+            title: 'Meta',
+            items: [
+                {
+                    name: 'Images',
+                    path: `${adminBaseUri}/images`,
+                    icon: ImageIcon,
+                    active: route.path === `${adminBaseUri}/images`,
+                    count: computed(() => dashBoard.value.count.images_count || 0),
+                },
+                {
+                    name: 'Mail Templates',
+                    path: `${adminBaseUri}/mail-templates`,
+                    icon: MailIcon,
+                    active: route.path === `${adminBaseUri}/mail-templates`,
+                    count: computed(() => dashBoard.value.count.mail_templates_count || 0),
+                },
+                {
+                    name: 'Redirect Links',
+                    path: `${adminBaseUri}/redirect-links`,
+                    icon: LinkIcon,
+                    active: route.path === `${adminBaseUri}/redirect-links`,
+                    count: computed(() => dashBoard.value.count.redirect_links_count || 0),
                 },
             ],
         },

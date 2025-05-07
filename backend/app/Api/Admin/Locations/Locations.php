@@ -71,13 +71,15 @@ $router->post('/api/admin/locations/create', function (): void {
 
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
 
-        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['pterodactyl_location_id']) && isset($_POST['node_ip']) && isset($_POST['status']) && isset($_POST['slots'])) {
+        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['pterodactyl_location_id']) && isset($_POST['node_ip']) && isset($_POST['status']) && isset($_POST['slots']) && isset($_POST['image_id'])) {
             $name = $_POST['name'];
             $description = $_POST['description'];
             $pterodactyl_location_id = $_POST['pterodactyl_location_id'];
             $node_ip = $_POST['node_ip'];
             $status = $_POST['status'];
             $slots = (int) $_POST['slots'];
+            $image_id = $_POST['image_id'];
+            $vipOnly = $_POST['vip_only'] ?? 'false';
 
             $status_list = ['online', 'offline', 'maintenance'];
             if (!in_array($status, $status_list)) {
@@ -86,10 +88,21 @@ $router->post('/api/admin/locations/create', function (): void {
                 return;
             }
 
-            if ($name == '' || $description == '' || $pterodactyl_location_id == '' || $node_ip == '' || $status == '' || $slots == '') {
+            if ($name == '' || $description == '' || $pterodactyl_location_id == '' || $node_ip == '' || $status == '' || $slots == '' || $image_id == '') {
                 $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
 
                 return;
+            }
+
+            if ($image_id != 'null') {
+                $image_id = (int) $image_id;
+            } else {
+                $image_id = null;
+            }
+
+            // Validate vip_only value
+            if ($vipOnly !== 'true' && $vipOnly !== 'false') {
+                $vipOnly = 'false';
             }
 
             $pterodactyl_location_id = intval($pterodactyl_location_id);
@@ -107,7 +120,7 @@ $router->post('/api/admin/locations/create', function (): void {
                 return;
             }
 
-            $id = Locations::create($name, $description, $pterodactyl_location_id, $node_ip, $status, $slots);
+            $id = Locations::create($name, $description, $pterodactyl_location_id, $node_ip, $status, $slots, $image_id, $vipOnly);
             if ($id == 0) {
                 $appInstance->BadRequest('Failed to create location', ['error_code' => 'ERROR_FAILED_TO_CREATE_LOCATION']);
 
@@ -124,6 +137,8 @@ $router->post('/api/admin/locations/create', function (): void {
                     'node_ip' => $node_ip,
                     'status' => $status,
                     'slots' => $slots,
+                    'image_id' => $image_id,
+                    'vip_only' => $vipOnly,
                     'id' => $id,
                 ],
             ]);
@@ -143,12 +158,15 @@ $router->post('/api/admin/locations/(.*)/update', function ($id): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
     if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
-        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['node_ip']) && isset($_POST['status']) && isset($_POST['slots'])) {
+        if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['node_ip']) && isset($_POST['status']) && isset($_POST['slots']) && isset($_POST['image_id'])) {
             $name = $_POST['name'];
             $description = $_POST['description'];
             $node_ip = $_POST['node_ip'];
             $status = $_POST['status'];
             $slots = (int) $_POST['slots'];
+            $image_id = $_POST['image_id'];
+            $vipOnly = $_POST['vip_only'] ?? 'false';
+
             $status_list = ['online', 'offline', 'maintenance'];
             if (!in_array($status, $status_list)) {
                 $appInstance->BadRequest('Invalid status', ['error_code' => 'ERROR_INVALID_STATUS']);
@@ -156,10 +174,21 @@ $router->post('/api/admin/locations/(.*)/update', function ($id): void {
                 return;
             }
 
-            if ($name == '' || $description == '' || $node_ip == '' || $status == '' || $slots == '') {
+            if ($name == '' || $description == '' || $node_ip == '' || $status == '' || $slots == '' || $image_id == '') {
                 $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
 
                 return;
+            }
+
+            if ($image_id != 'null') {
+                $image_id = (int) $image_id;
+            } else {
+                $image_id = null;
+            }
+
+            // Validate vip_only value
+            if ($vipOnly !== 'true' && $vipOnly !== 'false') {
+                $vipOnly = 'false';
             }
 
             if (!Locations::exists($id)) {
@@ -168,7 +197,7 @@ $router->post('/api/admin/locations/(.*)/update', function ($id): void {
                 return;
             }
 
-            $updated = Locations::update($id, $name, $description, $node_ip, $status, $slots);
+            $updated = Locations::update($id, $name, $description, $node_ip, $status, $slots, $image_id, $vipOnly);
             if (!$updated) {
                 $appInstance->BadRequest('Failed to update location', ['error_code' => 'ERROR_FAILED_TO_UPDATE_LOCATION']);
 
@@ -190,6 +219,8 @@ $router->post('/api/admin/locations/(.*)/update', function ($id): void {
                     'node_ip' => $node_ip,
                     'status' => $status,
                     'slots' => $slots,
+                    'image_id' => $image_id,
+                    'vip_only' => $vipOnly,
                     'id' => $id,
                 ],
             ]);

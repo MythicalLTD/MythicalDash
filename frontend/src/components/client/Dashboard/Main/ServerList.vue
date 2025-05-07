@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import {
     Server,
@@ -8,6 +8,9 @@ import {
     Trash as TrashIcon,
     ExternalLink as ExternalLinkIcon,
     RefreshCcw as RefreshCcwIcon,
+    LayoutGrid as GridIcon,
+    Table as TableIcon,
+    List as ListIcon,
 } from 'lucide-vue-next';
 import CardComponent from '../../ui/Card/CardComponent.vue';
 import Servers from '@/mythicaldash/Pterodactyl/Servers';
@@ -15,11 +18,21 @@ import Session from '@/mythicaldash/Session';
 import Swal from 'sweetalert2';
 import { useSettingsStore } from '@/stores/settings';
 import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
 
 const Settings = useSettingsStore();
 const pterodactylUrl = Settings.getSetting('pterodactyl_base_url');
 const serverRenewEnabled = Settings.getSetting('server_renew_enabled');
+
+// Add layout preference with localStorage
+const preferredLayout = ref(localStorage.getItem('server_list_layout') || 'cards');
+
+const toggleLayout = () => {
+    const layouts = ['cards', 'table', 'compact'];
+    const currentIndex = layouts.indexOf(preferredLayout.value);
+    const nextIndex = (currentIndex + 1) % layouts.length;
+    preferredLayout.value = layouts[nextIndex];
+    localStorage.setItem('server_list_layout', preferredLayout.value);
+};
 
 const isServersEnabled = computed(() => {
     return Settings.getSetting('allow_servers') === 'true';
@@ -162,24 +175,157 @@ onMounted(() => {
         </div>
 
         <div v-else class="space-y-4">
-            <!-- Header with stats and actions -->
-            <div class="flex justify-between items-center mb-4">
-                <div class="text-sm text-gray-400">
-                    {{ t('Components.ServerList.serverLimit', [servers.length, Session.getInfoInt('server_limit')]) }}
+            <!-- Header with stats, actions, and layout toggle -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-indigo-500/10 rounded-lg">
+                        <Server class="w-5 h-5 text-indigo-400" />
+                    </div>
+                    <div>
+                        <h3 class="text-white font-medium">{{ t('Components.ServerList.title') }}</h3>
+                        <p class="text-sm text-gray-400">
+                            {{
+                                t('Components.ServerList.serverLimit', [
+                                    servers.length,
+                                    Session.getInfoInt('server_limit'),
+                                ])
+                            }}
+                        </p>
+                    </div>
                 </div>
-                <button
-                    @click="createServer"
-                    v-if="isServersEnabled"
-                    class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md transition-colors flex items-center gap-2"
-                    :disabled="servers.length >= Session.getInfoInt('server_limit')"
-                >
-                    <PlusIcon class="w-4 h-4" />
-                    {{ t('Components.ServerList.newServer') }}
-                </button>
+                <div class="flex items-center gap-3">
+                    <button
+                        @click="toggleLayout"
+                        class="p-2 rounded-lg bg-gray-800/50 hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
+                        :title="
+                            preferredLayout === 'cards'
+                                ? 'Switch to Table View'
+                                : preferredLayout === 'table'
+                                  ? 'Switch to Compact View'
+                                  : 'Switch to Card View'
+                        "
+                    >
+                        <GridIcon v-if="preferredLayout === 'table'" class="w-5 h-5" />
+                        <TableIcon v-else-if="preferredLayout === 'compact'" class="w-5 h-5" />
+                        <ListIcon v-else class="w-5 h-5" />
+                    </button>
+                    <button
+                        @click="createServer"
+                        v-if="isServersEnabled"
+                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                        :disabled="servers.length >= Session.getInfoInt('server_limit')"
+                    >
+                        <PlusIcon class="w-4 h-4" />
+                        {{ t('Components.ServerList.newServer') }}
+                    </button>
+                </div>
             </div>
 
-            <!-- Servers Table -->
-            <div class="relative overflow-x-auto rounded-lg border border-gray-800">
+            <!-- Card Layout -->
+            <div v-if="preferredLayout === 'cards'" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div
+                    v-for="server in servers"
+                    :key="server.identifier"
+                    class="group relative bg-gray-900/40 border border-gray-800 rounded-xl p-5 hover:bg-gray-800/40 transition-all duration-200 hover:border-gray-700"
+                >
+                    <!-- Server Status Indicator -->
+                    <div class="absolute top-4 right-4">
+                        <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-1.5">
+                                <div
+                                    class="w-2 h-2 rounded-full"
+                                    :class="server.suspended ? 'bg-red-500' : 'bg-green-500'"
+                                ></div>
+                                <span class="text-xs text-gray-400">{{
+                                    server.suspended ? 'Suspended' : 'Active'
+                                }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Server Header -->
+                    <div class="mb-4">
+                        <h3 class="text-lg font-medium text-white mb-1">{{ server.name }}</h3>
+                        <p class="text-sm text-gray-400">{{ server.identifier }}</p>
+                    </div>
+
+                    <!-- Server Details -->
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-gray-800/50 rounded-lg p-3">
+                                <div class="text-xs text-gray-400 mb-1">
+                                    {{ t('Components.ServerList.table.location') }}
+                                </div>
+                                <div class="text-sm text-white">{{ server.location?.name || 'Unknown' }}</div>
+                            </div>
+                            <div class="bg-gray-800/50 rounded-lg p-3">
+                                <div class="text-xs text-gray-400 mb-1">{{ t('Components.ServerList.table.egg') }}</div>
+                                <div class="text-sm text-white">{{ server.service?.name || 'Unknown' }}</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-gray-800/50 rounded-lg p-3">
+                                <div class="text-xs text-gray-400 mb-1">
+                                    {{ t('Components.ServerList.table.memory') }}
+                                </div>
+                                <div class="text-sm text-white">{{ formatBytes(server.limits.memory) }}</div>
+                            </div>
+                            <div class="bg-gray-800/50 rounded-lg p-3">
+                                <div class="text-xs text-gray-400 mb-1">{{ t('Components.ServerList.table.cpu') }}</div>
+                                <div class="text-sm text-white">{{ server.limits.cpu }}%</div>
+                            </div>
+                            <div class="bg-gray-800/50 rounded-lg p-3">
+                                <div class="text-xs text-gray-400 mb-1">
+                                    {{ t('Components.ServerList.table.disk') }}
+                                </div>
+                                <div class="text-sm text-white">{{ formatBytes(server.limits.disk) }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-4 pt-4 border-t border-gray-800 flex items-center justify-between">
+                        <button
+                            class="px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                            @click="jumpToPanel(server.identifier)"
+                        >
+                            <ExternalLinkIcon class="w-4 h-4" />
+                            Panel
+                        </button>
+                        <div class="flex items-center gap-2">
+                            <button
+                                class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
+                                title="Edit Server"
+                                @click="editServer(server.id)"
+                            >
+                                <PencilIcon class="w-4 h-4" />
+                            </button>
+                            <button
+                                v-if="serverRenewEnabled === 'true'"
+                                class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
+                                title="Renew Server"
+                                @click="renewServer(server.id)"
+                            >
+                                <RefreshCcwIcon class="w-4 h-4" />
+                            </button>
+                            <button
+                                class="p-1.5 rounded-lg text-gray-400 hover:text-red-400 hover:bg-gray-800/50 transition-colors"
+                                title="Delete Server"
+                                @click="deleteServer(server.id)"
+                            >
+                                <TrashIcon class="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Layout -->
+            <div
+                v-else-if="preferredLayout === 'table'"
+                class="relative overflow-x-auto rounded-lg border border-gray-800"
+            >
                 <table class="w-full text-sm text-left text-gray-300">
                     <thead class="text-xs uppercase bg-gray-800/50">
                         <tr>
@@ -199,8 +345,16 @@ onMounted(() => {
                             class="border-b border-gray-800 bg-gray-900/20 hover:bg-gray-800/30 transition-colors"
                         >
                             <td class="px-6 py-4">
-                                <div class="font-medium text-white">{{ server.name }}</div>
-                                <div class="text-xs text-gray-400">{{ server.identifier }}</div>
+                                <div class="flex items-center gap-2">
+                                    <div
+                                        class="w-2 h-2 rounded-full"
+                                        :class="server.suspended ? 'bg-red-500' : 'bg-green-500'"
+                                    ></div>
+                                    <div>
+                                        <div class="font-medium text-white">{{ server.name }}</div>
+                                        <div class="text-xs text-gray-400">{{ server.identifier }}</div>
+                                    </div>
+                                </div>
                             </td>
                             <td class="px-6 py-4 text-gray-400">
                                 {{ server.location?.name || 'Unknown' }}
@@ -251,6 +405,91 @@ onMounted(() => {
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Compact List Layout -->
+            <div v-else-if="preferredLayout === 'compact'" class="space-y-2">
+                <div
+                    v-for="server in servers"
+                    :key="server.identifier"
+                    class="group bg-gray-900/40 border border-gray-800 rounded-lg hover:bg-gray-800/40 transition-all duration-200 hover:border-gray-700"
+                >
+                    <div class="flex items-center justify-between p-4">
+                        <!-- Left side: Server info -->
+                        <div class="flex items-center gap-4 flex-1 min-w-0">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <div
+                                    class="w-2 h-2 rounded-full flex-shrink-0"
+                                    :class="server.suspended ? 'bg-red-500' : 'bg-green-500'"
+                                ></div>
+                                <div class="min-w-0">
+                                    <div class="font-medium text-white truncate">{{ server.name }}</div>
+                                    <div class="text-xs text-gray-400 truncate">{{ server.identifier }}</div>
+                                </div>
+                            </div>
+                            <div class="hidden md:flex items-center gap-4 text-sm text-gray-400">
+                                <div class="flex items-center gap-1">
+                                    <span class="text-xs text-gray-500"
+                                        >{{ t('Components.ServerList.table.location') }}:</span
+                                    >
+                                    <span class="truncate">{{ server.location?.name || 'Unknown' }}</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-xs text-gray-500"
+                                        >{{ t('Components.ServerList.table.egg') }}:</span
+                                    >
+                                    <span class="truncate">{{ server.service?.name || 'Unknown' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Middle: Resource usage -->
+                        <div class="hidden lg:flex items-center gap-6 text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="text-gray-400">{{ formatBytes(server.limits.memory) }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-gray-400">{{ server.limits.cpu }}%</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-gray-400">{{ formatBytes(server.limits.disk) }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Right side: Actions -->
+                        <div class="flex items-center gap-2 ml-4">
+                            <button
+                                class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
+                                title="Jump to Panel"
+                                @click="jumpToPanel(server.identifier)"
+                            >
+                                <ExternalLinkIcon class="w-4 h-4" />
+                            </button>
+                            <button
+                                class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
+                                title="Edit Server"
+                                @click="editServer(server.id)"
+                            >
+                                <PencilIcon class="w-4 h-4" />
+                            </button>
+                            <button
+                                v-if="serverRenewEnabled === 'true'"
+                                class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
+                                title="Renew Server"
+                                @click="renewServer(server.id)"
+                            >
+                                <RefreshCcwIcon class="w-4 h-4" />
+                            </button>
+                            <button
+                                class="p-1.5 rounded-lg text-gray-400 hover:text-red-400 hover:bg-gray-800/50 transition-colors"
+                                title="Delete Server"
+                                @click="deleteServer(server.id)"
+                            >
+                                <TrashIcon class="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </CardComponent>

@@ -138,4 +138,17 @@ class UserActivitiesTypes
     public static string $admin_backup_restore = 'admin:backup:restore';
     public static string $admin_backup_delete = 'admin:backup:delete';
 
+    /**
+     * Images.
+     */
+    public static string $admin_image_create = 'admin:image:create';
+    public static string $admin_image_update = 'admin:image:update';
+    public static string $admin_image_delete = 'admin:image:delete';
+
+    /**
+     * Redirect Links.
+     */
+    public static string $admin_redirect_link_create = 'admin:redirect_link:create';
+    public static string $admin_redirect_link_update = 'admin:redirect_link:update';
+    public static string $admin_redirect_link_delete = 'admin:redirect_link:delete';
 }

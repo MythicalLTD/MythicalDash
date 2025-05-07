@@ -95,6 +95,30 @@
                             class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                     </div>
+
+                    <div>
+                        <label for="image" class="block text-sm font-medium text-gray-400 mb-1">Location Image</label>
+                        <div class="flex flex-col space-y-4">
+                            <select
+                                id="image"
+                                v-model="locationForm.image_id"
+                                class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            >
+                                <option :value="null">Select an image</option>
+                                <option v-for="image in images" :key="image.id" :value="image.id">
+                                    {{ image.name }}
+                                </option>
+                            </select>
+                            <div v-if="loadingImages" class="text-gray-400">Loading images...</div>
+                            <div v-if="locationForm.image_id" class="mt-2">
+                                <img
+                                    :src="images.find((img) => img.id === locationForm.image_id)?.image"
+                                    alt="Location preview"
+                                    class="w-32 h-32 object-cover rounded-lg"
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-4 border-t border-gray-700">
@@ -121,7 +145,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import { ArrowLeftIcon, SaveIcon, LoaderIcon } from 'lucide-vue-next';
@@ -144,6 +168,7 @@ const locationForm = ref({
     node_ip: '',
     status: 'active' as 'active' | 'inactive' | 'maintenance',
     slots: 15,
+    image_id: null as number | null,
 });
 
 interface PterodactylLocation {
@@ -160,6 +185,50 @@ Locations.getPterodactylLocations().then((locations) => {
     pterodactylLocations.value = locations.locations;
 });
 
+interface Image {
+    id: number;
+    name: string;
+    image: string;
+    created_at: string;
+    updated_at: string;
+}
+
+const images = ref<Image[]>([]);
+const loadingImages = ref(true);
+
+// Fetch images from API
+const fetchImages = async () => {
+    loadingImages.value = true;
+    try {
+        const response = await fetch('/api/admin/images', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch images');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            images.value = data.images;
+        } else {
+            console.error('Failed to load images:', data.message);
+        }
+    } catch (error) {
+        console.error('Error fetching images:', error);
+    } finally {
+        loadingImages.value = false;
+    }
+};
+
+onMounted(() => {
+    fetchImages();
+});
+
 const saveLocation = async () => {
     loading.value = true;
 
@@ -171,6 +240,7 @@ const saveLocation = async () => {
             locationForm.value.node_ip,
             locationForm.value.status,
             locationForm.value.slots,
+            locationForm.value.image_id,
         );
 
         if (response.success) {
