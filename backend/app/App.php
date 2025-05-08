@@ -34,6 +34,7 @@ class App extends MythicalAPP
     public Database $db;
     public LicenseSystem $LicenseSystem;
     public MythicalZero $telemetry;
+    public rt $router;
 
     public function __construct(bool $softBoot, bool $isCron = false)
     {
@@ -82,20 +83,34 @@ class App extends MythicalAPP
 
         if (!defined('CRON_MODE')) {
             // @phpstan-ignore-next-line
-            $rateLimiter = new RedisRateLimiter(Rate::perMinute(RATE_LIMIT), new \Redis(), 'rate_limiting');
-            try {
-                $rateLimiter->limit(CloudFlareRealIP::getRealIP());
-            } catch (LimitExceeded $e) {
-                self::getLogger()->error('User: ' . $e->getMessage());
-                self::init();
-                self::ServiceUnavailable('You are being rate limited!', ['error_code' => 'RATE_LIMITED']);
-            } catch (\Exception $e) {
-                self::getLogger()->error('-----------------------------');
-                self::getLogger()->error('REDIS SERVER IS DOWN');
-                self::getLogger()->error('RATE LIMITING IS DISABLED');
-                self::getLogger()->error('YOU SHOULD FIX THIS ASAP');
-                self::getLogger()->error('NO SUPPORT WILL BE PROVIDED');
-                self::getLogger()->error('-----------------------------');
+            if (!isset($_ENV['firewall_enabled'])) {
+                $_ENV['firewall_enabled'] = 'true';
+                $this->updateEnvValue(ConfigInterface::FIREWALL_ENABLED, 'true', false);
+            }
+            if (!isset($_ENV['firewall_rate_limit'])) {
+                $_ENV['firewall_rate_limit'] = '100';
+                $this->updateEnvValue(ConfigInterface::FIREWALL_RATE_LIMIT, '100', false);
+            }
+            if (!isset($_ENV['firewall_block_vpn'])) {
+                $_ENV['firewall_block_vpn'] = 'false';
+                $this->updateEnvValue(ConfigInterface::FIREWALL_BLOCK_VPN, 'false', false);
+            }
+            if ($_ENV['firewall_enabled'] == 'true') {
+                $rateLimiter = new RedisRateLimiter(Rate::perMinute($_ENV['firewall_rate_limit']), new \Redis(), 'rate_limiting');
+                try {
+                    $rateLimiter->limit(CloudFlareRealIP::getRealIP());
+                } catch (LimitExceeded $e) {
+                    self::getLogger()->error('User: ' . $e->getMessage());
+                    self::init();
+                    self::ServiceUnavailable('You are being rate limited!', ['error_code' => 'RATE_LIMITED']);
+                } catch (\Exception $e) {
+                    self::getLogger()->error('-----------------------------');
+                    self::getLogger()->error('REDIS SERVER IS DOWN');
+                    self::getLogger()->error('RATE LIMITING IS DISABLED');
+                    self::getLogger()->error('YOU SHOULD FIX THIS ASAP');
+                    self::getLogger()->error('NO SUPPORT WILL BE PROVIDED');
+                    self::getLogger()->error('-----------------------------');
+                }
             }
         }
 
@@ -121,10 +136,10 @@ class App extends MythicalAPP
             return;
         }
 
-        $router = new rt();
-        $this->registerApiRoutes($router);
+        $this->router = new rt();
+        $this->registerApiRoutes($this->router);
         $eventManager->emit(AppEvent::onAppLoad(), []);
-        $eventManager->emit(AppEvent::onRouterReady(), [$router]);
+        $eventManager->emit(AppEvent::onRouterReady(), [$this->router]);
 
         try {
             $this->LicenseSystem = new LicenseSystem();
@@ -158,17 +173,25 @@ class App extends MythicalAPP
             $this->getConfig()->getSetting(ConfigInterface::MYTHICAL_ZERO_TRUST_ENABLED, 'true'),
             $this->getConfig()->getSetting(ConfigInterface::TELEMETRY_ENABLED, 'true'),
         );
-        $router->add('/(.*)', function ($route): void {
+        $this->router->add('/(.*)', function ($route): void {
             self::init();
             self::NotFound('The api route does not exist!', ['error_code' => 'API_ROUTE_NOT_FOUND', 'route' => $route]);
         });
 
         try {
-            $router->route();
+            $this->router->route();
         } catch (\Exception $e) {
             self::init();
             self::InternalServerError($e->getMessage(), null);
         }
+    }
+
+    /**
+     * Get the router.
+     */
+    public function getRouter(): rt
+    {
+        return $this->router;
     }
 
     /**

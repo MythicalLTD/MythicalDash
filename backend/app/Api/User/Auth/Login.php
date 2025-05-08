@@ -17,6 +17,7 @@ use MythicalDash\App;
 use MythicalDash\Mail\Mail;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\Servers\Server;
+use MythicalDash\Middleware\Firewall;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
@@ -28,6 +29,7 @@ $router->add('/api/user/auth/login', function (): void {
     global $eventManager;
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
+    global $router;
 
     $appInstance->allowOnlyPOST();
 
@@ -59,6 +61,8 @@ $router->add('/api/user/auth/login', function (): void {
 
     $login = $_POST['login'];
     $password = $_POST['password'];
+
+    Firewall::handle($appInstance, CloudFlareRealIP::getRealIP());
 
     $loginResult = User::login($login, $password);
     if ($loginResult == 'false') {

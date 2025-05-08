@@ -13,6 +13,7 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\User;
+use MythicalDash\Middleware\Firewall;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Referral\ReferralUses;
@@ -24,6 +25,7 @@ use MythicalDash\Hooks\MythicalSystems\CloudFlare\Turnstile;
 
 $router->add('/api/user/auth/register', function (): void {
     global $eventManager;
+    global $router;
     App::init();
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
@@ -78,6 +80,8 @@ $router->add('/api/user/auth/register', function (): void {
         $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['email' => $_POST['email'], 'error_code' => 'INVALID_EMAIL']);
         $appInstance->BadRequest('Bad Request', ['error_code' => 'INVALID_EMAIL']);
     }
+
+    Firewall::handle($appInstance, CloudFlareRealIP::getRealIP());
 
     /**
      * Process the turnstile response.

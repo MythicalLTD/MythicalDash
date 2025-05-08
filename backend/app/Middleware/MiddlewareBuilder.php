@@ -11,12 +11,11 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalDash\Services\Cloud;
+namespace MythicalDash\Middleware;
 
-class MythicalCloud
+use MythicalDash\App;
+
+interface MiddlewareBuilder
 {
-    public function __construct()
-    {
-
-    }
+    public static function handle(App $app, string $ip): void;
 }

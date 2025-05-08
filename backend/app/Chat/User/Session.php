@@ -15,6 +15,7 @@ namespace MythicalDash\Chat\User;
 
 use MythicalDash\App;
 use MythicalDash\Chat\Database;
+use MythicalDash\Middleware\Firewall;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 
@@ -25,6 +26,7 @@ class Session extends Database
 
     public function __construct(App $app)
     {
+        Firewall::handle($app, CloudFlareRealIP::getRealIP());
         if (isset($_COOKIE['user_token']) && !$_COOKIE['user_token'] == '') {
             if (User::exists(UserColumns::ACCOUNT_TOKEN, $_COOKIE['user_token'])) {
                 try {

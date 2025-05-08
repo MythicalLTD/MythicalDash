@@ -49,7 +49,7 @@ class EggCategories extends Database
      *
      * @return int The ID of the category
      */
-    public static function create(string $name, string $description, int $pterodactylNestId, bool $enabled = true, int $imageId = null): int
+    public static function create(string $name, string $description, int $pterodactylNestId, bool $enabled = true, ?int $imageId = null): int
     {
         try {
             $dbConn = Database::getPdoConnection();
@@ -82,7 +82,7 @@ class EggCategories extends Database
      *
      * @return bool True if the category was updated successfully, false otherwise
      */
-    public static function update(int $id, string $name, string $description, string $enabled, int $imageId = null): bool
+    public static function update(int $id, string $name, string $description, string $enabled, ?int $imageId = null): bool
     {
         try {
             if (!self::exists($id)) {
@@ -101,6 +101,7 @@ class EggCategories extends Database
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':enabled', $enabled);
             $stmt->bindParam(':image_id', $imageId);
+
             return $stmt->execute();
         } catch (\Exception $e) {
             self::db_Error('Failed to update egg category: ' . $e->getMessage());

@@ -13,6 +13,7 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\User;
+use MythicalDash\Middleware\Firewall;
 use MythicalDash\Chat\User\Verification;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
@@ -29,7 +30,8 @@ $router->get('/api/user/auth/verify', function (): void {
 
     if (isset($_GET['code']) && $_GET['code'] != '') {
         $code = $_GET['code'];
-
+        global $router;
+        Firewall::handle($appInstance, CloudFlareRealIP::getRealIP());
         if (Verification::verify($code, EmailVerificationColumns::$type_verify)) {
             if (User::exists(UserColumns::UUID, Verification::getUserUUID($code))) {
                 $token = User::getInfo(User::getTokenFromUUID(Verification::getUserUUID($code)), UserColumns::ACCOUNT_TOKEN, false);

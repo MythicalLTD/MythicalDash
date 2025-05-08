@@ -13,6 +13,7 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\User;
+use MythicalDash\Middleware\Firewall;
 use MythicalDash\Chat\User\Verification;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
@@ -28,7 +29,7 @@ $router->get('/api/user/auth/reset', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
-
+    global $router;
     $appInstance->allowOnlyGET();
 
     if (isset($_GET['code']) && $_GET['code'] != '') {
@@ -52,7 +53,7 @@ $router->post('/api/user/auth/reset', function (): void {
     global $eventManager;
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
-
+    global $router;
     $appInstance->allowOnlyPOST();
 
     if (!isset($_POST['email_code']) || $_POST['email_code'] == '') {
@@ -77,6 +78,8 @@ $router->post('/api/user/auth/reset', function (): void {
 
     $code = $_POST['email_code'];
     $password = $_POST['password'];
+
+    Firewall::handle($appInstance, CloudFlareRealIP::getRealIP());
 
     /**
      * Process the turnstile response.

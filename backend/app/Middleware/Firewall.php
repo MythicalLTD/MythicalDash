@@ -1,0 +1,38 @@
+<?php
+
+/*
+ * This file is part of MythicalDash.
+ * Please view the LICENSE file that was distributed with this source code.
+ *
+ * # MythicalSystems License v2.0
+ *
+ * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
+ *
+ * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ */
+
+namespace MythicalDash\Middleware;
+
+use MythicalDash\App;
+use App\Services\ProxyCheck\ProxyCheck;
+use MythicalDash\Config\ConfigInterface;
+
+class Firewall implements MiddlewareBuilder
+{
+    public static function handle(App $app, string $ip): void
+    {
+        /**
+         * Firewall check.
+         */
+        if ($app->getConfig()->getSetting(ConfigInterface::FIREWALL_ENABLED, 'false') == 'true') {
+            /**
+             * Block VPNs.
+             */
+            if ($app->getConfig()->getSetting(ConfigInterface::FIREWALL_BLOCK_VPN, 'false') == 'true') {
+                if (ProxyCheck::hasProxy($ip)) {
+                    $app->BadRequest('You are using a vpn or a proxy!', ['error_code' => 'PROXY_DETECTED']);
+                }
+            }
+        }
+    }
+}

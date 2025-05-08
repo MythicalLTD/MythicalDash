@@ -38,6 +38,7 @@ const handleSubmit = async () => {
                 TURNSTILE_FAILED: t('auth.pages.forgot_password.alerts.error.cloudflare_error'),
                 EMAIL_DOES_NOT_EXIST: t('auth.pages.forgot_password.alerts.error.email_not_found'),
                 FAILED_TO_SEND_EMAIL: t('auth.pages.forgot_password.alerts.error.generic'),
+                PROXY_DETECTED: t('auth.pages.forgot_password.alerts.error.proxy_detected'),
             };
 
             if (errorMessages[error_code]) {

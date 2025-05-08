@@ -15,6 +15,7 @@ use MythicalDash\App;
 use MythicalDash\Chat\User\User;
 use PragmaRX\Google2FA\Google2FA;
 use MythicalDash\Chat\User\Session;
+use MythicalDash\Middleware\Firewall;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
@@ -43,6 +44,7 @@ $router->post('/api/user/auth/2fa/setup', function (): void {
     $config = $appInstance->getConfig();
     $appInstance->allowOnlyPOST();
     global $eventManager;
+    global $router;
     /**
      * Process the turnstile response.
      *
@@ -59,6 +61,8 @@ $router->post('/api/user/auth/2fa/setup', function (): void {
             $appInstance->BadRequest('Invalid TurnStile Key', ['error_code' => 'TURNSTILE_FAILED']);
         }
     }
+
+    Firewall::handle($appInstance, CloudFlareRealIP::getRealIP());
 
     $google2fa = new Google2FA();
 

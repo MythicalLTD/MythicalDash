@@ -310,6 +310,29 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- System Logs -->
+                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                        <div class="p-4 border-b border-gray-800/30">
+                            <h2 class="text-lg font-medium text-white">System Logs</h2>
+                        </div>
+                        <div class="p-4">
+                            <div class="space-y-2 max-h-[300px] overflow-y-auto">
+                                <div
+                                    v-for="(log, index) in dashboardData.logs"
+                                    :key="index"
+                                    class="text-sm p-2 rounded-lg"
+                                    :class="{
+                                        'bg-red-500/10 text-red-400': log.includes('[ERROR]'),
+                                        'bg-yellow-500/10 text-yellow-400': log.includes('[WARNING]'),
+                                        'bg-green-500/10 text-green-400': log.includes('[INFO]'),
+                                    }"
+                                >
+                                    {{ log }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -440,10 +463,11 @@ const dashboardData = ref({
     },
     github_data: null as GitHubData | null,
     activity: [] as Activity[],
+    logs: [] as string[],
 });
 
 // Activity display
-const activitiesPerLoad = ref(5);
+const activitiesPerLoad = ref(10);
 const displayedActivities = ref<Activity[]>([]);
 
 // Computed property to check if there are more activities to load
@@ -495,6 +519,7 @@ onMounted(async () => {
             counts: data.count || dashboardData.value.counts,
             github_data: data.core?.github_data || null,
             activity: data.etc?.activity || [],
+            logs: data.core?.logs || [],
         };
         // Initialize displayed activities
         displayedActivities.value = dashboardData.value.activity.slice(0, activitiesPerLoad.value);
@@ -515,6 +540,7 @@ const refreshData = async () => {
             counts: data.count || dashboardData.value.counts,
             github_data: data.core?.github_data || null,
             activity: data.etc?.activity || [],
+            logs: data.core?.logs || [],
         };
         // Reset displayed activities
         displayedActivities.value = dashboardData.value.activity.slice(0, activitiesPerLoad.value);

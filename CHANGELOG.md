@@ -29,6 +29,7 @@
 - Feature: Eggs support vip only users now!
 - Feature: Locations support vip only users now!
 - Feature: Brand server creation page!
+- Feature: Premium AntiVPN/Proxy System
 
 # Features Removed:
 

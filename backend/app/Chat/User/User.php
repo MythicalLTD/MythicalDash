@@ -500,9 +500,9 @@ class User extends Database
      *
      * @param string $uuid The UUID
      *
-     * @return string The token
+     * @return string|null The token
      */
-    public static function getTokenFromUUID(string $uuid): string
+    public static function getTokenFromUUID(string $uuid): ?string
     {
         try {
             $con = self::getPdoConnection();

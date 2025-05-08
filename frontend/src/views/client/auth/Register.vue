@@ -147,6 +147,7 @@ const handleSubmit = async () => {
                 DATABASE_ERROR: t('auth.pages.register.alerts.error.generic'),
                 PTERODACTYL_NOT_ENABLED: t('auth.pages.register.alerts.error.pterodactyl_not_enabled'),
                 PTERODACTYL_ERROR: t('auth.pages.register.alerts.error.pterodactyl_error'),
+                PROXY_DETECTED: t('auth.pages.register.alerts.error.proxy_detected'),
             };
 
             if (errorMessages[error_code]) {

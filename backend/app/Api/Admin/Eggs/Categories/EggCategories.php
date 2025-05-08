@@ -98,11 +98,11 @@ $router->post('/api/admin/egg-categories/create', function (): void {
                 return;
             }
 
-			if ($image_id == "null") {
-				$image_id = null;
-			} else {
-				$image_id = intval($image_id);
-			}
+            if ($image_id == 'null') {
+                $image_id = null;
+            } else {
+                $image_id = intval($image_id);
+            }
 
             $pterodactyl_nest_id = intval($pterodactyl_nest_id);
 
@@ -168,11 +168,11 @@ $router->post('/api/admin/egg-categories/(.*)/update', function ($id): void {
                 return;
             }
 
-			if ($image_id == "null") {
-				$image_id = null;
-			} else {
-				$image_id = intval($image_id);
-			}
+            if ($image_id == 'null') {
+                $image_id = null;
+            } else {
+                $image_id = intval($image_id);
+            }
 
             if (!EggCategories::exists($id)) {
                 $appInstance->BadRequest('Egg category not found', ['error_code' => 'ERROR_CATEGORY_NOT_FOUND']);

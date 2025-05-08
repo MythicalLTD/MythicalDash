@@ -13,8 +13,10 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\User;
+use MythicalDash\Middleware\Firewall;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
 use MythicalDash\Hooks\MythicalSystems\CloudFlare\Turnstile;
 
@@ -22,7 +24,7 @@ $router->add('/api/user/auth/forgot', function (): void {
     global $eventManager;
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
-
+    global $router;
     $appInstance->allowOnlyPOST();
     /**
      * Check if the required fields are set.
@@ -45,13 +47,14 @@ $router->add('/api/user/auth/forgot', function (): void {
             $appInstance->BadRequest('Bad Request', ['error_code' => 'TURNSTILE_FAILED']);
         }
         $cfTurnstileResponse = $_POST['turnstileResponse'];
-        if (!Turnstile::validate($cfTurnstileResponse, MythicalDash\CloudFlare\CloudFlareRealIP::getRealIP(), $config->getSetting(ConfigInterface::TURNSTILE_KEY_PRIV, 'XXXX'))) {
+        if (!Turnstile::validate($cfTurnstileResponse, CloudFlareRealIP::getRealIP(), $config->getSetting(ConfigInterface::TURNSTILE_KEY_PRIV, 'XXXX'))) {
             $eventManager->emit(AuthEvent::onAuthForgotPasswordFailed(), ['email' => $_POST['email'], 'error_code' => 'TURNSTILE_FAILED']);
             $appInstance->BadRequest('Invalid TurnStile Key', ['error_code' => 'TURNSTILE_FAILED']);
         }
     }
     $email = $_POST['email'];
 
+    Firewall::handle($appInstance, CloudFlareRealIP::getRealIP());
     if (User::exists(UserColumns::EMAIL, $email)) {
 
         if (User::forgotPassword($email)) {

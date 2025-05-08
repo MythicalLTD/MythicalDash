@@ -110,6 +110,67 @@
                 </div>
             </div>
 
+            <!-- Firewall Section -->
+            <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
+                <div class="flex items-center mb-4">
+                    <div class="flex-1">
+                        <h3 class="text-lg font-medium text-white">Firewall Protection</h3>
+                        <p class="text-sm text-gray-400">
+                            Configure firewall settings to protect your application from abuse and unauthorized access.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Enable Firewall -->
+                <div class="flex items-center space-x-2 mb-4">
+                    <input
+                        type="checkbox"
+                        id="firewall_enabled"
+                        v-model="firewallEnabled"
+                        @change="updateSetting('firewall_enabled', firewallEnabled ? 'true' : 'false')"
+                        class="rounded border-gray-700 text-pink-500 focus:ring-pink-500 bg-gray-800/30"
+                    />
+                    <label for="firewall_enabled" class="text-sm font-medium text-gray-400"
+                        >Enable Firewall Protection</label
+                    >
+                </div>
+
+                <div v-if="firewallEnabled" class="space-y-4">
+                    <!-- Rate Limit -->
+                    <div>
+                        <label for="firewall_rate_limit" class="block text-sm font-medium text-gray-400 mb-1"
+                            >Rate Limit (requests per minute)</label
+                        >
+                        <input
+                            id="firewall_rate_limit"
+                            type="number"
+                            v-model="formData.firewall_rate_limit"
+                            @change="updateSetting('firewall_rate_limit', formData.firewall_rate_limit)"
+                            class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="60"
+                            min="1"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">
+                            Maximum number of requests allowed per minute per IP address.
+                        </p>
+                    </div>
+
+                    <!-- Block VPN -->
+                    <div class="flex items-center space-x-2">
+                        <input
+                            type="checkbox"
+                            id="firewall_block_vpn"
+                            v-model="firewallBlockVPN"
+                            @change="updateSetting('firewall_block_vpn', firewallBlockVPN ? 'true' : 'false')"
+                            class="rounded border-gray-700 text-pink-500 focus:ring-pink-500 bg-gray-800/30"
+                        />
+                        <label for="firewall_block_vpn" class="text-sm font-medium text-gray-400"
+                            >Block VPN Connections</label
+                        >
+                    </div>
+                </div>
+            </div>
+
             <!-- Node Ping Visibility Section -->
             <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
                 <div class="flex items-center mb-4">
@@ -551,6 +612,8 @@ const emit = defineEmits(['update']);
 const formData = ref({
     turnstile_key_pub: '',
     turnstile_key_priv: '',
+    firewall_rate_limit: '',
+    firewall_block_vpn: false,
 });
 
 // Show/hide sensitive data
@@ -620,6 +683,22 @@ const zeroTrustEnhancedLoggingEnabled = computed({
     },
 });
 
+// Computed property for firewall enabled state
+const firewallEnabled = computed({
+    get: () => props.settings?.firewall_enabled === 'true',
+    set: (value) => {
+        emit('update', 'firewall_enabled', value ? 'true' : 'false');
+    },
+});
+
+// Computed property for firewall block VPN state
+const firewallBlockVPN = computed({
+    get: () => props.settings?.firewall_block_vpn === 'true',
+    set: (value) => {
+        emit('update', 'firewall_block_vpn', value ? 'true' : 'false');
+    },
+});
+
 // Initialize form with settings values
 watch(
     () => props.settings,
@@ -628,6 +707,8 @@ watch(
             formData.value = {
                 turnstile_key_pub: newSettings['turnstile_key_pub'] || '',
                 turnstile_key_priv: newSettings['turnstile_key_priv'] || '',
+                firewall_rate_limit: newSettings['firewall_rate_limit'] || '',
+                firewall_block_vpn: newSettings['firewall_block_vpn'] === 'true',
             };
         }
     },

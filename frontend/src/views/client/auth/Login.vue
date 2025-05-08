@@ -47,6 +47,7 @@ const handleSubmit = async () => {
                 PTERODACTYL_USER_NOT_FOUND: t('auth.pages.login.alerts.error.pterodactyl_user_not_found'),
                 PTERODACTYL_ERROR: t('auth.pages.login.alerts.error.pterodactyl_error'),
                 PTERODACTYL_NOT_ENABLED: t('auth.pages.login.alerts.error.pterodactyl_not_enabled'),
+                PROXY_DETECTED: t('auth.pages.login.alerts.error.proxy_detected'),
             };
 
             if (errorMessages[error_code]) {

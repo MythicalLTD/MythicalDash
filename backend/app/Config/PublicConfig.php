@@ -248,6 +248,11 @@ class PublicConfig extends ConfigFactory
             // Custom CSS and JS
             ConfigInterface::CUSTOM_CSS => '',
             ConfigInterface::CUSTOM_JS => '',
+
+            // Firewall
+            ConfigInterface::FIREWALL_ENABLED => 'false',
+            ConfigInterface::FIREWALL_RATE_LIMIT => '100',
+            ConfigInterface::FIREWALL_BLOCK_VPN => 'false',
         ];
 
     }

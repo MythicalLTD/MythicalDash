@@ -306,4 +306,11 @@ interface ConfigInterface
      */
     public const CUSTOM_CSS = 'custom_css';
     public const CUSTOM_JS = 'custom_js';
+    /**
+     * Firewall.
+     */
+    public const FIREWALL_ENABLED = 'firewall_enabled';
+    public const FIREWALL_RATE_LIMIT = 'firewall_rate_limit';
+    public const FIREWALL_BLOCK_VPN = 'firewall_block_vpn';
+
 }

@@ -41,6 +41,8 @@ class Backup
         $dump->tables['mythicaldash_linkvertise'] = \MySQLDump::CREATE;
         $dump->tables['mythicaldash_linkpays'] = \MySQLDump::CREATE;
         $dump->tables['mythicaldash_gyanilinks'] = \MySQLDump::CREATE;
+        $dump->tables['mythicaldash_proxylist'] = \MySQLDump::CREATE;
+
         /**
          * Tables to include in the backup.
          */

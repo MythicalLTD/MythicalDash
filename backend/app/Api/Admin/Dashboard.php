@@ -47,9 +47,21 @@ $router->get('/api/admin', function (): void {
             $pluginsCount = Database::getTableRowCount('mythicaldash_addons', true);
             $imagesCount = Database::getTableRowCount('mythicaldash_image_db', true);
             $redirectLinksCount = Database::getTableRowCount('mythicaldash_redirect_links', true);
+            $DashboardLogs = $appInstance->getLogger()->getLogs(false);
+            $WebServerLogs = $appInstance->getWebServerLogger()->getLogs(true);
+            // Limit logs to 250 lines (keep most recent)
+            if (count($DashboardLogs) > 250) {
+                $DashboardLogs = array_slice($DashboardLogs, -250);
+            }
+            if (count($WebServerLogs) > 250) {
+                $WebServerLogs = array_slice($WebServerLogs, -250);
+            }
+
+            $logs = array_merge($DashboardLogs, $WebServerLogs);
             $appInstance->OK('Dashboard data retrieved successfully.', [
                 'core' => [
                     'github_data' => $github_data,
+                    'logs' => $logs,
                 ],
                 'count' => [
                     'user_count' => $userCount,

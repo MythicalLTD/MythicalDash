@@ -73,6 +73,7 @@ const handleSubmit = async () => {
                 TURNSTILE_FAILED: t('auth.pages.reset_password.alerts.error.cloudflare_error'),
                 PASSWORDS_DO_NOT_MATCH: t('auth.pages.reset_password.alerts.error.passwords_mismatch'),
                 INVALID_CODE: t('auth.pages.reset_password.alerts.error.invalid_code'),
+                PROXY_DETECTED: t('auth.pages.reset_password.alerts.error.proxy_detected'),
             };
 
             if (errorMessages[error_code]) {

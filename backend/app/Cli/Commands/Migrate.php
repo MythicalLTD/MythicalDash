@@ -108,7 +108,7 @@ class Migrate extends App implements CommandBuilder
             }
         }
         $cliApp->send('&aAll migrations have been executed!');
-		$cliApp->send('&aPlease restart the server to apply the changes!');
+        $cliApp->send('&aPlease restart the server to apply the changes!');
     }
 
     public static function getDescription(): string
