@@ -10,6 +10,7 @@
 - BUG: Fixed the: Failed to get table row count: SQLSTATE[42S22]
 - BUG: Fixed a bug where items in the admin menu will also count deleted records!
 - BUG: Fixed the bug with the tables count per page!
+- BUG: Fixed the stupid bug with referrals showing on register even if they are disabled!
 
 # Features Added:
 
@@ -30,6 +31,7 @@
 - Feature: Locations support vip only users now!
 - Feature: Brand server creation page!
 - Feature: Premium AntiVPN/Proxy System
+- Feature: Premium AntiAlt System
 
 # Features Removed:
 

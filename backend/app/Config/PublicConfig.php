@@ -64,14 +64,14 @@ class PublicConfig extends ConfigFactory
             ConfigInterface::PTERODACTYL_BASE_URL => 'https://demopanel.mythical.systems',
 
             // AFK Settings
-            ConfigInterface::AFK_ENABLED => 'false',
+            ConfigInterface::AFK_ENABLED => 'true',
             ConfigInterface::AFK_MIN_PER_COIN => '1',
 
             // Feature toggles
-            ConfigInterface::CODE_REDEMPTION_ENABLED => 'false',
+            ConfigInterface::CODE_REDEMPTION_ENABLED => 'true',
             ConfigInterface::J4R_ENABLED => 'false',
-            ConfigInterface::REFERRALS_ENABLED => 'false',
-            ConfigInterface::L4R_ENABLED => 'false',
+            ConfigInterface::REFERRALS_ENABLED => 'true',
+            ConfigInterface::L4R_ENABLED => 'true',
 
             // L4R platform toggles
             ConfigInterface::L4R_LINKVERTISE_ENABLED => 'false',
@@ -125,7 +125,7 @@ class PublicConfig extends ConfigFactory
             ConfigInterface::SMTP_ENABLED => 'false',
 
             // Node settings
-            ConfigInterface::SHOW_NODE_PING => 'false',
+            ConfigInterface::SHOW_NODE_PING => 'true',
 
             // External URLs
             ConfigInterface::WEBSITE_URL => '',
@@ -210,20 +210,20 @@ class PublicConfig extends ConfigFactory
             ConfigInterface::BLOCK_BACKUPS => 'false',
 
             // Leaderboard
-            ConfigInterface::LEADERBOARD_ENABLED => 'false',
+            ConfigInterface::LEADERBOARD_ENABLED => 'true',
             ConfigInterface::LEADERBOARD_LIMIT => '15',
 
             // Allow Tickets
-            ConfigInterface::ALLOW_TICKETS => 'false',
+            ConfigInterface::ALLOW_TICKETS => 'true',
 
             // Allow Servers
-            ConfigInterface::ALLOW_SERVERS => 'false',
+            ConfigInterface::ALLOW_SERVERS => 'true',
 
             // Allow Public Profiles
-            ConfigInterface::ALLOW_PUBLIC_PROFILES => 'false',
+            ConfigInterface::ALLOW_PUBLIC_PROFILES => 'true',
 
             // Allow Coins Sharing
-            ConfigInterface::ALLOW_COINS_SHARING => 'false',
+            ConfigInterface::ALLOW_COINS_SHARING => 'true',
             ConfigInterface::COINS_SHARE_MAX_AMOUNT => '100',
             ConfigInterface::COINS_SHARE_MIN_AMOUNT => '1',
             ConfigInterface::COINS_SHARE_FEE => '10',
@@ -250,9 +250,10 @@ class PublicConfig extends ConfigFactory
             ConfigInterface::CUSTOM_JS => '',
 
             // Firewall
-            ConfigInterface::FIREWALL_ENABLED => 'false',
+            ConfigInterface::FIREWALL_ENABLED => 'true',
             ConfigInterface::FIREWALL_RATE_LIMIT => '100',
             ConfigInterface::FIREWALL_BLOCK_VPN => 'false',
+            ConfigInterface::FIREWALL_BLOCK_ALTS => 'false',
         ];
 
     }

@@ -271,7 +271,7 @@ const handleSubmit = async () => {
                 :placeholder="t('auth.pages.register.page.form.password.placeholder')"
                 required
             />
-            <div v-if="referralsEnabled">
+            <div v-if="referralsEnabled == 'true'">
                 <FormInput
                     id="referralCode"
                     :label="t('auth.pages.register.page.form.referralCode.label')"

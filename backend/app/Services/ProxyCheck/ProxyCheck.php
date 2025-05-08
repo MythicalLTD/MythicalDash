@@ -11,7 +11,7 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace App\Services\ProxyCheck;
+namespace MythicalDash\Services\ProxyCheck;
 
 use MythicalDash\Chat\ProxyList\ProxyList;
 
@@ -19,11 +19,9 @@ class ProxyCheck
 {
     public static function hasProxy(string $ip): bool
     {
-        $ip = trim($ip);
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
-            return true;
-        }
-
+		if ($ip == '127.0.0.1' || $ip == '::1' || $ip == 'localhost' || $ip == '0.0.0.0' || $ip == '::') {
+			return false;
+		}
         $proxy = ProxyList::exists($ip);
         if ($proxy) {
             return true;

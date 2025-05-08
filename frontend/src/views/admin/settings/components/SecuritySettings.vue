@@ -168,6 +168,17 @@
                             >Block VPN Connections</label
                         >
                     </div>
+                    <div class="flex items-center space-x-2">
+                        <input
+                            type="checkbox"
+                            id="firewall_block_alts"
+                            v-model="firewallBlockAlts"
+                            @change="updateSetting('firewall_block_alts', firewallBlockAlts ? 'true' : 'false')"
+                        />
+                        <label for="firewall_block_alts" class="text-sm font-medium text-gray-400"
+                            >Block Alt Accounts</label
+                        >
+                    </div>
                 </div>
             </div>
 
@@ -614,6 +625,7 @@ const formData = ref({
     turnstile_key_priv: '',
     firewall_rate_limit: '',
     firewall_block_vpn: false,
+    firewall_block_alts: false,
 });
 
 // Show/hide sensitive data
@@ -699,6 +711,13 @@ const firewallBlockVPN = computed({
     },
 });
 
+// Computed property for firewall block alts state
+const firewallBlockAlts = computed({
+    get: () => props.settings?.firewall_block_alts === 'true',
+    set: (value) => {
+        emit('update', 'firewall_block_alts', value ? 'true' : 'false');
+    },
+});
 // Initialize form with settings values
 watch(
     () => props.settings,
@@ -709,6 +728,7 @@ watch(
                 turnstile_key_priv: newSettings['turnstile_key_priv'] || '',
                 firewall_rate_limit: newSettings['firewall_rate_limit'] || '',
                 firewall_block_vpn: newSettings['firewall_block_vpn'] === 'true',
+                firewall_block_alts: newSettings['firewall_block_alts'] === 'true',
             };
         }
     },

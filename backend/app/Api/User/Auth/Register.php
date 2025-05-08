@@ -12,6 +12,7 @@
  */
 
 use MythicalDash\App;
+use MythicalDash\Chat\IPRelationships\IPRelationship;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Middleware\Firewall;
 use MythicalDash\Config\ConfigInterface;
@@ -194,7 +195,7 @@ $router->add('/api/user/auth/register', function (): void {
         User::updateInfo($newUserToken, UserColumns::BACKUP_LIMIT, $defaultBackups, false);
 
         $eventManager->emit(AuthEvent::onAuthRegisterSuccess(), ['username' => $username, 'email' => $email]);
-
+		IPRelationship::create($newUserUuid, CloudFlareRealIP::getRealIP());
         /**
          * Zero Trust.
          */

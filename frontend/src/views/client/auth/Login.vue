@@ -31,6 +31,25 @@ const form = reactive({
 });
 const domainName = localStorage.getItem('domain_name');
 
+interface AltAccount {
+    uuid: string;
+    username: string;
+    avatar: string;
+}
+
+const errorMessages = {
+    TURNSTILE_FAILED: t('auth.pages.login.alerts.error.cloudflare_error'),
+    INVALID_CREDENTIALS: t('auth.pages.login.alerts.error.invalid_credentials'),
+    ACCOUNT_NOT_VERIFIED: t('auth.pages.login.alerts.error.not_verified'),
+    ACCOUNT_BANNED: t('auth.pages.login.alerts.error.banned'),
+    ACCOUNT_DELETED: t('auth.pages.login.alerts.error.deleted'),
+    PTERODACTYL_USER_NOT_FOUND: t('auth.pages.login.alerts.error.pterodactyl_user_not_found'),
+    PTERODACTYL_ERROR: t('auth.pages.login.alerts.error.pterodactyl_error'),
+    PTERODACTYL_NOT_ENABLED: t('auth.pages.login.alerts.error.pterodactyl_not_enabled'),
+    PROXY_DETECTED: t('auth.pages.login.alerts.error.proxy_detected'),
+    MULTIPLE_ACCOUNTS: t('auth.pages.login.alerts.error.multiple_accounts'),
+};
+
 const handleSubmit = async () => {
     try {
         loading.value = true;
@@ -38,54 +57,63 @@ const handleSubmit = async () => {
         if (!response.success) {
             const error_code = response.error_code as keyof typeof errorMessages;
 
-            const errorMessages = {
-                TURNSTILE_FAILED: t('auth.pages.login.alerts.error.cloudflare_error'),
-                INVALID_CREDENTIALS: t('auth.pages.login.alerts.error.invalid_credentials'),
-                ACCOUNT_NOT_VERIFIED: t('auth.pages.login.alerts.error.not_verified'),
-                ACCOUNT_BANNED: t('auth.pages.login.alerts.error.banned'),
-                ACCOUNT_DELETED: t('auth.pages.login.alerts.error.deleted'),
-                PTERODACTYL_USER_NOT_FOUND: t('auth.pages.login.alerts.error.pterodactyl_user_not_found'),
-                PTERODACTYL_ERROR: t('auth.pages.login.alerts.error.pterodactyl_error'),
-                PTERODACTYL_NOT_ENABLED: t('auth.pages.login.alerts.error.pterodactyl_not_enabled'),
-                PROXY_DETECTED: t('auth.pages.login.alerts.error.proxy_detected'),
-            };
-
             if (errorMessages[error_code]) {
                 playError();
-                Swal.fire({
-                    icon: 'error',
-                    title: t('auth.pages.login.alerts.error.title'),
-                    text: errorMessages[error_code],
-                    footer: t('auth.pages.login.alerts.error.footer'),
-                    showConfirmButton: true,
-                });
+                if (error_code === 'MULTIPLE_ACCOUNTS' && response.info && response.info.length > 0) {
+                    const altAccounts = response.info
+                        .map(
+                            (account: AltAccount) => `
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <img src="${account.avatar}" alt="${account.username}" class="w-8 h-8 rounded-full">
+                                    <div>
+                                        <div class="font-medium text-white">${account.username}</div>
+                                        <div class="text-sm text-gray-400">${account.uuid}</div>
+                                    </div>
+                                </div>
+                            `,
+                        )
+                        .join('');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: t('auth.pages.login.alerts.error.title'),
+                        html: `
+                            <div class="text-left">
+                                <p class="mb-4">${errorMessages[error_code]}</p>
+                                <div class="bg-gray-800 p-4 rounded-lg">
+                                    <h3 class="text-lg font-medium mb-2">Detected Alt Accounts:</h3>
+                                    ${altAccounts}
+                                </div>
+                            </div>
+                        `,
+                        footer: t('auth.pages.login.alerts.error.footer'),
+                        showConfirmButton: true,
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: t('auth.pages.login.alerts.error.title'),
+                        text: errorMessages[error_code],
+                        footer: t('auth.pages.login.alerts.error.footer'),
+                        showConfirmButton: true,
+                    });
+                }
                 loading.value = false;
                 throw new Error('Login failed');
             } else {
-                playError();
+                playSuccess();
                 Swal.fire({
-                    icon: 'error',
-                    title: t('auth.pages.login.alerts.error.title'),
-                    text: response.message,
-                    footer: t('auth.pages.login.alerts.error.footer'),
+                    icon: 'success',
+                    title: t('auth.pages.login.alerts.success.title'),
+                    text: t('auth.pages.login.alerts.success.login_success'),
+                    footer: t('auth.pages.login.alerts.success.footer'),
                     showConfirmButton: true,
                 });
                 loading.value = false;
-                throw new Error('Login failed');
+                setTimeout(() => {
+                    router.push('/');
+                }, 1500);
             }
-        } else {
-            playSuccess();
-            Swal.fire({
-                icon: 'success',
-                title: t('auth.pages.login.alerts.success.title'),
-                text: t('auth.pages.login.alerts.success.login_success'),
-                footer: t('auth.pages.login.alerts.success.footer'),
-                showConfirmButton: true,
-            });
-            loading.value = false;
-            setTimeout(() => {
-                router.push('/');
-            }, 1500);
         }
     } catch (error) {
         console.error('Login failed:', error);

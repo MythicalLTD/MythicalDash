@@ -312,5 +312,6 @@ interface ConfigInterface
     public const FIREWALL_ENABLED = 'firewall_enabled';
     public const FIREWALL_RATE_LIMIT = 'firewall_rate_limit';
     public const FIREWALL_BLOCK_VPN = 'firewall_block_vpn';
+	public const FIREWALL_BLOCK_ALTS = 'firewall_block_alts';
 
 }
