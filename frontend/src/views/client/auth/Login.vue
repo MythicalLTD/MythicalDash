@@ -99,25 +99,36 @@ const handleSubmit = async () => {
                     });
                 }
                 loading.value = false;
-                throw new Error('Login failed');
+                return;
             } else {
-                playSuccess();
+                playError();
                 Swal.fire({
-                    icon: 'success',
-                    title: t('auth.pages.login.alerts.success.title'),
-                    text: t('auth.pages.login.alerts.success.login_success'),
-                    footer: t('auth.pages.login.alerts.success.footer'),
+                    icon: 'error',
+                    title: t('auth.pages.login.alerts.error.title'),
+                    text: response.message,
+                    footer: t('auth.pages.login.alerts.error.footer'),
                     showConfirmButton: true,
                 });
                 loading.value = false;
-                setTimeout(() => {
-                    router.push('/');
-                }, 1500);
+                return;
             }
         }
+
+        // Only proceed with success if we haven't returned due to an error
+        playSuccess();
+        Swal.fire({
+            icon: 'success',
+            title: t('auth.pages.login.alerts.success.title'),
+            text: t('auth.pages.login.alerts.success.login_success'),
+            footer: t('auth.pages.login.alerts.success.footer'),
+            showConfirmButton: true,
+        });
+        loading.value = false;
+        setTimeout(() => {
+            router.push('/');
+        }, 1500);
     } catch (error) {
         console.error('Login failed:', error);
-    } finally {
         loading.value = false;
     }
 };

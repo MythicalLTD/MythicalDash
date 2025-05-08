@@ -194,26 +194,26 @@ $router->add('/api/user/auth/login', function (): void {
 	}
 	$userUuid = $userInfoArray[UserColumns::UUID];
 	$currentIP = CloudFlareRealIP::getRealIP();
+	if ($config->getSetting(ConfigInterface::FIREWALL_BLOCK_ALTS, 'false') == 'true') {
 
-	// Create the IP relationship
-	IPRelationship::create($userUuid, $currentIP);
+		// Create the IP relationship
+		IPRelationship::create($userUuid, $currentIP);
 
-	// Process multiple accounts
-	$multipleAccounts = IPRelationship::processMultipleAccounts($userUuid);
+		// Process multiple accounts
+		$multipleAccounts = IPRelationship::processMultipleAccounts($userUuid);
 
-	if ($multipleAccounts['has_multiple_accounts']) {
-		// Log the warning
-		$appInstance->getLogger()->warning(
-			sprintf(
-				'User %s logged in from %s. Found %d shared accounts and %d shared IPs',
-				$userUuid,
-				$currentIP,
-				count($multipleAccounts['shared_users']),
-				count($multipleAccounts['shared_ips'])
-			)
-		);
+		if ($multipleAccounts['has_multiple_accounts']) {
+			// Log the warning
+			$appInstance->getLogger()->warning(
+				sprintf(
+					'User %s logged in from %s. Found %d shared accounts and %d shared IPs',
+					$userUuid,
+					$currentIP,
+					count($multipleAccounts['shared_users']),
+					count($multipleAccounts['shared_ips'])
+				)
+			);
 
-		if ($config->getSetting(ConfigInterface::FIREWALL_BLOCK_ALTS, 'false') == 'true') {
 
 			// Ban the current user first
 			try {
@@ -275,7 +275,11 @@ $router->add('/api/user/auth/login', function (): void {
 				}
 			}
 		}
-		$appInstance->BadRequest('Multiple accounts detected', ['error_code' => 'MULTIPLE_ACCOUNTS', 'info' => $processedUsers]);
+		// Check if any users were actually banned in this process
+		if (!empty($processedUsers)) {
+			$appInstance->BadRequest('Multiple accounts detected and banned', ['error_code' => 'MULTIPLE_ACCOUNTS', 'info' => $processedUsers]);
+		}
+
 	}
 	// Emit successful login event before sending response
 	$eventManager->emit(AuthEvent::onAuthLoginSuccess(), ['login' => $login]);
