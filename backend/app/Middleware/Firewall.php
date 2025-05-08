@@ -14,8 +14,8 @@
 namespace MythicalDash\Middleware;
 
 use MythicalDash\App;
-use MythicalDash\Services\ProxyCheck\ProxyCheck;
 use MythicalDash\Config\ConfigInterface;
+use MythicalDash\Services\ProxyCheck\ProxyCheck;
 
 class Firewall implements MiddlewareBuilder
 {

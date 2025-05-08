@@ -24,6 +24,7 @@ class IPRelationship
      *
      * @param string $user The UUID of the user
      * @param string $ip The IP address
+     *
      * @return int The ID of the newly created record
      */
     public static function create(string $user, string $ip): int
@@ -36,6 +37,7 @@ class IPRelationship
             return (int) $pdo->lastInsertId();
         } catch (\Exception $e) {
             Database::db_Error('Failed to create IP relationship: ' . $e->getMessage());
+
             return 0;
         }
     }
@@ -44,6 +46,7 @@ class IPRelationship
      * Get an IP relationship by ID.
      *
      * @param int $id The relationship ID
+     *
      * @return array|null The relationship data or null if not found
      */
     public static function get(int $id): ?array
@@ -57,6 +60,7 @@ class IPRelationship
             return $result ?: null;
         } catch (\Exception $e) {
             Database::db_Error('Failed to get IP relationship: ' . $e->getMessage());
+
             return null;
         }
     }
@@ -66,6 +70,7 @@ class IPRelationship
      *
      * @param string $user The UUID of the user
      * @param bool $includeDeleted Whether to include deleted relationships
+     *
      * @return array Array of IP relationships
      */
     public static function getByUser(string $user, bool $includeDeleted = false): array
@@ -82,6 +87,7 @@ class IPRelationship
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
             Database::db_Error('Failed to get IP relationships for user: ' . $e->getMessage());
+
             return [];
         }
     }
@@ -91,6 +97,7 @@ class IPRelationship
      *
      * @param string $ip The IP address
      * @param bool $includeDeleted Whether to include deleted relationships
+     *
      * @return array Array of IP relationships
      */
     public static function getByIP(string $ip, bool $includeDeleted = false): array
@@ -107,35 +114,40 @@ class IPRelationship
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
             Database::db_Error('Failed to get IP relationships for IP: ' . $e->getMessage());
+
             return [];
         }
     }
 
-	/**
-	 * Get an IP relationship by IP and not user.
-	 *
-	 * @param string $ip The IP address
-	 * @param string $user The UUID of the user
-	 * @return array|null The relationship data or null if not found
-	 */
-	public static function getByIpAndNotUser(string $ip, string $user): ?array
-	{
-		try {
-			$pdo = Database::getPdoConnection();
-			$stmt = $pdo->prepare('SELECT * FROM ' . self::TABLE_NAME . ' WHERE ip = ? AND user != ? AND deleted = "false"');
-			$stmt->execute([$ip, $user]);
-			return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-		} catch (\Exception $e) {
-			Database::db_Error('Failed to get IP relationships for IP: ' . $e->getMessage());
-			return [];
-		}
-	}
-			
+    /**
+     * Get an IP relationship by IP and not user.
+     *
+     * @param string $ip The IP address
+     * @param string $user The UUID of the user
+     *
+     * @return array|null The relationship data or null if not found
+     */
+    public static function getByIpAndNotUser(string $ip, string $user): ?array
+    {
+        try {
+            $pdo = Database::getPdoConnection();
+            $stmt = $pdo->prepare('SELECT * FROM ' . self::TABLE_NAME . ' WHERE ip = ? AND user != ? AND deleted = "false"');
+            $stmt->execute([$ip, $user]);
+
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            Database::db_Error('Failed to get IP relationships for IP: ' . $e->getMessage());
+
+            return [];
+        }
+    }
+
     /**
      * Update an IP relationship.
      *
      * @param int $id The relationship ID
      * @param string $ip The new IP address
+     *
      * @return bool Whether the update was successful
      */
     public static function update(int $id, string $ip): bool
@@ -143,9 +155,11 @@ class IPRelationship
         try {
             $pdo = Database::getPdoConnection();
             $stmt = $pdo->prepare('UPDATE ' . self::TABLE_NAME . ' SET ip = ? WHERE id = ? AND deleted = "false"');
+
             return $stmt->execute([$ip, $id]);
         } catch (\Exception $e) {
             Database::db_Error('Failed to update IP relationship: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -154,15 +168,18 @@ class IPRelationship
      * Delete an IP relationship (soft delete).
      *
      * @param int $id The relationship ID
+     *
      * @return bool Whether the deletion was successful
      */
     public static function delete(int $id): bool
     {
         try {
             Database::markRecordAsDeleted(self::TABLE_NAME, $id);
+
             return true;
         } catch (\Exception $e) {
             Database::db_Error('Failed to delete IP relationship: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -171,15 +188,18 @@ class IPRelationship
      * Restore a deleted IP relationship.
      *
      * @param int $id The relationship ID
+     *
      * @return bool Whether the restoration was successful
      */
     public static function restore(int $id): bool
     {
         try {
             Database::restoreRecord(self::TABLE_NAME, $id);
+
             return true;
         } catch (\Exception $e) {
             Database::db_Error('Failed to restore IP relationship: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -188,15 +208,18 @@ class IPRelationship
      * Lock an IP relationship.
      *
      * @param int $id The relationship ID
+     *
      * @return bool Whether the locking was successful
      */
     public static function lock(int $id): bool
     {
         try {
             Database::lockRecord(self::TABLE_NAME, $id);
+
             return true;
         } catch (\Exception $e) {
             Database::db_Error('Failed to lock IP relationship: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -205,15 +228,18 @@ class IPRelationship
      * Unlock an IP relationship.
      *
      * @param int $id The relationship ID
+     *
      * @return bool Whether the unlocking was successful
      */
     public static function unlock(int $id): bool
     {
         try {
             Database::unlockRecord(self::TABLE_NAME, $id);
+
             return true;
         } catch (\Exception $e) {
             Database::db_Error('Failed to unlock IP relationship: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -222,6 +248,7 @@ class IPRelationship
      * Check if an IP relationship is locked.
      *
      * @param int $id The relationship ID
+     *
      * @return bool Whether the relationship is locked
      */
     public static function isLocked(int $id): bool
@@ -235,6 +262,7 @@ class IPRelationship
             return $result && $result['locked'] === 'true';
         } catch (\Exception $e) {
             Database::db_Error('Failed to check if IP relationship is locked: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -243,6 +271,7 @@ class IPRelationship
      * Check if an IP relationship exists.
      *
      * @param int $id The relationship ID
+     *
      * @return bool Whether the relationship exists
      */
     public static function exists(int $id): bool
@@ -251,9 +280,11 @@ class IPRelationship
             $pdo = Database::getPdoConnection();
             $stmt = $pdo->prepare('SELECT COUNT(*) FROM ' . self::TABLE_NAME . ' WHERE id = ? AND deleted = "false"');
             $stmt->execute([$id]);
+
             return (int) $stmt->fetchColumn() > 0;
         } catch (\Exception $e) {
             Database::db_Error('Failed to check if IP relationship exists: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -263,6 +294,7 @@ class IPRelationship
      *
      * @param string $user The UUID of the user
      * @param string $ip The IP address
+     *
      * @return bool Whether the relationship exists
      */
     public static function hasRelationship(string $user, string $ip): bool
@@ -271,9 +303,11 @@ class IPRelationship
             $pdo = Database::getPdoConnection();
             $stmt = $pdo->prepare('SELECT COUNT(*) FROM ' . self::TABLE_NAME . ' WHERE user = ? AND ip = ? AND deleted = "false"');
             $stmt->execute([$user, $ip]);
+
             return (int) $stmt->fetchColumn() > 0;
         } catch (\Exception $e) {
             Database::db_Error('Failed to check if IP relationship exists: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -283,6 +317,7 @@ class IPRelationship
      *
      * @param string $user The UUID of the user to check
      * @param bool $includeDeleted Whether to include deleted relationships
+     *
      * @return array Array of user UUIDs that share an IP with the given user
      */
     public static function getSharedIPUsers(string $user, bool $includeDeleted = false): array
@@ -293,17 +328,18 @@ class IPRelationship
                    FROM ' . self::TABLE_NAME . ' r1 
                    JOIN ' . self::TABLE_NAME . ' r2 ON r1.ip = r2.ip 
                    WHERE r1.user = ? AND r2.user != ?';
-            
+
             if (!$includeDeleted) {
                 $sql .= ' AND r1.deleted = "false" AND r2.deleted = "false"';
             }
-            
+
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$user, $user]);
-            
+
             return $stmt->fetchAll(\PDO::FETCH_COLUMN);
         } catch (\Exception $e) {
             Database::db_Error('Failed to get shared IP users: ' . $e->getMessage());
+
             return [];
         }
     }
@@ -312,6 +348,7 @@ class IPRelationship
      * Check if a user has multiple accounts (shares IPs with other users).
      *
      * @param string $user The UUID of the user to check
+     *
      * @return bool Whether the user has multiple accounts
      */
     public static function hasMultipleAccounts(string $user): bool
@@ -323,6 +360,7 @@ class IPRelationship
      * Get all IPs shared between multiple users.
      *
      * @param string $user The UUID of the user to check
+     *
      * @return array Array of IPs that are shared with other users
      */
     public static function getSharedIPs(string $user): array
@@ -333,13 +371,14 @@ class IPRelationship
                    FROM ' . self::TABLE_NAME . ' r1 
                    JOIN ' . self::TABLE_NAME . ' r2 ON r1.ip = r2.ip 
                    WHERE r1.user = ? AND r2.user != ? AND r1.deleted = "false" AND r2.deleted = "false"';
-            
+
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$user, $user]);
-            
+
             return $stmt->fetchAll(\PDO::FETCH_COLUMN);
         } catch (\Exception $e) {
             Database::db_Error('Failed to get shared IPs: ' . $e->getMessage());
+
             return [];
         }
     }
@@ -349,9 +388,10 @@ class IPRelationship
      * This method will:
      * 1. Get all users sharing IPs with the given user
      * 2. Get all shared IPs
-     * 3. Return detailed information about the relationships
+     * 3. Return detailed information about the relationships.
      *
      * @param string $user The UUID of the user to process
+     *
      * @return array Array containing:
      *               - 'has_multiple_accounts' => bool
      *               - 'shared_users' => array of user UUIDs
@@ -362,7 +402,7 @@ class IPRelationship
     {
         $sharedUsers = self::getSharedIPUsers($user);
         $sharedIPs = self::getSharedIPs($user);
-        
+
         // Use an associative array to deduplicate users and their relationships
         $uniqueRelationships = [];
         foreach ($sharedIPs as $ip) {
@@ -374,7 +414,7 @@ class IPRelationship
                         'ip' => $ip,
                         'user' => $relationship['user'],
                         'created_at' => $relationship['created_at'],
-                        'locked' => $relationship['locked'] === 'true'
+                        'locked' => $relationship['locked'] === 'true',
                     ];
                 }
             }
@@ -387,7 +427,7 @@ class IPRelationship
             'has_multiple_accounts' => count($sharedUsers) > 0,
             'shared_users' => array_values(array_unique($sharedUsers)), // Ensure unique users
             'shared_ips' => array_values(array_unique($sharedIPs)), // Ensure unique IPs
-            'relationships' => $relationships
+            'relationships' => $relationships,
         ];
     }
-} 
+}

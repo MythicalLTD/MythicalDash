@@ -12,7 +12,6 @@
  */
 
 use MythicalDash\App;
-use MythicalDash\Chat\IPRelationships\IPRelationship;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Middleware\Firewall;
 use MythicalDash\Config\ConfigInterface;
@@ -21,6 +20,7 @@ use MythicalDash\Chat\Referral\ReferralUses;
 use MythicalDash\Chat\Referral\ReferralCodes;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
+use MythicalDash\Chat\IPRelationships\IPRelationship;
 use MythicalDash\Plugins\Events\Events\ReferralsEvent;
 use MythicalDash\Hooks\MythicalSystems\CloudFlare\Turnstile;
 
@@ -195,7 +195,7 @@ $router->add('/api/user/auth/register', function (): void {
         User::updateInfo($newUserToken, UserColumns::BACKUP_LIMIT, $defaultBackups, false);
 
         $eventManager->emit(AuthEvent::onAuthRegisterSuccess(), ['username' => $username, 'email' => $email]);
-		IPRelationship::create($newUserUuid, CloudFlareRealIP::getRealIP());
+        IPRelationship::create($newUserUuid, CloudFlareRealIP::getRealIP());
         /**
          * Zero Trust.
          */

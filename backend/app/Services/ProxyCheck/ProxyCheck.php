@@ -19,9 +19,9 @@ class ProxyCheck
 {
     public static function hasProxy(string $ip): bool
     {
-		if ($ip == '127.0.0.1' || $ip == '::1' || $ip == 'localhost' || $ip == '0.0.0.0' || $ip == '::') {
-			return false;
-		}
+        if ($ip == '127.0.0.1' || $ip == '::1' || $ip == 'localhost' || $ip == '0.0.0.0' || $ip == '::') {
+            return false;
+        }
         $proxy = ProxyList::exists($ip);
         if ($proxy) {
             return true;
