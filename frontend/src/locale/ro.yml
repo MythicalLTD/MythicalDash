@@ -387,15 +387,16 @@ account:
             notVerified: 'Contul dvs. nu este verificat'
     pages:
         index:
-            title: 'Gestionare Cont'
-            description: 'Vizualizați și gestionați setările și preferințele contului dvs.'
+            title: 'Cont'
+            description: 'Gestionați setările și preferințele contului dvs.'
             tabs:
                 settings: 'Setări'
                 security: 'Securitate'
-                emails: 'Emailuri'
+                emails: 'E-mailuri'
                 activity: 'Activitate'
                 apikey: 'Cheie API'
                 linked_accounts: 'Conturi Conectate'
+                theme: 'Temă'
         linked_accounts:
             errors:
                 title: 'Ups, se pare că nu suportăm încă acest furnizor.'

@@ -387,8 +387,8 @@ account:
             notVerified: 'Tu cuenta no está verificada'
     pages:
         index:
-            title: 'Gestión de Cuenta'
-            description: 'Ver y gestionar la configuración y preferencias de tu cuenta'
+            title: 'Cuenta'
+            description: 'Administre la configuración y preferencias de su cuenta'
             tabs:
                 settings: 'Configuración'
                 security: 'Seguridad'
@@ -396,6 +396,7 @@ account:
                 activity: 'Actividad'
                 apikey: 'Clave API'
                 linked_accounts: 'Cuentas Vinculadas'
+                theme: 'Tema'
         linked_accounts:
             errors:
                 title: 'Vaya, parece que aún no admitimos este proveedor.'

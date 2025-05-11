@@ -383,4 +383,24 @@ class Database
             return;
         }
     }
+
+    /**
+     * Run a raw SQL query.
+     *
+     * @param string $query the SQL query to run
+     *
+     * @return array the result of the SQL query
+     */
+    public static function rawQuery(string $query): array
+    {
+        try {
+            $query = self::getPdoConnection()->query($query);
+
+            return $query->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            self::db_Error('Failed to run raw query: ' . $e->getMessage());
+
+            return [];
+        }
+    }
 }

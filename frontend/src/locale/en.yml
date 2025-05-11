@@ -389,8 +389,8 @@ account:
             notVerified: 'Your account is not verified'
     pages:
         index:
-            title: 'Account Management'
-            description: 'View and manage your account settings and preferences'
+            title: 'Account'
+            description: 'Manage your account settings and preferences'
             tabs:
                 settings: 'Settings'
                 security: 'Security'
@@ -398,6 +398,7 @@ account:
                 activity: 'Activity'
                 apikey: 'API Key'
                 linked_accounts: 'Linked Accounts'
+                theme: 'Theme'
         linked_accounts:
             errors:
                 title: "Woops, it looks like we don't support this provider yet."

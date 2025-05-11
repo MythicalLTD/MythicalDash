@@ -387,8 +387,8 @@ account:
             notVerified: 'Ihr Konto ist nicht verifiziert'
     pages:
         index:
-            title: 'Kontoverwaltung'
-            description: 'Kontoeinstellungen und -präferenzen anzeigen und verwalten'
+            title: 'Konto'
+            description: 'Verwalten Sie Ihre Kontoeinstellungen und Präferenzen'
             tabs:
                 settings: 'Einstellungen'
                 security: 'Sicherheit'
@@ -396,6 +396,7 @@ account:
                 activity: 'Aktivität'
                 apikey: 'API-Schlüssel'
                 linked_accounts: 'Verknüpfte Konten'
+                theme: 'Design'
         linked_accounts:
             errors:
                 title: 'Hoppla, es sieht so aus, als würden wir diesen Anbieter noch nicht unterstützen.'

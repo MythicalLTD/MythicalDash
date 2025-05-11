@@ -76,6 +76,9 @@
                         </div>
                     </div>
 
+                    <!-- At-a-Glance Analytics -->
+                    <AtAGlanceAnalytics />
+
                     <!-- GitHub Stats -->
                     <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
                         <div class="p-4 border-b border-gray-800/30">
@@ -415,6 +418,7 @@ import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import { useSettingsStore } from '@/stores/settings';
 import Dashboard from '@/mythicaldash/admin/Dashboard';
 import { RouterLink } from 'vue-router';
+import AtAGlanceAnalytics from '@/components/admin/Analytics/AtAGlanceAnalytics.vue';
 
 const Settings = useSettingsStore();
 const isRefreshing = ref(false);
@@ -591,7 +595,7 @@ const statsCards = computed(() => [
         iconColor: 'text-purple-400',
         valueColor: 'text-purple-400',
         description: 'Servers in queue',
-        link: '/mc-admin/queue',
+        link: '/mc-admin/server-queue',
     },
 ]);
 

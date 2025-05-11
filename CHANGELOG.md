@@ -12,6 +12,7 @@
 - BUG: Fixed the bug with the tables count per page!
 - BUG: Fixed the stupid bug with referrals showing on register even if they are disabled!
 - BUG: Fixed processed users being null
+- BUG: Fixed a silly bug in the admin area for clicking the button not really working :)!
 
 
 # Features Added:
@@ -35,6 +36,7 @@
 - Feature: Premium AntiVPN/Proxy System
 - Feature: Premium AntiAlt System
 - Feature: Relationships are not saved in the database anymore!
+- Feature: At-a-glance analytics dashboard showing user, server, and system metrics
 
 # Features Removed:
 

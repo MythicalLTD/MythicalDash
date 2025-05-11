@@ -386,15 +386,16 @@ account:
             notVerified: '您的账户未验证'
     pages:
         index:
-            title: '账户管理'
-            description: '查看和管理您的账户设置和偏好'
+            title: '账户'
+            description: '管理您的账户设置和偏好'
             tabs:
                 settings: '设置'
                 security: '安全'
-                emails: '电子邮件'
+                emails: '邮件'
                 activity: '活动'
                 apikey: 'API密钥'
                 linked_accounts: '关联账户'
+                theme: '主题'
         linked_accounts:
             errors:
                 title: '哎呀，看起来我们还不支持这个提供商。'

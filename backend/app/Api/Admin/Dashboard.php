@@ -57,6 +57,9 @@ $router->get('/api/admin', function (): void {
                 $WebServerLogs = array_slice($WebServerLogs, -250);
             }
 
+            // Collect analytics data for at-a-glance insights
+            $analytics = getAnalyticsData();
+
             $logs = array_merge($DashboardLogs, $WebServerLogs);
             $appInstance->OK('Dashboard data retrieved successfully.', [
                 'core' => [
@@ -84,6 +87,7 @@ $router->get('/api/admin', function (): void {
                 'etc' => [
                     'activity' => $activity,
                 ],
+                'analytics' => $analytics,
             ]);
 
         } catch (Exception $e) {
@@ -92,5 +96,75 @@ $router->get('/api/admin', function (): void {
     } else {
         $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
     }
-
 });
+
+/**
+ * Collect analytics data for the dashboard
+ * 
+ * @return array The analytics data
+ */
+function getAnalyticsData(): array
+{
+    // Get new users registered in the last 24 hours
+    $newUsersQuery = "SELECT COUNT(*) as count FROM mythicaldash_users WHERE first_seen >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+    $newUsers = Database::rawQuery($newUsersQuery)[0]['count'] ?? 0;
+    
+    // Get new servers created in the last 24 hours
+    $newServersQuery = "SELECT COUNT(*) as count FROM mythicaldash_servers WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+    $newServers = Database::rawQuery($newServersQuery)[0]['count'] ?? 0;
+    
+    // Get total server count
+    $totalServersQuery = "SELECT COUNT(*) as count FROM mythicaldash_servers";
+    $totalServers = Database::rawQuery($totalServersQuery)[0]['count'] ?? 0;
+    
+    // Get new tickets in the last 24 hours
+    $newTicketsQuery = "SELECT COUNT(*) as count FROM mythicaldash_tickets WHERE date >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+    $newTickets = Database::rawQuery($newTicketsQuery)[0]['count'] ?? 0;
+    
+    // Get open tickets
+    $openTicketsQuery = "SELECT COUNT(*) as count FROM mythicaldash_tickets WHERE status != 'closed'";
+    $openTickets = Database::rawQuery($openTicketsQuery)[0]['count'] ?? 0;
+    
+    // Get usage by resource type
+    $resourceQuery = "SELECT 
+        SUM(ram) as total_memory,
+        SUM(disk) as total_disk,
+        COUNT(*) as server_count
+        FROM mythicaldash_servers_queue";
+    $resourceStats = Database::rawQuery($resourceQuery)[0] ?? ['total_memory' => 0, 'total_disk' => 0, 'server_count' => 0];
+    
+    // Get user activity by hour (last 24 hours)
+    $hourlyActivityQuery = "SELECT 
+        HOUR(date) as hour,
+        COUNT(*) as count
+        FROM mythicaldash_users_activities
+        WHERE date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
+        GROUP BY HOUR(date)
+        ORDER BY hour ASC";
+    $hourlyActivity = Database::rawQuery($hourlyActivityQuery);
+    
+    // Format hourly data for chart
+    $activityByHour = array_fill(0, 24, 0);
+    foreach ($hourlyActivity as $row) {
+        $activityByHour[(int)$row['hour']] = (int)$row['count'];
+    }
+    
+    // Get recent server deployment stats
+    $serverQueuesQuery = "SELECT COUNT(*) as count FROM mythicaldash_servers_queue WHERE status = 'pending'";
+    $pendingServers = Database::rawQuery($serverQueuesQuery)[0]['count'] ?? 0;
+    
+    return [
+        'new_users_24h' => $newUsers,
+        'new_servers_24h' => $newServers,
+        'total_servers' => $totalServers,
+        'pending_servers' => $pendingServers,
+        'new_tickets_24h' => $newTickets,
+        'open_tickets' => $openTickets,
+        'resource_usage' => [
+            'memory' => (int)$resourceStats['total_memory'],
+            'disk' => (int)$resourceStats['total_disk'],
+            'server_count' => (int)$resourceStats['server_count'],
+        ],
+        'hourly_activity' => $activityByHour,
+    ];
+}

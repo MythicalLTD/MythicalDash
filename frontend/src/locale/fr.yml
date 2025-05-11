@@ -387,15 +387,16 @@ account:
             notVerified: "Votre compte n'est pas vérifié"
     pages:
         index:
-            title: 'Management de votre compte'
-            description: 'Voir et modifier les paramètres de votre compte et vos préférences.'
+            title: 'Compte'
+            description: 'Gérez vos paramètres et préférences de compte'
             tabs:
                 settings: 'Paramètres'
                 security: 'Sécurité'
-                emails: 'Emails'
+                emails: 'E-mails'
                 activity: 'Activité'
-                apikey: 'API Key'
-                linked_accounts: 'Compte liés'
+                apikey: 'Clé API'
+                linked_accounts: 'Comptes Liés'
+                theme: 'Thème'
         linked_accounts:
             errors:
                 title: 'Woops, nous ne supportons pas ce service!'
