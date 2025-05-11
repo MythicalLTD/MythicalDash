@@ -34,6 +34,7 @@ class Backup
 
         $mysqli = $db->getMysqli();
         $dump = new \MySQLDump($mysqli);
+		
         /**
          * Tables to exclude from the backup.
          */
@@ -42,6 +43,7 @@ class Backup
         $dump->tables['mythicaldash_linkpays'] = \MySQLDump::CREATE;
         $dump->tables['mythicaldash_gyanilinks'] = \MySQLDump::CREATE;
         $dump->tables['mythicaldash_proxylist'] = \MySQLDump::CREATE;
+        $dump->tables['mythicaldash_ip_relationship'] = \MySQLDump::CREATE;
 
         /**
          * Tables to include in the backup.

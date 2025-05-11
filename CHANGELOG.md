@@ -11,6 +11,8 @@
 - BUG: Fixed a bug where items in the admin menu will also count deleted records!
 - BUG: Fixed the bug with the tables count per page!
 - BUG: Fixed the stupid bug with referrals showing on register even if they are disabled!
+- BUG: Fixed processed users being null
+
 
 # Features Added:
 
@@ -32,6 +34,7 @@
 - Feature: Brand server creation page!
 - Feature: Premium AntiVPN/Proxy System
 - Feature: Premium AntiAlt System
+- Feature: Relationships are not saved in the database anymore!
 
 # Features Removed:
 

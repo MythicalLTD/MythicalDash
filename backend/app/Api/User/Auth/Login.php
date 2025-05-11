@@ -195,6 +195,7 @@ $router->add('/api/user/auth/login', function (): void {
     $userUuid = $userInfoArray[UserColumns::UUID];
     $currentIP = CloudFlareRealIP::getRealIP();
     if ($config->getSetting(ConfigInterface::FIREWALL_BLOCK_ALTS, 'false') == 'true') {
+        $processedUsers = []; // Initialize the array
 
         // Create the IP relationship
         IPRelationship::create($userUuid, $currentIP);
