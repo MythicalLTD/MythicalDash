@@ -254,6 +254,13 @@ class PublicConfig extends ConfigFactory
             ConfigInterface::FIREWALL_RATE_LIMIT => '100',
             ConfigInterface::FIREWALL_BLOCK_VPN => 'false',
             ConfigInterface::FIREWALL_BLOCK_ALTS => 'false',
+
+            // Image Hosting
+            ConfigInterface::IMAGE_HOSTING_ENABLED => 'false',
+            ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED => 'true',
+            ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE => '1',
+            ConfigInterface::IMAGE_HOSTING_MAX_FILE_SIZE => '1024',
+            ConfigInterface::IMAGE_HOSTING_ALLOW_DOMAINS => 'false',
         ];
 
     }

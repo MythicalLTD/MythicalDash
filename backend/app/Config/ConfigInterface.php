@@ -313,5 +313,12 @@ interface ConfigInterface
     public const FIREWALL_RATE_LIMIT = 'firewall_rate_limit';
     public const FIREWALL_BLOCK_VPN = 'firewall_block_vpn';
     public const FIREWALL_BLOCK_ALTS = 'firewall_block_alts';
-
+    /**
+     * Image Hosting.
+     */
+    public const IMAGE_HOSTING_ENABLED = 'image_hosting_enabled';
+    public const IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED = 'image_hosting_coins_per_image_enabled';
+    public const IMAGE_HOSTING_COINS_PER_IMAGE = 'image_hosting_coins_per_image';
+    public const IMAGE_HOSTING_MAX_FILE_SIZE = 'image_hosting_max_file_size';
+    public const IMAGE_HOSTING_ALLOW_DOMAINS = 'image_hosting_allow_domains';
 }

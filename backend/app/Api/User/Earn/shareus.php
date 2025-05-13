@@ -24,43 +24,43 @@ use MythicalDash\Hooks\MythicalSystems\User\UUIDManager;
 use MythicalDash\Plugins\Events\Events\LinkForRewardEvent;
 
 $router->get('/api/user/earn/l4r/shareus/start', function (): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$config = $appInstance->getConfig();
-	$appInstance->allowOnlyGET();
-	$session = new Session($appInstance);
-	header('Content-Type: text/html');
-	global $eventManager;
+    App::init();
+    $appInstance = App::getInstance(true);
+    $config = $appInstance->getConfig();
+    $appInstance->allowOnlyGET();
+    $session = new Session($appInstance);
+    header('Content-Type: text/html');
+    global $eventManager;
 
-	// Check if ShareUS is enabled
-	if ($config->getSetting(ConfigInterface::L4R_SHAREUS_ENABLED, 'false') !== 'true') {
-		header('Location: /earn/links?error=shareus_not_enabled');
-		exit;
-	}
+    // Check if ShareUS is enabled
+    if ($config->getSetting(ConfigInterface::L4R_SHAREUS_ENABLED, 'false') !== 'true') {
+        header('Location: /earn/links?error=shareus_not_enabled');
+        exit;
+    }
 
-	$dayLimit = $config->getSetting(ConfigInterface::L4R_SHAREUS_DAILY_LIMIT, 5);
-	$coolDown = $config->getSetting(ConfigInterface::L4R_SHAREUS_COOLDOWN_TIME, 3600);
-	$appUrl = $config->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
+    $dayLimit = $config->getSetting(ConfigInterface::L4R_SHAREUS_DAILY_LIMIT, 5);
+    $coolDown = $config->getSetting(ConfigInterface::L4R_SHAREUS_COOLDOWN_TIME, 3600);
+    $appUrl = $config->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
 
-	$dayCount = 0;
-	$links = ShareUSDB::getAllByUser($session->getInfo(UserColumns::UUID, false), 35);
-	foreach ($links as $link) {
-		// Check if link was created within last 24 hours
-		$createdAt = strtotime($link['created_at']);
-		$now = time();
-		$dayAgo = $now - (24 * 60 * 60);
+    $dayCount = 0;
+    $links = ShareUSDB::getAllByUser($session->getInfo(UserColumns::UUID, false), 35);
+    foreach ($links as $link) {
+        // Check if link was created within last 24 hours
+        $createdAt = strtotime($link['created_at']);
+        $now = time();
+        $dayAgo = $now - (24 * 60 * 60);
 
-		if ($createdAt > $dayAgo) {
-			++$dayCount;
-			$timeSinceLastLink = $now - $createdAt;
-			if ($timeSinceLastLink < $coolDown) {
-				$waitTime = $coolDown - $timeSinceLastLink;
-				$waitMinutes = ceil($waitTime / 60);
-				$eventManager->emit(LinkForRewardEvent::onLinkCoolDownReached(), [
-					'user' => $session->getInfo(UserColumns::UUID, false),
-					'wait_time' => $waitMinutes,
-				]);
-				?>
+        if ($createdAt > $dayAgo) {
+            ++$dayCount;
+            $timeSinceLastLink = $now - $createdAt;
+            if ($timeSinceLastLink < $coolDown) {
+                $waitTime = $coolDown - $timeSinceLastLink;
+                $waitMinutes = ceil($waitTime / 60);
+                $eventManager->emit(LinkForRewardEvent::onLinkCoolDownReached(), [
+                    'user' => $session->getInfo(UserColumns::UUID, false),
+                    'wait_time' => $waitMinutes,
+                ]);
+                ?>
 				?>
 				<!DOCTYPE html>
 				<html>
@@ -115,16 +115,16 @@ $router->get('/api/user/earn/l4r/shareus/start', function (): void {
 
 				</html>
 				<?php
-				exit;
-			}
-		}
+                exit;
+            }
+        }
 
-		if ($dayCount >= $dayLimit) {
-			$eventManager->emit(LinkForRewardEvent::onLinkDailyLimitReached(), [
-				'user' => $session->getInfo(UserColumns::UUID, false),
-				'day_limit' => $dayLimit,
-			]);
-			?>
+        if ($dayCount >= $dayLimit) {
+            $eventManager->emit(LinkForRewardEvent::onLinkDailyLimitReached(), [
+                'user' => $session->getInfo(UserColumns::UUID, false),
+                'day_limit' => $dayLimit,
+            ]);
+            ?>
 			<!DOCTYPE html>
 			<html>
 
@@ -191,17 +191,17 @@ $router->get('/api/user/earn/l4r/shareus/start', function (): void {
 
 			</html>
 			<?php
-			exit;
-		}
-	}
+            exit;
+        }
+    }
 
-	$ShareUSUUID = UUIDManager::generateUUID();
-	$id = ShareUSDB::create($ShareUSUUID, $session->getInfo(UserColumns::UUID, false));
-	if ($id === 0) {
-		$eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
-			'user' => $session->getInfo(UserColumns::UUID, false),
-		]);
-		?>
+    $ShareUSUUID = UUIDManager::generateUUID();
+    $id = ShareUSDB::create($ShareUSUUID, $session->getInfo(UserColumns::UUID, false));
+    if ($id === 0) {
+        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+        ]);
+        ?>
 		<!DOCTYPE html>
 		<html>
 
@@ -269,105 +269,105 @@ $router->get('/api/user/earn/l4r/shareus/start', function (): void {
 
 		</html>
 		<?php
-		return;
-	}
-	$finalLink = $appUrl . '/api/user/earn/l4r/shareus/earn/' . $ShareUSUUID;
-	try {
-		$shareUS = new ShareUS($config->getSetting(ConfigInterface::L4R_SHAREUS_API_KEY, ''));
-		$link = $shareUS->getLink($finalLink);
-		$eventManager->emit(LinkForRewardEvent::onLinkForRewardCreated(), [
-			'user' => $session->getInfo(UserColumns::UUID, false),
-			'link' => $ShareUSUUID,
-		]);
-		header('Location: ' . $link);
-	} catch (Exception $e) {
-		header('Location: /earn/links?error=shareus_error');
+        return;
+    }
+    $finalLink = $appUrl . '/api/user/earn/l4r/shareus/earn/' . $ShareUSUUID;
+    try {
+        $shareUS = new ShareUS($config->getSetting(ConfigInterface::L4R_SHAREUS_API_KEY, ''));
+        $link = $shareUS->getLink($finalLink);
+        $eventManager->emit(LinkForRewardEvent::onLinkForRewardCreated(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $ShareUSUUID,
+        ]);
+        header('Location: ' . $link);
+    } catch (Exception $e) {
+        header('Location: /earn/links?error=shareus_error');
 
-		return;
-	}
+        return;
+    }
 
 });
 
 $router->get('/api/user/earn/l4r/shareus/earn/(.*)', function (string $code): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$appInstance->allowOnlyGET();
-	$session = new Session($appInstance);
-	$config = $appInstance->getConfig();
-	global $eventManager;
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    $session = new Session($appInstance);
+    $config = $appInstance->getConfig();
+    global $eventManager;
 
-	// Check if ShareUS is enabled
-	if ($config->getSetting(ConfigInterface::L4R_SHAREUS_ENABLED, 'false') !== 'true') {
-		header('Location: /earn/links');
-		exit;
-	}
+    // Check if ShareUS is enabled
+    if ($config->getSetting(ConfigInterface::L4R_SHAREUS_ENABLED, 'false') !== 'true') {
+        header('Location: /earn/links');
+        exit;
+    }
 
-	$minToComplete = $config->getSetting(ConfigInterface::L4R_SHAREUS_MIN_TIME_TO_COMPLETE, 60);
-	$coolDown = $config->getSetting(ConfigInterface::L4R_SHAREUS_COOLDOWN_TIME, 3600);
-	$coinsPerLink = $config->getSetting(ConfigInterface::L4R_SHAREUS_COINS_PER_LINK, 60);
+    $minToComplete = $config->getSetting(ConfigInterface::L4R_SHAREUS_MIN_TIME_TO_COMPLETE, 60);
+    $coolDown = $config->getSetting(ConfigInterface::L4R_SHAREUS_COOLDOWN_TIME, 3600);
+    $coinsPerLink = $config->getSetting(ConfigInterface::L4R_SHAREUS_COINS_PER_LINK, 60);
 
-	// Validate code format
-	if (empty($code) || !preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', $code)) {
-		header('Location: /earn/links?error=invalid_code');
-		$eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
-			'user' => $session->getInfo(UserColumns::UUID, false),
-			'link' => $code,
-		]);
-		exit;
-	}
+    // Validate code format
+    if (empty($code) || !preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', $code)) {
+        header('Location: /earn/links?error=invalid_code');
+        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $code,
+        ]);
+        exit;
+    }
 
-	$linkId = ShareUSDB::convertCodeToId($code);
-	if ($linkId === 0) {
-		header('Location: /earn/links?error=invalid_code');
-		$eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
-			'user' => $session->getInfo(UserColumns::UUID, false),
-			'link' => $linkId,
-		]);
-		exit;
-	}
+    $linkId = ShareUSDB::convertCodeToId($code);
+    if ($linkId === 0) {
+        header('Location: /earn/links?error=invalid_code');
+        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $linkId,
+        ]);
+        exit;
+    }
 
-	$link = ShareUSDB::getById($linkId);
-	if (empty($link)) {
-		header('Location: /earn/links?error=invalid_code');
-		$eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
-			'user' => $session->getInfo(UserColumns::UUID, false),
-			'link' => $linkId,
-		]);
-		exit;
-	}
+    $link = ShareUSDB::getById($linkId);
+    if (empty($link)) {
+        header('Location: /earn/links?error=invalid_code');
+        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $linkId,
+        ]);
+        exit;
+    }
 
-	// Validate link ownership
-	if ($link['user'] !== $session->getInfo(UserColumns::UUID, false)) {
-		header('Location: /earn/links?error=invalid_ownership');
-		$eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
-			'user' => $session->getInfo(UserColumns::UUID, false),
-			'link' => $linkId,
-		]);
-		exit;
-	}
+    // Validate link ownership
+    if ($link['user'] !== $session->getInfo(UserColumns::UUID, false)) {
+        header('Location: /earn/links?error=invalid_ownership');
+        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $linkId,
+        ]);
+        exit;
+    }
 
-	// Check if link is already completed
-	if ($link['completed'] == 'true') {
-		header('Location: /earn/links?error=already_completed');
-		$eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
-			'user' => $session->getInfo(UserColumns::UUID, false),
-			'link' => $linkId,
-		]);
-		exit;
-	}
-	// Get the time when the link was created
-	$createdAt = strtotime($link['created_at']);
-	$now = time();
-	$timeTaken = $now - $createdAt;
+    // Check if link is already completed
+    if ($link['completed'] == 'true') {
+        header('Location: /earn/links?error=already_completed');
+        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $linkId,
+        ]);
+        exit;
+    }
+    // Get the time when the link was created
+    $createdAt = strtotime($link['created_at']);
+    $now = time();
+    $timeTaken = $now - $createdAt;
 
-	// Check if user took less time than required
-	if ($timeTaken < $minToComplete) {
-		ShareUSDB::delete($linkId);
-		$eventManager->emit(LinkForRewardEvent::onLinkToEarly(), [
-			'user' => $session->getInfo(UserColumns::UUID, false),
-			'link' => $linkId,
-		]);
-		?>
+    // Check if user took less time than required
+    if ($timeTaken < $minToComplete) {
+        ShareUSDB::delete($linkId);
+        $eventManager->emit(LinkForRewardEvent::onLinkToEarly(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+            'link' => $linkId,
+        ]);
+        ?>
 		<!DOCTYPE html>
 		<html>
 
@@ -437,25 +437,25 @@ $router->get('/api/user/earn/l4r/shareus/earn/(.*)', function (string $code): vo
 
 		</html>
 		<?php
-		exit;
-	}
+        exit;
+    }
 
-	// User took enough time, give them coins
-	ShareUSDB::markAsCompleted($linkId);
-	$currentCredits = (int) $session->getInfo(UserColumns::CREDITS, false);
-	$coinsToAdd = (int) $coinsPerLink;
-	$newTotal = (string) ($currentCredits + $coinsToAdd);
-	$session->addCredits((int) intval($coinsToAdd));
-	$eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
-		'user' => $session->getInfo(UserColumns::UUID, false),
-		'link' => $linkId,
-	]);
-	UserActivities::add(
-		$session->getInfo(UserColumns::UUID, false),
-		UserActivitiesTypes::$user_redeemed_code,
-		CloudFlareRealIP::getRealIP(),
-		"Redeemed code: $code for $coinsPerLink credits"
-	);
-	header('Location: /earn/links?success=true');
-	exit;
+    // User took enough time, give them coins
+    ShareUSDB::markAsCompleted($linkId);
+    $currentCredits = (int) $session->getInfo(UserColumns::CREDITS, false);
+    $coinsToAdd = (int) $coinsPerLink;
+    $newTotal = (string) ($currentCredits + $coinsToAdd);
+    $session->addCredits((int) intval($coinsToAdd));
+    $eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
+        'user' => $session->getInfo(UserColumns::UUID, false),
+        'link' => $linkId,
+    ]);
+    UserActivities::add(
+        $session->getInfo(UserColumns::UUID, false),
+        UserActivitiesTypes::$user_redeemed_code,
+        CloudFlareRealIP::getRealIP(),
+        "Redeemed code: $code for $coinsPerLink credits"
+    );
+    header('Location: /earn/links?success=true');
+    exit;
 });

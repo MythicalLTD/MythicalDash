@@ -23,7 +23,7 @@ class Database
     private $dbName;
     private $username;
     private $password;
-	private $port; 
+    private $port;
 
     /**
      * Database constructor.
@@ -33,6 +33,7 @@ class Database
      * @param string|null $username the username for the database connection (not used for sqlite)
      * @param string|null $password the password for the database connection (not used for sqlite)
      * @param int $port the port to use for the database connection
+     *
      * @throws \Exception if an unsupported database type is provided or the connection fails
      */
     public function __construct($host, $dbName, $username = null, $password = null, int $port = 3306)

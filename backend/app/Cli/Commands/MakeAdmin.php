@@ -37,7 +37,7 @@ class MakeAdmin extends App implements CommandBuilder
                 $_ENV['DATABASE_DATABASE'],
                 $_ENV['DATABASE_USER'],
                 $_ENV['DATABASE_PASSWORD'],
-				$_ENV['DATABASE_PORT']
+                $_ENV['DATABASE_PORT']
             );
             $config = new ConfigFactory($db->getPdo());
 

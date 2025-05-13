@@ -68,6 +68,17 @@ class UserColumns
     public const GITHUB_EMAIL = 'github_email';
     public const GITHUB_LINKED = 'github_linked';
 
+    public const IMAGE_HOSTING_ENABLED = 'image_hosting_enabled';
+    public const IMAGE_HOSTING_EMBED_ENABLED = 'image_hosting_embed_enabled';
+    public const IMAGE_HOSTING_EMBED_TITLE = 'image_hosting_embed_title';
+    public const IMAGE_HOSTING_EMBED_DESCRIPTION = 'image_hosting_embed_description';
+    public const IMAGE_HOSTING_EMBED_COLOR = 'image_hosting_embed_color';
+    public const IMAGE_HOSTING_EMBED_IMAGE = 'image_hosting_embed_image';
+    public const IMAGE_HOSTING_EMBED_THUMBNAIL = 'image_hosting_embed_thumbnail';
+    public const IMAGE_HOSTING_EMBED_URL = 'image_hosting_embed_url';
+    public const IMAGE_HOSTING_EMBED_AUTHOR_NAME = 'image_hosting_embed_author_name';
+    public const IMAGE_HOSTING_UPLOAD_KEY = 'image_hosting_upload_key';
+
     /**
      * @return string[]
      */
