@@ -495,10 +495,8 @@ $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code)
 
     // User took enough time, give them coins
     Linkvertise::markAsCompleted($linkId);
-    $currentCredits = (int) $session->getInfo(UserColumns::CREDITS, false);
     $coinsToAdd = (int) $coinsPerLink;
-    $newTotal = (string) ($currentCredits + $coinsToAdd);
-    $session->setInfo(UserColumns::CREDITS, (string) $newTotal, false);
+    $session->addCredits((int) intval($coinsToAdd));
     $eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
         'user' => $session->getInfo(UserColumns::UUID, false),
         'link' => $linkId,

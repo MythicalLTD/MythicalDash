@@ -118,7 +118,7 @@ class App extends MythicalAPP
          * Database Connection.
          */
         try {
-            $this->db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD']);
+            $this->db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
         } catch (\Exception $e) {
             self::init();
             self::InternalServerError($e->getMessage(), null);

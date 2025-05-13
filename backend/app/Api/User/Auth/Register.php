@@ -166,10 +166,9 @@ $router->add('/api/user/auth/register', function (): void {
                             'referral_code' => $_GET['ref'],
                         ]);
                         $newUserBonus = intval($appInstance->getConfig()->getSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER, 15));
-                        User::updateInfo($newUserToken, UserColumns::CREDITS, $newUserBonus, false);
-
+						User::addCredits($newUserToken, (int) intval($newUserBonus));
                         $referrerBonus = intval($appInstance->getConfig()->getSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL, 35)) + intval(User::getInfo($referrerToken, UserColumns::CREDITS, false));
-                        User::updateInfo($referrerToken, UserColumns::CREDITS, $referrerBonus, false);
+                        User::addCredits($referrerToken, (int) intval($referrerBonus));
                     }
                 }
             }

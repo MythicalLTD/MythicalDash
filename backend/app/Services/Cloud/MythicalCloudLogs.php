@@ -35,7 +35,8 @@ class MythicalCloudLogs
                 $_ENV['DATABASE_HOST'],
                 $_ENV['DATABASE_DATABASE'],
                 $_ENV['DATABASE_USER'],
-                $_ENV['DATABASE_PASSWORD']
+                $_ENV['DATABASE_PASSWORD'],
+				$_ENV['DATABASE_PORT'],
             );
             $config = new ConfigFactory($db->getPdo());
 
@@ -108,7 +109,8 @@ class MythicalCloudLogs
                 $_ENV['DATABASE_HOST'],
                 $_ENV['DATABASE_DATABASE'],
                 $_ENV['DATABASE_USER'],
-                $_ENV['DATABASE_PASSWORD']
+                $_ENV['DATABASE_PASSWORD'],
+				$_ENV['DATABASE_PORT'],
             );
             $config = new ConfigFactory($db->getPdo());
 

@@ -1,4 +1,19 @@
-# v3-remastered 1.0.0.3
+# v3-remastered 1.0.0.4
+
+# Bugs Fixed:
+
+- BUG: Fixed coins adding bugs
+- BUG: Port defined but not used!
+
+
+# Features Added:
+
+
+# Features Removed:
+
+-----
+
+# v3-remastered 1.0.0.4
 
 # Bugs Fixed:
 

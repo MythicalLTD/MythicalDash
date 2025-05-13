@@ -671,4 +671,38 @@ class User extends Database
     {
         return self::updateInfo($token, UserColumns::DELETED, 'true', false);
     }
+
+	/**
+	 * Get the user's credits.
+	 *
+	 * @param string $token The token
+	 *
+	 * @return int The user's credits
+	 */
+	public static function getCredits(string $token): int {
+		return intval(self::getInfo($token, UserColumns::CREDITS, false));
+	}
+
+	/**
+	 * Add credits to the user's account.
+	 *
+	 * @param string $token The token
+	 * @param int $credits The number of credits to add
+	 */
+	public static function addCredits(string $token, int $credits): void {
+		$currentCredits = self::getCredits($token);
+		self::updateInfo($token, UserColumns::CREDITS, $currentCredits + $credits, false);
+	}
+
+	/**
+	 * Remove credits from the user's account.
+	 *
+	 * @param string $token The token
+	 * @param int $credits The number of credits to remove
+	 */
+	public static function removeCredits(string $token, int $credits): void {
+		$currentCredits = self::getCredits($token);
+		self::updateInfo($token, UserColumns::CREDITS, $currentCredits - $credits, false);
+	}
+
 }

@@ -47,6 +47,7 @@ $router->post('/api/user/gift', function () {
         if ($coinsAfterFee > $s->getInfo(UserColumns::CREDITS, false)) {
             $appInstance->BadRequest('Insufficient balance! You need ' . $coinsAfterFee . ' coins (including ' . $fee . '% fee)', ['error_code' => 'INSUFFICIENT_BALANCE']);
         }
+
         $minAmount = $config->getSetting(ConfigInterface::COINS_SHARE_MIN_AMOUNT, 1);
         $maxAmount = $config->getSetting(ConfigInterface::COINS_SHARE_MAX_AMOUNT, 1000);
 
@@ -57,8 +58,8 @@ $router->post('/api/user/gift', function () {
             $appInstance->BadRequest('Amount is too high! Maximum amount is ' . $maxAmount . ' coins', ['error_code' => 'COINS_AMOUNT_TOO_HIGH']);
         }
 
-        $s->setInfo(UserColumns::CREDITS, $s->getInfo(UserColumns::CREDITS, false) - $coinsAfterFee, false);
-        User::updateInfo(User::getTokenFromUUID($recipientUuid), UserColumns::CREDITS, User::getInfo(User::getTokenFromUUID($recipientUuid), UserColumns::CREDITS, false) + $coinsAfterFee, false);
+        $s->removeCredits((int) intval($coinsAfterFee));
+        User::addCredits($recipientUuid, (int) intval($coinsAfterFee));
 
         $appInstance->OK('Coins gifted successfully!', []);
     } else {

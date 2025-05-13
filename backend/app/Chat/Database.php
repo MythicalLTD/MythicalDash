@@ -23,6 +23,7 @@ class Database
     private $dbName;
     private $username;
     private $password;
+	private $port; 
 
     /**
      * Database constructor.
@@ -31,12 +32,12 @@ class Database
      * @param string $dbName the name of the database (not used for sqlite)
      * @param string|null $username the username for the database connection (not used for sqlite)
      * @param string|null $password the password for the database connection (not used for sqlite)
-     *
+     * @param int $port the port to use for the database connection
      * @throws \Exception if an unsupported database type is provided or the connection fails
      */
-    public function __construct($host, $dbName, $username = null, $password = null)
+    public function __construct($host, $dbName, $username = null, $password = null, int $port = 3306)
     {
-        $dsn = "mysql:host=$host;dbname=$dbName";
+        $dsn = "mysql:host=$host;port=$port;dbname=$dbName";
         try {
             $this->pdo = new \PDO($dsn, $username, $password);
             $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -48,6 +49,7 @@ class Database
         $this->dbName = $dbName;
         $this->username = $username;
         $this->password = $password;
+        $this->port = $port;
     }
 
     public function getPdo(): \PDO
@@ -71,7 +73,7 @@ class Database
          * Load the environment variables.
          */
         \MythicalDash\App::getInstance(true)->loadEnv();
-        $con = new self($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD']);
+        $con = new self($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
 
         return $con->getPdo();
     }

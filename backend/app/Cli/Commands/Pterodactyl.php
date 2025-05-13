@@ -65,7 +65,8 @@ class Pterodactyl extends CliApp implements CommandBuilder
                 $_ENV['DATABASE_HOST'],
                 $_ENV['DATABASE_DATABASE'],
                 $_ENV['DATABASE_USER'],
-                $_ENV['DATABASE_PASSWORD']
+                $_ENV['DATABASE_PASSWORD'],
+				$_ENV['DATABASE_PORT'],
             );
             $config = new ConfigFactory($db->getPdo());
 
@@ -266,7 +267,8 @@ class Pterodactyl extends CliApp implements CommandBuilder
                 $_ENV['DATABASE_HOST'],
                 $_ENV['DATABASE_DATABASE'],
                 $_ENV['DATABASE_USER'],
-                $_ENV['DATABASE_PASSWORD']
+                $_ENV['DATABASE_PASSWORD'],
+				$_ENV['DATABASE_PORT']
             );
             $config = new ConfigFactory($db->getPdo());
 
@@ -313,7 +315,8 @@ class Pterodactyl extends CliApp implements CommandBuilder
                 $_ENV['DATABASE_HOST'],
                 $_ENV['DATABASE_DATABASE'],
                 $_ENV['DATABASE_USER'],
-                $_ENV['DATABASE_PASSWORD']
+                $_ENV['DATABASE_PASSWORD'],
+				$_ENV['DATABASE_PORT']
             );
             $config = new ConfigFactory($db->getPdo());
 
@@ -393,7 +396,8 @@ class Pterodactyl extends CliApp implements CommandBuilder
                 $_ENV['DATABASE_HOST'],
                 $_ENV['DATABASE_DATABASE'],
                 $_ENV['DATABASE_USER'],
-                $_ENV['DATABASE_PASSWORD']
+                $_ENV['DATABASE_PASSWORD'],
+				$_ENV['DATABASE_PORT']
             );
             $config = new ConfigFactory($db->getPdo());
 

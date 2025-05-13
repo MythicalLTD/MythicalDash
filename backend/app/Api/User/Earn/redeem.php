@@ -81,7 +81,7 @@ $router->post('/api/user/earn/redeem', function (): void {
 
     RedeemRedeems::redeemCode($codeDB['id'], $session->getInfo(UserColumns::UUID, false));
     $newCredits = $session->getInfo(UserColumns::CREDITS, false) + $coinsToAdd;
-    $session->setInfo(UserColumns::CREDITS, $newCredits, false);
+    $session->addCredits((int) intval($coinsToAdd));
     RedeemCoins::removeUsage($codeDB['id']);
 
     // Add user activity log

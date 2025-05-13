@@ -30,7 +30,7 @@ class Migrate extends App implements CommandBuilder
         $sqlScript = self::getMigrationSQL();
         try {
             \MythicalDash\App::getInstance(true)->loadEnv();
-            $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD']);
+            $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
         } catch (\Exception $e) {
             $cliApp->send('&cFailed to connect to the database: &r' . $e->getMessage());
             exit;

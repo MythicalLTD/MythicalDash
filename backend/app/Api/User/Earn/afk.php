@@ -45,7 +45,7 @@ $router->post('/api/user/earn/afk/work', function (): void {
                 // Calculate how many coins to award
                 $coinsToAward = floor($timeDiff / $minToEarn);
                 // Update user's coins and AFK time
-                $s->setInfo(UserColumns::CREDITS, $coins + $coinsToAward, false);
+                $s->addCredits((int) intval($coinsToAward));
                 $s->setInfo(UserColumns::MINUTES_AFK, $afkTime + $minToEarn, false);
                 $s->setInfo(UserColumns::LAST_SEEN_AFK, $currentTimestamp, false);
                 $eventManager->emit(AfkEvent::onAfk(), [

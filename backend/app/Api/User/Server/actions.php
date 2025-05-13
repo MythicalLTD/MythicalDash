@@ -329,7 +329,7 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
     }
 
     // Check user balance
-    $userBalance = (int) $session->getInfo(UserColumns::CREDITS, false);
+    $userBalance = (int) $session->getInfo((int)intval(UserColumns::CREDITS), false);
     if ($userBalance < $server_renew_cost) {
         $appInstance->BadRequest('You do not have enough credits to renew this server', ['error_code' => 'INSUFFICIENT_CREDITS']);
 
@@ -353,10 +353,7 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
             throw new Exception('Failed to update server expiration');
         }
 
-        // Deduct credits from user
-        $newBalance = $userBalance - $server_renew_cost;
-        $session->setInfo(UserColumns::CREDITS, $newBalance, false);
-
+		$session->removeCredits($server_renew_cost);
         // Log activity
         UserActivities::add(
             $session->getInfo(UserColumns::UUID, false),
@@ -381,7 +378,6 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
                 'days_added' => $server_renew_days,
                 'cost' => $server_renew_cost,
                 'new_expires_at' => $newExpiresAtFormatted,
-                'new_balance' => $newBalance,
             ],
         ]);
 

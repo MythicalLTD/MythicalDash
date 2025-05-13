@@ -219,7 +219,7 @@ $router->post('/api/user/store/purchase', function (): void {
     // Process purchase
     try {
         // Deduct coins
-        $session->setInfo(UserColumns::CREDITS, $currentCoins - $price, false);
+        $session->removeCredits((int) intval($price));
 
         // Apply item effect
         $item['effect']($session);

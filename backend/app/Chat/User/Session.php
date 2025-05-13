@@ -212,4 +212,24 @@ class Session extends Database
             'error_code' => 'SECURITY_VALIDATION_FAILED',
         ]);
     }
+
+	/**
+	 * Remove credits from the user's account.
+	 *
+	 * @param int $credits The number of credits to remove.
+	 */
+	public function removeCredits(int $credits) : void {
+		(int) $currentCredits = intval($this->getInfo(UserColumns::CREDITS, false));
+		$this->setInfo(UserColumns::CREDITS, $currentCredits - $credits, false);
+	}
+
+	/**
+	 * Add coins to the user's account.
+	 *
+	 * @param int $coins The number of coins to add.
+	 */
+	public function addCredits(int $credits) : void {
+		(int) $currentCredits = intval($this->getInfo(UserColumns::CREDITS, false));
+		$this->setInfo(UserColumns::CREDITS, $currentCredits + $credits, false);
+	}
 }

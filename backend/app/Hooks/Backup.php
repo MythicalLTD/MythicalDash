@@ -29,7 +29,8 @@ class Backup
             $_ENV['DATABASE_HOST'],
             $_ENV['DATABASE_DATABASE'],
             $_ENV['DATABASE_USER'],
-            $_ENV['DATABASE_PASSWORD']
+            $_ENV['DATABASE_PASSWORD'],
+            $_ENV['DATABASE_PORT']
         );
 
         $mysqli = $db->getMysqli();
@@ -180,7 +181,8 @@ class Backup
                     $_ENV['DATABASE_HOST'],
                     $_ENV['DATABASE_DATABASE'],
                     $_ENV['DATABASE_USER'],
-                    $_ENV['DATABASE_PASSWORD']
+                    $_ENV['DATABASE_PASSWORD'],
+					$_ENV['DATABASE_PORT']
                 );
                 try {
                     $pdo = $db->getPdo();
