@@ -107,6 +107,56 @@ View the full roadmap [here](https://github.com/orgs/MythicalLTD/projects/5).
 
 ---
 
+### 🧩 Feature Comparison Table
+
+| Feature                                      | MythicalDash | Heliactyl | HolaClient v2-mini | NorthClient |
+|----------------------------------------------|--------------|-----------|--------------------|-------------|
+| Basic Dashboard Functions                    | ✅           | ✅        | ✅                 | ✅          |
+| J4R (Join for Rewards)                       | ❌           | ✅        | ✅                 | ✅          |
+| L4R (Linkvertise, Shareus, etc.)             | ✅           | ❌        | ✅                 | ❌          |
+| AFK Page                                     | ✅           | ✅        | ✅                 | ✅          |
+| Referrals                                    | ✅           | ❌        | ✅                 | ❌          |
+| Code Redemption                              | ✅           | ❌        | ✅                 | ❌          |
+| Coin Sharing                                 | ✅           | ❌        | ✅                 | ❌          |
+| Own SDK (Plugins)                            | ✅           | ❌        | ❌                 | ❌          |
+| Full WebUI Management                        | ✅           | ❌        | ❌                 | ❌          |
+| Live Application (API Based)                 | ✅           | ❌        | ❌                 | ❌          |
+| Zero Trust AI Security                       | ✅           | ❌        | ❌                 | ❌          |
+| At-a-Glance Analytics                        | ✅           | ❌        | ❌                 | ❌          |
+| Full Activity Backlog                        | ✅           | ❌        | ❌                 | ❌          |
+| Backup System + Cloud                        | ✅           | ❌        | ❌                 | ❌          |
+| Leaderboards                                 | ✅           | ❌        | ❌                 | ❌          |
+| Advanced Ticket System                       | ✅           | ❌        | ❌                 | ❌          |
+| Coin Sharing with Fees                       | ✅           | ❌        | ❌                 | ❌          |
+| Public/Private Profiles                      | ✅           | ❌        | ❌                 | ❌          |
+| Cloudflare Turnstile                         | ✅           | ❌        | ❌                 | ❌          |
+| Firewall (AntiVPN, AntiAlting, AntiProxy)    | ✅           | ❌        | ❌                 | ❌          |
+| Pelican Panel Support (Alpha)                | ✅           | ❌        | ❌                 | ❌          |
+| Linking (Discord, GitHub, Google, Facebook)  | ✅           | ❌        | ❌                 | ❌          |
+| 2FA Security                                 | ✅           | ❌        | ❌                 | ❌          |
+| Social Integration                           | ✅           | ❌        | ❌                 | ❌          |
+| Custom Resource Selling                      | ✅           | ❌        | ❌                 | ❌          |
+| Advanced Glass Lookup Technology             | ✅           | ❌        | ❌                 | ❌          |
+| Max Resources                                | ✅           | ❌        | ❌                 | ❌          |
+| Billing Integration (Stripe, PayPal)         | ✅           | ❌        | ❌                 | ❌          |
+| Announcements Support                        | ✅           | ❌        | ❌                 | ❌          |
+| Redirection Links                            | ✅           | ❌        | ❌                 | ❌          |
+| Mail Templates (Editor)                      | ✅           | ❌        | ❌                 | ❌          |
+| Departments Support                          | ✅           | ❌        | ❌                 | ❌          |
+| Auto Pterodactyl Import                      | ✅           | ❌        | ❌                 | ❌          |
+| Pterodactyl Wrappers (No More IDs)           | ✅           | ❌        | ❌                 | ❌          |
+| Zero Data Deletion Policy                    | ✅           | ❌        | ❌                 | ❌          |
+| Anti Overwrite (Lock Based)                  | ✅           | ❌        | ❌                 | ❌          |
+| Health-Based Monitoring                      | ✅           | ❌        | ❌                 | ❌          |
+| Built-in Debugger/Helper                     | ✅           | ❌        | ❌                 | ❌          |
+| AI Assistant                                 | ✅           | ❌        | ❌                 | ❌          |
+| Support PIN Integration                      | ✅           | ❌        | ❌                 | ❌          |
+| Multiple Layout Support                      | ✅           | ❌        | ❌                 | ❌          |
+| Server Splitting                             | ✅           | ❌        | ❌                 | ❌          |
+| Multiple Language Support (EN, DE, FR, RO, ES, MD) | ✅     | ❌        | ❌                 | ❌          |
+
+---
+
 ## 🤝 Contributing
 
 Contributions are always welcome! For guidelines on how to contribute, please see [CONTRIBUTING.md](CONTRIBUTING.md).
