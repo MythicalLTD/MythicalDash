@@ -116,11 +116,11 @@ View the full roadmap [here](https://github.com/orgs/MythicalLTD/projects/5).
 | L4R (Linkvertise, Shareus, etc.)             | ✅           | ❌        | ✅                 | ❌          |
 | AFK Page                                     | ✅           | ✅        | ✅                 | ✅          |
 | Referrals                                    | ✅           | ❌        | ✅                 | ❌          |
-| Code Redemption                              | ✅           | ❌        | ✅                 | ❌          |
-| Coin Sharing                                 | ✅           | ❌        | ✅                 | ❌          |
+| Code Redemption                              | ✅           | ✅        | ✅                 | ❌          |
+| Coin Sharing                                 | ✅           | ✅        | ✅                 | ❌          |
 | Own SDK (Plugins)                            | ✅           | ❌        | ❌                 | ❌          |
 | Full WebUI Management                        | ✅           | ❌        | ❌                 | ❌          |
-| Live Application (API Based)                 | ✅           | ❌        | ❌                 | ❌          |
+| Real-time Native UI Experience               | ✅           | ❌        | ❌                 | ❌          |
 | Zero Trust AI Security                       | ✅           | ❌        | ❌                 | ❌          |
 | At-a-Glance Analytics                        | ✅           | ❌        | ❌                 | ❌          |
 | Full Activity Backlog                        | ✅           | ❌        | ❌                 | ❌          |
