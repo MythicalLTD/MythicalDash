@@ -13,6 +13,16 @@ class ImageHostBridge implements MythicalDashPlugin
 	 */
 	public static function processEvents(\MythicalDash\Plugins\PluginEvents $event): void
 	{
+		$event->on(AuthEvent::onAuthRegisterSuccess(), function (string $username, string $email) : void {
+			new \MythicalDash\Addons\imagehostbridge\Events\Register($username, $email);
+		});
+
+		$event->on(AuthEvent::onAuthLoginSuccess(), function (string $login) : void {
+			new \MythicalDash\Addons\imagehostbridge\Events\Login($login);
+		});
+
+
+
 
 	}
 

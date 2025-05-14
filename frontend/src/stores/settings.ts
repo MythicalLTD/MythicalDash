@@ -60,10 +60,36 @@ export const useSettingsStore = defineStore('settings', () => {
         document.body.innerHTML = '';
         app.mount(document.body);
     }
-
     async function fetchSettings(): Promise<SettingsResponse> {
         const response = await fetch('/api/system/settings');
-        const data = await response.json();
+
+        if (!response.ok) {
+            if (response.status === 500) {
+                showErrorPage('Error', 'An unexpected server error occurred. Please try again later.', 'SERVER_ERROR');
+                throw new Error('Server error');
+            }
+            // Handle non-JSON responses
+            const text = await response.text();
+            showErrorPage('Error', 'Invalid response from server. Please try again later.', 'INVALID_RESPONSE');
+            throw new Error(`Invalid response: ${text}`);
+        }
+
+        // Check if the response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            showErrorPage('Error', 'Server returned non-JSON response. Please try again later.', 'INVALID_RESPONSE');
+            throw new Error(`Invalid response type: ${contentType}, content: ${text}`);
+        }
+
+        let data;
+        try {
+            data = await response.json();
+        } catch (error) {
+            console.error('Failed to fetch settings:', error);
+            showErrorPage('Error', 'Failed to parse server response. Please try again later.', 'PARSE_ERROR');
+            throw error;
+        }
 
         if (!data.success) {
             if (data.error_code === 'LICENSE_INVALID') {

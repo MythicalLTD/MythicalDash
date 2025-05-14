@@ -398,7 +398,7 @@ class User extends Database
      *
      * @return string|null The value of the column
      */
-    public static function getInfo(string $token, UserColumns|string $info, bool $encrypted): ?string
+    public static function getInfo(string $token, UserColumns|string $info, bool $encrypted): string|null
     {
         try {
             if (!in_array($info, UserColumns::getColumns())) {
@@ -409,10 +409,10 @@ class User extends Database
             $stmt->bindParam(':token', $token);
             $stmt->execute();
             if ($encrypted) {
-                return App::getInstance(true)->decrypt($stmt->fetchColumn());
+                return App::getInstance(true)->decrypt($stmt->fetchColumn()) ?? null;
             }
 
-            return $stmt->fetchColumn();
+            return $stmt->fetchColumn() ?? null;
         } catch (\Exception $e) {
             Database::db_Error('Failed to grab the info about the user: ' . $e->getMessage());
 
