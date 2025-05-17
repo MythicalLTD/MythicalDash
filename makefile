@@ -53,6 +53,8 @@ help:
 	@echo -e "  ${GREEN}make clean${NC}       ${CLEAN} Cleans all build artifacts"
 	@echo -e "  ${GREEN}make test${NC}        ${CHECK} Runs all tests"
 	@echo -e "  ${GREEN}make set-prod${NC}    ${PROD} Sets APP_DEBUG to false for production\n"
+	@echo -e "  ${GREEN}make set-dev${NC}     ${DEV} Sets APP_DEBUG to true for development"
+	@echo -e "  ${GREEN}make get-frontend${NC} ${DEV} Uses the official frontend repository instead of the local one"
 	@echo -e "${YELLOW}Use 'make <command>' to execute a command${NC}\n"
 
 # Frontend tasks
@@ -118,7 +120,6 @@ clean:
 	@echo -e "${CYAN}=======================${NC}"
 	@echo -e "${YELLOW}${WARN} Removing artifacts and caches...${NC}"
 	@cd $(FRONTEND_DIR) && rm -rf dist node_modules/
-	@cd $(BACKEND_DIR) && rm -rf storage/caches/* storage/logs/* storage/packages/ public/attachments/
 	@echo -e "${GREEN}${CHECK} Clean complete!${NC}\n"
 
 # Run tests
@@ -143,3 +144,13 @@ set-dev:
 	@echo -e "${GREEN}${INFO} Setting APP_DEBUG to true...${NC}"
 	@find $(BACKEND_DIR) -type f -name "*.php" -exec $(SED) -i 's/define('\''APP_DEBUG'\'', false);/define('\''APP_DEBUG'\'', true);/g' {} +
 	@echo -e "${GREEN}${CHECK} Development mode set successfully!${NC}\n"
+
+get-frontend:
+	@echo -e "\n${BOLD}${BLUE}Getting Frontend Repository${NC} ${ROCKET}"
+	@echo -e "${CYAN}=======================${NC}"
+	@echo -e "${GREEN}${INFO} Cloning frontend repository...${NC}"
+	@cd $(FRONTEND_DIR) && rm -rf dist
+	@cd $(FRONTEND_DIR) && curl -Lo Frontend.zip https://github.com/MythicalLTD/MythicalDash/releases/latest/download/Frontend.zip
+	@cd $(FRONTEND_DIR) && unzip Frontend.zip -d .
+	@cd $(FRONTEND_DIR) && rm Frontend.zip
+	@echo -e "${GREEN}${CHECK} Frontend repository cloned successfully!${NC}\n"

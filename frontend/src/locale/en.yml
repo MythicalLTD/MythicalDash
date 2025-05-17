@@ -1593,22 +1593,49 @@ image_hosting:
             generic: An unexpected error occurred.
             footer: Please contact support for assistance
 lost_connection:
-  title: "Lost Connection to Server"
-  message: "We're trying to reconnect to the server. Please wait..."
-  instructions: "Please do not refresh the page. We're working on reconnecting you automatically." 
+    title: 'Lost Connection to Server'
+    message: "We're trying to reconnect to the server. Please wait..."
+    instructions: "Please do not refresh the page. We're working on reconnecting you automatically."
 images:
-  page_title: "My Images"
-  page_description: "Browse and manage your uploaded images. Switch between gallery and list view."
-  gallery_view: "Gallery"
-  list_view: "List"
-  view_full: "View Full"
-  empty: "You have not uploaded any images yet."
-  table:
-    name: "Name"
-    size: "Size"
-    date: "Date"
-    actions: "Actions"
-  action:
-    view: "View"
-    copy: "Copy Link"
-    delete: "Delete"
+    page_title: 'My Images'
+    page_description: 'Browse and manage your uploaded images. Switch between gallery and list view.'
+    gallery_view: 'Gallery'
+    list_view: 'List'
+    view_full: 'View Full'
+    empty: 'You have not uploaded any images yet.'
+    table:
+        name: 'Name'
+        size: 'Size'
+        date: 'Date'
+        actions: 'Actions'
+    action:
+        view: 'View'
+        copy: 'Copy Link'
+        delete: 'Delete'
+    gallery:
+        title: 'Gallery'
+        description: 'Welcome to your image gallery! Here you can manage all your uploaded images. Use the copy link button to get the direct URL of any image, or delete images you no longer need. Images are loaded progressively as you scroll, and you can always refresh to check for new uploads.'
+        download_config: 'Download Config'
+        no_images: 'No Images Found'
+        no_images_description: 'Your image gallery is empty. Upload some images to get started or refresh to check for new uploads.'
+        loading_more: 'Loading more images...'
+        load_more: 'Load More'
+        no_more: 'No more images to load'
+        error: 'An error occurred while fetching images'
+    card:
+        delete: 'Delete'
+        copy_link: 'Copy Link'
+        uploaded: 'Uploaded:'
+        kb: 'KB'
+    config:
+        title: 'Image Upload Configuration'
+        description: 'Manage your image upload settings and API configuration'
+        api_key:
+            title: 'API Key'
+            description: 'Your unique key for uploading images'
+            copy: 'Copy'
+        sharex:
+            title: 'ShareX Configuration'
+            description: 'Download your ShareX config file'
+            download: 'Download'
+            filename: 'sharex-config.sxcu'

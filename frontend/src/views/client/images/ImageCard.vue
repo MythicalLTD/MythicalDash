@@ -17,7 +17,7 @@
                     <div class="flex items-center gap-2">
                         <span class="text-white text-base font-semibold truncate">{{ image.name }}</span>
                         <span class="ml-auto bg-[#23234a]/80 text-indigo-300 text-xs px-2 py-0.5 rounded-full"
-                            >{{ image.size }} KB</span
+                            >{{ image.size }} {{ $t('images.card.kb') }}</span
                         >
                     </div>
                     <div class="flex gap-2 mt-2">
@@ -33,7 +33,7 @@
                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                 />
                             </svg>
-                            Delete
+                            {{ $t('images.card.delete') }}
                         </button>
                         <button
                             @click="$emit('copy-link', image.url)"
@@ -47,7 +47,7 @@
                                     d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
                                 />
                             </svg>
-                            Copy Link
+                            {{ $t('images.card.copy_link') }}
                         </button>
                     </div>
                 </div>
@@ -55,8 +55,8 @@
         </div>
         <!-- File info below image -->
         <div class="px-4 py-2 flex items-center justify-between bg-[#12121f]/70 border-t border-[#2a2a3f]/30">
-            <span class="text-xs text-gray-400">{{ image.size }} KB</span>
-            <span class="text-xs text-gray-500">Uploaded: {{ image.uploaded }}</span>
+            <span class="text-xs text-gray-400">{{ image.size }} {{ $t('images.card.kb') }}</span>
+            <span class="text-xs text-gray-500">{{ $t('images.card.uploaded') }} {{ image.uploaded }}</span>
         </div>
     </div>
 </template>

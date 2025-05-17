@@ -27,6 +27,7 @@ View the full roadmap [here](https://github.com/orgs/MythicalLTD/projects/5).
 ## ✨ Features & Configuration Options
 
 ### 🖥️ Core Platform
+
 - **Multi-Panel Support** - Integration with Pterodactyl, Pelican, and other platforms
 - **Plugin System** - Extendable functionality through powerful plugin architecture
 - **User Management** - Complete user account management system
@@ -43,6 +44,7 @@ View the full roadmap [here](https://github.com/orgs/MythicalLTD/projects/5).
   - Custom CSS/JS (`CUSTOM_CSS`, `CUSTOM_JS`)
 
 ### 🔒 Security Features
+
 - **Turnstile Integration** (`TURNSTILE_ENABLED`) - Bot protection for forms
 - **Mythical Zero Trust** (`MYTHICAL_ZERO_TRUST_ENABLED`) - Advanced security framework:
   - Server scan protection (`MYTHICAL_ZERO_TRUST_SERVER_SCAN_TOOL_ENABLED`)
@@ -51,6 +53,7 @@ View the full roadmap [here](https://github.com/orgs/MythicalLTD/projects/5).
   - Enhanced security logging (`MYTHICAL_ZERO_TRUST_ENHANCED_LOGGING_ENABLED`)
 
 ### 📧 Communication Systems
+
 - **SMTP Integration** (`SMTP_ENABLED`) - Email notifications and communications
 - **Discord Integration** (`DISCORD_ENABLED`) - Account linking and authentication
 - **GitHub Integration** (`GITHUB_ENABLED`) - Account linking and authentication
@@ -59,6 +62,7 @@ View the full roadmap [here](https://github.com/orgs/MythicalLTD/projects/5).
   - TikTok, Facebook, Reddit, Telegram, WhatsApp
 
 ### 💰 Monetization Features
+
 - **Credits/Coins System** - Virtual currency for the platform
 - **Store System** (`STORE_ENABLED`) - Purchase server resources with coins
 - **AFK Rewards** (`AFK_ENABLED`) - Earn coins by staying active
@@ -70,17 +74,20 @@ View the full roadmap [here](https://github.com/orgs/MythicalLTD/projects/5).
 - **Server Renewal** (`SERVER_RENEW_ENABLED`) - Extend server lifespan with coins
 
 ### 🔄 Link Services Integration
+
 - **Linkvertise** (`L4R_LINKVERTISE_ENABLED`) - Monetize with shortlinks
 - **ShareUS** (`L4R_SHAREUS_ENABLED`) - File sharing service
 - **LinkPays** (`L4R_LINKPAYS_ENABLED`) - Link monetization
 - **GyaniLinks** (`L4R_GYANILINKS_ENABLED`) - URL shortening
 
 ### 💳 Payment Processors
+
 - **PayPal Integration** (`ENABLE_PAYPAL`) - Process payments via PayPal
 - **Stripe Integration** (`ENABLE_STRIPE`) - Secure payment processing
 - **Currency Configuration** (`CURRENCY`, `CURRENCY_SYMBOL`) - Set currency and symbols
 
 ### 🧮 Resource Management
+
 - **Server Resource Controls**:
   - RAM (`MAX_RAM`, `DEFAULT_RAM`, `BLOCK_RAM`, `STORE_RAM_PRICE`)
   - Disk (`MAX_DISK`, `DEFAULT_DISK`, `BLOCK_DISK`, `STORE_DISK_PRICE`)
@@ -93,11 +100,13 @@ View the full roadmap [here](https://github.com/orgs/MythicalLTD/projects/5).
 - **Daily Backup System** (`DAILY_BACKUP_ENABLED`) - Automated backups
 
 ### 🤝 Community Features
+
 - **Leaderboard System** (`LEADERBOARD_ENABLED`) - Competitive user rankings
 - **Public Profiles** (`ALLOW_PUBLIC_PROFILES`) - User profile visibility
 - **Early Supporters Program** (`EARLY_SUPPORTERS_ENABLED`) - Recognition for early adopters
 
 ### 🧰 Developer Tools
+
 - **Event-Driven Architecture** - Hook into system events for custom functionality
 - **Caching System** - Performance optimization through caching
 - **Logging System** - Comprehensive activity logging
@@ -109,51 +118,52 @@ View the full roadmap [here](https://github.com/orgs/MythicalLTD/projects/5).
 
 ### 🧩 Feature Comparison Table
 
-| Feature                                      | MythicalDash | Heliactyl | HolaClient v2-mini | NorthClient |
-|----------------------------------------------|--------------|-----------|--------------------|-------------|
-| Basic Dashboard Functions                    | ✅           | ✅        | ✅                 | ✅          |
-| J4R (Join for Rewards)                       | ❌           | ✅        | ✅                 | ✅          |
-| L4R (Linkvertise, Shareus, etc.)             | ✅           | ❌        | ✅                 | ❌          |
-| AFK Page                                     | ✅           | ✅        | ✅                 | ✅          |
-| Referrals                                    | ✅           | ❌        | ✅                 | ❌          |
-| Code Redemption                              | ✅           | ✅        | ✅                 | ❌          |
-| Coin Sharing                                 | ✅           | ✅        | ✅                 | ❌          |
-| Own SDK (Plugins)                            | ✅           | ❌        | ❌                 | ❌          |
-| Full WebUI Management                        | ✅           | ❌        | ❌                 | ❌          |
-| Real-time Native UI Experience               | ✅           | ❌        | ❌                 | ❌          |
-| Zero Trust AI Security                       | ✅           | ❌        | ❌                 | ❌          |
-| At-a-Glance Analytics                        | ✅           | ❌        | ❌                 | ❌          |
-| Full Activity Backlog                        | ✅           | ❌        | ❌                 | ❌          |
-| Backup System + Cloud                        | ✅           | ❌        | ❌                 | ❌          |
-| Leaderboards                                 | ✅           | ❌        | ❌                 | ❌          |
-| Advanced Ticket System                       | ✅           | ❌        | ❌                 | ❌          |
-| Coin Sharing with Fees                       | ✅           | ❌        | ❌                 | ❌          |
-| Public/Private Profiles                      | ✅           | ❌        | ❌                 | ❌          |
-| Cloudflare Turnstile                         | ✅           | ❌        | ❌                 | ❌          |
-| Firewall (AntiVPN, AntiAlting, AntiProxy)    | ✅           | ❌        | ❌                 | ❌          |
-| Pelican Panel Support (Alpha)                | ✅           | ❌        | ❌                 | ❌          |
-| Linking (Discord, GitHub, Google, Facebook)  | ✅           | ❌        | ❌                 | ❌          |
-| 2FA Security                                 | ✅           | ❌        | ❌                 | ❌          |
-| Social Integration                           | ✅           | ❌        | ❌                 | ❌          |
-| Custom Resource Selling                      | ✅           | ❌        | ❌                 | ❌          |
-| Advanced Glass Lookup Technology             | ✅           | ❌        | ❌                 | ❌          |
-| Max Resources                                | ✅           | ❌        | ❌                 | ❌          |
-| Billing Integration (Stripe, PayPal)         | ✅           | ❌        | ❌                 | ❌          |
-| Announcements Support                        | ✅           | ❌        | ❌                 | ❌          |
-| Redirection Links                            | ✅           | ❌        | ❌                 | ❌          |
-| Mail Templates (Editor)                      | ✅           | ❌        | ❌                 | ❌          |
-| Departments Support                          | ✅           | ❌        | ❌                 | ❌          |
-| Auto Pterodactyl Import                      | ✅           | ❌        | ❌                 | ❌          |
-| Pterodactyl Wrappers (No More IDs)           | ✅           | ❌        | ❌                 | ❌          |
-| Zero Data Deletion Policy                    | ✅           | ❌        | ❌                 | ❌          |
-| Anti Overwrite (Lock Based)                  | ✅           | ❌        | ❌                 | ❌          |
-| Health-Based Monitoring                      | ✅           | ❌        | ❌                 | ❌          |
-| Built-in Debugger/Helper                     | ✅           | ❌        | ❌                 | ❌          |
-| AI Assistant                                 | ✅           | ❌        | ❌                 | ❌          |
-| Support PIN Integration                      | ✅           | ❌        | ❌                 | ❌          |
-| Multiple Layout Support                      | ✅           | ❌        | ❌                 | ❌          |
-| Server Splitting                             | ✅           | ❌        | ❌                 | ❌          |
-| Multiple Language Support (EN, DE, FR, RO, ES, MD) | ✅     | ❌        | ❌                 | ❌          |
+| Feature                                            | MythicalDash | Heliactyl | HolaClient v2-mini | NorthClient |
+| -------------------------------------------------- | ------------ | --------- | ------------------ | ----------- |
+| Basic Dashboard Functions                          | ✅           | ✅        | ✅                 | ✅          |
+| J4R (Join for Rewards)                             | ❌           | ✅        | ✅                 | ✅          |
+| L4R (Linkvertise, Shareus, etc.)                   | ✅           | ❌        | ✅                 | ❌          |
+| AFK Page                                           | ✅           | ✅        | ✅                 | ✅          |
+| Referrals                                          | ✅           | ❌        | ✅                 | ❌          |
+| Code Redemption                                    | ✅           | ✅        | ✅                 | ❌          |
+| Coin Sharing                                       | ✅           | ✅        | ✅                 | ❌          |
+| Own SDK (Plugins)                                  | ✅           | ❌        | ❌                 | ❌          |
+| Full WebUI Management                              | ✅           | ❌        | ❌                 | ❌          |
+| Real-time Native UI Experience                     | ✅           | ❌        | ❌                 | ❌          |
+| Zero Trust AI Security                             | ✅           | ❌        | ❌                 | ❌          |
+| At-a-Glance Analytics                              | ✅           | ❌        | ❌                 | ❌          |
+| Full Activity Backlog                              | ✅           | ❌        | ❌                 | ❌          |
+| Backup System + Cloud                              | ✅           | ❌        | ❌                 | ❌          |
+| Leaderboards                                       | ✅           | ❌        | ❌                 | ❌          |
+| Advanced Ticket System                             | ✅           | ❌        | ❌                 | ❌          |
+| Coin Sharing with Fees                             | ✅           | ❌        | ❌                 | ❌          |
+| Public/Private Profiles                            | ✅           | ❌        | ❌                 | ❌          |
+| Cloudflare Turnstile                               | ✅           | ❌        | ❌                 | ❌          |
+| Firewall (AntiVPN, AntiAlting, AntiProxy)          | ✅           | ❌        | ❌                 | ❌          |
+| Pelican Panel Support (Alpha)                      | ✅           | ❌        | ❌                 | ❌          |
+| Linking (Discord, GitHub, Google, Facebook)        | ✅           | ❌        | ❌                 | ❌          |
+| 2FA Security                                       | ✅           | ❌        | ❌                 | ❌          |
+| Social Integration                                 | ✅           | ❌        | ❌                 | ❌          |
+| Custom Resource Selling                            | ✅           | ❌        | ❌                 | ❌          |
+| Advanced Glass Lookup Technology                   | ✅           | ❌        | ❌                 | ❌          |
+| Max Resources                                      | ✅           | ❌        | ❌                 | ❌          |
+| Billing Integration (Stripe, PayPal)               | ✅           | ❌        | ❌                 | ❌          |
+| Announcements Support                              | ✅           | ❌        | ❌                 | ❌          |
+| Redirection Links                                  | ✅           | ❌        | ❌                 | ❌          |
+| Mail Templates (Editor)                            | ✅           | ❌        | ❌                 | ❌          |
+| Departments Support                                | ✅           | ❌        | ❌                 | ❌          |
+| Auto Pterodactyl Import                            | ✅           | ❌        | ❌                 | ❌          |
+| Pterodactyl Wrappers (No More IDs)                 | ✅           | ❌        | ❌                 | ❌          |
+| Zero Data Deletion Policy                          | ✅           | ❌        | ❌                 | ❌          |
+| Anti Overwrite (Lock Based)                        | ✅           | ❌        | ❌                 | ❌          |
+| Health-Based Monitoring                            | ✅           | ❌        | ❌                 | ❌          |
+| Built-in Debugger/Helper                           | ✅           | ❌        | ❌                 | ❌          |
+| AI Assistant                                       | ✅           | ❌        | ❌                 | ❌          |
+| Support PIN Integration                            | ✅           | ❌        | ❌                 | ❌          |
+| Multiple Layout Support                            | ✅           | ❌        | ❌                 | ❌          |
+| Server Splitting                                   | ✅           | ❌        | ❌                 | ❌          |
+| Multiple Language Support (EN, DE, FR, RO, ES, MD) | ✅           | ❌        | ❌                 | ❌          |
+| Image Hosting                                      | ✅           | ❌        | ❌                 | ❌          |
 
 ---
 
@@ -164,10 +174,10 @@ Contributions are always welcome! For guidelines on how to contribute, please se
 ## 🌐 Live Demo
 
 Experience MythicalDash in action at our demo site:
+
 - **Demo URL**: [https://mythicaldash-v3.mythical.systems](https://mythicaldash-v3.mythical.systems)
 
 > Note: The demo site is reset periodically to ensure a clean testing environment for all users.
-
 
 ---
 

@@ -1,6 +1,9 @@
 <template>
     <!-- Support PIN -->
-    <CardComponent cardTitle="Support PIN" cardDescription="Share this PIN with the support team!">
+    <CardComponent
+        :cardTitle="$t('Components.SupportPin.title')"
+        :cardDescription="$t('Components.SupportPin.description')"
+    >
         <div class="pin-container relative overflow-hidden">
             <!-- Decorative elements -->
             <div class="flex items-center justify-between relative z-10">

@@ -174,16 +174,16 @@ $router->get('/api/user/session', function (): void {
             UserColumns::GITHUB_EMAIL,
             UserColumns::GITHUB_ID,
 
-			UserColumns::IMAGE_HOSTING_ENABLED,
-			UserColumns::IMAGE_HOSTING_EMBED_ENABLED,
-			UserColumns::IMAGE_HOSTING_EMBED_TITLE,
-			UserColumns::IMAGE_HOSTING_EMBED_DESCRIPTION,
-			UserColumns::IMAGE_HOSTING_EMBED_COLOR,
-			UserColumns::IMAGE_HOSTING_EMBED_IMAGE,
-			UserColumns::IMAGE_HOSTING_EMBED_THUMBNAIL,
-			UserColumns::IMAGE_HOSTING_EMBED_URL,
-			UserColumns::IMAGE_HOSTING_EMBED_AUTHOR_NAME,
-			UserColumns::IMAGE_HOSTING_UPLOAD_KEY,
+            UserColumns::IMAGE_HOSTING_ENABLED,
+            UserColumns::IMAGE_HOSTING_EMBED_ENABLED,
+            UserColumns::IMAGE_HOSTING_EMBED_TITLE,
+            UserColumns::IMAGE_HOSTING_EMBED_DESCRIPTION,
+            UserColumns::IMAGE_HOSTING_EMBED_COLOR,
+            UserColumns::IMAGE_HOSTING_EMBED_IMAGE,
+            UserColumns::IMAGE_HOSTING_EMBED_THUMBNAIL,
+            UserColumns::IMAGE_HOSTING_EMBED_URL,
+            UserColumns::IMAGE_HOSTING_EMBED_AUTHOR_NAME,
+            UserColumns::IMAGE_HOSTING_UPLOAD_KEY,
         ];
 
         $info = User::getInfoArray($accountToken, $columns, [

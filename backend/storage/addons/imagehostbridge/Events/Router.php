@@ -40,7 +40,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 				$app->OK("Success", []);
 			});
 
-			$router->post('/api/user/images/embed-settings', function () use ($app, $logger, $config) {
+			$router->post('/api/user/images/embed/settings', function () use ($app, $logger, $config) {
 				$session = new Session($app);
 				$session->setInfo(UserColumns::IMAGE_HOSTING_ENABLED, "true", false);
 				$body = json_decode(file_get_contents('php://input'), true);
@@ -54,18 +54,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 				if (!isset($body['color']) || $body['color'] == "") {
 					$app->BadRequest("Color is required", ['error_code' => 'color_required']);
 				}
-				if (!isset($body['author_name']) || $body['author_name'] == "") {
-					$app->BadRequest("Author name is required", ['error_code' => 'author_name_required']);
-				}
-				if (!isset($body['image']) || $body['image'] == "") {
-					$app->BadRequest("Image is required", ['error_code' => 'image_required']);
-				}
-				if (!isset($body['thumbnail']) || $body['thumbnail'] == "") {
-					$app->BadRequest("Thumbnail is required", ['error_code' => 'thumbnail_required']);
-				}
-				if (!isset($body['url']) || $body['url'] == "") {
-					$app->BadRequest("URL is required", ['error_code' => 'url_required']);
-				}
+			
 
 				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_TITLE, $body['title'], false);
 				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_DESCRIPTION, $body['description'], false);
@@ -124,15 +113,30 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 
 				$images = glob($dataDir . "/*.json");
 				
-				// Convert absolute paths to relative paths (removing APP_PUBLIC prefix)
-				$relativeImages = array_map(function($path) {
-					return str_replace(APP_PUBLIC, '', $path);
-				}, $images);
+				// Create array of image data with timestamps for sorting
+				$imageData = [];
+				foreach ($images as $image) {
+					$metadata = json_decode(file_get_contents($image), true);
+					if ($metadata && isset($metadata['uploaded_at'])) {
+						$imageData[] = [
+							'path' => str_replace(APP_PUBLIC, '', $image),
+							'timestamp' => $metadata['uploaded_at']
+						];
+					}
+				}
+
+				// Sort by timestamp in descending order (latest first)
+				usort($imageData, function($a, $b) {
+					return $b['timestamp'] - $a['timestamp'];
+				});
+
+				// Extract just the paths after sorting
+				$sortedImages = array_column($imageData, 'path');
 
 				$app->OK("Success", [
 					"status" => 200,
 					"data" => [
-						"images" => $relativeImages
+						"images" => $sortedImages
 					]
 				]);
 			} else {
@@ -162,6 +166,50 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 				]
 			]);
 		});
+
+		$router->get('/api/user/images/delete/(.*)', function ($name) use ($app, $logger, $config) {
+			$session = new Session($app);
+			if (!$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)) {
+				$app->BadRequest("You do not have permission to delete images.", [
+					"status" => 400,
+					"data" => [
+						"error" => "You do not have permission to delete images.",
+					]
+				]);
+			}
+
+			$user_uuid = $session->getInfo(UserColumns::UUID, false);
+			$imagePath = APP_PUBLIC . "/attachments/imgs/users/" . $user_uuid . "/raw/" . $name;
+			$name_no_ext = pathinfo($name, PATHINFO_FILENAME);
+			$metadataPath = APP_PUBLIC . "/attachments/imgs/users/" . $user_uuid . "/data/" . $name_no_ext . ".json";
+
+			// Check if metadata exists and user owns the image
+			if (!file_exists($metadataPath)) {
+				$app->NotFound("Metadata not found");
+				return;
+			}
+			$metadata = json_decode(file_get_contents($metadataPath), true);
+			if (!$metadata || !isset($metadata['user_uuid']) || $metadata['user_uuid'] !== $user_uuid) {
+				$app->BadRequest("You do not have permission to delete this image.", [
+					"status" => 403,
+					"data" => [
+						"error" => "You do not own this image.",
+					]
+				]);
+				return;
+			}
+
+			if (!file_exists($imagePath)) {
+				$app->NotFound("Image not found");
+				return;
+			}
+
+			unlink($imagePath);
+			unlink($metadataPath);
+
+			$app->OK("Success", []);
+		});
+
 		$router->get('/i/(.*)', function ($name) use ($app, $logger, $config) {
 			// Extract UUID and timestamp using regex pattern: ([0-9a-f\-]{36})-(\d+)\.
 			if (!preg_match('/^([0-9a-f\-]{36})-(\d+)\./', $name, $matches)) {
@@ -334,7 +382,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 			/**
 			 * Coins per image enabled
 			 */
-			if ($config->getSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED, false)) {
+			if ($config->getSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED, "false") == "true") {
 				$coins = User::getInfoUUID($user_uuid, UserColumns::CREDITS, false);
 				if ($coins <= 0) {
 					ShareXApi::showError($app, "You do not have enough coins to upload images.");
@@ -407,6 +455,10 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 				$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
 				$new_name
 			);
+
+			$logger->debug("Embed URL: " . $embedUrl);
+			$logger->debug("Image URL: " . $imageUrl);
+			$logger->debug("Delete URL: " . $deleteUrl);
 
 			ShareXApi::showSuccess(
 				$app,

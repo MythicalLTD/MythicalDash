@@ -21,9 +21,7 @@ use MythicalDash\Mail\templates\Verify;
 use MythicalDash\Mail\templates\NewLogin;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Mail\templates\ResetPassword;
-use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Chat\columns\EmailVerificationColumns;
-use MythicalDash\Hooks\MythicalSystems\CloudFlare\CloudFlare;
 
 class User extends Database
 {
@@ -270,6 +268,7 @@ class User extends Database
                             App::getInstance(true)->getLogger()->error('Failed to send email: ' . $e->getMessage());
                         }
                     }
+
                     return $user['token'];
                 }
 
@@ -396,7 +395,7 @@ class User extends Database
      *
      * @return string|null The value of the column
      */
-    public static function getInfo(string $token, UserColumns|string $info, bool $encrypted): string|null
+    public static function getInfo(string $token, UserColumns|string $info, bool $encrypted): ?string
     {
         try {
             if (!in_array($info, UserColumns::getColumns())) {
@@ -418,31 +417,33 @@ class User extends Database
         }
     }
 
-	/**
-	 * Get the user info by UUID.
-	 *
-	 * @param string $uuid The UUID of the user
-	 * @param UserColumns|string $info The column name
-	 * @param bool $encrypted If the value is encrypted
-	 *
-	 * @return string|null The value of the column
-	 */	
-	public static function getInfoUUID(string $uuid, UserColumns|string $info, bool $encrypted): string|null
-	{
-		try {
-			$con = self::getPdoConnection();
-			$stmt = $con->prepare('SELECT ' . $info . ' FROM ' . self::TABLE_NAME . ' WHERE uuid = :uuid');
-			$stmt->bindParam(':uuid', $uuid);
-			$stmt->execute();
-			if ($encrypted) {
-				return App::getInstance(true)->decrypt($stmt->fetchColumn()) ?? null;
-			}
-			return $stmt->fetchColumn() ?? null;
-		} catch (\Exception $e) {
-			Database::db_Error('Failed to get info: ' . $e->getMessage());
-			return null;
-		}
-	}
+    /**
+     * Get the user info by UUID.
+     *
+     * @param string $uuid The UUID of the user
+     * @param UserColumns|string $info The column name
+     * @param bool $encrypted If the value is encrypted
+     *
+     * @return string|null The value of the column
+     */
+    public static function getInfoUUID(string $uuid, UserColumns|string $info, bool $encrypted): ?string
+    {
+        try {
+            $con = self::getPdoConnection();
+            $stmt = $con->prepare('SELECT ' . $info . ' FROM ' . self::TABLE_NAME . ' WHERE uuid = :uuid');
+            $stmt->bindParam(':uuid', $uuid);
+            $stmt->execute();
+            if ($encrypted) {
+                return App::getInstance(true)->decrypt($stmt->fetchColumn()) ?? null;
+            }
+
+            return $stmt->fetchColumn() ?? null;
+        } catch (\Exception $e) {
+            Database::db_Error('Failed to get info: ' . $e->getMessage());
+
+            return null;
+        }
+    }
 
     /**
      * Get the user info.
@@ -731,20 +732,21 @@ class User extends Database
         self::updateInfo($token, UserColumns::CREDITS, $currentCredits - $credits, false);
     }
 
-	public static function getUserByUploadKey(string $uploadKey): ?string
-	{
-		try {
-			$con = self::getPdoConnection();
-			$stmt = $con->prepare('SELECT uuid FROM ' . self::TABLE_NAME . ' WHERE image_hosting_upload_key = :uploadKey');
-			$stmt->bindParam(':uploadKey', $uploadKey);
-			$stmt->execute();
+    public static function getUserByUploadKey(string $uploadKey): ?string
+    {
+        try {
+            $con = self::getPdoConnection();
+            $stmt = $con->prepare('SELECT uuid FROM ' . self::TABLE_NAME . ' WHERE image_hosting_upload_key = :uploadKey');
+            $stmt->bindParam(':uploadKey', $uploadKey);
+            $stmt->execute();
 
-			$result = $stmt->fetchColumn();
-			return $result ? (string)$result : null;
-		} catch (\Exception $e) {
-			Database::db_Error('Failed to get user by upload key: ' . $e->getMessage());
-			return null;
-		}
-	}
-	
+            $result = $stmt->fetchColumn();
+
+            return $result ? (string) $result : null;
+        } catch (\Exception $e) {
+            Database::db_Error('Failed to get user by upload key: ' . $e->getMessage());
+
+            return null;
+        }
+    }
 }

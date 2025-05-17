@@ -281,7 +281,7 @@ $router->add('/api/user/auth/login', function (): void {
         }
 
     }
-	$login = $userInfoArray[UserColumns::EMAIL];
+    $login = $userInfoArray[UserColumns::EMAIL];
     // Emit successful login event before sending response
     $eventManager->emit(AuthEvent::onAuthLoginSuccess(), ['login' => $login]);
     $appInstance->OK('Successfully logged in', []);

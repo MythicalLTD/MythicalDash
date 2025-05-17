@@ -5,15 +5,18 @@
 - BUG: Fixed coins adding bugs!
 - BUG: Port defined but not used!
 - BUG: Fix data not loading on settings init if the data is not a json!
+- BUG: Fix translations missing in some places!
 
 # Features Added:
 
+- Feature: Added image hosting support to MythicalDash!
+- Feature: Frontend is now included into release!
 
 # Features Removed:
 
 -----
 
-# v3-remastered 1.0.0.4
+# v3-remastered 1.0.0.3
 
 # Bugs Fixed:
 

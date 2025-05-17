@@ -3,8 +3,8 @@
         <div class="p-6 max-w-7xl mx-auto">
             <!-- Header Section -->
             <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-100 mb-2">Image Upload Configuration</h1>
-                <p class="text-gray-400">Manage your image upload settings and API configuration</p>
+                <h1 class="text-3xl font-bold text-gray-100 mb-2">{{ $t('images.config.title') }}</h1>
+                <p class="text-gray-400">{{ $t('images.config.description') }}</p>
             </div>
 
             <!-- Main Content Grid -->
@@ -13,7 +13,7 @@
                 <CardComponent class="relative overflow-hidden group">
                     <template #header-action>
                         <Button
-                            text="Copy"
+                            :text="$t('images.config.api_key.copy')"
                             variant="ghost"
                             small
                             @click="copyApiKey"
@@ -30,8 +30,10 @@
                                 <Key class="w-5 h-5 text-indigo-400" />
                             </div>
                             <div>
-                                <h3 class="text-sm font-medium text-gray-400">API Key</h3>
-                                <p class="text-sm text-gray-300 mt-1">Your unique key for uploading images</p>
+                                <h3 class="text-sm font-medium text-gray-400">
+                                    {{ $t('images.config.api_key.title') }}
+                                </h3>
+                                <p class="text-sm text-gray-300 mt-1">{{ $t('images.config.api_key.description') }}</p>
                             </div>
                         </div>
                         <div class="relative">
@@ -71,18 +73,20 @@
                                 <Download class="w-5 h-5 text-blue-400" />
                             </div>
                             <div>
-                                <h3 class="text-sm font-medium text-gray-400">ShareX Configuration</h3>
-                                <p class="text-sm text-gray-300 mt-1">Download your ShareX config file</p>
+                                <h3 class="text-sm font-medium text-gray-400">
+                                    {{ $t('images.config.sharex.title') }}
+                                </h3>
+                                <p class="text-sm text-gray-300 mt-1">{{ $t('images.config.sharex.description') }}</p>
                             </div>
                         </div>
                         <div class="bg-[#1a1a2e] rounded-lg p-4">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <FileJson class="w-5 h-5 text-blue-400" />
-                                    <span class="text-sm text-gray-300">sharex-config.sxcu</span>
+                                    <span class="text-sm text-gray-300">{{ $t('images.config.sharex.filename') }}</span>
                                 </div>
                                 <Button
-                                    text="Download"
+                                    :text="$t('images.config.sharex.download')"
                                     variant="secondary"
                                     small
                                     @click="downloadShareXConfig"
@@ -138,7 +142,7 @@ const copyApiKey = () => {
 
 const downloadShareXConfig = () => {
     // Mock ShareX config download
-    alert('Downloading ShareX configuration...');
+    window.open('/api/user/images/sharex/download', '_blank');
 };
 </script>
 
