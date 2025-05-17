@@ -149,6 +149,7 @@ const resetPin = async () => {
     100% {
         opacity: 0.5;
     }
+
     50% {
         opacity: 0.8;
     }
