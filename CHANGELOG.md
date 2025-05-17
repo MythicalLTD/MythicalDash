@@ -2,9 +2,9 @@
 
 # Bugs Fixed:
 
-- BUG: Fixed coins adding bugs
+- BUG: Fixed coins adding bugs!
 - BUG: Port defined but not used!
-
+- BUG: Fix data not loading on settings init if the data is not a json!
 
 # Features Added:
 

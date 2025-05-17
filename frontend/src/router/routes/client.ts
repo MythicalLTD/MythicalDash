@@ -2,6 +2,30 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const clientRoutes: RouteRecordRaw[] = [
     {
+        path: '/ws',
+        name: 'Lost Connection',
+        component: () => import('@/components/LostConnection.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
+        path: '/images',
+        name: 'Images',
+        component: () => import('@/views/client/images/Images.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
+        path: '/images/config',
+        name: 'Images Config',
+        component: () => import('@/views/client/images/Config.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         path: '/dashboard',
         name: 'Dashboard',
         component: () => import('@/views/client/Home.vue'),

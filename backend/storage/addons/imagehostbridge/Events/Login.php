@@ -2,15 +2,11 @@
 
 namespace MythicalDash\Addons\imagehostbridge\Events;
 
-use Exception;
 use MythicalDash\App;
 use MythicalDash\Chat\columns\UserColumns;
-use MythicalDash\Chat\Referral\ReferralCodes;
-use MythicalDash\Chat\Referral\ReferralUses;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Hooks\MythicalSystems\User\UUIDManager;
-use MythicalDash\Plugins\PluginHelper;
 
 class Login extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 {

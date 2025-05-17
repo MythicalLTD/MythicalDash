@@ -82,6 +82,11 @@
                 <div v-show="activeTab === 'custom-code'" class="space-y-6">
                     <CustomCodeSettings :settings="settings" @update="updateSettings" />
                 </div>
+
+                <!-- Image Hosting Settings -->
+                <div v-show="activeTab === 'image-hosting'" class="space-y-6">
+                    <ImageHostingSettings :settings="settings" @update="updateSettings" />
+                </div>
             </div>
         </div>
     </LayoutDashboard>
@@ -100,6 +105,7 @@ import {
     FileText as FileTextIcon,
     CreditCard as CreditCardIcon,
     Code as CodeIcon,
+    Image as ImageIcon,
     LoaderIcon,
 } from 'lucide-vue-next';
 
@@ -112,6 +118,7 @@ import EarnSettings from './components/EarnSettings.vue';
 import BillingSettings from './components/BillingSettings.vue';
 import LegalSettings from './components/LegalSettings.vue';
 import CustomCodeSettings from './components/CustomCodeSettings.vue';
+import ImageHostingSettings from './components/ImageHostingSettings.vue';
 
 // Settings tabs
 const tabs = [
@@ -123,6 +130,7 @@ const tabs = [
     { id: 'legal', name: 'Legal', icon: FileTextIcon },
     { id: 'billing', name: 'Billing', icon: CreditCardIcon },
     { id: 'custom-code', name: 'Custom Code', icon: CodeIcon },
+    { id: 'image-hosting', name: 'Image Hosting', icon: ImageIcon },
 ];
 
 // State setup

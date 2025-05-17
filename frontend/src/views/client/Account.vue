@@ -40,6 +40,7 @@
                     <ActivitiesTab v-if="activeTab === t('account.pages.index.tabs.activity')" />
                     <ApiKey v-if="activeTab === t('account.pages.index.tabs.apikey')" />
                     <LinkedAccounts v-if="activeTab === t('account.pages.index.tabs.linked_accounts')" />
+                    <ImageHosting v-if="activeTab === t('account.pages.index.tabs.image_hosting')" />
                 </div>
             </div>
         </div>
@@ -54,14 +55,9 @@ import MailsTab from '@/components/client/Dashboard/Account/Mails.vue';
 import ActivitiesTab from '@/components/client/Dashboard/Account/Activities.vue';
 import ApiKey from '@/components/client/Dashboard/Account/ApiKey.vue';
 import LinkedAccounts from '@/components/client/Dashboard/Account/LinkedAccounts.vue';
+import ImageHosting from '@/components/client/Dashboard/Account/ImageHosting.vue';
 import LayoutAccount from '@/components/client/Dashboard/Account/Layout.vue';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
-
-MythicalDOM.setPageTitle(t('account.pages.index.title'));
-
 import { ref } from 'vue';
 import {
     Settings as SettingsIcon,
@@ -69,8 +65,13 @@ import {
     Mail as MailIcon,
     Bell as ActivityIcon,
     Key as ApiKeyIcon,
+    Image as ImageHostingIcon,
     Link as LinkedAccountsIcon,
 } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+MythicalDOM.setPageTitle(t('account.pages.index.title'));
 
 const activeTab = ref(t('account.pages.index.tabs.settings'));
 
@@ -81,6 +82,7 @@ const tabs = [
     { name: t('account.pages.index.tabs.activity'), icon: ActivityIcon },
     { name: t('account.pages.index.tabs.apikey'), icon: ApiKeyIcon },
     { name: t('account.pages.index.tabs.linked_accounts'), icon: LinkedAccountsIcon },
+    { name: t('account.pages.index.tabs.image_hosting'), icon: ImageHostingIcon },
 ];
 </script>
 

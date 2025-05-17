@@ -1,0 +1,422 @@
+<?php
+
+namespace MythicalDash\Addons\imagehostbridge\Events;
+
+use MythicalDash\Addons\imagehostbridge\ShareXApi;
+use MythicalDash\App;
+use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\User\Session;
+use MythicalDash\Chat\User\User;
+use MythicalDash\Config\ConfigInterface;
+
+class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
+{
+	public function __construct(\MythicalDash\Router\Router $router)
+	{
+		$app = App::getInstance(true);
+		$logger = $app->getLogger();
+		$config = $app->getConfig();
+		if ($config->getSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
+			$router->post('/api/user/images/toggle', function () use ($app, $logger, $config) {
+				$session = new Session($app);
+				if ($session->getInfo(UserColumns::IMAGE_HOSTING_ENABLED, false) == "true") {
+					$session->setInfo(UserColumns::IMAGE_HOSTING_ENABLED, "false", false);
+				} else {
+					$session->setInfo(UserColumns::IMAGE_HOSTING_ENABLED, "true", false);
+				}
+
+				$app->OK("Success", []);
+
+			});
+
+			$router->post('/api/user/images/embed-settings/toggle', function () use ($app, $logger, $config) {
+				$session = new Session($app);
+				if ($session->getInfo(UserColumns::IMAGE_HOSTING_EMBED_ENABLED, false) == "true") {
+					$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_ENABLED, "false", false);
+				} else {
+					$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_ENABLED, "true", false);
+				}
+
+				$app->OK("Success", []);
+			});
+
+			$router->post('/api/user/images/embed-settings', function () use ($app, $logger, $config) {
+				$session = new Session($app);
+				$session->setInfo(UserColumns::IMAGE_HOSTING_ENABLED, "true", false);
+				$body = json_decode(file_get_contents('php://input'), true);
+
+				if (!isset($body['title']) || $body['title'] == "") {
+					$app->BadRequest("Title is required", ['error_code' => 'title_required']);
+				}
+				if (!isset($body['description']) || $body['description'] == "") {
+					$app->BadRequest("Description is required", ['error_code' => 'description_required']);
+				}
+				if (!isset($body['color']) || $body['color'] == "") {
+					$app->BadRequest("Color is required", ['error_code' => 'color_required']);
+				}
+				if (!isset($body['author_name']) || $body['author_name'] == "") {
+					$app->BadRequest("Author name is required", ['error_code' => 'author_name_required']);
+				}
+				if (!isset($body['image']) || $body['image'] == "") {
+					$app->BadRequest("Image is required", ['error_code' => 'image_required']);
+				}
+				if (!isset($body['thumbnail']) || $body['thumbnail'] == "") {
+					$app->BadRequest("Thumbnail is required", ['error_code' => 'thumbnail_required']);
+				}
+				if (!isset($body['url']) || $body['url'] == "") {
+					$app->BadRequest("URL is required", ['error_code' => 'url_required']);
+				}
+
+				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_TITLE, $body['title'], false);
+				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_DESCRIPTION, $body['description'], false);
+				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_COLOR, $body['color'], false);
+				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_AUTHOR_NAME, $body['author_name'], false);
+
+				$app->OK("Success", []);
+			});
+		}
+		$router->get('/api/user/images/sharex/download', function () use ($app, $logger, $config) {
+			$session = new Session($app);
+			if (!$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)) {
+				$app->BadRequest("You do not have permission to upload images.", [
+					"status" => 400,
+					"data" => [
+						"error" => "You do not have permission to upload images.",
+					]
+				]);
+			}
+			header('Content-Type: application/json');
+			header('Content-Disposition: attachment; filename="sharex_config.sxcu"');
+
+			echo json_encode(ShareXApi::createConfig(
+				$config->getSetting(ConfigInterface::APP_NAME, "MythicalDash"),
+				$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)
+			));
+		});
+		$router->get('/api/user/images/list', function () use ($app, $logger, $config) {
+			$session = new Session($app);
+			if ($config->getSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
+				$userDir = APP_PUBLIC . "/attachments/imgs/users/" . $session->getInfo(UserColumns::UUID, false);
+				$dataDir = $userDir . "/data";
+				
+				// Check if user directory exists
+				if (!is_dir($userDir)) {
+					$app->OK("Success", [
+						"status" => 200,
+						"data" => [
+							"images" => []
+						]
+					]);
+					return;
+				}
+
+				// Check if data directory exists
+				if (!is_dir($dataDir)) {
+					$app->OK("Success", [
+						"status" => 200,
+						"data" => [
+							"images" => []
+						]
+					]);
+					return;
+				}
+
+				$images = glob($dataDir . "/*.json");
+				
+				// Convert absolute paths to relative paths (removing APP_PUBLIC prefix)
+				$relativeImages = array_map(function($path) {
+					return str_replace(APP_PUBLIC, '', $path);
+				}, $images);
+
+				$app->OK("Success", [
+					"status" => 200,
+					"data" => [
+						"images" => $relativeImages
+					]
+				]);
+			} else {
+				$app->BadRequest("Image hosting is not enabled.", [
+					"status" => 400,
+					"data" => [
+						"error" => "Image hosting is not enabled.",
+					]
+				]);
+			}
+		});
+		$router->get('/api/user/images/sharex', function () use ($app, $logger, $config) {
+			$session = new Session($app);
+			if (!$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)) {
+				$app->BadRequest("You do not have permission to upload images.", [
+					"status" => 400,
+					"data" => [
+						"error" => "You do not have permission to upload images.",
+					]
+				]);
+			}
+
+			$app->OK("Success", [
+				"status" => 200,
+				"data" => [
+					"config" => ShareXApi::createConfig($config->getSetting(ConfigInterface::APP_NAME, "MythicalDash"), $config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"), $session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)),
+				]
+			]);
+		});
+		$router->get('/i/(.*)', function ($name) use ($app, $logger, $config) {
+			// Extract UUID and timestamp using regex pattern: ([0-9a-f\-]{36})-(\d+)\.
+			if (!preg_match('/^([0-9a-f\-]{36})-(\d+)\./', $name, $matches)) {
+				$logger->error("Invalid image format - no UUID/timestamp found in name: " . $name);
+				$app->NotFound("Invalid image format");
+				return;
+			}
+
+			$user_uuid = $matches[1];
+			$timestamp = $matches[2];
+
+			// Get the full filename without extension for metadata lookup
+			$filename = pathinfo($name, PATHINFO_FILENAME);
+			
+			// Construct paths using the public directory
+			$baseDir = APP_PUBLIC . "/attachments/imgs/users/" . $user_uuid;
+			$metadataPath = $baseDir . "/data/" . $filename . ".json";
+			$imagePath = $baseDir . "/raw/" . $name;
+
+			// Debug logging
+			$logger->debug("Looking for image: " . $name . " in base dir: " . $baseDir . " with UUID: " . $user_uuid);
+
+			if (!file_exists($metadataPath)) {
+				$logger->error("Metadata file not found: " . $metadataPath);
+				$app->NotFound("Image not found");
+				return;
+			}
+
+			$metadata = json_decode(file_get_contents($metadataPath), true);
+			if (!$metadata) {
+				$logger->error("Invalid metadata file: " . $metadataPath);
+				$app->NotFound("Invalid image metadata");
+				return;
+			}
+
+			// Update the file URL in metadata to match our naming scheme
+			$metadata['metadata']['file_url'] = sprintf(
+				'%s/attachments/imgs/users/%s/raw/%s',
+				$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$user_uuid,
+				$name
+			);
+
+			if (!file_exists($imagePath)) {
+				$logger->error("Image file not found: " . $imagePath);
+				$app->NotFound("Image file not found");
+				return;
+			}
+
+			// If it's an API request (has Accept: application/json header), return metadata
+			if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+				header('Content-Type: application/json');
+				echo json_encode($metadata, JSON_PRETTY_PRINT);
+				return;
+			}
+
+			// If embed is enabled, return HTML with embed info
+			if ($metadata['embed'] === true) {
+				header('Content-Type: text/html');
+				$embedInfo = $metadata['embed_info'];
+
+				// Helper to safely get string values
+				function safe($val) { return htmlspecialchars((string)($val ?? ''), ENT_QUOTES, 'UTF-8'); }
+
+				// Prepare replacements
+				$replacements = [
+					'{{title}}' => safe($embedInfo['title']),
+					'{{description}}' => safe($embedInfo['description']),
+					'{{image_url}}' => safe($metadata['metadata']['file_url']),
+					'{{url}}' => safe($embedInfo['url']),
+					'{{color}}' => safe($embedInfo['color']),
+					'{{user_name}}' => safe($metadata['user_name']),
+					'{{uploaded_at}}' => date('Y-m-d H:i:s', $metadata['metadata']['uploaded_at'] ?? time()),
+					'{{file_size}}' => (isset($metadata['metadata']['file_size']) ? round($metadata['metadata']['file_size'] / 1024, 2) . ' KB' : 'N/A'),
+				];
+
+				// Load template
+				$template = file_get_contents(__DIR__ . '/../embed_template.html');
+				// Replace placeholders
+				$html = strtr($template, $replacements);
+
+				echo $html;
+				return;
+			}
+
+			// Default: serve the image directly
+			header('Content-Type: ' . $metadata['metadata']['file_type']);
+			header('Content-Length: ' . filesize($imagePath));
+			readfile($imagePath);
+		});
+		$router->post('/api/user/images/upload', function () use ($app, $logger, $config) {
+			if (!isset($_POST['upload_api'])) {
+				ShareXApi::showError($app, "Invalid upload key.");
+				return;
+			}
+
+			$uploadKey = $_POST['upload_api'];
+			if (!User::exists(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, $uploadKey)) {
+				ShareXApi::showError($app, "Invalid upload key.");
+				return;
+			}
+
+			$user_uuid = User::getUserByUploadKey($uploadKey);
+			if (!$user_uuid) {
+				ShareXApi::showError($app, "User not found.");
+				return;
+			}
+
+			if (!isset($_FILES['file'])) {
+				ShareXApi::showError($app, "No file uploaded.");
+				return;
+			}
+
+			$file = $_FILES['file'];
+			$ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+			$allowed = ["jpg", "jpeg", "png", "gif", "webp"];
+
+			if (!in_array($ext, $allowed)) {
+				ShareXApi::showError($app, "Invalid file type. Allowed types: " . implode(", ", $allowed));
+				return;
+			}
+
+			// Get max size in bytes (default 10MB)
+			$maxSize = (int) $config->getSetting(ConfigInterface::IMAGE_HOSTING_MAX_FILE_SIZE, 10) * 1024 * 1024;
+
+			// Debug log the sizes
+			$logger->debug(sprintf(
+				"File size check - Max: %d bytes, Uploaded: %d bytes",
+				$maxSize,
+				$file['size']
+			));
+
+			if ($file['size'] <= 0) {
+				ShareXApi::showError($app, "Invalid file size: File appears to be empty.");
+				return;
+			}
+
+			if ($file['size'] > $maxSize) {
+				ShareXApi::showError($app, sprintf(
+					"File is too large. Max size: %d MB, Provided: %.2f MB",
+					$maxSize / (1024 * 1024),
+					$file['size'] / (1024 * 1024)
+				));
+				return;
+			}
+
+			// Create user-specific directories
+			$userDir = APP_PUBLIC . "/attachments/imgs/users/" . $user_uuid;
+			$rawDir = $userDir . "/raw";
+			$dataDir = $userDir . "/data";
+
+			foreach ([$userDir, $rawDir, $dataDir] as $dir) {
+				if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
+					$logger->error("Failed to create directory: " . $dir);
+					ShareXApi::showError($app, "Failed to create upload directory.");
+					return;
+				}
+			}
+
+			// Generate unique filename
+			$timestamp = time();
+			$new_name = sprintf(
+				'%s-%s.%s',
+				$user_uuid,
+				$timestamp,
+				$ext
+			);
+
+			$targetPath = $rawDir . "/" . $new_name;
+			/**
+			 * Coins per image enabled
+			 */
+			if ($config->getSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED, false)) {
+				$coins = User::getInfoUUID($user_uuid, UserColumns::CREDITS, false);
+				if ($coins <= 0) {
+					ShareXApi::showError($app, "You do not have enough coins to upload images.");
+					return;
+				}
+				if ($coins < $config->getSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1)) {
+					ShareXApi::showError($app, "You do not have enough coins to upload images.");
+					return;
+				}
+				User::removeCredits(User::getTokenFromUUID($user_uuid), $config->getSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1));
+			}
+
+			if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+				$logger->error("Failed to move uploaded file to: " . $targetPath);
+				ShareXApi::showError($app, "Failed to save uploaded file.");
+				return;
+			}
+
+			// Store metadata
+			$metadata = [
+				'original_name' => $file['name'],
+				'uploaded_at' => $timestamp,
+				'metadata' => [
+					'file_size' => $file['size'],
+					'file_type' => $file['type'],
+					'file_name' => $new_name,
+					'file_url' => sprintf(
+						'%s/attachments/imgs/users/%s/raw/%s',
+						$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+						$user_uuid,
+						$new_name
+					),
+					'uploaded_at' => $timestamp,
+				],
+				'user_uuid' => $user_uuid,
+				'user_name' => User::getInfoUUID($user_uuid, UserColumns::USERNAME, false),
+				'embed' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_ENABLED, false) == "true" ? true : false,
+				'embed_info' => [
+					'title' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_TITLE, false),
+					'description' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_DESCRIPTION, false),
+					'color' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_COLOR, false),
+					'author_name' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_AUTHOR_NAME, false),
+					'image' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_IMAGE, false),
+					'thumbnail' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_THUMBNAIL, false),
+					'url' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_URL, false),
+				]
+			];
+
+			$metadataPath = $dataDir . "/" . pathinfo($new_name, PATHINFO_FILENAME) . ".json";
+			if (!file_put_contents($metadataPath, json_encode($metadata, JSON_PRETTY_PRINT))) {
+				$logger->error("Failed to save metadata for: " . $new_name);
+			}
+
+
+			$deleteUrl = sprintf(
+				'%s/api/user/images/delete/%s',
+				$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$new_name
+			);
+
+			$imageUrl = sprintf(
+				'%s/attachments/imgs/users/%s/raw/%s',
+				$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$user_uuid,
+				$new_name
+			);
+
+			$embedUrl = sprintf(
+				'%s/i/%s',
+				$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$new_name
+			);
+
+			ShareXApi::showSuccess(
+				$app,
+				$embedUrl,
+				$imageUrl,
+				$deleteUrl
+			);
+		});
+
+	}
+
+
+}

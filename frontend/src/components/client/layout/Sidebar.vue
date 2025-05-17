@@ -14,6 +14,9 @@ import {
     Home as HomeIcon,
     ShoppingCart as ShoppingCartIcon,
     TrophyIcon as LeaderboardIcon,
+    Image as ImageIcon,
+    SettingsIcon,
+    Images,
 } from 'lucide-vue-next';
 import Translation from '@/mythicaldash/Translation';
 import { useSettingsStore } from '@/stores/settings';
@@ -40,6 +43,11 @@ const isJ4REnabled = computed(() => {
 // Check if Referrals is enabled
 const isReferralsEnabled = computed(() => {
     return Settings.getSetting('referrals_enabled') === 'true';
+});
+
+// Check if Image Hosting is enabled
+const isImageHostingEnabled = computed(() => {
+    return Settings.getSetting('image_hosting_enabled') === 'true';
 });
 
 // Check if Link For Rewards is enabled
@@ -75,7 +83,7 @@ const isActiveRoute = (routes: string | string[]) => {
 interface MenuItem {
     name: string;
     icon: typeof ServerIcon;
-    href: string;
+    href?: string;
     active: boolean;
     expanded?: boolean;
     subitems?: MenuItem[];
@@ -101,6 +109,33 @@ const codeRedemptionMenuItem = {
     icon: GiftIcon,
     href: '/earn/redeem',
     active: isActiveRoute(['/earn/redeem']),
+};
+
+// Define Image Hosting menu item
+const imageHostingMenuItem = {
+    name: t('components.sidebar.image_hosting'),
+    icon: ImageIcon,
+    subitems: [
+        {
+            name: t('components.sidebar.images'),
+            icon: ImageIcon,
+            href: '/images',
+            active: isActiveRoute(['/images']),
+        },
+        {
+            name: t('components.sidebar.config'),
+            icon: Images,
+            href: '/images/config',
+            active: isActiveRoute(['/images/config']),
+        },
+        {
+            name: t('components.sidebar.settings'),
+            icon: SettingsIcon,
+            href: '/account',
+            active: isActiveRoute(['/account']),
+        },
+    ],
+    active: isActiveRoute(['/images', '/images/config']),
 };
 
 // Define Join For Rewards menu item
@@ -212,6 +247,7 @@ const menuSections = ref<MenuSection[]>([
             dashboardMenuItem,
             ...(isServersEnabled.value ? [serversMenuItem] : []),
             ...(isStoreEnabled.value ? [storeMenuItem] : []),
+            ...(isImageHostingEnabled.value ? [imageHostingMenuItem] : []),
         ],
     },
     {
@@ -339,7 +375,7 @@ const toggleSubitems = (item: MenuItem) => {
                                                                     <RouterLink
                                                                         v-for="category in subitem.subitems || []"
                                                                         :key="category.name"
-                                                                        :to="category.href"
+                                                                        :to="category.href || ''"
                                                                         class="group relative flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-all duration-200 text-sm"
                                                                         :class="{
                                                                             'bg-indigo-500/10 text-indigo-400':
@@ -370,7 +406,7 @@ const toggleSubitems = (item: MenuItem) => {
 
                                                         <RouterLink
                                                             v-else
-                                                            :to="subitem.href"
+                                                            :to="subitem.href || ''"
                                                             class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[#1a1a2e]/50 transition-all duration-200 text-sm group"
                                                             :class="{
                                                                 'bg-indigo-500/10 text-indigo-400': subitem.active,
@@ -390,7 +426,7 @@ const toggleSubitems = (item: MenuItem) => {
                                     </div>
                                     <RouterLink
                                         v-else
-                                        :to="item.href"
+                                        :to="item.href || ''"
                                         class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-[#1a1a2e]/50 transition-all duration-200 group"
                                         :class="{ 'bg-indigo-500/10 text-indigo-400': item.active }"
                                     >

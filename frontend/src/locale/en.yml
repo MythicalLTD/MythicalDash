@@ -398,6 +398,7 @@ account:
                 activity: 'Activity'
                 apikey: 'API Key'
                 linked_accounts: 'Linked Accounts'
+                image_hosting: 'Image Hosting'
                 theme: 'Theme'
         linked_accounts:
             errors:
@@ -632,6 +633,41 @@ account:
                     info: Your activity history will appear here
                     results:
                         viewButton: View
+        image_hosting:
+            page:
+                title: 'Image Hosting'
+                description: 'Configure your image hosting and embed settings'
+            toggles:
+                hosting:
+                    title: 'Image Hosting'
+                    description: 'Enable or disable image hosting for your account'
+                embed:
+                    title: 'Embed'
+                    description: 'Enable or disable Discord-style embed for your images'
+            settings:
+                title: 'Embed Settings'
+                description: 'Configure how your images appear when embedded'
+                embed_title:
+                    label: 'Embed Title'
+                    placeholder: 'Title for embedded images'
+                embed_description:
+                    label: 'Embed Description'
+                    placeholder: 'Description for embedded images'
+                embed_color:
+                    label: 'Embed Color'
+                author_name:
+                    label: 'Author Name'
+                    placeholder: 'Author name for embed'
+                save_button: 'Save Embed Settings'
+                saving: 'Saving...'
+            preview:
+                title: 'Embed Preview'
+                description: 'Preview how your images will appear when embedded'
+                image_label: "Here's the image:"
+                image_alt: 'Preview'
+                link_label: 'Image Link'
+                default_title: 'Image Title'
+                default_description: 'Image description goes here'
 
 tickets:
     pages:
@@ -765,6 +801,7 @@ components:
         all_tickets: All Tickets
         knowledge: Knowledge Base
         earn: Earn
+        config: Config
         afk: AFK Rewards
         create: Create Server
         code_redemption: Code Redemption
@@ -774,6 +811,9 @@ components:
         store: Store
         leaderboard: Leaderboard
         general: General
+        image_hosting: Image Hosting
+        images: Images
+        quota: Quota
     search:
         placeholder: 'Search (Ctrl + K)'
         no_results: 'No results found'
@@ -1536,3 +1576,39 @@ redirect:
     go_now: 'Go Now'
 common:
     loading: 'Loading...'
+
+image_hosting:
+    alerts:
+        success:
+            title: Success
+            toggle_hosting: Image hosting setting updated!
+            toggle_embed: Embed setting updated!
+            save_embed: Your embed settings have been saved!
+            footer: Your image hosting settings have been updated
+        error:
+            title: Error
+            toggle_hosting: Failed to toggle image hosting
+            toggle_embed: Failed to toggle embed settings
+            save_embed: Failed to save embed settings
+            generic: An unexpected error occurred.
+            footer: Please contact support for assistance
+lost_connection:
+  title: "Lost Connection to Server"
+  message: "We're trying to reconnect to the server. Please wait..."
+  instructions: "Please do not refresh the page. We're working on reconnecting you automatically." 
+images:
+  page_title: "My Images"
+  page_description: "Browse and manage your uploaded images. Switch between gallery and list view."
+  gallery_view: "Gallery"
+  list_view: "List"
+  view_full: "View Full"
+  empty: "You have not uploaded any images yet."
+  table:
+    name: "Name"
+    size: "Size"
+    date: "Date"
+    actions: "Actions"
+  action:
+    view: "View"
+    copy: "Copy Link"
+    delete: "Delete"

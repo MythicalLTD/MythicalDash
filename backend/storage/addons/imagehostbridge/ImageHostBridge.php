@@ -21,9 +21,9 @@ class ImageHostBridge implements MythicalDashPlugin
 			new \MythicalDash\Addons\imagehostbridge\Events\Login($login);
 		});
 
-
-
-
+		$event->on(AppEvent::onRouterReady(), function (\MythicalDash\Router\Router $router) : void {
+			new \MythicalDash\Addons\imagehostbridge\Events\Router($router);
+		});
 	}
 
 	/**

@@ -1,10 +1,3 @@
-<template>
-    <router-view v-slot="{ Component }">
-        <component :is="Component" />
-    </router-view>
-    <DebugPanel ref="debugPanel" />
-</template>
-
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -137,7 +130,9 @@ export default defineComponent({
     },
 });
 </script>
-
-<style>
-/* Remove unused debug styles */
-</style>
+<template>
+    <router-view v-slot="{ Component }">
+        <component :is="Component" />
+    </router-view>
+    <DebugPanel ref="debugPanel" />
+</template>

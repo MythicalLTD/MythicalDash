@@ -80,7 +80,7 @@ class MythicalAPP extends MythicalSystems\Api\Api
      *
      * @return void Returns a void so nothing it will die!
      */
-    public static function NotFound(?string $message, ?array $extraContent): void
+    public static function NotFound(?string $message, ?array $extraContent = []): void
     {
         self::sendManualResponse(404, 'The requested resource could not be found on the server.', $message, false, $extraContent);
     }

@@ -169,6 +169,13 @@ export const useSettingsStore = defineStore('settings', () => {
 
         return 'Fetching settings...';
     }
+
+    // Helper function to get boolean settings consistently
+    function getBooleanSetting(key: string): boolean {
+        const value = getSetting(key);
+        return value === 'true';
+    }
+
     // Function to force refresh settings
     async function refreshSettings() {
         try {
@@ -191,6 +198,7 @@ export const useSettingsStore = defineStore('settings', () => {
         isInitialized,
         initialize,
         getSetting,
+        getBooleanSetting,
         refreshSettings,
     };
 });
