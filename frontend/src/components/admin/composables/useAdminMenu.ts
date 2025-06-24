@@ -20,6 +20,7 @@ import {
     Cloud,
     Image as ImageIcon,
     LinkIcon,
+    Shield,
 } from 'lucide-vue-next';
 import type { MenuGroup, ProfileMenuItem } from '../types';
 
@@ -40,6 +41,7 @@ interface DashboardCounts {
     backups_count: number;
     images_count: number;
     redirect_links_count: number;
+    roles_count: number;
 }
 
 interface DashboardData {
@@ -115,6 +117,13 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     icon: Building,
                     count: computed(() => dashBoard.value.count.departments_count || 0),
                     active: route.path === `${adminBaseUri}/departments`,
+                },
+                {
+                    name: 'Roles',
+                    path: `${adminBaseUri}/roles`,
+                    icon: Shield,
+                    count: computed(() => dashBoard.value.count.roles_count || 0),
+                    active: route.path === `${adminBaseUri}/roles`,
                 },
             ],
         },

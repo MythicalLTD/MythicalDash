@@ -16,7 +16,9 @@ import pluginRoutes from './plugins.ts';
 import backupsRoutes from './backups.ts';
 import imagesRoutes from './images.ts';
 import redirectLinks from './redirectLinks.ts';
-// Main admin dashboard route
+import rolesRoutes from './roles.ts';
+
+// Main admin dashboard routes
 const mainAdminRoutes: RouteRecordRaw[] = [
     {
         path: '/mc-admin',
@@ -58,6 +60,7 @@ const adminRoutes: RouteRecordRaw[] = [
     ...backupsRoutes,
     ...imagesRoutes,
     ...redirectLinks,
+    ...rolesRoutes,
 ];
 
 export default adminRoutes;

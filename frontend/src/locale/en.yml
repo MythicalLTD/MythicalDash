@@ -502,16 +502,16 @@ account:
                         title: 'Warning'
                         description: "Don't be an idiot, you can't undo this action, like really once you press this button, there is no more confirmation it will straight up delete your account. So be sure you want to do this."
                     confirm:
-                        title: "Are you sure? (Step {step}/3)"
-                        text: "This action is irreversible. Are you absolutely sure you want to delete your account? (Step {step}/3)"
-                        confirm: "Yes, continue"
-                        cancel: "Cancel"
+                        title: 'Are you sure? (Step {step}/3)'
+                        text: 'This action is irreversible. Are you absolutely sure you want to delete your account? (Step {step}/3)'
+                        confirm: 'Yes, continue'
+                        cancel: 'Cancel'
                     success:
-                        title: "Account Deleted"
-                        text: "Your account has been deleted. You will now be logged out."
+                        title: 'Account Deleted'
+                        text: 'Your account has been deleted. You will now be logged out.'
                     error:
-                        title: "Error"
-                        text: "There was a problem deleting your account. Please try again."
+                        title: 'Error'
+                        text: 'There was a problem deleting your account. Please try again.'
                 clear:
                     title: Application Data
                     subTitle: Manage and clear application data incase you see outdated data.
@@ -1782,7 +1782,6 @@ privacy_policy:
         generic: 'An error occurred while loading the privacy policy'
         failed_fetch: 'Failed to fetch privacy policy'
         retry: 'Try Again'
-
 
 # User Lookup translations
 lookup:

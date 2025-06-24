@@ -17,6 +17,7 @@ class RolesColumns
 {
     public static string $name = 'name';
     public static string $real_name = 'real_name';
+    public static string $color = 'color';
     public static string $date = 'date';
 
     public static function getColumns(): array
@@ -24,6 +25,7 @@ class RolesColumns
         return [
             'name' => 'name',
             'real_name' => 'real_name',
+            'color' => 'color',
             'date' => 'date',
         ];
     }

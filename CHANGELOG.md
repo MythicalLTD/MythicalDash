@@ -27,6 +27,7 @@
 - Feature: Ability to change resources view!
 - Feature: First user will always get admin :)!
 - Feature: New user lookup page!
+- Feature: Complete rewrite of the permission system!
 
 # Futures Removed: 
 

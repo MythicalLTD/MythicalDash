@@ -14,6 +14,7 @@
 use MythicalDash\App;
 use MythicalDash\Chat\Database;
 use MythicalDash\Chat\Eggs\Eggs;
+use MythicalDash\Chat\User\Permissions;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Roles;
 use MythicalDash\Chat\User\Session;
@@ -196,12 +197,19 @@ $router->get('/api/user/session', function (): void {
         $info['role_name'] = Roles::getUserRoleName($info[UserColumns::UUID]);
         $info['role_real_name'] = strtolower($info['role_name']);
 
+		$permissions = $session->getUserPermissions();
+		$permissions_list = [];
+		foreach ($permissions as $permission) {
+			$permissions_list[] = $permission['permission'];
+		}
         $appInstance->OK('Account token is valid', [
             'user_info' => $info,
             'stats' => [
                 'tickets' => $stats_tickets,
                 'servers' => $stats_servers,
             ],
+			'permissions_info' => $permissions,
+			'permissions' => $permissions_list,
         ]);
 
     } catch (Exception $e) {

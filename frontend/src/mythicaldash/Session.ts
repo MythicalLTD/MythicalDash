@@ -7,6 +7,7 @@ interface SessionResponse {
     user_info: Record<string, unknown>;
     billing: Record<string, unknown>;
     stats: Record<string, unknown>;
+    permissions?: string[];
 }
 
 /**
@@ -16,6 +17,7 @@ interface SessionResponse {
 class Session {
     private static sessionData: Record<string, unknown> = {};
     private static updateInterval: number | null = null;
+    private static permissions: string[] = [];
     private static initPromise: Promise<void> | null = null;
     private static retryCount = 0;
     private static maxRetries = 3;
@@ -195,7 +197,13 @@ class Session {
     private static updateSessionStorage(data: SessionResponse): void {
         if (!data || !data.success) return;
 
-        const { user_info, billing, stats } = data;
+        const { user_info, billing, stats, permissions } = data;
+
+        // Update permissions in memory and localStorage
+        if (permissions && Array.isArray(permissions)) {
+            this.permissions = permissions;
+            localStorage.setItem('user_permissions', JSON.stringify(permissions));
+        }
 
         // Update memory cache
         this.sessionData = {
@@ -251,6 +259,15 @@ class Session {
             if (!this.isSessionValid()) {
                 throw new Error('No valid session found');
             }
+            // Load permissions from localStorage if they exist
+            const cachedPermissions = localStorage.getItem('user_permissions');
+            if (cachedPermissions) {
+                try {
+                    this.permissions = JSON.parse(cachedPermissions);
+                } catch (e) {
+                    console.error('Failed to parse cached permissions:', e);
+                }
+            }
 
             const data = await this.fetchSessionData();
             if (data.success) {
@@ -261,6 +278,30 @@ class Session {
             this.initPromise = null;
             throw error;
         }
+    }
+    /**
+     * Checks if the user has a specific permission
+     * @param node The permission node to check
+     * @returns boolean True if the user has the permission, false otherwise
+     */
+    static hasPermission(node: string): boolean {
+        // If user has admin permission, they have access to everything
+        if (this.permissions.includes('admin.root')) {
+            return true;
+        }
+        return this.permissions.includes(node);
+    }
+
+    /**
+     * Gets all permissions for the current user
+     * @returns string[] Array of permission nodes
+     */
+    static getPermissions(): string[] {
+        // If user has admin permission, they effectively have all permissions
+        if (this.permissions.includes('admin.root')) {
+            return ['*', ...this.permissions];
+        }
+        return [...this.permissions];
     }
 
     /**
@@ -359,9 +400,79 @@ class Session {
         }
         this.retryCount = 0;
         this.sessionData = {};
+        this.permissions = [];
         this.initPromise = null;
+        localStorage.removeItem('user_permissions'); // Clear cached permissions
         this.isRefreshing = false;
     }
+
+    /**
+     * Checks if the user has a specific permission and redirects to 403 error page if not
+     * @param node The permission node to check
+     * @param showAlert Whether to show an alert before redirecting (default: true)
+     * @returns boolean True if the user has the permission, false if redirected
+     */
+    static hasOrRedirectToErrorPage(node: string): boolean {
+        // Load permissions from localStorage if array is empty
+        if (this.permissions.length === 0) {
+            const cachedPermissions = localStorage.getItem('user_permissions');
+            if (cachedPermissions) {
+                try {
+                    this.permissions = JSON.parse(cachedPermissions);
+                } catch (e) {
+                    console.error('Failed to parse cached permissions:', e);
+                }
+            }
+        }
+
+        if (this.hasPermission(node)) {
+            console.log('User has permission to access this resource');
+            return true;
+        }
+
+        console.log('User does not have permission to access this resource');
+        Swal.fire({
+            title: 'Access Denied',
+            text: 'You do not have permission to access this resource.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        }).then(() => {
+            router.push('/errors/403');
+        });
+        return false;
+    }
+
+    /**
+     * Permission utility class for more readable permission checks
+     */
+    static Permission = class {
+        /**
+         * Checks if the user has a specific permission and redirects to 403 error page if not
+         * @param node The permission node to check
+         * @param showAlert Whether to show an alert before redirecting (default: true)
+         * @returns boolean True if the user has the permission, false if redirected
+         */
+        static HasOrRedirectToErrorPage(node: string): boolean {
+            return Session.hasOrRedirectToErrorPage(node);
+        }
+
+        /**
+         * Checks if the user has a specific permission
+         * @param node The permission node to check
+         * @returns boolean True if the user has the permission, false otherwise
+         */
+        static Has(node: string): boolean {
+            return Session.hasPermission(node);
+        }
+
+        /**
+         * Gets all permissions for the current user
+         * @returns string[] Array of permission nodes
+         */
+        static GetAll(): string[] {
+            return Session.getPermissions();
+        }
+    };
 }
 
 export default Session;

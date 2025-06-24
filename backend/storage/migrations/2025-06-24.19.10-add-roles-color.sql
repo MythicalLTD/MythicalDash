@@ -1,0 +1,1 @@
+ALTER TABLE `mythicaldash_roles` ADD `color` TEXT NOT NULL DEFAULT '#808080' AFTER `real_name`;

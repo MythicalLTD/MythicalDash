@@ -102,18 +102,101 @@ class Session extends Database
     }
 
     /**
-     * Check if the user has access to the admin panel.
+     * Check if the user has a specific permission.
+     * This method looks up the user's role and checks if that role has the specified permission.
      *
-     * @return bool true if the user has access to the admin panel, otherwise false
+     * @param string $permission The permission to check (e.g., 'admin.users.create')
+     * @return bool True if the user has the permission, false otherwise
      */
-    public function canAccessAdmin(): bool
+    public function hasPermission(string $permission): bool
     {
-        if ($this->getInfo(UserColumns::ROLE_ID, false) == '1' || $this->getInfo(UserColumns::ROLE_ID, false) == '2') {
+        try {
+            $roleId = (int) $this->getInfo(UserColumns::ROLE_ID, false);
+            
+            // Check if the role has the specific permission
+            return Permissions::hasPermission($roleId, $permission);
+        } catch (\Exception $e) {
+            $this->app->getLogger()->error('Failed to check permission: ' . $e->getMessage());
             return false;
         }
+    }
 
+    /**
+     * Check if the user has any of the specified permissions.
+     * Returns true if the user has at least one of the permissions.
+     *
+     * @param array $permissions Array of permissions to check
+     * @return bool True if the user has at least one permission, false otherwise
+     */
+    public function hasAnyPermission(array $permissions): bool
+    {
+        foreach ($permissions as $permission) {
+            if ($this->hasPermission($permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the user has all of the specified permissions.
+     * Returns true only if the user has all permissions.
+     *
+     * @param array $permissions Array of permissions to check
+     * @return bool True if the user has all permissions, false otherwise
+     */
+    public function hasAllPermissions(array $permissions): bool
+    {
+        foreach ($permissions as $permission) {
+            if (!$this->hasPermission($permission)) {
+                return false;
+            }
+        }
         return true;
+    }
 
+    /**
+     * Get all permissions for the current user's role.
+     *
+     * @return array Array of permissions with their granted status
+     */
+    public function getUserPermissions(): array
+    {
+        try {
+            $roleId = (int) $this->getInfo(UserColumns::ROLE_ID, false);
+            return Permissions::getPermissionsByRole($roleId);
+        } catch (\Exception $e) {
+            $this->app->getLogger()->error('Failed to get user permissions: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Get the user's role information.
+     *
+     * @return array|null Role information or null if not found
+     */
+    public function getUserRole(): ?array
+    {
+        try {
+            $roleId = (int) $this->getInfo(UserColumns::ROLE_ID, false);
+            return Roles::getRole($roleId);
+        } catch (\Exception $e) {
+            $this->app->getLogger()->error('Failed to get user role: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Check if the user has admin access with specific permission.
+     * This is a convenience method that combines admin access check with permission check.
+     *
+     * @param string $permission The permission to check
+     * @return bool True if user has admin access and the permission, false otherwise
+     */
+    public function canAccessAdminWithPermission(string $permission): bool
+    {
+        return $this->hasPermission($permission);
     }
 
     /**
