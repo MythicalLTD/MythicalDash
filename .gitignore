@@ -3,3 +3,4 @@ dockerfiles/mariadb/data
 package.json
 yarn.lock
 count-results/
+/frontend/.vite

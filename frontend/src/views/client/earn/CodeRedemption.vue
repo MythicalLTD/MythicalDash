@@ -119,17 +119,6 @@
                             </div>
                         </div>
                     </CardComponent>
-
-                    <!-- Ad Square -->
-                    <div class="p-3 bg-gray-800/30 border border-gray-700/30 rounded-lg">
-                        <div class="flex justify-between items-center">
-                            <div class="text-xs text-gray-500">Advertisement</div>
-                            <button class="text-xs text-gray-500 hover:text-gray-400">×</button>
-                        </div>
-                        <div class="h-80 flex items-center justify-center text-gray-600 text-sm">
-                            [Square Ad Placement]
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

@@ -6,45 +6,49 @@
             <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
                 <div class="mb-4">
                     <h3 class="text-lg font-medium text-white mb-1">Terms of Service</h3>
-                    <p class="text-sm text-gray-400">Provide a link to your Terms of Service document.</p>
+                    <p class="text-sm text-gray-400">
+                        Edit your Terms of Service content. You can use basic HTML (e.g. <b>&lt;b&gt;</b>,
+                        <b>&lt;strong&gt;</b>, <b>&lt;br&gt;</b>, <b>&lt;ul&gt;</b>, <b>&lt;li&gt;</b>).
+                    </p>
                 </div>
 
                 <div class="mb-4">
-                    <label for="legal_tos_url" class="block text-sm font-medium text-gray-400 mb-1"
-                        >Terms of Service URL</label
+                    <label for="legal_tos" class="block text-sm font-medium text-gray-400 mb-1"
+                        >Terms of Service Content</label
                     >
-                    <input
-                        id="legal_tos_url"
-                        type="url"
-                        v-model="formData.legal_tos_url"
-                        @change="updateSetting('legal_tos_url', formData.legal_tos_url)"
-                        class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                        placeholder="https://yourdomain.com/terms"
+                    <textarea
+                        id="legal_tos"
+                        v-model="formData.legal_tos"
+                        @change="updateSetting('legal_tos', formData.legal_tos)"
+                        class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500 min-h-[200px] font-mono"
+                        placeholder="Enter your Terms of Service HTML here..."
                     />
                     <p class="mt-1 text-xs text-gray-500">
-                        Link to your Terms of Service page. Must include http:// or https://.
+                        You can use basic HTML tags for formatting. Avoid scripts or unsafe tags.
                     </p>
                 </div>
 
                 <div class="mb-4">
                     <h3 class="text-lg font-medium text-white mb-1">Privacy Policy</h3>
-                    <p class="text-sm text-gray-400">Provide a link to your Privacy Policy document.</p>
+                    <p class="text-sm text-gray-400">
+                        Edit your Privacy Policy content. You can use basic HTML (e.g. <b>&lt;b&gt;</b>,
+                        <b>&lt;strong&gt;</b>, <b>&lt;br&gt;</b>, <b>&lt;ul&gt;</b>, <b>&lt;li&gt;</b>).
+                    </p>
                 </div>
 
                 <div>
-                    <label for="legal_privacy_url" class="block text-sm font-medium text-gray-400 mb-1"
-                        >Privacy Policy URL</label
+                    <label for="legal_privacy" class="block text-sm font-medium text-gray-400 mb-1"
+                        >Privacy Policy Content</label
                     >
-                    <input
-                        id="legal_privacy_url"
-                        type="url"
-                        v-model="formData.legal_privacy_url"
-                        @change="updateSetting('legal_privacy_url', formData.legal_privacy_url)"
-                        class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                        placeholder="https://yourdomain.com/privacy"
+                    <textarea
+                        id="legal_privacy"
+                        v-model="formData.legal_privacy"
+                        @change="updateSetting('legal_privacy', formData.legal_privacy)"
+                        class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500 min-h-[200px] font-mono"
+                        placeholder="Enter your Privacy Policy HTML here..."
                     />
                     <p class="mt-1 text-xs text-gray-500">
-                        Link to your Privacy Policy page. Must include http:// or https://.
+                        You can use basic HTML tags for formatting. Avoid scripts or unsafe tags.
                     </p>
                 </div>
             </div>
@@ -79,8 +83,8 @@ const emit = defineEmits(['update']);
 
 // Form state
 const formData = ref({
-    legal_tos_url: '',
-    legal_privacy_url: '',
+    legal_tos: '',
+    legal_privacy: '',
 });
 
 // Initialize form with settings values
@@ -89,8 +93,8 @@ watch(
     (newSettings) => {
         if (newSettings) {
             formData.value = {
-                legal_tos_url: newSettings['legal_tos_url'] || '',
-                legal_privacy_url: newSettings['legal_privacy_url'] || '',
+                legal_tos: newSettings['legal_tos'] || '',
+                legal_privacy: newSettings['legal_privacy'] || '',
             };
         }
     },

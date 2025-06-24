@@ -18,8 +18,11 @@ use MythicalDash\Chat\User\Mails;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Config\ConfigInterface;
+use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 use MythicalDash\Plugins\Events\Events\UserEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
+use MythicalDash\Services\Pterodactyl\Admin\Resources\UsersResource;
 
 $router->get('/api/admin/users', function (): void {
     App::init();
@@ -170,6 +173,14 @@ $router->post('/api/admin/user/(.*)/delete', function ($userId): void {
         if (User::exists(UserColumns::UUID, $userId)) {
             $token = User::getTokenFromUUID($userId);
             User::delete($token);
+			foreach (Servers::getUserServersList(User::getInfo($token, UserColumns::PTERODACTYL_USER_ID, false)) as $server) {
+				Servers::deletePterodactylServer($server['id']);
+			}
+			$pteroUsers = new UsersResource(
+				$appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+				$appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+			);
+			$pteroUsers->deleteUser(User::getInfo($token, UserColumns::PTERODACTYL_USER_ID, false));
             UserActivities::add(
                 $session->getInfo(UserColumns::UUID, false),
                 UserActivitiesTypes::$admin_user_delete,

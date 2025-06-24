@@ -156,23 +156,25 @@ $router->add('/api/user/auth/register', function (): void {
                 if (isset($_GET['ref']) && $_GET['ref'] != '') {
                     $referrerCode = ReferralCodes::getByCode($_GET['ref']);
 
-                    $referrerUuid = $referrerCode['user'];
-                    $referrerToken = User::getTokenFromUUID($referrerUuid);
+                    if (is_array($referrerCode) && isset($referrerCode['user']) && is_string($referrerCode['user']) && $referrerCode['user'] !== '') {
+                        $referrerUuid = $referrerCode['user'];
+                        $referrerToken = User::getTokenFromUUID($referrerUuid);
 
-                    if ($referrerToken == null) {
+                        if ($referrerToken == null) {
+                            $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'REFERRAL_CODE_NOT_FOUND']);
+                        } else {
+                            ReferralUses::create($referrerCode['id'], $newUserUuid);
+                            $eventManager->emit(ReferralsEvent::onReferralRedeemed(), [
+                                'user' => $referrerUuid,
+                                'referral_code' => $_GET['ref'],
+                            ]);
+                            $newUserBonus = intval($appInstance->getConfig()->getSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER, 15));
+                            User::addCredits($newUserToken, (int) intval($newUserBonus));
+                            $referrerBonus = intval($appInstance->getConfig()->getSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL, 35)) + intval(User::getInfo($referrerToken, UserColumns::CREDITS, false));
+                            User::addCredits($referrerToken, (int) intval($referrerBonus));
+                        }
+                    } else {
                         $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'REFERRAL_CODE_NOT_FOUND']);
-                    }
-
-                    if ($referrerCode) {
-                        ReferralUses::create($referrerCode['id'], $newUserUuid);
-                        $eventManager->emit(ReferralsEvent::onReferralRedeemed(), [
-                            'user' => $referrerUuid,
-                            'referral_code' => $_GET['ref'],
-                        ]);
-                        $newUserBonus = intval($appInstance->getConfig()->getSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER, 15));
-                        User::addCredits($newUserToken, (int) intval($newUserBonus));
-                        $referrerBonus = intval($appInstance->getConfig()->getSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL, 35)) + intval(User::getInfo($referrerToken, UserColumns::CREDITS, false));
-                        User::addCredits($referrerToken, (int) intval($referrerBonus));
                     }
                 }
             }
@@ -203,7 +205,14 @@ $router->add('/api/user/auth/register', function (): void {
          * Zero Trust.
          */
         $appInstance->getTelemetry()->sendRegister($username, $firstName, $lastName, $email, CloudFlareRealIP::getRealIP());
-        App::OK('User registered', []);
+        
+		
+		if (User::isFirstUserInDatabase()) {
+			User::updateInfo($newUserToken, UserColumns::ROLE_ID, '8', false);
+			App::OK('User registered', ["is_first_user" => true]);
+		} else {
+			App::OK('User registered', ["is_first_user" => false]);
+		}
 
     } catch (Exception $e) {
         $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'DATABASE_ERROR']);

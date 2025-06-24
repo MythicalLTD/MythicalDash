@@ -1308,6 +1308,46 @@
                     </div>
                 </div>
             </div>
+
+            <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700 mb-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg font-medium text-white">Google AdSense</h3>
+                        <p class="text-sm text-gray-400">
+                            Enable Google Ads and set your AdSense client code for monetization.
+                        </p>
+                    </div>
+                    <div class="ml-4 flex items-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="googleAdsEnabled"
+                                class="sr-only peer"
+                                @change="updateSetting('google_ads_enabled', googleAdsEnabled ? 'true' : 'false')"
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                        </label>
+                    </div>
+                </div>
+                <div v-if="googleAdsEnabled">
+                    <label for="google_ads_client_id" class="block text-sm font-medium text-gray-400 mb-1">
+                        Google Ads Client Code
+                    </label>
+                    <input
+                        id="google_ads_client_id"
+                        type="text"
+                        v-model="formData.google_ads_client_id"
+                        @change="updateSetting('google_ads_client_id', formData.google_ads_client_id)"
+                        placeholder="ca-pub-xxxxxxxxxxxxxxxx"
+                        class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    />
+                    <p class="mt-1 text-xs text-gray-500">
+                        Paste your AdSense client code (e.g., ca-pub-1234567890123456).
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -1387,6 +1427,8 @@ const formData = ref({
     server_renew_cost: '100',
     server_renew_days: '30',
     server_renew_send_mail: 'false',
+    google_ads_enabled: 'false',
+    google_ads_client_id: '',
 });
 
 // Computed properties for toggles
@@ -1483,6 +1525,13 @@ const serverRenewSendMail = computed({
     },
 });
 
+const googleAdsEnabled = computed({
+    get: () => props.settings?.google_ads_enabled === 'true',
+    set: (value) => {
+        emit('update', 'google_ads_enabled', value ? 'true' : 'false');
+    },
+});
+
 // Initialize form with settings values
 watch(
     () => props.settings,
@@ -1552,6 +1601,8 @@ watch(
                 server_renew_cost: newSettings['server_renew_cost'] || '100',
                 server_renew_days: newSettings['server_renew_days'] || '30',
                 server_renew_send_mail: newSettings['server_renew_send_mail'] || 'false',
+                google_ads_enabled: newSettings['google_ads_enabled'] || 'false',
+                google_ads_client_id: newSettings['google_ads_client_id'] || '',
             };
         }
     },

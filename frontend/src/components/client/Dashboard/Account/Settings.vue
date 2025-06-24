@@ -26,6 +26,7 @@ const isLoading = ref(true);
 const isSaving = ref(false);
 const isResetting = ref(false);
 const isClearing = ref(false);
+const isDeleting = ref(false);
 
 const form = reactive({
     firstName: Session.getInfo('first_name'),
@@ -243,6 +244,72 @@ const previewBackground = computed(() => {
         'https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?q=80&w=1000&auto=format&fit=crop'
     );
 });
+
+const deleteAccount = async () => {
+    let confirmed = false;
+    for (let i = 1; i <= 3; i++) {
+        const result = await Swal.fire({
+            title: t('account.pages.settings.page.delete.confirm.title', { step: i }),
+            text: t('account.pages.settings.page.delete.confirm.text', { step: i }),
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: t('account.pages.settings.page.delete.confirm.confirm'),
+            cancelButtonText: t('account.pages.settings.page.delete.confirm.cancel'),
+            confirmButtonColor: '#dc2626',
+            background: '#12121f',
+            color: '#e5e7eb',
+        });
+        if (!result.isConfirmed) {
+            confirmed = false;
+            break;
+        }
+        confirmed = true;
+    }
+    if (!confirmed) return;
+    isDeleting.value = true;
+    try {
+        const res = await fetch('/api/user/session/delete-account', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        if (res.ok) {
+            await Swal.fire({
+                icon: 'success',
+                title: t('account.pages.settings.page.delete.success.title'),
+                text: t('account.pages.settings.page.delete.success.text'),
+                showConfirmButton: true,
+                background: '#12121f',
+                color: '#e5e7eb',
+                confirmButtonColor: '#6366f1',
+            });
+            window.location.href = '/logout';
+        } else {
+            const data = await res.json().catch(() => ({}));
+            await Swal.fire({
+                icon: 'error',
+                title: t('account.pages.settings.page.delete.error.title'),
+                text: data.message || t('account.pages.settings.page.delete.error.text'),
+                showConfirmButton: true,
+                background: '#12121f',
+                color: '#e5e7eb',
+                confirmButtonColor: '#6366f1',
+            });
+        }
+    } catch (e: unknown) {
+        console.error('Error deleting account:', e);
+        await Swal.fire({
+            icon: 'error',
+            title: t('account.pages.settings.page.delete.error.title'),
+            text: t('account.pages.settings.page.delete.error.text'),
+            showConfirmButton: true,
+            background: '#12121f',
+            color: '#e5e7eb',
+            confirmButtonColor: '#6366f1',
+        });
+    } finally {
+        isDeleting.value = false;
+    }
+};
 </script>
 
 <template>
@@ -471,7 +538,13 @@ const previewBackground = computed(() => {
                             <p class="text-xs text-gray-400 mt-1 mb-3">
                                 {{ t('account.pages.settings.page.delete.warning.description') }}
                             </p>
-                            <Button variant="danger" small>
+                            <Button
+                                variant="danger"
+                                small
+                                :loading="isDeleting"
+                                :disabled="isDeleting"
+                                @click="deleteAccount"
+                            >
                                 {{ t('account.pages.settings.page.delete.button') }}
                             </Button>
                         </div>

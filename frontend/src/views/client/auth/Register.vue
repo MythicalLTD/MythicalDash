@@ -124,7 +124,19 @@ if (router.currentRoute.value.query.ref) {
 
 MythicalDOM.setPageTitle(t('auth.pages.register.page.title'));
 const referralsEnabled = Settings.getSetting('referrals_enabled');
+const acceptTerms = ref(false);
 const handleSubmit = async () => {
+    if (!acceptTerms.value) {
+        playError();
+        Swal.fire({
+            icon: 'error',
+            title: t('auth.pages.register.alerts.error.title'),
+            text: t('auth.pages.register.page.form.accept_terms.required'),
+            showConfirmButton: true,
+        });
+        loading.value = false;
+        return;
+    }
     loading.value = true;
     try {
         const response = await Auth.register(
@@ -222,7 +234,7 @@ const handleSubmit = async () => {
                     @click="generateUsername"
                     class="absolute right-2 top-8 px-2 py-1 text-sm bg-purple-600 hover:bg-purple-700 text-white rounded transition-colors"
                 >
-                    Generate
+                    {{ t('auth.pages.register.page.form.generate_username.label') }}
                 </button>
             </div>
             <div class="relative">
@@ -259,7 +271,7 @@ const handleSubmit = async () => {
                     t('auth.pages.register.page.form.password.label')
                 }}</label>
                 <button type="button" @click="generatePassword" class="text-sm text-purple-400 hover:text-purple-300">
-                    Generate Password
+                    {{ t('auth.pages.register.page.form.generate_password.label') }}
                 </button>
             </div>
 
@@ -278,6 +290,27 @@ const handleSubmit = async () => {
                     v-model="form.referralCode"
                     :placeholder="t('auth.pages.register.page.form.referralCode.placeholder')"
                 />
+            </div>
+            <div class="flex items-center mt-4">
+                <input id="acceptTerms" type="checkbox" v-model="acceptTerms" required class="mr-2" />
+                <label for="acceptTerms" class="text-sm text-gray-400">
+                    {{ t('auth.pages.register.page.form.accept_terms.label') }}
+                    <a
+                        href="/terms-of-service"
+                        target="_blank"
+                        class="text-purple-400 hover:text-purple-300 underline mx-1"
+                    >
+                        {{ t('auth.pages.register.page.form.accept_terms.terms') }}
+                    </a>
+                    {{ t('auth.pages.register.page.form.accept_terms.and') }}
+                    <a
+                        href="/privacy-policy"
+                        target="_blank"
+                        class="text-purple-400 hover:text-purple-300 underline mx-1"
+                    >
+                        {{ t('auth.pages.register.page.form.accept_terms.privacy') }}
+                    </a>
+                </label>
             </div>
             <button
                 type="submit"

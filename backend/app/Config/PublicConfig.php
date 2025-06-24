@@ -261,6 +261,10 @@ class PublicConfig extends ConfigFactory
             ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE => '1',
             ConfigInterface::IMAGE_HOSTING_MAX_FILE_SIZE => '1024',
             ConfigInterface::IMAGE_HOSTING_ALLOW_DOMAINS => 'false',
+
+			// Google Ads
+			ConfigInterface::GOOGLE_ADS_ENABLED => 'false',
+			ConfigInterface::GOOGLE_ADS_CLIENT_ID => '',
         ];
 
     }

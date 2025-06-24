@@ -59,7 +59,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_TITLE, $body['title'], false);
 				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_DESCRIPTION, $body['description'], false);
 				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_COLOR, $body['color'], false);
-				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_AUTHOR_NAME, $body['author_name'], false);
+				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_AUTHOR_NAME, isset($body['author_name']) ? $body['author_name'] : '', false);
 
 				$app->OK("Success", []);
 			});

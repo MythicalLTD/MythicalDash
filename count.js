@@ -8,7 +8,7 @@ const readFileAsync = promisify(fs.readFile);
 // File extensions to include
 const VALID_EXTENSIONS = ['.vue', '.ts', '.js', '.php', '.css', '.yml', '.yaml', '.json', '.sql'];
 // Directories to exclude
-const EXCLUDED_DIRS = ['node_modules', 'vendor', 'cache', '.cache', 'packages','dist','assets'];
+const EXCLUDED_DIRS = ['node_modules', 'vendor', 'cache', '.cache', 'packages','dist','assets', '.vite', '.vite-cache'];
 // Process arguments
 const targetDir = process.argv[2] || '.';
 

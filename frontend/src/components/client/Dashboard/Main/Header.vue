@@ -3,7 +3,7 @@
         <div>
             <h1 class="text-3xl font-bold text-white mb-2">{{ t('components.dashboard.title') }}</h1>
             <div class="text-blue-200 text-sm">
-                <RouterLink to="/" class="hover:text-white transition-colors">{{
+                <RouterLink to="/dashboard" class="hover:text-white transition-colors">{{
                     t('components.dashboard.portal_home')
                 }}</RouterLink>
                 <span class="mx-2">/</span>

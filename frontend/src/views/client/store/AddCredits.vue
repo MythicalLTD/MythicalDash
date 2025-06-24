@@ -122,7 +122,7 @@ if (Session.getInfo('city') == 'N/A' && Session.getInfo('state') == 'N/A' && Ses
             <!-- Header -->
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-semibold text-gray-100">{{ t('billing.pages.add_funds.title') }}</h1>
-                <router-link to="/">
+                <router-link to="/dashboard">
                     <button
                         class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
                     >

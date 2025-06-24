@@ -98,39 +98,36 @@
             <!-- SEO Settings -->
             <div class="pt-4 border-t border-gray-700">
                 <h3 class="text-lg font-medium text-white mb-3">SEO Settings</h3>
-
-                <!-- SEO Description -->
-                <div class="mb-4">
-                    <label for="seo_description" class="block text-sm font-medium text-gray-400 mb-1"
-                        >Meta Description</label
+                <!--
+                    SEO meta tags (description and keywords) must be changed in /var/www/mythicaldash-v3/index.html.
+                    Because this app is prebuilt and uses client-side rendering (CSR) rather than server-side rendering (SSR),
+                    updating these values here will NOT update the actual meta tags for search engines.
+                    After editing index.html, you must rebuild the frontend for changes to take effect.
+                -->
+                <div class="mb-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 flex items-center gap-2">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 text-yellow-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
                     >
-                    <textarea
-                        id="seo_description"
-                        v-model="formData.seo_description"
-                        @change="updateSetting('seo_description', formData.seo_description)"
-                        rows="2"
-                        class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                        placeholder="A brief description of your application"
-                    ></textarea>
-                    <p class="mt-1 text-xs text-gray-500">
-                        A short description of your application for search engines. Recommended: 150-160 characters.
-                    </p>
-                </div>
-
-                <!-- SEO Keywords -->
-                <div>
-                    <label for="seo_keywords" class="block text-sm font-medium text-gray-400 mb-1">Meta Keywords</label>
-                    <input
-                        id="seo_keywords"
-                        type="text"
-                        v-model="formData.seo_keywords"
-                        @change="updateSetting('seo_keywords', formData.seo_keywords)"
-                        class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                        placeholder="dashboard, game, hosting, etc."
-                    />
-                    <p class="mt-1 text-xs text-gray-500">
-                        Comma-separated keywords to help search engines categorize your site.
-                    </p>
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                        />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    <div>
+                        <div class="text-yellow-500 font-medium mb-1">
+                            SEO meta tags must be changed in <code>/var/www/mythicaldash-v3/index.html</code>
+                        </div>
+                        <div class="text-yellow-500 text-xs">
+                            This application is prebuilt and uses client-side rendering (CSR). To update the meta
+                            description or keywords for SEO, edit the <code>&lt;meta&gt;</code> tags in
+                            <code>index.html</code> and rebuild the frontend.
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -93,18 +93,18 @@
                                     </label>
                                     <p class="mt-1">
                                         By creating a server, you agree to our
-                                        <a
-                                            :href="termsUrl"
+                                        <router-link
+                                            to="/terms-of-service"
                                             target="_blank"
                                             class="text-indigo-400 hover:text-indigo-300"
-                                            >Terms of Service</a
+                                            >Terms of Service</router-link
                                         >
                                         and
-                                        <a
-                                            :href="privacyUrl"
+                                        <router-link
+                                            to="/privacy-policy"
                                             target="_blank"
                                             class="text-indigo-400 hover:text-indigo-300"
-                                            >Privacy Policy</a
+                                            >Privacy Policy</router-link
                                         >. Please review them before proceeding.
                                     </p>
                                 </div>
@@ -481,9 +481,6 @@ import { Cpu, HardDrive, Database, Archive, Server, FolderOpen, Box, Wifi } from
 
 const { t } = useI18n();
 const Settings = useSettingsStore();
-
-const termsUrl = Settings.getSetting('legal_tos_url');
-const privacyUrl = Settings.getSetting('legal_privacy_url');
 
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);

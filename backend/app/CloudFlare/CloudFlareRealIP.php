@@ -15,15 +15,30 @@ namespace MythicalDash\CloudFlare;
 
 class CloudFlareRealIP
 {
+    /**
+     * Get the real client IP address, considering Cloudflare and Nginx proxy headers.
+     *
+     * Order of precedence:
+     * 1. HTTP_CF_CONNECTING_IP (Cloudflare)
+     * 2. HTTP_X_FORWARDED_FOR (first IP, may be a comma-separated list)
+     * 3. HTTP_X_REAL_IP (set by Nginx)
+     * 4. REMOTE_ADDR (fallback)
+     *
+     * @return string Real client IP address
+     */
     public static function getRealIP()
     {
         if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
             return $_SERVER['HTTP_CF_CONNECTING_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            return $_SERVER['HTTP_X_FORWARDED_FOR'];
         }
-
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            // X-Forwarded-For can be a comma+space separated list of IPs. The first is the original client.
+            $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            return trim($ips[0]);
+        }
+        if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+            return $_SERVER['HTTP_X_REAL_IP'];
+        }
         return $_SERVER['REMOTE_ADDR'];
-
     }
 }

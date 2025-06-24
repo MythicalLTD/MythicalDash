@@ -7,12 +7,11 @@ import Sidebar from '@/components/client/layout/Sidebar.vue';
 import SearchModal from '@/components/client/layout/SearchModal.vue';
 import NotificationsDropdown from '@/components/client/layout/NotificationsDropdown.vue';
 import ProfileDropdown from '@/components/client/layout/ProfileDropdown.vue';
-import { SettingsIcon, UsersIcon } from 'lucide-vue-next';
+import { SettingsIcon, UserIcon, UsersIcon } from 'lucide-vue-next';
 import Session from '@/mythicaldash/Session';
 import StorageMonitor from '@/mythicaldash/StorageMonitor';
 import MythicalDash from '@/mythicaldash/MythicalDash';
 import { LicenseServer } from '@/mythicaldash/LicenseServer';
-import ReloadAnimation from '@/components/client/ui/ReloadAnimation.vue';
 
 MythicalDash.download();
 
@@ -36,7 +35,6 @@ const isSearchOpen = ref(false);
 const isNotificationsOpen = ref(false);
 const isReloading = ref(false);
 const isProfileOpen = ref(false);
-const isOffline = ref(false);
 
 // Toggle functions
 const toggleSidebar = () => {
@@ -118,18 +116,11 @@ const handleVisibilityChange = () => {
     document.title = document.hidden ? `${document.title} - Inactive` : document.title.replace(' - Inactive', '');
 };
 
-const handleOnlineStatus = () => {
-    isOffline.value = !navigator.onLine;
-};
-
 // Lifecycle hooks
 onMounted(() => {
     document.addEventListener('click', handleClickOutside);
     document.addEventListener('keydown', handleKeydown);
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('online', handleOnlineStatus);
-    window.addEventListener('offline', handleOnlineStatus);
-    isOffline.value = !navigator.onLine;
 
     if (sessionStorage.getItem('firstLoad') === null) {
         loading.value = true;
@@ -142,17 +133,36 @@ onMounted(() => {
     }
 });
 
+const userBackground = computed(() => {
+    return Session.getInfo('background');
+});
+
+const pageBackgroundStyle = computed(() => {
+    if (!userBackground.value) {
+        return {};
+    }
+
+    return {
+        backgroundImage: `linear-gradient(135deg, rgba(3, 3, 5, 0.85) 0%, rgba(10, 10, 21, 0.85) 50%, rgba(3, 3, 5, 0.85) 100%), url('${userBackground.value}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+    };
+});
+
 onUnmounted(() => {
     document.removeEventListener('click', handleClickOutside);
     document.removeEventListener('keydown', handleKeydown);
     document.removeEventListener('visibilitychange', handleVisibilityChange);
-    window.removeEventListener('online', handleOnlineStatus);
-    window.removeEventListener('offline', handleOnlineStatus);
 });
 
 // Computed properties
 const profileMenu = computed(() => {
-    const menu = [{ name: 'Settings', icon: SettingsIcon, href: '/account' }];
+    const menu = [
+        { name: 'Settings', icon: SettingsIcon, href: '/account' },
+        { name: 'Profile', icon: UserIcon, href: `/profile/${Session.getInfo('uuid')}` },
+    ];
     const role = Session.getInfo('role_real_name') ?? '';
     if (['admin', 'administrator', 'support', 'supportbuddy'].includes(role)) {
         menu.splice(1, 0, { name: 'Admin Area', icon: UsersIcon, href: '/mc-admin' });
@@ -167,6 +177,7 @@ const userInfo = computed(() => ({
     roleName: Session.getInfo('role_name'),
     email: Session.getInfo('email'),
     avatar: Session.getInfo('avatar'),
+    background: Session.getInfo('background'),
 }));
 
 const showFooter = ref(true);
@@ -204,46 +215,19 @@ const reloadUserData = async () => {
 };
 </script>
 <template>
-    <ReloadAnimation :isReloading="isReloading" />
-    <div class="min-h-screen bg-[#030305] relative overflow-hidden">
-        <!-- Connection Failed Screen -->
-        <div
-            v-if="isOffline"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-[#030305]/95 backdrop-blur-lg"
-        >
-            <div class="text-center p-8">
-                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-8 w-8 text-red-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                        />
-                    </svg>
-                </div>
-                <h2 class="text-2xl font-semibold text-white mb-2">Connection Lost</h2>
-                <p class="text-gray-400 mb-4">Please check your internet connection and try again.</p>
-                <button
-                    @click="reloadUserData"
-                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-                >
-                    Retry Connection
-                </button>
-            </div>
-        </div>
-
+    <div class="min-h-screen bg-[#030305] relative overflow-hidden" :style="pageBackgroundStyle">
         <!-- Background elements -->
-        <div class="absolute inset-0 bg-gradient-to-b from-[#030305] via-[#0a0a15] to-[#030305]">
-            <div class="stars"></div>
-            <div class="grid-overlay"></div>
-            <div class="glow-effects"></div>
+        <div
+            class="absolute inset-0"
+            :class="
+                userBackground
+                    ? 'bg-gradient-to-b from-black/30 via-black/20 to-black/30'
+                    : 'bg-gradient-to-b from-[#030305] via-[#0a0a15] to-[#030305]'
+            "
+        >
+            <div class="stars" :class="{ 'opacity-50': userBackground }"></div>
+            <div class="grid-overlay" :class="{ 'opacity-30': userBackground }"></div>
+            <div class="glow-effects" :class="{ 'opacity-50': userBackground }"></div>
         </div>
 
         <!-- Content wrapper -->
@@ -307,6 +291,7 @@ const reloadUserData = async () => {
                         roleName: userInfo.roleName || '',
                         email: userInfo.email || '',
                         avatar: userInfo.avatar || '',
+                        background: userInfo.background || '',
                     }"
                     class="bg-[#050508]/95 backdrop-blur-lg border border-[#1a1a2f]/30"
                 />
@@ -316,7 +301,7 @@ const reloadUserData = async () => {
                     <a href="https://mythical.systems" class="hover:text-indigo-400 transition-colors">
                         MythicalSystems
                     </a>
-                    <p>LTD 2020 - {{ new Date().getFullYear() }}</p>
+                    <p>2020 - {{ new Date().getFullYear() }}</p>
                 </footer>
             </template>
         </div>

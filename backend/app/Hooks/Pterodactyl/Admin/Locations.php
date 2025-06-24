@@ -21,56 +21,21 @@ use MythicalDash\Services\Pterodactyl\Admin\Resources\LocationsResource;
 class Locations extends LocationsResource
 {
     /**
-     * Cache directory for storing locations data.
-     */
-    private const CACHE_DIR = APP_CACHE_DIR . '/pterodactyl/locations';
-
-    /**
-     * Cache TTL in seconds (30 minutes).
-     */
-    private const CACHE_TTL = 1800;
-
-    /**
-     * Get all locations from Pterodactyl with caching.
+     * Get all locations from Pterodactyl.
      *
-     * @param bool $forceRefresh Whether to force refresh the cache
+     * @param bool $forceRefresh Whether to force refresh the data
      *
      * @return array The list of locations
      */
     public static function getLocations(bool $forceRefresh = false): array
     {
         $appInstance = App::getInstance(true);
-
-        // Create cache directory if it doesn't exist
-        if (!is_dir(self::CACHE_DIR)) {
-            mkdir(self::CACHE_DIR, 0755, true);
-        }
-
-        $cacheFile = self::CACHE_DIR . '/locations.json';
-
-        // Check if cache exists and is valid
-        if ($forceRefresh) {
-            self::clearLocationsCache();
-        }
-
-        if (file_exists($cacheFile) && !$forceRefresh) {
-            $cacheData = json_decode(file_get_contents($cacheFile), true);
-            if ($cacheData && isset($cacheData['timestamp'])
-                && (time() - $cacheData['timestamp']) < self::CACHE_TTL) {
-                return $cacheData['locations'];
-            }
-        }
-
-        // Cache doesn't exist or is invalid, fetch from API
         try {
             $locationsResource = new LocationsResource(
                 $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
                 $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
-
             $locationsData = $locationsResource->listLocations(1, 150);
-
-            // Process and format locations data
             $locations = [];
             if (isset($locationsData['data']) && is_array($locationsData['data'])) {
                 foreach ($locationsData['data'] as $location) {
@@ -86,23 +51,12 @@ class Locations extends LocationsResource
                     }
                 }
             }
-
-            // Cache the results
-            $cacheData = [
-                'timestamp' => time(),
-                'locations' => $locations,
-            ];
-            file_put_contents($cacheFile, json_encode($cacheData));
-
             return $locations;
-
         } catch (PterodactylException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Locations#getLocations] Failed to fetch locations: ' . $e->getMessage(), false);
         } catch (\Throwable $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Locations#getLocations] Unexpected error: ' . $e->getMessage(), false);
         }
-
-        // Return empty array if there was an error
         return [];
     }
 
@@ -166,13 +120,7 @@ class Locations extends LocationsResource
     /**
      * Clear the locations cache.
      */
-    public static function clearLocationsCache(): void
-    {
-        $cacheFile = self::CACHE_DIR . '/locations.json';
-        if (file_exists($cacheFile)) {
-            unlink($cacheFile);
-        }
-    }
+    public static function clearLocationsCache(): void {}
 
     /**
      * Get location ID mapping for all locations.

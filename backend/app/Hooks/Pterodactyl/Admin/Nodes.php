@@ -23,16 +23,6 @@ use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 class Nodes extends NodesResource
 {
     /**
-     * Cache directory for storing node data.
-     */
-    private const CACHE_DIR = APP_CACHE_DIR . '/pterodactyl/nodes';
-
-    /**
-     * Cache TTL in seconds (2 minutes).
-     */
-    private const CACHE_TTL = 120;
-
-    /**
      * Get node information by ID.
      *
      * @param int $nodeId The ID of the node
@@ -42,7 +32,7 @@ class Nodes extends NodesResource
      */
     public static function getNodeInfo(int $nodeId, bool $forceRefresh = false): array
     {
-        return self::getNodeData($nodeId, $forceRefresh);
+        return self::getNodeData($nodeId);
     }
 
     /**
@@ -55,8 +45,7 @@ class Nodes extends NodesResource
      */
     public static function getLocationIdFromNode(int $nodeId, bool $forceRefresh = false): ?int
     {
-        $nodeData = self::getNodeData($nodeId, $forceRefresh);
-
+        $nodeData = self::getNodeData($nodeId);
         return $nodeData['attributes']['location_id'] ?? null;
     }
 
@@ -65,26 +54,12 @@ class Nodes extends NodesResource
      *
      * @param int $nodeId The ID of the node to clear cache for
      */
-    public static function clearNodeCache(int $nodeId): void
-    {
-        $cacheFile = self::CACHE_DIR . '/node_' . $nodeId . '.json';
-        if (file_exists($cacheFile)) {
-            unlink($cacheFile);
-        }
-    }
+    public static function clearNodeCache(int $nodeId): void {}
 
     /**
      * Clear all node caches.
      */
-    public static function clearAllCaches(): void
-    {
-        if (is_dir(self::CACHE_DIR)) {
-            $files = glob(self::CACHE_DIR . '/*.json');
-            foreach ($files as $file) {
-                unlink($file);
-            }
-        }
-    }
+    public static function clearAllCaches(): void {}
 
     /**
      * Get node data from cache or API.
@@ -94,47 +69,18 @@ class Nodes extends NodesResource
      *
      * @return array The node data
      */
-    private static function getNodeData(int $nodeId, bool $forceRefresh = false): array
+    private static function getNodeData(int $nodeId): array
     {
         $appInstance = App::getInstance(true);
-
-        // Create cache directory if it doesn't exist
-        if (!is_dir(self::CACHE_DIR)) {
-            mkdir(self::CACHE_DIR, 0755, true);
-        }
-
-        $cacheFile = self::CACHE_DIR . '/node_' . $nodeId . '.json';
-
-        // Check if cache exists and is valid
-        if ($forceRefresh) {
-            self::clearNodeCache($nodeId);
-        }
-
-        if (file_exists($cacheFile) && !$forceRefresh) {
-            $cacheData = json_decode(file_get_contents($cacheFile), true);
-            if ($cacheData && isset($cacheData['timestamp'])
-                && (time() - $cacheData['timestamp']) < self::CACHE_TTL) {
-                return $cacheData;
-            }
-        }
-
-        $nodeResource = new NodesResource(
-            App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-            App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
-        );
-
         try {
+            $nodeResource = new NodesResource(
+                $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+            );
             $nodeInfo = $nodeResource->getNode($nodeId);
-            $nodeData = [
-                'timestamp' => time(),
+            return [
                 'attributes' => $nodeInfo['attributes'] ?? [],
             ];
-
-            // Cache the results
-            file_put_contents($cacheFile, json_encode($nodeData));
-
-            return $nodeData;
-
         } catch (ResourceNotFoundException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Nodes#getNodeData] Node not found', false);
         } catch (PterodactylException|ValidationException $e) {
@@ -142,7 +88,6 @@ class Nodes extends NodesResource
         } catch (\Throwable $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Nodes#getNodeData] Unexpected error', false);
         }
-
-        return ['timestamp' => time(), 'attributes' => []];
+        return ['attributes' => []];
     }
 }

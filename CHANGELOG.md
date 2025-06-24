@@ -1,3 +1,39 @@
+# v3-remastered 1.1
+
+# Bugs Fixed.
+
+- BUG: Fixed the bridge plugin saving path being null!
+- BUG: Fixed `Undefined array key "author_name"`
+- BUG: Fixed `PHP Fatal error:  Uncaught TypeError: MythicalDash\Chat\User\User::getTokenFromUUID(): Argument #1 ($uuid) must be of type string, null given, called in /var/www/mythicaldash-v3/backend/app/Api/User/Auth/Register.php on line 160`
+- BUG: Fixed servers not being deleted on account deletion (Admin area)
+- BUG: Removed caches (Added stupid delays/Permission errors & More)
+- BUG: IP Defaults to 127.0.0.1 instead of trying more way :>
+
+# Futures Added: 
+
+- Feature: Major performance optimizations implemented
+- Feature: Complete UI rebranding for a fresh look
+- Feature: Documented how to change the seo tags!
+- Feature: Added UI Customizer for personalized user experience
+- Feature: Preloader is on CSR instead of SSR now!
+- Feature: New Terms of service page design
+- Feature: New Privacy policy page design
+- Feature: Accounts now require to accept the terms and privacy policy!
+- Feature: Support center now only shows if the instance has a discord server!
+- Feature: Updated the ticket list page component!
+- Feature: Added terms requirement on server creation page!
+- Feature: Google ads support (GADS)
+- Feature: Ability to delete accounts (self deletion)
+- Feature: Ability to change resources view!
+- Feature: First user will always get admin :)!
+- Feature: New user lookup page!
+
+# Futures Removed: 
+
+- Feature: Removed the test email from admin area :)
+- Feature: Ability to use external links for privacy policy and terms of service!
+- Feature: Some security mitigations were put on reflect instead of strict!
+
 # v3-remastered 1.0.0.4
 
 # Bugs Fixed:

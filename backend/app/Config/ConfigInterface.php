@@ -45,8 +45,8 @@ interface ConfigInterface
     /**
      * Legal Values.
      */
-    public const LEGAL_TOS = 'legal_tos_url';
-    public const LEGAL_PRIVACY = 'legal_privacy_url';
+    public const LEGAL_TOS = 'legal_tos';
+    public const LEGAL_PRIVACY = 'legal_privacy';
 
     /**
      * Pterodactyl.
@@ -321,4 +321,10 @@ interface ConfigInterface
     public const IMAGE_HOSTING_COINS_PER_IMAGE = 'image_hosting_coins_per_image';
     public const IMAGE_HOSTING_MAX_FILE_SIZE = 'image_hosting_max_file_size';
     public const IMAGE_HOSTING_ALLOW_DOMAINS = 'image_hosting_allow_domains';
+
+	/**
+	 * Google Ads.
+	 */
+	public const GOOGLE_ADS_ENABLED = 'google_ads_enabled';
+	public const GOOGLE_ADS_CLIENT_ID = 'google_ads_client_id';
 }

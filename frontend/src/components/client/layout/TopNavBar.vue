@@ -1,5 +1,5 @@
 <template>
-    <nav class="fixed top-0 left-0 right-0 h-16 bg-[#0a0a0f]/95 backdrop-blur-md border-b border-[#2a2a3f]/30 z-30">
+    <nav :class="navClasses" :style="backgroundStyle">
         <div class="h-full px-4 flex items-center justify-between">
             <!-- Left: Logo & Menu Button -->
             <div class="flex items-center gap-3 flex-shrink-0">
@@ -11,14 +11,15 @@
                     <XIcon v-else class="w-5 h-5" />
                 </button>
 
-                <div class="flex items-center gap-2 group">
+                <div class="hidden md:flex items-center gap-2 group">
                     <div
                         class="w-8 h-8 flex items-center justify-center bg-[#1a1a2e]/30 rounded-lg transition-all duration-200 group-hover:bg-indigo-500/10 group-hover:scale-105"
+                        :class="topNavSettings.borderGlow ? 'shadow-md shadow-indigo-500/20' : ''"
                     >
-                        <img :src="appLogo" alt="MythicalDash" class="h-6 w-6" />
+                        <img :src="appLogo" alt="McCloudAdmin" class="h-6 w-6" />
                     </div>
                     <span
-                        class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent transition-all duration-200 group-hover:from-indigo-300 group-hover:to-indigo-500"
+                        class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent transition-all duration-200 group-hover:from-indigo-300 group-hover:to-indigo-500 drop-shadow-sm"
                     >
                         {{ appName }}
                     </span>
@@ -26,7 +27,7 @@
             </div>
 
             <!-- Center: Search Bar (Desktop) -->
-            <div class="hidden lg:flex flex-1 justify-center">
+            <div v-if="topNavSettings.showSearchBar" class="hidden lg:flex flex-1 justify-center">
                 <div class="relative group w-72">
                     <SearchIcon
                         class="absolute left-3 top-2.5 h-5 w-5 text-gray-400 group-hover:text-indigo-400 transition-all duration-200"
@@ -34,7 +35,8 @@
                     <input
                         type="text"
                         :placeholder="t('components.search.placeholder')"
-                        class="px-10 py-2 w-full bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 hover:bg-[#1a1a2e]/40"
+                        class="px-10 py-2 w-full bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 hover:bg-[#1a1a2e]/40 backdrop-blur-sm"
+                        :class="topNavSettings.borderGlow ? 'focus:shadow-lg focus:shadow-indigo-500/20' : ''"
                         @click="$emit('toggle-search')"
                         readonly
                     />
@@ -43,6 +45,7 @@
 
             <!-- Search Icon (Mobile) -->
             <button
+                v-if="topNavSettings.showSearchBar"
                 class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-all duration-200 hover:scale-105"
                 @click="$emit('toggle-search')"
             >
@@ -58,7 +61,8 @@
                     <select
                         v-model="locale"
                         @change="changeLocale"
-                        class="appearance-none bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg pl-8 pr-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all duration-200 cursor-pointer hover:bg-[#1a1a2e]/50 group-hover:border-indigo-500/30"
+                        class="appearance-none bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg pl-8 pr-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all duration-200 cursor-pointer hover:bg-[#1a1a2e]/50 group-hover:border-indigo-500/30 backdrop-blur-sm"
+                        :class="topNavSettings.borderGlow ? 'focus:shadow-lg focus:shadow-indigo-500/20' : ''"
                     >
                         <option
                             v-for="lang in availableLocales"
@@ -84,16 +88,19 @@
                 <button
                     @click="$emit('toggle-notifications')"
                     class="p-2 hover:bg-[#1a1a2e]/50 rounded-lg relative transition-all duration-200 hover:scale-105"
+                    :class="topNavSettings.borderGlow ? 'hover:shadow-md hover:shadow-indigo-500/20' : ''"
                 >
                     <BellIcon class="w-5 h-5" />
                     <span
                         class="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full ring-4 ring-[#0a0a0f]/95 animate-pulse"
+                        :class="topNavSettings.borderGlow ? 'shadow-sm shadow-indigo-500/50' : ''"
                     ></span>
                 </button>
 
                 <button
                     @click="$emit('toggle-profile')"
                     class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-all duration-200 hover:scale-105"
+                    :class="topNavSettings.borderGlow ? 'hover:shadow-md hover:shadow-indigo-500/20' : ''"
                 >
                     <UserIcon class="w-5 h-5" />
                 </button>
@@ -101,6 +108,7 @@
                 <button
                     @click="$emit('toggle-profile')"
                     class="hidden lg:flex items-center gap-3 px-3 py-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-all duration-200 group"
+                    :class="topNavSettings.borderGlow ? 'hover:shadow-md hover:shadow-indigo-500/20' : ''"
                 >
                     <div class="relative">
                         <img
@@ -110,16 +118,18 @@
                         />
                         <div
                             class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-[#0a0a0f]/95 animate-pulse"
+                            :class="topNavSettings.borderGlow ? 'shadow-sm shadow-green-500/50' : ''"
                         ></div>
                     </div>
                     <div class="flex flex-col items-start">
                         <span
-                            class="text-sm font-medium text-gray-200 group-hover:text-gray-100 transition-colors duration-200"
+                            class="text-sm font-medium text-gray-200 group-hover:text-gray-100 transition-colors duration-200 drop-shadow-sm"
                             >{{ Session.getInfo('username') }}</span
                         >
-                        <span class="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-200">{{
-                            role
-                        }}</span>
+                        <span
+                            class="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-200 drop-shadow-sm"
+                            >{{ role }}</span
+                        >
                     </div>
                 </button>
             </div>
@@ -138,16 +148,19 @@ import {
     Globe as GlobeIcon,
 } from 'lucide-vue-next';
 import { useSettingsStore } from '@/stores/settings';
-const Settings = useSettingsStore();
 import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
 import Session from '@/mythicaldash/Session';
 import SocialMediaLinks from './SocialMediaLinks.vue';
+import { useSkinSettings } from '@/composables/useSkinSettings';
 
 const role =
     (Session.getInfo('role_real_name') ?? '').charAt(0).toUpperCase() +
     (Session.getInfo('role_real_name') ?? '').slice(1);
 const { t, locale } = useI18n();
+const { topNavSettings } = useSkinSettings();
 
+const Settings = useSettingsStore();
 const availableLocales = ['EN', 'RO', 'FR', 'DE', 'ES', 'MD'];
 
 const changeLocale = (event: Event) => {
@@ -164,6 +177,30 @@ defineEmits(['toggle-sidebar', 'toggle-search', 'toggle-notifications', 'toggle-
 
 const appLogo = Settings.getSetting('app_logo');
 const appName = Settings.getSetting('app_name');
+
+// Computed styles based on settings
+const navClasses = computed(() => {
+    const baseClasses = 'fixed top-0 left-0 right-0 h-16 z-30 transition-all duration-200';
+    const backgroundClasses = topNavSettings.glassEffect
+        ? `bg-[#0a0a0f]/${Math.round(topNavSettings.backgroundOpacity * 100)} backdrop-blur-md`
+        : 'bg-[#0a0a0f]';
+    const borderClasses = topNavSettings.borderGlow
+        ? 'border-b border-[#2a2a3f]/30 shadow-lg shadow-indigo-500/5'
+        : 'border-b border-[#2a2a3f]/20';
+
+    return [baseClasses, backgroundClasses, borderClasses].join(' ');
+});
+
+const backgroundStyle = computed(() => {
+    if (!topNavSettings.glassEffect) return {};
+
+    return {
+        backgroundImage: `linear-gradient(135deg, 
+            rgba(99, 102, 241, 0.02) 0%, 
+            rgba(168, 85, 247, 0.01) 50%, 
+            rgba(59, 130, 246, 0.02) 100%)`,
+    };
+});
 </script>
 
 <style scoped>

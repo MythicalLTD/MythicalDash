@@ -50,7 +50,7 @@
 
                 <!-- Mail Settings -->
                 <div v-show="activeTab === 'mail'" class="space-y-6">
-                    <MailSettings :settings="settings" @update="updateSettings" @test-email="testEmailSettings" />
+                    <MailSettings :settings="settings" @update="updateSettings" />
                 </div>
 
                 <!-- Security Settings -->
@@ -176,7 +176,7 @@ const updateSettings = async (key: string, value: string) => {
         const data = await response.json();
 
         if (data.success) {
-            successMessage.value = 'Settings updated successfully';
+            successMessage.value = 'Settings updated successfully (A refresh may be needed (CTRL + R))';
             // Refresh global settings
             await settingsStore.refreshSettings();
 
@@ -190,43 +190,6 @@ const updateSettings = async (key: string, value: string) => {
     } catch (error) {
         console.error('Error updating settings:', error);
         errorMessage.value = 'An error occurred while updating settings';
-    } finally {
-        saving.value = false;
-    }
-};
-
-// Test email settings
-const testEmailSettings = async (email: string) => {
-    saving.value = true;
-    errorMessage.value = '';
-    successMessage.value = '';
-
-    try {
-        // Prepare form data
-        const formData = new FormData();
-        formData.append('email', email);
-
-        // Send test email request
-        const response = await fetch('/api/admin/settings/mail/test', {
-            method: 'POST',
-            body: formData,
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            successMessage.value = 'Test email sent successfully';
-
-            // Clear success message after 3 seconds
-            setTimeout(() => {
-                successMessage.value = '';
-            }, 3000);
-        } else {
-            errorMessage.value = data.message || 'Failed to send test email';
-        }
-    } catch (error) {
-        console.error('Error sending test email:', error);
-        errorMessage.value = 'An error occurred while sending test email';
     } finally {
         saving.value = false;
     }

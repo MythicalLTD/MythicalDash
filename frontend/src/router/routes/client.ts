@@ -26,6 +26,22 @@ const clientRoutes: RouteRecordRaw[] = [
         },
     },
     {
+        path: '/privacy-policy',
+        name: 'Privacy Policy',
+        component: () => import('@/views/guest/PrivacyPolicy.vue'),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+    {
+        path: '/terms-of-service',
+        name: 'Terms of Service',
+        component: () => import('@/views/guest/TermsOfService.vue'),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+    {
         path: '/dashboard',
         name: 'Dashboard',
         component: () => import('@/views/client/Home.vue'),
@@ -125,6 +141,14 @@ const clientRoutes: RouteRecordRaw[] = [
         path: '/profile/:uuid/gift-coins',
         name: 'Gift Coins',
         component: () => import('@/views/client/profile/GiftCoins.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
+        path: '/lookup',
+        name: 'Lookup',
+        component: () => import('@/views/client/Lookup.vue'),
         meta: {
             requiresAuth: true,
         },

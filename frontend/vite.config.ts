@@ -70,4 +70,5 @@ export default defineConfig({
     optimizeDeps: {
         include: ['vue', 'vue-router', 'pinia', 'vue-i18n', 'vue-sweetalert2'],
     },
+    cacheDir: '.vite',
 });

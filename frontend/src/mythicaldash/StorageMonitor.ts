@@ -1,5 +1,3 @@
-import Swal from 'sweetalert2';
-
 class StorageMonitor {
     private localStorageKey = 'storageMonitorKey';
     private sessionStorageKey = 'sessionStorageMonitorKey';
@@ -53,7 +51,9 @@ class StorageMonitor {
     }
 
     private alertAndReload(storageType: string) {
-        Swal.fire({
+        /**
+		 * Disabled for now, we don't want to scare users with alerts.
+		 * Swal.fire({
             title: 'Security Alert',
             text: `We have detected a potential security threat in your ${storageType}. The page will now reload.`,
             icon: 'warning',
@@ -65,7 +65,8 @@ class StorageMonitor {
         });
         setTimeout(() => {
             window.location.reload();
-        }, 5000);
+        }, 5000);**/
+        console.log(`We have detected a potential security threat in your ${storageType}.`);
     }
 
     private setCookie(name: string, value: string, days: number) {

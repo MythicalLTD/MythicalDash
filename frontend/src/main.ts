@@ -5,8 +5,12 @@ import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
 import VueSweetalert2 from 'vue-sweetalert2';
+import Ads from 'vue-google-adsense';
 import { createI18n } from 'vue-i18n';
 import './assets/sweetalert2.css';
+
+// Import performance optimizations
+import { initializePerformanceOptimizations, updatePerformanceSettings } from '@/utils/performance';
 
 // Load custom CSS and JS
 const loadCustomResources = () => {
@@ -70,33 +74,6 @@ const loadLocaleMessages = async (locale: string) => {
 // Load initial locale
 loadLocaleMessages(locale);
 
-// Performance optimization: Debounced error handler
-let errorTimeout: number | null = null;
-app.config.errorHandler = (err, instance, info) => {
-    if (errorTimeout) {
-        clearTimeout(errorTimeout);
-    }
-
-    errorTimeout = window.setTimeout(() => {
-        console.error('🚨 Vue Application Error 🚨\n', {
-            error: err,
-            message: err instanceof Error ? err.message : 'Unknown error',
-            stack: err instanceof Error ? err.stack : undefined,
-        });
-        console.error('🔍 Component Details:', {
-            name: instance?.$options?.name || 'Anonymous Component',
-            props: instance?.$props || {},
-            data: instance?.$data || {},
-        });
-        console.error('📋 Error Context:', {
-            info,
-            timestamp: new Date().toISOString(),
-            environment: import.meta.env.MODE,
-            vueVersion: instance?.$root?.$options?.version,
-        });
-    }, 100);
-};
-
 // Performance optimization: Disable devtools in production
 if (import.meta.env.PROD) {
     // @ts-expect-error - devtools is a valid property but not in types
@@ -106,6 +83,18 @@ if (import.meta.env.PROD) {
     app.config.warnHandler = () => null;
 }
 
+// Add this function to fetch the ad client code
+const fetchAdClient = async () => {
+    try {
+        const res = await fetch('/api/system/ga-ads');
+        if (!res.ok) throw new Error('Failed to fetch AdSense client code');
+        return (await res.text()).trim();
+    } catch (e) {
+        console.error('Failed to fetch AdSense client code:', e);
+        return null;
+    }
+};
+
 // Performance optimization: Register plugins with proper error handling and lazy loading
 const registerPlugins = async () => {
     try {
@@ -113,14 +102,58 @@ const registerPlugins = async () => {
         app.use(pinia);
         app.use(router);
         app.use(VueSweetalert2);
+
+        // Dynamically fetch and register Google AdSense client code
+        const adClient = await fetchAdClient();
+        if (adClient) {
+            app.use(Ads.AutoAdsense, { adClient, isNewAdsCode: true });
+        } else {
+            console.warn('Google AdSense client code not available, skipping Ads plugin.');
+        }
     } catch (error) {
         console.error('Failed to initialize Vue plugins:', error);
+    }
+};
+
+// Initialize performance optimizations early
+const initializePerformance = () => {
+    try {
+        // Initialize performance optimizations
+        initializePerformanceOptimizations();
+
+        // Set up performance settings watcher
+        if (typeof window !== 'undefined') {
+            // Watch for settings changes in localStorage
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'ui-settings') {
+                    updatePerformanceSettings();
+                }
+            });
+
+            // Also watch for direct settings updates
+            const originalSetItem = localStorage.setItem;
+            localStorage.setItem = function (key: string, value: string) {
+                const result = originalSetItem.call(this, key, value);
+                if (key === 'ui-settings') {
+                    // Small delay to allow the new settings to be processed
+                    setTimeout(() => {
+                        updatePerformanceSettings();
+                    }, 10);
+                }
+                return result;
+            };
+        }
+    } catch (error) {
+        console.warn('Failed to initialize performance optimizations:', error);
     }
 };
 
 // Mount the app with error boundary and performance monitoring
 const mountApp = async () => {
     try {
+        // Initialize performance optimizations first
+        initializePerformance();
+
         await registerPlugins();
 
         // Performance optimization: Use requestAnimationFrame for mounting
@@ -140,6 +173,7 @@ const mountApp = async () => {
 
 mountApp();
 
+// Web vitals monitoring for production
 if (import.meta.env.PROD) {
     import('web-vitals').then((webVitals) => {
         const { onCLS, onFID, onFCP, onLCP, onTTFB } = webVitals;

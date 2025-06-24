@@ -193,7 +193,7 @@
                                     <span class="block text-xs text-gray-400">{{ userProfile.discord_username }}</span>
                                 </div>
                                 <a
-                                    :href="`https://discord.com/users/${userProfile.discord_username}`"
+                                    :href="`https://discord.com/users/${userProfile.discord_id}`"
                                     target="_blank"
                                     class="text-indigo-400 hover:text-indigo-300 transition-colors"
                                 >

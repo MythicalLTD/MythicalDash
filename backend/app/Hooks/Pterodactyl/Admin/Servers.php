@@ -25,16 +25,6 @@ use MythicalDash\Services\Pterodactyl\Exceptions\ResourceNotFoundException;
 class Servers extends ServersResource
 {
     /**
-     * Cache directory for storing user data.
-     */
-    private const CACHE_DIR = APP_CACHE_DIR . '/pterodactyl/users';
-
-    /**
-     * Cache TTL in seconds (2 minutes).
-     */
-    private const CACHE_TTL = 120;
-
-    /**
      * Get the total resources usage for a user.
      *
      * @param int $pterodactylUserId The ID of the user to get the total resources usage for
@@ -43,7 +33,7 @@ class Servers extends ServersResource
      */
     public static function getUserTotalResourcesUsage(int $pterodactylUserId, bool $forceRefresh = false): array
     {
-        return self::getUserData($pterodactylUserId, $forceRefresh)['resources'];
+        return self::getUserData($pterodactylUserId)['resources'];
     }
 
     /**
@@ -56,7 +46,7 @@ class Servers extends ServersResource
      */
     public static function getUserServersList(int $pterodactylUserId, bool $forceRefresh = false): array
     {
-        return self::getUserData($pterodactylUserId, $forceRefresh)['servers'];
+        return self::getUserData($pterodactylUserId)['servers'];
     }
 
     /**
@@ -70,7 +60,7 @@ class Servers extends ServersResource
      */
     public static function getUserServerDetails(int $pterodactylUserId, int $serverId, bool $forceRefresh = false): array
     {
-        return self::getUserData($pterodactylUserId, $forceRefresh)['servers'][$serverId] ?? [];
+        return self::getUserData($pterodactylUserId)['servers'][$serverId] ?? [];
     }
 
     /**
@@ -105,26 +95,12 @@ class Servers extends ServersResource
      *
      * @param int $pterodactylUserId The ID of the user to clear cache for
      */
-    public static function clearUserCache(int $pterodactylUserId): void
-    {
-        $cacheFile = self::CACHE_DIR . '/user_' . $pterodactylUserId . '.json';
-        if (file_exists($cacheFile)) {
-            unlink($cacheFile);
-        }
-    }
+    public static function clearUserCache(int $pterodactylUserId): void {}
 
     /**
      * Clear all user caches.
      */
-    public static function clearAllCaches(): void
-    {
-        if (is_dir(self::CACHE_DIR)) {
-            $files = glob(self::CACHE_DIR . '/*.json');
-            foreach ($files as $file) {
-                unlink($file);
-            }
-        }
-    }
+    public static function clearAllCaches(): void {}
 
     /**
      * Check if a server exists in Pterodactyl.
@@ -342,48 +318,16 @@ class Servers extends ServersResource
      *
      * @return array The user data including servers and resources
      */
-    private static function getUserData(int $pterodactylUserId, bool $forceRefresh = false): array
+    private static function getUserData(int $pterodactylUserId): array
     {
         $appInstance = App::getInstance(true);
-
-        // Create cache directory if it doesn't exist
-        if (!is_dir(self::CACHE_DIR)) {
-            try {
-                mkdir(self::CACHE_DIR, 0755, true);
-            } catch (\Throwable $e) {
-                // Directory might have been created by another process
-                if (!is_dir(self::CACHE_DIR)) {
-                    $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Failed to create cache directory: ' . $e->getMessage());
-                }
-            }
-        }
-
-        $cacheFile = self::CACHE_DIR . '/user_' . $pterodactylUserId . '.json';
-
-        // Check if cache exists and is valid
-        if ($forceRefresh) {
-            self::clearUserCache($pterodactylUserId);
-        }
-
-        if (file_exists($cacheFile) && !$forceRefresh) {
-            $cacheData = json_decode(file_get_contents($cacheFile), true);
-            if (
-                $cacheData && isset($cacheData['timestamp'])
-                && (time() - $cacheData['timestamp']) < self::CACHE_TTL
-            ) {
-                return $cacheData;
-            }
-        }
-
-        $userResource = new UsersResource(
-            App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-            App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
-        );
-
         try {
+            $userResource = new UsersResource(
+                $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+            );
             $userInfo = $userResource->getUserWithServers($pterodactylUserId);
             $servers = $userInfo['attributes']['relationships']['servers']['data'] ?? [];
-
             $resources = [
                 'memory' => 0,
                 'cpu' => 0,
@@ -393,29 +337,22 @@ class Servers extends ServersResource
                 'allocations' => 0,
                 'servers' => count($servers),
             ];
-
             $serversList = [];
             foreach ($servers as $server) {
                 if (!isset($server['attributes'])) {
                     continue;
                 }
-
                 $attr = $server['attributes'];
-
-                // Calculate resources
                 if (isset($attr['limits'])) {
                     $resources['memory'] += intval($attr['limits']['memory'] ?? 0);
                     $resources['cpu'] += intval($attr['limits']['cpu'] ?? 0);
                     $resources['disk'] += intval($attr['limits']['disk'] ?? 0);
                 }
-
                 if (isset($attr['feature_limits'])) {
                     $resources['backups'] += intval($attr['feature_limits']['backups'] ?? 0);
                     $resources['databases'] += intval($attr['feature_limits']['databases'] ?? 0);
                     $resources['allocations'] += intval($attr['feature_limits']['allocations'] ?? 0);
                 }
-
-                // Build servers list
                 $serversList[] = [
                     'id' => $attr['id'] ?? null,
                     'identifier' => $attr['identifier'] ?? null,
@@ -440,33 +377,19 @@ class Servers extends ServersResource
                         'installed' => $attr['container']['installed'] ?? 0,
                         'environment' => $attr['container']['environment'] ?? [],
                     ],
-
                 ];
             }
-
-            $userData = [
-                'timestamp' => time(),
+            return [
                 'resources' => $resources,
                 'servers' => $serversList,
             ];
-
-            // Cache the results
-            file_put_contents($cacheFile, json_encode($userData));
-
-            return $userData;
-
         } catch (ResourceNotFoundException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] User not found', false);
-
-            return [];
         } catch (PterodactylException|ValidationException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Failed to fetch user data', false);
-
-            return [];
         } catch (\Throwable $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Unexpected error', false);
-
-            return [];
         }
+        return ['resources' => [], 'servers' => []];
     }
 }

@@ -2,8 +2,10 @@
 import { HelpCircleIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '@/stores/settings';
+import { computed } from 'vue';
 const Settings = useSettingsStore();
 const { t } = useI18n();
+const discordInvite = computed(() => Settings.getSetting('discord_invite_url') || '');
 
 defineProps({
     title: String,
@@ -28,8 +30,12 @@ defineEmits(['submit']);
         </form>
 
         <!-- Footer Links -->
-        <div class="mt-6 flex items-center justify-center gap-6 text-sm text-gray-400">
-            <a href="#" class="flex items-center gap-2 hover:text-white transition-colors">
+        <div v-if="discordInvite !== ''" class="mt-6 flex items-center justify-center gap-6 text-sm text-gray-400">
+            <a
+                :href="discordInvite || '#'"
+                target="_blank"
+                class="flex items-center gap-2 hover:text-white transition-colors"
+            >
                 <HelpCircleIcon class="w-4 h-4" />
                 {{ t('auth.pages.login.components.form.support_center') }}
             </a>

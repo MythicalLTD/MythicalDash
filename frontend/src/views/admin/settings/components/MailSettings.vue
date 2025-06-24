@@ -137,30 +137,6 @@
                     />
                     <p class="mt-1 text-xs text-gray-500">The email address that will appear in the "From" field.</p>
                 </div>
-
-                <!-- Test Email -->
-                <div class="mt-6 pt-4 border-t border-gray-700">
-                    <h3 class="text-md font-medium text-white mb-3">Test Email Configuration</h3>
-                    <div class="flex gap-2">
-                        <input
-                            type="email"
-                            v-model="testEmail"
-                            placeholder="Enter test email address"
-                            class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                        />
-                        <button
-                            type="button"
-                            @click="sendTestEmail"
-                            :disabled="testEmailInProgress || !testEmail"
-                            class="px-4 py-2 bg-gradient-to-r from-pink-500 to-violet-500 rounded-lg text-white hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center whitespace-nowrap"
-                        >
-                            <LoaderIcon v-if="testEmailInProgress" class="animate-spin w-4 h-4 mr-2" />
-                            <SendIcon v-else class="w-4 h-4 mr-2" />
-                            Send Test
-                        </button>
-                    </div>
-                    <p class="mt-1 text-xs text-gray-500">Send a test email to verify your SMTP configuration.</p>
-                </div>
             </div>
 
             <div v-else class="bg-gray-800/30 p-4 rounded-lg border border-gray-700">
@@ -175,7 +151,7 @@
 
 <script setup lang="ts">
 import { ref, watch, defineEmits } from 'vue';
-import { EyeIcon, EyeOffIcon, LoaderIcon, SendIcon, MilkOffIcon as MailOffIcon } from 'lucide-vue-next';
+import { EyeIcon, EyeOffIcon, MilkOffIcon as MailOffIcon } from 'lucide-vue-next';
 
 interface Props {
     settings: Record<string, string>;
@@ -196,8 +172,6 @@ const formData = ref({
 });
 
 const showPassword = ref(false);
-const testEmail = ref('');
-const testEmailInProgress = ref(false);
 
 // Initialize form with settings values
 watch(
@@ -221,20 +195,5 @@ watch(
 // Update a setting
 const updateSetting = (key: string, value: string) => {
     emit('update', key, value);
-};
-
-// Send test email
-const sendTestEmail = () => {
-    if (!testEmail.value) return;
-
-    testEmailInProgress.value = true;
-
-    // Emit event to parent
-    emit('test-email', testEmail.value);
-
-    // Reset progress after delay (parent will handle the actual API call)
-    setTimeout(() => {
-        testEmailInProgress.value = false;
-    }, 1000);
 };
 </script>

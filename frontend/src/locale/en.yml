@@ -87,12 +87,19 @@ Components:
         title: 'Recent tickets'
         description: 'View your recent tickets'
         viewMore: 'View more'
+        noTickets: 'No tickets found'
+        departmentHours: 'Department Hours'
         status:
             Open: 'Open'
             Closed: 'Closed'
             Waiting: 'Waiting'
             Replied: 'Replied'
             InProgress: 'In Progress'
+        priority:
+            Urgent: 'Urgent'
+            High: 'High'
+            Medium: 'Medium'
+            Low: 'Low'
     QuickSearch:
         title: 'Quick Search'
         esc_key: 'Esc'
@@ -242,6 +249,18 @@ auth:
                     login:
                         label: Already have an account?
                         link: Login
+                    accept_terms:
+                        label: I accept the
+                        terms: Terms of Service
+                        and: and
+                        privacy: Privacy Policy
+                        required: You must accept the Terms of Service and Privacy Policy to register.
+                    generate_username:
+                        label: Generate
+                        tooltip: Generate a random username
+                    generate_password:
+                        label: Generate Password
+                        tooltip: Generate a strong password
         forgot_password:
             alerts:
                 success:
@@ -482,6 +501,17 @@ account:
                     warning:
                         title: 'Warning'
                         description: "Don't be an idiot, you can't undo this action, like really once you press this button, there is no more confirmation it will straight up delete your account. So be sure you want to do this."
+                    confirm:
+                        title: "Are you sure? (Step {step}/3)"
+                        text: "This action is irreversible. Are you absolutely sure you want to delete your account? (Step {step}/3)"
+                        confirm: "Yes, continue"
+                        cancel: "Cancel"
+                    success:
+                        title: "Account Deleted"
+                        text: "Your account has been deleted. You will now be logged out."
+                    error:
+                        title: "Error"
+                        text: "There was a problem deleting your account. Please try again."
                 clear:
                     title: Application Data
                     subTitle: Manage and clear application data incase you see outdated data.
@@ -803,6 +833,7 @@ components:
         earn: Earn
         config: Config
         afk: AFK Rewards
+        lookup: Lookup
         create: Create Server
         code_redemption: Code Redemption
         j4r: Join For Rewards
@@ -1576,6 +1607,100 @@ redirect:
     go_now: 'Go Now'
 common:
     loading: 'Loading...'
+    cancel: 'Cancel'
+    close: 'Close'
+    go_back: 'Go Back'
+    save: 'Save'
+    edit: 'Edit'
+    delete: 'Delete'
+    view: 'View'
+    create: 'Create'
+    update: 'Update'
+    submit: 'Submit'
+    reset: 'Reset'
+    search: 'Search'
+    filter: 'Filter'
+    sort: 'Sort'
+    actions: 'Actions'
+    status: 'Status'
+    date: 'Date'
+    name: 'Name'
+    description: 'Description'
+    settings: 'Settings'
+    preferences: 'Preferences'
+    account: 'Account'
+    profile: 'Profile'
+    logout: 'Logout'
+    login: 'Login'
+    register: 'Register'
+    dashboard: 'Dashboard'
+    home: 'Home'
+    back: 'Back'
+    next: 'Next'
+    previous: 'Previous'
+    first: 'First'
+    last: 'Last'
+    page: 'Page'
+    of: 'of'
+    results: 'results'
+    no_results: 'No results found'
+    error: 'Error'
+    success: 'Success'
+    warning: 'Warning'
+    info: 'Info'
+    confirm: 'Confirm'
+    yes: 'Yes'
+    no: 'No'
+    ok: 'OK'
+    help: 'Help'
+    support: 'Support'
+    documentation: 'Documentation'
+    version: 'Version'
+    language: 'Language'
+    theme: 'Theme'
+    notifications: 'Notifications'
+    messages: 'Messages'
+    inbox: 'Inbox'
+    sent: 'Sent'
+    archived: 'Archived'
+    deleted: 'Deleted'
+    active: 'Active'
+    inactive: 'Inactive'
+    enabled: 'Enabled'
+    disabled: 'Disabled'
+    public: 'Public'
+    private: 'Private'
+    draft_status: 'Draft'
+    published: 'Published'
+    pending: 'Pending'
+    approved: 'Approved'
+    rejected: 'Rejected'
+    completed: 'Completed'
+    in_progress: 'In Progress'
+    cancelled: 'Cancelled'
+    expired: 'Expired'
+    required: 'Required'
+    optional: 'Optional'
+    recommended: 'Recommended'
+    available: 'Available'
+    unavailable: 'Unavailable'
+    online: 'Online'
+    offline: 'Offline'
+    connected: 'Connected'
+    disconnected: 'Disconnected'
+    synced: 'Synced'
+    unsynced: 'Unsynced'
+    verified: 'Verified'
+    unverified: 'Unverified'
+    locked: 'Locked'
+    unlocked: 'Unlocked'
+    secure: 'Secure'
+    insecure: 'Insecure'
+    valid: 'Valid'
+    invalid: 'Invalid'
+    true_value: 'True'
+    false_value: 'False'
+    select_option: 'Select an option'
 
 image_hosting:
     alerts:
@@ -1639,3 +1764,61 @@ images:
             description: 'Download your ShareX config file'
             download: 'Download'
             filename: 'sharex-config.sxcu'
+terms_of_service:
+    title: 'Terms of Service'
+    subtitle: 'Last updated: {date}'
+    loading: 'Loading terms of service...'
+    error:
+        title: 'Error Loading Terms of Service'
+        generic: 'An error occurred while loading the terms of service'
+        failed_fetch: 'Failed to fetch terms of service'
+        retry: 'Try Again'
+privacy_policy:
+    title: 'Privacy Policy'
+    subtitle: 'Last updated: {date}'
+    loading: 'Loading privacy policy...'
+    error:
+        title: 'Error Loading Privacy Policy'
+        generic: 'An error occurred while loading the privacy policy'
+        failed_fetch: 'Failed to fetch privacy policy'
+        retry: 'Try Again'
+
+
+# User Lookup translations
+lookup:
+    title: 'User Lookup'
+    description: 'Search for users within our community'
+    search:
+        title: 'Find Users'
+        subtitle: 'Search for community members by their username'
+        label: 'Search Users'
+        placeholder: 'Enter username (minimum 3 characters)'
+        button: 'Search Users'
+        searching: 'Searching...'
+    results:
+        title: 'Search Results'
+        found: 'users found'
+        showing: 'Showing {count} users'
+    user:
+        uuid: 'UUID'
+        view_profile: 'View Profile'
+    no_results:
+        title: 'No Users Found'
+        description: "We couldn't find any users matching your search"
+        message: 'Try a different search term or check your spelling'
+    tips:
+        title: 'Search Tips'
+        exact_username: 'Try searching for the exact username'
+        case_sensitive: 'Search is case-sensitive'
+        minimum_chars: 'Use at least 3 characters'
+    welcome:
+        title: 'User Directory'
+        description: 'Discover and connect with community members'
+        message: 'Start typing a username above to search for users in our community'
+    features:
+        search: 'Quick Search'
+        search_desc: 'Find users by their exact username'
+        profiles: 'User Profiles'
+        profiles_desc: 'View detailed user information and activity'
+        status: 'Online Status'
+        status_desc: See who's currently online and active

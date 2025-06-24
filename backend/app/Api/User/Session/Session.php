@@ -21,10 +21,12 @@ use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Locations\Locations;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Hooks\Pterodactyl\Admin\Nodes;
 use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 use MythicalDash\Plugins\Events\Events\UserEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
+use MythicalDash\Services\Pterodactyl\Admin\Resources\UsersResource;
 
 $router->post('/api/user/session/info/update', function (): void {
     App::init();
@@ -264,4 +266,32 @@ $router->get('/api/user/session/servers', function (): void {
     $appInstance->OK('User servers', [
         'servers' => $servers,
     ]);
+});
+
+
+$router->post('/api/user/session/delete-account', function (): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $session = new Session($appInstance);
+    $accountToken = $session->SESSION_KEY;
+
+	foreach (Servers::getUserServersList(User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false)) as $server) {
+        Servers::deletePterodactylServer($server['id']);
+    }
+	$pteroUsers = new UsersResource(
+		$appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+		$appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+	);
+	$pteroUsers->deleteUser(User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false));
+    User::delete($accountToken);
+
+	UserActivities::add(
+		User::getInfo($accountToken, UserColumns::UUID, false),
+		UserActivitiesTypes::$admin_user_update,
+		CloudFlareRealIP::getRealIP()
+	);
+
+
+    $appInstance->OK('Account deleted successfully!', []);
 });
