@@ -768,4 +768,9 @@ class User extends Database
 			return null;
 		}
 	}
+
+	public static function checkPermission(string $token, string $permission): bool
+	{
+		return PermissionUtils::userHasPermission($token, $permission);
+	}
 }

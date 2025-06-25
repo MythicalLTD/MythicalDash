@@ -1,5 +1,5 @@
 <template>
-    <li>
+    <li v-if="item.visible === undefined || item.visible">
         <!-- Menu item with submenu -->
         <template v-if="item.subMenu">
             <div

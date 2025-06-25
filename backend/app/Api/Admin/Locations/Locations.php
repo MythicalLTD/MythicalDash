@@ -12,13 +12,14 @@
  */
 
 use MythicalDash\App;
-use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Locations\Locations;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
-use MythicalDash\Plugins\Events\Events\LocationEvent;
+use MythicalDash\Plugins\Events\Events\LocationEvent;	
+use MythicalDash\Middleware\PermissionMiddleware;
+use MythicalDash\Permissions;
 
 $router->get('/api/admin/locations/pterodactyl', function (): void {
     App::init();
@@ -27,15 +28,12 @@ $router->get('/api/admin/locations/pterodactyl', function (): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
     $accountToken = $session->SESSION_KEY;
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_LOCATIONS_LIST);
         $locations = MythicalDash\Hooks\Pterodactyl\Admin\Locations::getLocations();
 
         $appInstance->OK('Pterodactyl api locations', [
             'locations' => $locations,
         ]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });
 
 $router->get('/api/admin/locations', function (): void {
@@ -45,31 +43,27 @@ $router->get('/api/admin/locations', function (): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
     $accountToken = $session->SESSION_KEY;
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_LOCATIONS_LIST);
         $locations = Locations::getLocations();
 
         $appInstance->OK('Locations', [
             'locations' => $locations,
         ]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });
 
 $router->post('/api/admin/locations/create', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
-    $appInstance->allowOnlyPOST();
+    $appInstance->allowOnlyPOST();	
     global $eventManager;
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_LOCATIONS_CREATE);
     UserActivities::add(
         $session->getInfo(UserColumns::UUID, false),
         UserActivitiesTypes::$admin_location_create,
         CloudFlareRealIP::getRealIP()
     );
-
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
 
         if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['pterodactyl_location_id']) && isset($_POST['node_ip']) && isset($_POST['status']) && isset($_POST['slots']) && isset($_POST['image_id'])) {
             $name = $_POST['name'];
@@ -145,9 +139,6 @@ $router->post('/api/admin/locations/create', function (): void {
         } else {
             $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
         }
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });
 
 $router->post('/api/admin/locations/(.*)/update', function ($id): void {
@@ -157,7 +148,7 @@ $router->post('/api/admin/locations/(.*)/update', function ($id): void {
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_LOCATIONS_EDIT);
         if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['node_ip']) && isset($_POST['status']) && isset($_POST['slots']) && isset($_POST['image_id'])) {
             $name = $_POST['name'];
             $description = $_POST['description'];
@@ -227,9 +218,6 @@ $router->post('/api/admin/locations/(.*)/update', function ($id): void {
         } else {
             $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
         }
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });
 
 $router->post('/api/admin/locations/(.*)/delete', function ($id): void {
@@ -239,7 +227,7 @@ $router->post('/api/admin/locations/(.*)/delete', function ($id): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
     global $eventManager;
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_LOCATIONS_DELETE);
         if (!Locations::exists($id)) {
             $appInstance->BadRequest('Location not found', ['error_code' => 'ERROR_LOCATION_NOT_FOUND']);
         }
@@ -264,5 +252,4 @@ $router->post('/api/admin/locations/(.*)/delete', function ($id): void {
                 'id' => $id,
             ],
         ]);
-    }
 });

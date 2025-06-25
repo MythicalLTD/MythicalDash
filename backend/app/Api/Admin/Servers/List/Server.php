@@ -11,8 +11,7 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-use MythicalDash\App;
-use MythicalDash\Chat\User\Can;
+use MythicalDash\App;	
 use MythicalDash\Chat\Eggs\Eggs;
 use MythicalDash\Chat\Eggs\EggCategories;
 use MythicalDash\Chat\columns\UserColumns;
@@ -21,14 +20,15 @@ use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\ServerEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
-
+use MythicalDash\Middleware\PermissionMiddleware;
+use MythicalDash\Permissions;
 $router->post('/api/admin/servers/toggle-suspend/(.*)', function (string $id): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     global $eventManager;
     $session = new MythicalDash\Chat\User\Session($appInstance);
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SERVERS_EDIT);
         if (MythicalDash\Hooks\Pterodactyl\Admin\Servers::serverExists($id)) {
             $serverInfo = MythicalDash\Hooks\Pterodactyl\Admin\Servers::getServerPterodactylDetails($id);
             $suspended = $serverInfo['attributes']['suspended'];
@@ -62,11 +62,9 @@ $router->post('/api/admin/servers/toggle-suspend/(.*)', function (string $id): v
                 ]);
             }
         } else {
-            $appInstance->BadRequest('Server not found', ['error_code' => 'SERVER_NOT_FOUND']);
-        }
-    } else {
-        $appInstance->Unauthorized('Unauthorized', extraContent: ['error_code' => 'INVALID_SESSION']);
+        $appInstance->BadRequest('Server not found', ['error_code' => 'SERVER_NOT_FOUND']);
     }
+
 });
 
 $router->post('/api/admin/servers/delete/(.*)', function (string $id): void {
@@ -74,7 +72,7 @@ $router->post('/api/admin/servers/delete/(.*)', function (string $id): void {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SERVERS_DELETE);
         if (MythicalDash\Hooks\Pterodactyl\Admin\Servers::serverExists($id)) {
             MythicalDash\Hooks\Pterodactyl\Admin\Servers::deletePterodactylServer($id);
             MythicalDash\Chat\Servers\Server::deleteServerByPterodactylId($id);
@@ -90,11 +88,9 @@ $router->post('/api/admin/servers/delete/(.*)', function (string $id): void {
             );
             $appInstance->OK('Server deleted successfully', []);
         } else {
-            $appInstance->BadRequest('Server not found', ['error_code' => 'SERVER_NOT_FOUND']);
-        }
-    } else {
-        $appInstance->Unauthorized('Unauthorized', extraContent: ['error_code' => 'INVALID_SESSION']);
+        $appInstance->BadRequest('Server not found', ['error_code' => 'SERVER_NOT_FOUND']);
     }
+    
 });
 
 $router->get('/api/admin/servers/list', function (): void {
@@ -102,7 +98,7 @@ $router->get('/api/admin/servers/list', function (): void {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SERVERS_LIST);
 
         $servers = MythicalDash\Hooks\Pterodactyl\Admin\Servers::getAllServers();
         $serversWithInfo = [];
@@ -129,7 +125,4 @@ $router->get('/api/admin/servers/list', function (): void {
         $appInstance->OK('Servers fetched successfully', [
             'servers' => $servers,
         ]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', extraContent: ['error_code' => 'INVALID_SESSION']);
-    }
 });

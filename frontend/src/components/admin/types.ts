@@ -6,6 +6,7 @@ export interface MenuItem {
     count?: unknown;
     subMenu?: MenuItem[];
     isOpen?: boolean;
+    visible?: unknown;
 }
 
 export interface MenuGroup {

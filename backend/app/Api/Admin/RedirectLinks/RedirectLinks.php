@@ -12,12 +12,13 @@
  */
 
 use MythicalDash\App;
-use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\RedirectLinks\RedirectLink;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
+use MythicalDash\Middleware\PermissionMiddleware;
+use MythicalDash\Permissions;
 
 $router->get('/api/admin/redirect-links', function () {
     App::init();
@@ -25,12 +26,9 @@ $router->get('/api/admin/redirect-links', function () {
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_LIST);
         $redirectLinks = RedirectLink::getAll();
         $appInstance->OK('Redirect links fetched successfully', ['redirect_links' => $redirectLinks]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });
 
 $router->post('/api/admin/redirect-links/create', function () {
@@ -39,7 +37,7 @@ $router->post('/api/admin/redirect-links/create', function () {
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_CREATE);
         if (!isset($_POST['name']) || empty($_POST['name'])) {
             $appInstance->BadRequest('Name is required', ['error_code' => 'ERROR_NAME_REQUIRED']);
 
@@ -87,9 +85,6 @@ $router->post('/api/admin/redirect-links/create', function () {
                 'link' => $_POST['link'],
             ],
         ]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });
 
 $router->post('/api/admin/redirect-links/(.*)/update', function ($id) {
@@ -98,7 +93,7 @@ $router->post('/api/admin/redirect-links/(.*)/update', function ($id) {
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_EDIT);
         if (!RedirectLink::exists($id)) {
             $appInstance->BadRequest('Redirect link not found', ['error_code' => 'REDIRECT_LINK_NOT_FOUND']);
 
@@ -144,9 +139,6 @@ $router->post('/api/admin/redirect-links/(.*)/update', function ($id) {
                 'link' => $_POST['link'],
             ],
         ]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });
 
 $router->post('/api/admin/redirect-links/(.*)/delete', function ($id) {
@@ -155,7 +147,7 @@ $router->post('/api/admin/redirect-links/(.*)/delete', function ($id) {
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_DELETE);
         if (!RedirectLink::exists($id)) {
             $appInstance->BadRequest('Redirect link not found', ['error_code' => 'REDIRECT_LINK_NOT_FOUND']);
 
@@ -176,9 +168,6 @@ $router->post('/api/admin/redirect-links/(.*)/delete', function ($id) {
         );
 
         $appInstance->OK('Redirect link deleted successfully', ['id' => $id]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });
 
 $router->get('/api/admin/redirect-links/(.*)', function ($id) {
@@ -187,7 +176,7 @@ $router->get('/api/admin/redirect-links/(.*)', function ($id) {
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_LIST);
         if (!RedirectLink::exists($id)) {
             $appInstance->BadRequest('Redirect link not found', ['error_code' => 'REDIRECT_LINK_NOT_FOUND']);
 
@@ -197,7 +186,4 @@ $router->get('/api/admin/redirect-links/(.*)', function ($id) {
         $redirectLink = RedirectLink::get($id);
 
         $appInstance->OK('Redirect link fetched successfully', ['redirect_link' => $redirectLink]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });

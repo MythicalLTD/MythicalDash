@@ -19,22 +19,20 @@ use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\DepartmentsEvent;
-
+use MythicalDash\Middleware\PermissionMiddleware;
+use MythicalDash\Permissions;
 $router->get('/api/admin/ticket/departments', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
-
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_DEPARTMENTS_LIST);
         $departments = Departments::getAll();
 
         $appInstance->OK('Departments retrieved successfully.', [
             'departments' => $departments,
         ]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
+
 });
 
 $router->post('/api/admin/ticket/departments/create', function (): void {
@@ -42,8 +40,7 @@ $router->post('/api/admin/ticket/departments/create', function (): void {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
-
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_DEPARTMENTS_CREATE);
         if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['open']) && isset($_POST['close']) && isset($_POST['enabled'])) {
             $name = $_POST['name'];
             $description = $_POST['description'];
@@ -89,11 +86,9 @@ $router->post('/api/admin/ticket/departments/create', function (): void {
                 ],
             ]);
         } else {
-            $appInstance->BadRequest('Missing required fields.', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
-        }
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
+        $appInstance->BadRequest('Missing required fields.', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
     }
+
 });
 
 $router->post('/api/admin/ticket/departments/(.*)/update', function (string $id): void {
@@ -101,8 +96,7 @@ $router->post('/api/admin/ticket/departments/(.*)/update', function (string $id)
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
-
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_DEPARTMENTS_EDIT);
         $departmentId = intval($id);
         if ($departmentId == 0) {
             $appInstance->BadRequest('Invalid department ID.', ['error_code' => 'INVALID_DEPARTMENT_ID']);
@@ -147,18 +141,15 @@ $router->post('/api/admin/ticket/departments/(.*)/update', function (string $id)
                 'enabled' => $enabled,
             ],
         ]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
-});
+
+});	
 
 $router->post('/api/admin/ticket/departments/(.*)/delete', function (string $id): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
-
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_DEPARTMENTS_DELETE);
         $departmentId = intval($id);
         if ($departmentId == 0) {
             $appInstance->BadRequest('Invalid department ID.', ['error_code' => 'INVALID_DEPARTMENT_ID']);
@@ -185,7 +176,5 @@ $router->post('/api/admin/ticket/departments/(.*)/delete', function (string $id)
             $appInstance->BadRequest('Failed to delete department.', ['error_code' => 'FAILED_TO_DELETE_DEPARTMENT']);
         }
         $appInstance->OK('Department deleted successfully.', []);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
+
 });

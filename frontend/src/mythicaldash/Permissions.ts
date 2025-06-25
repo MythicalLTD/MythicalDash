@@ -44,8 +44,6 @@ class Permissions {
     public static ADMIN_HEALTH_VIEW = 'admin.health.view';
 
     // Admin Users Permissions
-    /** Create new users */
-    public static ADMIN_USERS_CREATE = 'admin.users.create';
     /** Edit existing users */
     public static ADMIN_USERS_EDIT = 'admin.users.edit';
     /** Delete users */
@@ -114,8 +112,6 @@ class Permissions {
     public static ADMIN_PERMISSIONS_LIST = 'admin.permissions.list';
 
     // Admin Servers Permissions
-    /** Create new servers */
-    public static ADMIN_SERVERS_CREATE = 'admin.servers.create';
     /** Edit existing servers */
     public static ADMIN_SERVERS_EDIT = 'admin.servers.edit';
     /** Delete servers */
@@ -138,12 +134,6 @@ class Permissions {
     public static ADMIN_SERVER_QUEUE_LOGS_VIEW = 'admin.server.queue.logs.view';
 
     // Admin Tickets Permissions
-    /** Create new tickets */
-    public static ADMIN_TICKETS_CREATE = 'admin.tickets.create';
-    /** Edit existing tickets */
-    public static ADMIN_TICKETS_EDIT = 'admin.tickets.edit';
-    /** Delete tickets */
-    public static ADMIN_TICKETS_DELETE = 'admin.tickets.delete';
     /** List all tickets */
     public static ADMIN_TICKETS_LIST = 'admin.tickets.list';
     /** View ticket details */
@@ -166,16 +156,10 @@ class Permissions {
     public static ADMIN_SETTINGS_EDIT = 'admin.settings.edit';
 
     // Admin Plugins Permissions
-    /** Create new plugins */
-    public static ADMIN_PLUGINS_CREATE = 'admin.plugins.create';
     /** Edit existing plugins */
     public static ADMIN_PLUGINS_EDIT = 'admin.plugins.edit';
-    /** Delete plugins */
-    public static ADMIN_PLUGINS_DELETE = 'admin.plugins.delete';
     /** List all plugins */
     public static ADMIN_PLUGINS_LIST = 'admin.plugins.list';
-    /** View plugin details */
-    public static ADMIN_PLUGINS_VIEW = 'admin.plugins.view';
 
     // Admin MythicalCloud Permissions
     /** View MythicalCloud settings */
@@ -250,7 +234,6 @@ class Permissions {
             { constant: 'ADMIN_DASHBOARD_COMPONENTS_QUICK_ACTIONS', value: Permissions.ADMIN_DASHBOARD_COMPONENTS_QUICK_ACTIONS, category: 'Admin Dashboard Components', description: 'View quick actions component' },
             { constant: 'ADMIN_DASHBOARD_COMPONENTS_ACTIVITY_VIEW', value: Permissions.ADMIN_DASHBOARD_COMPONENTS_ACTIVITY_VIEW, category: 'Admin Dashboard Components', description: 'View activity feed component' },
             { constant: 'ADMIN_HEALTH_VIEW', value: Permissions.ADMIN_HEALTH_VIEW, category: 'Admin Health', description: 'See the health of the dashboard!' },
-            { constant: 'ADMIN_USERS_CREATE', value: Permissions.ADMIN_USERS_CREATE, category: 'Admin Users', description: 'Create new users' },
             { constant: 'ADMIN_USERS_EDIT', value: Permissions.ADMIN_USERS_EDIT, category: 'Admin Users', description: 'Edit existing users' },
             { constant: 'ADMIN_USERS_DELETE', value: Permissions.ADMIN_USERS_DELETE, category: 'Admin Users', description: 'Delete users' },
             { constant: 'ADMIN_USERS_LIST', value: Permissions.ADMIN_USERS_LIST, category: 'Admin Users', description: 'List all users' },
@@ -278,7 +261,6 @@ class Permissions {
             { constant: 'ADMIN_PERMISSIONS_EDIT', value: Permissions.ADMIN_PERMISSIONS_EDIT, category: 'Admin Permissions', description: 'Edit existing permissions' },
             { constant: 'ADMIN_PERMISSIONS_DELETE', value: Permissions.ADMIN_PERMISSIONS_DELETE, category: 'Admin Permissions', description: 'Delete permissions' },
             { constant: 'ADMIN_PERMISSIONS_LIST', value: Permissions.ADMIN_PERMISSIONS_LIST, category: 'Admin Permissions', description: 'List all permissions' },
-            { constant: 'ADMIN_SERVERS_CREATE', value: Permissions.ADMIN_SERVERS_CREATE, category: 'Admin Servers', description: 'Create new servers' },
             { constant: 'ADMIN_SERVERS_EDIT', value: Permissions.ADMIN_SERVERS_EDIT, category: 'Admin Servers', description: 'Edit existing servers' },
             { constant: 'ADMIN_SERVERS_DELETE', value: Permissions.ADMIN_SERVERS_DELETE, category: 'Admin Servers', description: 'Delete servers' },
             { constant: 'ADMIN_SERVERS_LIST', value: Permissions.ADMIN_SERVERS_LIST, category: 'Admin Servers', description: 'List all servers' },
@@ -287,9 +269,6 @@ class Permissions {
             { constant: 'ADMIN_SERVER_QUEUE_LIST', value: Permissions.ADMIN_SERVER_QUEUE_LIST, category: 'Admin Server Queue', description: 'List all server queue entries' },
             { constant: 'ADMIN_SERVER_QUEUE_VIEW', value: Permissions.ADMIN_SERVER_QUEUE_VIEW, category: 'Admin Server Queue', description: 'View server queue details' },
             { constant: 'ADMIN_SERVER_QUEUE_LOGS_VIEW', value: Permissions.ADMIN_SERVER_QUEUE_LOGS_VIEW, category: 'Admin Server Queue Logs', description: 'View server queue logs' },
-            { constant: 'ADMIN_TICKETS_CREATE', value: Permissions.ADMIN_TICKETS_CREATE, category: 'Admin Tickets', description: 'Create new tickets' },
-            { constant: 'ADMIN_TICKETS_EDIT', value: Permissions.ADMIN_TICKETS_EDIT, category: 'Admin Tickets', description: 'Edit existing tickets' },
-            { constant: 'ADMIN_TICKETS_DELETE', value: Permissions.ADMIN_TICKETS_DELETE, category: 'Admin Tickets', description: 'Delete tickets' },
             { constant: 'ADMIN_TICKETS_LIST', value: Permissions.ADMIN_TICKETS_LIST, category: 'Admin Tickets', description: 'List all tickets' },
             { constant: 'ADMIN_TICKETS_VIEW', value: Permissions.ADMIN_TICKETS_VIEW, category: 'Admin Tickets', description: 'View ticket details' },
             { constant: 'ADMIN_ANNOUNCEMENTS_CREATE', value: Permissions.ADMIN_ANNOUNCEMENTS_CREATE, category: 'Admin Announcements', description: 'Create new announcements' },
@@ -298,11 +277,8 @@ class Permissions {
             { constant: 'ADMIN_ANNOUNCEMENTS_LIST', value: Permissions.ADMIN_ANNOUNCEMENTS_LIST, category: 'Admin Announcements', description: 'List all announcements' },
             { constant: 'ADMIN_SETTINGS_VIEW', value: Permissions.ADMIN_SETTINGS_VIEW, category: 'Admin Settings', description: 'View system settings' },
             { constant: 'ADMIN_SETTINGS_EDIT', value: Permissions.ADMIN_SETTINGS_EDIT, category: 'Admin Settings', description: 'Edit system settings' },
-            { constant: 'ADMIN_PLUGINS_CREATE', value: Permissions.ADMIN_PLUGINS_CREATE, category: 'Admin Plugins', description: 'Create new plugins' },
             { constant: 'ADMIN_PLUGINS_EDIT', value: Permissions.ADMIN_PLUGINS_EDIT, category: 'Admin Plugins', description: 'Edit existing plugins' },
-            { constant: 'ADMIN_PLUGINS_DELETE', value: Permissions.ADMIN_PLUGINS_DELETE, category: 'Admin Plugins', description: 'Delete plugins' },
             { constant: 'ADMIN_PLUGINS_LIST', value: Permissions.ADMIN_PLUGINS_LIST, category: 'Admin Plugins', description: 'List all plugins' },
-            { constant: 'ADMIN_PLUGINS_VIEW', value: Permissions.ADMIN_PLUGINS_VIEW, category: 'Admin Plugins', description: 'View plugin details' },
             { constant: 'ADMIN_MYTHICALCLOUD_VIEW', value: Permissions.ADMIN_MYTHICALCLOUD_VIEW, category: 'Admin MythicalCloud', description: 'View MythicalCloud settings' },
             { constant: 'ADMIN_MYTHICALCLOUD_DOWNLOAD', value: Permissions.ADMIN_MYTHICALCLOUD_DOWNLOAD, category: 'Admin MythicalCloud', description: 'Download MythicalCloud backups' },
             { constant: 'ADMIN_MYTHICALCLOUD_UPLOAD', value: Permissions.ADMIN_MYTHICALCLOUD_UPLOAD, category: 'Admin MythicalCloud', description: 'Upload files to MythicalCloud' },

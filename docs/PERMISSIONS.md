@@ -4,9 +4,9 @@ This document provides a comprehensive overview of all permission nodes used in 
 
 ## Overview
 
-- **Total Permissions:** 87
+- **Total Permissions:** 79
 - **Categories:** 24
-- **With Descriptions:** 87
+- **With Descriptions:** 79
 
 ## Format
 
@@ -73,7 +73,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 
 | Permission | Node | Description |
 |------------|------|-------------|
-| `ADMIN_USERS_CREATE` | `admin.users.create` | Create new users |
 | `ADMIN_USERS_EDIT` | `admin.users.edit` | Edit existing users |
 | `ADMIN_USERS_DELETE` | `admin.users.delete` | Delete users |
 | `ADMIN_USERS_LIST` | `admin.users.list` | List all users |
@@ -136,7 +135,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 
 | Permission | Node | Description |
 |------------|------|-------------|
-| `ADMIN_SERVERS_CREATE` | `admin.servers.create` | Create new servers |
 | `ADMIN_SERVERS_EDIT` | `admin.servers.edit` | Edit existing servers |
 | `ADMIN_SERVERS_DELETE` | `admin.servers.delete` | Delete servers |
 | `ADMIN_SERVERS_LIST` | `admin.servers.list` | List all servers |
@@ -160,9 +158,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 
 | Permission | Node | Description |
 |------------|------|-------------|
-| `ADMIN_TICKETS_CREATE` | `admin.tickets.create` | Create new tickets |
-| `ADMIN_TICKETS_EDIT` | `admin.tickets.edit` | Edit existing tickets |
-| `ADMIN_TICKETS_DELETE` | `admin.tickets.delete` | Delete tickets |
 | `ADMIN_TICKETS_LIST` | `admin.tickets.list` | List all tickets |
 | `ADMIN_TICKETS_VIEW` | `admin.tickets.view` | View ticket details |
 
@@ -186,11 +181,8 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 
 | Permission | Node | Description |
 |------------|------|-------------|
-| `ADMIN_PLUGINS_CREATE` | `admin.plugins.create` | Create new plugins |
 | `ADMIN_PLUGINS_EDIT` | `admin.plugins.edit` | Edit existing plugins |
-| `ADMIN_PLUGINS_DELETE` | `admin.plugins.delete` | Delete plugins |
 | `ADMIN_PLUGINS_LIST` | `admin.plugins.list` | List all plugins |
-| `ADMIN_PLUGINS_VIEW` | `admin.plugins.view` | View plugin details |
 
 ## Admin MythicalCloud
 
@@ -266,4 +258,4 @@ To add a new permission node:
 
 ---
 
-*This documentation was auto-generated on 2025-06-25 05:59:45*
+*This documentation was auto-generated on 2025-06-25 07:32:45*

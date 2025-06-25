@@ -18,15 +18,15 @@ use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\SettingsEvent;
-
+use MythicalDash\Middleware\PermissionMiddleware;
+use MythicalDash\Permissions;
 $router->post('/api/admin/settings/update', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $config = $appInstance->getConfig();
     $session = new MythicalDash\Chat\User\Session($appInstance);
-
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SETTINGS_EDIT);
         if (isset($_POST['key']) && isset($_POST['value'])) {
             $key = $_POST['key'];
             $value = $_POST['value'];
@@ -51,12 +51,10 @@ $router->post('/api/admin/settings/update', function (): void {
             } else {
                 $appInstance->InternalServerError('Failed to update settings', ['error_code' => 'SERVICE_UNAVAILABLE']);
             }
-        } else {
-            $appInstance->BadRequest('Invalid request', ['error_code' => 'INVALID_REQUEST']);
-        }
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
+        		} else {
+        $appInstance->BadRequest('Invalid request', ['error_code' => 'INVALID_REQUEST']);
     }
+
 });
 
 $router->get('/api/admin/settings/get', function (): void {
@@ -64,13 +62,10 @@ $router->get('/api/admin/settings/get', function (): void {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
-
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SETTINGS_VIEW);
         $config = $appInstance->getConfig();
         $appInstance->OK('Settings retrieved successfully.', [
             'settings' => $config->dumpSettings(),
         ]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
+
 });

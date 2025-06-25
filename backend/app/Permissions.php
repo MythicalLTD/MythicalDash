@@ -60,8 +60,6 @@ class Permissions
     public const ADMIN_HEALTH_VIEW = 'admin.health.view';
 
     // Admin Users Permissions
-    /** Create new users */
-    public const ADMIN_USERS_CREATE = 'admin.users.create';
     /** Edit existing users */
     public const ADMIN_USERS_EDIT = 'admin.users.edit';
     /** Delete users */
@@ -130,8 +128,6 @@ class Permissions
     public const ADMIN_PERMISSIONS_LIST = 'admin.permissions.list';
 
     // Admin Servers Permissions
-    /** Create new servers */
-    public const ADMIN_SERVERS_CREATE = 'admin.servers.create';
     /** Edit existing servers */
     public const ADMIN_SERVERS_EDIT = 'admin.servers.edit';
     /** Delete servers */
@@ -154,12 +150,6 @@ class Permissions
     public const ADMIN_SERVER_QUEUE_LOGS_VIEW = 'admin.server.queue.logs.view';
 
     // Admin Tickets Permissions
-    /** Create new tickets */
-    public const ADMIN_TICKETS_CREATE = 'admin.tickets.create';
-    /** Edit existing tickets */
-    public const ADMIN_TICKETS_EDIT = 'admin.tickets.edit';
-    /** Delete tickets */
-    public const ADMIN_TICKETS_DELETE = 'admin.tickets.delete';
     /** List all tickets */
     public const ADMIN_TICKETS_LIST = 'admin.tickets.list';
     /** View ticket details */
@@ -182,16 +172,10 @@ class Permissions
     public const ADMIN_SETTINGS_EDIT = 'admin.settings.edit';
 
     // Admin Plugins Permissions
-    /** Create new plugins */
-    public const ADMIN_PLUGINS_CREATE = 'admin.plugins.create';
     /** Edit existing plugins */
     public const ADMIN_PLUGINS_EDIT = 'admin.plugins.edit';
-    /** Delete plugins */
-    public const ADMIN_PLUGINS_DELETE = 'admin.plugins.delete';
     /** List all plugins */
     public const ADMIN_PLUGINS_LIST = 'admin.plugins.list';
-    /** View plugin details */
-    public const ADMIN_PLUGINS_VIEW = 'admin.plugins.view';
 
     // Admin MythicalCloud Permissions
     /** View MythicalCloud settings */
@@ -327,12 +311,6 @@ class Permissions
                 'value' => self::ADMIN_HEALTH_VIEW,
                 'category' => 'Admin Health',
                 'description' => 'See the health of the dashboard!'
-            ],
-            [
-                'constant' => 'ADMIN_USERS_CREATE',
-                'value' => self::ADMIN_USERS_CREATE,
-                'category' => 'Admin Users',
-                'description' => 'Create new users'
             ],
             [
                 'constant' => 'ADMIN_USERS_EDIT',
@@ -497,12 +475,6 @@ class Permissions
                 'description' => 'List all permissions'
             ],
             [
-                'constant' => 'ADMIN_SERVERS_CREATE',
-                'value' => self::ADMIN_SERVERS_CREATE,
-                'category' => 'Admin Servers',
-                'description' => 'Create new servers'
-            ],
-            [
                 'constant' => 'ADMIN_SERVERS_EDIT',
                 'value' => self::ADMIN_SERVERS_EDIT,
                 'category' => 'Admin Servers',
@@ -549,24 +521,6 @@ class Permissions
                 'value' => self::ADMIN_SERVER_QUEUE_LOGS_VIEW,
                 'category' => 'Admin Server Queue Logs',
                 'description' => 'View server queue logs'
-            ],
-            [
-                'constant' => 'ADMIN_TICKETS_CREATE',
-                'value' => self::ADMIN_TICKETS_CREATE,
-                'category' => 'Admin Tickets',
-                'description' => 'Create new tickets'
-            ],
-            [
-                'constant' => 'ADMIN_TICKETS_EDIT',
-                'value' => self::ADMIN_TICKETS_EDIT,
-                'category' => 'Admin Tickets',
-                'description' => 'Edit existing tickets'
-            ],
-            [
-                'constant' => 'ADMIN_TICKETS_DELETE',
-                'value' => self::ADMIN_TICKETS_DELETE,
-                'category' => 'Admin Tickets',
-                'description' => 'Delete tickets'
             ],
             [
                 'constant' => 'ADMIN_TICKETS_LIST',
@@ -617,34 +571,16 @@ class Permissions
                 'description' => 'Edit system settings'
             ],
             [
-                'constant' => 'ADMIN_PLUGINS_CREATE',
-                'value' => self::ADMIN_PLUGINS_CREATE,
-                'category' => 'Admin Plugins',
-                'description' => 'Create new plugins'
-            ],
-            [
                 'constant' => 'ADMIN_PLUGINS_EDIT',
                 'value' => self::ADMIN_PLUGINS_EDIT,
                 'category' => 'Admin Plugins',
                 'description' => 'Edit existing plugins'
             ],
             [
-                'constant' => 'ADMIN_PLUGINS_DELETE',
-                'value' => self::ADMIN_PLUGINS_DELETE,
-                'category' => 'Admin Plugins',
-                'description' => 'Delete plugins'
-            ],
-            [
                 'constant' => 'ADMIN_PLUGINS_LIST',
                 'value' => self::ADMIN_PLUGINS_LIST,
                 'category' => 'Admin Plugins',
                 'description' => 'List all plugins'
-            ],
-            [
-                'constant' => 'ADMIN_PLUGINS_VIEW',
-                'value' => self::ADMIN_PLUGINS_VIEW,
-                'category' => 'Admin Plugins',
-                'description' => 'View plugin details'
             ],
             [
                 'constant' => 'ADMIN_MYTHICALCLOUD_VIEW',

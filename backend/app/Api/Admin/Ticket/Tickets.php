@@ -16,14 +16,14 @@ use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\Tickets\Tickets;
 use MythicalDash\Chat\columns\UserColumns;
-
+use MythicalDash\Middleware\PermissionMiddleware;
+use MythicalDash\Permissions;
 $router->get('/api/admin/tickets', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
-
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_TICKETS_LIST);
         $tickets = Tickets::getAllTickets(9500);
 
         // Process tickets to include user information instead of just UUID
@@ -66,7 +66,5 @@ $router->get('/api/admin/tickets', function (): void {
         $appInstance->OK('Tickets', [
             'tickets' => $tickets,
         ]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
+
 });

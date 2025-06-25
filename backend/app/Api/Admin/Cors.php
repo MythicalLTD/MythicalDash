@@ -14,13 +14,14 @@
 use MythicalDash\App;
 use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\User\Session;
-
+use MythicalDash\Middleware\PermissionMiddleware;
+use MythicalDash\Permissions;
 $router->add('/api/admin/cors', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyGET();
     $session = new Session($appInstance);
-    if (Can::canAccessAdminUI($session->getInfo(MythicalDash\Chat\columns\UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_ROOT);
         if (isset($_GET['target']) && !empty($_GET['target'])) {
             $target = $_GET['target'];
 
@@ -80,7 +81,4 @@ $router->add('/api/admin/cors', function (): void {
         }
         $appInstance->BadRequest('Valid target URL is required', ['error_code' => 'TARGET_REQUIRED']);
 
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });

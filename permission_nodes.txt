@@ -25,7 +25,6 @@ ADMIN_DASHBOARD_COMPONENTS_ACTIVITY_VIEW=admin.dashboard.components.activity.vie
 ADMIN_HEALTH_VIEW=admin.health.view | Admin Health | See the health of the dashboard!
 
 # Admin Users 
-ADMIN_USERS_CREATE=admin.users.create | Admin Users | Create new users
 ADMIN_USERS_EDIT=admin.users.edit | Admin Users | Edit existing users
 ADMIN_USERS_DELETE=admin.users.delete | Admin Users | Delete users
 ADMIN_USERS_LIST=admin.users.list | Admin Users | List all users
@@ -70,7 +69,6 @@ ADMIN_PERMISSIONS_DELETE=admin.permissions.delete | Admin Permissions | Delete p
 ADMIN_PERMISSIONS_LIST=admin.permissions.list | Admin Permissions | List all permissions
 
 # Servers
-ADMIN_SERVERS_CREATE=admin.servers.create | Admin Servers | Create new servers
 ADMIN_SERVERS_EDIT=admin.servers.edit | Admin Servers | Edit existing servers
 ADMIN_SERVERS_DELETE=admin.servers.delete | Admin Servers | Delete servers
 ADMIN_SERVERS_LIST=admin.servers.list | Admin Servers | List all servers
@@ -86,9 +84,6 @@ ADMIN_SERVER_QUEUE_VIEW=admin.server.queue.view | Admin Server Queue | View serv
 ADMIN_SERVER_QUEUE_LOGS_VIEW=admin.server.queue.logs.view | Admin Server Queue Logs | View server queue logs
 
 # Tickets
-ADMIN_TICKETS_CREATE=admin.tickets.create | Admin Tickets | Create new tickets
-ADMIN_TICKETS_EDIT=admin.tickets.edit | Admin Tickets | Edit existing tickets
-ADMIN_TICKETS_DELETE=admin.tickets.delete | Admin Tickets | Delete tickets
 ADMIN_TICKETS_LIST=admin.tickets.list | Admin Tickets | List all tickets
 ADMIN_TICKETS_VIEW=admin.tickets.view | Admin Tickets | View ticket details
 
@@ -103,11 +98,8 @@ ADMIN_SETTINGS_VIEW=admin.settings.view | Admin Settings | View system settings
 ADMIN_SETTINGS_EDIT=admin.settings.edit | Admin Settings | Edit system settings
 
 # Plugins
-ADMIN_PLUGINS_CREATE=admin.plugins.create | Admin Plugins | Create new plugins
 ADMIN_PLUGINS_EDIT=admin.plugins.edit | Admin Plugins | Edit existing plugins
-ADMIN_PLUGINS_DELETE=admin.plugins.delete | Admin Plugins | Delete plugins
 ADMIN_PLUGINS_LIST=admin.plugins.list | Admin Plugins | List all plugins
-ADMIN_PLUGINS_VIEW=admin.plugins.view | Admin Plugins | View plugin details
 
 # MythicalCloud
 ADMIN_MYTHICALCLOUD_VIEW=admin.mythicalcloud.view | Admin MythicalCloud | View MythicalCloud settings

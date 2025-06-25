@@ -12,13 +12,14 @@
  */
 
 use MythicalDash\App;
-use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Mails\MailTemplates;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\MailTemplatesEvent;
+use MythicalDash\Middleware\PermissionMiddleware;
+use MythicalDash\Permissions;
 
 $router->get('/api/admin/mail/mail-templates', function (): void {
     App::init();
@@ -26,12 +27,9 @@ $router->get('/api/admin/mail/mail-templates', function (): void {
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MAIL_TEMPLATES_LIST);
         $mailTemplates = MailTemplates::getAll();
         $appInstance->OK('Mail templates retrieved successfully.', ['mail_templates' => $mailTemplates]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });
 
 $router->post('/api/admin/mail/mail-templates/create', function (): void {
@@ -40,7 +38,7 @@ $router->post('/api/admin/mail/mail-templates/create', function (): void {
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MAIL_TEMPLATES_CREATE);
         if (isset($_POST['name']) && isset($_POST['content']) && isset($_POST['active'])) {
             $name = $_POST['name'];
             $content = $_POST['content'];
@@ -104,9 +102,6 @@ $router->post('/api/admin/mail/mail-templates/create', function (): void {
         } else {
             $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
         }
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });
 
 $router->post('/api/admin/mail/mail-templates/(.*)/update', function (string $id): void {
@@ -115,7 +110,7 @@ $router->post('/api/admin/mail/mail-templates/(.*)/update', function (string $id
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MAIL_TEMPLATES_EDIT);
         if (isset($_POST['name']) && isset($_POST['content']) && isset($_POST['active'])) {
             $name = $_POST['name'];
             $content = $_POST['content'];
@@ -186,9 +181,6 @@ $router->post('/api/admin/mail/mail-templates/(.*)/update', function (string $id
         } else {
             $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
         }
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });
 
 $router->post('/api/admin/mail/mail-templates/(.*)/delete', function (string $id): void {
@@ -197,7 +189,7 @@ $router->post('/api/admin/mail/mail-templates/(.*)/delete', function (string $id
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MAIL_TEMPLATES_DELETE);
         if (!MailTemplates::exists($id)) {
             $appInstance->BadRequest('Mail template does not exist', ['error_code' => 'MAIL_TEMPLATE_DOES_NOT_EXIST']);
 
@@ -220,7 +212,4 @@ $router->post('/api/admin/mail/mail-templates/(.*)/delete', function (string $id
         } else {
             $appInstance->BadRequest('Failed to delete mail template', ['error_code' => 'FAILED_TO_DELETE_MAIL_TEMPLATE']);
         }
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });

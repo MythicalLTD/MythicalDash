@@ -15,6 +15,8 @@ use MythicalDash\App;
 use MythicalDash\Chat\User\Can;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Services\Cloud\MythicalCloudLogs;
+use MythicalDash\Middleware\PermissionMiddleware;
+use MythicalDash\Permissions;
 
 $router->get('/api/admin/health', function (): void {
     App::init();
@@ -24,7 +26,7 @@ $router->get('/api/admin/health', function (): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
     $accountToken = $session->SESSION_KEY;
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_HEALTH_VIEW);
         // Get database connection
         $db = $appInstance->getDatabase()->getPdo();
 
@@ -235,9 +237,7 @@ $router->get('/api/admin/health', function (): void {
         }
 
         $appInstance->OK('Health check passed', ['health' => $health]);
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
+
 });
 
 $router->post('/api/admin/logs/upload', function (): void {
@@ -248,7 +248,7 @@ $router->post('/api/admin/logs/upload', function (): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
     $accountToken = $session->SESSION_KEY;
 
-    if (Can::canAccessAdminUI($session->getInfo(UserColumns::ROLE_ID, false))) {
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MYTHICALCLOUD_UPLOAD);
         // Get logs directory
 
         // Upload dashboard logs
@@ -262,7 +262,4 @@ $router->post('/api/admin/logs/upload', function (): void {
         } else {
             $appInstance->BadRequest('Failed to upload logs', ['error_code' => 'LOG_UPLOAD_FAILED']);
         }
-    } else {
-        $appInstance->Unauthorized('Unauthorized', ['error_code' => 'INVALID_SESSION']);
-    }
 });
