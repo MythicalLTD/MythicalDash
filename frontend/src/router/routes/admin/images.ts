@@ -1,3 +1,5 @@
+import Session from '@/mythicaldash/Session';
+import Permissions from '@/mythicaldash/Permissions';
 import type { RouteRecordRaw } from 'vue-router';
 
 const imagesRoutes: RouteRecordRaw[] = [
@@ -9,6 +11,13 @@ const imagesRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_IMAGES_LIST)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/images/create',
@@ -18,6 +27,13 @@ const imagesRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_IMAGES_CREATE)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/images/:id/delete',
@@ -26,6 +42,13 @@ const imagesRoutes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_IMAGES_DELETE)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
 ];

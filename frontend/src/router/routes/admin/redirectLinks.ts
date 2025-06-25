@@ -1,4 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
+import Session from '@/mythicaldash/Session';
+import Permissions from '@/mythicaldash/Permissions';
 
 const redirectLinks: RouteRecordRaw[] = [
     {
@@ -9,6 +11,13 @@ const redirectLinks: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_REDIRECT_LINKS_LIST)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/redirect-links/create',
@@ -17,6 +26,13 @@ const redirectLinks: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_REDIRECT_LINKS_CREATE)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
     {
@@ -27,6 +43,13 @@ const redirectLinks: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_REDIRECT_LINKS_DELETE)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/redirect-links/:id/edit',
@@ -35,6 +58,13 @@ const redirectLinks: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_REDIRECT_LINKS_EDIT)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
 ];

@@ -1,3 +1,5 @@
+import Permissions from '@/mythicaldash/Permissions';
+import Session from '@/mythicaldash/Session';
 import type { RouteRecordRaw } from 'vue-router';
 
 const announcementRoutes: RouteRecordRaw[] = [
@@ -9,6 +11,13 @@ const announcementRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_ANNOUNCEMENTS_LIST)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/announcements/create',
@@ -17,6 +26,13 @@ const announcementRoutes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_ANNOUNCEMENTS_CREATE)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
     {
@@ -27,6 +43,13 @@ const announcementRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_ANNOUNCEMENTS_EDIT)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/announcements/:id/delete',
@@ -35,6 +58,13 @@ const announcementRoutes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_ANNOUNCEMENTS_DELETE)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
 ];

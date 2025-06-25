@@ -1,4 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
+import Session from '@/mythicaldash/Session';
+import Permissions from '@/mythicaldash/Permissions';
 
 const redeemRoutes: RouteRecordRaw[] = [
     {
@@ -9,6 +11,13 @@ const redeemRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_REDEEM_CODES_LIST)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/redeem-codes/create',
@@ -17,6 +26,13 @@ const redeemRoutes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_REDEEM_CODES_CREATE)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
     {
@@ -27,6 +43,13 @@ const redeemRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_REDEEM_CODES_EDIT)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/redeem-codes/:id/delete',
@@ -35,6 +58,13 @@ const redeemRoutes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_REDEEM_CODES_DELETE)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
 ];

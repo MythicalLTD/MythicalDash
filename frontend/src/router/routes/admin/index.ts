@@ -17,6 +17,8 @@ import backupsRoutes from './backups.ts';
 import imagesRoutes from './images.ts';
 import redirectLinks from './redirectLinks.ts';
 import rolesRoutes from './roles.ts';
+import Session from '@/mythicaldash/Session';
+import Permissions from '@/mythicaldash/Permissions';
 
 // Main admin dashboard routes
 const mainAdminRoutes: RouteRecordRaw[] = [
@@ -28,6 +30,13 @@ const mainAdminRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_DASHBOARD_VIEW)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/health',
@@ -36,6 +45,13 @@ const mainAdminRoutes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_HEALTH_VIEW)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
 ];

@@ -1,3 +1,5 @@
+import Permissions from '@/mythicaldash/Permissions';
+import Session from '@/mythicaldash/Session';
 import type { RouteRecordRaw } from 'vue-router';
 
 const departmentRoutes: RouteRecordRaw[] = [
@@ -9,6 +11,13 @@ const departmentRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_DEPARTMENTS_LIST)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/departments/create',
@@ -17,6 +26,13 @@ const departmentRoutes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_DEPARTMENTS_CREATE)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
     {
@@ -27,6 +43,13 @@ const departmentRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_DEPARTMENTS_EDIT)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/departments/:id/delete',
@@ -35,6 +58,13 @@ const departmentRoutes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_DEPARTMENTS_DELETE)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
 ];

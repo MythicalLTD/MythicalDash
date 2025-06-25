@@ -1,3 +1,5 @@
+import Permissions from '@/mythicaldash/Permissions';
+import Session from '@/mythicaldash/Session';
 import type { RouteRecordRaw } from 'vue-router';
 
 const locationRoutes: RouteRecordRaw[] = [
@@ -8,6 +10,13 @@ const locationRoutes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_BACKUPS_LIST)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
 ];

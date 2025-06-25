@@ -1,4 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
+import Session from '@/mythicaldash/Session';
+import Permissions from '@/mythicaldash/Permissions';
 
 const queueRoutes: RouteRecordRaw[] = [
     {
@@ -9,6 +11,13 @@ const queueRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_SERVER_QUEUE_LIST)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/server-queue/create',
@@ -17,6 +26,13 @@ const queueRoutes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_SERVER_QUEUE_CREATE)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
     {
@@ -27,6 +43,13 @@ const queueRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_SERVER_QUEUE_VIEW)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/server-queue/:id/delete',
@@ -36,6 +59,13 @@ const queueRoutes: RouteRecordRaw[] = [
             requiresAuth: true,
             requiresAdmin: true,
         },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_SERVER_QUEUE_DELETE)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
     },
     {
         path: '/mc-admin/server-queue/logs',
@@ -44,6 +74,13 @@ const queueRoutes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_SERVER_QUEUE_LOGS_VIEW)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
         },
     },
 ];

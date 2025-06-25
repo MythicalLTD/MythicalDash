@@ -4,9 +4,9 @@ This document provides a comprehensive overview of all permission nodes used in 
 
 ## Overview
 
-- **Total Permissions:** 93
-- **Categories:** 23
-- **With Descriptions:** 93
+- **Total Permissions:** 87
+- **Categories:** 24
+- **With Descriptions:** 87
 
 ## Format
 
@@ -86,7 +86,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_LOCATIONS_EDIT` | `admin.locations.edit` | Edit existing locations |
 | `ADMIN_LOCATIONS_DELETE` | `admin.locations.delete` | Delete locations |
 | `ADMIN_LOCATIONS_LIST` | `admin.locations.list` | List all locations |
-| `ADMIN_LOCATIONS_VIEW` | `admin.locations.view` | View location details |
 
 ## Admin Nests
 
@@ -96,7 +95,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_NESTS_EDIT` | `admin.nests.edit` | Edit existing nests |
 | `ADMIN_NESTS_DELETE` | `admin.nests.delete` | Delete nests |
 | `ADMIN_NESTS_LIST` | `admin.nests.list` | List all nests |
-| `ADMIN_NESTS_VIEW` | `admin.nests.view` | View nest details |
 
 ## Admin Eggs
 
@@ -106,7 +104,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_EGG_EDIT` | `admin.egg.edit` | Edit existing eggs |
 | `ADMIN_EGG_DELETE` | `admin.egg.delete` | Delete eggs |
 | `ADMIN_EGG_LIST` | `admin.egg.list` | List all eggs |
-| `ADMIN_EGG_VIEW` | `admin.egg.view` | View egg details |
 
 ## Admin Departments
 
@@ -116,7 +113,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_DEPARTMENTS_EDIT` | `admin.departments.edit` | Edit existing departments |
 | `ADMIN_DEPARTMENTS_DELETE` | `admin.departments.delete` | Delete departments |
 | `ADMIN_DEPARTMENTS_LIST` | `admin.departments.list` | List all departments |
-| `ADMIN_DEPARTMENTS_VIEW` | `admin.departments.view` | View department details |
 
 ## Admin Roles
 
@@ -126,7 +122,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_ROLES_EDIT` | `admin.roles.edit` | Edit existing roles |
 | `ADMIN_ROLES_DELETE` | `admin.roles.delete` | Delete roles |
 | `ADMIN_ROLES_LIST` | `admin.roles.list` | List all roles |
-| `ADMIN_ROLES_VIEW` | `admin.roles.view` | View role details |
 
 ## Admin Permissions
 
@@ -136,7 +131,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_PERMISSIONS_EDIT` | `admin.permissions.edit` | Edit existing permissions |
 | `ADMIN_PERMISSIONS_DELETE` | `admin.permissions.delete` | Delete permissions |
 | `ADMIN_PERMISSIONS_LIST` | `admin.permissions.list` | List all permissions |
-| `ADMIN_PERMISSIONS_VIEW` | `admin.permissions.view` | View permission details |
 
 ## Admin Servers
 
@@ -146,13 +140,15 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_SERVERS_EDIT` | `admin.servers.edit` | Edit existing servers |
 | `ADMIN_SERVERS_DELETE` | `admin.servers.delete` | Delete servers |
 | `ADMIN_SERVERS_LIST` | `admin.servers.list` | List all servers |
-| `ADMIN_SERVERS_VIEW` | `admin.servers.view` | View server details |
 
 ## Admin Server Queue
 
 | Permission | Node | Description |
 |------------|------|-------------|
-| `ADMIN_SERVER_QUEUE_VIEW` | `admin.server.queue.view` | View server queue |
+| `ADMIN_SERVER_QUEUE_CREATE` | `admin.server.queue.create` | Create new server queue entries |
+| `ADMIN_SERVER_QUEUE_DELETE` | `admin.server.queue.delete` | Delete server queue entries |
+| `ADMIN_SERVER_QUEUE_LIST` | `admin.server.queue.list` | List all server queue entries |
+| `ADMIN_SERVER_QUEUE_VIEW` | `admin.server.queue.view` | View server queue details |
 
 ## Admin Server Queue Logs
 
@@ -178,7 +174,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_ANNOUNCEMENTS_EDIT` | `admin.announcements.edit` | Edit existing announcements |
 | `ADMIN_ANNOUNCEMENTS_DELETE` | `admin.announcements.delete` | Delete announcements |
 | `ADMIN_ANNOUNCEMENTS_LIST` | `admin.announcements.list` | List all announcements |
-| `ADMIN_ANNOUNCEMENTS_VIEW` | `admin.announcements.view` | View announcement details |
 
 ## Admin Settings
 
@@ -210,10 +205,8 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | Permission | Node | Description |
 |------------|------|-------------|
 | `ADMIN_BACKUPS_CREATE` | `admin.backups.create` | Create new backups |
-| `ADMIN_BACKUPS_EDIT` | `admin.backups.edit` | Edit existing backups |
 | `ADMIN_BACKUPS_DELETE` | `admin.backups.delete` | Delete backups |
 | `ADMIN_BACKUPS_LIST` | `admin.backups.list` | List all backups |
-| `ADMIN_BACKUPS_VIEW` | `admin.backups.view` | View backup details |
 
 ## Admin Images
 
@@ -223,7 +216,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_IMAGES_EDIT` | `admin.images.edit` | Edit existing images |
 | `ADMIN_IMAGES_DELETE` | `admin.images.delete` | Delete images |
 | `ADMIN_IMAGES_LIST` | `admin.images.list` | List all images |
-| `ADMIN_IMAGES_VIEW` | `admin.images.view` | View image details |
 
 ## Admin Mail Templates
 
@@ -233,7 +225,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_MAIL_TEMPLATES_EDIT` | `admin.mail.templates.edit` | Edit existing mail templates |
 | `ADMIN_MAIL_TEMPLATES_DELETE` | `admin.mail.templates.delete` | Delete mail templates |
 | `ADMIN_MAIL_TEMPLATES_LIST` | `admin.mail.templates.list` | List all mail templates |
-| `ADMIN_MAIL_TEMPLATES_VIEW` | `admin.mail.templates.view` | View mail template details |
 
 ## Admin Redirect Links
 
@@ -243,7 +234,15 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_REDIRECT_LINKS_EDIT` | `admin.redirect.links.edit` | Edit existing redirect links |
 | `ADMIN_REDIRECT_LINKS_DELETE` | `admin.redirect.links.delete` | Delete redirect links |
 | `ADMIN_REDIRECT_LINKS_LIST` | `admin.redirect.links.list` | List all redirect links |
-| `ADMIN_REDIRECT_LINKS_VIEW` | `admin.redirect.links.view` | View redirect link details |
+
+## Admin Redeem Codes
+
+| Permission | Node | Description |
+|------------|------|-------------|
+| `ADMIN_REDEEM_CODES_CREATE` | `admin.redeem.codes.create` | Create new redeem codes |
+| `ADMIN_REDEEM_CODES_EDIT` | `admin.redeem.codes.edit` | Edit existing redeem codes |
+| `ADMIN_REDEEM_CODES_DELETE` | `admin.redeem.codes.delete` | Delete redeem codes |
+| `ADMIN_REDEEM_CODES_LIST` | `admin.redeem.codes.list` | List all redeem codes |
 
 ## Adding New Permissions
 
@@ -267,4 +266,4 @@ To add a new permission node:
 
 ---
 
-*This documentation was auto-generated on 2025-06-24 22:21:16*
+*This documentation was auto-generated on 2025-06-25 05:59:45*

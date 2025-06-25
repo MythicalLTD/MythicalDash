@@ -78,8 +78,6 @@ class Permissions
     public const ADMIN_LOCATIONS_DELETE = 'admin.locations.delete';
     /** List all locations */
     public const ADMIN_LOCATIONS_LIST = 'admin.locations.list';
-    /** View location details */
-    public const ADMIN_LOCATIONS_VIEW = 'admin.locations.view';
 
     // Admin Nests Permissions
     /** Create new nests */
@@ -90,8 +88,6 @@ class Permissions
     public const ADMIN_NESTS_DELETE = 'admin.nests.delete';
     /** List all nests */
     public const ADMIN_NESTS_LIST = 'admin.nests.list';
-    /** View nest details */
-    public const ADMIN_NESTS_VIEW = 'admin.nests.view';
 
     // Admin Eggs Permissions
     /** Create new eggs */
@@ -102,8 +98,6 @@ class Permissions
     public const ADMIN_EGG_DELETE = 'admin.egg.delete';
     /** List all eggs */
     public const ADMIN_EGG_LIST = 'admin.egg.list';
-    /** View egg details */
-    public const ADMIN_EGG_VIEW = 'admin.egg.view';
 
     // Admin Departments Permissions
     /** Create new departments */
@@ -114,8 +108,6 @@ class Permissions
     public const ADMIN_DEPARTMENTS_DELETE = 'admin.departments.delete';
     /** List all departments */
     public const ADMIN_DEPARTMENTS_LIST = 'admin.departments.list';
-    /** View department details */
-    public const ADMIN_DEPARTMENTS_VIEW = 'admin.departments.view';
 
     // Admin Roles Permissions
     /** Create new roles */
@@ -126,8 +118,6 @@ class Permissions
     public const ADMIN_ROLES_DELETE = 'admin.roles.delete';
     /** List all roles */
     public const ADMIN_ROLES_LIST = 'admin.roles.list';
-    /** View role details */
-    public const ADMIN_ROLES_VIEW = 'admin.roles.view';
 
     // Admin Permissions Permissions
     /** Create new permissions */
@@ -138,8 +128,6 @@ class Permissions
     public const ADMIN_PERMISSIONS_DELETE = 'admin.permissions.delete';
     /** List all permissions */
     public const ADMIN_PERMISSIONS_LIST = 'admin.permissions.list';
-    /** View permission details */
-    public const ADMIN_PERMISSIONS_VIEW = 'admin.permissions.view';
 
     // Admin Servers Permissions
     /** Create new servers */
@@ -150,11 +138,15 @@ class Permissions
     public const ADMIN_SERVERS_DELETE = 'admin.servers.delete';
     /** List all servers */
     public const ADMIN_SERVERS_LIST = 'admin.servers.list';
-    /** View server details */
-    public const ADMIN_SERVERS_VIEW = 'admin.servers.view';
 
     // Admin Server Queue Permissions
-    /** View server queue */
+    /** Create new server queue entries */
+    public const ADMIN_SERVER_QUEUE_CREATE = 'admin.server.queue.create';
+    /** Delete server queue entries */
+    public const ADMIN_SERVER_QUEUE_DELETE = 'admin.server.queue.delete';
+    /** List all server queue entries */
+    public const ADMIN_SERVER_QUEUE_LIST = 'admin.server.queue.list';
+    /** View server queue details */
     public const ADMIN_SERVER_QUEUE_VIEW = 'admin.server.queue.view';
 
     // Admin Server Queue Logs Permissions
@@ -182,8 +174,6 @@ class Permissions
     public const ADMIN_ANNOUNCEMENTS_DELETE = 'admin.announcements.delete';
     /** List all announcements */
     public const ADMIN_ANNOUNCEMENTS_LIST = 'admin.announcements.list';
-    /** View announcement details */
-    public const ADMIN_ANNOUNCEMENTS_VIEW = 'admin.announcements.view';
 
     // Admin Settings Permissions
     /** View system settings */
@@ -214,14 +204,10 @@ class Permissions
     // Admin Backups Permissions
     /** Create new backups */
     public const ADMIN_BACKUPS_CREATE = 'admin.backups.create';
-    /** Edit existing backups */
-    public const ADMIN_BACKUPS_EDIT = 'admin.backups.edit';
     /** Delete backups */
     public const ADMIN_BACKUPS_DELETE = 'admin.backups.delete';
     /** List all backups */
     public const ADMIN_BACKUPS_LIST = 'admin.backups.list';
-    /** View backup details */
-    public const ADMIN_BACKUPS_VIEW = 'admin.backups.view';
 
     // Admin Images Permissions
     /** Create new images */
@@ -232,8 +218,6 @@ class Permissions
     public const ADMIN_IMAGES_DELETE = 'admin.images.delete';
     /** List all images */
     public const ADMIN_IMAGES_LIST = 'admin.images.list';
-    /** View image details */
-    public const ADMIN_IMAGES_VIEW = 'admin.images.view';
 
     // Admin Mail Templates Permissions
     /** Create new mail templates */
@@ -244,8 +228,6 @@ class Permissions
     public const ADMIN_MAIL_TEMPLATES_DELETE = 'admin.mail.templates.delete';
     /** List all mail templates */
     public const ADMIN_MAIL_TEMPLATES_LIST = 'admin.mail.templates.list';
-    /** View mail template details */
-    public const ADMIN_MAIL_TEMPLATES_VIEW = 'admin.mail.templates.view';
 
     // Admin Redirect Links Permissions
     /** Create new redirect links */
@@ -256,8 +238,16 @@ class Permissions
     public const ADMIN_REDIRECT_LINKS_DELETE = 'admin.redirect.links.delete';
     /** List all redirect links */
     public const ADMIN_REDIRECT_LINKS_LIST = 'admin.redirect.links.list';
-    /** View redirect link details */
-    public const ADMIN_REDIRECT_LINKS_VIEW = 'admin.redirect.links.view';
+
+    // Admin Redeem Codes Permissions
+    /** Create new redeem codes */
+    public const ADMIN_REDEEM_CODES_CREATE = 'admin.redeem.codes.create';
+    /** Edit existing redeem codes */
+    public const ADMIN_REDEEM_CODES_EDIT = 'admin.redeem.codes.edit';
+    /** Delete redeem codes */
+    public const ADMIN_REDEEM_CODES_DELETE = 'admin.redeem.codes.delete';
+    /** List all redeem codes */
+    public const ADMIN_REDEEM_CODES_LIST = 'admin.redeem.codes.list';
 
     /**
      * Returns all permission nodes with metadata.
@@ -387,12 +377,6 @@ class Permissions
                 'description' => 'List all locations'
             ],
             [
-                'constant' => 'ADMIN_LOCATIONS_VIEW',
-                'value' => self::ADMIN_LOCATIONS_VIEW,
-                'category' => 'Admin Locations',
-                'description' => 'View location details'
-            ],
-            [
                 'constant' => 'ADMIN_NESTS_CREATE',
                 'value' => self::ADMIN_NESTS_CREATE,
                 'category' => 'Admin Nests',
@@ -415,12 +399,6 @@ class Permissions
                 'value' => self::ADMIN_NESTS_LIST,
                 'category' => 'Admin Nests',
                 'description' => 'List all nests'
-            ],
-            [
-                'constant' => 'ADMIN_NESTS_VIEW',
-                'value' => self::ADMIN_NESTS_VIEW,
-                'category' => 'Admin Nests',
-                'description' => 'View nest details'
             ],
             [
                 'constant' => 'ADMIN_EGG_CREATE',
@@ -447,12 +425,6 @@ class Permissions
                 'description' => 'List all eggs'
             ],
             [
-                'constant' => 'ADMIN_EGG_VIEW',
-                'value' => self::ADMIN_EGG_VIEW,
-                'category' => 'Admin Eggs',
-                'description' => 'View egg details'
-            ],
-            [
                 'constant' => 'ADMIN_DEPARTMENTS_CREATE',
                 'value' => self::ADMIN_DEPARTMENTS_CREATE,
                 'category' => 'Admin Departments',
@@ -475,12 +447,6 @@ class Permissions
                 'value' => self::ADMIN_DEPARTMENTS_LIST,
                 'category' => 'Admin Departments',
                 'description' => 'List all departments'
-            ],
-            [
-                'constant' => 'ADMIN_DEPARTMENTS_VIEW',
-                'value' => self::ADMIN_DEPARTMENTS_VIEW,
-                'category' => 'Admin Departments',
-                'description' => 'View department details'
             ],
             [
                 'constant' => 'ADMIN_ROLES_CREATE',
@@ -507,12 +473,6 @@ class Permissions
                 'description' => 'List all roles'
             ],
             [
-                'constant' => 'ADMIN_ROLES_VIEW',
-                'value' => self::ADMIN_ROLES_VIEW,
-                'category' => 'Admin Roles',
-                'description' => 'View role details'
-            ],
-            [
                 'constant' => 'ADMIN_PERMISSIONS_CREATE',
                 'value' => self::ADMIN_PERMISSIONS_CREATE,
                 'category' => 'Admin Permissions',
@@ -535,12 +495,6 @@ class Permissions
                 'value' => self::ADMIN_PERMISSIONS_LIST,
                 'category' => 'Admin Permissions',
                 'description' => 'List all permissions'
-            ],
-            [
-                'constant' => 'ADMIN_PERMISSIONS_VIEW',
-                'value' => self::ADMIN_PERMISSIONS_VIEW,
-                'category' => 'Admin Permissions',
-                'description' => 'View permission details'
             ],
             [
                 'constant' => 'ADMIN_SERVERS_CREATE',
@@ -567,16 +521,28 @@ class Permissions
                 'description' => 'List all servers'
             ],
             [
-                'constant' => 'ADMIN_SERVERS_VIEW',
-                'value' => self::ADMIN_SERVERS_VIEW,
-                'category' => 'Admin Servers',
-                'description' => 'View server details'
+                'constant' => 'ADMIN_SERVER_QUEUE_CREATE',
+                'value' => self::ADMIN_SERVER_QUEUE_CREATE,
+                'category' => 'Admin Server Queue',
+                'description' => 'Create new server queue entries'
+            ],
+            [
+                'constant' => 'ADMIN_SERVER_QUEUE_DELETE',
+                'value' => self::ADMIN_SERVER_QUEUE_DELETE,
+                'category' => 'Admin Server Queue',
+                'description' => 'Delete server queue entries'
+            ],
+            [
+                'constant' => 'ADMIN_SERVER_QUEUE_LIST',
+                'value' => self::ADMIN_SERVER_QUEUE_LIST,
+                'category' => 'Admin Server Queue',
+                'description' => 'List all server queue entries'
             ],
             [
                 'constant' => 'ADMIN_SERVER_QUEUE_VIEW',
                 'value' => self::ADMIN_SERVER_QUEUE_VIEW,
                 'category' => 'Admin Server Queue',
-                'description' => 'View server queue'
+                'description' => 'View server queue details'
             ],
             [
                 'constant' => 'ADMIN_SERVER_QUEUE_LOGS_VIEW',
@@ -637,12 +603,6 @@ class Permissions
                 'value' => self::ADMIN_ANNOUNCEMENTS_LIST,
                 'category' => 'Admin Announcements',
                 'description' => 'List all announcements'
-            ],
-            [
-                'constant' => 'ADMIN_ANNOUNCEMENTS_VIEW',
-                'value' => self::ADMIN_ANNOUNCEMENTS_VIEW,
-                'category' => 'Admin Announcements',
-                'description' => 'View announcement details'
             ],
             [
                 'constant' => 'ADMIN_SETTINGS_VIEW',
@@ -711,12 +671,6 @@ class Permissions
                 'description' => 'Create new backups'
             ],
             [
-                'constant' => 'ADMIN_BACKUPS_EDIT',
-                'value' => self::ADMIN_BACKUPS_EDIT,
-                'category' => 'Admin Backups',
-                'description' => 'Edit existing backups'
-            ],
-            [
                 'constant' => 'ADMIN_BACKUPS_DELETE',
                 'value' => self::ADMIN_BACKUPS_DELETE,
                 'category' => 'Admin Backups',
@@ -727,12 +681,6 @@ class Permissions
                 'value' => self::ADMIN_BACKUPS_LIST,
                 'category' => 'Admin Backups',
                 'description' => 'List all backups'
-            ],
-            [
-                'constant' => 'ADMIN_BACKUPS_VIEW',
-                'value' => self::ADMIN_BACKUPS_VIEW,
-                'category' => 'Admin Backups',
-                'description' => 'View backup details'
             ],
             [
                 'constant' => 'ADMIN_IMAGES_CREATE',
@@ -759,12 +707,6 @@ class Permissions
                 'description' => 'List all images'
             ],
             [
-                'constant' => 'ADMIN_IMAGES_VIEW',
-                'value' => self::ADMIN_IMAGES_VIEW,
-                'category' => 'Admin Images',
-                'description' => 'View image details'
-            ],
-            [
                 'constant' => 'ADMIN_MAIL_TEMPLATES_CREATE',
                 'value' => self::ADMIN_MAIL_TEMPLATES_CREATE,
                 'category' => 'Admin Mail Templates',
@@ -787,12 +729,6 @@ class Permissions
                 'value' => self::ADMIN_MAIL_TEMPLATES_LIST,
                 'category' => 'Admin Mail Templates',
                 'description' => 'List all mail templates'
-            ],
-            [
-                'constant' => 'ADMIN_MAIL_TEMPLATES_VIEW',
-                'value' => self::ADMIN_MAIL_TEMPLATES_VIEW,
-                'category' => 'Admin Mail Templates',
-                'description' => 'View mail template details'
             ],
             [
                 'constant' => 'ADMIN_REDIRECT_LINKS_CREATE',
@@ -819,10 +755,28 @@ class Permissions
                 'description' => 'List all redirect links'
             ],
             [
-                'constant' => 'ADMIN_REDIRECT_LINKS_VIEW',
-                'value' => self::ADMIN_REDIRECT_LINKS_VIEW,
-                'category' => 'Admin Redirect Links',
-                'description' => 'View redirect link details'
+                'constant' => 'ADMIN_REDEEM_CODES_CREATE',
+                'value' => self::ADMIN_REDEEM_CODES_CREATE,
+                'category' => 'Admin Redeem Codes',
+                'description' => 'Create new redeem codes'
+            ],
+            [
+                'constant' => 'ADMIN_REDEEM_CODES_EDIT',
+                'value' => self::ADMIN_REDEEM_CODES_EDIT,
+                'category' => 'Admin Redeem Codes',
+                'description' => 'Edit existing redeem codes'
+            ],
+            [
+                'constant' => 'ADMIN_REDEEM_CODES_DELETE',
+                'value' => self::ADMIN_REDEEM_CODES_DELETE,
+                'category' => 'Admin Redeem Codes',
+                'description' => 'Delete redeem codes'
+            ],
+            [
+                'constant' => 'ADMIN_REDEEM_CODES_LIST',
+                'value' => self::ADMIN_REDEEM_CODES_LIST,
+                'category' => 'Admin Redeem Codes',
+                'description' => 'List all redeem codes'
             ],
         ];
     }

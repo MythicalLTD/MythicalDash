@@ -110,6 +110,7 @@ const dashBoard = ref({
         backups_count: 0,
         images_count: 0,
         redirect_links_count: 0,
+        roles_count: 0,
     },
 });
 

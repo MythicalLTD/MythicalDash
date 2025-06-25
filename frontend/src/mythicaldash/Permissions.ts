@@ -62,8 +62,6 @@ class Permissions {
     public static ADMIN_LOCATIONS_DELETE = 'admin.locations.delete';
     /** List all locations */
     public static ADMIN_LOCATIONS_LIST = 'admin.locations.list';
-    /** View location details */
-    public static ADMIN_LOCATIONS_VIEW = 'admin.locations.view';
 
     // Admin Nests Permissions
     /** Create new nests */
@@ -74,8 +72,6 @@ class Permissions {
     public static ADMIN_NESTS_DELETE = 'admin.nests.delete';
     /** List all nests */
     public static ADMIN_NESTS_LIST = 'admin.nests.list';
-    /** View nest details */
-    public static ADMIN_NESTS_VIEW = 'admin.nests.view';
 
     // Admin Eggs Permissions
     /** Create new eggs */
@@ -86,8 +82,6 @@ class Permissions {
     public static ADMIN_EGG_DELETE = 'admin.egg.delete';
     /** List all eggs */
     public static ADMIN_EGG_LIST = 'admin.egg.list';
-    /** View egg details */
-    public static ADMIN_EGG_VIEW = 'admin.egg.view';
 
     // Admin Departments Permissions
     /** Create new departments */
@@ -98,8 +92,6 @@ class Permissions {
     public static ADMIN_DEPARTMENTS_DELETE = 'admin.departments.delete';
     /** List all departments */
     public static ADMIN_DEPARTMENTS_LIST = 'admin.departments.list';
-    /** View department details */
-    public static ADMIN_DEPARTMENTS_VIEW = 'admin.departments.view';
 
     // Admin Roles Permissions
     /** Create new roles */
@@ -110,8 +102,6 @@ class Permissions {
     public static ADMIN_ROLES_DELETE = 'admin.roles.delete';
     /** List all roles */
     public static ADMIN_ROLES_LIST = 'admin.roles.list';
-    /** View role details */
-    public static ADMIN_ROLES_VIEW = 'admin.roles.view';
 
     // Admin Permissions Permissions
     /** Create new permissions */
@@ -122,8 +112,6 @@ class Permissions {
     public static ADMIN_PERMISSIONS_DELETE = 'admin.permissions.delete';
     /** List all permissions */
     public static ADMIN_PERMISSIONS_LIST = 'admin.permissions.list';
-    /** View permission details */
-    public static ADMIN_PERMISSIONS_VIEW = 'admin.permissions.view';
 
     // Admin Servers Permissions
     /** Create new servers */
@@ -134,11 +122,15 @@ class Permissions {
     public static ADMIN_SERVERS_DELETE = 'admin.servers.delete';
     /** List all servers */
     public static ADMIN_SERVERS_LIST = 'admin.servers.list';
-    /** View server details */
-    public static ADMIN_SERVERS_VIEW = 'admin.servers.view';
 
     // Admin Server Queue Permissions
-    /** View server queue */
+    /** Create new server queue entries */
+    public static ADMIN_SERVER_QUEUE_CREATE = 'admin.server.queue.create';
+    /** Delete server queue entries */
+    public static ADMIN_SERVER_QUEUE_DELETE = 'admin.server.queue.delete';
+    /** List all server queue entries */
+    public static ADMIN_SERVER_QUEUE_LIST = 'admin.server.queue.list';
+    /** View server queue details */
     public static ADMIN_SERVER_QUEUE_VIEW = 'admin.server.queue.view';
 
     // Admin Server Queue Logs Permissions
@@ -166,8 +158,6 @@ class Permissions {
     public static ADMIN_ANNOUNCEMENTS_DELETE = 'admin.announcements.delete';
     /** List all announcements */
     public static ADMIN_ANNOUNCEMENTS_LIST = 'admin.announcements.list';
-    /** View announcement details */
-    public static ADMIN_ANNOUNCEMENTS_VIEW = 'admin.announcements.view';
 
     // Admin Settings Permissions
     /** View system settings */
@@ -198,14 +188,10 @@ class Permissions {
     // Admin Backups Permissions
     /** Create new backups */
     public static ADMIN_BACKUPS_CREATE = 'admin.backups.create';
-    /** Edit existing backups */
-    public static ADMIN_BACKUPS_EDIT = 'admin.backups.edit';
     /** Delete backups */
     public static ADMIN_BACKUPS_DELETE = 'admin.backups.delete';
     /** List all backups */
     public static ADMIN_BACKUPS_LIST = 'admin.backups.list';
-    /** View backup details */
-    public static ADMIN_BACKUPS_VIEW = 'admin.backups.view';
 
     // Admin Images Permissions
     /** Create new images */
@@ -216,8 +202,6 @@ class Permissions {
     public static ADMIN_IMAGES_DELETE = 'admin.images.delete';
     /** List all images */
     public static ADMIN_IMAGES_LIST = 'admin.images.list';
-    /** View image details */
-    public static ADMIN_IMAGES_VIEW = 'admin.images.view';
 
     // Admin Mail Templates Permissions
     /** Create new mail templates */
@@ -228,8 +212,6 @@ class Permissions {
     public static ADMIN_MAIL_TEMPLATES_DELETE = 'admin.mail.templates.delete';
     /** List all mail templates */
     public static ADMIN_MAIL_TEMPLATES_LIST = 'admin.mail.templates.list';
-    /** View mail template details */
-    public static ADMIN_MAIL_TEMPLATES_VIEW = 'admin.mail.templates.view';
 
     // Admin Redirect Links Permissions
     /** Create new redirect links */
@@ -240,8 +222,16 @@ class Permissions {
     public static ADMIN_REDIRECT_LINKS_DELETE = 'admin.redirect.links.delete';
     /** List all redirect links */
     public static ADMIN_REDIRECT_LINKS_LIST = 'admin.redirect.links.list';
-    /** View redirect link details */
-    public static ADMIN_REDIRECT_LINKS_VIEW = 'admin.redirect.links.view';
+
+    // Admin Redeem Codes Permissions
+    /** Create new redeem codes */
+    public static ADMIN_REDEEM_CODES_CREATE = 'admin.redeem.codes.create';
+    /** Edit existing redeem codes */
+    public static ADMIN_REDEEM_CODES_EDIT = 'admin.redeem.codes.edit';
+    /** Delete redeem codes */
+    public static ADMIN_REDEEM_CODES_DELETE = 'admin.redeem.codes.delete';
+    /** List all redeem codes */
+    public static ADMIN_REDEEM_CODES_LIST = 'admin.redeem.codes.list';
 
     /**
      * Returns all permission nodes with metadata.
@@ -268,38 +258,34 @@ class Permissions {
             { constant: 'ADMIN_LOCATIONS_EDIT', value: Permissions.ADMIN_LOCATIONS_EDIT, category: 'Admin Locations', description: 'Edit existing locations' },
             { constant: 'ADMIN_LOCATIONS_DELETE', value: Permissions.ADMIN_LOCATIONS_DELETE, category: 'Admin Locations', description: 'Delete locations' },
             { constant: 'ADMIN_LOCATIONS_LIST', value: Permissions.ADMIN_LOCATIONS_LIST, category: 'Admin Locations', description: 'List all locations' },
-            { constant: 'ADMIN_LOCATIONS_VIEW', value: Permissions.ADMIN_LOCATIONS_VIEW, category: 'Admin Locations', description: 'View location details' },
             { constant: 'ADMIN_NESTS_CREATE', value: Permissions.ADMIN_NESTS_CREATE, category: 'Admin Nests', description: 'Create new nests' },
             { constant: 'ADMIN_NESTS_EDIT', value: Permissions.ADMIN_NESTS_EDIT, category: 'Admin Nests', description: 'Edit existing nests' },
             { constant: 'ADMIN_NESTS_DELETE', value: Permissions.ADMIN_NESTS_DELETE, category: 'Admin Nests', description: 'Delete nests' },
             { constant: 'ADMIN_NESTS_LIST', value: Permissions.ADMIN_NESTS_LIST, category: 'Admin Nests', description: 'List all nests' },
-            { constant: 'ADMIN_NESTS_VIEW', value: Permissions.ADMIN_NESTS_VIEW, category: 'Admin Nests', description: 'View nest details' },
             { constant: 'ADMIN_EGG_CREATE', value: Permissions.ADMIN_EGG_CREATE, category: 'Admin Eggs', description: 'Create new eggs' },
             { constant: 'ADMIN_EGG_EDIT', value: Permissions.ADMIN_EGG_EDIT, category: 'Admin Eggs', description: 'Edit existing eggs' },
             { constant: 'ADMIN_EGG_DELETE', value: Permissions.ADMIN_EGG_DELETE, category: 'Admin Eggs', description: 'Delete eggs' },
             { constant: 'ADMIN_EGG_LIST', value: Permissions.ADMIN_EGG_LIST, category: 'Admin Eggs', description: 'List all eggs' },
-            { constant: 'ADMIN_EGG_VIEW', value: Permissions.ADMIN_EGG_VIEW, category: 'Admin Eggs', description: 'View egg details' },
             { constant: 'ADMIN_DEPARTMENTS_CREATE', value: Permissions.ADMIN_DEPARTMENTS_CREATE, category: 'Admin Departments', description: 'Create new departments' },
             { constant: 'ADMIN_DEPARTMENTS_EDIT', value: Permissions.ADMIN_DEPARTMENTS_EDIT, category: 'Admin Departments', description: 'Edit existing departments' },
             { constant: 'ADMIN_DEPARTMENTS_DELETE', value: Permissions.ADMIN_DEPARTMENTS_DELETE, category: 'Admin Departments', description: 'Delete departments' },
             { constant: 'ADMIN_DEPARTMENTS_LIST', value: Permissions.ADMIN_DEPARTMENTS_LIST, category: 'Admin Departments', description: 'List all departments' },
-            { constant: 'ADMIN_DEPARTMENTS_VIEW', value: Permissions.ADMIN_DEPARTMENTS_VIEW, category: 'Admin Departments', description: 'View department details' },
             { constant: 'ADMIN_ROLES_CREATE', value: Permissions.ADMIN_ROLES_CREATE, category: 'Admin Roles', description: 'Create new roles' },
             { constant: 'ADMIN_ROLES_EDIT', value: Permissions.ADMIN_ROLES_EDIT, category: 'Admin Roles', description: 'Edit existing roles' },
             { constant: 'ADMIN_ROLES_DELETE', value: Permissions.ADMIN_ROLES_DELETE, category: 'Admin Roles', description: 'Delete roles' },
             { constant: 'ADMIN_ROLES_LIST', value: Permissions.ADMIN_ROLES_LIST, category: 'Admin Roles', description: 'List all roles' },
-            { constant: 'ADMIN_ROLES_VIEW', value: Permissions.ADMIN_ROLES_VIEW, category: 'Admin Roles', description: 'View role details' },
             { constant: 'ADMIN_PERMISSIONS_CREATE', value: Permissions.ADMIN_PERMISSIONS_CREATE, category: 'Admin Permissions', description: 'Create new permissions' },
             { constant: 'ADMIN_PERMISSIONS_EDIT', value: Permissions.ADMIN_PERMISSIONS_EDIT, category: 'Admin Permissions', description: 'Edit existing permissions' },
             { constant: 'ADMIN_PERMISSIONS_DELETE', value: Permissions.ADMIN_PERMISSIONS_DELETE, category: 'Admin Permissions', description: 'Delete permissions' },
             { constant: 'ADMIN_PERMISSIONS_LIST', value: Permissions.ADMIN_PERMISSIONS_LIST, category: 'Admin Permissions', description: 'List all permissions' },
-            { constant: 'ADMIN_PERMISSIONS_VIEW', value: Permissions.ADMIN_PERMISSIONS_VIEW, category: 'Admin Permissions', description: 'View permission details' },
             { constant: 'ADMIN_SERVERS_CREATE', value: Permissions.ADMIN_SERVERS_CREATE, category: 'Admin Servers', description: 'Create new servers' },
             { constant: 'ADMIN_SERVERS_EDIT', value: Permissions.ADMIN_SERVERS_EDIT, category: 'Admin Servers', description: 'Edit existing servers' },
             { constant: 'ADMIN_SERVERS_DELETE', value: Permissions.ADMIN_SERVERS_DELETE, category: 'Admin Servers', description: 'Delete servers' },
             { constant: 'ADMIN_SERVERS_LIST', value: Permissions.ADMIN_SERVERS_LIST, category: 'Admin Servers', description: 'List all servers' },
-            { constant: 'ADMIN_SERVERS_VIEW', value: Permissions.ADMIN_SERVERS_VIEW, category: 'Admin Servers', description: 'View server details' },
-            { constant: 'ADMIN_SERVER_QUEUE_VIEW', value: Permissions.ADMIN_SERVER_QUEUE_VIEW, category: 'Admin Server Queue', description: 'View server queue' },
+            { constant: 'ADMIN_SERVER_QUEUE_CREATE', value: Permissions.ADMIN_SERVER_QUEUE_CREATE, category: 'Admin Server Queue', description: 'Create new server queue entries' },
+            { constant: 'ADMIN_SERVER_QUEUE_DELETE', value: Permissions.ADMIN_SERVER_QUEUE_DELETE, category: 'Admin Server Queue', description: 'Delete server queue entries' },
+            { constant: 'ADMIN_SERVER_QUEUE_LIST', value: Permissions.ADMIN_SERVER_QUEUE_LIST, category: 'Admin Server Queue', description: 'List all server queue entries' },
+            { constant: 'ADMIN_SERVER_QUEUE_VIEW', value: Permissions.ADMIN_SERVER_QUEUE_VIEW, category: 'Admin Server Queue', description: 'View server queue details' },
             { constant: 'ADMIN_SERVER_QUEUE_LOGS_VIEW', value: Permissions.ADMIN_SERVER_QUEUE_LOGS_VIEW, category: 'Admin Server Queue Logs', description: 'View server queue logs' },
             { constant: 'ADMIN_TICKETS_CREATE', value: Permissions.ADMIN_TICKETS_CREATE, category: 'Admin Tickets', description: 'Create new tickets' },
             { constant: 'ADMIN_TICKETS_EDIT', value: Permissions.ADMIN_TICKETS_EDIT, category: 'Admin Tickets', description: 'Edit existing tickets' },
@@ -310,7 +296,6 @@ class Permissions {
             { constant: 'ADMIN_ANNOUNCEMENTS_EDIT', value: Permissions.ADMIN_ANNOUNCEMENTS_EDIT, category: 'Admin Announcements', description: 'Edit existing announcements' },
             { constant: 'ADMIN_ANNOUNCEMENTS_DELETE', value: Permissions.ADMIN_ANNOUNCEMENTS_DELETE, category: 'Admin Announcements', description: 'Delete announcements' },
             { constant: 'ADMIN_ANNOUNCEMENTS_LIST', value: Permissions.ADMIN_ANNOUNCEMENTS_LIST, category: 'Admin Announcements', description: 'List all announcements' },
-            { constant: 'ADMIN_ANNOUNCEMENTS_VIEW', value: Permissions.ADMIN_ANNOUNCEMENTS_VIEW, category: 'Admin Announcements', description: 'View announcement details' },
             { constant: 'ADMIN_SETTINGS_VIEW', value: Permissions.ADMIN_SETTINGS_VIEW, category: 'Admin Settings', description: 'View system settings' },
             { constant: 'ADMIN_SETTINGS_EDIT', value: Permissions.ADMIN_SETTINGS_EDIT, category: 'Admin Settings', description: 'Edit system settings' },
             { constant: 'ADMIN_PLUGINS_CREATE', value: Permissions.ADMIN_PLUGINS_CREATE, category: 'Admin Plugins', description: 'Create new plugins' },
@@ -322,25 +307,24 @@ class Permissions {
             { constant: 'ADMIN_MYTHICALCLOUD_DOWNLOAD', value: Permissions.ADMIN_MYTHICALCLOUD_DOWNLOAD, category: 'Admin MythicalCloud', description: 'Download MythicalCloud backups' },
             { constant: 'ADMIN_MYTHICALCLOUD_UPLOAD', value: Permissions.ADMIN_MYTHICALCLOUD_UPLOAD, category: 'Admin MythicalCloud', description: 'Upload files to MythicalCloud' },
             { constant: 'ADMIN_BACKUPS_CREATE', value: Permissions.ADMIN_BACKUPS_CREATE, category: 'Admin Backups', description: 'Create new backups' },
-            { constant: 'ADMIN_BACKUPS_EDIT', value: Permissions.ADMIN_BACKUPS_EDIT, category: 'Admin Backups', description: 'Edit existing backups' },
             { constant: 'ADMIN_BACKUPS_DELETE', value: Permissions.ADMIN_BACKUPS_DELETE, category: 'Admin Backups', description: 'Delete backups' },
             { constant: 'ADMIN_BACKUPS_LIST', value: Permissions.ADMIN_BACKUPS_LIST, category: 'Admin Backups', description: 'List all backups' },
-            { constant: 'ADMIN_BACKUPS_VIEW', value: Permissions.ADMIN_BACKUPS_VIEW, category: 'Admin Backups', description: 'View backup details' },
             { constant: 'ADMIN_IMAGES_CREATE', value: Permissions.ADMIN_IMAGES_CREATE, category: 'Admin Images', description: 'Create new images' },
             { constant: 'ADMIN_IMAGES_EDIT', value: Permissions.ADMIN_IMAGES_EDIT, category: 'Admin Images', description: 'Edit existing images' },
             { constant: 'ADMIN_IMAGES_DELETE', value: Permissions.ADMIN_IMAGES_DELETE, category: 'Admin Images', description: 'Delete images' },
             { constant: 'ADMIN_IMAGES_LIST', value: Permissions.ADMIN_IMAGES_LIST, category: 'Admin Images', description: 'List all images' },
-            { constant: 'ADMIN_IMAGES_VIEW', value: Permissions.ADMIN_IMAGES_VIEW, category: 'Admin Images', description: 'View image details' },
             { constant: 'ADMIN_MAIL_TEMPLATES_CREATE', value: Permissions.ADMIN_MAIL_TEMPLATES_CREATE, category: 'Admin Mail Templates', description: 'Create new mail templates' },
             { constant: 'ADMIN_MAIL_TEMPLATES_EDIT', value: Permissions.ADMIN_MAIL_TEMPLATES_EDIT, category: 'Admin Mail Templates', description: 'Edit existing mail templates' },
             { constant: 'ADMIN_MAIL_TEMPLATES_DELETE', value: Permissions.ADMIN_MAIL_TEMPLATES_DELETE, category: 'Admin Mail Templates', description: 'Delete mail templates' },
             { constant: 'ADMIN_MAIL_TEMPLATES_LIST', value: Permissions.ADMIN_MAIL_TEMPLATES_LIST, category: 'Admin Mail Templates', description: 'List all mail templates' },
-            { constant: 'ADMIN_MAIL_TEMPLATES_VIEW', value: Permissions.ADMIN_MAIL_TEMPLATES_VIEW, category: 'Admin Mail Templates', description: 'View mail template details' },
             { constant: 'ADMIN_REDIRECT_LINKS_CREATE', value: Permissions.ADMIN_REDIRECT_LINKS_CREATE, category: 'Admin Redirect Links', description: 'Create new redirect links' },
             { constant: 'ADMIN_REDIRECT_LINKS_EDIT', value: Permissions.ADMIN_REDIRECT_LINKS_EDIT, category: 'Admin Redirect Links', description: 'Edit existing redirect links' },
             { constant: 'ADMIN_REDIRECT_LINKS_DELETE', value: Permissions.ADMIN_REDIRECT_LINKS_DELETE, category: 'Admin Redirect Links', description: 'Delete redirect links' },
             { constant: 'ADMIN_REDIRECT_LINKS_LIST', value: Permissions.ADMIN_REDIRECT_LINKS_LIST, category: 'Admin Redirect Links', description: 'List all redirect links' },
-            { constant: 'ADMIN_REDIRECT_LINKS_VIEW', value: Permissions.ADMIN_REDIRECT_LINKS_VIEW, category: 'Admin Redirect Links', description: 'View redirect link details' },
+            { constant: 'ADMIN_REDEEM_CODES_CREATE', value: Permissions.ADMIN_REDEEM_CODES_CREATE, category: 'Admin Redeem Codes', description: 'Create new redeem codes' },
+            { constant: 'ADMIN_REDEEM_CODES_EDIT', value: Permissions.ADMIN_REDEEM_CODES_EDIT, category: 'Admin Redeem Codes', description: 'Edit existing redeem codes' },
+            { constant: 'ADMIN_REDEEM_CODES_DELETE', value: Permissions.ADMIN_REDEEM_CODES_DELETE, category: 'Admin Redeem Codes', description: 'Delete redeem codes' },
+            { constant: 'ADMIN_REDEEM_CODES_LIST', value: Permissions.ADMIN_REDEEM_CODES_LIST, category: 'Admin Redeem Codes', description: 'List all redeem codes' },
         ];
     }
 }
