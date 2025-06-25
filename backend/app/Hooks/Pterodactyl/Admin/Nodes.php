@@ -46,6 +46,7 @@ class Nodes extends NodesResource
     public static function getLocationIdFromNode(int $nodeId, bool $forceRefresh = false): ?int
     {
         $nodeData = self::getNodeData($nodeId);
+
         return $nodeData['attributes']['location_id'] ?? null;
     }
 
@@ -54,18 +55,21 @@ class Nodes extends NodesResource
      *
      * @param int $nodeId The ID of the node to clear cache for
      */
-    public static function clearNodeCache(int $nodeId): void {}
+    public static function clearNodeCache(int $nodeId): void
+    {
+    }
 
     /**
      * Clear all node caches.
      */
-    public static function clearAllCaches(): void {}
+    public static function clearAllCaches(): void
+    {
+    }
 
     /**
      * Get node data from cache or API.
      *
      * @param int $nodeId The ID of the node
-     * @param bool $forceRefresh Whether to force refresh the cache
      *
      * @return array The node data
      */
@@ -78,6 +82,7 @@ class Nodes extends NodesResource
                 $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
             $nodeInfo = $nodeResource->getNode($nodeId);
+
             return [
                 'attributes' => $nodeInfo['attributes'] ?? [],
             ];
@@ -88,6 +93,7 @@ class Nodes extends NodesResource
         } catch (\Throwable $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Nodes#getNodeData] Unexpected error', false);
         }
+
         return ['attributes' => []];
     }
 }

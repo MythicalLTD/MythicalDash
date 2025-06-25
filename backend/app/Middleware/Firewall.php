@@ -14,12 +14,13 @@
 namespace MythicalDash\Middleware;
 
 use MythicalDash\App;
+use MythicalDash\Chat\User\Session;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Services\ProxyCheck\ProxyCheck;
 
 class Firewall implements MiddlewareBuilder
 {
-    public static function handle(App $app, string $ip): void
+    public static function handle(App $app, string $context, ?Session $session = null): void
     {
         /**
          * Firewall check.
@@ -29,7 +30,7 @@ class Firewall implements MiddlewareBuilder
              * Block VPNs.
              */
             if ($app->getConfig()->getSetting(ConfigInterface::FIREWALL_BLOCK_VPN, 'false') == 'true') {
-                if (ProxyCheck::hasProxy($ip)) {
+                if (ProxyCheck::hasProxy($context)) {
                     $app->BadRequest('You are using a vpn or a proxy!', ['error_code' => 'PROXY_DETECTED']);
                 }
             }

@@ -12,6 +12,8 @@ import Session from '@/mythicaldash/Session';
 import StorageMonitor from '@/mythicaldash/StorageMonitor';
 import MythicalDash from '@/mythicaldash/MythicalDash';
 import { LicenseServer } from '@/mythicaldash/LicenseServer';
+import Permissions from '@/mythicaldash/Permissions';
+import Roles from '@/mythicaldash/admin/Roles';
 
 MythicalDash.download();
 
@@ -35,6 +37,8 @@ const isSearchOpen = ref(false);
 const isNotificationsOpen = ref(false);
 const isReloading = ref(false);
 const isProfileOpen = ref(false);
+
+const rolesData = ref<Array<{ id: number; name: string; color: string }>>([]);
 
 // Toggle functions
 const toggleSidebar = () => {
@@ -131,6 +135,8 @@ onMounted(() => {
     } else {
         loading.value = false;
     }
+
+    fetchRoles();
 });
 
 const userBackground = computed(() => {
@@ -163,22 +169,25 @@ const profileMenu = computed(() => {
         { name: 'Settings', icon: SettingsIcon, href: '/account' },
         { name: 'Profile', icon: UserIcon, href: `/profile/${Session.getInfo('uuid')}` },
     ];
-    const role = Session.getInfo('role_real_name') ?? '';
-    if (['admin', 'administrator', 'support', 'supportbuddy'].includes(role)) {
+    if (Session.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
         menu.splice(1, 0, { name: 'Admin Area', icon: UsersIcon, href: '/mc-admin' });
     }
-
     return menu;
 });
 
-const userInfo = computed(() => ({
-    firstName: Session.getInfo('first_name'),
-    lastName: Session.getInfo('last_name'),
-    roleName: Session.getInfo('role_name'),
-    email: Session.getInfo('email'),
-    avatar: Session.getInfo('avatar'),
-    background: Session.getInfo('background'),
-}));
+const userInfo = computed(() => {
+    const roleId = Number(Session.getInfo('role'));
+    const roleInfo = getRoleInfo(roleId);
+    return {
+        firstName: Session.getInfo('first_name'),
+        lastName: Session.getInfo('last_name'),
+        roleName: roleInfo.name,
+        roleColor: roleInfo.color,
+        email: Session.getInfo('email'),
+        avatar: Session.getInfo('avatar'),
+        background: Session.getInfo('background'),
+    };
+});
 
 const showFooter = ref(true);
 
@@ -212,6 +221,23 @@ const reloadUserData = async () => {
         console.error('Failed to reload user data:', error);
         isReloading.value = false;
     }
+};
+
+const fetchRoles = async () => {
+    try {
+        const response = await Roles.getRoles();
+        if (response.success) {
+            rolesData.value = response.roles;
+        }
+    } catch (error) {
+        console.error('Error fetching roles:', error);
+    }
+};
+
+const getRoleInfo = (roleId: number) => {
+    const role = rolesData.value.find((r) => r.id === roleId);
+    if (role) return role;
+    return { name: 'User', color: '#9CA3AF' };
 };
 </script>
 <template>
@@ -289,6 +315,7 @@ const reloadUserData = async () => {
                         firstName: userInfo.firstName || '',
                         lastName: userInfo.lastName || '',
                         roleName: userInfo.roleName || '',
+                        roleColor: userInfo.roleColor || '',
                         email: userInfo.email || '',
                         avatar: userInfo.avatar || '',
                         background: userInfo.background || '',

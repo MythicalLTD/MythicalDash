@@ -34,11 +34,13 @@ class CloudFlareRealIP
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             // X-Forwarded-For can be a comma+space separated list of IPs. The first is the original client.
             $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+
             return trim($ips[0]);
         }
         if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
             return $_SERVER['HTTP_X_REAL_IP'];
         }
+
         return $_SERVER['REMOTE_ADDR'];
     }
 }

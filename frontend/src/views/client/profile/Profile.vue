@@ -40,9 +40,14 @@
                         />
                         <div
                             v-if="userProfile.role"
-                            class="absolute -bottom-1 -right-1 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full"
+                            class="absolute -bottom-1 -right-1 text-xs font-bold px-2 py-1 rounded-full shadow"
+                            :style="{
+                                backgroundColor: getRoleInfo(userProfile.role).color,
+                                color: isColorLight(getRoleInfo(userProfile.role).color) ? '#222' : '#fff',
+                                border: '2px solid #030305',
+                            }"
                         >
-                            {{ getRoleName(userProfile.role) }}
+                            {{ getRoleInfo(userProfile.role).name }}
                         </div>
                     </div>
                     <div class="text-center md:text-left">
@@ -396,6 +401,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 import { useRouter } from 'vue-router';
 import Session from '@/mythicaldash/Session';
+import Roles from '@/mythicaldash/admin/Roles';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -442,20 +448,26 @@ const userProfile = ref<UserProfile>({} as UserProfile);
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
 
-// Helper function to get role name
-const getRoleName = (roleId: number): string => {
-    // This would ideally come from a role mapping or translation
-    const roles: Record<number, string> = {
-        1: 'Default',
-        2: 'VIP',
-        3: 'Support Buddy',
-        4: 'Support',
-        5: 'Support LVL 3',
-        6: 'Support LVL 4',
-        7: 'Admin',
-        8: 'Administrator',
-    };
-    return roles[roleId] || 'User';
+const rolesData = ref<Array<{ id: number; name: string; color: string }>>([]);
+
+const fetchRoles = async () => {
+    try {
+        const response = await Roles.getRoles();
+        if (response.success) {
+            rolesData.value = response.roles;
+        }
+    } catch (error) {
+        console.error('Error fetching roles:', error);
+    }
+};
+
+// Helper function to get role info
+const getRoleInfo = (roleId: number) => {
+    const role = rolesData.value.find((r) => r.id === roleId);
+    if (role) {
+        return role;
+    }
+    return { name: 'User', color: '#9CA3AF' };
 };
 
 const handleGiftCoins = () => {
@@ -504,6 +516,23 @@ const formatCPU = (cpuLimit: number): string => {
     return `${cpuLimit / 100}%`;
 };
 
+// Utility to determine if a color is light or dark
+function isColorLight(hex: string): boolean {
+    if (!hex) return false;
+    hex = hex.replace('#', '');
+    if (hex.length === 3) {
+        hex = hex
+            .split('')
+            .map((x) => x + x)
+            .join('');
+    }
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    // Perceived brightness formula
+    return (r * 299 + g * 587 + b * 114) / 1000 > 150;
+}
+
 // Fetch user profile data
 const fetchProfile = async (): Promise<void> => {
     loading.value = true;
@@ -531,6 +560,7 @@ const fetchProfile = async (): Promise<void> => {
 // Initial data fetch
 onMounted(() => {
     fetchProfile();
+    fetchRoles();
 });
 </script>
 

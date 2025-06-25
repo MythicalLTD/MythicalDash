@@ -53,12 +53,14 @@ class Nests extends NestsResource
                     }
                 }
             }
+
             return $nests;
         } catch (PterodactylException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Nests#getNests] Failed to fetch nests: ' . $e->getMessage(), false);
         } catch (\Throwable $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Nests#getNests] Unexpected error: ' . $e->getMessage(), false);
         }
+
         return [];
     }
 
@@ -123,7 +125,9 @@ class Nests extends NestsResource
     /**
      * Clear the nests cache.
      */
-    public static function clearNestsCache(): void {}
+    public static function clearNestsCache(): void
+    {
+    }
 
     /**
      * Get nest ID mapping for all nests.

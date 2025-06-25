@@ -28,6 +28,8 @@
 - Feature: First user will always get admin :)!
 - Feature: New user lookup page!
 - Feature: Complete rewrite of the permission system!
+- Feature: Brand new permission based system (*.*.*)
+- Feature: Support for VIP Nodes / Eggs requires (userextra.vip) as a permission!
 
 # Futures Removed: 
 

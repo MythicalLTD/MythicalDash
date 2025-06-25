@@ -4,9 +4,9 @@ This document provides a comprehensive overview of all permission nodes used in 
 
 ## Overview
 
-- **Total Permissions:** 79
-- **Categories:** 24
-- **With Descriptions:** 79
+- **Total Permissions:** 80
+- **Categories:** 25
+- **With Descriptions:** 80
 
 ## Format
 
@@ -236,6 +236,12 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_REDEEM_CODES_DELETE` | `admin.redeem.codes.delete` | Delete redeem codes |
 | `ADMIN_REDEEM_CODES_LIST` | `admin.redeem.codes.list` | List all redeem codes |
 
+## VIP
+
+| Permission | Node | Description |
+|------------|------|-------------|
+| `USER_PERMISSION_VIP` | `user.permission.vip` | The VIP permission that allows you to create servers on vip eggs or nodes |
+
 ## Adding New Permissions
 
 To add a new permission node:
@@ -258,4 +264,4 @@ To add a new permission node:
 
 ---
 
-*This documentation was auto-generated on 2025-06-25 07:32:45*
+*This documentation was auto-generated on 2025-06-25 12:38:51*

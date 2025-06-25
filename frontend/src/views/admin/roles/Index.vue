@@ -24,14 +24,16 @@ import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
 import { PlusIcon, EditIcon, TrashIcon, LoaderCircle, ShieldIcon } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
+import Roles from '@/mythicaldash/admin/Roles';
 
 interface Role {
     id: number;
     name: string;
     real_name: string;
     color: string;
-    created_at: string;
-    updated_at: string;
+    deleted: string;
+    locked: string;
+    date: string;
 }
 
 const router = useRouter();
@@ -60,13 +62,21 @@ const columns = [
         header: 'Color',
         cell: (info: { getValue: () => string }) => {
             const color = info.getValue();
-            return h('div', { class: 'flex items-center gap-2' }, [
+            return h('div', { class: 'flex items-center gap-3' }, [
                 h('div', {
-                    class: 'w-4 h-4 rounded-full border border-gray-600',
+                    class: 'w-8 h-8 rounded-lg border-2 border-gray-600 shadow-md',
                     style: { backgroundColor: color },
                 }),
-                h('span', { class: 'text-sm' }, color),
+                h('span', { class: 'text-sm font-mono bg-gray-800 px-2 py-1 rounded' }, color.toUpperCase()),
             ]);
+        },
+    },
+    {
+        accessorKey: 'date',
+        header: 'Created',
+        cell: (info: { getValue: () => string }) => {
+            const date = new Date(info.getValue());
+            return h('span', { class: 'text-sm text-gray-400' }, date.toLocaleDateString());
         },
     },
     {
@@ -111,23 +121,12 @@ const columns = [
 const fetchRoles = async () => {
     loading.value = true;
     try {
-        const response = await fetch('/api/admin/roles/list', {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-            },
-        });
+        const response = await Roles.getRoles();
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch roles');
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-            roles.value = data.roles;
+        if (response.success) {
+            roles.value = response.roles;
         } else {
-            console.error('Failed to load roles:', data.message);
+            console.error('Failed to load roles:', response.message);
         }
     } catch (error) {
         console.error('Error fetching roles:', error);

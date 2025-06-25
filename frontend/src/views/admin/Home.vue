@@ -36,7 +36,10 @@
                 <!-- Left Column -->
                 <div class="col-span-12 lg:col-span-8 space-y-6">
                     <!-- Stats Overview -->
-                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                    <div
+                        class="bg-gray-800/50 rounded-xl border border-gray-800/30"
+                        v-if="Session.hasPermission(Permissions.ADMIN_DASHBOARD_COMPONENTS_SYSTEM_OVERVIEW)"
+                    >
                         <div class="p-4 border-b border-gray-800/30">
                             <h2 class="text-lg font-medium text-white">System Overview</h2>
                         </div>
@@ -77,10 +80,15 @@
                     </div>
 
                     <!-- At-a-Glance Analytics -->
-                    <AtAGlanceAnalytics />
+                    <AtAGlanceAnalytics
+                        v-if="Session.hasPermission(Permissions.ADMIN_DASHBOARD_COMPONENTS_ANALYTICS_VIEW)"
+                    />
 
                     <!-- GitHub Stats -->
-                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                    <div
+                        class="bg-gray-800/50 rounded-xl border border-gray-800/30"
+                        v-if="Session.hasPermission(Permissions.ADMIN_DASHBOARD_COMPONENTS_GITHUB_VIEW)"
+                    >
                         <div class="p-4 border-b border-gray-800/30">
                             <h2 class="text-lg font-medium text-white">GitHub Repository</h2>
                         </div>
@@ -130,7 +138,10 @@
                     </div>
 
                     <!-- Recent Activity -->
-                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                    <div
+                        class="bg-gray-800/50 rounded-xl border border-gray-800/30"
+                        v-if="Session.hasPermission(Permissions.ADMIN_DASHBOARD_COMPONENTS_ACTIVITY_VIEW)"
+                    >
                         <div class="p-4 border-b border-gray-800/30">
                             <h2 class="text-lg font-medium text-white">Recent Activity</h2>
                         </div>
@@ -180,7 +191,10 @@
                 <!-- Right Column -->
                 <div class="col-span-12 lg:col-span-4 space-y-6">
                     <!-- System Updates -->
-                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                    <div
+                        class="bg-gray-800/50 rounded-xl border border-gray-800/30"
+                        v-if="Session.hasPermission(Permissions.ADMIN_DASHBOARD_COMPONENTS_SYSTEM_UPDATES)"
+                    >
                         <div class="p-4 border-b border-gray-800/30">
                             <h2 class="text-lg font-medium text-white">System Updates</h2>
                         </div>
@@ -222,7 +236,10 @@
                     </div>
 
                     <!-- Support & Resources -->
-                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                    <div
+                        class="bg-gray-800/50 rounded-xl border border-gray-800/30"
+                        v-if="Session.hasPermission(Permissions.ADMIN_DASHBOARD_COMPONENTS_SUPPORT_VIEW)"
+                    >
                         <div class="p-4 border-b border-gray-800/30">
                             <h2 class="text-lg font-medium text-white">Support & Resources</h2>
                         </div>
@@ -250,7 +267,10 @@
                     </div>
 
                     <!-- Premium Upgrade -->
-                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                    <div
+                        class="bg-gray-800/50 rounded-xl border border-gray-800/30"
+                        v-if="Session.hasPermission(Permissions.ADMIN_DASHBOARD_COMPONENTS_PREMIUM_VIEW)"
+                    >
                         <div class="p-4 border-b border-gray-800/30">
                             <h2 class="text-lg font-medium text-white">Premium Edition</h2>
                         </div>
@@ -280,7 +300,10 @@
                     </div>
 
                     <!-- Quick Actions -->
-                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                    <div
+                        class="bg-gray-800/50 rounded-xl border border-gray-800/30"
+                        v-if="Session.hasPermission(Permissions.ADMIN_DASHBOARD_COMPONENTS_QUICK_ACTIONS)"
+                    >
                         <div class="p-4 border-b border-gray-800/30">
                             <h2 class="text-lg font-medium text-white">Quick Actions</h2>
                         </div>
@@ -315,7 +338,10 @@
                     </div>
 
                     <!-- System Logs -->
-                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                    <div
+                        class="bg-gray-800/50 rounded-xl border border-gray-800/30"
+                        v-if="Session.hasPermission(Permissions.ADMIN_DASHBOARD_COMPONENTS_SYSTEM_LOGS)"
+                    >
                         <div class="p-4 border-b border-gray-800/30">
                             <h2 class="text-lg font-medium text-white">System Logs</h2>
                         </div>
@@ -419,6 +445,8 @@ import { useSettingsStore } from '@/stores/settings';
 import Dashboard from '@/mythicaldash/admin/Dashboard';
 import { RouterLink } from 'vue-router';
 import AtAGlanceAnalytics from '@/components/admin/Analytics/AtAGlanceAnalytics.vue';
+import Session from '@/mythicaldash/Session';
+import Permissions from '@/mythicaldash/Permissions';
 
 const Settings = useSettingsStore();
 const isRefreshing = ref(false);

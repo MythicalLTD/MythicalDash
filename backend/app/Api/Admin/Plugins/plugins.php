@@ -12,163 +12,163 @@
  */
 
 use MythicalDash\App;
+use MythicalDash\Permissions;
 use MythicalDash\Plugins\PluginConfig;
 use MythicalDash\Plugins\PluginSettings;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Middleware\PermissionMiddleware;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\PluginsSettingsEvent;
-use MythicalDash\Middleware\PermissionMiddleware;
-use MythicalDash\Permissions;
 
 $router->get('/api/admin/plugins/list', function (): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$appInstance->allowOnlyGET();
-	global $pluginManager;
-	$session = new MythicalDash\Chat\User\Session($appInstance);
-	PermissionMiddleware::handle($appInstance, Permissions::ADMIN_PLUGINS_LIST);
-	$plugins = $pluginManager->getLoadedMemoryPlugins();
-	$pluginsList = [];
-	foreach ($plugins as $plugin) {
-		$info = PluginConfig::getConfig($plugin);
-		$pluginsList[$plugin] = $info;
-	}
-	$appInstance->OK('Plugins fetched successfully', ['plugins' => $pluginsList]);
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    global $pluginManager;
+    $session = new MythicalDash\Chat\User\Session($appInstance);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_PLUGINS_LIST, $session);
+    $plugins = $pluginManager->getLoadedMemoryPlugins();
+    $pluginsList = [];
+    foreach ($plugins as $plugin) {
+        $info = PluginConfig::getConfig($plugin);
+        $pluginsList[$plugin] = $info;
+    }
+    $appInstance->OK('Plugins fetched successfully', ['plugins' => $pluginsList]);
 });
 
 $router->get('/api/admin/plugins/(.*)/config', function ($identifier): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$appInstance->allowOnlyGET();
-	global $pluginManager;
-	$plugins = $pluginManager->getLoadedMemoryPlugins();
-	$session = new MythicalDash\Chat\User\Session($appInstance);
-	PermissionMiddleware::handle($appInstance, Permissions::ADMIN_PLUGINS_LIST);
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    global $pluginManager;
+    $plugins = $pluginManager->getLoadedMemoryPlugins();
+    $session = new MythicalDash\Chat\User\Session($appInstance);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_PLUGINS_LIST, $session);
 
-	if (in_array($identifier, $plugins)) {
-		$info = PluginConfig::getConfig($identifier);
-		$settings = PluginSettings::getSettings($identifier);
-		$settingsList = [];
-		foreach ($settings as $setting) {
-			$settingsList[$setting['key']] = $appInstance->decrypt($setting['value']);
-		}
-		$appInstance->OK('Plugin config fetched successfully', ['config' => $info, 'plugin' => $info, 'settings' => $settingsList]);
-	} else {
-		$appInstance->NotFound('Plugin not found', ['error_code' => 'PLUGIN_NOT_FOUND', 'identifier' => $identifier, 'plugins' => $plugins]);
-	}
+    if (in_array($identifier, $plugins)) {
+        $info = PluginConfig::getConfig($identifier);
+        $settings = PluginSettings::getSettings($identifier);
+        $settingsList = [];
+        foreach ($settings as $setting) {
+            $settingsList[$setting['key']] = $appInstance->decrypt($setting['value']);
+        }
+        $appInstance->OK('Plugin config fetched successfully', ['config' => $info, 'plugin' => $info, 'settings' => $settingsList]);
+    } else {
+        $appInstance->NotFound('Plugin not found', ['error_code' => 'PLUGIN_NOT_FOUND', 'identifier' => $identifier, 'plugins' => $plugins]);
+    }
 });
 
 $router->post('/api/admin/plugins/(.*)/settings/set', function ($identifier): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$appInstance->allowOnlyPOST();
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
 
-	global $pluginManager;
-	$session = new MythicalDash\Chat\User\Session($appInstance);
+    global $pluginManager;
+    $session = new MythicalDash\Chat\User\Session($appInstance);
 
-	PermissionMiddleware::handle($appInstance, Permissions::ADMIN_PLUGINS_EDIT);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_PLUGINS_EDIT, $session);
 
-	$plugins = $pluginManager->getLoadedMemoryPlugins();
-	if (!in_array($identifier, $plugins)) {
-		$appInstance->NotFound('Plugin not found', ['error_code' => 'PLUGIN_NOT_FOUND']);
+    $plugins = $pluginManager->getLoadedMemoryPlugins();
+    if (!in_array($identifier, $plugins)) {
+        $appInstance->NotFound('Plugin not found', ['error_code' => 'PLUGIN_NOT_FOUND']);
 
-		return;
-	}
+        return;
+    }
 
-	if (isset($_POST['key']) && !empty($_POST['key'])) {
-		$key = $_POST['key'];
-	} else {
-		$appInstance->BadRequest('Missing key parameter', ['error_code' => 'MISSING_KEY']);
+    if (isset($_POST['key']) && !empty($_POST['key'])) {
+        $key = $_POST['key'];
+    } else {
+        $appInstance->BadRequest('Missing key parameter', ['error_code' => 'MISSING_KEY']);
 
-		return;
-	}
+        return;
+    }
 
-	if (isset($_POST['value']) && !empty($_POST['value'])) {
-		$value = $_POST['value'];
-		$valueNonEncrypted = $value;
-		$value = $appInstance->encrypt($value);
-	} else {
-		$appInstance->BadRequest('Missing value parameter', ['error_code' => 'MISSING_VALUE']);
+    if (isset($_POST['value']) && !empty($_POST['value'])) {
+        $value = $_POST['value'];
+        $valueNonEncrypted = $value;
+        $value = $appInstance->encrypt($value);
+    } else {
+        $appInstance->BadRequest('Missing value parameter', ['error_code' => 'MISSING_VALUE']);
 
-		return;
-	}
+        return;
+    }
 
-	try {
-		PluginSettings::setSettings($identifier, $key, ['value' => $value]);
+    try {
+        PluginSettings::setSettings($identifier, $key, ['value' => $value]);
 
-		UserActivities::add(
-			$session->getInfo(UserColumns::UUID, false),
-			UserActivitiesTypes::$plugin_setting_update,
-			CloudFlareRealIP::getRealIP(),
-			"Updated setting $key for plugin $identifier"
-		);
-		global $eventManager;
-		$eventManager->emit(PluginsSettingsEvent::onPluginSettingUpdate(), [
-			'identifier' => $identifier,
-			'key' => $key,
-			'value' => $valueNonEncrypted,
-		]);
-		$appInstance->OK('Setting updated successfully', [
-			'identifier' => $identifier,
-			'key' => $key,
-			'value' => $valueNonEncrypted,
-		]);
-	} catch (Exception $e) {
-		$appInstance->InternalServerError('Failed to update setting', [
-			'error_code' => 'SETTING_UPDATE_FAILED',
-			'error' => $e->getMessage(),
-		]);
-	}
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$plugin_setting_update,
+            CloudFlareRealIP::getRealIP(),
+            "Updated setting $key for plugin $identifier"
+        );
+        global $eventManager;
+        $eventManager->emit(PluginsSettingsEvent::onPluginSettingUpdate(), [
+            'identifier' => $identifier,
+            'key' => $key,
+            'value' => $valueNonEncrypted,
+        ]);
+        $appInstance->OK('Setting updated successfully', [
+            'identifier' => $identifier,
+            'key' => $key,
+            'value' => $valueNonEncrypted,
+        ]);
+    } catch (Exception $e) {
+        $appInstance->InternalServerError('Failed to update setting', [
+            'error_code' => 'SETTING_UPDATE_FAILED',
+            'error' => $e->getMessage(),
+        ]);
+    }
 });
 
 $router->post('/api/admin/plugins/(.*)/settings/remove', function ($identifier): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$appInstance->allowOnlyPOST();
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
 
-	global $pluginManager;
-	$session = new MythicalDash\Chat\User\Session($appInstance);
+    global $pluginManager;
+    $session = new MythicalDash\Chat\User\Session($appInstance);
 
-	PermissionMiddleware::handle($appInstance, Permissions::ADMIN_PLUGINS_EDIT);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_PLUGINS_EDIT, $session);
 
-	$plugins = $pluginManager->getLoadedMemoryPlugins();
-	if (!in_array($identifier, $plugins)) {
-		$appInstance->NotFound('Plugin not found', ['error_code' => 'PLUGIN_NOT_FOUND']);
+    $plugins = $pluginManager->getLoadedMemoryPlugins();
+    if (!in_array($identifier, $plugins)) {
+        $appInstance->NotFound('Plugin not found', ['error_code' => 'PLUGIN_NOT_FOUND']);
 
-		return;
-	}
+        return;
+    }
 
-	if (isset($_POST['key']) && !empty($_POST['key'])) {
-		$key = $_POST['key'];
-	} else {
-		$appInstance->BadRequest('Missing key parameter', ['error_code' => 'MISSING_KEY']);
+    if (isset($_POST['key']) && !empty($_POST['key'])) {
+        $key = $_POST['key'];
+    } else {
+        $appInstance->BadRequest('Missing key parameter', ['error_code' => 'MISSING_KEY']);
 
-		return;
-	}
+        return;
+    }
 
-	try {
-		UserActivities::add(
-			$session->getInfo(UserColumns::UUID, false),
-			UserActivitiesTypes::$plugin_setting_delete,
-			CloudFlareRealIP::getRealIP(),
-			"Removed setting $key from plugin $identifier"
-		);
-		global $eventManager;
-		$eventManager->emit(PluginsSettingsEvent::onPluginSettingDelete(), [
-			'identifier' => $identifier,
-			'key' => $key,
-		]);
-		PluginSettings::deleteSettings($identifier, $key);
-		$appInstance->OK('Setting removed successfully', [
-			'identifier' => $identifier,
-			'key' => $key,
-		]);
-	} catch (Exception $e) {
-		$appInstance->InternalServerError('Failed to remove setting', [
-			'error_code' => 'SETTING_REMOVE_FAILED',
-			'error' => $e->getMessage(),
-		]);
-	}
+    try {
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$plugin_setting_delete,
+            CloudFlareRealIP::getRealIP(),
+            "Removed setting $key from plugin $identifier"
+        );
+        global $eventManager;
+        $eventManager->emit(PluginsSettingsEvent::onPluginSettingDelete(), [
+            'identifier' => $identifier,
+            'key' => $key,
+        ]);
+        PluginSettings::deleteSettings($identifier, $key);
+        $appInstance->OK('Setting removed successfully', [
+            'identifier' => $identifier,
+            'key' => $key,
+        ]);
+    } catch (Exception $e) {
+        $appInstance->InternalServerError('Failed to remove setting', [
+            'error_code' => 'SETTING_REMOVE_FAILED',
+            'error' => $e->getMessage(),
+        ]);
+    }
 });

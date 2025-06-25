@@ -205,14 +205,13 @@ $router->add('/api/user/auth/register', function (): void {
          * Zero Trust.
          */
         $appInstance->getTelemetry()->sendRegister($username, $firstName, $lastName, $email, CloudFlareRealIP::getRealIP());
-        
-		
-		if (User::isFirstUserInDatabase()) {
-			User::updateInfo($newUserToken, UserColumns::ROLE_ID, '8', false);
-			App::OK('User registered', ["is_first_user" => true]);
-		} else {
-			App::OK('User registered', ["is_first_user" => false]);
-		}
+
+        if (User::isFirstUserInDatabase()) {
+            User::updateInfo($newUserToken, UserColumns::ROLE_ID, '8', false);
+            App::OK('User registered', ['is_first_user' => true]);
+        } else {
+            App::OK('User registered', ['is_first_user' => false]);
+        }
 
     } catch (Exception $e) {
         $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'DATABASE_ERROR']);

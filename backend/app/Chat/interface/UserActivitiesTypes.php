@@ -152,17 +152,17 @@ class UserActivitiesTypes
     public static string $admin_redirect_link_update = 'admin:redirect_link:update';
     public static string $admin_redirect_link_delete = 'admin:redirect_link:delete';
 
-	/**
-	 * Roles.
-	 */
-	public static string $admin_role_create = 'admin:role:create';
-	public static string $admin_role_update = 'admin:role:update';
-	public static string $admin_role_delete = 'admin:role:delete';
+    /**
+     * Roles.
+     */
+    public static string $admin_role_create = 'admin:role:create';
+    public static string $admin_role_update = 'admin:role:update';
+    public static string $admin_role_delete = 'admin:role:delete';
 
-	/**
-	 * Permissions.
-	 */
-	public static string $admin_permission_create = 'admin:permission:create';
-	public static string $admin_permission_update = 'admin:permission:update';
-	public static string $admin_permission_delete = 'admin:permission:delete';
+    /**
+     * Permissions.
+     */
+    public static string $admin_permission_create = 'admin:permission:create';
+    public static string $admin_permission_update = 'admin:permission:update';
+    public static string $admin_permission_delete = 'admin:permission:delete';
 }

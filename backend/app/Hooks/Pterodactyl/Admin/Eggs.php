@@ -59,12 +59,14 @@ class Eggs extends NestsResource
                     }
                 }
             }
+
             return $eggs;
         } catch (PterodactylException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Eggs#getEggs] Failed to fetch eggs: ' . $e->getMessage(), false);
         } catch (\Throwable $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Eggs#getEggs] Unexpected error: ' . $e->getMessage(), false);
         }
+
         return [];
     }
 
@@ -87,6 +89,7 @@ class Eggs extends NestsResource
                 }
             }
         }
+
         return $allEggs;
     }
 
@@ -147,12 +150,16 @@ class Eggs extends NestsResource
      *
      * @param int $nestId The ID of the nest
      */
-    public static function clearEggsCache(int $nestId): void {}
+    public static function clearEggsCache(int $nestId): void
+    {
+    }
 
     /**
      * Clear all eggs cache.
      */
-    public static function clearAllEggsCache(): void {}
+    public static function clearAllEggsCache(): void
+    {
+    }
 
     /**
      * Get egg ID mapping for all eggs.

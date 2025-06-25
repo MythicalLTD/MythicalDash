@@ -14,8 +14,9 @@
 namespace MythicalDash\Middleware;
 
 use MythicalDash\App;
+use MythicalDash\Chat\User\Session;
 
 interface MiddlewareBuilder
 {
-    public static function handle(App $app, string $ip): void;
+    public static function handle(App $app, string $context, ?Session $session = null): void;
 }

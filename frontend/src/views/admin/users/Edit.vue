@@ -22,6 +22,7 @@ import failedAlertSfx from '@/assets/sounds/error.mp3';
 import { useSettingsStore } from '@/stores/settings';
 const Settings = useSettingsStore();
 import successAlertSfx from '@/assets/sounds/success.mp3';
+import Roles from '@/mythicaldash/admin/Roles';
 
 // Utility function to open URLs safely in a new tab
 function openExternalLink(url: string): void {
@@ -129,6 +130,7 @@ interface Tab {
 interface RoleOption {
     value: number | string;
     label: string;
+    color?: string;
 }
 
 // Form Field component
@@ -211,6 +213,10 @@ const FormSelect = defineComponent({
             type: Boolean,
             default: false,
         },
+        showColors: {
+            type: Boolean,
+            default: false,
+        },
     },
     emits: ['update:modelValue', 'save'],
     setup(props, { emit }) {
@@ -226,7 +232,19 @@ const FormSelect = defineComponent({
                             onChange: (e: Event) => emit('update:modelValue', (e.target as HTMLSelectElement).value),
                             class: 'w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-pink-500',
                         },
-                        props.options.map((option: RoleOption) => h('option', { value: option.value }, option.label)),
+                        props.options.map((option: RoleOption) => {
+                            if (props.showColors && option.color) {
+                                return h(
+                                    'option',
+                                    {
+                                        value: option.value,
+                                        style: { color: option.color },
+                                    },
+                                    [h('span', { style: { color: option.color } }, '● '), option.label],
+                                );
+                            }
+                            return h('option', { value: option.value }, option.label);
+                        }),
                     ),
                     !props.disabled &&
                         h(
@@ -271,16 +289,25 @@ const tabs: Tab[] = [
 ];
 
 // Role options for dropdown
-const roleOptions: RoleOption[] = [
-    { value: 1, label: 'User' },
-    { value: 2, label: 'VIP' },
-    { value: 3, label: 'Support Buddy' },
-    { value: 4, label: 'Support' },
-    { value: 5, label: 'Support LVL 3' },
-    { value: 6, label: 'Support LVL 4' },
-    { value: 7, label: 'Admin' },
-    { value: 8, label: 'Administrator' },
-];
+const roleOptions = ref<RoleOption[]>([]);
+const rolesData = ref<Array<{ id: number; name: string; color: string }>>([]);
+
+// Fetch roles for dropdown
+const fetchRoles = async () => {
+    try {
+        const response = await Roles.getRoles();
+        if (response.success) {
+            rolesData.value = response.roles;
+            roleOptions.value = response.roles.map((role: { id: number; name: string; color: string }) => ({
+                value: role.id,
+                label: role.name,
+                color: role.color,
+            }));
+        }
+    } catch (error) {
+        console.error('Error fetching roles:', error);
+    }
+};
 
 // Form data
 const formData = ref<FormData>({
@@ -314,30 +341,38 @@ const saving = reactive<Record<string, boolean>>({});
 // Role helpers
 const getRoleName = (roleId: string): string => {
     const id = parseInt(roleId);
-    const role = roleOptions.find((r) => r.value === id);
+    const role = roleOptions.value.find((r) => r.value === id);
     return role ? role.label : 'Unknown';
 };
 
 const getRoleClass = (roleId: string): string => {
     const id = parseInt(roleId);
-    switch (id) {
-        case 1:
-            return 'bg-blue-500/20 text-blue-400';
-        case 2:
-            return 'bg-green-500/20 text-green-400';
-        case 3:
-            return 'bg-yellow-500/20 text-yellow-400';
-        case 4:
-            return 'bg-purple-500/20 text-purple-400';
-        case 5:
-        case 6:
-        case 7:
-            return 'bg-pink-500/20 text-pink-400';
-        case 8:
-            return 'bg-red-500/20 text-red-400';
-        default:
-            return 'bg-gray-500/20 text-gray-400';
+    const role = rolesData.value.find((r) => r.id === id);
+    if (role) {
+        return 'px-3 py-1 rounded-full text-xs inline-flex items-center w-fit';
     }
+    return 'px-3 py-1 rounded-full text-xs inline-flex items-center w-fit bg-gray-500/20 text-gray-400';
+};
+
+const getRoleStyle = (roleId: string): Record<string, string> => {
+    const id = parseInt(roleId);
+    const role = rolesData.value.find((r) => r.id === id);
+    if (role) {
+        // Convert hex color to rgba for background with opacity
+        const hex = role.color.replace('#', '');
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+
+        return {
+            backgroundColor: `rgba(${r}, ${g}, ${b}, 0.2)`,
+            color: role.color,
+        };
+    }
+    return {
+        backgroundColor: 'rgba(107, 114, 128, 0.2)',
+        color: '#9CA3AF',
+    };
 };
 
 const formatDate = (dateString?: string): string => {
@@ -462,6 +497,7 @@ const saveField = async (column: string, value: string | number, encrypted: bool
 
 onMounted(() => {
     fetchUser();
+    fetchRoles();
 });
 </script>
 <template>
@@ -483,7 +519,7 @@ onMounted(() => {
                     <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
                         <div class="relative">
                             <img
-                                :src="user.avatar || '/assets/images/default-avatar.png'"
+                                :src="user.avatar || 'https://github.com/mythicalltd.png'"
                                 alt="User Avatar"
                                 class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 border-gray-700 shadow-lg"
                             />
@@ -506,10 +542,7 @@ onMounted(() => {
                         <div class="flex-1">
                             <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
                                 <h2 class="text-2xl font-bold text-white">{{ user.username }}</h2>
-                                <span
-                                    :class="getRoleClass(user.role)"
-                                    class="px-3 py-1 rounded-full text-xs inline-flex items-center w-fit"
-                                >
+                                <span :class="getRoleClass(user.role)" :style="getRoleStyle(user.role)">
                                     {{ getRoleName(user.role) }}
                                 </span>
                             </div>
@@ -637,6 +670,7 @@ onMounted(() => {
                                 v-model="formData.role"
                                 :options="roleOptions"
                                 :saving="saving.role"
+                                :showColors="true"
                                 @save="saveField('role', formData.role)"
                             />
                             <FormField

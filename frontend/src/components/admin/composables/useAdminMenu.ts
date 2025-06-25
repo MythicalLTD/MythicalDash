@@ -75,6 +75,7 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
         },
         {
             title: 'Management',
+
             items: [
                 {
                     name: 'Users',
@@ -96,6 +97,12 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     name: 'Eggs & Nests',
                     icon: EggIcon,
                     count: computed(() => dashBoard.value.count.eggs_count || 0),
+                    active: route.path === `${adminBaseUri}/egg-categories` || route.path === `${adminBaseUri}/eggs`,
+                    visible: computed(
+                        () =>
+                            Session.Permission.Has(Permissions.ADMIN_EGG_LIST) ||
+                            Session.Permission.Has(Permissions.ADMIN_NESTS_LIST),
+                    ),
                     subMenu: [
                         {
                             name: 'Nests (Categories)',
@@ -143,8 +150,15 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                 {
                     name: 'Server Queue',
                     icon: ServerCrash,
-                    active: route.path === `${adminBaseUri}/server-queue`,
+                    active:
+                        route.path === `${adminBaseUri}/server-queue` ||
+                        route.path === `${adminBaseUri}/server-queue/logs`,
                     count: computed(() => dashBoard.value.count.server_queue_count || 0),
+                    visible: computed(
+                        () =>
+                            Session.Permission.Has(Permissions.ADMIN_SERVER_QUEUE_LIST) ||
+                            Session.Permission.Has(Permissions.ADMIN_SERVER_QUEUE_LOGS_VIEW),
+                    ),
                     subMenu: [
                         {
                             name: 'Server Queue',

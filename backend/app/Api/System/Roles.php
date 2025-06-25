@@ -11,19 +11,15 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalDash\Chat\User;
+use MythicalDash\App;
+use MythicalDash\Chat\User\Roles;
 
-class Can
-{
-    /**
-     * Check if the user can access the admin UI.
-     *
-     * @param int $id The role id!
-     *
-     * @return bool Returns true if the user can access the admin UI
-     */
-    public static function canAccessAdminUI(int $id): bool
-    {
-        return in_array($id, [3, 4, 5, 6, 7, 8], true);
-    }
-}
+$router->get('/api/system/roles', function () {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $config = $appInstance->getConfig();
+
+    $appInstance->OK('Here are your roles', [
+        'roles' => Roles::getList(),
+    ]);
+});

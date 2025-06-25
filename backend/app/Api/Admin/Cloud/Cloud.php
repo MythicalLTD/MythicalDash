@@ -12,149 +12,147 @@
  */
 
 use MythicalDash\App;
-use MythicalDash\Chat\User\Can;
+use MythicalDash\Permissions;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Hooks\MythicalCloud;
 use MythicalDash\Config\ConfigInterface;
-use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Middleware\PermissionMiddleware;
-use MythicalDash\Permissions;
 
 // Get all backups
 $router->get('/api/admin/cloud/backups', function (): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$appInstance->allowOnlyGET();
-	$session = new Session($appInstance);
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    $session = new Session($appInstance);
 
-	PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MYTHICALCLOUD_VIEW);
-	try {
-		$licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
-		if (!$licenseKey) {
-			throw new Exception('Mythical Cloud license key not configured');
-		}
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MYTHICALCLOUD_VIEW, $session);
+    try {
+        $licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
+        if (!$licenseKey) {
+            throw new Exception('Mythical Cloud license key not configured');
+        }
 
-		$backups = MythicalCloud::getBackups($licenseKey);
-		if ($backups === null) {
-			throw new Exception('Failed to retrieve backups');
-		}
+        $backups = MythicalCloud::getBackups($licenseKey);
+        if ($backups === null) {
+            throw new Exception('Failed to retrieve backups');
+        }
 
-		$appInstance->OK('Backups retrieved successfully', $backups);
-	} catch (Exception $e) {
-		$appInstance->InternalServerError($e->getMessage(), ['error_code' => 'CLOUD_ERROR']);
-	}
+        $appInstance->OK('Backups retrieved successfully', $backups);
+    } catch (Exception $e) {
+        $appInstance->InternalServerError($e->getMessage(), ['error_code' => 'CLOUD_ERROR']);
+    }
 
 });
 
 // Download backup
 $router->get('/api/admin/cloud/backup/(.*)/download', function (string $backupId): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$appInstance->allowOnlyGET();
-	$session = new Session($appInstance);
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    $session = new Session($appInstance);
 
-	PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MYTHICALCLOUD_DOWNLOAD);
-	try {
-		$licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MYTHICALCLOUD_DOWNLOAD, $session);
+    try {
+        $licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
 
-		if (!$licenseKey) {
-			throw new Exception('Mythical Cloud license key not configured');
-		}
+        if (!$licenseKey) {
+            throw new Exception('Mythical Cloud license key not configured');
+        }
 
-		$backupDir = __DIR__ . '/../../../../storage/backups';
-		if (!is_dir($backupDir)) {
-			mkdir($backupDir, 0755, true);
-		}
-		$savePath = $backupDir . '/backup_' . $backupId . '.mydb';
-		$backupContent = MythicalCloud::downloadBackup($licenseKey, $backupId, $savePath);
-		if ($backupContent === false) {
-			throw new Exception('Failed to download backup');
-		}
+        $backupDir = __DIR__ . '/../../../../storage/backups';
+        if (!is_dir($backupDir)) {
+            mkdir($backupDir, 0755, true);
+        }
+        $savePath = $backupDir . '/backup_' . $backupId . '.mydb';
+        $backupContent = MythicalCloud::downloadBackup($licenseKey, $backupId, $savePath);
+        if ($backupContent === false) {
+            throw new Exception('Failed to download backup');
+        }
 
-		$appInstance->OK('Backup downloaded successfully', []);
-		exit;
-	} catch (Exception $e) {
-		$appInstance->InternalServerError($e->getMessage(), ['error_code' => 'CLOUD_ERROR']);
-	}
+        $appInstance->OK('Backup downloaded successfully', []);
+        exit;
+    } catch (Exception $e) {
+        $appInstance->InternalServerError($e->getMessage(), ['error_code' => 'CLOUD_ERROR']);
+    }
 
 });
 
 // Delete specific backup
 $router->post('/api/admin/cloud/backup/(.*)/delete', function (string $backupId): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$appInstance->allowOnlyPOST();
-	$session = new Session($appInstance);
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $session = new Session($appInstance);
 
-	PermissionMiddleware::handle($appInstance, Permissions::ADMIN_ROOT);
-	try {
-		$licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_ROOT, $session);
+    try {
+        $licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
 
-		if (!$licenseKey) {
-			throw new Exception('Mythical Cloud license key not configured');
-		}
+        if (!$licenseKey) {
+            throw new Exception('Mythical Cloud license key not configured');
+        }
 
-		$result = MythicalCloud::deleteBackup($licenseKey, $backupId);
-		if ($result === null) {
-			throw new Exception('Failed to delete backup');
-		}
+        $result = MythicalCloud::deleteBackup($licenseKey, $backupId);
+        if ($result === null) {
+            throw new Exception('Failed to delete backup');
+        }
 
-		$appInstance->OK('Backup deleted successfully', $result);
-	} catch (Exception $e) {
-		$appInstance->InternalServerError($e->getMessage(), ['error_code' => 'CLOUD_ERROR']);
-	}
+        $appInstance->OK('Backup deleted successfully', $result);
+    } catch (Exception $e) {
+        $appInstance->InternalServerError($e->getMessage(), ['error_code' => 'CLOUD_ERROR']);
+    }
 });
 
 // Get specific backup info
 $router->get('/api/admin/cloud/backup/(.*)', function (string $backupId): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$appInstance->allowOnlyGET();
-	$session = new Session($appInstance);
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyGET();
+    $session = new Session($appInstance);
 
-	PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MYTHICALCLOUD_VIEW);
-	try {
-		$licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MYTHICALCLOUD_VIEW, $session);
+    try {
+        $licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
 
-		if (!$licenseKey) {
-			throw new Exception('Mythical Cloud license key not configured');
-		}
+        if (!$licenseKey) {
+            throw new Exception('Mythical Cloud license key not configured');
+        }
 
-		$backupInfo = MythicalCloud::getBackupInfo($licenseKey, $backupId);
-		if ($backupInfo === null) {
-			throw new Exception('Failed to retrieve backup info');
-		}
+        $backupInfo = MythicalCloud::getBackupInfo($licenseKey, $backupId);
+        if ($backupInfo === null) {
+            throw new Exception('Failed to retrieve backup info');
+        }
 
-		$appInstance->OK('Backup info retrieved successfully', $backupInfo);
-	} catch (Exception $e) {
-		$appInstance->InternalServerError($e->getMessage(), ['error_code' => 'CLOUD_ERROR']);
-	}
+        $appInstance->OK('Backup info retrieved successfully', $backupInfo);
+    } catch (Exception $e) {
+        $appInstance->InternalServerError($e->getMessage(), ['error_code' => 'CLOUD_ERROR']);
+    }
 
 });
 
 // Delete all backups
 $router->post('/api/admin/cloud/backups/wipe', function (): void {
-	App::init();
-	$appInstance = App::getInstance(true);
-	$appInstance->allowOnlyPOST();
-	$session = new Session($appInstance);
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $session = new Session($appInstance);
 
-	PermissionMiddleware::handle($appInstance, Permissions::ADMIN_ROOT);
-	try {
-		$licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_ROOT, $session);
+    try {
+        $licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
 
-		if (!$licenseKey) {
-			throw new Exception('Mythical Cloud license key not configured');
-		}
+        if (!$licenseKey) {
+            throw new Exception('Mythical Cloud license key not configured');
+        }
 
-		$result = MythicalCloud::deleteAllBackups($licenseKey);
-		if ($result === null) {
-			throw new Exception('Failed to delete all backups');
-		}
+        $result = MythicalCloud::deleteAllBackups($licenseKey);
+        if ($result === null) {
+            throw new Exception('Failed to delete all backups');
+        }
 
-		$appInstance->OK('All backups deleted successfully', $result);
-	} catch (Exception $e) {
-		$appInstance->InternalServerError($e->getMessage(), ['error_code' => 'CLOUD_ERROR']);
-	}
+        $appInstance->OK('All backups deleted successfully', $result);
+    } catch (Exception $e) {
+        $appInstance->InternalServerError($e->getMessage(), ['error_code' => 'CLOUD_ERROR']);
+    }
 
 });

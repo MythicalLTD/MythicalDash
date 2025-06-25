@@ -14,6 +14,7 @@ interface Props {
     }>;
     userInfo: {
         roleName: string;
+        roleColor: string;
         firstName: string;
         lastName: string;
         email: string;
@@ -147,6 +148,7 @@ const optimizedAvatar = computed(() => {
 
                         <div
                             class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-black/30 backdrop-blur-sm text-white border border-white/20 shadow-lg"
+                            :style="{ backgroundColor: userInfo.roleColor }"
                         >
                             <span class="w-2 h-2 rounded-full bg-white mr-2 animate-pulse"></span>
                             {{ userInfo.roleName }}

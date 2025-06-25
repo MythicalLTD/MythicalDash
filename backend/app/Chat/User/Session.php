@@ -106,17 +106,20 @@ class Session extends Database
      * This method looks up the user's role and checks if that role has the specified permission.
      *
      * @param string $permission The permission to check (e.g., 'admin.users.create')
+     *
      * @return bool True if the user has the permission, false otherwise
      */
     public function hasPermission(string $permission): bool
     {
         try {
             $roleId = (int) $this->getInfo(UserColumns::ROLE_ID, false);
-            
+            $this->app->getLogger()->error('Checking permission: ' . $permission . ' for role: ' . $roleId);
+
             // Check if the role has the specific permission
             return Permissions::hasPermission($roleId, $permission);
         } catch (\Exception $e) {
             $this->app->getLogger()->error('Failed to check permission: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -126,6 +129,7 @@ class Session extends Database
      * Returns true if the user has at least one of the permissions.
      *
      * @param array $permissions Array of permissions to check
+     *
      * @return bool True if the user has at least one permission, false otherwise
      */
     public function hasAnyPermission(array $permissions): bool
@@ -135,6 +139,7 @@ class Session extends Database
                 return true;
             }
         }
+
         return false;
     }
 
@@ -143,6 +148,7 @@ class Session extends Database
      * Returns true only if the user has all permissions.
      *
      * @param array $permissions Array of permissions to check
+     *
      * @return bool True if the user has all permissions, false otherwise
      */
     public function hasAllPermissions(array $permissions): bool
@@ -152,6 +158,7 @@ class Session extends Database
                 return false;
             }
         }
+
         return true;
     }
 
@@ -164,9 +171,11 @@ class Session extends Database
     {
         try {
             $roleId = (int) $this->getInfo(UserColumns::ROLE_ID, false);
+
             return Permissions::getPermissionsByRole($roleId);
         } catch (\Exception $e) {
             $this->app->getLogger()->error('Failed to get user permissions: ' . $e->getMessage());
+
             return [];
         }
     }
@@ -180,9 +189,11 @@ class Session extends Database
     {
         try {
             $roleId = (int) $this->getInfo(UserColumns::ROLE_ID, false);
+
             return Roles::getRole($roleId);
         } catch (\Exception $e) {
             $this->app->getLogger()->error('Failed to get user role: ' . $e->getMessage());
+
             return null;
         }
     }
@@ -192,6 +203,7 @@ class Session extends Database
      * This is a convenience method that combines admin access check with permission check.
      *
      * @param string $permission The permission to check
+     *
      * @return bool True if user has admin access and the permission, false otherwise
      */
     public function canAccessAdminWithPermission(string $permission): bool

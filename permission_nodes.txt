@@ -134,3 +134,6 @@ ADMIN_REDEEM_CODES_CREATE=admin.redeem.codes.create | Admin Redeem Codes | Creat
 ADMIN_REDEEM_CODES_EDIT=admin.redeem.codes.edit | Admin Redeem Codes | Edit existing redeem codes
 ADMIN_REDEEM_CODES_DELETE=admin.redeem.codes.delete | Admin Redeem Codes | Delete redeem codes
 ADMIN_REDEEM_CODES_LIST=admin.redeem.codes.list | Admin Redeem Codes | List all redeem codes
+
+# User Permissions
+USER_PERMISSION_VIP=user.permission.vip | VIP | The VIP permission that allows you to create servers on vip eggs or nodes 

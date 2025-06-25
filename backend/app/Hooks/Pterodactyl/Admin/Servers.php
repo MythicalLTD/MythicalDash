@@ -95,12 +95,16 @@ class Servers extends ServersResource
      *
      * @param int $pterodactylUserId The ID of the user to clear cache for
      */
-    public static function clearUserCache(int $pterodactylUserId): void {}
+    public static function clearUserCache(int $pterodactylUserId): void
+    {
+    }
 
     /**
      * Clear all user caches.
      */
-    public static function clearAllCaches(): void {}
+    public static function clearAllCaches(): void
+    {
+    }
 
     /**
      * Check if a server exists in Pterodactyl.
@@ -314,7 +318,6 @@ class Servers extends ServersResource
      * Get user data from cache or API.
      *
      * @param int $pterodactylUserId The ID of the user
-     * @param bool $forceRefresh Whether to force refresh the cache
      *
      * @return array The user data including servers and resources
      */
@@ -379,6 +382,7 @@ class Servers extends ServersResource
                     ],
                 ];
             }
+
             return [
                 'resources' => $resources,
                 'servers' => $serversList,
@@ -390,6 +394,7 @@ class Servers extends ServersResource
         } catch (\Throwable $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Unexpected error', false);
         }
+
         return ['resources' => [], 'servers' => []];
     }
 }

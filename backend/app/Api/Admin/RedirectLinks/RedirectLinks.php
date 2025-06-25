@@ -12,13 +12,13 @@
  */
 
 use MythicalDash\App;
+use MythicalDash\Permissions;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\RedirectLinks\RedirectLink;
-use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Middleware\PermissionMiddleware;
-use MythicalDash\Permissions;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 $router->get('/api/admin/redirect-links', function () {
     App::init();
@@ -26,9 +26,9 @@ $router->get('/api/admin/redirect-links', function () {
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_LIST);
-        $redirectLinks = RedirectLink::getAll();
-        $appInstance->OK('Redirect links fetched successfully', ['redirect_links' => $redirectLinks]);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_LIST, $session);
+    $redirectLinks = RedirectLink::getAll();
+    $appInstance->OK('Redirect links fetched successfully', ['redirect_links' => $redirectLinks]);
 });
 
 $router->post('/api/admin/redirect-links/create', function () {
@@ -37,54 +37,54 @@ $router->post('/api/admin/redirect-links/create', function () {
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_CREATE);
-        if (!isset($_POST['name']) || empty($_POST['name'])) {
-            $appInstance->BadRequest('Name is required', ['error_code' => 'ERROR_NAME_REQUIRED']);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_CREATE, $session);
+    if (!isset($_POST['name']) || empty($_POST['name'])) {
+        $appInstance->BadRequest('Name is required', ['error_code' => 'ERROR_NAME_REQUIRED']);
 
-            return;
-        }
+        return;
+    }
 
-        if (!isset($_POST['link']) || empty($_POST['link'])) {
-            $appInstance->BadRequest('Link is required', ['error_code' => 'ERROR_LINK_REQUIRED']);
+    if (!isset($_POST['link']) || empty($_POST['link'])) {
+        $appInstance->BadRequest('Link is required', ['error_code' => 'ERROR_LINK_REQUIRED']);
 
-            return;
-        }
+        return;
+    }
 
-        if (RedirectLink::doesNameAlreadyExist($_POST['name'])) {
-            $appInstance->BadRequest('Name already exists', ['error_code' => 'ERROR_NAME_ALREADY_EXISTS']);
+    if (RedirectLink::doesNameAlreadyExist($_POST['name'])) {
+        $appInstance->BadRequest('Name already exists', ['error_code' => 'ERROR_NAME_ALREADY_EXISTS']);
 
-            return;
-        }
+        return;
+    }
 
-        // Validate URL format
-        if (!filter_var($_POST['link'], FILTER_VALIDATE_URL)) {
-            $appInstance->BadRequest('Invalid URL format', ['error_code' => 'ERROR_INVALID_URL']);
+    // Validate URL format
+    if (!filter_var($_POST['link'], FILTER_VALIDATE_URL)) {
+        $appInstance->BadRequest('Invalid URL format', ['error_code' => 'ERROR_INVALID_URL']);
 
-            return;
-        }
+        return;
+    }
 
-        $redirectLinkId = RedirectLink::create($_POST['name'], $_POST['link']);
+    $redirectLinkId = RedirectLink::create($_POST['name'], $_POST['link']);
 
-        if ($redirectLinkId === 0) {
-            $appInstance->InternalServerError('Failed to create redirect link record', ['error_code' => 'ERROR_FAILED_TO_CREATE_REDIRECT_LINK']);
+    if ($redirectLinkId === 0) {
+        $appInstance->InternalServerError('Failed to create redirect link record', ['error_code' => 'ERROR_FAILED_TO_CREATE_REDIRECT_LINK']);
 
-            return;
-        }
+        return;
+    }
 
-        UserActivities::add(
-            $session->getInfo(UserColumns::UUID, false),
-            UserActivitiesTypes::$admin_redirect_link_create,
-            CloudFlareRealIP::getRealIP(),
-            "Created redirect link $redirectLinkId"
-        );
+    UserActivities::add(
+        $session->getInfo(UserColumns::UUID, false),
+        UserActivitiesTypes::$admin_redirect_link_create,
+        CloudFlareRealIP::getRealIP(),
+        "Created redirect link $redirectLinkId"
+    );
 
-        $appInstance->OK('Redirect link created successfully', [
-            'redirect_link' => [
-                'id' => $redirectLinkId,
-                'name' => $_POST['name'],
-                'link' => $_POST['link'],
-            ],
-        ]);
+    $appInstance->OK('Redirect link created successfully', [
+        'redirect_link' => [
+            'id' => $redirectLinkId,
+            'name' => $_POST['name'],
+            'link' => $_POST['link'],
+        ],
+    ]);
 });
 
 $router->post('/api/admin/redirect-links/(.*)/update', function ($id) {
@@ -93,52 +93,52 @@ $router->post('/api/admin/redirect-links/(.*)/update', function ($id) {
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_EDIT);
-        if (!RedirectLink::exists($id)) {
-            $appInstance->BadRequest('Redirect link not found', ['error_code' => 'REDIRECT_LINK_NOT_FOUND']);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_EDIT, $session);
+    if (!RedirectLink::exists($id)) {
+        $appInstance->BadRequest('Redirect link not found', ['error_code' => 'REDIRECT_LINK_NOT_FOUND']);
 
-            return;
-        }
+        return;
+    }
 
-        if (!isset($_POST['name']) || empty($_POST['name'])) {
-            $appInstance->BadRequest('Name is required', ['error_code' => 'ERROR_NAME_REQUIRED']);
+    if (!isset($_POST['name']) || empty($_POST['name'])) {
+        $appInstance->BadRequest('Name is required', ['error_code' => 'ERROR_NAME_REQUIRED']);
 
-            return;
-        }
+        return;
+    }
 
-        if (!isset($_POST['link']) || empty($_POST['link'])) {
-            $appInstance->BadRequest('Link is required', ['error_code' => 'ERROR_LINK_REQUIRED']);
+    if (!isset($_POST['link']) || empty($_POST['link'])) {
+        $appInstance->BadRequest('Link is required', ['error_code' => 'ERROR_LINK_REQUIRED']);
 
-            return;
-        }
+        return;
+    }
 
-        // Validate URL format
-        if (!filter_var($_POST['link'], FILTER_VALIDATE_URL)) {
-            $appInstance->BadRequest('Invalid URL format', ['error_code' => 'ERROR_INVALID_URL']);
+    // Validate URL format
+    if (!filter_var($_POST['link'], FILTER_VALIDATE_URL)) {
+        $appInstance->BadRequest('Invalid URL format', ['error_code' => 'ERROR_INVALID_URL']);
 
-            return;
-        }
+        return;
+    }
 
-        if (!RedirectLink::update($id, $_POST['name'], $_POST['link'])) {
-            $appInstance->InternalServerError('Failed to update redirect link', ['error_code' => 'ERROR_FAILED_TO_UPDATE_REDIRECT_LINK']);
+    if (!RedirectLink::update($id, $_POST['name'], $_POST['link'])) {
+        $appInstance->InternalServerError('Failed to update redirect link', ['error_code' => 'ERROR_FAILED_TO_UPDATE_REDIRECT_LINK']);
 
-            return;
-        }
+        return;
+    }
 
-        UserActivities::add(
-            $session->getInfo(UserColumns::UUID, false),
-            UserActivitiesTypes::$admin_redirect_link_update,
-            CloudFlareRealIP::getRealIP(),
-            "Updated redirect link $id"
-        );
+    UserActivities::add(
+        $session->getInfo(UserColumns::UUID, false),
+        UserActivitiesTypes::$admin_redirect_link_update,
+        CloudFlareRealIP::getRealIP(),
+        "Updated redirect link $id"
+    );
 
-        $appInstance->OK('Redirect link updated successfully', [
-            'redirect_link' => [
-                'id' => $id,
-                'name' => $_POST['name'],
-                'link' => $_POST['link'],
-            ],
-        ]);
+    $appInstance->OK('Redirect link updated successfully', [
+        'redirect_link' => [
+            'id' => $id,
+            'name' => $_POST['name'],
+            'link' => $_POST['link'],
+        ],
+    ]);
 });
 
 $router->post('/api/admin/redirect-links/(.*)/delete', function ($id) {
@@ -147,27 +147,27 @@ $router->post('/api/admin/redirect-links/(.*)/delete', function ($id) {
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_DELETE);
-        if (!RedirectLink::exists($id)) {
-            $appInstance->BadRequest('Redirect link not found', ['error_code' => 'REDIRECT_LINK_NOT_FOUND']);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_DELETE, $session);
+    if (!RedirectLink::exists($id)) {
+        $appInstance->BadRequest('Redirect link not found', ['error_code' => 'REDIRECT_LINK_NOT_FOUND']);
 
-            return;
-        }
+        return;
+    }
 
-        if (!RedirectLink::delete($id)) {
-            $appInstance->InternalServerError('Failed to delete redirect link', ['error_code' => 'ERROR_FAILED_TO_DELETE_REDIRECT_LINK']);
+    if (!RedirectLink::delete($id)) {
+        $appInstance->InternalServerError('Failed to delete redirect link', ['error_code' => 'ERROR_FAILED_TO_DELETE_REDIRECT_LINK']);
 
-            return;
-        }
+        return;
+    }
 
-        UserActivities::add(
-            $session->getInfo(UserColumns::UUID, false),
-            UserActivitiesTypes::$admin_redirect_link_delete,
-            CloudFlareRealIP::getRealIP(),
-            "Deleted redirect link $id"
-        );
+    UserActivities::add(
+        $session->getInfo(UserColumns::UUID, false),
+        UserActivitiesTypes::$admin_redirect_link_delete,
+        CloudFlareRealIP::getRealIP(),
+        "Deleted redirect link $id"
+    );
 
-        $appInstance->OK('Redirect link deleted successfully', ['id' => $id]);
+    $appInstance->OK('Redirect link deleted successfully', ['id' => $id]);
 });
 
 $router->get('/api/admin/redirect-links/(.*)', function ($id) {
@@ -176,14 +176,14 @@ $router->get('/api/admin/redirect-links/(.*)', function ($id) {
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
-    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_LIST);
-        if (!RedirectLink::exists($id)) {
-            $appInstance->BadRequest('Redirect link not found', ['error_code' => 'REDIRECT_LINK_NOT_FOUND']);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_REDIRECT_LINKS_LIST, $session);
+    if (!RedirectLink::exists($id)) {
+        $appInstance->BadRequest('Redirect link not found', ['error_code' => 'REDIRECT_LINK_NOT_FOUND']);
 
-            return;
-        }
+        return;
+    }
 
-        $redirectLink = RedirectLink::get($id);
+    $redirectLink = RedirectLink::get($id);
 
-        $appInstance->OK('Redirect link fetched successfully', ['redirect_link' => $redirectLink]);
+    $appInstance->OK('Redirect link fetched successfully', ['redirect_link' => $redirectLink]);
 });

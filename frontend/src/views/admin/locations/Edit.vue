@@ -97,6 +97,18 @@
                         />
                     </div>
 
+                    <div>
+                        <label for="vip_only" class="block text-sm font-medium text-gray-400 mb-1">VIP Only</label>
+                        <select
+                            id="vip_only"
+                            v-model="locationForm.vip_only"
+                            class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        >
+                            <option :value="false">No</option>
+                            <option :value="true">Yes</option>
+                        </select>
+                    </div>
+
                     <div v-if="locationForm.created_at">
                         <label class="block text-sm font-medium text-gray-400 mb-1">Created At</label>
                         <div class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 text-gray-400">
@@ -192,6 +204,7 @@ const locationForm = ref({
     created_at: '',
     updated_at: '',
     slots: 15,
+    vip_only: false,
     image_id: null as number | null,
 });
 
@@ -318,6 +331,7 @@ const fetchLocationData = async () => {
                 created_at: location.created_at,
                 updated_at: location.updated_at,
                 slots: location.slots,
+                vip_only: typeof location.vip_only !== 'undefined' ? location.vip_only : false,
                 image_id: location.image_id,
             };
         } else {
@@ -342,6 +356,7 @@ const updateLocation = async () => {
         formData.append('node_ip', locationForm.value.node_ip);
         formData.append('status', locationForm.value.status);
         formData.append('slots', locationForm.value.slots.toString());
+        formData.append('vip_only', locationForm.value.vip_only.toString());
 
         if (locationForm.value.pterodactyl_location_id) {
             formData.append('pterodactyl_location_id', locationForm.value.pterodactyl_location_id.toString());

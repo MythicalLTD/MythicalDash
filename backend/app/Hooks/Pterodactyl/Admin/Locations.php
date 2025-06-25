@@ -51,12 +51,14 @@ class Locations extends LocationsResource
                     }
                 }
             }
+
             return $locations;
         } catch (PterodactylException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Locations#getLocations] Failed to fetch locations: ' . $e->getMessage(), false);
         } catch (\Throwable $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Locations#getLocations] Unexpected error: ' . $e->getMessage(), false);
         }
+
         return [];
     }
 
@@ -120,7 +122,9 @@ class Locations extends LocationsResource
     /**
      * Clear the locations cache.
      */
-    public static function clearLocationsCache(): void {}
+    public static function clearLocationsCache(): void
+    {
+    }
 
     /**
      * Get location ID mapping for all locations.

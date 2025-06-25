@@ -14,15 +14,14 @@
 use MythicalDash\App;
 use MythicalDash\Chat\Database;
 use MythicalDash\Chat\Eggs\Eggs;
-use MythicalDash\Chat\User\Permissions;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Roles;
 use MythicalDash\Chat\User\Session;
+use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Locations\Locations;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
-use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Hooks\Pterodactyl\Admin\Nodes;
 use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 use MythicalDash\Plugins\Events\Events\UserEvent;
@@ -197,19 +196,19 @@ $router->get('/api/user/session', function (): void {
         $info['role_name'] = Roles::getUserRoleName($info[UserColumns::UUID]);
         $info['role_real_name'] = strtolower($info['role_name']);
 
-		$permissions = $session->getUserPermissions();
-		$permissions_list = [];
-		foreach ($permissions as $permission) {
-			$permissions_list[] = $permission['permission'];
-		}
+        $permissions = $session->getUserPermissions();
+        $permissions_list = [];
+        foreach ($permissions as $permission) {
+            $permissions_list[] = $permission['permission'];
+        }
         $appInstance->OK('Account token is valid', [
             'user_info' => $info,
             'stats' => [
                 'tickets' => $stats_tickets,
                 'servers' => $stats_servers,
             ],
-			'permissions_info' => $permissions,
-			'permissions' => $permissions_list,
+            'permissions_info' => $permissions,
+            'permissions' => $permissions_list,
         ]);
 
     } catch (Exception $e) {
@@ -276,7 +275,6 @@ $router->get('/api/user/session/servers', function (): void {
     ]);
 });
 
-
 $router->post('/api/user/session/delete-account', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
@@ -284,22 +282,21 @@ $router->post('/api/user/session/delete-account', function (): void {
     $session = new Session($appInstance);
     $accountToken = $session->SESSION_KEY;
 
-	foreach (Servers::getUserServersList(User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false)) as $server) {
+    foreach (Servers::getUserServersList(User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false)) as $server) {
         Servers::deletePterodactylServer($server['id']);
     }
-	$pteroUsers = new UsersResource(
-		$appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-		$appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
-	);
-	$pteroUsers->deleteUser(User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false));
+    $pteroUsers = new UsersResource(
+        $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+        $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+    );
+    $pteroUsers->deleteUser(User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false));
     User::delete($accountToken);
 
-	UserActivities::add(
-		User::getInfo($accountToken, UserColumns::UUID, false),
-		UserActivitiesTypes::$admin_user_update,
-		CloudFlareRealIP::getRealIP()
-	);
-
+    UserActivities::add(
+        User::getInfo($accountToken, UserColumns::UUID, false),
+        UserActivitiesTypes::$admin_user_update,
+        CloudFlareRealIP::getRealIP()
+    );
 
     $appInstance->OK('Account deleted successfully!', []);
 });

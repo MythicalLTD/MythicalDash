@@ -25,6 +25,7 @@ import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
 import { EditIcon, TrashIcon, LoaderCircle, ClockIcon, SearchIcon } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
+import Roles from '@/mythicaldash/admin/Roles';
 
 // User interface based on the API response
 interface User {
@@ -42,17 +43,41 @@ interface User {
 const router = useRouter();
 const users = ref<User[]>([]);
 const loading = ref(true);
+const rolesData = ref<Array<{ id: number; name: string; color: string }>>([]);
 
-// Role mappings for display purposes
-const roleMap: Record<number, { name: string; color: string }> = {
-    1: { name: 'User', color: 'bg-blue-500/20 text-blue-400' },
-    2: { name: 'VIP', color: 'bg-green-500/20 text-green-400' },
-    3: { name: 'Support Buddy', color: 'bg-yellow-500/20 text-yellow-400' },
-    4: { name: 'Support', color: 'bg-purple-500/20 text-purple-400' },
-    5: { name: 'Support LVL 3', color: 'bg-pink-500/20 text-pink-400' },
-    6: { name: 'Support LVL 4', color: 'bg-pink-500/20 text-pink-400' },
-    7: { name: 'Admin', color: 'bg-pink-500/20 text-pink-400' },
-    8: { name: 'Administrator', color: 'bg-red-500/20 text-red-400' },
+// Fetch roles for dynamic color support
+const fetchRoles = async () => {
+    try {
+        const response = await Roles.getRoles();
+        if (response.success) {
+            rolesData.value = response.roles;
+        }
+    } catch (error) {
+        console.error('Error fetching roles:', error);
+    }
+};
+
+// Get role info by ID
+const getRoleInfo = (roleId: number) => {
+    const role = rolesData.value.find((r) => r.id === roleId);
+    if (role) {
+        // Convert hex color to rgba for background with opacity
+        const hex = role.color.replace('#', '');
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+
+        return {
+            name: role.name,
+            color: role.color,
+            backgroundColor: `rgba(${r}, ${g}, ${b}, 0.2)`,
+        };
+    }
+    return {
+        name: `Role ${roleId}`,
+        color: '#9CA3AF',
+        backgroundColor: 'rgba(107, 114, 128, 0.2)',
+    };
 };
 
 // Define columns for TableTanstack
@@ -97,14 +122,18 @@ const columns = [
         header: 'Role',
         cell: (info: { getValue: () => number }) => {
             const roleId = info.getValue();
-            const role = roleMap[roleId] || { name: `Role ${roleId}`, color: 'bg-gray-500/20 text-gray-400' };
+            const roleInfo = getRoleInfo(roleId);
 
             return h(
                 'span',
                 {
-                    class: `px-2 py-1 rounded-full text-xs font-medium ${role.color}`,
+                    class: 'px-2 py-1 rounded-full text-xs font-medium',
+                    style: {
+                        backgroundColor: roleInfo.backgroundColor,
+                        color: roleInfo.color,
+                    },
                 },
-                role.name,
+                roleInfo.name,
             );
         },
     },
@@ -242,5 +271,6 @@ const supportPinModal = () => {
 
 onMounted(() => {
     fetchUsers();
+    fetchRoles();
 });
 </script>

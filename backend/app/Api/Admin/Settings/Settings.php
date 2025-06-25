@@ -12,46 +12,46 @@
  */
 
 use MythicalDash\App;
-use MythicalDash\Chat\User\Can;
+use MythicalDash\Permissions;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Middleware\PermissionMiddleware;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\SettingsEvent;
-use MythicalDash\Middleware\PermissionMiddleware;
-use MythicalDash\Permissions;
+
 $router->post('/api/admin/settings/update', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $config = $appInstance->getConfig();
     $session = new MythicalDash\Chat\User\Session($appInstance);
-    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SETTINGS_EDIT);
-        if (isset($_POST['key']) && isset($_POST['value'])) {
-            $key = $_POST['key'];
-            $value = $_POST['value'];
-            if ($value == '' || $value == null || $key == '' || $key == null) {
-                $appInstance->BadRequest('Invalid request', ['error_code' => 'INVALID_REQUEST']);
-            }
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SETTINGS_EDIT, $session);
+    if (isset($_POST['key']) && isset($_POST['value'])) {
+        $key = $_POST['key'];
+        $value = $_POST['value'];
+        if ($value == '' || $value == null || $key == '' || $key == null) {
+            $appInstance->BadRequest('Invalid request', ['error_code' => 'INVALID_REQUEST']);
+        }
 
-            $config = $config->setSetting($key, $value);
-            if ($config) {
-                global $eventManager;
-                $eventManager->emit(SettingsEvent::onSettingsUpdated(), [
-                    'key' => $key,
-                    'value' => $value,
-                ]);
-                UserActivities::add(
-                    $session->getInfo(UserColumns::UUID, false),
-                    UserActivitiesTypes::$admin_settings_update,
-                    CloudFlareRealIP::getRealIP(),
-                    "Updated setting $key"
-                );
-                $appInstance->OK('Settings updated successfully.', []);
-            } else {
-                $appInstance->InternalServerError('Failed to update settings', ['error_code' => 'SERVICE_UNAVAILABLE']);
-            }
-        		} else {
+        $config = $config->setSetting($key, $value);
+        if ($config) {
+            global $eventManager;
+            $eventManager->emit(SettingsEvent::onSettingsUpdated(), [
+                'key' => $key,
+                'value' => $value,
+            ]);
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$admin_settings_update,
+                CloudFlareRealIP::getRealIP(),
+                "Updated setting $key"
+            );
+            $appInstance->OK('Settings updated successfully.', []);
+        } else {
+            $appInstance->InternalServerError('Failed to update settings', ['error_code' => 'SERVICE_UNAVAILABLE']);
+        }
+    } else {
         $appInstance->BadRequest('Invalid request', ['error_code' => 'INVALID_REQUEST']);
     }
 
@@ -62,10 +62,10 @@ $router->get('/api/admin/settings/get', function (): void {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
-    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SETTINGS_VIEW);
-        $config = $appInstance->getConfig();
-        $appInstance->OK('Settings retrieved successfully.', [
-            'settings' => $config->dumpSettings(),
-        ]);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SETTINGS_VIEW, $session);
+    $config = $appInstance->getConfig();
+    $appInstance->OK('Settings retrieved successfully.', [
+        'settings' => $config->dumpSettings(),
+    ]);
 
 });

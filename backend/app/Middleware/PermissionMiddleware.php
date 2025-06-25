@@ -14,22 +14,18 @@
 namespace MythicalDash\Middleware;
 
 use MythicalDash\App;
-use MythicalDash\Chat\User\User;
-use MythicalDash\Config\ConfigInterface;
-use MythicalDash\Services\ProxyCheck\ProxyCheck;
+use MythicalDash\Chat\User\Session;
 
 class PermissionMiddleware implements MiddlewareBuilder
 {
-	public static function handle(App $app, string $context): void
+    public static function handle(App $app, string $context, ?Session $session = null): void
     {
         if (isset($_COOKIE['user_token']) && !empty($_COOKIE['user_token'])) {
-            // We will assume this action is performed after the login process and the validation logic.
-            $specialCookie = $_COOKIE['user_token'];
-			if (User::checkPermission($specialCookie, $context)) {
-				return;
-			}
-
-			$app->BadRequest('You are not authorized to perform this action!', ['error_code' => 'NOT_AUTHORIZED']);
+            if ($session->hasPermission($context)) {
+                return;
+            }
+            $app->BadRequest('You are not authorized to perform this action!', ['error_code' => 'NOT_AUTHORIZED']);
         }
+
     }
 }
