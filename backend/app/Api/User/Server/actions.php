@@ -12,6 +12,7 @@
  */
 
 use MythicalDash\App;
+use MythicalDash\Permissions;
 use MythicalDash\Chat\Eggs\Eggs;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\Images\Image;
@@ -443,6 +444,27 @@ $router->get('/api/user/server/create', function (): void {
     $categories = EggCategories::getCategories();
     $eggs = Eggs::getAll();
 
+    // Filter locations based on VIP permission
+    $hasVipPermission = $session->hasPermission(Permissions::USER_PERMISSION_VIP);
+    $locations = array_filter($locations, function ($location) use ($hasVipPermission) {
+        // If location is VIP only and user doesn't have VIP permission, exclude it
+        if ($location['vip_only'] === 'true' && !$hasVipPermission) {
+            return false;
+        }
+
+        return true;
+    });
+
+    // Filter eggs based on VIP permission
+    $eggs = array_filter($eggs, function ($egg) use ($hasVipPermission) {
+        // If egg is VIP only and user doesn't have VIP permission, exclude it
+        if ($egg['vip_only'] === 'true' && !$hasVipPermission) {
+            return false;
+        }
+
+        return true;
+    });
+
     // Structure categories with their eggs
     $structuredCategories = array_map(function ($category) use ($eggs) {
         $category['eggs'] = array_filter($eggs, function ($egg) use ($category) {
@@ -451,6 +473,11 @@ $router->get('/api/user/server/create', function (): void {
 
         return $category;
     }, $categories);
+
+    // Filter out categories that have no eggs after VIP filtering
+    $structuredCategories = array_filter($structuredCategories, function ($category) {
+        return !empty($category['eggs']);
+    });
 
     $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
     $resources = Servers::getUserTotalResourcesUsage($pterodactylUserId, true);
@@ -497,11 +524,12 @@ $router->get('/api/user/server/create', function (): void {
     }
 
     $appInstance->OK('Server Creation', [
-        'locations' => $locations,
-        'categories' => $structuredCategories,
+        'locations' => array_values($locations), // Reset array keys
+        'categories' => array_values($structuredCategories), // Reset array keys
         'used_resources' => $resources,
         'total_resources' => $total_resources,
         'free_resources' => $free_resources,
+        'has_vip_permission' => $hasVipPermission,
     ]);
 });
 
@@ -695,6 +723,36 @@ $router->post('/api/user/server/create', function (): void {
         return;
     }
 
+    $locationInfo = Locations::get($location_id);
+    $eggInfo = Eggs::getById($egg_id);
+
+    // Check if location is VIP only and user doesn't have VIP permission
+    if ($locationInfo['vip_only'] === 'true' && !$session->hasPermission(Permissions::USER_PERMISSION_VIP)) {
+        $appInstance->BadRequest('Location is VIP only', ['error_code' => 'LOCATION_VIP_ONLY']);
+
+        return;
+    }
+
+    // Check if egg is VIP only and user doesn't have VIP permission
+    if ($eggInfo['vip_only'] === 'true' && !$session->hasPermission(Permissions::USER_PERMISSION_VIP)) {
+        $appInstance->BadRequest('Egg is VIP only', ['error_code' => 'EGG_VIP_ONLY']);
+
+        return;
+    }
+
+    if ($locationInfo['slots'] < 1) {
+        $appInstance->BadRequest('Location is full', ['error_code' => 'LOCATION_FULL']);
+
+        return;
+    }
+
+    $serverCount = MythicalDash\Chat\Servers\Server::getServerCountByLocationId($location_id);
+    if ($serverCount >= $locationInfo['slots']) {
+        $appInstance->BadRequest('Location is full', ['error_code' => 'LOCATION_FULL', 'server_count' => $serverCount, 'location_slots' => $locationInfo['slots']]);
+
+        return;
+    }
+
     $sv = ServerQueue::create($name, $description, $memory, $disk, $cpu, $allocations, $databases, $backups, $location_id, $uuid, $category_id, $egg_id);
     if ($sv == false) {
         $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
@@ -729,7 +787,7 @@ $router->post('/api/user/server/create', function (): void {
             "Created server queue item $sv"
         );
 
-        $appInstance->OK('Server queue item created successfully.', ['error_code' => 'SERVER_QUEUE_ITEM_CREATED', 'server_queue_item' => $sv]);
+        $appInstance->OK('Server queue item created successfully.', ['error_code' => 'SERVER_QUEUE_ITEM_CREATED', 'server_queue_item' => $sv, 'server_count' => $serverCount, 'location_slots' => $locationInfo['slots']]);
     } catch (Exception $e) {
         $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
     }

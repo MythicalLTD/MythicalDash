@@ -162,6 +162,10 @@ $router->post('/api/admin/user/(.*)/delete', function ($userId): void {
         $appInstance->BadRequest('User ID is required', ['error_code' => 'USER_ID_REQUIRED']);
     }
     if (User::exists(UserColumns::UUID, $userId)) {
+        global $eventManager;
+        $eventManager->emit(UserEvent::onUserDelete(), [
+            'user' => $userId,
+        ]);
         $token = User::getTokenFromUUID($userId);
         User::delete($token);
         foreach (Servers::getUserServersList(User::getInfo($token, UserColumns::PTERODACTYL_USER_ID, false)) as $server) {
@@ -172,16 +176,14 @@ $router->post('/api/admin/user/(.*)/delete', function ($userId): void {
             $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
         );
         $pteroUsers->deleteUser(User::getInfo($token, UserColumns::PTERODACTYL_USER_ID, false));
+
         UserActivities::add(
             $session->getInfo(UserColumns::UUID, false),
             UserActivitiesTypes::$admin_user_delete,
             CloudFlareRealIP::getRealIP(),
             "Deleted user $userId"
         );
-        global $eventManager;
-        $eventManager->emit(UserEvent::onUserDelete(), [
-            'user' => $userId,
-        ]);
+
         $appInstance->OK('User deleted successfully.', ['error_code' => 'USER_DELETED']);
     } else {
         $appInstance->NotFound('User not found', ['error_code' => 'USER_NOT_FOUND']);

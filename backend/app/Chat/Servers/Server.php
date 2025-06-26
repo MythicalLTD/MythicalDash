@@ -328,4 +328,30 @@ class Server extends Database
             return false;
         }
     }
+
+    /**
+     * Get the number of servers in a location.
+     *
+     * @param int $locationId The ID of the location
+     *
+     * @return int The number of servers in the location
+     */
+    public static function getServerCountByLocationId(int $locationId): int
+    {
+        try {
+            $dbConn = self::getPdoConnection();
+            $sql = 'SELECT COUNT(*) FROM ' . self::getTableName() . ' s 
+				INNER JOIN mythicaldash_servers_queue sq ON s.build = sq.id 
+				WHERE sq.location = :location_id AND s.deleted = "false" AND sq.deleted = "false"';
+            $stmt = $dbConn->prepare($sql);
+            $stmt->bindParam(':location_id', $locationId);
+            $stmt->execute();
+
+            return (int) $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get server count by location ID: ' . $e->getMessage());
+
+            return 0;
+        }
+    }
 }

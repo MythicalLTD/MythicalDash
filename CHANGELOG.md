@@ -8,6 +8,10 @@
 - BUG: Fixed servers not being deleted on account deletion (Admin area)
 - BUG: Removed caches (Added stupid delays/Permission errors & More)
 - BUG: IP Defaults to 127.0.0.1 instead of trying more way :>
+- BUG: Server page components were not right translated!
+- BUG: Profile dropdown components were not all translated!
+- BUG: Image hosting bridge did not delete the user images on user deletion!
+- BUG: Fix idiot bugs with cache
 
 # Futures Added: 
 
@@ -36,6 +40,42 @@
 - Feature: Removed the test email from admin area :)
 - Feature: Ability to use external links for privacy policy and terms of service!
 - Feature: Some security mitigations were put on reflect instead of strict!
+
+# Updates:
+
+- Update: `vite` to 7.0.0
+- Update: `phpparser` to 5.5.0
+- Update: `stripe/stripe-php` to v17.3.0
+- Update: `phpunit/phpunit` to 11.5.24
+- Update: `symfony/yaml` to 7.3.0
+- Update: `nikic/php-parser` to 5.5.0
+- Update: `vue` to ^3.5.17
+- Update: `vue-router` to ^4.5.1
+- Update: `vue-tsc` to ^2.2.10
+- Update: `@vitejs/plugin-vue` to ^6.0.0
+- Update: `@vitejs/plugin-vue-jsx` to ^5.0.0
+- Update: `typescript` to ~5.8.3
+- Update: `tailwindcss` to ^4.1.10
+- Update: `@tailwindcss/vite` to ^4.1.10
+- Update: `chart.js` to ^4.5.0
+- Update: `date-fns` to ^4.1.0
+- Update: `lucide-vue-next` to ^0.523.0
+- Update: `monaco-editor` to ^0.52.2
+- Update: `monaco-editor-vue3` to ^0.1.10
+- Update: `pinia` to ^3.0.3
+- Update: `prettier` to ^3.6.1
+- Update: `qrcode` to ^1.5.4
+- Update: `sweetalert2` to ^11.22.1
+- Update: `vue-qrcode` to ^2.2.2
+- Update: `vue-sweetalert2` to ^5.0.11
+- Update: `vue-turnstile` to ^1.0.11
+- Update: `web-vitals` to ^5.0.3
+- Update: `@vueuse/sound` to ^2.1.3
+- Update: `vue-i18n` to ^11.1.7
+- Update: `@modyfi/vite-plugin-yaml` to ^1.1.1
+- Update: `@tanstack/vue-table` to ^8.21.3
+- Update: `eslint` to ^9.29.0
+
 
 # v3-remastered 1.0.0.4
 

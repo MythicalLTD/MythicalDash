@@ -281,7 +281,10 @@ $router->post('/api/user/session/delete-account', function (): void {
     $appInstance->allowOnlyPOST();
     $session = new Session($appInstance);
     $accountToken = $session->SESSION_KEY;
-
+    global $eventManager;
+    $eventManager->emit(UserEvent::onUserDelete(), [
+        'user' => $session->getInfo(UserColumns::UUID, false),
+    ]);
     foreach (Servers::getUserServersList(User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false)) as $server) {
         Servers::deletePterodactylServer($server['id']);
     }

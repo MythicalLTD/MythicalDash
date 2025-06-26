@@ -14,13 +14,14 @@ import MythicalDash from '@/mythicaldash/MythicalDash';
 import { LicenseServer } from '@/mythicaldash/LicenseServer';
 import Permissions from '@/mythicaldash/Permissions';
 import Roles from '@/mythicaldash/admin/Roles';
+import { useI18n } from 'vue-i18n';
 
 MythicalDash.download();
 
 new StorageMonitor();
 
 const router = useRouter();
-
+const { t } = useI18n();
 if (!Session.isSessionValid()) {
     router.push('/auth/login');
 }
@@ -166,11 +167,11 @@ onUnmounted(() => {
 // Computed properties
 const profileMenu = computed(() => {
     const menu = [
-        { name: 'Settings', icon: SettingsIcon, href: '/account' },
-        { name: 'Profile', icon: UserIcon, href: `/profile/${Session.getInfo('uuid')}` },
+        { name: t('components.profileDropdown.settings'), icon: SettingsIcon, href: '/account' },
+        { name: t('components.profileDropdown.profile'), icon: UserIcon, href: `/profile/${Session.getInfo('uuid')}` },
     ];
     if (Session.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
-        menu.splice(1, 0, { name: 'Admin Area', icon: UsersIcon, href: '/mc-admin' });
+        menu.splice(1, 0, { name: t('components.profileDropdown.adminArea'), icon: UsersIcon, href: '/mc-admin' });
     }
     return menu;
 });

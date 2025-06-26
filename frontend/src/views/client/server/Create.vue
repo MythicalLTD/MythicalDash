@@ -2,8 +2,19 @@
     <LayoutDashboard>
         <!-- Page Header -->
         <div class="mb-8">
-            <h1 class="text-2xl font-bold text-gray-100 mb-2">{{ t('create.pages.index.title') }}</h1>
-            <p class="text-gray-400">{{ t('create.pages.index.subTitle') }}</p>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-100 mb-2">{{ t('create.pages.index.title') }}</h1>
+                    <p class="text-gray-400">{{ t('create.pages.index.subTitle') }}</p>
+                </div>
+                <div
+                    v-if="hasVipPermission"
+                    class="flex items-center space-x-2 bg-gradient-to-r from-yellow-600/20 to-yellow-400/20 border border-yellow-500/30 rounded-lg px-3 py-2"
+                >
+                    <Crown class="w-5 h-5 text-yellow-400" />
+                    <span class="text-yellow-400 font-medium">{{ t('create.pages.index.vip_access') }}</span>
+                </div>
+            </div>
         </div>
 
         <!-- Progress Steps -->
@@ -89,23 +100,23 @@
                                 </div>
                                 <div class="text-sm text-gray-400">
                                     <label for="terms" class="font-medium text-gray-300">
-                                        I accept the terms and conditions
+                                        {{ t('create.pages.index.i_accept_the_terms_and_conditions') }}
                                     </label>
                                     <p class="mt-1">
-                                        By creating a server, you agree to our
+                                        {{ t('create.pages.index.by_creating_a_server') }}
                                         <router-link
                                             to="/terms-of-service"
                                             target="_blank"
                                             class="text-indigo-400 hover:text-indigo-300"
-                                            >Terms of Service</router-link
+                                            >{{ t('create.pages.index.terms_and_conditions') }}</router-link
                                         >
-                                        and
+                                        {{ t('create.pages.index.and') }}
                                         <router-link
                                             to="/privacy-policy"
                                             target="_blank"
                                             class="text-indigo-400 hover:text-indigo-300"
-                                            >Privacy Policy</router-link
-                                        >. Please review them before proceeding.
+                                            >{{ t('create.pages.index.privacy_policy') }}</router-link
+                                        >. {{ t('create.pages.index.please_review_them_before_proceeding') }}
                                     </p>
                                 </div>
                             </div>
@@ -121,8 +132,10 @@
                         <div class="w-16 h-16 mx-auto mb-4 text-gray-500">
                             <FolderOpen class="w-12 h-12 mx-auto" />
                         </div>
-                        <h3 class="text-lg font-medium text-gray-300 mb-2">No Categories Available</h3>
-                        <p class="text-gray-500">There are no server categories available at the moment.</p>
+                        <h3 class="text-lg font-medium text-gray-300 mb-2">
+                            {{ t('create.pages.index.no_category_found') }}
+                        </h3>
+                        <p class="text-gray-500">{{ t('create.pages.index.no_category_found_description') }}</p>
                     </div>
                     <div v-else class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div
@@ -171,8 +184,10 @@
                         <div class="w-16 h-16 mx-auto mb-4 text-gray-500">
                             <Server class="w-12 h-12 mx-auto" />
                         </div>
-                        <h3 class="text-lg font-medium text-gray-300 mb-2">No Locations Available</h3>
-                        <p class="text-gray-500">There are no server locations available at the moment.</p>
+                        <h3 class="text-lg font-medium text-gray-300 mb-2">
+                            {{ t('create.pages.index.no_location_found') }}
+                        </h3>
+                        <p class="text-gray-500">{{ t('create.pages.index.no_location_found_description') }}</p>
                     </div>
                     <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div
@@ -201,7 +216,18 @@
                                     class="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
                                 >
                                     <div class="bg-black/50 backdrop-blur-sm rounded-lg p-3">
-                                        <h3 class="text-white font-medium">{{ location.name }}</h3>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h3 class="text-white font-medium">{{ location.name }}</h3>
+                                            <div
+                                                v-if="location.vip_only === 'true'"
+                                                class="flex items-center space-x-1"
+                                            >
+                                                <Crown class="w-4 h-4 text-yellow-400" />
+                                                <span class="text-xs text-yellow-400 font-medium">{{
+                                                    t('create.pages.index.vip_access')
+                                                }}</span>
+                                            </div>
+                                        </div>
                                         <p class="text-gray-400 text-sm line-clamp-2">{{ location.description }}</p>
                                         <div class="flex items-center justify-between mt-2">
                                             <span class="text-xs text-gray-400">
@@ -256,8 +282,10 @@
                         <div class="w-16 h-16 mx-auto mb-4 text-gray-500">
                             <Box class="w-12 h-12 mx-auto" />
                         </div>
-                        <h3 class="text-lg font-medium text-gray-300 mb-2">No Server Types Available</h3>
-                        <p class="text-gray-500">Please select a category first to view available server types.</p>
+                        <h3 class="text-lg font-medium text-gray-300 mb-2">
+                            {{ t('create.pages.index.no_egg_found') }}
+                        </h3>
+                        <p class="text-gray-500">{{ t('create.pages.index.no_egg_found_description') }}</p>
                     </div>
                     <div v-else class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div
@@ -286,7 +314,15 @@
                                     class="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
                                 >
                                     <div class="bg-black/50 backdrop-blur-sm rounded-lg p-3">
-                                        <h3 class="text-white font-medium">{{ egg.name }}</h3>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h3 class="text-white font-medium">{{ egg.name }}</h3>
+                                            <div v-if="egg.vip_only === 'true'" class="flex items-center space-x-1">
+                                                <Crown class="w-4 h-4 text-yellow-400" />
+                                                <span class="text-xs text-yellow-400 font-medium">{{
+                                                    t('create.pages.index.vip_only')
+                                                }}</span>
+                                            </div>
+                                        </div>
                                         <p class="text-gray-400 text-sm line-clamp-2">{{ egg.description }}</p>
                                     </div>
                                 </div>
@@ -436,7 +472,7 @@
                 <Button
                     v-if="currentStep > 0"
                     type="button"
-                    text="Previous"
+                    :text="t('create.pages.index.previous')"
                     @click="currentStep--"
                     class="bg-[#1a1a2f] hover:bg-[#1a1a2f]/80 transform transition-all duration-300 hover:scale-105"
                 />
@@ -444,7 +480,7 @@
                     <Button
                         v-if="currentStep < steps.length - 1"
                         type="button"
-                        text="Next"
+                        :text="t('create.pages.index.next')"
                         @click="nextStep"
                         :disabled="!canProceed"
                         class="transform transition-all duration-300 hover:scale-105"
@@ -452,7 +488,7 @@
                     <Button
                         v-else
                         type="submit"
-                        text="Create Server"
+                        :text="t('create.pages.index.create_server')"
                         :disabled="!canCreateServer"
                         :loading="isSubmitting"
                         class="transform transition-all duration-300 hover:scale-105"
@@ -477,7 +513,7 @@ import failedAlertSfx from '@/assets/sounds/error.mp3';
 import successAlertSfx from '@/assets/sounds/success.mp3';
 import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '@/stores/settings';
-import { Cpu, HardDrive, Database, Archive, Server, FolderOpen, Box, Wifi } from 'lucide-vue-next';
+import { Cpu, HardDrive, Database, Archive, Server, FolderOpen, Box, Wifi, Crown } from 'lucide-vue-next';
 
 const { t } = useI18n();
 const Settings = useSettingsStore();
@@ -508,6 +544,7 @@ interface Location {
     node_ip: string;
     status: string;
     deleted: string;
+    vip_only: string;
     image: Image;
     locked: string;
     updated_at: string;
@@ -524,6 +561,7 @@ interface Egg {
     deleted: string;
     locked: string;
     image: Image;
+    vip_only: string;
     updated_at: string;
     created_at: string;
 }
@@ -564,6 +602,7 @@ function convertToString(value: number): string {
 const locations = ref<Location[]>([]);
 const categories = ref<Category[]>([]);
 const availableEggs = ref<Egg[]>([]);
+const hasVipPermission = ref(false);
 const resources = reactive<{
     used: ResourceLimits;
     total: ResourceLimits;
@@ -710,6 +749,7 @@ onMounted(async () => {
         if (data.success) {
             locations.value = data.locations || [];
             categories.value = data.categories || [];
+            hasVipPermission.value = data.has_vip_permission || false;
             // Set resource limits
             if (data.used_resources) resources.used = data.used_resources;
             if (data.total_resources) resources.total = data.total_resources;
@@ -851,6 +891,8 @@ const createServer = async () => {
                 FAILED_TO_CREATE_SERVER_QUEUE_ITEM: t(
                     'create.pages.alerts.error.deploy.FAILED_TO_CREATE_SERVER_QUEUE_ITEM',
                 ),
+                LOCATION_VIP_ONLY: t('create.pages.alerts.error.deploy.LOCATION_VIP_ONLY'),
+                EGG_VIP_ONLY: t('create.pages.alerts.error.deploy.EGG_VIP_ONLY'),
             };
 
             playError();
@@ -878,7 +920,13 @@ const createServer = async () => {
 };
 
 const currentStep = ref(0);
-const steps = ['Server Details', 'Select Category', 'Select Location', 'Select Server Type', 'Resource Allocation'];
+const steps = [
+    t('create.pages.index.server_details'),
+    t('create.pages.index.select_category'),
+    t('create.pages.index.select_location'),
+    t('create.pages.index.select_server_type'),
+    t('create.pages.index.resource_allocation'),
+];
 
 // Get resource icon based on type
 const getResourceIcon = (type: keyof ResourceLimits) => {

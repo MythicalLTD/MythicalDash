@@ -113,7 +113,6 @@ class Session extends Database
     {
         try {
             $roleId = (int) $this->getInfo(UserColumns::ROLE_ID, false);
-            $this->app->getLogger()->error('Checking permission: ' . $permission . ' for role: ' . $roleId);
 
             // Check if the role has the specific permission
             return Permissions::hasPermission($roleId, $permission);

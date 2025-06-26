@@ -4,6 +4,7 @@ namespace MythicalDash\Addons\imagehostbridge;
 
 use MythicalDash\Plugins\Events\Events\AppEvent;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
+use MythicalDash\Plugins\Events\Events\UserEvent;
 use MythicalDash\Plugins\MythicalDashPlugin;
 
 class ImageHostBridge implements MythicalDashPlugin
@@ -23,6 +24,10 @@ class ImageHostBridge implements MythicalDashPlugin
 
 		$event->on(AppEvent::onRouterReady(), function (\MythicalDash\Router\Router $router) : void {
 			new \MythicalDash\Addons\imagehostbridge\Events\Router($router);
+		});
+
+		$event->on(UserEvent::onUserDelete(), function (string $user) : void {
+			new \MythicalDash\Addons\imagehostbridge\Events\DeleteUser($user);
 		});
 	}
 

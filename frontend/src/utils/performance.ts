@@ -207,12 +207,42 @@ class PerformanceManager {
         }
 
         if (dataBackground) {
-            element.style.backgroundImage = `url(${dataBackground})`;
+            // Properly escape the background URL to prevent CSS injection
+            const escapedBackground = this.escapeCSSUrl(dataBackground);
+            element.style.backgroundImage = `url(${escapedBackground})`;
             element.removeAttribute('data-background');
         }
 
         element.removeAttribute('data-lazy');
         element.classList.add('loaded');
+    }
+
+    /**
+     * Escape a URL for safe use in CSS url() function
+     * Prevents CSS injection attacks by properly escaping special characters
+     * 
+     * @param url The URL to escape
+     * @returns The escaped URL safe for CSS
+     */
+    private escapeCSSUrl(url: string): string {
+        // Remove any existing quotes and escape special characters
+        let escaped = url.replace(/['"]/g, ''); // Remove quotes
+        
+        // Escape backslashes and other special characters that could be used for injection
+        escaped = escaped.replace(/\\/g, '\\\\'); // Escape backslashes
+        escaped = escaped.replace(/\)/g, '\\)'); // Escape closing parentheses
+        
+        // Validate that it's a safe URL (basic check)
+        try {
+            // Try to create a URL object to validate
+            new URL(escaped, window.location.origin);
+        } catch {
+            // If it's not a valid URL, return empty string to prevent injection
+            console.warn('Invalid URL detected in data-background attribute:', url);
+            return '';
+        }
+        
+        return escaped;
     }
 
     private setupMemoryOptimization(): void {

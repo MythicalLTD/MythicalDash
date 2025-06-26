@@ -845,6 +845,10 @@ components:
         image_hosting: Image Hosting
         images: Images
         quota: Quota
+    profileDropdown:
+        settings: Settings
+        profile: Profile
+        adminArea: Admin Area
     search:
         placeholder: 'Search (Ctrl + K)'
         no_results: 'No results found'
@@ -1113,6 +1117,29 @@ create:
                 available: 'Available'
                 depleted: 'Depleted'
             slots: 'Slots'
+            vip_only: 'VIP Only'
+            vip_access: 'VIP Access'
+            terms_and_conditions: 'Terms and Conditions'
+            privacy_policy: 'Privacy Policy'
+            and: 'and'
+            i_accept_the_terms_and_conditions: 'I accept the terms and conditions'
+            by_creating_a_server: 'By creating a server, you agree to our'
+            please_review_them_before_proceeding: 'Please review them before proceeding.'
+            no_category_found: 'No category found'
+            no_egg_found: 'No egg found'
+            no_location_found: 'No location found'
+            create_server: 'Create Server'
+            previous: 'Previous'
+            next: 'Next'
+            steps:
+            server_details: 'Server Details'
+            select_category: 'Select Category'
+            select_location: 'Select Location'
+            select_server_type: 'Select Server Type'
+            resource_allocation: 'Resource Allocation'
+            no_category_found_description: 'Please create a category first'
+            no_egg_found_description: 'Please create an egg first'
+            no_location_found_description: 'Please create a location first'
             resources:
                 title: 'Resource Availability'
                 available: 'Available'
@@ -1153,6 +1180,8 @@ create:
                     NOT_ENOUGH_ALLOCATIONS: 'You do not have enough allocation resources'
                     NOT_ENOUGH_SERVERS: 'You have reached your server limit'
                     FAILED_TO_CREATE_SERVER_QUEUE_ITEM: 'Failed to create server queue item'
+                    LOCATION_VIP_ONLY: 'This location is VIP-only. You need VIP permissions to create servers here.'
+                    EGG_VIP_ONLY: 'This server type is VIP-only. You need VIP permissions to use this server type.'
             success:
                 title: 'Success'
                 generic: 'Your server has been created'

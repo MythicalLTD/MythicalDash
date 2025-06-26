@@ -85,7 +85,7 @@
                     <label for="vip_only" class="block text-sm font-medium text-gray-300 mb-1">VIP Only</label>
                     <select
                         id="vip_only"
-                        v-model="eggForm.vip"
+                        v-model="eggForm.vip_only"
                         class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
                     >
                         <option value="true">Yes</option>
@@ -186,7 +186,7 @@ const eggForm = ref({
     pterodactyl_egg_id: 0,
     enabled: 'false',
     image_id: null as number | null,
-    vip: 'false',
+    vip_only: 'false',
 });
 
 const categories = ref<Category[]>([]);
@@ -262,7 +262,7 @@ const fetchEgg = async () => {
                 pterodactyl_egg_id: parseInt(foundEgg.pterodactyl_egg_id),
                 enabled: foundEgg.enabled,
                 image_id: foundEgg.image_id ? parseInt(foundEgg.image_id) : null,
-                vip: foundEgg.vip === 'true' ? 'true' : 'false',
+                vip_only: foundEgg.vip_only === 'true' ? 'true' : 'false',
             };
 
             // Load Pterodactyl eggs for the selected category
@@ -314,7 +314,7 @@ const updateEgg = async () => {
             eggForm.value.pterodactyl_egg_id,
             eggForm.value.enabled,
             eggForm.value.image_id,
-            eggForm.value.vip,
+            eggForm.value.vip_only,
         );
 
         if (response.success) {

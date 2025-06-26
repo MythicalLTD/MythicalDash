@@ -13,7 +13,6 @@
 
 namespace MythicalDash\Chat\User;
 
-use MythicalDash\App;
 use MythicalDash\Chat\Database;
 
 class Permissions extends Database
@@ -183,8 +182,6 @@ class Permissions extends Database
 
             $result = $stmt->fetchColumn();
             if ($result === 'true') {
-                App::getInstance(true)->getLogger()->error('User has root permission');
-
                 return true;
             }
         } catch (\Exception $e) {

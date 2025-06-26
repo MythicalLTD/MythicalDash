@@ -4,7 +4,7 @@ plugin:
     description: 'A nice bridge built to extend MythicalDash to allow hosting owners to have a image host!'
     flags:
         - hasEvents
-    version: 1.0.0
+    version: 1.0.1
     target: v3
     author:
         - NaysKutzu
