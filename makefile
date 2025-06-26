@@ -10,7 +10,7 @@ BACKEND_DIR = backend
 YARN = yarn
 NPM = npm
 PHP = php
-COMPOSER = composer
+COMPOSER = COMPOSER_ALLOW_SUPERUSER=1 composer
 SED = sed
 
 # Colors and formatting
@@ -80,8 +80,14 @@ release:
 	@echo -e "\n${BOLD}${BLUE}Release Build${NC} ${ROCKET}"
 	@echo -e "${CYAN}=================${NC}"
 	@echo -e "${YELLOW}${WARN} Starting comprehensive release build...${NC}\n"
+
+	@echo -e "${PURPLE}${INFO} Exporting permissions...${NC}"
+	@php mythicaldash ExportPermissions
+	@echo -e "${GREEN}${CHECK} Permissions exported${NC}\n"
+
 	
 	@echo -e "${PURPLE}${INFO} Frontend checks...${NC}"
+
 	@cd $(BACKEND_DIR) && $(COMPOSER) run lint
 	@cd $(FRONTEND_DIR) && $(YARN) format
 	@echo -e "${GREEN}${CHECK} Frontend checks complete${NC}\n"

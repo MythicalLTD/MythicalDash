@@ -206,7 +206,7 @@ class PerformanceManager {
                 const validatedSrc = new URL(dataSrc, window.location.origin).toString();
                 element.src = validatedSrc;
                 element.removeAttribute('data-src');
-            } catch (e) {
+            } catch {
                 console.error('Invalid data-src URL:', dataSrc);
             }
         }
@@ -225,18 +225,18 @@ class PerformanceManager {
     /**
      * Escape a URL for safe use in CSS url() function
      * Prevents CSS injection attacks by properly escaping special characters
-     * 
+     *
      * @param url The URL to escape
      * @returns The escaped URL safe for CSS
      */
     private escapeCSSUrl(url: string): string {
         // Remove any existing quotes and escape special characters
         let escaped = url.replace(/['"]/g, ''); // Remove quotes
-        
+
         // Escape backslashes and other special characters that could be used for injection
         escaped = escaped.replace(/\\/g, '\\\\'); // Escape backslashes
         escaped = escaped.replace(/\)/g, '\\)'); // Escape closing parentheses
-        
+
         // Validate that it's a safe URL (basic check)
         try {
             // Try to create a URL object to validate
@@ -246,7 +246,7 @@ class PerformanceManager {
             console.warn('Invalid URL detected in data-background attribute:', url);
             return '';
         }
-        
+
         return escaped;
     }
 

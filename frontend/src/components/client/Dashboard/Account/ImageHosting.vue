@@ -307,7 +307,7 @@ const toggleImageHosting = async () => {
 // Toggle embed enabled
 const toggleEmbedEnabled = async () => {
     try {
-        const response = await fetch('/api/user/images/embed/toggle', {
+        const response = await fetch('/api/user/images/embed-settings/toggle', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

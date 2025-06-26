@@ -56,23 +56,35 @@ const i18n = createI18n({
 
 // Performance optimization: Lazy load translations with caching
 const messageCache = new Map();
+const FALLBACK_LOCALE = 'EN';
+
 const loadLocaleMessages = async (locale: string) => {
-    if (messageCache.has(locale)) {
-        i18n.global.setLocaleMessage(locale, messageCache.get(locale));
-        return;
+    // Always load fallback first if not loaded
+    if (!messageCache.has(FALLBACK_LOCALE)) {
+        try {
+            const fallbackMessages = await import(`@/locale/${FALLBACK_LOCALE.toLowerCase()}.yml`);
+            messageCache.set(FALLBACK_LOCALE, fallbackMessages.default);
+            i18n.global.setLocaleMessage(FALLBACK_LOCALE, fallbackMessages.default);
+        } catch (error) {
+            console.error(`Failed to load fallback locale messages for ${FALLBACK_LOCALE}:`, error);
+        }
     }
 
-    try {
-        const messages = await import(`@/locale/${locale.toLowerCase()}.yml`);
-        messageCache.set(locale, messages.default);
-        i18n.global.setLocaleMessage(locale, messages.default);
-    } catch (error) {
-        console.error(`Failed to load locale messages for ${locale}:`, error);
+    // Then load the requested locale if different
+    if (locale !== FALLBACK_LOCALE && !messageCache.has(locale)) {
+        try {
+            const messages = await import(`@/locale/${locale.toLowerCase()}.yml`);
+            messageCache.set(locale, messages.default);
+            i18n.global.setLocaleMessage(locale, messages.default);
+        } catch (error) {
+            console.error(`Failed to load locale messages for ${locale}:`, error);
+        }
     }
 };
 
 // Load initial locale
-loadLocaleMessages(locale);
+await loadLocaleMessages(locale);
+i18n.global.locale.value = locale as 'EN' | 'RO' | 'FR' | 'DE' | 'ES' | 'MD';
 
 // Performance optimization: Disable devtools in production
 if (import.meta.env.PROD) {

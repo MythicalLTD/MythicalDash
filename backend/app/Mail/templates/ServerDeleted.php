@@ -11,7 +11,7 @@
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
 
-namespace MythicalDash\Mail\Templates;
+namespace MythicalDash\Mail\templates;
 
 use MythicalDash\App;
 use MythicalDash\Mail\Mail;
