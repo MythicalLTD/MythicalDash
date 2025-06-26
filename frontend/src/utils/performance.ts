@@ -202,8 +202,13 @@ class PerformanceManager {
         const dataBackground = element.getAttribute('data-background');
 
         if (dataSrc && element instanceof HTMLImageElement) {
-            element.src = dataSrc;
-            element.removeAttribute('data-src');
+            try {
+                const validatedSrc = new URL(dataSrc, window.location.origin).toString();
+                element.src = validatedSrc;
+                element.removeAttribute('data-src');
+            } catch (e) {
+                console.error('Invalid data-src URL:', dataSrc);
+            }
         }
 
         if (dataBackground) {
