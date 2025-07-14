@@ -44,15 +44,15 @@ class User extends UsersResource
                 $userExists = $userResource->findUserByUuid($pterodactylUserId);
             } catch (ResourceNotFoundException $e) {
                 // TODO: Delete user form mythicaldash
-                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by uuid');
+                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by uuid (RESOURCE)');
                 throw new \Exception('User not found by uuid');
             } catch (PterodactylException $e) {
                 // TODO: Delete user form mythicaldash
-                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by uuid');
+                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by uuid (PTERODACTYL)');
                 throw new \Exception('User not found by uuid');
             } catch (ValidationException $e) {
                 // TODO: Delete user form mythicaldash
-                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by uuid');
+                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by uuid (VALIDATION)');
                 throw new \Exception('User not found by uuid');
             }
 

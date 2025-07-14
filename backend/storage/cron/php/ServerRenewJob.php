@@ -121,6 +121,14 @@ class ServerRenewJob implements TimeTask
 		if ($days_until_expiry <= 1 && $days_until_expiry > 0) {
 			self::handleFinalDayServer($pterodactyl_ID, $user, $chat, $logger);
 		}
+
+		// If the server is expired (days_until_expiry <= 0), and is suspended, delete it
+		if ($days_until_expiry <= 0) {
+			$serverInfo = self::getServerInfoWithRetry($pterodactyl_ID);
+			if ($serverInfo && isset($serverInfo['attributes']['suspended']) && $serverInfo['attributes']['suspended']) {
+				self::deleteExpiredServer($pterodactyl_ID, $user, $chat, $logger);
+			}
+		}
 	}
 
 	private static function handleExpiringServer(int $pterodactyl_ID, string $user, int $days_until_expiry, $chat): void

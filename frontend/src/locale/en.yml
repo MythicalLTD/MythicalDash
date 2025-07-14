@@ -226,21 +226,28 @@ auth:
                 title: Register
                 subTitle: Create a new account
                 form:
+                    validation_failed: Please correct the highlighted errors before submitting.
                     email:
                         label: Email
                         placeholder: Enter your email
+                        validation: Please enter a valid email address (1-191 chars).
                     firstName:
                         label: First Name
                         placeholder: Enter your first name
+                        validation: First name must be 1-191 letters.
                     lastName:
                         label: Last Name
                         placeholder: Enter your last name
+                        validation: Last name must be 1-191 letters.
                     username:
                         label: Username
                         placeholder: Enter your username
+                        validation: Username must be 1-191 chars, start/end with alphanumeric, and can contain . - _ in between.
                     password:
                         label: Password
                         placeholder: Enter your password
+                        validation: Password must be at least 8 characters.
+                        validation_failed: Please correct the highlighted errors before submitting.
                     confirm_password:
                         label: Confirm Password
                         placeholder: Confirm your password

@@ -10,7 +10,9 @@
 
 ## New Features
 
-- TODO
+- Validation logic on frontend and backend to reduce false input provided to pterodactyl panel!
+- Servers now get deleted after renew has reached day 0! 
+
 
 ## Features Removed
 

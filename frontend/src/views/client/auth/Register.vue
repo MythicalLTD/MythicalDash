@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, watch, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, watch, onMounted, onUnmounted, computed } from 'vue';
 import Layout from '@/components/client/Layout.vue';
 import FormCard from '@/components/client/Auth/FormCard.vue';
 import FormInput from '@/components/client/Auth/FormInput.vue';
@@ -125,6 +125,43 @@ if (router.currentRoute.value.query.ref) {
 MythicalDOM.setPageTitle(t('auth.pages.register.page.title'));
 const referralsEnabled = Settings.getSetting('referrals_enabled');
 const acceptTerms = ref(false);
+const validationErrors = ref<{ [key: string]: string }>({});
+
+const validateForm = () => {
+    validationErrors.value = {};
+    // First Name: required, only letters, 1-191 chars
+    if (!form.firstName || !/^[a-zA-Z]+$/.test(form.firstName) || form.firstName.length > 191) {
+        validationErrors.value.firstName = t('auth.pages.register.page.form.firstName.validation');
+    }
+    // Last Name: required, only letters, 1-191 chars
+    if (!form.lastName || !/^[a-zA-Z]+$/.test(form.lastName) || form.lastName.length > 191) {
+        validationErrors.value.lastName = t('auth.pages.register.page.form.lastName.validation');
+    }
+    // Username: required, 1-191 chars, regex /^[a-z0-9]([\w\.-]+)[a-z0-9]$/i
+    if (
+        !form.username ||
+        form.username.length < 1 ||
+        form.username.length > 191 ||
+        !/^[a-z0-9]([\w\.-]+)[a-z0-9]$/i.test(form.username)
+    ) {
+        validationErrors.value.username = t('auth.pages.register.page.form.username.validation');
+    }
+    // Email: required, valid, 1-191 chars
+    if (
+        !form.email ||
+        form.email.length < 1 ||
+        form.email.length > 191 ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+    ) {
+        validationErrors.value.email = t('auth.pages.register.page.form.email.validation');
+    }
+    // Password: required, min 8 chars
+    if (!form.password || form.password.length < 8) {
+        validationErrors.value.password = t('auth.pages.register.page.form.password.validation');
+    }
+    return Object.keys(validationErrors.value).length === 0;
+};
+
 const handleSubmit = async () => {
     if (!acceptTerms.value) {
         playError();
@@ -135,6 +172,16 @@ const handleSubmit = async () => {
             showConfirmButton: true,
         });
         loading.value = false;
+        return;
+    }
+    if (!validateForm()) {
+        playError();
+        Swal.fire({
+            icon: 'error',
+            title: t('auth.pages.register.alerts.error.title'),
+            text: t('auth.pages.register.page.form.validation_failed'),
+            showConfirmButton: true,
+        });
         return;
     }
     loading.value = true;
@@ -206,20 +253,30 @@ const handleSubmit = async () => {
     <Layout>
         <FormCard :title="t('auth.pages.register.page.subTitle')" @submit="handleSubmit">
             <div class="flex space-x-4">
-                <FormInput
-                    id="firstName"
-                    :label="t('auth.pages.register.page.form.firstName.label')"
-                    v-model="form.firstName"
-                    :placeholder="t('auth.pages.register.page.form.firstName.placeholder')"
-                    required
-                />
-                <FormInput
-                    id="lastName"
-                    :label="t('auth.pages.register.page.form.lastName.label')"
-                    v-model="form.lastName"
-                    :placeholder="t('auth.pages.register.page.form.lastName.placeholder')"
-                    required
-                />
+                <div class="w-1/2">
+                    <FormInput
+                        id="firstName"
+                        :label="t('auth.pages.register.page.form.firstName.label')"
+                        v-model="form.firstName"
+                        :placeholder="t('auth.pages.register.page.form.firstName.placeholder')"
+                        required
+                    />
+                    <div v-if="validationErrors.firstName" class="text-red-500 text-xs mt-1">
+                        {{ validationErrors.firstName }}
+                    </div>
+                </div>
+                <div class="w-1/2">
+                    <FormInput
+                        id="lastName"
+                        :label="t('auth.pages.register.page.form.lastName.label')"
+                        v-model="form.lastName"
+                        :placeholder="t('auth.pages.register.page.form.lastName.placeholder')"
+                        required
+                    />
+                    <div v-if="validationErrors.lastName" class="text-red-500 text-xs mt-1">
+                        {{ validationErrors.lastName }}
+                    </div>
+                </div>
             </div>
             <div class="relative">
                 <FormInput
@@ -236,6 +293,9 @@ const handleSubmit = async () => {
                 >
                     {{ t('auth.pages.register.page.form.generate_username.label') }}
                 </button>
+                <div v-if="validationErrors.username" class="text-red-500 text-xs mt-1">
+                    {{ validationErrors.username }}
+                </div>
             </div>
             <div class="relative">
                 <FormInput
@@ -264,8 +324,10 @@ const handleSubmit = async () => {
                         </li>
                     </ul>
                 </div>
+                <div v-if="validationErrors.email" class="text-red-500 text-xs mt-1">
+                    {{ validationErrors.email }}
+                </div>
             </div>
-
             <div class="flex items-center justify-between mb-2">
                 <label class="block text-sm text-gray-400">{{
                     t('auth.pages.register.page.form.password.label')
@@ -274,7 +336,6 @@ const handleSubmit = async () => {
                     {{ t('auth.pages.register.page.form.generate_password.label') }}
                 </button>
             </div>
-
             <FormInput
                 id="password"
                 type="password"
@@ -283,6 +344,9 @@ const handleSubmit = async () => {
                 :placeholder="t('auth.pages.register.page.form.password.placeholder')"
                 required
             />
+            <div v-if="validationErrors.password" class="text-red-500 text-xs mt-1">
+                {{ validationErrors.password }}
+            </div>
             <div v-if="referralsEnabled == 'true'">
                 <FormInput
                     id="referralCode"
