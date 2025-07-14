@@ -158,7 +158,11 @@ $router->add('/api/user/auth/register', function (): void {
 
                     if (is_array($referrerCode) && isset($referrerCode['user']) && is_string($referrerCode['user']) && $referrerCode['user'] !== '') {
                         $referrerUuid = $referrerCode['user'];
-                        $referrerToken = User::getTokenFromUUID($referrerUuid);
+                        if ($referrerUuid !== null && is_string($referrerUuid) && $referrerUuid !== '') {
+                            $referrerToken = User::getTokenFromUUID($referrerUuid);
+                        } else {
+                            $referrerToken = null;
+                        }
 
                         if ($referrerToken == null) {
                             $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'REFERRAL_CODE_NOT_FOUND']);

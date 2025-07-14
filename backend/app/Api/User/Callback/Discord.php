@@ -61,7 +61,13 @@ $router->get('/api/user/auth/callback/discord/link', function () {
         ];
         $context = stream_context_create($options);
         $result = file_get_contents($tokenUrl, false, $context);
-        $accessToken = json_decode($result, true)['access_token'];
+        $tokenData = json_decode($result, true);
+        $accessToken = isset($tokenData['access_token']) ? $tokenData['access_token'] : null;
+        if (!$accessToken) {
+            $appInstance->getLogger()->error('Failed to get access token from Discord: ' . $result);
+            header('Location: ' . $url . '/auth/login?error=discord');
+            exit;
+        }
 
         $userUrl = 'https://discord.com/api/users/@me';
 
@@ -73,8 +79,12 @@ $router->get('/api/user/auth/callback/discord/link', function () {
         ];
         $context = stream_context_create($options);
         $result = file_get_contents($userUrl, false, $context);
-
         $userInfo = json_decode($result, true);
+        if (!$userInfo || !isset($userInfo['id'])) {
+            $appInstance->getLogger()->error('Failed to get user info from Discord: ' . $result);
+            header('Location: ' . $url . '/auth/login?error=discord');
+            exit;
+        }
 
         $id = $userInfo['id'];
         $username = $userInfo['username'];

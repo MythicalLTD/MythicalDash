@@ -84,6 +84,10 @@ Components:
             ReadMore: 'Read More'
             NoAnnouncements: 'No announcements yet'
     Tickets:
+        empty:
+            title: 'No tickets found'
+            description: "You don't have any tickets yet."
+            createFirst: 'Create a ticket'
         title: 'Recent tickets'
         description: 'View your recent tickets'
         viewMore: 'View more'

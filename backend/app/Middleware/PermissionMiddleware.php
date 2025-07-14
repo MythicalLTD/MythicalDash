@@ -21,7 +21,7 @@ class PermissionMiddleware implements MiddlewareBuilder
     public static function handle(App $app, string $context, ?Session $session = null): void
     {
         if (isset($_COOKIE['user_token']) && !empty($_COOKIE['user_token'])) {
-            if ($session->hasPermission($context)) {
+            if ($session !== null && $session->hasPermission($context)) {
                 return;
             }
             $app->BadRequest('You are not authorized to perform this action!', ['error_code' => 'NOT_AUTHORIZED']);

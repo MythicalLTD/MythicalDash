@@ -1,3 +1,47 @@
+# v3-remastered 1.2
+
+## Bug Fixes
+
+- Resolved ticket component having no translation!
+- Reverted the change for vite: `MPA` app!
+- Added null and type checks in `Register.php` to prevent 'Trying to access array offset on value of type bool' and 'getTokenFromUUID(): Argument #1 ($uuid) must be of type string, null given' errors.
+- Improved error handling in `Callback/Discord.php` for failed HTTP requests and missing array keys to prevent warnings and fatal errors.
+- Added null check for `$session` in `PermissionMiddleware.php` to prevent 'Call to a member function hasPermission() on null' fatal error.
+
+## New Features
+
+- TODO
+
+## Features Removed
+
+- TODO
+
+## Updates
+
+### Frontend:
+
+- Updated `@tailwindcss/vite` to 4.1.11
+- Updated `@types/node` to 24.0.13
+- Updated `@vitejs/plugin-vue-jsx` to 5.0.1
+- Updated `lucide-vue-next` to 0.525.0
+- Updated `oxlint` to 1.6.0
+- Updated `prettier` to 3.6.2
+- Updated `sweetalert2` to 11.22.2
+- Updated `tailwindcss` to 4.1.11
+- Updated `vite` to 7.0.4
+- Updated `vite-plugin-oxlint` to 1.4.0
+- Updated `vue-i18n` to 11.1.9
+- Updated `vue-tsc` to 3.0.1
+
+### Backend:
+
+- Updated `friendsofphp/php-cs-fixer` to v3.82.2
+- Updated `myclabs/deep-copy` to 1.13.3
+- Updated `phpunit/phpunit` to 11.5.27
+- Updated `stripe/stripe-php` to v17.4.0
+- Updated `symfony/console` to v7.3.1
+- Updated `symfony/yaml` to v7.3.1
+
 # v3-remastered 1.1
 
 ## Bug Fixes
