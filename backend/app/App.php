@@ -170,8 +170,6 @@ class App extends MythicalAPP
             APP_VERSION,
             preg_replace('/^https?:\/\//', '', $this->getConfig()->getSetting(ConfigInterface::APP_URL, 'NULL')),
             $this->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'),
-            $this->getConfig()->getSetting(ConfigInterface::MYTHICAL_ZERO_TRUST_ENABLED, 'true'),
-            $this->getConfig()->getSetting(ConfigInterface::TELEMETRY_ENABLED, 'true'),
         );
         $this->router->add('/(.*)', function ($route): void {
             self::init();

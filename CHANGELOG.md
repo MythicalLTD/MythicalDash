@@ -7,16 +7,17 @@
 - Added null and type checks in `Register.php` to prevent 'Trying to access array offset on value of type bool' and 'getTokenFromUUID(): Argument #1 ($uuid) must be of type string, null given' errors.
 - Improved error handling in `Callback/Discord.php` for failed HTTP requests and missing array keys to prevent warnings and fatal errors.
 - Added null check for `$session` in `PermissionMiddleware.php` to prevent 'Call to a member function hasPermission() on null' fatal error.
+- Fixed a bug where users above id 100 matching a char will not be found!
 
 ## New Features
 
 - Validation logic on frontend and backend to reduce false input provided to pterodactyl panel!
 - Servers now get deleted after renew has reached day 0! 
-
+- New logic to check the users existence into pterodactyl!
 
 ## Features Removed
 
-- TODO
+- Ability to disable telemetry via UI (Requires a plugin now!)
 
 ## Updates
 

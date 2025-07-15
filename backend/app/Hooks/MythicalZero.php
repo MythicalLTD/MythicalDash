@@ -20,8 +20,6 @@ class MythicalZero
     private string $url;
     private string $version;
     private string $instanceId;
-    private bool $zeroTrustEnabled;
-    private bool $telemetryEnabled;
     private string $licenseKey;
 
     /**
@@ -38,15 +36,11 @@ class MythicalZero
         string $version,
         string $instanceId,
         string $licenseKey,
-        string $zeroTrustEnabled,
-        string $telemetryEnabled,
     ) {
         $this->url = rtrim($url, '/');
         $this->version = $version;
         $this->instanceId = $instanceId;
         $this->licenseKey = $licenseKey;
-        $this->zeroTrustEnabled = $zeroTrustEnabled === 'true';
-        $this->telemetryEnabled = $telemetryEnabled === 'true';
     }
 
     /**
@@ -60,12 +54,6 @@ class MythicalZero
      */
     public function sendRegister(string $username, string $firstName, string $lastName, string $email, string $ip): void
     {
-        if (!$this->zeroTrustEnabled) {
-            App::getInstance(true)->getLogger()->warning('Zero trust is not enabled, skipping registration telemetry');
-
-            return;
-        }
-
         try {
             $client = new \GuzzleHttp\Client();
             $headers = [
@@ -126,12 +114,6 @@ class MythicalZero
         string $discord_id = '',
         string $github_id = '',
     ): void {
-        if (!$this->zeroTrustEnabled) {
-            App::getInstance(true)->getLogger()->warning('Zero trust is not enabled, skipping login telemetry');
-
-            return;
-        }
-
         try {
             $client = new \GuzzleHttp\Client();
             $headers = [

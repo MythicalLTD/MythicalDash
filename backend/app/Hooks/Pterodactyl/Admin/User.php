@@ -41,19 +41,15 @@ class User extends UsersResource
             $userResource = new UsersResource($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
 
             try {
-                $userExists = $userResource->findUserByUuid($pterodactylUserId);
-            } catch (ResourceNotFoundException $e) {
+                $userExists = $userResource->doesUserExist((int)$pterodactylUserId);
+				if (!$userExists) {
+					$appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by id');
+					throw new \Exception('User not found by id');
+				}
+            } catch (\Exception $e) {
                 // TODO: Delete user form mythicaldash
-                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by uuid (RESOURCE)');
-                throw new \Exception('User not found by uuid');
-            } catch (PterodactylException $e) {
-                // TODO: Delete user form mythicaldash
-                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by uuid (PTERODACTYL)');
-                throw new \Exception('User not found by uuid');
-            } catch (ValidationException $e) {
-                // TODO: Delete user form mythicaldash
-                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by uuid (VALIDATION)');
-                throw new \Exception('User not found by uuid');
+                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by id');
+                throw new \Exception('User not found by id: ' . $e->getMessage());
             }
 
             try {
@@ -200,10 +196,10 @@ class User extends UsersResource
         $config = $appInstance->getConfig();
         $userResource = new UsersResource($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
         try {
-            $userResource->findUserByUuid($userId);
+            $userResource->doesUserExist((int)$userId);
 
             return true;
-        } catch (ResourceNotFoundException $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }

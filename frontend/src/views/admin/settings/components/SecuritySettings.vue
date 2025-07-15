@@ -209,58 +209,8 @@
                 </div>
             </div>
 
-            <!-- Telemetry Section -->
-            <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
-                <div class="flex items-center mb-4">
-                    <div class="flex-1">
-                        <h3 class="text-lg font-medium text-white">Telemetry</h3>
-                        <p class="text-sm text-gray-400">
-                            Control whether anonymous usage data is collected to help improve MythicalDash.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Enable Telemetry -->
-                <div class="flex items-center space-x-2">
-                    <input
-                        type="checkbox"
-                        id="telemetry_enabled"
-                        v-model="telemetryEnabled"
-                        @change="updateSetting('telemetry_enabled', telemetryEnabled ? 'true' : 'false')"
-                        class="rounded border-gray-700 text-pink-500 focus:ring-pink-500 bg-gray-800/30"
-                    />
-                    <label for="telemetry_enabled" class="text-sm font-medium text-gray-400"
-                        >Enable Anonymous Telemetry</label
-                    >
-                </div>
-
-                <div
-                    v-if="!telemetryEnabled"
-                    class="mt-3 text-xs text-yellow-500 bg-yellow-500/10 p-2 rounded border border-yellow-500/20 flex items-start"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 mr-2 flex-shrink-0 mt-0.5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <path
-                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                        ></path>
-                        <line x1="12" y1="9" x2="12" y2="13"></line>
-                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                    </svg>
-                    <span>Advanced Abuse Protection (Zero Trust) requires Telemetry to be enabled.</span>
-                </div>
-            </div>
-
             <!-- Zero Trust Section -->
             <div
-                v-if="telemetryEnabled"
                 class="bg-gray-800/30 p-5 rounded-lg border border-gray-700/80 shadow-lg relative overflow-hidden group transition-all duration-300 hover:shadow-pink-500/20 hover:border-pink-500/40"
             >
                 <div
@@ -360,24 +310,9 @@
                         </div>
                     </div>
 
-                    <!-- Enable Zero Trust -->
-                    <div class="flex items-center space-x-2 mb-3">
-                        <input
-                            type="checkbox"
-                            id="zero_trust_enabled"
-                            v-model="zeroTrustEnabled"
-                            @change="updateSetting('zero_trust_enabled', zeroTrustEnabled ? 'true' : 'false')"
-                            class="rounded border-gray-700 text-pink-500 focus:ring-pink-500 bg-gray-800/30"
-                        />
-                        <label
-                            for="zero_trust_enabled"
-                            class="text-sm font-medium text-gray-300 group-hover:text-pink-300 transition-colors duration-300"
-                            >Enable Advanced Abuse Protection</label
-                        >
-                    </div>
 
                     <!-- Zero Trust Features -->
-                    <div v-if="zeroTrustEnabled" class="mb-5 ml-6 border-l-2 border-pink-500/20 pl-4 py-2">
+                    <div class="mb-5 ml-6 border-l-2 border-pink-500/20 pl-4 py-2">
                         <h4 class="text-sm text-pink-400 mb-2 font-medium">Zero Trust Features</h4>
 
                         <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs mb-4">
@@ -470,7 +405,6 @@
 
                     <!-- Server Scan Tool -->
                     <div
-                        v-if="zeroTrustEnabled"
                         class="ml-6 mt-3 border-l-2 border-pink-500/20 pl-4 py-2 animate-fadeIn"
                     >
                         <div class="mb-2">
@@ -520,7 +454,7 @@
                     </div>
 
                     <!-- Advanced Security Settings -->
-                    <div v-if="zeroTrustEnabled" class="mt-4 pt-3 border-t border-gray-700/50">
+                    <div class="mt-4 pt-3 border-t border-gray-700/50">
                         <h4 class="text-sm text-pink-400 mb-3 font-medium flex items-center">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -644,22 +578,6 @@ const showNodePing = computed({
     get: () => props.settings?.show_node_ping === 'true',
     set: (value) => {
         emit('update', 'show_node_ping', value ? 'true' : 'false');
-    },
-});
-
-// Computed property for telemetry enabled state
-const telemetryEnabled = computed({
-    get: () => props.settings?.telemetry_enabled === 'true',
-    set: (value) => {
-        emit('update', 'telemetry_enabled', value ? 'true' : 'false');
-    },
-});
-
-// Computed property for zero trust enabled state
-const zeroTrustEnabled = computed({
-    get: () => props.settings?.zero_trust_enabled === 'true',
-    set: (value) => {
-        emit('update', 'zero_trust_enabled', value ? 'true' : 'false');
     },
 });
 

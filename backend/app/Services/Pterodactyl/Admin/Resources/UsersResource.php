@@ -119,7 +119,7 @@ class UsersResource extends PterodactylAdmin
      * @throws ValidationException
      * @throws ResourceNotFoundException
      * @throws PterodactylException
-     */
+	*/
     public function updateUser(int $userId, array $data): array
     {
         try {
@@ -267,5 +267,24 @@ class UsersResource extends PterodactylAdmin
         } catch (ClientException $e) {
             throw new PterodactylException('Failed to find user by external id: ' . $e->getMessage());
         }
-    }
+	}
+
+	/**
+	 * Check if a user exists.
+	 *
+	 * @param int $userId The ID of the user to check
+	 *
+	 * @return bool True if the user exists, false otherwise
+	 */
+	public function doesUserExist(int $userId): bool
+	{
+		try {
+			$this->getUser((int)$userId);
+			return true;
+		} catch (ResourceNotFoundException $e) {
+			return false;
+		} catch (\Exception $e) {
+			return false;
+		}
+	}
 }
