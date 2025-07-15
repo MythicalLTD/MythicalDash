@@ -793,6 +793,20 @@ $router->post('/api/user/server/create', function (): void {
     }
 });
 
+$router->post('/api/user/queue/(.*)/delete', function (string $id): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $session = new Session($appInstance);
+    $accountToken = $session->SESSION_KEY;
+    $serverQueue = ServerQueue::getByUserAndId($session->getInfo(UserColumns::UUID, false), (int) $id);
+    if (!$serverQueue) {
+        $appInstance->BadRequest('Server queue item not found', ['error_code' => 'SERVER_QUEUE_ITEM_NOT_FOUND', 'server_queue' => $serverQueue]);
+    }
+    ServerQueue::delete((int) $serverQueue['id']);
+    $appInstance->OK('Server queue item deleted successfully.', ['error_code' => 'SERVER_QUEUE_ITEM_DELETED']);
+});
+
 // Get server by ID
 $router->get('/api/user/server/(.*)', function (string $id): void {
     App::init();

@@ -137,9 +137,9 @@ class Eggs extends Database
      *
      * @param int $id The ID of the egg to get
      *
-     * @return array|null The egg data or null if not found
+     * @return array The egg data or empty array if not found
      */
-    public static function getById(int $id): ?array
+    public static function getById(int $id): array
     {
         try {
             $dbConn = Database::getPdoConnection();
@@ -152,11 +152,11 @@ class Eggs extends Database
 
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-            return $result ?: null;
+            return $result ? [$result] : [];
         } catch (\Exception $e) {
             self::db_Error('Failed to get egg: ' . $e->getMessage());
 
-            return null;
+            return [];
         }
     }
 
@@ -169,7 +169,7 @@ class Eggs extends Database
      */
     public static function exists(int $id): bool
     {
-        return self::getById($id) !== null;
+        return !empty(self::getById($id));
     }
 
     /**
@@ -265,7 +265,9 @@ class Eggs extends Database
             $stmt->bindParam(':pterodactyl_egg_id', $pterodactylEggId);
             $stmt->execute();
 
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            return $result ? [$result] : [];
         } catch (\Exception $e) {
             self::db_Error('Failed to get eggs by Pterodactyl egg ID: ' . $e->getMessage());
 

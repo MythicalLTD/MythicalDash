@@ -310,7 +310,6 @@
                         </div>
                     </div>
 
-
                     <!-- Zero Trust Features -->
                     <div class="mb-5 ml-6 border-l-2 border-pink-500/20 pl-4 py-2">
                         <h4 class="text-sm text-pink-400 mb-2 font-medium">Zero Trust Features</h4>
@@ -404,9 +403,7 @@
                     </div>
 
                     <!-- Server Scan Tool -->
-                    <div
-                        class="ml-6 mt-3 border-l-2 border-pink-500/20 pl-4 py-2 animate-fadeIn"
-                    >
+                    <div class="ml-6 mt-3 border-l-2 border-pink-500/20 pl-4 py-2 animate-fadeIn">
                         <div class="mb-2">
                             <p class="text-xs text-gray-400 mb-3">
                                 Enhanced server protection that scans for malicious software and activities:

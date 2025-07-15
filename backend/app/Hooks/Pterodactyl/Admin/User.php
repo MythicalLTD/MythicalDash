@@ -41,11 +41,11 @@ class User extends UsersResource
             $userResource = new UsersResource($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
 
             try {
-                $userExists = $userResource->doesUserExist((int)$pterodactylUserId);
-				if (!$userExists) {
-					$appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by id');
-					throw new \Exception('User not found by id');
-				}
+                $userExists = $userResource->doesUserExist((int) $pterodactylUserId);
+                if (!$userExists) {
+                    $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by id');
+                    throw new \Exception('User not found by id');
+                }
             } catch (\Exception $e) {
                 // TODO: Delete user form mythicaldash
                 $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by id');
@@ -196,7 +196,7 @@ class User extends UsersResource
         $config = $appInstance->getConfig();
         $userResource = new UsersResource($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
         try {
-            $userResource->doesUserExist((int)$userId);
+            $userResource->doesUserExist((int) $userId);
 
             return true;
         } catch (\Exception $e) {

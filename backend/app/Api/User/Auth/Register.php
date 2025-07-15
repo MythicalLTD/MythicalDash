@@ -91,7 +91,7 @@ $router->add('/api/user/auth/register', function (): void {
     // Add validation for password length (minimum 8 characters)
     if (strlen($_POST['password']) < 8) {
         $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['password' => 'REDACTED', 'error_code' => 'PASSWORD_TOO_SHORT']);
-        $appInstance->BadRequest('Bad Request', ['error_code' => 'PASSWORD_TOO_SHORT']); 
+        $appInstance->BadRequest('Bad Request', ['error_code' => 'PASSWORD_TOO_SHORT']);
     }
     // Validate username format (must start and end with alphanumeric, can contain dots/dashes/underscores in between)
     if (!preg_match('/^[a-z0-9]([\w\.-]+)[a-z0-9]$/i', $_POST['username'])) {
@@ -102,7 +102,7 @@ $router->add('/api/user/auth/register', function (): void {
     // Check username length (1-191 chars)
     if (strlen($_POST['username']) < 1 || strlen($_POST['username']) > 191) {
         $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['username' => $_POST['username'], 'error_code' => 'INVALID_USERNAME_LENGTH']);
-        $appInstance->BadRequest('Bad Request', ['error_code' => 'INVALID_USERNAME_LENGTH']); 
+        $appInstance->BadRequest('Bad Request', ['error_code' => 'INVALID_USERNAME_LENGTH']);
     }
 
     // Check email length (1-191 chars)
@@ -117,7 +117,7 @@ $router->add('/api/user/auth/register', function (): void {
         $appInstance->BadRequest('Bad Request', ['error_code' => 'INVALID_FIRST_NAME_LENGTH']);
     }
 
-    // Check last name length (1-191 chars) 
+    // Check last name length (1-191 chars)
     if (strlen($_POST['lastName']) < 1 || strlen($_POST['lastName']) > 191) {
         $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['lastName' => $_POST['lastName'], 'error_code' => 'INVALID_LAST_NAME_LENGTH']);
         $appInstance->BadRequest('Bad Request', ['error_code' => 'INVALID_LAST_NAME_LENGTH']);

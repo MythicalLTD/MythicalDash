@@ -20,6 +20,7 @@ use MythicalDash\Chat\User\Session;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Locations\Locations;
+use MythicalDash\Chat\Servers\ServerQueue;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Hooks\Pterodactyl\Admin\Nodes;
@@ -262,7 +263,7 @@ $router->get('/api/user/session/servers', function (): void {
 
         $eggId = $server['egg'];
         $egg = Eggs::getByPterodactylEggId($eggId);
-        $server['service'] = $egg;
+        $server['service'] = $egg[0] ?? null;
 
         $nestId = $server['nest'];
         $nest = MythicalDash\Chat\Eggs\EggCategories::getByPterodactylNestId($nestId);
@@ -270,8 +271,38 @@ $router->get('/api/user/session/servers', function (): void {
     }
     unset($server); // Unset the reference to avoid potential issues
 
+    $serversInQ = ServerQueue::getByUser($session->getInfo(UserColumns::UUID, false), [], false);
+
+    foreach ($serversInQ as &$server) {
+        // Get location data
+        $server['location'] = Locations::get((int) $server['location']);
+
+        // Get egg data and set it as service to match active servers structure
+        $egg = Eggs::getById((int) $server['egg']);
+        $server['service'] = $egg[0] ?? null;
+
+        // Get category data
+        $server['category'] = MythicalDash\Chat\Eggs\EggCategories::get((int) $server['nest']);
+
+        // Set limits to match active servers structure
+        $server['limits'] = [
+            'memory' => $server['ram'],
+            'disk' => $server['disk'],
+            'cpu' => $server['cpu'],
+        ];
+
+        // Set feature limits to match active servers structure
+        $server['feature_limits'] = [
+            'databases' => $server['databases'],
+            'allocations' => $server['ports'],
+            'backups' => $server['backups'],
+        ];
+    }
+    unset($server); // Unset the reference to avoid potential issues
+
     $appInstance->OK('User servers', [
         'servers' => $servers,
+        'servers_queue' => $serversInQ,
     ]);
 });
 

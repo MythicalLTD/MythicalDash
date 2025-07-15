@@ -54,12 +54,20 @@ class ServerQueue extends Database
      *
      * @return array The list of server queue items
      */
-    public static function getByUser(string $user): array
+    public static function getByUser(string $user, array $filters = [], bool $includeCompleted = false): array
     {
         try {
             $dbConn = Database::getPdoConnection();
 
             $query = 'SELECT * FROM ' . self::getTableName() . ' WHERE user = :user AND deleted = "false"';
+            if (!$includeCompleted) {
+                $query .= ' AND status != "completed"';
+            }
+            if (!empty($filters)) {
+                $query .= ' AND ' . implode(' AND ', $filters);
+            }
+
+            $query .= ' ORDER BY created_at DESC';
             $stmt = $dbConn->prepare($query);
             $stmt->bindParam(':user', $user);
             $stmt->execute();
@@ -70,6 +78,18 @@ class ServerQueue extends Database
 
             return [];
         }
+    }
+
+    public static function getByUserAndId(string $user, int $id): ?array
+    {
+        $items = self::getByUser($user, [], false);
+        foreach ($items as $item) {
+            if ($item['id'] == $id) {
+                return $item;
+            }
+        }
+
+        return null;
     }
 
     public static function hasAtLeastOnePendingItem(string $user): bool

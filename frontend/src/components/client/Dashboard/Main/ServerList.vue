@@ -76,9 +76,30 @@ interface Server {
     };
 }
 
+interface QueuedServer {
+    id: string;
+    name: string;
+    description: string;
+    status: 'pending' | 'failed' | 'building';
+    limits: ServerLimits;
+    feature_limits: ServerFeatureLimits;
+    location?: {
+        name: string;
+    };
+    service?: {
+        name: string;
+    };
+    category?: {
+        name: string;
+    };
+    created_at: string;
+    updated_at: string;
+}
+
 const router = useRouter();
 const loading = ref(true);
 const servers = ref<Server[]>([]);
+const queuedServers = ref<QueuedServer[]>([]);
 
 // Format bytes to human readable
 const formatBytes = (bytes: number) => {
@@ -97,7 +118,9 @@ const createServer = () => {
 const fetchServers = async () => {
     try {
         const data = await Servers.getPterodactylServers();
+        const dataQueued = await Servers.getPterodactylQueuedServers();
         servers.value = data as Server[];
+        queuedServers.value = dataQueued as QueuedServer[];
     } catch (error) {
         console.error('Failed to fetch servers:', error);
     } finally {
@@ -143,6 +166,118 @@ const jumpToPanel = (identifier: string) => {
         return;
     }
     window.open(`${pterodactylUrl}/server/${identifier}`, '_blank');
+};
+
+// Add new deleteQueuedServer function
+const deleteQueuedServer = async (id: string) => {
+    const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this! The queued server will be removed from the queue.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#4f46e5',
+        cancelButtonColor: '#dc2626',
+        confirmButtonText: 'Yes, delete it!',
+        background: '#1f2937',
+        color: '#fff',
+        customClass: {
+            popup: 'rounded-lg border border-gray-700',
+            confirmButton: 'px-4 py-2 rounded-md text-sm font-medium',
+            cancelButton: 'px-4 py-2 rounded-md text-sm font-medium',
+        },
+    });
+
+    if (result.isConfirmed) {
+        await fetch(`/api/user/queue/${id}/delete`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${Session.getInfo('token')}`,
+            },
+        });
+        fetchServers();
+        Swal.fire({
+            title: 'Success',
+            text: 'Server deleted successfully',
+            icon: 'success',
+            confirmButtonColor: '#4f46e5',
+            background: '#1f2937',
+        });
+    }
+};
+
+// Update the delete button click handler
+const handleDelete = (server: Server | QueuedServer) => {
+    if ('status' in server) {
+        // For queued servers
+        deleteQueuedServer(server.id);
+    } else {
+        // For regular servers
+        deleteServer(server.id);
+    }
+};
+
+// Update the getServerStatus function
+const getServerStatus = (server: Server | QueuedServer) => {
+    if ('suspended' in server) {
+        return {
+            color: server.suspended ? 'bg-red-500' : 'bg-green-500',
+            text: server.suspended ? 'Suspended' : 'Active',
+        };
+    } else {
+        switch (server.status) {
+            case 'pending':
+                return {
+                    color: 'bg-yellow-500',
+                    text: 'Pending',
+                };
+            case 'building':
+                return {
+                    color: 'bg-blue-500',
+                    text: 'Building',
+                };
+            case 'failed':
+                return {
+                    color: 'bg-red-500',
+                    text: 'Failed',
+                };
+            default:
+                return {
+                    color: 'bg-gray-500',
+                    text: 'Unknown',
+                };
+        }
+    }
+};
+
+// Fix the isActionDisabled function
+const isActionDisabled = (server: Server | QueuedServer, action: 'panel' | 'edit' | 'renew' | 'delete'): boolean => {
+    if ('suspended' in server) {
+        // This is a regular server, never disable actions
+        return false;
+    } else {
+        // This is a queued server
+        switch (server.status) {
+            case 'pending':
+            case 'building':
+                // Pending and building servers have all actions disabled
+                return true;
+            case 'failed':
+                // Failed servers only allow delete action
+                return action !== 'delete';
+            default:
+                return true;
+        }
+    }
+};
+
+// Add helper function to get server identifier
+const getServerIdentifier = (server: Server | QueuedServer): string => {
+    return 'identifier' in server ? server.identifier : `Queue #${server.id}`;
+};
+
+// Add helper function to get server ID
+const getServerId = (server: Server | QueuedServer): string => {
+    return 'identifier' in server ? server.id : server.id;
 };
 
 onMounted(() => {
@@ -223,102 +358,125 @@ onMounted(() => {
 
             <!-- Card Layout -->
             <div v-if="preferredLayout === 'cards'" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                <div
-                    v-for="server in servers"
-                    :key="server.identifier"
-                    class="group relative bg-gray-900/40 border border-gray-800 rounded-xl p-5 hover:bg-gray-800/40 transition-all duration-200 hover:border-gray-700"
-                >
-                    <!-- Server Status Indicator -->
-                    <div class="absolute top-4 right-4">
-                        <div class="flex items-center gap-2">
-                            <div class="flex items-center gap-1.5">
-                                <div
-                                    class="w-2 h-2 rounded-full"
-                                    :class="server.suspended ? 'bg-red-500' : 'bg-green-500'"
-                                ></div>
-                                <span class="text-xs text-gray-400">{{
-                                    server.suspended ? 'Suspended' : 'Active'
-                                }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Server Header -->
-                    <div class="mb-4">
-                        <h3 class="text-lg font-medium text-white mb-1">{{ server.name }}</h3>
-                        <p class="text-sm text-gray-400">{{ server.identifier }}</p>
-                    </div>
-
-                    <!-- Server Details -->
-                    <div class="space-y-3">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="bg-gray-800/50 rounded-lg p-3">
-                                <div class="text-xs text-gray-400 mb-1">
-                                    {{ t('Components.ServerList.table.location') }}
+                <template v-for="server in [...servers, ...queuedServers]" :key="getServerId(server)">
+                    <div
+                        class="group relative bg-gray-900/40 border border-gray-800 rounded-xl p-5 hover:bg-gray-800/40 transition-all duration-200 hover:border-gray-700"
+                    >
+                        <!-- Server Status Indicator -->
+                        <div class="absolute top-4 right-4">
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1.5">
+                                    <div class="w-2 h-2 rounded-full" :class="getServerStatus(server).color"></div>
+                                    <span class="text-xs text-gray-400">{{ getServerStatus(server).text }}</span>
                                 </div>
-                                <div class="text-sm text-white">{{ server.location?.name || 'Unknown' }}</div>
-                            </div>
-                            <div class="bg-gray-800/50 rounded-lg p-3">
-                                <div class="text-xs text-gray-400 mb-1">{{ t('Components.ServerList.table.egg') }}</div>
-                                <div class="text-sm text-white">{{ server.service?.name || 'Unknown' }}</div>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-3 gap-3">
-                            <div class="bg-gray-800/50 rounded-lg p-3">
-                                <div class="text-xs text-gray-400 mb-1">
-                                    {{ t('Components.ServerList.table.memory') }}
-                                </div>
-                                <div class="text-sm text-white">{{ formatBytes(server.limits.memory) }}</div>
-                            </div>
-                            <div class="bg-gray-800/50 rounded-lg p-3">
-                                <div class="text-xs text-gray-400 mb-1">{{ t('Components.ServerList.table.cpu') }}</div>
-                                <div class="text-sm text-white">{{ server.limits.cpu }}%</div>
-                            </div>
-                            <div class="bg-gray-800/50 rounded-lg p-3">
-                                <div class="text-xs text-gray-400 mb-1">
-                                    {{ t('Components.ServerList.table.disk') }}
-                                </div>
-                                <div class="text-sm text-white">{{ formatBytes(server.limits.disk) }}</div>
-                            </div>
+                        <!-- Server Header -->
+                        <div class="mb-4">
+                            <h3 class="text-lg font-medium text-white mb-1">{{ server.name }}</h3>
+                            <p class="text-sm text-gray-400">{{ getServerIdentifier(server) }}</p>
                         </div>
-                    </div>
 
-                    <!-- Action Buttons -->
-                    <div class="mt-4 pt-4 border-t border-gray-800 flex items-center justify-between">
-                        <button
-                            class="px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-                            @click="jumpToPanel(server.identifier)"
-                        >
-                            <ExternalLinkIcon class="w-4 h-4" />
-                            Panel
-                        </button>
-                        <div class="flex items-center gap-2">
+                        <!-- Server Details -->
+                        <div class="space-y-3">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-gray-800/50 rounded-lg p-3">
+                                    <div class="text-xs text-gray-400 mb-1">
+                                        {{ t('Components.ServerList.table.location') }}
+                                    </div>
+                                    <div class="text-sm text-white">{{ server.location?.name || 'Unknown' }}</div>
+                                </div>
+                                <div class="bg-gray-800/50 rounded-lg p-3">
+                                    <div class="text-xs text-gray-400 mb-1">
+                                        {{ t('Components.ServerList.table.egg') }}
+                                    </div>
+                                    <div class="text-sm text-white">{{ server.service?.name || 'Unknown' }}</div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="bg-gray-800/50 rounded-lg p-3">
+                                    <div class="text-xs text-gray-400 mb-1">
+                                        {{ t('Components.ServerList.table.memory') }}
+                                    </div>
+                                    <div class="text-sm text-white">{{ formatBytes(server.limits.memory) }}</div>
+                                </div>
+                                <div class="bg-gray-800/50 rounded-lg p-3">
+                                    <div class="text-xs text-gray-400 mb-1">
+                                        {{ t('Components.ServerList.table.cpu') }}
+                                    </div>
+                                    <div class="text-sm text-white">{{ server.limits.cpu }}%</div>
+                                </div>
+                                <div class="bg-gray-800/50 rounded-lg p-3">
+                                    <div class="text-xs text-gray-400 mb-1">
+                                        {{ t('Components.ServerList.table.disk') }}
+                                    </div>
+                                    <div class="text-sm text-white">{{ formatBytes(server.limits.disk) }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-4 pt-4 border-t border-gray-800 flex items-center justify-between">
                             <button
-                                class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
-                                title="Edit Server"
-                                @click="editServer(server.id)"
+                                class="px-3 py-1.5"
+                                :class="
+                                    isActionDisabled(server, 'panel')
+                                        ? 'bg-gray-700/10 text-gray-500 cursor-not-allowed'
+                                        : 'bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400'
+                                "
+                                @click="!isActionDisabled(server, 'panel') && jumpToPanel(getServerIdentifier(server))"
+                                :disabled="isActionDisabled(server, 'panel')"
                             >
-                                <PencilIcon class="w-4 h-4" />
+                                <ExternalLinkIcon class="w-4 h-4" />
+                                Panel
                             </button>
-                            <button
-                                v-if="serverRenewEnabled === 'true'"
-                                class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
-                                title="Renew Server"
-                                @click="renewServer(server.id)"
-                            >
-                                <RefreshCcwIcon class="w-4 h-4" />
-                            </button>
-                            <button
-                                class="p-1.5 rounded-lg text-gray-400 hover:text-red-400 hover:bg-gray-800/50 transition-colors"
-                                title="Delete Server"
-                                @click="deleteServer(server.id)"
-                            >
-                                <TrashIcon class="w-4 h-4" />
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <button
+                                    class="p-1.5 rounded-lg"
+                                    :class="
+                                        isActionDisabled(server, 'edit')
+                                            ? 'text-gray-500 cursor-not-allowed'
+                                            : 'text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50'
+                                    "
+                                    title="Edit Server"
+                                    @click="!isActionDisabled(server, 'edit') && editServer(getServerId(server))"
+                                    :disabled="isActionDisabled(server, 'edit')"
+                                >
+                                    <PencilIcon class="w-4 h-4" />
+                                </button>
+                                <button
+                                    v-if="serverRenewEnabled === 'true'"
+                                    class="p-1.5 rounded-lg"
+                                    :class="
+                                        isActionDisabled(server, 'renew')
+                                            ? 'text-gray-500 cursor-not-allowed'
+                                            : 'text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50'
+                                    "
+                                    title="Renew Server"
+                                    @click="!isActionDisabled(server, 'renew') && renewServer(getServerId(server))"
+                                    :disabled="isActionDisabled(server, 'renew')"
+                                >
+                                    <RefreshCcwIcon class="w-4 h-4" />
+                                </button>
+                                <button
+                                    class="p-1.5 rounded-lg"
+                                    :class="
+                                        isActionDisabled(server, 'delete')
+                                            ? 'text-gray-500 cursor-not-allowed'
+                                            : 'text-gray-400 hover:text-red-400 hover:bg-gray-800/50'
+                                    "
+                                    title="Delete Server"
+                                    @click="handleDelete(server)"
+                                    :disabled="isActionDisabled(server, 'delete')"
+                                >
+                                    <TrashIcon class="w-4 h-4" />
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </template>
             </div>
 
             <!-- Table Layout -->
@@ -340,19 +498,16 @@ onMounted(() => {
                     </thead>
                     <tbody>
                         <tr
-                            v-for="server in servers"
-                            :key="server.identifier"
+                            v-for="server in [...servers, ...queuedServers]"
+                            :key="getServerId(server)"
                             class="border-b border-gray-800 bg-gray-900/20 hover:bg-gray-800/30 transition-colors"
                         >
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-2">
-                                    <div
-                                        class="w-2 h-2 rounded-full"
-                                        :class="server.suspended ? 'bg-red-500' : 'bg-green-500'"
-                                    ></div>
+                                    <div class="w-2 h-2 rounded-full" :class="getServerStatus(server).color"></div>
                                     <div>
                                         <div class="font-medium text-white">{{ server.name }}</div>
-                                        <div class="text-xs text-gray-400">{{ server.identifier }}</div>
+                                        <div class="text-xs text-gray-400">{{ getServerIdentifier(server) }}</div>
                                     </div>
                                 </div>
                             </td>
@@ -372,31 +527,58 @@ onMounted(() => {
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-2">
                                     <button
-                                        class="p-1.5 rounded-md text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
+                                        class="p-1.5 rounded-md"
+                                        :class="
+                                            isActionDisabled(server, 'panel')
+                                                ? 'text-gray-500 cursor-not-allowed'
+                                                : 'text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50'
+                                        "
                                         title="Jump to Panel"
-                                        @click="jumpToPanel(server.identifier)"
+                                        @click="
+                                            !isActionDisabled(server, 'panel') &&
+                                            jumpToPanel(getServerIdentifier(server))
+                                        "
+                                        :disabled="isActionDisabled(server, 'panel')"
                                     >
                                         <ExternalLinkIcon class="w-4 h-4" />
                                     </button>
                                     <button
-                                        class="p-1.5 rounded-md text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
+                                        class="p-1.5 rounded-md"
+                                        :class="
+                                            isActionDisabled(server, 'edit')
+                                                ? 'text-gray-500 cursor-not-allowed'
+                                                : 'text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50'
+                                        "
                                         title="Edit Server"
-                                        @click="editServer(server.id)"
+                                        @click="!isActionDisabled(server, 'edit') && editServer(getServerId(server))"
+                                        :disabled="isActionDisabled(server, 'edit')"
                                     >
                                         <PencilIcon class="w-4 h-4" />
                                     </button>
                                     <button
-                                        class="p-1.5 rounded-md text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
+                                        class="p-1.5 rounded-md"
+                                        :class="
+                                            isActionDisabled(server, 'renew')
+                                                ? 'text-gray-500 cursor-not-allowed'
+                                                : 'text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50'
+                                        "
                                         title="Renew Server"
                                         v-if="serverRenewEnabled === 'true'"
-                                        @click="renewServer(server.id)"
+                                        @click="!isActionDisabled(server, 'renew') && renewServer(getServerId(server))"
+                                        :disabled="isActionDisabled(server, 'renew')"
                                     >
                                         <RefreshCcwIcon class="w-4 h-4" />
                                     </button>
                                     <button
-                                        class="p-1.5 rounded-md text-gray-400 hover:text-red-400 hover:bg-gray-800/50 transition-colors"
+                                        class="p-1.5 rounded-md"
+                                        :class="
+                                            isActionDisabled(server, 'delete')
+                                                ? 'text-gray-500 cursor-not-allowed'
+                                                : 'text-gray-400 hover:text-red-400 hover:bg-gray-800/50'
+                                        "
                                         title="Delete Server"
-                                        @click="deleteServer(server.id)"
+                                        @click="handleDelete(server)"
+                                        :disabled="isActionDisabled(server, 'delete')"
                                     >
                                         <TrashIcon class="w-4 h-4" />
                                     </button>
@@ -410,8 +592,8 @@ onMounted(() => {
             <!-- Compact List Layout -->
             <div v-else-if="preferredLayout === 'compact'" class="space-y-2">
                 <div
-                    v-for="server in servers"
-                    :key="server.identifier"
+                    v-for="server in [...servers, ...queuedServers]"
+                    :key="getServerId(server)"
                     class="group bg-gray-900/40 border border-gray-800 rounded-lg hover:bg-gray-800/40 transition-all duration-200 hover:border-gray-700"
                 >
                     <div class="flex items-center justify-between p-4">
@@ -420,11 +602,11 @@ onMounted(() => {
                             <div class="flex items-center gap-2 min-w-0">
                                 <div
                                     class="w-2 h-2 rounded-full flex-shrink-0"
-                                    :class="server.suspended ? 'bg-red-500' : 'bg-green-500'"
+                                    :class="getServerStatus(server).color"
                                 ></div>
                                 <div class="min-w-0">
                                     <div class="font-medium text-white truncate">{{ server.name }}</div>
-                                    <div class="text-xs text-gray-400 truncate">{{ server.identifier }}</div>
+                                    <div class="text-xs text-gray-400 truncate">{{ getServerIdentifier(server) }}</div>
                                 </div>
                             </div>
                             <div class="hidden md:flex items-center gap-4 text-sm text-gray-400">
@@ -459,31 +641,55 @@ onMounted(() => {
                         <!-- Right side: Actions -->
                         <div class="flex items-center gap-2 ml-4">
                             <button
-                                class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
+                                class="p-1.5 rounded-lg"
+                                :class="
+                                    isActionDisabled(server, 'panel')
+                                        ? 'text-gray-500 cursor-not-allowed'
+                                        : 'text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50'
+                                "
                                 title="Jump to Panel"
-                                @click="jumpToPanel(server.identifier)"
+                                @click="!isActionDisabled(server, 'panel') && jumpToPanel(getServerIdentifier(server))"
+                                :disabled="isActionDisabled(server, 'panel')"
                             >
                                 <ExternalLinkIcon class="w-4 h-4" />
                             </button>
                             <button
-                                class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
+                                class="p-1.5 rounded-lg"
+                                :class="
+                                    isActionDisabled(server, 'edit')
+                                        ? 'text-gray-500 cursor-not-allowed'
+                                        : 'text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50'
+                                "
                                 title="Edit Server"
-                                @click="editServer(server.id)"
+                                @click="!isActionDisabled(server, 'edit') && editServer(getServerId(server))"
+                                :disabled="isActionDisabled(server, 'edit')"
                             >
                                 <PencilIcon class="w-4 h-4" />
                             </button>
                             <button
                                 v-if="serverRenewEnabled === 'true'"
-                                class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50 transition-colors"
+                                class="p-1.5 rounded-lg"
+                                :class="
+                                    isActionDisabled(server, 'renew')
+                                        ? 'text-gray-500 cursor-not-allowed'
+                                        : 'text-gray-400 hover:text-indigo-400 hover:bg-gray-800/50'
+                                "
                                 title="Renew Server"
-                                @click="renewServer(server.id)"
+                                @click="!isActionDisabled(server, 'renew') && renewServer(getServerId(server))"
+                                :disabled="isActionDisabled(server, 'renew')"
                             >
                                 <RefreshCcwIcon class="w-4 h-4" />
                             </button>
                             <button
-                                class="p-1.5 rounded-lg text-gray-400 hover:text-red-400 hover:bg-gray-800/50 transition-colors"
+                                class="p-1.5 rounded-lg"
+                                :class="
+                                    isActionDisabled(server, 'delete')
+                                        ? 'text-gray-500 cursor-not-allowed'
+                                        : 'text-gray-400 hover:text-red-400 hover:bg-gray-800/50'
+                                "
                                 title="Delete Server"
-                                @click="deleteServer(server.id)"
+                                @click="handleDelete(server)"
+                                :disabled="isActionDisabled(server, 'delete')"
                             >
                                 <TrashIcon class="w-4 h-4" />
                             </button>

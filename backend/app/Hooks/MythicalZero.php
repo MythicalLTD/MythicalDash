@@ -28,8 +28,6 @@ class MythicalZero
      * @param string $url The URL where telemetry data is sent
      * @param string $version The version of the product
      * @param string $instanceId The unique instance identifier
-     * @param string $zeroTrustEnabled Whether zero trust security is enabled
-     * @param string $telemetryEnabled Whether telemetry collection is enabled
      */
     public function __construct(
         string $url,

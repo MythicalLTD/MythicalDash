@@ -14,6 +14,8 @@
 - Validation logic on frontend and backend to reduce false input provided to pterodactyl panel!
 - Servers now get deleted after renew has reached day 0! 
 - New logic to check the users existence into pterodactyl!
+- Ability for users to see server in deployment!
+- Ability for users to delete the server that are in deployment stage!
 
 ## Features Removed
 

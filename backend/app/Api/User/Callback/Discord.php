@@ -62,7 +62,7 @@ $router->get('/api/user/auth/callback/discord/link', function () {
         $context = stream_context_create($options);
         $result = file_get_contents($tokenUrl, false, $context);
         $tokenData = json_decode($result, true);
-        $accessToken = isset($tokenData['access_token']) ? $tokenData['access_token'] : null;
+        $accessToken = $tokenData['access_token'] ?? null;
         if (!$accessToken) {
             $appInstance->getLogger()->error('Failed to get access token from Discord: ' . $result);
             header('Location: ' . $url . '/auth/login?error=discord');
