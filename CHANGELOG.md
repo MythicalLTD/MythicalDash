@@ -8,6 +8,7 @@
 - Improved error handling in `Callback/Discord.php` for failed HTTP requests and missing array keys to prevent warnings and fatal errors.
 - Added null check for `$session` in `PermissionMiddleware.php` to prevent 'Call to a member function hasPermission() on null' fatal error.
 - Fixed a bug where users above id 100 matching a char will not be found!
+- Fixed useless components being rendered behind!
 
 ## New Features
 
@@ -16,6 +17,8 @@
 - New logic to check the users existence into pterodactyl!
 - Ability for users to see server in deployment!
 - Ability for users to delete the server that are in deployment stage!
+- Init command actually helps you now lol
+- Clear license cache command
 
 ## Features Removed
 

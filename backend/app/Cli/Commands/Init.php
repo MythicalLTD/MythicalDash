@@ -55,7 +55,9 @@ class Init extends App implements CommandBuilder
             }
         }
 
-        $app->send('&7Please enter your application URL (e.g., https://panel.example.com):');
+        $app->send('&7Please enter your application URL (e.g., https://client.example.com):');
+		$app->send("&cPlease do not include a trailing slash");
+		$app->send("&cAlso please do not place in your panel url! This is the place where the dashboard will run!");
         $appUrl = readline('> ');
 
         if (empty($appUrl)) {

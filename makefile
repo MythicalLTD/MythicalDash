@@ -74,6 +74,12 @@ backend:
 	@cd $(BACKEND_DIR) && $(COMPOSER) dump-autoload
 	@echo -e "${GREEN}${CHECK} Backend build complete!${NC}\n"
 
+clean-license:
+	@echo -e "\n${BOLD}${BLUE}Cleaning License${NC} ${CLEAN}"
+	@echo -e "${CYAN}=======================${NC}"
+	@echo -e "${YELLOW}${WARN} Cleaning license...${NC}"
+	@rm -rf /var/www/mythicaldash-v3/backend/storage/caches/licenses/*.json 
+	@echo -e "${GREEN}${CHECK} License cleaned${NC}\n"
 
 # Release build
 release:
