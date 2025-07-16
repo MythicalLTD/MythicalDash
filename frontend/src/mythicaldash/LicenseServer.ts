@@ -18,7 +18,7 @@ export class LicenseServer {
     /**
      * Validates the license with the server and caches the result
      */
-    public static async validateLicense(): Promise<boolean> {
+    public static async validateLicense(type: string): Promise<boolean> {
         try {
             // Check cache first
             const cachedLicense = this.getLicenseFromCache();
@@ -27,7 +27,7 @@ export class LicenseServer {
             }
 
             // If no cache or expired, fetch from server
-            const response = await fetch('/api/system/license/branding-removal');
+            const response = await fetch(`/api/system/license/${type}`);
             const data: LicenseResponse = await response.json();
 
             // Cache the result
@@ -77,12 +77,12 @@ export class LicenseServer {
     /**
      * Checks if the license is valid (from cache or server)
      */
-    public static async isLicenseValid(): Promise<boolean> {
+    public static async isLicenseValid(type: string): Promise<boolean> {
         const Settings = useSettingsStore();
         const appName = Settings.getSetting('app_name');
         console.log('Checking license for ' + appName);
 
-        const isValid = await this.validateLicense();
+        const isValid = await this.validateLicense(type);
         console.log('License is valid:', isValid);
         return isValid;
     }
@@ -97,8 +97,8 @@ export class LicenseServer {
     /**
      * Forces a refresh of the license status
      */
-    public static async refreshLicense(): Promise<boolean> {
+    public static async refreshLicense(type: string): Promise<boolean> {
         this.clearCache();
-        return await this.validateLicense();
+        return await this.validateLicense(type);
     }
 }

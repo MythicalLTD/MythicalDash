@@ -207,12 +207,12 @@ const deleteQueuedServer = async (id: string) => {
 
 // Update the delete button click handler
 const handleDelete = (server: Server | QueuedServer) => {
-    if ('status' in server) {
-        // For queued servers
-        deleteQueuedServer(server.id);
-    } else {
-        // For regular servers
+    if ('identifier' in server) {
+        // For regular servers (they have an identifier)
         deleteServer(server.id);
+    } else {
+        // For queued servers (they only have an id)
+        deleteQueuedServer(server.id);
     }
 };
 
@@ -294,7 +294,7 @@ onMounted(() => {
         </div>
 
         <div
-            v-else-if="servers.length === 0 && isServersEnabled"
+            v-else-if="servers.length === 0 && queuedServers.length === 0 && isServersEnabled"
             class="flex flex-col items-center justify-center py-12 text-center"
         >
             <Server class="w-12 h-12 text-gray-600 mb-3" />
@@ -321,7 +321,7 @@ onMounted(() => {
                         <p class="text-sm text-gray-400">
                             {{
                                 t('Components.ServerList.serverLimit', [
-                                    servers.length,
+                                    servers.length + queuedServers.length,
                                     Session.getInfoInt('server_limit'),
                                 ])
                             }}
@@ -348,7 +348,7 @@ onMounted(() => {
                         @click="createServer"
                         v-if="isServersEnabled"
                         class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-                        :disabled="servers.length >= Session.getInfoInt('server_limit')"
+                        :disabled="servers.length + queuedServers.length >= Session.getInfoInt('server_limit')"
                     >
                         <PlusIcon class="w-4 h-4" />
                         {{ t('Components.ServerList.newServer') }}

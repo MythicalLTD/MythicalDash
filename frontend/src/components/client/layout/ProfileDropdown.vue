@@ -40,7 +40,7 @@ const showAd = ref(true);
 
 onMounted(async () => {
     try {
-        const isValid = await LicenseServer.isLicenseValid();
+        const isValid = await LicenseServer.isLicenseValid('branding-removal');
         showAd.value = !isValid;
     } catch (error) {
         console.error('Error checking license:', error);

@@ -78,7 +78,7 @@ class ServersResource extends PterodactylAdmin
 
             return $this->request('GET', "/api/application/servers/{$serverId}", [
                 'query' => $query,
-            ]);
+            ]) ?? [];
         } catch (ClientException $e) {
             $response = $e->getResponse();
             $statusCode = $response->getStatusCode();

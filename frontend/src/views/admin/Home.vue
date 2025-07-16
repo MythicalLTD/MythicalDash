@@ -283,56 +283,13 @@
                             </div>
                             <div class="flex flex-col gap-2">
                                 <a
-                                    href="https://www.mythical.systems/premium"
+                                    href="https://mymythicalid.mythical.systems"
                                     target="_blank"
                                     class="flex items-center justify-center gap-2 w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-lg shadow-indigo-900/30 transition-all duration-200"
                                 >
                                     <Sparkles class="w-4 h-4" />
                                     <span>Upgrade Now</span>
                                 </a>
-                                <button
-                                    class="w-full py-2.5 bg-transparent hover:bg-white/10 text-white border border-white/30 rounded-lg transition-all duration-200"
-                                >
-                                    Learn More
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div
-                        class="bg-gray-800/50 rounded-xl border border-gray-800/30"
-                        v-if="Session.hasPermission(Permissions.ADMIN_DASHBOARD_COMPONENTS_QUICK_ACTIONS)"
-                    >
-                        <div class="p-4 border-b border-gray-800/30">
-                            <h2 class="text-lg font-medium text-white">Quick Actions</h2>
-                        </div>
-                        <div class="p-4">
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                <button
-                                    class="flex flex-col items-center justify-center p-4 bg-gray-800/80 rounded-xl hover:bg-gray-700/50 transition-colors duration-200"
-                                >
-                                    <Server class="w-6 h-6 text-blue-400 mb-2" />
-                                    <span class="text-sm text-gray-300">Add Server</span>
-                                </button>
-                                <button
-                                    class="flex flex-col items-center justify-center p-4 bg-gray-800/80 rounded-xl hover:bg-gray-700/50 transition-colors duration-200"
-                                >
-                                    <Users class="w-6 h-6 text-green-400 mb-2" />
-                                    <span class="text-sm text-gray-300">New User</span>
-                                </button>
-                                <button
-                                    class="flex flex-col items-center justify-center p-4 bg-gray-800/80 rounded-xl hover:bg-gray-700/50 transition-colors duration-200"
-                                >
-                                    <Ticket class="w-6 h-6 text-amber-400 mb-2" />
-                                    <span class="text-sm text-gray-300">New Ticket</span>
-                                </button>
-                                <button
-                                    class="flex flex-col items-center justify-center p-4 bg-gray-800/80 rounded-xl hover:bg-gray-700/50 transition-colors duration-200"
-                                >
-                                    <SettingsIcon2 class="w-6 h-6 text-purple-400 mb-2" />
-                                    <span class="text-sm text-gray-300">Settings</span>
-                                </button>
                             </div>
                         </div>
                     </div>

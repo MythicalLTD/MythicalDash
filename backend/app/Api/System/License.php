@@ -14,6 +14,57 @@
 use MythicalDash\App;
 use MythicalDash\Config\ConfigInterface;
 
+$router->add('/api/system/license/theme-customization', function (): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $config = $appInstance->getConfig();
+
+    $licenseSystem = $appInstance->getLicenseSystem();
+    try {
+        $keyData = $licenseSystem->validateLicense($config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $config->getSetting(ConfigInterface::APP_URL, 'true'));
+    } catch (Exception $e) {
+        App::OK('License is invalid!', ['valid' => false]);
+    }
+    if ($keyData['valid']) {
+        $licenseData = $keyData['data'];
+        $project_info = $licenseData['project_info'];
+
+        if (isset($project_info['features']) && in_array('More Customization', $project_info['features'])) {
+            App::OK('License is valid!', ['valid' => true]);
+        } else {
+            App::OK('License is invalid! More Customization feature not found.', ['valid' => false]);
+        }
+    } else {
+        App::OK('License is invalid!', ['valid' => false]);
+    }
+
+});
+
+$router->add('/api/system/license/beta', function (): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $config = $appInstance->getConfig();
+
+    $licenseSystem = $appInstance->getLicenseSystem();
+    try {
+        $keyData = $licenseSystem->validateLicense($config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $config->getSetting(ConfigInterface::APP_URL, 'true'));
+    } catch (Exception $e) {
+        App::OK('License is invalid!', ['valid' => false]);
+    }
+    if ($keyData['valid']) {
+        $licenseData = $keyData['data'];
+        $project_info = $licenseData['project_info'];
+
+        if (isset($project_info['features']) && in_array('Beta Features', $project_info['features'])) {
+            App::OK('License is valid!', ['valid' => true]);
+        } else {
+            App::OK('License is invalid! Beta features not found.', ['valid' => false]);
+        }
+    } else {
+        App::OK('License is invalid!', ['valid' => false]);
+    }
+});
+
 $router->add('/api/system/license/branding-removal', function (): void {
     App::init();
     $appInstance = App::getInstance(true);

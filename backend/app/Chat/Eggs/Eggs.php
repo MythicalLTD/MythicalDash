@@ -152,7 +152,7 @@ class Eggs extends Database
 
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-            return $result ? [$result] : [];
+            return $result ?? [];
         } catch (\Exception $e) {
             self::db_Error('Failed to get egg: ' . $e->getMessage());
 

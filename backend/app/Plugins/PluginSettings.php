@@ -88,6 +88,11 @@ class PluginSettings extends PluginDB
         }
     }
 
+    public static function setSetting(string $identifier, string $key, string $value): void
+    {
+        self::setSettings($identifier, $key, ['value' => $value]);
+    }
+
     /**
      * Delete a setting from the database with transaction support.
      *
@@ -136,7 +141,7 @@ class PluginSettings extends PluginDB
      *
      * @return string The value of the setting
      */
-    public static function getSetting(string $identifier, string $key): string
+    public static function getSetting(string $identifier, string $key): ?string
     {
         self::validateInput($identifier, $key);
 
@@ -159,7 +164,7 @@ class PluginSettings extends PluginDB
 
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-            return $result ? $result['value'] : '';
+            return $result ? $result['value'] : null;
         } catch (\PDOException $e) {
             throw new \PDOException('Failed to get setting: ' . $e->getMessage());
         }

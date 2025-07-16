@@ -116,9 +116,9 @@ class Cron
      *
      * @return bool Whether the job was executed
      */
-    public function runIfDue(callable $callback): bool
+    public function runIfDue(callable $callback, bool $force = false): bool
     {
-        if (!$this->shouldRun()) {
+        if (!$this->shouldRun() && !$force) {
             return false;
         }
 

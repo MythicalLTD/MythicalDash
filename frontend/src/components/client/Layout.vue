@@ -8,7 +8,7 @@ const showFooter = ref(true);
 
 onMounted(async () => {
     try {
-        const isValid = await LicenseServer.isLicenseValid();
+        const isValid = await LicenseServer.isLicenseValid('branding-removal');
         showFooter.value = !isValid;
     } catch (error) {
         console.error('Error checking license:', error);

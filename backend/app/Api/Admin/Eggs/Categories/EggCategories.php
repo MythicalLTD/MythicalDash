@@ -32,9 +32,13 @@ $router->get('/api/admin/egg-categories/pterodactyl-nests', function (): void {
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_NESTS_LIST, $session);
     $nests = Nests::getNests();
 
-    $appInstance->OK('Pterodactyl nests', [
-        'nests' => $nests,
-    ]);
+    if (empty($nests)) {
+        $appInstance->BadRequest('No nests found', ['error_code' => 'ERROR_NO_NESTS_FOUND']);
+    } else {
+        $appInstance->OK('Pterodactyl nests', [
+            'nests' => $nests,
+        ]);
+    }
 });
 
 $router->get('/api/admin/egg-categories/pterodactyl-nests/(.*)/eggs', function ($nestId): void {
@@ -46,9 +50,13 @@ $router->get('/api/admin/egg-categories/pterodactyl-nests/(.*)/eggs', function (
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_NESTS_LIST, $session);
     $eggs = Eggs::getEggs((int) $nestId);
 
-    $appInstance->OK('Pterodactyl eggs', [
-        'eggs' => $eggs,
-    ]);
+    if (empty($eggs)) {
+        $appInstance->BadRequest('No eggs found', ['error_code' => 'ERROR_NO_EGGS_FOUND']);
+    } else {
+        $appInstance->OK('Pterodactyl eggs', [
+            'eggs' => $eggs,
+        ]);
+    }
 });
 
 $router->get('/api/admin/egg-categories', function (): void {
@@ -60,9 +68,13 @@ $router->get('/api/admin/egg-categories', function (): void {
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_NESTS_LIST, $session);
     $categories = EggCategories::getCategories();
 
-    $appInstance->OK('Egg Categories', [
-        'categories' => $categories,
-    ]);
+    if (empty($categories)) {
+        $appInstance->BadRequest('No categories found', ['error_code' => 'ERROR_NO_CATEGORIES_FOUND']);
+    } else {
+        $appInstance->OK('Egg Categories', [
+            'categories' => $categories,
+        ]);
+    }
 });
 
 $router->post('/api/admin/egg-categories/create', function (): void {

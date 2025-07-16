@@ -34,7 +34,7 @@ class ServerQueueLogs extends Database
         try {
             $dbConn = Database::getPdoConnection();
 
-            $query = 'SELECT * FROM ' . self::getTableName() . ' WHERE deleted = "false"';
+            $query = 'SELECT * FROM ' . self::getTableName() . ' WHERE deleted = "false" ORDER BY created_at DESC';
 
             $stmt = $dbConn->prepare($query);
             $stmt->execute();

@@ -142,6 +142,10 @@ class User extends UsersResource
                     $password
                 );
 
+                if (empty($newUser)) {
+                    throw new \Exception('Failed to register user in Pterodactyl: Empty response');
+                }
+
                 return $newUser['attributes']['id'];
             } catch (ValidationException|PterodactylException $e) {
                 $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performRegister:2] Failed to register user in Pterodactyl: ' . $e->getMessage());

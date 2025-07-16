@@ -1,28 +1,34 @@
-# v3-remastered 1.2
+# v3.2.0-Nexus
 
 ## Bug Fixes
 
-- Resolved ticket component having no translation!
-- Reverted the change for vite: `MPA` app!
-- Added null and type checks in `Register.php` to prevent 'Trying to access array offset on value of type bool' and 'getTokenFromUUID(): Argument #1 ($uuid) must be of type string, null given' errors.
-- Improved error handling in `Callback/Discord.php` for failed HTTP requests and missing array keys to prevent warnings and fatal errors.
-- Added null check for `$session` in `PermissionMiddleware.php` to prevent 'Call to a member function hasPermission() on null' fatal error.
-- Fixed a bug where users above id 100 matching a char will not be found!
-- Fixed useless components being rendered behind!
+- Fixed missing translations in ticket component
+- Reverted Vite MPA (Multi-Page Application) configuration changes
+- Enhanced type safety in `Register.php` to prevent null reference and type coercion errors
+- Improved error handling for Discord API callbacks to prevent warnings and fatal errors
+- Added session null check in `PermissionMiddleware.php` to prevent fatal errors
+- Fixed user-character matching for user IDs above 100
+- Removed unnecessary component rendering in background layers
+- Resolved VIP-only flag initialization issues
+- Fixed user deletion functionality in dashboard
+- Resolved server deletion issues
+- Fixed plugin settings encryption system
 
-## New Features
+## Enhancements
 
-- Validation logic on frontend and backend to reduce false input provided to pterodactyl panel!
-- Servers now get deleted after renew has reached day 0! 
-- New logic to check the users existence into pterodactyl!
-- Ability for users to see server in deployment!
-- Ability for users to delete the server that are in deployment stage!
-- Init command actually helps you now lol
-- Clear license cache command
+- Implemented comprehensive validation on both frontend and backend for Pterodactyl panel inputs
+- Added automatic server cleanup on renewal expiration
+- Enhanced user verification logic for Pterodactyl integration
+- Added server deployment status visibility for users
+- Implemented server deletion capability during deployment phase
+- Improved initialization command functionality
+- Added command to clear license cache
+- Introduced URL-based plugin installation support
 
-## Features Removed
+## Breaking Changes
 
-- Ability to disable telemetry via UI (Requires a plugin now!)
+- Telemetry controls moved to plugin system (UI controls removed)
+- Advanced customization features restricted to premium users
 
 ## Updates
 
@@ -50,7 +56,7 @@
 - Updated `symfony/console` to v7.3.1
 - Updated `symfony/yaml` to v7.3.1
 
-# v3-remastered 1.1
+# v3-remastered 1.0
 
 ## Bug Fixes
 

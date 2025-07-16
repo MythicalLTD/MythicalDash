@@ -32,11 +32,15 @@ class Addon extends App implements CommandBuilder
         define('APP_DEBUG', true);
         $pluginManager->loadKernel();
 
-        if (count($args) > 0) {
+        if (count($args) > 1) {
             switch ($args[1]) {
                 case 'install':
                     // Install an addon.
                     self::installPlugin();
+                    break;
+                case 'online-install':
+                    // Install an addon from the online repository.
+                    self::onlineInstallPlugin();
                     break;
                 case 'uninstall':
                     // Uninstall an addon.
@@ -80,15 +84,45 @@ class Addon extends App implements CommandBuilder
         self::getInstance()->send('');
     }
 
-    public static function installPlugin(): void
+    public static function onlineInstallPlugin(): void
+    {
+        self::getInstance()->send('&5&lMythical&d&lDash &7- &d&lAddons &7- &d&lOnline Install');
+        self::getInstance()->send('');
+        self::getInstance()->send('&7Please enter the url of the .myd file:');
+        $url = trim(fgets(STDIN));
+
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            self::getInstance()->send('&cInvalid URL!');
+
+            return;
+        }
+
+        $response = file_get_contents($url);
+        if ($response === false) {
+            self::getInstance()->send('&cFailed to download plugin!');
+
+            return;
+        }
+
+        $tempFile = sys_get_temp_dir() . '/' . uniqid('mythicaldash_') . '.myd';
+        file_put_contents($tempFile, $response);
+
+        self::installPlugin($tempFile);
+    }
+
+    public static function installPlugin(?string $tempFile = null): void
     {
         self::getInstance()->send('&5&lMythical&d&lDash &7- &d&lAddons');
         self::getInstance()->send('');
-        self::getInstance()->send('&7Please enter the path to the .myd file:');
-        $workDir = getcwd();
-        $filePath = trim(fgets(STDIN));
-        $filePath = str_replace($workDir . '/', '', $filePath);
-        $filePath = $filePath . '.myd';
+        if ($tempFile) {
+            $filePath = $tempFile;
+        } else {
+            self::getInstance()->send('&7Please enter the path to the .myd file:');
+            $workDir = getcwd();
+            $filePath = trim(fgets(STDIN));
+            $filePath = str_replace($workDir . '/', '', $filePath);
+            $filePath = $filePath . '.myd';
+        }
 
         if (!file_exists($filePath)) {
             self::getInstance()->send('&cFile not found! Looked in: ' . $workDir . '/' . $filePath);
@@ -440,6 +474,7 @@ class " . $name . " implements MythicalDashPlugin
             'list' => 'List all installed addons.',
             'create' => 'Create a new addon.',
             'export' => 'Export an addon.',
+            'online-install' => 'Install an addon from the online repository.',
         ];
     }
 

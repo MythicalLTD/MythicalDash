@@ -52,7 +52,7 @@ $router->get('/api/admin/plugins/(.*)/config', function ($identifier): void {
         $settings = PluginSettings::getSettings($identifier);
         $settingsList = [];
         foreach ($settings as $setting) {
-            $settingsList[$setting['key']] = $appInstance->decrypt($setting['value']);
+            $settingsList[$setting['key']] = $setting['value'];
         }
         $appInstance->OK('Plugin config fetched successfully', ['config' => $info, 'plugin' => $info, 'settings' => $settingsList]);
     } else {
@@ -87,8 +87,6 @@ $router->post('/api/admin/plugins/(.*)/settings/set', function ($identifier): vo
 
     if (isset($_POST['value']) && !empty($_POST['value'])) {
         $value = $_POST['value'];
-        $valueNonEncrypted = $value;
-        $value = $appInstance->encrypt($value);
     } else {
         $appInstance->BadRequest('Missing value parameter', ['error_code' => 'MISSING_VALUE']);
 
@@ -108,12 +106,12 @@ $router->post('/api/admin/plugins/(.*)/settings/set', function ($identifier): vo
         $eventManager->emit(PluginsSettingsEvent::onPluginSettingUpdate(), [
             'identifier' => $identifier,
             'key' => $key,
-            'value' => $valueNonEncrypted,
+            'value' => $value,
         ]);
         $appInstance->OK('Setting updated successfully', [
             'identifier' => $identifier,
             'key' => $key,
-            'value' => $valueNonEncrypted,
+            'value' => $value,
         ]);
     } catch (Exception $e) {
         $appInstance->InternalServerError('Failed to update setting', [

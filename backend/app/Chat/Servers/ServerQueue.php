@@ -80,16 +80,16 @@ class ServerQueue extends Database
         }
     }
 
-    public static function getByUserAndId(string $user, int $id): ?array
+    public static function getByUserAndId(string $user, int $id): array
     {
         $items = self::getByUser($user, [], false);
         foreach ($items as $item) {
             if ($item['id'] == $id) {
-                return $item;
+                return $item ?: [];
             }
         }
 
-        return null;
+        return []; // Type errors :>
     }
 
     public static function hasAtLeastOnePendingItem(string $user): bool
@@ -234,6 +234,9 @@ class ServerQueue extends Database
      */
     public static function delete(int $id): bool
     {
+        if ($id == 0) {
+            return false;
+        }
         try {
             $dbConn = Database::getPdoConnection();
 

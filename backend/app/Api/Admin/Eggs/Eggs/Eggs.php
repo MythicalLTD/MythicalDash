@@ -33,9 +33,13 @@ $router->get('/api/admin/eggs/pterodactyl/(.*)/eggs', function ($nestId): void {
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_NESTS_LIST, $session);
     $eggs = Eggs::getEggs((int) $nestId);
 
-    $appInstance->OK('Pterodactyl eggs', [
-        'eggs' => $eggs,
-    ]);
+    if (empty($eggs)) {
+        $appInstance->BadRequest('No eggs found', ['error_code' => 'ERROR_NO_EGGS_FOUND']);
+    } else {
+        $appInstance->OK('Pterodactyl eggs', [
+            'eggs' => $eggs,
+        ]);
+    }
 });
 
 // Get all eggs from all nests
@@ -47,10 +51,13 @@ $router->get('/api/admin/eggs/pterodactyl', function (): void {
 
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_EGG_LIST, $session);
     $eggs = Eggs::getAllEggs();
-
-    $appInstance->OK('All Pterodactyl eggs', [
-        'eggs' => $eggs,
-    ]);
+    if (empty($eggs)) {
+        $appInstance->BadRequest('No eggs found', ['error_code' => 'ERROR_NO_EGGS_FOUND']);
+    } else {
+        $appInstance->OK('All Pterodactyl eggs', [
+            'eggs' => $eggs,
+        ]);
+    }
 });
 
 // Get a specific egg by ID

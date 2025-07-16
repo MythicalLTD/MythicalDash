@@ -102,7 +102,7 @@ class UsersResource extends PterodactylAdmin
                     'last_name' => $lastName,
                     'password' => $password,
                 ],
-            ]);
+            ]) ?? [];
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === 422) {
                 $errors = json_decode($e->getResponse()->getBody()->getContents(), true);
@@ -144,10 +144,10 @@ class UsersResource extends PterodactylAdmin
      * @throws ResourceNotFoundException
      * @throws PterodactylException
      */
-    public function deleteUser(int $userId): array
+    public function deleteUser(int $userId): void
     {
         try {
-            return $this->request('DELETE', "/api/application/users/{$userId}");
+            $this->request('DELETE', "/api/application/users/{$userId}");
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === 404) {
                 throw ResourceNotFoundException::forResource('user', (string) $userId);

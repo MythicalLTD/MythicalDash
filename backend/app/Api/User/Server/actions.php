@@ -727,14 +727,14 @@ $router->post('/api/user/server/create', function (): void {
     $eggInfo = Eggs::getById($egg_id);
 
     // Check if location is VIP only and user doesn't have VIP permission
-    if ($locationInfo['vip_only'] === 'true' && !$session->hasPermission(Permissions::USER_PERMISSION_VIP)) {
+    if (isset($locationInfo['vip_only']) && $locationInfo['vip_only'] === 'true' && !$session->hasPermission(Permissions::USER_PERMISSION_VIP)) {
         $appInstance->BadRequest('Location is VIP only', ['error_code' => 'LOCATION_VIP_ONLY']);
 
         return;
     }
 
     // Check if egg is VIP only and user doesn't have VIP permission
-    if ($eggInfo['vip_only'] === 'true' && !$session->hasPermission(Permissions::USER_PERMISSION_VIP)) {
+    if (isset($eggInfo['vip_only']) && $eggInfo['vip_only'] === 'true' && !$session->hasPermission(Permissions::USER_PERMISSION_VIP)) {
         $appInstance->BadRequest('Egg is VIP only', ['error_code' => 'EGG_VIP_ONLY']);
 
         return;
@@ -800,10 +800,10 @@ $router->post('/api/user/queue/(.*)/delete', function (string $id): void {
     $session = new Session($appInstance);
     $accountToken = $session->SESSION_KEY;
     $serverQueue = ServerQueue::getByUserAndId($session->getInfo(UserColumns::UUID, false), (int) $id);
-    if (!$serverQueue) {
+    if (empty($serverQueue)) {
         $appInstance->BadRequest('Server queue item not found', ['error_code' => 'SERVER_QUEUE_ITEM_NOT_FOUND', 'server_queue' => $serverQueue]);
     }
-    ServerQueue::delete((int) $serverQueue['id']);
+    ServerQueue::delete((int) $serverQueue['id'] ?? 0);
     $appInstance->OK('Server queue item deleted successfully.', ['error_code' => 'SERVER_QUEUE_ITEM_DELETED']);
 });
 
@@ -820,7 +820,7 @@ $router->get('/api/user/server/(.*)', function (string $id): void {
     $server = Servers::getServerPterodactylDetails((int) $id);
 
     if (empty($server)) {
-        $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
+        $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND', 'server' => $server]);
 
         return;
     }

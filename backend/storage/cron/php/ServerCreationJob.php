@@ -43,7 +43,7 @@ class ServerCreationJob implements TimeTask
 			foreach ($pendingServers as $server) {
 				self::processServer($server, $app, $logger, $chat);
 			}
-		});
+		},true);
 	}
 
 	private static function processServer($server, $app, $logger, $chat)
@@ -51,7 +51,7 @@ class ServerCreationJob implements TimeTask
 		$id = $server['id'];
 		self::$currentBuildId = $id;
 		self::$logs = []; // Reset logs for this server
-		
+
 		$name = $server['name'];
 		$description = $server['description'];
 		$ram = $server['ram'];
@@ -80,50 +80,60 @@ class ServerCreationJob implements TimeTask
 		}
 
 		// Get resource details
-		$locationData = Locations::get($location);
-		$eggData = Eggs::getById($egg);
-		$category = EggCategories::get($nest);
+		$locationData = Locations::get((int) $location);
+		$eggData = Eggs::getById((int) $egg);
+		$category = EggCategories::get((int) $nest);
 
 		try {
-			$locationId = $locationData['pterodactyl_location_id'];
-			$eggId = $eggData['pterodactyl_egg_id'];
-			$nestId = $category['pterodactyl_nest_id'];
-			$serverOwnerToken = User::getTokenFromUUID($userUUID);
-			$pterodactylUserId = User::getInfo($serverOwnerToken, UserColumns::PTERODACTYL_USER_ID, false);
+			$locationId = isset($locationData['pterodactyl_location_id']) ? $locationData['pterodactyl_location_id'] : null;
+			$eggId = isset($eggData['pterodactyl_egg_id']) ? $eggData['pterodactyl_egg_id'] : null;
+			$nestId = isset($category['pterodactyl_nest_id']) ? $category['pterodactyl_nest_id'] : null;
+			if ($locationId == null || $eggId == null || $nestId == null) {
+				$errorMsg = "Location, egg, or nest not found";
+				$logger->error($errorMsg);
+				self::logMessage($servePrefix . "&cLocation, egg, or nest not found");
+				$chat->sendOutputWithNewLine($servePrefix . "&cLocation, egg, or nest not found");
+				$chat->sendOutputWithNewLine(print_r($locationData, true));
+				$chat->sendOutputWithNewLine(print_r($eggData, true));
+				$chat->sendOutputWithNewLine(print_r($category, true));
+				ServerQueue::updateStatus($id, 'failed');
+			} else {
+				$serverOwnerToken = User::getTokenFromUUID($userUUID);
+				$pterodactylUserId = User::getInfo($serverOwnerToken, UserColumns::PTERODACTYL_USER_ID, false);
 
-			// Validate Pterodactyl resources
-			if (!self::validatePterodactylResources($id, $servePrefix, $locationId, $eggId, $nestId, $pterodactylUserId, $logger, $chat)) {
-				return;
+				// Validate Pterodactyl resources
+				if (!self::validatePterodactylResources($id, $servePrefix, $locationId, $eggId, $nestId, $pterodactylUserId, $logger, $chat)) {
+					return;
+				}
+
+				self::createPterodactylServer(
+					$app,
+					$id,
+					$servePrefix,
+					$name,
+					$pterodactylUserId,
+					$eggId,
+					$nestId,
+					$ram,
+					$disk,
+					$cpu,
+					$ports,
+					$databases,
+					$backups,
+					$locationId,
+					$description,
+					$logger,
+					$chat,
+					$userUUID
+				);
 			}
-
-			self::createPterodactylServer(
-				$app,
-				$id,
-				$servePrefix,
-				$name,
-				$pterodactylUserId,
-				$eggId,
-				$nestId,
-				$ram,
-				$disk,
-				$cpu,
-				$ports,
-				$databases,
-				$backups,
-				$locationId,
-				$description,
-				$logger,
-				$chat,
-				$userUUID
-			);
-
 		} catch (\Exception $e) {
 			$errorMsg = "Error creating server {$id}: " . $e->getMessage();
 			$logger->error($errorMsg);
 			$chat->sendOutputWithNewLine($servePrefix . "&cError creating server: " . $e->getMessage());
 			self::logMessage($servePrefix . "&cError creating server: " . $e->getMessage());
 			ServerQueue::updateStatus($id, 'failed');
-			
+
 			// Save failure logs
 			ServerQueueLogs::logFailure($id, self::$logs, $e->getMessage());
 		}
@@ -138,7 +148,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cUser no longer exists: " . $userUUID);
 			$chat->sendOutputWithNewLine($servePrefix . "&cUser no longer exists: " . $userUUID);
 			ServerQueue::updateStatus($id, 'failed');
-			
+
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -146,7 +156,7 @@ class ServerCreationJob implements TimeTask
 			} else {
 				ServerQueueLogs::logFailure($id, self::$logs, $errorMsg);
 			}
-			
+
 			return false;
 		}
 
@@ -157,7 +167,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cNest no longer exists: " . $nest);
 			$chat->sendOutputWithNewLine($servePrefix . "&cNest no longer exists: " . $nest);
 			ServerQueue::updateStatus($id, 'failed');
-			
+
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -165,7 +175,7 @@ class ServerCreationJob implements TimeTask
 			} else {
 				ServerQueueLogs::logFailure($id, self::$logs, $errorMsg);
 			}
-			
+
 			return false;
 		}
 
@@ -176,7 +186,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cEgg no longer exists: " . $egg);
 			$chat->sendOutputWithNewLine($servePrefix . "&cEgg no longer exists: " . $egg);
 			ServerQueue::updateStatus($id, 'failed');
-			
+
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -184,7 +194,7 @@ class ServerCreationJob implements TimeTask
 			} else {
 				ServerQueueLogs::logFailure($id, self::$logs, $errorMsg);
 			}
-			
+
 			return false;
 		}
 
@@ -195,7 +205,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cLocation no longer exists: " . $location);
 			$chat->sendOutputWithNewLine($servePrefix . "&cLocation no longer exists: " . $location);
 			ServerQueue::updateStatus($id, 'failed');
-			
+
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -203,7 +213,7 @@ class ServerCreationJob implements TimeTask
 			} else {
 				ServerQueueLogs::logFailure($id, self::$logs, $errorMsg);
 			}
-			
+
 			return false;
 		}
 
@@ -219,7 +229,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cEgg no longer exists in Pterodactyl: " . $eggId);
 			$chat->sendOutputWithNewLine($servePrefix . "&cEgg no longer exists in Pterodactyl: " . $eggId);
 			ServerQueue::updateStatus($id, 'failed');
-			
+
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -227,7 +237,7 @@ class ServerCreationJob implements TimeTask
 			} else {
 				ServerQueueLogs::logFailure($id, self::$logs, $errorMsg);
 			}
-			
+
 			return false;
 		}
 
@@ -238,7 +248,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cLocation no longer exists in Pterodactyl: " . $locationId);
 			$chat->sendOutputWithNewLine($servePrefix . "&cLocation no longer exists in Pterodactyl: " . $locationId);
 			ServerQueue::updateStatus($id, 'failed');
-			
+
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -246,7 +256,7 @@ class ServerCreationJob implements TimeTask
 			} else {
 				ServerQueueLogs::logFailure($id, self::$logs, $errorMsg);
 			}
-			
+
 			return false;
 		}
 
@@ -257,7 +267,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cNest no longer exists in Pterodactyl: " . $nestId);
 			$chat->sendOutputWithNewLine($servePrefix . "&cNest no longer exists in Pterodactyl: " . $nestId);
 			ServerQueue::updateStatus($id, 'failed');
-			
+
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -265,7 +275,7 @@ class ServerCreationJob implements TimeTask
 			} else {
 				ServerQueueLogs::logFailure($id, self::$logs, $errorMsg);
 			}
-			
+
 			return false;
 		}
 
@@ -276,7 +286,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cUser no longer exists in Pterodactyl: " . $pterodactylUserId);
 			$chat->sendOutputWithNewLine($servePrefix . "&cUser no longer exists in Pterodactyl: " . $pterodactylUserId);
 			ServerQueue::updateStatus($id, 'failed');
-			
+
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -284,7 +294,7 @@ class ServerCreationJob implements TimeTask
 			} else {
 				ServerQueueLogs::logFailure($id, self::$logs, $errorMsg);
 			}
-			
+
 			return false;
 		}
 
@@ -351,13 +361,13 @@ class ServerCreationJob implements TimeTask
 				$isRenewal = $app->getConfig()->getSetting(ConfigInterface::SERVER_RENEW_ENABLED, 'false');
 				if ($isRenewal == 'true') {
 					$server_renew_days = (int) $app->getConfig()->getSetting(ConfigInterface::SERVER_RENEW_DAYS, 30);
-					
+
 					// Get existing expiration date if it exists, otherwise use current time
 					$existingExpiration = Server::getExpirationTimestamp($svID);
 					// If no existing expiration or it's null, use current time
 					$baseTime = $existingExpiration ?: strtotime(date('Y-m-d H:i:s'));
 					$newExpiresAt = $baseTime + ($server_renew_days * 86400); // Convert days to seconds
-					
+
 					self::logMessage($servePrefix . "&aServer expiration set to: " . date('Y-m-d H:i:s', $newExpiresAt));
 					try {
 						// Update server expiration
@@ -376,14 +386,14 @@ class ServerCreationJob implements TimeTask
 				ServerQueue::updateStatus($id, 'completed');
 				self::logMessage($servePrefix . "&aServer information stored in database");
 				$chat->sendOutputWithNewLine($servePrefix . "&aServer information stored in database");
-				
+
 				// Update logs with completion status
 				if (self::$logId) {
 					ServerQueueLogs::appendLogs(self::$logId, self::$logs);
 				} else {
 					ServerQueueLogs::saveJobLogs($id, self::$logs);
 				}
-				
+
 				return true;
 			} else {
 				$errorMsg = "Failed to create server {$id}: " . json_encode($response);
@@ -391,7 +401,7 @@ class ServerCreationJob implements TimeTask
 				$chat->sendOutputWithNewLine($servePrefix . "&cFailed to create server: " . json_encode($response));
 				self::logMessage($servePrefix . "&cFailed to create server: " . json_encode($response));
 				ServerQueue::updateStatus($id, 'failed');
-				
+
 				// Save failure logs
 				if (self::$logId) {
 					ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -399,7 +409,7 @@ class ServerCreationJob implements TimeTask
 				} else {
 					ServerQueueLogs::logFailure($id, self::$logs, $errorMsg);
 				}
-				
+
 				return false;
 			}
 		} catch (\Exception $e) {
@@ -408,7 +418,7 @@ class ServerCreationJob implements TimeTask
 			$chat->sendOutputWithNewLine($servePrefix . "&cError during server creation: " . $e->getMessage());
 			self::logMessage($servePrefix . "&cError during server creation: " . $e->getMessage());
 			ServerQueue::updateStatus($id, 'failed');
-			
+
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -416,11 +426,11 @@ class ServerCreationJob implements TimeTask
 			} else {
 				ServerQueueLogs::logFailure($id, self::$logs, $errorMsg);
 			}
-			
+
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Add a message to the logs array and update the database if needed
 	 *
@@ -430,7 +440,7 @@ class ServerCreationJob implements TimeTask
 	private static function logMessage(string $message, bool $updateDb = false)
 	{
 		self::$logs[] = $message;
-		
+
 		// Update the database if requested and we have a log ID
 		if ($updateDb && self::$logId && self::$currentBuildId) {
 			ServerQueueLogs::appendLogs(self::$logId, $message);

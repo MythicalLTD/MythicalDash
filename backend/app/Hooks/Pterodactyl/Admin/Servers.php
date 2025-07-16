@@ -84,7 +84,7 @@ class Servers extends ServersResource
         } catch (ResourceNotFoundException $e) {
             return [];
         } catch (\Throwable $e) {
-            App::getInstance(true)->getLogger()->error('[Pterodactyl/Admin/Servers#serverExists] Failed to check server existence: ' . $e->getMessage());
+            App::getInstance(true)->getLogger()->error('[Pterodactyl/Admin/Servers#getServerPterodactylDetails] Failed to check server existence: ' . $e->getMessage());
 
             return [];
         }
