@@ -25,42 +25,50 @@ use MythicalDash\Plugins\PluginManager;
  */
 
 try {
-    if (file_exists(APP_DIR . 'storage/packages')) {
-        require APP_DIR . 'storage/packages/autoload.php';
-    } else {
-        throw new Exception('Packages not installed looked at this path: ' . APP_DIR . 'storage/packages');
-    }
+	if (file_exists(APP_DIR . 'storage/packages')) {
+		require APP_DIR . 'storage/packages/autoload.php';
+	} else {
+		throw new Exception('Packages not installed looked at this path: ' . APP_DIR . 'storage/packages');
+	}
 } catch (Exception $e) {
-    echo $e->getMessage();
-    echo "\n";
-    exit;
+	echo $e->getMessage();
+	echo "\n";
+	exit;
 }
 
 if (!defined('IS_CLI')) {
-    ini_set('expose_php', 'off');
-    header_remove('X-Powered-By');
-    header_remove('Server');
+	ini_set('expose_php', 'off');
+	header_remove('X-Powered-By');
+	header_remove('Server');
 }
 
 if (!is_writable(__DIR__)) {
-    $error = 'Please make sure the root directory is writable.';
-    exit(json_encode(['error' => $error, 'code' => 500, 'message' => 'Please make sure the root directory is writable.', 'success' => false]));
+	$error = 'Please make sure the root directory is writable.';
+	exit(json_encode(['error' => $error, 'code' => 500, 'message' => 'Please make sure the root directory is writable.', 'success' => false]));
 }
 
 if (!is_writable(__DIR__ . '/../storage')) {
-    exit(json_encode(['error' => 'Please make sure the storage directory is writable.', 'code' => 500, 'message' => 'Please make sure the storage directory is writable.', 'success' => false]));
+	exit(json_encode(['error' => 'Please make sure the storage directory is writable.', 'code' => 500, 'message' => 'Please make sure the storage directory is writable.', 'success' => false]));
 }
 
-if (file_exists(APP_DIR . 'storage/.env')) {
-    /**
-     * Initialize the plugin manager.
-     */
-    $pluginManager = new PluginManager();
-    $eventManager = $pluginManager->getEventManager();
+\Sentry\init([
+	'dsn' => 'https://b1d78f7281cc4ddb10e693d2a8c3f509@o4508434822791168.ingest.de.sentry.io/4509679592144976',
+	// Specify a fixed sample rate
+	'traces_sample_rate' => 1.0,
 
-    /**
-     * @global \MythicalDash\Plugins\PluginManager $pluginManager
-     * @global \MythicalDash\Plugins\Events\PluginEvent $eventManager
-     */
-    global $pluginManager, $eventManager;
+]);
+
+
+if (file_exists(APP_DIR . 'storage/.env')) {
+	/**
+	 * Initialize the plugin manager.
+	 */
+	$pluginManager = new PluginManager();
+	$eventManager = $pluginManager->getEventManager();
+
+	/**
+	 * @global \MythicalDash\Plugins\PluginManager $pluginManager
+	 * @global \MythicalDash\Plugins\Events\PluginEvent $eventManager
+	 */
+	global $pluginManager, $eventManager;
 }
