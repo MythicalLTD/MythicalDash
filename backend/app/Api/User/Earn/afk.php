@@ -25,57 +25,37 @@ $router->post('/api/user/earn/afk/work', function (): void {
     $uuid = $s->getInfo(UserColumns::UUID, false);
     if ($config->getSetting(ConfigInterface::AFK_ENABLED, 'false') === 'false') {
         App::NotFound('AFK is not enabled', []);
-    }global $eventManager;
+    }
+    global $eventManager;
 
     $coins = $s->getInfo(UserColumns::CREDITS, false);
     $afkTime = $s->getInfo(UserColumns::MINUTES_AFK, false);
-    $lastSeen = $s->getInfo(UserColumns::LAST_SEEN_AFK, false);
 
-    $minToEarn = $config->getSetting(ConfigInterface::AFK_MIN_PER_COIN, 1);
+    $coinsToAward = (int) $config->getSetting(ConfigInterface::AFK_MIN_PER_COIN, 1);
 
-    $dateTime = new DateTime();
-    $currentTimestamp = $dateTime->getTimestamp();
+    // Always increment AFK time by 1 minute per request
+    $newAfkTime = $afkTime + 1;
 
-    try {
-        if ($lastSeen <= $currentTimestamp) {
-            // Calculate time difference in minutes
-            $timeDiff = floor(($currentTimestamp - $lastSeen) / 60);
-
-            if ($timeDiff >= $minToEarn) {
-                // Calculate how many coins to award
-                $coinsToAward = floor($timeDiff / $minToEarn);
-                // Update user's coins and AFK time
-                $s->addCredits((int) intval($coinsToAward));
-                $s->setInfo(UserColumns::MINUTES_AFK, $afkTime + $minToEarn, false);
-                $s->setInfo(UserColumns::LAST_SEEN_AFK, $currentTimestamp, false);
-                $eventManager->emit(AfkEvent::onAfk(), [
-                    'user' => $uuid,
-                    'coins_awarded' => $coinsToAward,
-                    'time_spent' => $timeDiff,
-                    'total_coins' => $coins + $coinsToAward,
-                    'total_afk_time' => $afkTime + $timeDiff,
-                ]);
-                App::OK('Coins and AFK time added successfully', [
-                    'coins_awarded' => $coinsToAward,
-                    'time_spent' => $timeDiff,
-                    'total_coins' => $coins + $coinsToAward,
-                    'total_afk_time' => $afkTime + $timeDiff,
-                ]);
-            } else {
-                $eventManager->emit(AfkEvent::onAfkEarly(), [
-                    'user' => $uuid,
-                    'time_spent' => $timeDiff,
-                    'minutes_needed' => $minToEarn,
-                ]);
-                App::OK('Not enough time spent AFK to earn coins', [
-                    'time_spent' => $timeDiff,
-                    'minutes_needed' => $minToEarn,
-                ]);
-            }
-        } else {
-            App::BadRequest('Invalid last seen timestamp', []);
-        }
-    } catch (Exception $e) {
-        App::BadRequest('Failed to add coins and AFK time', []);
+    // Update user stats
+    $s->setInfo(UserColumns::MINUTES_AFK, $newAfkTime, false);
+    if ($coinsToAward > 0) {
+        $s->addCredits($coinsToAward);
     }
+
+    $eventManager->emit(
+        $coinsToAward > 0 ? AfkEvent::onAfk() : AfkEvent::onAfkEarly(),
+        [
+            'user' => $uuid,
+            'coins_awarded' => $coinsToAward,
+            'time_spent' => 1,
+            'total_coins' => $coins + $coinsToAward,
+            'total_afk_time' => $newAfkTime,
+        ]
+    );
+
+    App::OK('AFK stats updated', [
+        'coins_awarded' => $coinsToAward,
+        'total_coins' => $coins + $coinsToAward,
+        'total_afk_time' => $newAfkTime,
+    ]);
 });

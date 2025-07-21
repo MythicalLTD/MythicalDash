@@ -405,9 +405,6 @@ class PerformanceManager {
 
             // Enable service worker for caching
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js').catch(() => {
-                    // Service worker registration failed, continue without caching
-                });
             }
         } catch (error) {
             console.warn('Failed to enable caching:', error);

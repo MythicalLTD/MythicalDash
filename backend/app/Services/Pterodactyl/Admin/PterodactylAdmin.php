@@ -13,6 +13,7 @@
 
 namespace MythicalDash\Services\Pterodactyl\Admin;
 
+use MythicalDash\App;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -53,12 +54,26 @@ class PterodactylAdmin
             $response = $this->httpClient->request($method, $endpoint, $options);
 
             if ($response->getStatusCode() === 204) {
-                return null;
+                App::getInstance(true)->getLogger()->error('Pterodactyl Admin API returned 204 status code');
+
+                return [];
+            }
+            if ($response->getStatusCode() === 404) {
+                App::getInstance(true)->getLogger()->error('Pterodactyl Admin API returned 404 status code');
+
+                return [];
+            }
+            if ($response->getStatusCode() === 401) {
+                App::getInstance(true)->getLogger()->error('Pterodactyl Admin API returned 401 status code');
+
+                return [];
             }
 
             return json_decode($response->getBody()->getContents(), true);
         } catch (GuzzleException $e) {
-            return null;
+            App::getInstance(true)->getLogger()->error('Failed to send request to Pterodactyl Admin API: ' . $e->getMessage());
+
+            return [];
         }
     }
 }

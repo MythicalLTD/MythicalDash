@@ -120,12 +120,13 @@
                     </svg>
                     <div>
                         <div class="text-yellow-500 font-medium mb-1">
-                            SEO meta tags must be changed in <code>/var/www/mythicaldash-v3/index.html</code>
+                            SEO meta tags must be changed with the <code>mythicaldash ApplySEO</code> command.
                         </div>
                         <div class="text-yellow-500 text-xs">
                             This application is prebuilt and uses client-side rendering (CSR). To update the meta
                             description or keywords for SEO, edit the <code>&lt;meta&gt;</code> tags in
-                            <code>index.html</code> and rebuild the frontend.
+                            <code>index.html</code> and rebuild the frontend with the
+                            <code>mythicaldash build</code> command.
                         </div>
                     </div>
                 </div>

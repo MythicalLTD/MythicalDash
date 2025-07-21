@@ -23,6 +23,7 @@ use MythicalDash\Plugins\Events\Events\AuthEvent;
 use MythicalDash\Chat\IPRelationships\IPRelationship;
 use MythicalDash\Plugins\Events\Events\ReferralsEvent;
 use MythicalDash\Hooks\MythicalSystems\CloudFlare\Turnstile;
+use MythicalDash\Services\Pterodactyl\Admin\Resources\UsersResource;
 
 $router->add('/api/user/auth/register', function (): void {
     global $eventManager;
@@ -174,8 +175,9 @@ $router->add('/api/user/auth/register', function (): void {
                 $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'PTERODACTYL_ERROR']);
                 $appInstance->InternalServerError('Internal Server Error', ['error_code' => 'PTERODACTYL_ERROR']);
             }
+            $pteroUsers = new UsersResource($appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
 
-            MythicalDash\Hooks\Pterodactyl\Admin\User::performUpdateUser($pterodactylUserId, $username, $firstName, $lastName, $email, $password);
+            MythicalDash\Hooks\Pterodactyl\Admin\User::performUpdateUser($pteroUsers, $pterodactylUserId, $username, $firstName, $lastName, $email, $password);
         } catch (Exception $e) {
             $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'PTERODACTYL_ERROR']);
             $appInstance->InternalServerError('Internal Server Error', ['error_code' => 'PTERODACTYL_ERROR']);
@@ -250,14 +252,7 @@ $router->add('/api/user/auth/register', function (): void {
          * Zero Trust.
          */
         $appInstance->getTelemetry()->sendRegister($username, $firstName, $lastName, $email, CloudFlareRealIP::getRealIP());
-
-        if (User::isFirstUserInDatabase()) {
-            User::updateInfo($newUserToken, UserColumns::ROLE_ID, '8', false);
-            App::OK('User registered', ['is_first_user' => true]);
-        } else {
-            App::OK('User registered', ['is_first_user' => false]);
-        }
-
+		App::OK('User registered', ['is_first_user' => false]);
     } catch (Exception $e) {
         $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'DATABASE_ERROR']);
         $appInstance->InternalServerError('Internal Server Error', ['error_code' => 'DATABASE_ERROR']);

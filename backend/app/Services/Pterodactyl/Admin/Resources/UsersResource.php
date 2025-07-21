@@ -55,7 +55,7 @@ class UsersResource extends PterodactylAdmin
     public function getUser(int $userId): array
     {
         try {
-            return $this->request('GET', "/api/application/users/{$userId}");
+            return$this->request('GET', "/api/application/users/{$userId}");
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === 404) {
                 throw ResourceNotFoundException::forResource('user', (string) $userId);
@@ -71,7 +71,7 @@ class UsersResource extends PterodactylAdmin
                 'query' => [
                     'include' => 'servers',
                 ],
-            ]);
+            ]) ?? [];
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === 404) {
                 throw ResourceNotFoundException::forResource('user', (string) $userId);

@@ -134,6 +134,8 @@ class User extends Database
      * Check if the user is the first user in the database.
      *
      * @return bool If the user is the first user in the database
+	 * 
+	 * @deprecated This method is deprecated and will be removed in the future.
      */
     public static function isFirstUserInDatabase(): bool
     {

@@ -29,7 +29,7 @@
 
                 <div v-if="afkEnabled" class="mb-4">
                     <label for="afk_min_per_coin" class="block text-sm font-medium text-gray-400 mb-1"
-                        >Minutes per Coin</label
+                        >Coins per Minute</label
                     >
                     <div class="flex items-center gap-4">
                         <input
@@ -41,11 +41,9 @@
                             @change="updateSetting('afk_min_per_coin', formData.afk_min_per_coin)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
-                        <span class="text-gray-400 whitespace-nowrap">minutes</span>
+                        <span class="text-gray-400 whitespace-nowrap">coins</span>
                     </div>
-                    <p class="mt-1 text-xs text-gray-500">
-                        How many minutes a user needs to be active on the dashboard to earn 1 coin.
-                    </p>
+                    <p class="mt-1 text-xs text-gray-500">How many coins per minute a user will earn.</p>
                 </div>
             </div>
 

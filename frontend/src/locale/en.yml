@@ -92,6 +92,8 @@ Components:
         description: 'View your recent tickets'
         viewMore: 'View more'
         noTickets: 'No tickets found'
+        createTicket: 'Create Ticket'
+        createFirst: 'Create your first ticket'
         departmentHours: 'Department Hours'
         status:
             Open: 'Open'

@@ -359,7 +359,7 @@ $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code)
 
     // Check if Linkvertise is enabled
     if ($config->getSetting(ConfigInterface::L4R_LINKVERTISE_ENABLED, 'false') !== 'true') {
-        header('Location: /earn/links');
+        header('Location: /earn/links?error=linkvertise_not_enabled');
         exit;
     }
 
@@ -367,19 +367,9 @@ $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code)
     $coolDown = $config->getSetting(ConfigInterface::L4R_LINKVERTISE_COOLDOWN_TIME, 3600);
     $coinsPerLink = $config->getSetting(ConfigInterface::L4R_LINKVERTISE_COINS_PER_LINK, 60);
 
-    // Validate code format
-    if (empty($code) || !preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', $code)) {
-        header('Location: /earn/links');
-        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
-            'user' => $session->getInfo(UserColumns::UUID, false),
-            'link' => $code,
-        ]);
-        exit;
-    }
-
     $linkId = Linkvertise::convertCodeToId($code);
     if ($linkId === 0) {
-        header('Location: /earn/links');
+        header('Location: /earn/links?error=invalid_code_linkvertise_id');
         $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
             'user' => $session->getInfo(UserColumns::UUID, false),
             'link' => $linkId,
@@ -389,7 +379,7 @@ $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code)
 
     $link = Linkvertise::getById($linkId);
     if (empty($link)) {
-        header('Location: /earn/links');
+        header('Location: /earn/links?error=invalid_code_linkvertise_code');
         $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
             'user' => $session->getInfo(UserColumns::UUID, false),
             'link' => $linkId,
@@ -399,7 +389,7 @@ $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code)
 
     // Validate link ownership
     if ($link['user'] !== $session->getInfo(UserColumns::UUID, false)) {
-        header('Location: /earn/links');
+        header('Location: /earn/links?error=invalid_code');
         $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
             'user' => $session->getInfo(UserColumns::UUID, false),
             'link' => $linkId,
@@ -409,7 +399,7 @@ $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code)
 
     // Check if link is already completed
     if ($link['completed'] == 'true') {
-        header('Location: /earn/links');
+        header('Location: /earn/links?error=link_already_completed');
         $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
             'user' => $session->getInfo(UserColumns::UUID, false),
             'link' => $linkId,
@@ -495,8 +485,9 @@ $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code)
 
     // User took enough time, give them coins
     Linkvertise::markAsCompleted($linkId);
+
     $coinsToAdd = (int) $coinsPerLink;
-    $session->addCredits((int) intval($coinsToAdd));
+    $session->addCredits($coinsToAdd);
     $eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
         'user' => $session->getInfo(UserColumns::UUID, false),
         'link' => $linkId,

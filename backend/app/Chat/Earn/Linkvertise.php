@@ -137,7 +137,6 @@ class Linkvertise extends Database implements Schema
      */
     public static function convertCodeToId(string $code): int
     {
-        $appInstance = App::getInstance(true);
         try {
             // Validate input
             if (empty($code)) {

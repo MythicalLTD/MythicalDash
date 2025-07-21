@@ -1,3 +1,29 @@
+# v3.2.1-Nexus
+
+## Bug Fixes
+
+- Fixed Pterodactyl login authentication
+- Resolved server import functionality issues
+- Addressed servers not loading after import process
+- Corrected license server check to handle missing HTTPS protocol
+- Improved panel communication handling
+- Fixed Linkvertise coin reward inconsistency issue
+- Added missing translation strings
+- Corrected CSS typing errors
+- Fixed the afk area :)
+
+## Enhancements
+
+- Plugin-registered commands now appear in help menu
+- Added ability to modify SEO tags
+- Implemented CLI commands for modifying settings values
+- Added CLI functionality to read all system settings
+- New documentation for plugin development
+
+## Breaking Changes
+
+- Removed automatic admin privileges for first user due to security concerns
+
 # v3.2.0-Nexus
 
 ## Bug Fixes

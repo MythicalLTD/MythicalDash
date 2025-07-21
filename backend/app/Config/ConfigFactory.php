@@ -146,4 +146,9 @@ class ConfigFactory
 
         return $settings;
     }
+
+	public static function getConfigurableSettings() : array {
+		$ref = new \ReflectionClass(\MythicalDash\Config\ConfigInterface::class);
+		return $ref->getConstants();
+	}
 }

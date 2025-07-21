@@ -200,9 +200,6 @@ function createNewTicket() {
                     <Ticket class="w-16 h-16 text-gray-600 mx-auto mb-4" />
                     <p class="text-xl font-semibold text-gray-300">{{ t('tickets.pages.tickets.noTickets') }}</p>
                     <p class="text-gray-400 mt-2">{{ t('tickets.pages.tickets.noTickets') }}</p>
-                    <Button @click="createNewTicket">
-                        {{ t('tickets.pages.tickets.actions.newTicket') }}
-                    </Button>
                 </div>
 
                 <div v-else key="table">

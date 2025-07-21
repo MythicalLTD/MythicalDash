@@ -62,6 +62,10 @@ class LicenseSystem
                 // Validate cached data against instance URL
                 $instanceInfo = $data['data']['instance'] ?? [];
                 $instanceUrlLicense = $instanceInfo['instanceUrl'];
+                // Check if instance URL has protocol, if not add https://
+                if (!preg_match('~^(?:f|ht)tps?://~i', $instanceUrl)) {
+                    $instanceUrl = 'https://' . $instanceUrl;
+                }
 
                 if ($instanceUrlLicense !== $instanceUrl) {
                     throw new \Exception('LICENSE_KEY_INSTANCE_URL_MISMATCH');
@@ -116,7 +120,10 @@ class LicenseSystem
 
             $instanceInfo = $data['data']['instance'] ?? [];
             $instanceUrlLicense = $instanceInfo['instanceUrl'];
-
+            // Check if instance URL has protocol, if not add https://
+            if (!preg_match('~^(?:f|ht)tps?://~i', $instanceUrl)) {
+                $instanceUrl = 'https://' . $instanceUrl;
+            }
             if ($instanceUrlLicense !== $instanceUrl) {
                 throw new \Exception('LICENSE_KEY_INSTANCE_URL_MISMATCH');
             }

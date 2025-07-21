@@ -55,6 +55,40 @@ class Help extends App implements CommandBuilder
 
         }
         $cmdInstance->send('');
+        $cmdInstance->send('&d&lPlugin Commands:');
+        $pluginDir = getcwd() . '/backend/storage/addons';
+        if (is_dir($pluginDir)) {
+            $plugins = array_diff(scandir($pluginDir), ['.', '..']);
+            foreach ($plugins as $plugin) {
+                $commandsFolder = $pluginDir . "/$plugin/Commands";
+                if (!is_dir($commandsFolder)) {
+                    continue;
+                }
+                $commandFiles = array_diff(scandir($commandsFolder), ['.', '..']);
+                foreach ($commandFiles as $commandFile) {
+                    if (!str_ends_with($commandFile, '.php')) {
+                        continue;
+                    }
+                    $className = pathinfo($commandFile, PATHINFO_FILENAME);
+                    $commandClass = "MythicalDash\\Addons\\$plugin\\Commands\\$className";
+                    $commandFilePath = $commandsFolder . "/$commandFile";
+                    require_once $commandFilePath;
+                    if (!class_exists($commandClass)) {
+                        continue;
+                    }
+                    $description = $commandClass::getDescription();
+                    $command = lcfirst($className);
+                    $subCommands = $commandClass::getSubCommands();
+                    $cmdInstance->send("&b[{$plugin}] {$command} &8> &7{$description}");
+                    if (!empty($subCommands)) {
+                        foreach ($subCommands as $subCommand => $subDesc) {
+                            $cmdInstance->send("    &8> &b{$command} {$subCommand} &8- &7{$subDesc}");
+                        }
+                    }
+                }
+            }
+        }
+        $cmdInstance->send('');
         $cmdInstance->send($cmdInstance->bars);
     }
 

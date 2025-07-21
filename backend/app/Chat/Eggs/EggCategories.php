@@ -236,7 +236,7 @@ class EggCategories extends Database
      *
      * @return array|null The category data or null if not found
      */
-    public static function getByPterodactylNestId(int $pterodactylNestId): ?array
+    public static function getByPterodactylNestId(int $pterodactylNestId): array|bool
     {
         try {
             $dbConn = Database::getPdoConnection();
@@ -246,11 +246,11 @@ class EggCategories extends Database
             $stmt->bindParam(':pterodactyl_nest_id', $pterodactylNestId);
             $stmt->execute();
 
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $stmt->fetch(\PDO::FETCH_ASSOC) ?? [];
         } catch (\Exception $e) {
             self::db_Error('Failed to get egg category by Pterodactyl nest ID: ' . $e->getMessage());
 
-            return null;
+            return [];
         }
     }
 }

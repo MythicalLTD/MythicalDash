@@ -36,33 +36,26 @@ class User extends UsersResource
     {
         $appInstance = App::getInstance(true);
 
+        $config = $appInstance->getConfig();
+        $userResource = new UsersResource($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+
         try {
-            $config = $appInstance->getConfig();
-            $userResource = new UsersResource($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
-
-            try {
-                $userExists = $userResource->doesUserExist((int) $pterodactylUserId);
-                if (!$userExists) {
-                    $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by id');
-                    throw new \Exception('User not found by id');
-                }
-            } catch (\Exception $e) {
-                // TODO: Delete user form mythicaldash
-                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User not found by id');
-                throw new \Exception('User not found by id: ' . $e->getMessage());
+            // Check if user exists and has servers
+            $user = $userResource->getUserWithServers((int) $pterodactylUserId);
+            if (empty($user)) {
+                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] User data is empty: ' . $pterodactylUserId);
+                throw new \Exception('User data is empty: ' . $pterodactylUserId);
             }
-
-            try {
-                self::performUpdateUser($pterodactylUserId, $username, $first_name, $last_name, $email, $password);
-            } catch (\Exception $e) {
-                // TODO: Delete user form mythicaldash
-                $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] Failed to update user in Pterodactyl: ' . $e->getMessage());
-                throw new \Exception('Failed to update user in Pterodactyl: ' . $e->getMessage());
-            }
-
+            // If user exists, update their details
+            self::performUpdateUser($userResource, $pterodactylUserId, $username, $first_name, $last_name, $email, $password);
+        } catch (ResourceNotFoundException $e) {
+            // User not found, create new user
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:2] User not found by id: ' . $pterodactylUserId);
+            throw new \Exception('User not found by id: ' . $pterodactylUserId);
         } catch (\Exception $e) {
-            $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] Failed to get config: ' . $e->getMessage());
-            throw new \Exception('Failed to get config: ' . $e->getMessage());
+            // TODO: Delete user from mythicaldash
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:3] Failed to update user in Pterodactyl: ' . $e->getMessage());
+            throw new \Exception('Failed to update user in Pterodactyl: ' . $e->getMessage());
         }
     }
 
@@ -167,14 +160,12 @@ class User extends UsersResource
      * @param string $email The email of the user to update
      * @param string $password The password of the user to update
      */
-    public static function performUpdateUser(int $userId, string $username, string $first_name, string $last_name, string $email, string $password): void
+    public static function performUpdateUser(UsersResource $user, $userId, string $username, string $first_name, string $last_name, string $email, string $password): void
     {
         $appInstance = App::getInstance(true);
 
-        $config = $appInstance->getConfig();
         try {
-            $userResource = new UsersResource($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
-            $userResource->updateUser($userId, ['username' => $username, 'email' => $email, 'password' => $password, 'first_name' => $first_name, 'last_name' => $last_name, 'language' => 'en']);
+            $user->updateUser($userId, ['username' => $username, 'email' => $email, 'password' => $password, 'first_name' => $first_name, 'last_name' => $last_name, 'language' => 'en']);
         } catch (ValidationException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performUpdateUser:1] Failed to update user in Pterodactyl: ' . $e->getMessage());
             throw new \Exception('Failed to update user in Pterodactyl: ' . $e->getMessage());

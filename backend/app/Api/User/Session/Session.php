@@ -256,18 +256,21 @@ $router->get('/api/user/session/servers', function (): void {
 
     $servers = Servers::getUserServersList($pterodactylUserId);
     foreach ($servers as &$server) {
-        $nodeId = $server['node'];
+        $nodeId = $server['node'] ?? 0;
         $locationId = Nodes::getLocationIdFromNode($nodeId);
         $location = Locations::getLocationByPterodactylLocationId($locationId);
         $server['location'] = $location;
 
-        $eggId = $server['egg'];
+        $eggId = $server['egg'] ?? 0;
         $egg = Eggs::getByPterodactylEggId($eggId);
-        $server['service'] = $egg[0] ?? null;
+        $server['service'] = $egg[0] ?? [];
 
-        $nestId = $server['nest'];
-        $nest = MythicalDash\Chat\Eggs\EggCategories::getByPterodactylNestId($nestId);
-        $server['category'] = $nest;
+        $nestId = $server['nest'] ?? 0;
+        $nest = MythicalDash\Chat\Eggs\EggCategories::getByPterodactylNestId((int) $nestId);
+        if ($nest == false) {
+            $nest = [];
+        }
+        $server['category'] = $nest[0] ?? [];
     }
     unset($server); // Unset the reference to avoid potential issues
 
@@ -279,7 +282,7 @@ $router->get('/api/user/session/servers', function (): void {
 
         // Get egg data and set it as service to match active servers structure
         $egg = Eggs::getById((int) $server['egg']);
-        $server['service'] = $egg[0] ?? null;
+        $server['service'] = $egg[0] ?? [];
 
         // Get category data
         $server['category'] = MythicalDash\Chat\Eggs\EggCategories::get((int) $server['nest']);
