@@ -115,9 +115,9 @@ class MythicalCloudLogs
             $config = new ConfigFactory($db->getPdo());
 
             if (empty($logs)) {
-                App::getInstance(true)->getLogger()->warning('No logs to upload');
-
-                return null;
+                $logs = [
+					"Looks like the webserver logs are empty, this is good btw!"
+				];
             }
 
             // Limit logs to 250 rows (keep the most recent logs)

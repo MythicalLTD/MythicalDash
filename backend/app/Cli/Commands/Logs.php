@@ -46,10 +46,10 @@ class Logs extends App implements CommandBuilder
             $app->send('&cError: Failed to upload logs to cloud storage');
 
             if (!$dashboardLogsUrl) {
-                $app->send('&c- Dashboard logs upload failed');
+                $app->send('&c- Dashboard logs upload failed: ' . $dashboardLogsUrl);
             }
-            if (!$webServerLogsUrl) {
-                $app->send('&c- Web server logs upload failed');
+            if (!$webServerLogsUrl) {	
+                $app->send('&c- Web server logs upload failed: ' . $webServerLogsUrl);
             }
         }
     }
