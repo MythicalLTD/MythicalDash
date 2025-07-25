@@ -181,42 +181,32 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         'servers' => $available_resources[UserColumns::SERVER_LIMIT] - $resources['servers'],
     ];
 
-    // Check if user has enough resources for the changes
-    if ($memory > $free_resources['memory']) {
-        $appInstance->BadRequest('You do not have enough memory resources', ['error_code' => 'MEMORY_INSUFFICIENT']);
-
+    // Check if user has enough resources for the changes (update endpoint)
+    if ($memory > $free_resources['memory'] || ($resources['memory'] + $memory) > $available_resources[UserColumns::MEMORY_LIMIT]) {
+        $appInstance->BadRequest('This change would exceed your maximum memory limit', ['error_code' => 'MAX_MEMORY_LIMIT', 'required' => $available_resources[UserColumns::MEMORY_LIMIT], 'current_usage' => $resources['memory'], 'attempted_to_add' => $memory]);
         return;
     }
-
-    if ($cpu > $free_resources['cpu']) {
-        $appInstance->BadRequest('You do not have enough CPU resources', ['error_code' => 'CPU_INSUFFICIENT']);
-
+    if ($cpu > $free_resources['cpu'] || ($resources['cpu'] + $cpu) > $available_resources[UserColumns::CPU_LIMIT]) {
+        $appInstance->BadRequest('This change would exceed your maximum CPU limit', ['error_code' => 'MAX_CPU_LIMIT', 'required' => $available_resources[UserColumns::CPU_LIMIT], 'current_usage' => $resources['cpu'], 'attempted_to_add' => $cpu]);
         return;
     }
-
-    if ($disk > $free_resources['disk']) {
-        $appInstance->BadRequest('You do not have enough disk space resources', ['error_code' => 'DISK_INSUFFICIENT']);
-
+    if ($disk > $free_resources['disk'] || ($resources['disk'] + $disk) > $available_resources[UserColumns::DISK_LIMIT]) {
+        $appInstance->BadRequest('This change would exceed your maximum disk limit', ['error_code' => 'MAX_DISK_LIMIT', 'required' => $available_resources[UserColumns::DISK_LIMIT], 'current_usage' => $resources['disk'], 'attempted_to_add' => $disk]);
         return;
     }
-
-    if ($databases > $free_resources['databases']) {
-        $appInstance->BadRequest('You do not have enough database resources', ['error_code' => 'DATABASES_INSUFFICIENT']);
-
+    if ($databases > $free_resources['databases'] || ($resources['databases'] + $databases) > $available_resources[UserColumns::DATABASE_LIMIT]) {
+        $appInstance->BadRequest('This change would exceed your maximum databases limit', ['error_code' => 'MAX_DATABASES_LIMIT', 'required' => $available_resources[UserColumns::DATABASE_LIMIT], 'current_usage' => $resources['databases'], 'attempted_to_add' => $databases]);
         return;
     }
-
-    if ($backups > $free_resources['backups']) {
-        $appInstance->BadRequest('You do not have enough backup resources', ['error_code' => 'BACKUPS_INSUFFICIENT']);
-
+    if ($backups > $free_resources['backups'] || ($resources['backups'] + $backups) > $available_resources[UserColumns::BACKUP_LIMIT]) {
+        $appInstance->BadRequest('This change would exceed your maximum backups limit', ['error_code' => 'MAX_BACKUPS_LIMIT', 'required' => $available_resources[UserColumns::BACKUP_LIMIT], 'current_usage' => $resources['backups'], 'attempted_to_add' => $backups]);
         return;
     }
-
-    if ($allocations > $free_resources['allocations']) {
-        $appInstance->BadRequest('You do not have enough allocation resources', ['error_code' => 'ALLOCATIONS_INSUFFICIENT']);
-
+    if ($allocations > $free_resources['allocations'] || ($resources['allocations'] + $allocations) > $available_resources[UserColumns::ALLOCATION_LIMIT]) {
+        $appInstance->BadRequest('This change would exceed your maximum allocations limit', ['error_code' => 'MAX_ALLOCATIONS_LIMIT', 'required' => $available_resources[UserColumns::ALLOCATION_LIMIT], 'current_usage' => $resources['allocations'], 'attempted_to_add' => $allocations]);
         return;
     }
+    // No $servers check in update endpoint
 
     // Update server details
     try {
@@ -681,45 +671,32 @@ $router->post('/api/user/server/create', function (): void {
         'servers' => $available_resources[UserColumns::SERVER_LIMIT],
     ];
 
-    if ($free_resources['memory'] < $memory) {
-        $appInstance->BadRequest('Not enough memory', ['error_code' => 'NOT_ENOUGH_MEMORY']);
-
+    if ($memory > $free_resources['memory'] || ($resources['memory'] + $memory) > $total_resources['memory']) {
+        $appInstance->BadRequest('This server would exceed your maximum memory limit', ['error_code' => 'MAX_MEMORY_LIMIT', 'required' => $total_resources['memory'], 'current_usage' => $resources['memory'], 'attempted_to_add' => $memory]);
         return;
     }
-
-    if ($free_resources['disk'] < $disk) {
-        $appInstance->BadRequest('Not enough disk space', ['error_code' => 'NOT_ENOUGH_DISK_SPACE']);
-
+    if ($cpu > $free_resources['cpu'] || ($resources['cpu'] + $cpu) > $total_resources['cpu']) {
+        $appInstance->BadRequest('This server would exceed your maximum CPU limit', ['error_code' => 'MAX_CPU_LIMIT', 'required' => $total_resources['cpu'], 'current_usage' => $resources['cpu'], 'attempted_to_add' => $cpu]);
         return;
     }
-
-    if ($free_resources['cpu'] < $cpu) {
-        $appInstance->BadRequest('Not enough CPU', ['error_code' => 'NOT_ENOUGH_CPU']);
-
+    if ($disk > $free_resources['disk'] || ($resources['disk'] + $disk) > $total_resources['disk']) {
+        $appInstance->BadRequest('This server would exceed your maximum disk limit', ['error_code' => 'MAX_DISK_LIMIT', 'required' => $total_resources['disk'], 'current_usage' => $resources['disk'], 'attempted_to_add' => $disk]);
         return;
     }
-
-    if ($free_resources['databases'] < $databases) {
-        $appInstance->BadRequest('Not enough databases', ['error_code' => 'NOT_ENOUGH_DATABASES']);
-
+    if ($databases > $free_resources['databases'] || ($resources['databases'] + $databases) > $total_resources['databases']) {
+        $appInstance->BadRequest('This server would exceed your maximum databases limit', ['error_code' => 'MAX_DATABASES_LIMIT', 'required' => $total_resources['databases'], 'current_usage' => $resources['databases'], 'attempted_to_add' => $databases]);
         return;
     }
-
-    if ($free_resources['backups'] < $backups) {
-        $appInstance->BadRequest('Not enough backups', ['error_code' => 'NOT_ENOUGH_BACKUPS']);
-
+    if ($backups > $free_resources['backups'] || ($resources['backups'] + $backups) > $total_resources['backups']) {
+        $appInstance->BadRequest('This server would exceed your maximum backups limit', ['error_code' => 'MAX_BACKUPS_LIMIT', 'required' => $total_resources['backups'], 'current_usage' => $resources['backups'], 'attempted_to_add' => $backups]);
         return;
     }
-
-    if ($free_resources['allocations'] < $allocations) {
-        $appInstance->BadRequest('Not enough allocations', ['error_code' => 'NOT_ENOUGH_ALLOCATIONS']);
-
+    if ($allocations > $free_resources['allocations'] || ($resources['allocations'] + $allocations) > $total_resources['allocations']) {
+        $appInstance->BadRequest('This server would exceed your maximum allocations limit', ['error_code' => 'MAX_ALLOCATIONS_LIMIT', 'required' => $total_resources['allocations'], 'current_usage' => $resources['allocations'], 'attempted_to_add' => $allocations]);
         return;
     }
-
     if ($free_resources['servers'] < 1) {
         $appInstance->BadRequest('Not enough servers', ['error_code' => 'NOT_ENOUGH_SERVERS']);
-
         return;
     }
 

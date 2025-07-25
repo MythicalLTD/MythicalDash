@@ -1,3 +1,17 @@
+# v3.2.2-Nexus 
+
+## Bug Fixes
+
+- WebServers logs are not uploading if the file was empty!
+- Fixed server slot buy
+- Fixed a bug with permissions
+- Server max limit config into actions.php 
+
+## Enhancements
+- None
+## Breaking Changes
+- None
+
 # v3.2.1-Nexus
 
 ## Bug Fixes

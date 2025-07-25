@@ -132,85 +132,155 @@ $router->post('/api/user/store/purchase', function (): void {
     switch ($itemId) {
         case 'ram':
             $maxRam = $config->getSetting(ConfigInterface::MAX_RAM, 1024);
-            if ($session->getInfo(UserColumns::MEMORY_LIMIT, false) >= $maxRam) {
+            $currentRam = (int)$session->getInfo(UserColumns::MEMORY_LIMIT, false);
+            $ramToAdd = isset($item['ram']) ? (int)$item['ram'] : 1024;
+            if ($currentRam >= (int)$maxRam) {
                 $appInstance->BadRequest('You have reached the maximum RAM limit', [
                     'error_code' => 'MAX_RAM_LIMIT',
                     'required' => $maxRam,
-                    'available' => $session->getInfo(UserColumns::MEMORY_LIMIT, false),
+                    'available' => $currentRam,
                 ]);
-
+                return;
+            }
+            if (($currentRam + $ramToAdd) > (int)$maxRam) {
+                $appInstance->BadRequest('This purchase would exceed your maximum RAM limit', [
+                    'error_code' => 'MAX_RAM_LIMIT',
+                    'required' => $maxRam,
+                    'available' => $currentRam,
+                    'attempted_to_add' => $ramToAdd,
+                ]);
                 return;
             }
             break;
         case 'disk':
             $maxDisk = $config->getSetting(ConfigInterface::MAX_DISK, 1024);
-            if ($session->getInfo(UserColumns::DISK_LIMIT, false) >= $maxDisk) {
+            $currentDisk = (int)$session->getInfo(UserColumns::DISK_LIMIT, false);
+            $diskToAdd = isset($item['disk']) ? (int)$item['disk'] : 1024;
+            if ($currentDisk >= (int)$maxDisk) {
                 $appInstance->BadRequest('You have reached the maximum disk limit', [
                     'error_code' => 'MAX_DISK_LIMIT',
                     'required' => $maxDisk,
-                    'available' => $session->getInfo(UserColumns::DISK_LIMIT, false),
+                    'available' => $currentDisk,
                 ]);
-
+                return;
+            }
+            if (($currentDisk + $diskToAdd) > (int)$maxDisk) {
+                $appInstance->BadRequest('This purchase would exceed your maximum disk limit', [
+                    'error_code' => 'MAX_DISK_LIMIT',
+                    'required' => $maxDisk,
+                    'available' => $currentDisk,
+                    'attempted_to_add' => $diskToAdd,
+                ]);
                 return;
             }
             break;
         case 'cpu':
             $maxCpu = $config->getSetting(ConfigInterface::MAX_CPU, 100);
-            if ($session->getInfo(UserColumns::CPU_LIMIT, false) >= $maxCpu) {
+            $currentCpu = (int)$session->getInfo(UserColumns::CPU_LIMIT, false);
+            $cpuToAdd = isset($item['cpu']) ? (int)$item['cpu'] : 100;
+            if ($currentCpu >= (int)$maxCpu) {
                 $appInstance->BadRequest('You have reached the maximum CPU limit', [
                     'error_code' => 'MAX_CPU_LIMIT',
                     'required' => $maxCpu,
-                    'available' => $session->getInfo(UserColumns::CPU_LIMIT, false),
+                    'available' => $currentCpu,
                 ]);
-
+                return;
+            }
+            if (($currentCpu + $cpuToAdd) > (int)$maxCpu) {
+                $appInstance->BadRequest('This purchase would exceed your maximum CPU limit', [
+                    'error_code' => 'MAX_CPU_LIMIT',
+                    'required' => $maxCpu,
+                    'available' => $currentCpu,
+                    'attempted_to_add' => $cpuToAdd,
+                ]);
                 return;
             }
             break;
         case 'server_slot':
-            $maxServerSlots = $config->getSetting(ConfigInterface::MAX_SERVER_SLOTS, 1);
-            if ($session->getInfo(UserColumns::SERVER_LIMIT, false) >= $maxServerSlots) {
+            $maxServerSlots = (int)$config->getSetting(ConfigInterface::MAX_SERVER_SLOTS, 1);
+            $currentSlots = (int)$session->getInfo(UserColumns::SERVER_LIMIT, false);
+            if ($currentSlots >= (int)$maxServerSlots) {
                 $appInstance->BadRequest('You have reached the maximum server slots limit', [
                     'error_code' => 'MAX_SERVER_SLOTS_LIMIT',
                     'required' => $maxServerSlots,
-                    'available' => $session->getInfo(UserColumns::SERVER_LIMIT, false),
+                    'available' => $currentSlots,
                 ]);
-
+                return;
+            }
+            $slotsToAdd = isset($item['slots']) ? (int)$item['slots'] : 1;
+            if (($currentSlots + $slotsToAdd) > (int)$maxServerSlots) {
+                $appInstance->BadRequest('This purchase would exceed your maximum server slots limit', [
+                    'error_code' => 'MAX_SERVER_SLOTS_LIMIT',
+                    'required' => $maxServerSlots,
+                    'available' => $currentSlots,
+                    'attempted_to_add' => $slotsToAdd,
+                ]);
                 return;
             }
             break;
         case 'server_backup':
             $maxBackups = $config->getSetting(ConfigInterface::MAX_BACKUPS, 5);
-            if ($session->getInfo(UserColumns::BACKUP_LIMIT, false) >= $maxBackups) {
+            $currentBackups = (int)$session->getInfo(UserColumns::BACKUP_LIMIT, false);
+            $backupsToAdd = isset($item['backups']) ? (int)$item['backups'] : 1;
+            if ($currentBackups >= (int)$maxBackups) {
                 $appInstance->BadRequest('You have reached the maximum backups limit', [
                     'error_code' => 'MAX_BACKUPS_LIMIT',
                     'required' => $maxBackups,
-                    'available' => $session->getInfo(UserColumns::BACKUP_LIMIT, false),
+                    'available' => $currentBackups,
                 ]);
-
+                return;
+            }
+            if (($currentBackups + $backupsToAdd) > (int)$maxBackups) {
+                $appInstance->BadRequest('This purchase would exceed your maximum backups limit', [
+                    'error_code' => 'MAX_BACKUPS_LIMIT',
+                    'required' => $maxBackups,
+                    'available' => $currentBackups,
+                    'attempted_to_add' => $backupsToAdd,
+                ]);
                 return;
             }
             break;
         case 'server_allocation':
             $maxPorts = $config->getSetting(ConfigInterface::MAX_PORTS, 2);
-            if ($session->getInfo(UserColumns::ALLOCATION_LIMIT, false) >= $maxPorts) {
+            $currentPorts = (int)$session->getInfo(UserColumns::ALLOCATION_LIMIT, false);
+            $portsToAdd = isset($item['ports']) ? (int)$item['ports'] : 1;
+            if ($currentPorts >= (int)$maxPorts) {
                 $appInstance->BadRequest('You have reached the maximum ports limit', [
                     'error_code' => 'MAX_PORTS_LIMIT',
                     'required' => $maxPorts,
-                    'available' => $session->getInfo(UserColumns::ALLOCATION_LIMIT, false),
+                    'available' => $currentPorts,
                 ]);
-
+                return;
+            }
+            if (($currentPorts + $portsToAdd) > (int)$maxPorts) {
+                $appInstance->BadRequest('This purchase would exceed your maximum ports limit', [
+                    'error_code' => 'MAX_PORTS_LIMIT',
+                    'required' => $maxPorts,
+                    'available' => $currentPorts,
+                    'attempted_to_add' => $portsToAdd,
+                ]);
                 return;
             }
             break;
         case 'server_database':
             $maxDatabases = $config->getSetting(ConfigInterface::MAX_DATABASES, 1);
-            if ($session->getInfo(UserColumns::DATABASE_LIMIT, false) >= $maxDatabases) {
+            $currentDatabases = (int)$session->getInfo(UserColumns::DATABASE_LIMIT, false);
+            $databasesToAdd = isset($item['databases']) ? (int)$item['databases'] : 1;
+            if ($currentDatabases >= (int)$maxDatabases) {
                 $appInstance->BadRequest('You have reached the maximum databases limit', [
                     'error_code' => 'MAX_DATABASES_LIMIT',
                     'required' => $maxDatabases,
-                    'available' => $session->getInfo(UserColumns::DATABASE_LIMIT, false),
+                    'available' => $currentDatabases,
                 ]);
-
+                return;
+            }
+            if (($currentDatabases + $databasesToAdd) > (int)$maxDatabases) {
+                $appInstance->BadRequest('This purchase would exceed your maximum databases limit', [
+                    'error_code' => 'MAX_DATABASES_LIMIT',
+                    'required' => $maxDatabases,
+                    'available' => $currentDatabases,
+                    'attempted_to_add' => $databasesToAdd,
+                ]);
                 return;
             }
             break;
