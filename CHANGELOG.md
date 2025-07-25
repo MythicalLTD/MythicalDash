@@ -6,6 +6,7 @@
 - Fixed server slot buy
 - Fixed a bug with permissions
 - Server max limit config into actions.php 
+- Fix duplicate settings bug!
 
 ## Enhancements
 - None
