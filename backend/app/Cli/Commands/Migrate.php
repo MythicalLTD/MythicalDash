@@ -31,11 +31,14 @@ class Migrate extends App implements CommandBuilder
         try {
             \MythicalDash\App::getInstance(true)->loadEnv();
             $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
-
+			
             // --- Fix duplicate settings before running migrations that add unique constraints ---
             $pdo = $db->getPdo();
-            $fixSql = "DELETE FROM mythicaldash_settings WHERE id NOT IN (SELECT id FROM (SELECT MAX(id) as id FROM mythicaldash_settings GROUP BY name) as keep_ids);";
-            $pdo->exec($fixSql);
+            $query = $pdo->query("SHOW TABLES LIKE 'mythicaldash_settings'");
+            if ($query->rowCount() > 0) {
+                $fixSql = "DELETE FROM mythicaldash_settings WHERE id NOT IN (SELECT id FROM (SELECT MAX(id) as id FROM mythicaldash_settings GROUP BY name) as keep_ids);";
+                $pdo->exec($fixSql);
+            }
             // --- End fix ---
         } catch (\Exception $e) {
             $cliApp->send('&cFailed to connect to the database: &r' . $e->getMessage());
