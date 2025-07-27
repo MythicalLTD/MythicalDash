@@ -21,7 +21,7 @@ $router->add('/api/system/license/theme-customization', function (): void {
 
     $licenseSystem = $appInstance->getLicenseSystem();
     try {
-        $keyData = $licenseSystem->validateLicense($config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $config->getSetting(ConfigInterface::APP_URL, 'true'));
+        $keyData = $licenseSystem->validateLicense($config->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $config->getDBSetting(ConfigInterface::APP_URL, 'true'));
     } catch (Exception $e) {
         App::OK('License is invalid!', ['valid' => false]);
     }
@@ -47,7 +47,7 @@ $router->add('/api/system/license/beta', function (): void {
 
     $licenseSystem = $appInstance->getLicenseSystem();
     try {
-        $keyData = $licenseSystem->validateLicense($config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $config->getSetting(ConfigInterface::APP_URL, 'true'));
+        $keyData = $licenseSystem->validateLicense($config->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $config->getDBSetting(ConfigInterface::APP_URL, 'true'));
     } catch (Exception $e) {
         App::OK('License is invalid!', ['valid' => false]);
     }
@@ -72,7 +72,7 @@ $router->add('/api/system/license/branding-removal', function (): void {
 
     $licenseSystem = $appInstance->getLicenseSystem();
     try {
-        $keyData = $licenseSystem->validateLicense($config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $config->getSetting(ConfigInterface::APP_URL, 'true'));
+        $keyData = $licenseSystem->validateLicense($config->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $config->getDBSetting(ConfigInterface::APP_URL, 'true'));
     } catch (Exception $e) {
         App::OK('License is invalid!', ['valid' => false]);
     }
@@ -96,7 +96,7 @@ $router->add('/api/system/license', function (): void {
 
     $licenseSystem = $appInstance->getLicenseSystem();
     try {
-        $keyData = $licenseSystem->validateLicense($config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $config->getSetting(ConfigInterface::APP_URL, 'true'));
+        $keyData = $licenseSystem->validateLicense($config->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $config->getDBSetting(ConfigInterface::APP_URL, 'true'));
         if ($keyData['valid']) {
             $licenseData = $keyData['data'];
             $project_info = $licenseData['project_info'];

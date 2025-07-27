@@ -30,13 +30,17 @@ class Migrate extends App implements CommandBuilder
         $sqlScript = self::getMigrationSQL();
         try {
             \MythicalDash\App::getInstance(true)->loadEnv();
-            $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
-			
+            if (isset($_ENV['DATABASE_HOST']) && isset($_ENV['DATABASE_DATABASE']) && isset($_ENV['DATABASE_USER']) && isset($_ENV['DATABASE_PASSWORD']) && isset($_ENV['DATABASE_PORT'])) {
+                $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
+            } else {
+                $cliApp->send('&cFailed to connect to the database: &rDatabase connection failed!');
+                exit;
+            }
             // --- Fix duplicate settings before running migrations that add unique constraints ---
             $pdo = $db->getPdo();
             $query = $pdo->query("SHOW TABLES LIKE 'mythicaldash_settings'");
             if ($query->rowCount() > 0) {
-                $fixSql = "DELETE FROM mythicaldash_settings WHERE id NOT IN (SELECT id FROM (SELECT MAX(id) as id FROM mythicaldash_settings GROUP BY name) as keep_ids);";
+                $fixSql = 'DELETE FROM mythicaldash_settings WHERE id NOT IN (SELECT id FROM (SELECT MAX(id) as id FROM mythicaldash_settings GROUP BY name) as keep_ids);';
                 $pdo->exec($fixSql);
             }
             // --- End fix ---

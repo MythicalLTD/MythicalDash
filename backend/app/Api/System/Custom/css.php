@@ -19,19 +19,19 @@ $router->add('/api/system/custom.css', function () {
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
 
-    $customCss = $config->getSetting(ConfigInterface::CUSTOM_CSS, '');
+    $customCss = $config->getDBSetting(ConfigInterface::CUSTOM_CSS, '');
 
     header('Content-Type: text/css');
-	echo "// Custom CSS\n";
+    echo "// Custom CSS\n";
     echo $customCss;
-	echo "\n";
-	echo "// Plugin CSS\n";
+    echo "\n";
+    echo "// Plugin CSS\n";
     // Append plugin JS
     $pluginDir = __DIR__ . '/../../../../storage/addons';
     if (is_dir($pluginDir)) {
         $plugins = array_diff(scandir($pluginDir), ['.', '..']);
         foreach ($plugins as $plugin) {
-        $cssPath = $pluginDir . "/$plugin/CSS/index.css";
+            $cssPath = $pluginDir . "/$plugin/CSS/index.css";
             if (file_exists($cssPath)) {
                 echo "\n// Plugin: $plugin\n";
                 echo file_get_contents($cssPath) . "\n";

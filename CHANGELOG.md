@@ -1,3 +1,31 @@
+# v3.2.3-Nexus 
+
+## Bug Fixes
+
+- **Server Management**: Resolved null server reference issues that could cause dashboard crashes
+- **Environment Variables**: Fixed critical bug where environment values were returning null, affecting system stability
+- **Redis Dependency**: Addressed startup failure when Redis service is unavailable
+- **Pterodactyl Integration**: Fixed empty or null values being returned from Pterodactyl API calls
+- **File Permissions**: Resolved dashboard file access issues caused by incorrect permission settings
+- **Server Updates**: Fixed server update process that sometimes required unexpected dependencies
+- **Version Management**: Updated application version handling for better compatibility
+- **User Interface**: Fixed profile dropdown UI rendering issues
+- **User Management**: Resolved bug where disabled profiles were still being displayed
+- **Data Validation**: Fixed NaN (Not a Number) errors appearing in form fields with missing values
+- **System Configuration**: Corrected timezone settings that were not being properly applied
+
+## Enhancements
+
+- **Plugin System**: Implemented early plugin injection support with Mixin architecture
+- **API Performance**: Added bulk settings update endpoint for improved efficiency
+- **Settings Management**: Enhanced settings reading with proper default value handling
+- **User Experience**: Completely redesigned settings page with modern interface and improved usability
+
+
+## Breaking Changes
+- None
+
+
 # v3.2.2-Nexus 
 
 ## Bug Fixes

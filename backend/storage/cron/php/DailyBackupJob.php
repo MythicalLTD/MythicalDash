@@ -20,7 +20,7 @@ class DailyBackupJob implements TimeTask
 				$chat = new BungeeChatApi();
 				$config = $app->getConfig();
 
-				$isEnabled = $config->getSetting(ConfigInterface::DAILY_BACKUP_ENABLED, 'true');
+				$isEnabled = $config->getDBSetting(ConfigInterface::DAILY_BACKUP_ENABLED, 'true');
 				if ($isEnabled === 'true') {
 					$isEnabled = true;
 				} else {

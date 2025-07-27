@@ -38,11 +38,10 @@ class ConfigFactory
      * Get a setting from the database.
      *
      * @param string $name The name of the setting
-     * @param mixed $fallback The fallback value if the setting is not found
      *
      * @return string|null The value of the setting
      */
-    public function getSetting(string $name, ?string $fallback): ?string
+    public function getSetting(string $name, ?string $fallback = null): ?string
     {
         // Check if the setting is in the cache
         if (isset($this->cache[$name])) {
@@ -57,6 +56,56 @@ class ConfigFactory
             $this->cache[$name] = $result['value'];
 
             return $result['value'];
+        }
+
+        return $fallback ?? null;
+    }
+
+    /**
+     * Get a setting from the database, with reflection fallback to default values.
+     *
+     * @param string $name The name of the setting
+     * @param string|null $fallback Fallback value if reflection fails
+     *
+     * @return string|null The value of the setting from database or default values, or fallback if reflection fails
+     */
+    public function getDBSetting(string $name, ?string $fallback = null): ?string
+    {
+        // Check if the setting is in the cache
+        if (isset($this->cache[$name])) {
+            return $this->cache[$name];
+        }
+
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table_name} WHERE name = :name LIMIT 1");
+        $stmt->execute(['name' => $name]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($result) {
+            $result['value'] = XChaCha20::decrypt($result['value'], $this->encryption_key);
+            // Store the result in the cache
+            $this->cache[$name] = $result['value'];
+
+            return $result['value'];
+        }
+
+        // If not found in database, try to get default value using reflection
+        try {
+            $reflection = new \ReflectionClass('MythicalDash\Config\PublicConfig');
+            $method = $reflection->getMethod('getPublicSettingsWithDefaults');
+            $defaultValues = $method->invoke(null);
+
+            if (isset($defaultValues[$name])) {
+                // Store the default value in cache
+                $this->cache[$name] = $defaultValues[$name];
+
+                return $defaultValues[$name];
+            }
+        } catch (\ReflectionException $e) {
+            // Log the error but don't throw it
+            error_log('Failed to get default value via reflection for setting "' . $name . '": ' . $e->getMessage());
+
+            // Return fallback if reflection fails
+            return $fallback;
         }
 
         return $fallback ?? null;
@@ -107,6 +156,7 @@ class ConfigFactory
             // Update the cache
             $this->cache[$name] = $value;
         }
+
         return $result;
     }
 
@@ -141,8 +191,10 @@ class ConfigFactory
         return $settings;
     }
 
-	public static function getConfigurableSettings() : array {
-		$ref = new \ReflectionClass(\MythicalDash\Config\ConfigInterface::class);
-		return $ref->getConstants();
-	}
+    public static function getConfigurableSettings(): array
+    {
+        $ref = new \ReflectionClass(ConfigInterface::class);
+
+        return $ref->getConstants();
+    }
 }

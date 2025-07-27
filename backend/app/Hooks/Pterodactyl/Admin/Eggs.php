@@ -33,8 +33,8 @@ class Eggs extends NestsResource
         $appInstance = App::getInstance(true);
         try {
             $eggsResource = new NestsResource(
-                $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
             $eggsData = $eggsResource->listEggs($nestId, 1, 555);
             $eggs = [];

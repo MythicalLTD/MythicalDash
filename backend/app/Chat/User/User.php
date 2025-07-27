@@ -134,8 +134,8 @@ class User extends Database
      * Check if the user is the first user in the database.
      *
      * @return bool If the user is the first user in the database
-	 * 
-	 * @deprecated This method is deprecated and will be removed in the future.
+     *
+     * @deprecated this method is deprecated and will be removed in the future
      */
     public static function isFirstUserInDatabase(): bool
     {
@@ -319,7 +319,7 @@ class User extends Database
      *
      * @return bool If the user info exists
      */
-    public static function exists(UserColumns|string $info, string $value): bool
+    public static function exists(UserColumns|string $info, string $value, bool $doNotIncludeDeleted = false): bool
     {
         try {
             if (!in_array($info, UserColumns::getColumns())) {
@@ -327,7 +327,7 @@ class User extends Database
             }
 
             $con = self::getPdoConnection();
-            $stmt = $con->prepare('SELECT * FROM ' . self::TABLE_NAME . ' WHERE ' . $info . ' = :value');
+            $stmt = $con->prepare('SELECT * FROM ' . self::TABLE_NAME . ' WHERE ' . $info . ' = :value' . ($doNotIncludeDeleted ? ' AND deleted = "false"' : ''));
             $stmt->bindParam(':value', $value);
             $stmt->execute();
 

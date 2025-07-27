@@ -27,7 +27,7 @@ $router->get('/api/admin/cloud/backups', function (): void {
 
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MYTHICALCLOUD_VIEW, $session);
     try {
-        $licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
+        $licenseKey = $appInstance->getConfig()->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL');
         if (!$licenseKey) {
             throw new Exception('Mythical Cloud license key not configured');
         }
@@ -53,7 +53,7 @@ $router->get('/api/admin/cloud/backup/(.*)/download', function (string $backupId
 
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MYTHICALCLOUD_DOWNLOAD, $session);
     try {
-        $licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
+        $licenseKey = $appInstance->getConfig()->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL');
 
         if (!$licenseKey) {
             throw new Exception('Mythical Cloud license key not configured');
@@ -86,7 +86,7 @@ $router->post('/api/admin/cloud/backup/(.*)/delete', function (string $backupId)
 
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_ROOT, $session);
     try {
-        $licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
+        $licenseKey = $appInstance->getConfig()->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL');
 
         if (!$licenseKey) {
             throw new Exception('Mythical Cloud license key not configured');
@@ -112,7 +112,7 @@ $router->get('/api/admin/cloud/backup/(.*)', function (string $backupId): void {
 
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MYTHICALCLOUD_VIEW, $session);
     try {
-        $licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
+        $licenseKey = $appInstance->getConfig()->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL');
 
         if (!$licenseKey) {
             throw new Exception('Mythical Cloud license key not configured');
@@ -139,7 +139,7 @@ $router->post('/api/admin/cloud/backups/wipe', function (): void {
 
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_ROOT, $session);
     try {
-        $licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
+        $licenseKey = $appInstance->getConfig()->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL');
 
         if (!$licenseKey) {
             throw new Exception('Mythical Cloud license key not configured');

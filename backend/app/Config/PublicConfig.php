@@ -268,5 +268,4 @@ class PublicConfig extends ConfigFactory
         ];
 
     }
-
 }

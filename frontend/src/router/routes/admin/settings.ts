@@ -4,9 +4,25 @@ import Permissions from '@/mythicaldash/Permissions';
 
 const settingsRoutes: RouteRecordRaw[] = [
     {
-        path: '/mc-admin/settings',
+        path: '/mc-admin/settings/old',
         name: 'admin-settings',
         component: () => import('@/views/admin/settings/Index.vue'),
+        meta: {
+            requiresAuth: true,
+            requiresAdmin: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (Session.hasOrRedirectToErrorPage(Permissions.ADMIN_SETTINGS_VIEW)) {
+                next();
+            } else {
+                next('/errors/403');
+            }
+        },
+    },
+    {
+        path: '/mc-admin/settings',
+        name: 'admin-settings-new',
+        component: () => import('@/views/admin/settings/SettingsNew.vue'),
         meta: {
             requiresAuth: true,
             requiresAdmin: true,

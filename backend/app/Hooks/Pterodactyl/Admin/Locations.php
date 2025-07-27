@@ -32,8 +32,8 @@ class Locations extends LocationsResource
         $appInstance = App::getInstance(true);
         try {
             $locationsResource = new LocationsResource(
-                $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
             $locationsData = $locationsResource->listLocations(1, 150);
             $locations = [];

@@ -41,13 +41,13 @@ $router->add('/api/user/auth/forgot', function (): void {
      *
      * IF the turnstile is enabled
      */
-    if ($appInstance->getConfig()->getSetting(ConfigInterface::TURNSTILE_ENABLED, 'false') == 'true') {
+    if ($appInstance->getConfig()->getDBSetting(ConfigInterface::TURNSTILE_ENABLED, 'false') == 'true') {
         if (!isset($_POST['turnstileResponse']) || $_POST['turnstileResponse'] == '') {
             $eventManager->emit(AuthEvent::onAuthForgotPasswordFailed(), ['email' => $_POST['email'], 'error_code' => 'MISSING_TURNSTILE_RESPONSE']);
             $appInstance->BadRequest('Bad Request', ['error_code' => 'TURNSTILE_FAILED']);
         }
         $cfTurnstileResponse = $_POST['turnstileResponse'];
-        if (!Turnstile::validate($cfTurnstileResponse, CloudFlareRealIP::getRealIP(), $config->getSetting(ConfigInterface::TURNSTILE_KEY_PRIV, 'XXXX'))) {
+        if (!Turnstile::validate($cfTurnstileResponse, CloudFlareRealIP::getRealIP(), $config->getDBSetting(ConfigInterface::TURNSTILE_KEY_PRIV, 'XXXX'))) {
             $eventManager->emit(AuthEvent::onAuthForgotPasswordFailed(), ['email' => $_POST['email'], 'error_code' => 'TURNSTILE_FAILED']);
             $appInstance->BadRequest('Invalid TurnStile Key', ['error_code' => 'TURNSTILE_FAILED']);
         }

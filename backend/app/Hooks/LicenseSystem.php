@@ -32,7 +32,7 @@ class LicenseSystem
     public function __construct()
     {
         // Ensure cache directory exists
-        if (!is_dir(self::CACHE_DIR)) {
+        if (!is_dir(self::CACHE_DIR) && !file_exists(self::CACHE_DIR)) {
             mkdir(self::CACHE_DIR, 0755, true);
         }
     }
@@ -133,7 +133,12 @@ class LicenseSystem
                 'data' => $data,
                 'expires_at' => time() + self::CACHE_TTL,
             ];
-            file_put_contents($cacheFile, json_encode($cacheData));
+            try {
+                if (is_writable($cacheFile)) {
+                    file_put_contents($cacheFile, json_encode($cacheData));
+                }
+            } catch (\Exception $e) {
+            }
 
             return [
                 'valid' => true,

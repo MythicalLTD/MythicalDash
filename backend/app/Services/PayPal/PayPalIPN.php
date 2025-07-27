@@ -38,9 +38,9 @@ class PayPalIPN
     public function __construct()
     {
         $this->app = App::getInstance(true);
-        $this->isSandbox = $this->app->getConfig()->getSetting(ConfigInterface::PAYPAL_IS_SANDBOX, 'false') === 'true';
-        $this->businessEmail = $this->app->getConfig()->getSetting(ConfigInterface::PAYPAL_CLIENT_ID, '');
-        $this->appUrl = $this->app->getConfig()->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
+        $this->isSandbox = $this->app->getConfig()->getDBSetting(ConfigInterface::PAYPAL_IS_SANDBOX, 'false') === 'true';
+        $this->businessEmail = $this->app->getConfig()->getDBSetting(ConfigInterface::PAYPAL_CLIENT_ID, '');
+        $this->appUrl = $this->app->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
 
         $this->client = new Client([
             'timeout' => 30,
@@ -86,7 +86,7 @@ class PayPalIPN
                 'item_name' => 'Account Topup',
                 'item_number' => $code,
                 'amount' => number_format($amount, 2, '.', ''),
-                'currency_code' => $this->app->getConfig()->getSetting(ConfigInterface::CURRENCY, 'EUR'),
+                'currency_code' => $this->app->getConfig()->getDBSetting(ConfigInterface::CURRENCY, 'EUR'),
                 'custom' => $code . '|' . $uuid,
                 'no_shipping' => '1',
                 'no_note' => '1',

@@ -408,9 +408,12 @@ const route = useRoute();
 const router = useRouter();
 const Settings = useSettingsStore();
 
-if (Settings.getSetting('allow_public_profile') === 'false') {
-    router.push('/dashboard');
-}
+onMounted(async () => {
+    if (Settings.getSetting('allow_public_profiles') === 'false') {
+        await router.push('/dashboard');
+        return;
+    }
+});
 const canGiveCoins = computed(() => {
     return Settings.getSetting('allow_coins_sharing') === 'true';
 });

@@ -41,18 +41,18 @@ $router->get('/api/user/auth/callback/github', function () {
     $appInstance->getLogger()->debug('Starting GitHub authentication process');
 
     if (
-        $config->getSetting(ConfigInterface::GITHUB_ENABLED, 'false') === 'false'
-        || $config->getSetting(ConfigInterface::GITHUB_CLIENT_ID, '') === ''
-        || $config->getSetting(ConfigInterface::GITHUB_CLIENT_SECRET, '') === ''
+        $config->getDBSetting(ConfigInterface::GITHUB_ENABLED, 'false') === 'false'
+        || $config->getDBSetting(ConfigInterface::GITHUB_CLIENT_ID, '') === ''
+        || $config->getDBSetting(ConfigInterface::GITHUB_CLIENT_SECRET, '') === ''
     ) {
         $appInstance->getLogger()->debug('GitHub integration is not properly configured');
         header('Location: /account?error=github_not_enabled');
         exit;
     }
 
-    $appId = $config->getSetting(ConfigInterface::GITHUB_CLIENT_ID, '');
-    $appSecret = $config->getSetting(ConfigInterface::GITHUB_CLIENT_SECRET, '');
-    $url = $config->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
+    $appId = $config->getDBSetting(ConfigInterface::GITHUB_CLIENT_ID, '');
+    $appSecret = $config->getDBSetting(ConfigInterface::GITHUB_CLIENT_SECRET, '');
+    $url = $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
     $redirectUri = $url . '/api/user/auth/callback/github';
 
     $appInstance->getLogger()->debug('Initializing OAuth provider with redirect URI: ' . $redirectUri);

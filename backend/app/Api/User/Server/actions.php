@@ -181,33 +181,6 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         'servers' => $available_resources[UserColumns::SERVER_LIMIT] - $resources['servers'],
     ];
 
-    // Check if user has enough resources for the changes (update endpoint)
-    if ($memory > $free_resources['memory'] || ($resources['memory'] + $memory) > $available_resources[UserColumns::MEMORY_LIMIT]) {
-        $appInstance->BadRequest('This change would exceed your maximum memory limit', ['error_code' => 'MAX_MEMORY_LIMIT', 'required' => $available_resources[UserColumns::MEMORY_LIMIT], 'current_usage' => $resources['memory'], 'attempted_to_add' => $memory]);
-        return;
-    }
-    if ($cpu > $free_resources['cpu'] || ($resources['cpu'] + $cpu) > $available_resources[UserColumns::CPU_LIMIT]) {
-        $appInstance->BadRequest('This change would exceed your maximum CPU limit', ['error_code' => 'MAX_CPU_LIMIT', 'required' => $available_resources[UserColumns::CPU_LIMIT], 'current_usage' => $resources['cpu'], 'attempted_to_add' => $cpu]);
-        return;
-    }
-    if ($disk > $free_resources['disk'] || ($resources['disk'] + $disk) > $available_resources[UserColumns::DISK_LIMIT]) {
-        $appInstance->BadRequest('This change would exceed your maximum disk limit', ['error_code' => 'MAX_DISK_LIMIT', 'required' => $available_resources[UserColumns::DISK_LIMIT], 'current_usage' => $resources['disk'], 'attempted_to_add' => $disk]);
-        return;
-    }
-    if ($databases > $free_resources['databases'] || ($resources['databases'] + $databases) > $available_resources[UserColumns::DATABASE_LIMIT]) {
-        $appInstance->BadRequest('This change would exceed your maximum databases limit', ['error_code' => 'MAX_DATABASES_LIMIT', 'required' => $available_resources[UserColumns::DATABASE_LIMIT], 'current_usage' => $resources['databases'], 'attempted_to_add' => $databases]);
-        return;
-    }
-    if ($backups > $free_resources['backups'] || ($resources['backups'] + $backups) > $available_resources[UserColumns::BACKUP_LIMIT]) {
-        $appInstance->BadRequest('This change would exceed your maximum backups limit', ['error_code' => 'MAX_BACKUPS_LIMIT', 'required' => $available_resources[UserColumns::BACKUP_LIMIT], 'current_usage' => $resources['backups'], 'attempted_to_add' => $backups]);
-        return;
-    }
-    if ($allocations > $free_resources['allocations'] || ($resources['allocations'] + $allocations) > $available_resources[UserColumns::ALLOCATION_LIMIT]) {
-        $appInstance->BadRequest('This change would exceed your maximum allocations limit', ['error_code' => 'MAX_ALLOCATIONS_LIMIT', 'required' => $available_resources[UserColumns::ALLOCATION_LIMIT], 'current_usage' => $resources['allocations'], 'attempted_to_add' => $allocations]);
-        return;
-    }
-    // No $servers check in update endpoint
-
     // Update server details
     try {
         $updateData = [
@@ -230,7 +203,11 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
             'description' => $description,
             'external_id' => '',
         ];
+        if (!isset($server['attributes']['id'])) {
+            $appInstance->BadRequest('Server not found', ['error_code' => 'SERVER_NOT_FOUND']);
 
+            return;
+        }
         $serverId = $server['attributes']['id'];
         $svAw1 = Servers::updatePterodactylServer($serverId, $updateData);
         $svAw2 = Servers::updatePterodactylServerDetails($serverId, $details);
@@ -270,7 +247,7 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
     $config = $appInstance->getConfig();
 
     // Check if server renewal is enabled
-    if ($config->getSetting(ConfigInterface::SERVER_RENEW_ENABLED, 'false') == 'false') {
+    if ($config->getDBSetting(ConfigInterface::SERVER_RENEW_ENABLED, 'false') == 'false') {
         $appInstance->BadRequest('Server renewal is not enabled', ['error_code' => 'SERVER_RENEWAL_NOT_ENABLED']);
 
         return;
@@ -294,17 +271,19 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
     }
 
     // Get server info from database
-    $serverId = $server['attributes']['id'];
-    $serverInfoDb = MythicalDash\Chat\Servers\Server::getByPterodactylId($serverId);
-    if (!$serverInfoDb) {
-        $appInstance->BadRequest('Server not found in database', ['error_code' => 'SERVER_NOT_FOUND_IN_DB']);
+    if (isset($server['attributes']['id'])) {
+        $serverId = $server['attributes']['id'];
+        $serverInfoDb = MythicalDash\Chat\Servers\Server::getByPterodactylId((int) $serverId);
+        if (!$serverInfoDb) {
+            $appInstance->BadRequest('Server not found in database', ['error_code' => 'SERVER_NOT_FOUND_IN_DB']);
 
-        return;
+            return;
+        }
     }
 
     // Get renewal settings
-    $server_renew_cost = (int) $config->getSetting(ConfigInterface::SERVER_RENEW_COST, 120);
-    $server_renew_days = (int) $config->getSetting(ConfigInterface::SERVER_RENEW_DAYS, 30);
+    $server_renew_cost = (int) $config->getDBSetting(ConfigInterface::SERVER_RENEW_COST, 120);
+    $server_renew_days = (int) $config->getDBSetting(ConfigInterface::SERVER_RENEW_DAYS, 30);
 
     // Validate renewal settings
     if ($server_renew_cost <= 0) {
@@ -529,7 +508,7 @@ $router->post('/api/user/server/create', function (): void {
     $session = new Session($appInstance);
     $accountToken = $session->SESSION_KEY;
     $config = $appInstance->getConfig();
-    if ($config->getSetting(ConfigInterface::ALLOW_SERVERS, 'false') == 'false') {
+    if ($config->getDBSetting(ConfigInterface::ALLOW_SERVERS, 'false') == 'false') {
         $appInstance->BadRequest('Server creation is not allowed', ['error_code' => 'SERVER_CREATION_NOT_ALLOWED']);
 
         return;
@@ -673,30 +652,37 @@ $router->post('/api/user/server/create', function (): void {
 
     if ($memory > $free_resources['memory'] || ($resources['memory'] + $memory) > $total_resources['memory']) {
         $appInstance->BadRequest('This server would exceed your maximum memory limit', ['error_code' => 'MAX_MEMORY_LIMIT', 'required' => $total_resources['memory'], 'current_usage' => $resources['memory'], 'attempted_to_add' => $memory]);
+
         return;
     }
     if ($cpu > $free_resources['cpu'] || ($resources['cpu'] + $cpu) > $total_resources['cpu']) {
         $appInstance->BadRequest('This server would exceed your maximum CPU limit', ['error_code' => 'MAX_CPU_LIMIT', 'required' => $total_resources['cpu'], 'current_usage' => $resources['cpu'], 'attempted_to_add' => $cpu]);
+
         return;
     }
     if ($disk > $free_resources['disk'] || ($resources['disk'] + $disk) > $total_resources['disk']) {
         $appInstance->BadRequest('This server would exceed your maximum disk limit', ['error_code' => 'MAX_DISK_LIMIT', 'required' => $total_resources['disk'], 'current_usage' => $resources['disk'], 'attempted_to_add' => $disk]);
+
         return;
     }
     if ($databases > $free_resources['databases'] || ($resources['databases'] + $databases) > $total_resources['databases']) {
         $appInstance->BadRequest('This server would exceed your maximum databases limit', ['error_code' => 'MAX_DATABASES_LIMIT', 'required' => $total_resources['databases'], 'current_usage' => $resources['databases'], 'attempted_to_add' => $databases]);
+
         return;
     }
     if ($backups > $free_resources['backups'] || ($resources['backups'] + $backups) > $total_resources['backups']) {
         $appInstance->BadRequest('This server would exceed your maximum backups limit', ['error_code' => 'MAX_BACKUPS_LIMIT', 'required' => $total_resources['backups'], 'current_usage' => $resources['backups'], 'attempted_to_add' => $backups]);
+
         return;
     }
     if ($allocations > $free_resources['allocations'] || ($resources['allocations'] + $allocations) > $total_resources['allocations']) {
         $appInstance->BadRequest('This server would exceed your maximum allocations limit', ['error_code' => 'MAX_ALLOCATIONS_LIMIT', 'required' => $total_resources['allocations'], 'current_usage' => $resources['allocations'], 'attempted_to_add' => $allocations]);
+
         return;
     }
     if ($free_resources['servers'] < 1) {
         $appInstance->BadRequest('Not enough servers', ['error_code' => 'NOT_ENOUGH_SERVERS']);
+
         return;
     }
 

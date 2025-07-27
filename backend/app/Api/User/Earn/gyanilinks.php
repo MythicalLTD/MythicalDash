@@ -33,14 +33,14 @@ $router->get('/api/user/earn/l4r/gyanilinks/start', function (): void {
     header('Content-Type: text/html');
 
     // Check if GyaniLinks is enabled
-    if ($config->getSetting(ConfigInterface::L4R_GYANILINKS_ENABLED, 'false') !== 'true') {
+    if ($config->getDBSetting(ConfigInterface::L4R_GYANILINKS_ENABLED, 'false') !== 'true') {
         header('Location: /earn/links?error=gyanilinks_not_enabled');
         exit;
     }
 
-    $dayLimit = $config->getSetting(ConfigInterface::L4R_GYANILINKS_DAILY_LIMIT, 5);
-    $coolDown = $config->getSetting(ConfigInterface::L4R_GYANILINKS_COOLDOWN_TIME, 3600);
-    $appUrl = $config->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
+    $dayLimit = $config->getDBSetting(ConfigInterface::L4R_GYANILINKS_DAILY_LIMIT, 5);
+    $coolDown = $config->getDBSetting(ConfigInterface::L4R_GYANILINKS_COOLDOWN_TIME, 3600);
+    $appUrl = $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
 
     $dayCount = 0;
     $links = GyaniLinksDB::getAllByUser($session->getInfo(UserColumns::UUID, false), 35);
@@ -274,7 +274,7 @@ $router->get('/api/user/earn/l4r/gyanilinks/start', function (): void {
 
     $finalLink = $appUrl . '/api/user/earn/l4r/gyanilinks/earn/' . $ShareUSUUID;
     try {
-        $shareUS = new GyaniLinks($config->getSetting(ConfigInterface::L4R_GYANILINKS_API_KEY, ''));
+        $shareUS = new GyaniLinks($config->getDBSetting(ConfigInterface::L4R_GYANILINKS_API_KEY, ''));
         $link = $shareUS->getLink($finalLink);
         $eventManager->emit(LinkForRewardEvent::onLinkForRewardCreated(), [
             'user' => $session->getInfo(UserColumns::UUID, false),
@@ -297,14 +297,14 @@ $router->get('/api/user/earn/l4r/gyanilinks/earn/(.*)', function (string $code):
     global $eventManager;
     $config = $appInstance->getConfig();
     // Check if GyaniLinks is enabled
-    if ($config->getSetting(ConfigInterface::L4R_GYANILINKS_ENABLED, 'false') !== 'true') {
+    if ($config->getDBSetting(ConfigInterface::L4R_GYANILINKS_ENABLED, 'false') !== 'true') {
         header('Location: /earn/links');
         exit;
     }
 
-    $minToComplete = $config->getSetting(ConfigInterface::L4R_GYANILINKS_MIN_TIME_TO_COMPLETE, 60);
-    $coolDown = $config->getSetting(ConfigInterface::L4R_GYANILINKS_COOLDOWN_TIME, 3600);
-    $coinsPerLink = $config->getSetting(ConfigInterface::L4R_GYANILINKS_COINS_PER_LINK, 60);
+    $minToComplete = $config->getDBSetting(ConfigInterface::L4R_GYANILINKS_MIN_TIME_TO_COMPLETE, 60);
+    $coolDown = $config->getDBSetting(ConfigInterface::L4R_GYANILINKS_COOLDOWN_TIME, 3600);
+    $coinsPerLink = $config->getDBSetting(ConfigInterface::L4R_GYANILINKS_COINS_PER_LINK, 60);
 
     // Validate code format
     if (empty($code) || !preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', $code)) {

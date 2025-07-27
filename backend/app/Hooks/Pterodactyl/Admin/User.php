@@ -37,7 +37,7 @@ class User extends UsersResource
         $appInstance = App::getInstance(true);
 
         $config = $appInstance->getConfig();
-        $userResource = new UsersResource($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+        $userResource = new UsersResource($config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
 
         try {
             // Check if user exists and has servers
@@ -105,7 +105,7 @@ class User extends UsersResource
         try {
             $config = $appInstance->getConfig();
             // Get the Pterodactyl base URL and API key from the config
-            $userResource = new UsersResource($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+            $userResource = new UsersResource($config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
 
             // Check if user exists by email
             try {
@@ -189,7 +189,7 @@ class User extends UsersResource
     {
         $appInstance = App::getInstance(true);
         $config = $appInstance->getConfig();
-        $userResource = new UsersResource($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+        $userResource = new UsersResource($config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
         try {
             $userResource->doesUserExist((int) $userId);
 

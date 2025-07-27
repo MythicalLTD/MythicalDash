@@ -40,7 +40,7 @@ $router->add('/api/stripe/processed', function (): void {
             $token = User::getTokenFromUUID($uuid);
             if (StripeDB::isPending($code)) {
 
-                Stripe\Stripe::setApiKey($appInstance->getConfig()->getSetting(ConfigInterface::STRIPE_SECRET_KEY, 'NULL'));
+                Stripe\Stripe::setApiKey($appInstance->getConfig()->getDBSetting(ConfigInterface::STRIPE_SECRET_KEY, 'NULL'));
                 $coins = User::getInfo($token, UserColumns::CREDITS, false) + $coins;
                 $coins = User::updateInfo($token, UserColumns::CREDITS, $coins, false);
                 StripeDB::updateStatus($code, 'processed');
@@ -78,18 +78,18 @@ $router->add('/api/stripe/process', function (): void {
         $code = bin2hex(random_bytes(16));
         if (StripeDB::create($code, $coins, $uuid)) {
             try {
-                Stripe\Stripe::setApiKey($appInstance->getConfig()->getSetting(ConfigInterface::STRIPE_SECRET_KEY, 'NULL'));
+                Stripe\Stripe::setApiKey($appInstance->getConfig()->getDBSetting(ConfigInterface::STRIPE_SECRET_KEY, 'NULL'));
 
                 $checkout_session = Stripe\Checkout\Session::create([
                     'mode' => 'payment',
                     'customer_email' => $session->getInfo(UserColumns::EMAIL, false),
-                    'success_url' =>  $appInstance->getConfig()->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems') . '/api/stripe/processed?code=' . $code,
-                    'cancel_url' => $appInstance->getConfig()->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems') . '/api/stripe/cancelled',
+                    'success_url' =>  $appInstance->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems') . '/api/stripe/processed?code=' . $code,
+                    'cancel_url' => $appInstance->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems') . '/api/stripe/cancelled',
                     'line_items' => [
                         [
                             'quantity' => 1,
                             'price_data' => [
-                                'currency' => $appInstance->getConfig()->getSetting(ConfigInterface::CURRENCY, 'EUR'),
+                                'currency' => $appInstance->getConfig()->getDBSetting(ConfigInterface::CURRENCY, 'EUR'),
                                 'unit_amount' => $coins * 100,
                                 'product_data' => [
                                     'name' => 'Account Topup',

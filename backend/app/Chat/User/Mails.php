@@ -28,7 +28,7 @@ class Mails extends Database
     {
         try {
             $dbConn = Database::getPdoConnection();
-            $from = \MythicalDash\App::getInstance(true)->getConfig()->getSetting(\MythicalDash\Config\ConfigInterface::SMTP_FROM, 'system@mythical.systems');
+            $from = \MythicalDash\App::getInstance(true)->getConfig()->getDBSetting(\MythicalDash\Config\ConfigInterface::SMTP_FROM, 'system@mythical.systems');
             $stmt = $dbConn->prepare('INSERT INTO ' . self::getTableName() . ' (subject, body, `from`, `user`) VALUES (:subject, :body, :from, :user)');
             $stmt->bindParam(':subject', $subject);
             $stmt->bindParam(':body', $body);

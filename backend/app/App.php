@@ -95,21 +95,35 @@ class App extends MythicalAPP
                 $_ENV['firewall_block_vpn'] = 'false';
                 $this->updateEnvValue(ConfigInterface::FIREWALL_BLOCK_VPN, 'false', false);
             }
-            if ($_ENV['firewall_enabled'] == 'true') {
-                $rateLimiter = new RedisRateLimiter(Rate::perMinute($_ENV['firewall_rate_limit']), new \Redis(), 'rate_limiting');
+            if (isset($_ENV['firewall_enabled']) && $_ENV['firewall_enabled'] == 'true') {
                 try {
-                    $rateLimiter->limit(CloudFlareRealIP::getRealIP());
-                } catch (LimitExceeded $e) {
-                    self::getLogger()->error('User: ' . $e->getMessage());
-                    self::init();
-                    self::ServiceUnavailable('You are being rate limited!', ['error_code' => 'RATE_LIMITED']);
+                    $redis = new \Redis();
+                    if (isset($_ENV['firewall_rate_limit'])) {
+                        $rateLimiter = new RedisRateLimiter(Rate::perMinute($_ENV['firewall_rate_limit']), $redis, 'rate_limiting');
+                        try {
+                            $rateLimiter->limit(CloudFlareRealIP::getRealIP());
+                        } catch (LimitExceeded $e) {
+                            self::getLogger()->error('User: ' . $e->getMessage());
+                            self::init();
+                            self::ServiceUnavailable('You are being rate limited!', ['error_code' => 'RATE_LIMITED']);
+                        } catch (\Exception $e) {
+                            self::getLogger()->error('-----------------------------');
+                            self::getLogger()->error('REDIS SERVER IS DOWN');
+                            self::getLogger()->error('RATE LIMITING IS DISABLED');
+                            self::getLogger()->error('YOU SHOULD FIX THIS ASAP');
+                            self::getLogger()->error('NO SUPPORT WILL BE PROVIDED');
+                            self::getLogger()->error('-----------------------------');
+                        }
+                    } else {
+                        self::getLogger()->error('Firewall rate limit is not set');
+                        self::getLogger()->error('Rate limiting is disabled');
+                        self::getLogger()->error('You should fix this ASAP');
+                        self::getLogger()->error('No support will be provided');
+                        self::getLogger()->error('-----------------------------');
+                    }
                 } catch (\Exception $e) {
-                    self::getLogger()->error('-----------------------------');
-                    self::getLogger()->error('REDIS SERVER IS DOWN');
-                    self::getLogger()->error('RATE LIMITING IS DISABLED');
-                    self::getLogger()->error('YOU SHOULD FIX THIS ASAP');
-                    self::getLogger()->error('NO SUPPORT WILL BE PROVIDED');
-                    self::getLogger()->error('-----------------------------');
+                    self::getLogger()->error('Redis server is not available - rate limiting disabled');
+                    $rateLimiter = null;
                 }
             }
         }
@@ -118,7 +132,12 @@ class App extends MythicalAPP
          * Database Connection.
          */
         try {
-            $this->db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
+            if (isset($_ENV['DATABASE_HOST']) && isset($_ENV['DATABASE_DATABASE']) && isset($_ENV['DATABASE_USER']) && isset($_ENV['DATABASE_PASSWORD']) && isset($_ENV['DATABASE_PORT'])) {
+                $this->db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
+            } else {
+                self::init();
+                self::InternalServerError('Database connection failed', null);
+            }
         } catch (\Exception $e) {
             self::init();
             self::InternalServerError($e->getMessage(), null);
@@ -144,7 +163,7 @@ class App extends MythicalAPP
         try {
             $this->LicenseSystem = new LicenseSystem();
             try {
-                if (!$this->LicenseSystem->validateLicense($this->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $this->getConfig()->getSetting(ConfigInterface::APP_URL, 'true'))) {
+                if (!$this->LicenseSystem->validateLicense($this->getConfig()->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $this->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'true'))) {
                     define('HAS_VALID_LICENSE', false);
                 } else {
                     define('HAS_VALID_LICENSE', true);
@@ -168,13 +187,21 @@ class App extends MythicalAPP
         $this->telemetry = new MythicalZero(
             'https://mymythicalid.mythical.systems',
             APP_VERSION,
-            preg_replace('/^https?:\/\//', '', $this->getConfig()->getSetting(ConfigInterface::APP_URL, 'NULL')),
-            $this->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL'),
+            preg_replace('/^https?:\/\//', '', $this->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'NULL')),
+            $this->getConfig()->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL'),
         );
         $this->router->add('/(.*)', function ($route): void {
             self::init();
             self::NotFound('The api route does not exist!', ['error_code' => 'API_ROUTE_NOT_FOUND', 'route' => $route]);
         });
+
+        try {
+            $timezone = $this->getConfig()->getDBSetting(ConfigInterface::APP_TIMEZONE, 'UTC');
+            date_default_timezone_set($timezone);
+        } catch (\Exception $e) {
+            self::getLogger()->warning('Failed to set timezone ' . $timezone . ', falling back to UTC: ' . $e->getMessage());
+            date_default_timezone_set('UTC');
+        }
 
         try {
             $this->router->route();
@@ -295,7 +322,21 @@ class App extends MythicalAPP
         }
 
         // Write the updated lines back to the .env file
-        return file_put_contents($envFile, implode(PHP_EOL, $lines)) !== false;
+        // Check if we have write permissions
+        if (!is_writable($envFile)) {
+            $this->getLogger()->error('Cannot write to .env file - insufficient permissions');
+
+            return false;
+        }
+
+        // Try to write the file
+        try {
+            return file_put_contents($envFile, implode(PHP_EOL, $lines)) !== false;
+        } catch (\Exception $e) {
+            $this->getLogger()->error('Failed to write to .env file: ' . $e->getMessage());
+
+            return false;
+        }
     }
 
     /**

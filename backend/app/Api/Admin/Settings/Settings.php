@@ -57,6 +57,107 @@ $router->post('/api/admin/settings/update', function (): void {
 
 });
 
+$router->post('/api/admin/settings/update/bulk', function (): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $config = $appInstance->getConfig();
+    $session = new MythicalDash\Chat\User\Session($appInstance);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SETTINGS_EDIT, $session);
+
+    // Get JSON input
+    $jsonInput = file_get_contents('php://input');
+    $data = json_decode($jsonInput, true);
+
+    if (!$data || !is_array($data)) {
+        $appInstance->BadRequest('Invalid JSON body', ['error_code' => 'INVALID_JSON']);
+
+        return;
+    }
+
+    $updatedSettings = [];
+    $failedSettings = [];
+    $successCount = 0;
+    $errorCount = 0;
+
+    foreach ($data as $key => $value) {
+        if (empty($key) || $key === null) {
+            $failedSettings[] = [
+                'key' => $key,
+                'value' => $value,
+                'error' => 'Invalid key',
+            ];
+            ++$errorCount;
+            continue;
+        }
+
+        if ($value === '' || $value === null) {
+            $failedSettings[] = [
+                'key' => $key,
+                'value' => $value,
+                'error' => 'Invalid value',
+            ];
+            ++$errorCount;
+            continue;
+        }
+
+        try {
+            $config = $config->setSetting($key, $value);
+            if ($config) {
+                $updatedSettings[] = [
+                    'key' => $key,
+                    'value' => $value,
+                ];
+                ++$successCount;
+
+                // Log individual setting update
+                global $eventManager;
+                $eventManager->emit(SettingsEvent::onSettingsUpdated(), [
+                    'key' => $key,
+                    'value' => $value,
+                ]);
+                UserActivities::add(
+                    $session->getInfo(UserColumns::UUID, false),
+                    UserActivitiesTypes::$admin_settings_update,
+                    CloudFlareRealIP::getRealIP(),
+                    "Updated setting $key"
+                );
+            } else {
+                $failedSettings[] = [
+                    'key' => $key,
+                    'value' => $value,
+                    'error' => 'Failed to update setting',
+                ];
+                ++$errorCount;
+            }
+        } catch (Exception $e) {
+            $failedSettings[] = [
+                'key' => $key,
+                'value' => $value,
+                'error' => 'Exception: ' . $e->getMessage(),
+            ];
+            ++$errorCount;
+        }
+    }
+
+    // Prepare response
+    $response = [
+        'success_count' => $successCount,
+        'error_count' => $errorCount,
+        'total_count' => count($data),
+        'updated_settings' => $updatedSettings,
+        'failed_settings' => $failedSettings,
+    ];
+
+    if ($errorCount === 0) {
+        $appInstance->OK('All settings updated successfully.', $response);
+    } elseif ($successCount === 0) {
+        $appInstance->BadRequest('Failed to update any settings', $response);
+    } else {
+        $appInstance->OK('Settings updated with some errors.', $response);
+    }
+});
+
 $router->get('/api/admin/settings/get', function (): void {
     App::init();
     $appInstance = App::getInstance(true);

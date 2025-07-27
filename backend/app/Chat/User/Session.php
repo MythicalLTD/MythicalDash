@@ -78,7 +78,9 @@ class Session extends Database
             throw new \InvalidArgumentException('Invalid column name: ' . $info);
         }
 
-        return User::getInfo($this->SESSION_KEY, $info, $encrypted);
+        $value = User::getInfo($this->SESSION_KEY, $info, $encrypted);
+
+        return $value ?? '';
     }
 
     public function setInfo(string|UserColumns $info, ?string $value, bool $encrypted): void

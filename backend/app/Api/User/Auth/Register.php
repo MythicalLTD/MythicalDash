@@ -131,13 +131,13 @@ $router->add('/api/user/auth/register', function (): void {
      *
      * IF the turnstile is enabled
      */
-    if ($appInstance->getConfig()->getSetting(ConfigInterface::TURNSTILE_ENABLED, 'false') == 'true') {
+    if ($appInstance->getConfig()->getDBSetting(ConfigInterface::TURNSTILE_ENABLED, 'false') == 'true') {
         if (!isset($_POST['turnstileResponse']) || $_POST['turnstileResponse'] == '') {
             $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'MISSING_TURNSTILE_RESPONSE']);
             $appInstance->BadRequest('Bad Request', ['error_code' => 'TURNSTILE_FAILED']);
         }
         $cfTurnstileResponse = $_POST['turnstileResponse'];
-        if (!Turnstile::validate($cfTurnstileResponse, CloudFlareRealIP::getRealIP(), $config->getSetting(ConfigInterface::TURNSTILE_KEY_PRIV, 'XXXX'))) {
+        if (!Turnstile::validate($cfTurnstileResponse, CloudFlareRealIP::getRealIP(), $config->getDBSetting(ConfigInterface::TURNSTILE_KEY_PRIV, 'XXXX'))) {
             $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'TURNSTILE_FAILED']);
             $appInstance->BadRequest('Invalid TurnStile Key', ['error_code' => 'TURNSTILE_FAILED']);
         }
@@ -155,7 +155,7 @@ $router->add('/api/user/auth/register', function (): void {
      * @var bool
      */
     try {
-        if ($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, '') == '') {
+        if ($config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, '') == '') {
             $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'PTERODACTYL_NOT_ENABLED']);
             $appInstance->BadRequest('Pterodactyl is not enabled', ['error_code' => 'PTERODACTYL_NOT_ENABLED']);
         }
@@ -175,7 +175,7 @@ $router->add('/api/user/auth/register', function (): void {
                 $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'PTERODACTYL_ERROR']);
                 $appInstance->InternalServerError('Internal Server Error', ['error_code' => 'PTERODACTYL_ERROR']);
             }
-            $pteroUsers = new UsersResource($appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+            $pteroUsers = new UsersResource($appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
 
             MythicalDash\Hooks\Pterodactyl\Admin\User::performUpdateUser($pteroUsers, $pterodactylUserId, $username, $firstName, $lastName, $email, $password);
         } catch (Exception $e) {
@@ -186,7 +186,7 @@ $router->add('/api/user/auth/register', function (): void {
         User::register($username, $password, $email, $firstName, $lastName, CloudFlareRealIP::getRealIP(), $pterodactylUserId);
         $newUserUuid = User::convertEmailToUUID($email);
         $newUserToken = User::getTokenFromEmail($email);
-        if ($config->getSetting(ConfigInterface::REFERRALS_ENABLED, false)) {
+        if ($config->getDBSetting(ConfigInterface::REFERRALS_ENABLED, false)) {
             if ($newUserUuid) {
                 // Generate a referral code
                 $referralCode = $username . '_' . $appInstance->generatePin();
@@ -215,9 +215,9 @@ $router->add('/api/user/auth/register', function (): void {
                                 'user' => $referrerUuid,
                                 'referral_code' => $_GET['ref'],
                             ]);
-                            $newUserBonus = intval($appInstance->getConfig()->getSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER, 15));
+                            $newUserBonus = intval($appInstance->getConfig()->getDBSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER, 15));
                             User::addCredits($newUserToken, (int) intval($newUserBonus));
-                            $referrerBonus = intval($appInstance->getConfig()->getSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL, 35)) + intval(User::getInfo($referrerToken, UserColumns::CREDITS, false));
+                            $referrerBonus = intval($appInstance->getConfig()->getDBSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL, 35)) + intval(User::getInfo($referrerToken, UserColumns::CREDITS, false));
                             User::addCredits($referrerToken, (int) intval($referrerBonus));
                         }
                     } else {
@@ -230,13 +230,26 @@ $router->add('/api/user/auth/register', function (): void {
         /**
          * Default Resources.
          */
-        $defaultRam = $config->getSetting(ConfigInterface::DEFAULT_RAM, 1024);
-        $defaultDisk = $config->getSetting(ConfigInterface::DEFAULT_DISK, 1024);
-        $defaultCpu = $config->getSetting(ConfigInterface::DEFAULT_CPU, 100);
-        $defaultPorts = $config->getSetting(ConfigInterface::DEFAULT_PORTS, 2);
-        $defaultDatabases = $config->getSetting(ConfigInterface::DEFAULT_DATABASES, 1);
-        $defaultServerSlots = $config->getSetting(ConfigInterface::DEFAULT_SERVER_SLOTS, 1);
-        $defaultBackups = $config->getSetting(ConfigInterface::DEFAULT_BACKUPS, 5);
+        $defaultRam = (int) $config->getDBSetting(ConfigInterface::DEFAULT_RAM, 1024);
+        $defaultDisk = (int) $config->getDBSetting(ConfigInterface::DEFAULT_DISK, 1024);
+        $defaultCpu = (int) $config->getDBSetting(ConfigInterface::DEFAULT_CPU, 100);
+        $defaultPorts = (int) $config->getDBSetting(ConfigInterface::DEFAULT_PORTS, 2);
+        $defaultDatabases = (int) $config->getDBSetting(ConfigInterface::DEFAULT_DATABASES, 1);
+        $defaultServerSlots = (int) $config->getDBSetting(ConfigInterface::DEFAULT_SERVER_SLOTS, 1);
+        $defaultBackups = (int) $config->getDBSetting(ConfigInterface::DEFAULT_BACKUPS, 5);
+
+        if ($defaultDatabases > 0) {
+            $defaultDatabases = 1;
+        }
+        if ($defaultServerSlots > 0) {
+            $defaultServerSlots = 1;
+        }
+        if ($defaultBackups > 0) {
+            $defaultBackups = 1;
+        }
+        if ($defaultPorts > 0) {
+            $defaultPorts = 1;
+        }
 
         User::updateInfo($newUserToken, UserColumns::MEMORY_LIMIT, $defaultRam, false);
         User::updateInfo($newUserToken, UserColumns::DISK_LIMIT, $defaultDisk, false);
@@ -252,7 +265,7 @@ $router->add('/api/user/auth/register', function (): void {
          * Zero Trust.
          */
         $appInstance->getTelemetry()->sendRegister($username, $firstName, $lastName, $email, CloudFlareRealIP::getRealIP());
-		App::OK('User registered', ['is_first_user' => false]);
+        App::OK('User registered', ['is_first_user' => false]);
     } catch (Exception $e) {
         $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'DATABASE_ERROR']);
         $appInstance->InternalServerError('Internal Server Error', ['error_code' => 'DATABASE_ERROR']);

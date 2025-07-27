@@ -103,27 +103,42 @@ $router->get('/api/admin/servers/list', function (): void {
 
     $servers = MythicalDash\Hooks\Pterodactyl\Admin\Servers::getAllServers();
     $serversWithInfo = [];
-    foreach ($servers['data'] as $server) {
-        // Add additional server information
-        $serverData = $server;
+    if (isset($servers['data'])) {
+        foreach ($servers['data'] as $server) {
+            // Add additional server information
+            $serverData = $server;
+            if (isset($server['attributes']['node'])) {
+                $locationId = MythicalDash\Hooks\Pterodactyl\Admin\Nodes::getLocationIdFromNode((int) $server['attributes']['node']);
+                $location = Locations::getLocationByPterodactylLocationId($locationId);
+                if ($location) {
+                    $serverData['location'] = $location;
+                }
+            }
 
-        $locationId = MythicalDash\Hooks\Pterodactyl\Admin\Nodes::getLocationIdFromNode((int) $server['attributes']['node']);
-        $location = Locations::getLocationByPterodactylLocationId($locationId);
-        $serverData['location'] = $location;
+            if (isset($server['attributes']['egg'])) {
+                $eggId = $server['attributes']['egg'];
+                $egg = Eggs::getByPterodactylEggId($eggId);
+                if ($egg) {
+                    $serverData['service'] = $egg;
+                }
+            }
 
-        $eggId = $server['attributes']['egg'];
-        $egg = Eggs::getByPterodactylEggId($eggId);
-        $serverData['service'] = $egg;
+            if (isset($server['attributes']['nest'])) {
+                $nestId = $server['attributes']['nest'];
+                $nest = EggCategories::getByPterodactylNestId($nestId);
+                if ($nest) {
+                    $serverData['category'] = $nest;
+                }
+            }
 
-        $nestId = $server['attributes']['nest'];
-        $nest = EggCategories::getByPterodactylNestId($nestId);
-        $serverData['category'] = $nest;
+            $serversWithInfo[] = $serverData;
+        }
+        $servers['data'] = $serversWithInfo;
 
-        $serversWithInfo[] = $serverData;
+        $appInstance->OK('Servers fetched successfully', [
+            'servers' => $servers,
+        ]);
+    } else {
+        $appInstance->BadRequest('No servers found', ['error_code' => 'NO_SERVERS_FOUND']);
     }
-    $servers['data'] = $serversWithInfo;
-
-    $appInstance->OK('Servers fetched successfully', [
-        'servers' => $servers,
-    ]);
 });

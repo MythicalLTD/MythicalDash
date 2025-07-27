@@ -29,7 +29,7 @@ $router->post('/api/user/earn/redeem', function (): void {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new Session($appInstance);
-    if (!$appInstance->getConfig()->getSetting(ConfigInterface::CODE_REDEMPTION_ENABLED, false)) {
+    if (!$appInstance->getConfig()->getDBSetting(ConfigInterface::CODE_REDEMPTION_ENABLED, false)) {
         $appInstance->BadRequest('Code redemption is not enabled', ['error_code' => 'CODE_REDEMPTION_NOT_ENABLED']);
 
         return;

@@ -23,7 +23,7 @@ $router->post('/api/user/earn/afk/work', function (): void {
     $config = $appInstance->getConfig();
     $s = new Session($appInstance);
     $uuid = $s->getInfo(UserColumns::UUID, false);
-    if ($config->getSetting(ConfigInterface::AFK_ENABLED, 'false') === 'false') {
+    if ($config->getDBSetting(ConfigInterface::AFK_ENABLED, 'false') === 'false') {
         App::NotFound('AFK is not enabled', []);
     }
     global $eventManager;
@@ -31,7 +31,7 @@ $router->post('/api/user/earn/afk/work', function (): void {
     $coins = $s->getInfo(UserColumns::CREDITS, false);
     $afkTime = $s->getInfo(UserColumns::MINUTES_AFK, false);
 
-    $coinsToAward = (int) $config->getSetting(ConfigInterface::AFK_MIN_PER_COIN, 1);
+    $coinsToAward = (int) $config->getDBSetting(ConfigInterface::AFK_MIN_PER_COIN, 1);
 
     // Always increment AFK time by 1 minute per request
     $newAfkTime = $afkTime + 1;

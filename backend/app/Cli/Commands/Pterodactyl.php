@@ -71,8 +71,8 @@ class Pterodactyl extends CliApp implements CommandBuilder
             $config = new ConfigFactory($db->getPdo());
 
             $cliApp->send('&7Debug mode enabled!');
-            $cliApp->send('&7Pterodactyl panel URL: &e' . $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''));
-            $cliApp->send('&7Pterodactyl API key: &e' . $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+            $cliApp->send('&7Pterodactyl panel URL: &e' . $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''));
+            $cliApp->send('&7Pterodactyl API key: &e' . $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
             $cliApp->send('&7--------------------------------');
 
             $cliApp->send('&7What do you want to test?');
@@ -87,25 +87,25 @@ class Pterodactyl extends CliApp implements CommandBuilder
 
             switch ($answer) {
                 case '1':
-                    self::testUsers($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testUsers($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
                     break;
                 case '2':
-                    self::testServers($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testServers($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
                     break;
                 case '3':
-                    self::testLocations($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testLocations($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
                     break;
                 case '4':
-                    self::testNodes($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testNodes($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
                     break;
                 case '5':
-                    self::testNests($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testNests($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
                     break;
                 case '6':
-                    self::testEggs($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testEggs($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
                     break;
                 case '7':
-                    self::testAll($cliApp, $appInstance, $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testAll($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
                     break;
                 default:
                     $cliApp->send('&cInvalid option!');
@@ -126,8 +126,12 @@ class Pterodactyl extends CliApp implements CommandBuilder
             $users = $userResource->listUsers(1, 50);
 
             $cliApp->send('&7List of users:');
-            foreach ($users['data'] as $user) {
-                $cliApp->send("&7ID: &e{$user['attributes']['id']} &7| Username: &e{$user['attributes']['username']} &7| Email: &e{$user['attributes']['email']}");
+            if (isset($users['data'])) {
+                foreach ($users['data'] as $user) {
+                    $cliApp->send("&7ID: &e{$user['attributes']['id']} &7| Username: &e{$user['attributes']['username']} &7| Email: &e{$user['attributes']['email']}");
+                }
+            } else {
+                $cliApp->send('&cNo users found inside the response | maybe the api key is invalid');
             }
 
             $cliApp->send('&7Enter user ID to view (or press enter to skip):');
@@ -273,8 +277,8 @@ class Pterodactyl extends CliApp implements CommandBuilder
             $config = new ConfigFactory($db->getPdo());
 
             // Get current values
-            $currentUrl = $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, '');
-            $currentApiKey = $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '');
+            $currentUrl = $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, '');
+            $currentApiKey = $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '');
 
             $cliApp->send("&7Current panel URL: &e{$currentUrl}");
             $cliApp->send('&7Enter new panel URL (or press enter to keep current):');
@@ -320,8 +324,8 @@ class Pterodactyl extends CliApp implements CommandBuilder
             );
             $config = new ConfigFactory($db->getPdo());
 
-            $url = $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, '');
-            $apiKey = $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '');
+            $url = $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, '');
+            $apiKey = $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '');
 
             if (empty($url) || empty($apiKey)) {
                 $cliApp->send('&cPterodactyl panel is not configured. Please run &epterodactyl configure &cfirst.');
@@ -401,8 +405,8 @@ class Pterodactyl extends CliApp implements CommandBuilder
             );
             $config = new ConfigFactory($db->getPdo());
 
-            $url = $config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, '');
-            $apiKey = $config->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '');
+            $url = $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, '');
+            $apiKey = $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '');
 
             if (empty($url) || empty($apiKey)) {
                 $cliApp->send('&cPterodactyl panel is not configured. Please run &epterodactyl configure &cfirst.');

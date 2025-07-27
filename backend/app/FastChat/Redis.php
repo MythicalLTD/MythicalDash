@@ -24,13 +24,17 @@ class Redis
     {
         $app = App::getInstance(true);
         $app->loadEnv();
-        $host = $_ENV['REDIS_HOST'];
-        $pwd = $_ENV['REDIS_PASSWORD'];
-        $client = new Client([
-            'scheme' => 'tcp',
-            'host' => $host,
-        ]);
-        $this->redis = $client;
+        if (isset($_ENV['REDIS_HOST']) && isset($_ENV['REDIS_PASSWORD'])) {
+            $host = $_ENV['REDIS_HOST'] ?? 'localhost';
+            $pwd = $_ENV['REDIS_PASSWORD'] ?? '';
+            $client = new Client([
+                'scheme' => 'tcp',
+                'host' => $host,
+            ]);
+            $this->redis = $client;
+        } else {
+            $app->getLogger()->error('Redis connection failed');
+        }
     }
 
     public function getRedis(): Client

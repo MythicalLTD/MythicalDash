@@ -1,5 +1,27 @@
 <template>
     <LayoutDashboard>
+        <!-- New Settings Page Notice -->
+        <div
+            class="bg-green-500/20 border border-green-500/30 text-green-400 p-4 rounded-lg mb-6 flex items-center justify-between"
+        >
+            <div class="flex items-center">
+                <AlertCircleIcon class="w-5 h-5 mr-3" />
+                <div>
+                    <p class="font-medium">We have a brand new settings page!</p>
+                    <p class="text-sm text-green-300">
+                        Try our improved settings interface with better organization and auto-save functionality.
+                    </p>
+                </div>
+            </div>
+            <a
+                href="/mc-admin/settings"
+                class="flex items-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm"
+            >
+                <SettingsIcon class="w-4 h-4 mr-2" />
+                Try New Settings
+            </a>
+        </div>
+
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-pink-400">Dashboard Settings</h1>
         </div>
@@ -107,6 +129,7 @@ import {
     Code as CodeIcon,
     Image as ImageIcon,
     LoaderIcon,
+    AlertCircle as AlertCircleIcon,
 } from 'lucide-vue-next';
 
 // Import settings components

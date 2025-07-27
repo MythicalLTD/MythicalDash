@@ -70,7 +70,7 @@ $router->post('/api/admin/backup/(.*)/upload-to-cloud', function (string $backup
             $appInstance->InternalServerError($e->getMessage(), ['error_code' => 'BACKUP_NOT_FOUND']);
         }
         // Get license key for MythicalCloud
-        $licenseKey = $appInstance->getConfig()->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
+        $licenseKey = $appInstance->getConfig()->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL');
         if (!$licenseKey) {
             throw new Exception('MythicalCloud license key not configured');
         }

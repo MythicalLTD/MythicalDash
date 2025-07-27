@@ -17,7 +17,7 @@ class DeleteUser extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 		$logger = $app->getLogger();
 
 		// Only proceed if image hosting is enabled
-		if (!$config->getSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
+		if (!$config->getDBSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
 			$logger->info("Image hosting is disabled, skipping user image deletion for user: " . $userId);
 			return;
 		}

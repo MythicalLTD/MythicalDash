@@ -47,14 +47,14 @@ $router->add('/api/user/auth/login', function (): void {
     }
 
     // Process turnstile if enabled
-    if ($appInstance->getConfig()->getSetting(ConfigInterface::TURNSTILE_ENABLED, 'false') == 'true') {
+    if ($appInstance->getConfig()->getDBSetting(ConfigInterface::TURNSTILE_ENABLED, 'false') == 'true') {
         if (!isset($_POST['turnstileResponse']) || $_POST['turnstileResponse'] == '') {
             $eventManager->emit(AuthEvent::onAuthLoginFailed(), ['login' => $_POST['login'], 'error_code' => 'TURNSTILE_FAILED']);
             $appInstance->BadRequest('Bad Request', ['error_code' => 'TURNSTILE_FAILED']);
         }
 
         $cfTurnstileResponse = $_POST['turnstileResponse'];
-        if (!Turnstile::validate($cfTurnstileResponse, CloudFlareRealIP::getRealIP(), $config->getSetting(ConfigInterface::TURNSTILE_KEY_PRIV, 'XXXX'))) {
+        if (!Turnstile::validate($cfTurnstileResponse, CloudFlareRealIP::getRealIP(), $config->getDBSetting(ConfigInterface::TURNSTILE_KEY_PRIV, 'XXXX'))) {
             $eventManager->emit(AuthEvent::onAuthLoginFailed(), ['login' => $_POST['login'], 'error_code' => 'TURNSTILE_FAILED']);
             $appInstance->BadRequest('Invalid TurnStile Key', ['error_code' => 'TURNSTILE_FAILED']);
         }
@@ -71,7 +71,7 @@ $router->add('/api/user/auth/login', function (): void {
         $appInstance->BadRequest('Invalid login credentials', ['error_code' => 'INVALID_CREDENTIALS']);
     }
 
-    if ($config->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, '') == '') {
+    if ($config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, '') == '') {
         $eventManager->emit(AuthEvent::onAuthLoginFailed(), ['login' => $login, 'error_code' => 'PTERODACTYL_NOT_ENABLED']);
         $appInstance->BadRequest('Pterodactyl is not enabled', ['error_code' => 'PTERODACTYL_NOT_ENABLED']);
     }
@@ -194,7 +194,7 @@ $router->add('/api/user/auth/login', function (): void {
     }
     $userUuid = $userInfoArray[UserColumns::UUID];
     $currentIP = CloudFlareRealIP::getRealIP();
-    if ($config->getSetting(ConfigInterface::FIREWALL_BLOCK_ALTS, 'false') == 'true') {
+    if ($config->getDBSetting(ConfigInterface::FIREWALL_BLOCK_ALTS, 'false') == 'true') {
         $processedUsers = []; // Initialize the array
 
         // Create the IP relationship

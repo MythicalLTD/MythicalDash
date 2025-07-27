@@ -72,10 +72,14 @@ class LoggerFactory
 
     public function getLogs(bool $isWebServer = false): array
     {
+        if (!file_exists($this->logFile)) {
+            return [];
+        }
+
         $logs = file($this->logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
         if (!$isWebServer) {
-            return array_filter($logs, function ($log) {
+            return array_filter($logs ?? [], function ($log) {
                 return !str_contains($log, '[DEBUG]');
             });
         }
@@ -90,13 +94,22 @@ class LoggerFactory
 
     private function appendLog(string $message): void
     {
-        file_put_contents($this->logFile, '| (' . $this->getFormattedDate() . ') ' . $message . PHP_EOL, FILE_APPEND);
+        try {
+            file_put_contents($this->logFile, '| (' . $this->getFormattedDate() . ') ' . $message . PHP_EOL, FILE_APPEND);
+        } catch (\Exception $e) {
+            // Failed to write to log file, likely due to permissions
+            error_log('Failed to write to log file: ' . $e->getMessage());
+        }
     }
 
     private function createLogFile(): void
     {
         if (!$this->doesLogFileExist()) {
-            file_put_contents($this->logFile, '');
+            try {
+                file_put_contents($this->logFile, '');
+            } catch (\Exception $e) {
+                error_log('Failed to create log file: ' . $e->getMessage());
+            }
         }
     }
 

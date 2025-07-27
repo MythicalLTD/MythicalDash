@@ -28,7 +28,7 @@ $router->get('/api/user/earn/referrals', function (): void {
     $uuid = $session->getInfo(UserColumns::UUID, false);
 
     // Check if referrals are enabled
-    if (!$appInstance->getConfig()->getSetting(ConfigInterface::REFERRALS_ENABLED, false)) {
+    if (!$appInstance->getConfig()->getDBSetting(ConfigInterface::REFERRALS_ENABLED, false)) {
         $appInstance->BadRequest('Referrals are not enabled', ['error_code' => 'REFERRALS_NOT_ENABLED']);
 
         return;

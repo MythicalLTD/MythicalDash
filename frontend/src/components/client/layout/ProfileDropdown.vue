@@ -105,7 +105,7 @@ const optimizedAvatar = computed(() => {
 </script>
 <template>
     <Transition :name="animationClass" mode="out-in">
-        <div v-if="isOpen" :class="dropdownClasses" :style="backgroundStyle" @click.stop>
+        <div v-if="isOpen" :class="dropdownClasses" :style="[backgroundStyle, { position: 'fixed' }]" @click.stop>
             <!-- Decorative header gradient -->
             <div
                 v-if="dropdownSettings.showBackground"

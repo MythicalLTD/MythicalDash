@@ -66,7 +66,7 @@ class ServerSuspended extends Mail
             $template = User::processTemplate($template, $uuid);
             $template = Mail::processEmailTemplateGlobal($template);
 
-            $template = str_replace('${renewal_amount}', $config->getSetting(ConfigInterface::SERVER_RENEW_COST, '10'), $template);
+            $template = str_replace('${renewal_amount}', $config->getDBSetting(ConfigInterface::SERVER_RENEW_COST, '10'), $template);
             $template = str_replace('${pterodactyl_id}', $ptero_server_id, $template);
             $template = str_replace('${expiration_date}', Server::getExpirationDate($ptero_server_id), $template);
             $template = str_replace('${suspension_reason}', $suspension_reason, $template);

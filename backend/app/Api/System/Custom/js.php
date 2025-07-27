@@ -19,13 +19,13 @@ $router->add('/api/system/custom.js', function () {
     $appInstance = App::getInstance(true);
     $config = $appInstance->getConfig();
 
-    $customJs = $config->getSetting(ConfigInterface::CUSTOM_JS, '');
-	
+    $customJs = $config->getDBSetting(ConfigInterface::CUSTOM_JS, '');
+
     header('Content-Type: application/javascript');
-	echo "// Custom JS\n";
-	echo $customJs;
-	echo "\n";
-	echo "// Plugin JS\n";
+    echo "// Custom JS\n";
+    echo $customJs;
+    echo "\n";
+    echo "// Plugin JS\n";
     // Append plugin JS
     $pluginDir = __DIR__ . '/../../../../storage/addons';
     if (is_dir($pluginDir)) {
@@ -38,6 +38,5 @@ $router->add('/api/system/custom.js', function () {
             }
         }
     }
-
 
 });

@@ -78,8 +78,8 @@ class Nodes extends NodesResource
         $appInstance = App::getInstance(true);
         try {
             $nodeResource = new NodesResource(
-                $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
             $nodeInfo = $nodeResource->getNode($nodeId);
 

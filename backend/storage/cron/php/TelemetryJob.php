@@ -40,7 +40,7 @@ class TelemetryJob implements TimeTask
 				$chat = new BungeeChatApi();
 				$config = $app->getConfig();
 
-				$appID = preg_replace('/^https?:\/\//', '', $config->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems'));
+				$appID = preg_replace('/^https?:\/\//', '', $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems'));
 				$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &3App ID: &f' . $appID);
 				$servers = Database::getTableRowCount(Server::getTableName());
 				$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &3Servers: &f' . $servers);
@@ -157,7 +157,7 @@ class TelemetryJob implements TimeTask
 
 				$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &eSending telemetry data...');
 				try {
-					$licenseKey = $config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL');
+					$licenseKey = $config->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL');
 
 					if ($licenseKey === 'NULL') {
 						$chat->sendOutputWithNewLine('&8[&bTelemetry&8] &cNo license key found');

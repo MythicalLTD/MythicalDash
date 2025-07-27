@@ -16,7 +16,7 @@ class Register extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 		$app = App::getInstance(true);
 		$logger = $app->getLogger();
 		$config = $app->getConfig();
-		if ($config->getSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
+		if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
 			$user = User::getTokenFromEmail($email);
 			$api_key = UUIDManager::generateUUID();
 			User::updateInfo($user, UserColumns::IMAGE_HOSTING_UPLOAD_KEY, $api_key, false);

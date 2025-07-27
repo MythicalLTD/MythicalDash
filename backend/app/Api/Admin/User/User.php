@@ -48,7 +48,7 @@ $router->get('/api/admin/user/(.*)/info', function ($userId): void {
     if (empty($userId)) {
         $appInstance->BadRequest('User ID is required', ['error_code' => 'USER_ID_REQUIRED']);
     }
-    if (User::exists(UserColumns::UUID, $userId)) {
+    if (User::exists(UserColumns::UUID, $userId, true)) {
         $targetUser = User::getTokenFromUUID($userId);
         $userInfo = User::getInfoArray(
             $targetUser,
@@ -172,8 +172,8 @@ $router->post('/api/admin/user/(.*)/delete', function ($userId): void {
             Servers::deletePterodactylServer($server['id']);
         }
         $pteroUsers = new UsersResource(
-            $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-            $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+            $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+            $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
         );
         $pteroUsers->deleteUser(User::getInfo($token, UserColumns::PTERODACTYL_USER_ID, false));
 

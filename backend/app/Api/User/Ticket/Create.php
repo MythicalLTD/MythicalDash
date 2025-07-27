@@ -43,7 +43,7 @@ $router->post('/api/user/ticket/create', function () {
     $session = new Session($appInstance);
     $config = $appInstance->getConfig();
 
-    if ($config->getSetting(ConfigInterface::ALLOW_TICKETS, 'false') === 'false') {
+    if ($config->getDBSetting(ConfigInterface::ALLOW_TICKETS, 'false') === 'false') {
         $appInstance->BadRequest('Tickets are not enabled!', ['error_code' => 'TICKETS_NOT_ENABLED']);
     }
 

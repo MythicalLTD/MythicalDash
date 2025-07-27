@@ -257,17 +257,26 @@ $router->get('/api/user/session/servers', function (): void {
     $servers = Servers::getUserServersList($pterodactylUserId);
     foreach ($servers as &$server) {
         $nodeId = $server['node'] ?? 0;
-        $locationId = Nodes::getLocationIdFromNode($nodeId);
-        $location = Locations::getLocationByPterodactylLocationId($locationId);
+        $locationId = Nodes::getLocationIdFromNode((int) $nodeId);
+        if ($locationId != 0) {
+            $location = Locations::getLocationByPterodactylLocationId((int) $locationId);
+        } else {
+            $location = [];
+        }
         $server['location'] = $location;
 
         $eggId = $server['egg'] ?? 0;
-        $egg = Eggs::getByPterodactylEggId($eggId);
+        if ($eggId != 0) {
+            $egg = Eggs::getByPterodactylEggId((int) $eggId);
+        } else {
+            $egg = [];
+        }
         $server['service'] = $egg[0] ?? [];
 
         $nestId = $server['nest'] ?? 0;
-        $nest = MythicalDash\Chat\Eggs\EggCategories::getByPterodactylNestId((int) $nestId);
-        if ($nest == false) {
+        if ($nestId != 0) {
+            $nest = MythicalDash\Chat\Eggs\EggCategories::getByPterodactylNestId((int) $nestId);
+        } else {
             $nest = [];
         }
         $server['category'] = $nest[0] ?? [];
@@ -323,8 +332,8 @@ $router->post('/api/user/session/delete-account', function (): void {
         Servers::deletePterodactylServer($server['id']);
     }
     $pteroUsers = new UsersResource(
-        $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-        $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+        $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+        $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
     );
     $pteroUsers->deleteUser(User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false));
     User::delete($accountToken);

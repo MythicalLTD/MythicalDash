@@ -16,7 +16,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 		$app = App::getInstance(true);
 		$logger = $app->getLogger();
 		$config = $app->getConfig();
-		if ($config->getSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
+		if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
 			$router->post('/api/user/images/toggle', function () use ($app, $logger, $config) {
 				$session = new Session($app);
 				if ($session->getInfo(UserColumns::IMAGE_HOSTING_ENABLED, false) == "true") {
@@ -78,14 +78,14 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 			header('Content-Disposition: attachment; filename="sharex_config.sxcu"');
 
 			echo json_encode(ShareXApi::createConfig(
-				$config->getSetting(ConfigInterface::APP_NAME, "MythicalDash"),
-				$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$config->getDBSetting(ConfigInterface::APP_NAME, "MythicalDash"),
+				$config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
 				$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)
 			));
 		});
 		$router->get('/api/user/images/list', function () use ($app, $logger, $config) {
 			$session = new Session($app);
-			if ($config->getSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
+			if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
 				$userDir = APP_PUBLIC . "/attachments/imgs/users/" . $session->getInfo(UserColumns::UUID, false);
 				$dataDir = $userDir . "/data";
 				
@@ -162,7 +162,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 			$app->OK("Success", [
 				"status" => 200,
 				"data" => [
-					"config" => ShareXApi::createConfig($config->getSetting(ConfigInterface::APP_NAME, "MythicalDash"), $config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"), $session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)),
+					"config" => ShareXApi::createConfig($config->getDBSetting(ConfigInterface::APP_NAME, "MythicalDash"), $config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"), $session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)),
 				]
 			]);
 		});
@@ -248,7 +248,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 			// Update the file URL in metadata to match our naming scheme
 			$metadata['metadata']['file_url'] = sprintf(
 				'%s/attachments/imgs/users/%s/raw/%s',
-				$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
 				$user_uuid,
 				$name
 			);
@@ -333,7 +333,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 			}
 
 			// Get max size in bytes (default 10MB)
-			$maxSize = (int) $config->getSetting(ConfigInterface::IMAGE_HOSTING_MAX_FILE_SIZE, 10) * 1024 * 1024;
+			$maxSize = (int) $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_MAX_FILE_SIZE, 10) * 1024 * 1024;
 
 			// Debug log the sizes
 			$logger->debug(sprintf(
@@ -382,17 +382,17 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 			/**
 			 * Coins per image enabled
 			 */
-			if ($config->getSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED, "false") == "true") {
+			if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED, "false") == "true") {
 				$coins = User::getInfoUUID($user_uuid, UserColumns::CREDITS, false);
 				if ($coins <= 0) {
 					ShareXApi::showError($app, "You do not have enough coins to upload images.");
 					return;
 				}
-				if ($coins < $config->getSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1)) {
+				if ($coins < $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1)) {
 					ShareXApi::showError($app, "You do not have enough coins to upload images.");
 					return;
 				}
-				User::removeCredits(User::getTokenFromUUID($user_uuid), $config->getSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1));
+				User::removeCredits(User::getTokenFromUUID($user_uuid), $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1));
 			}
 
 			if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
@@ -411,7 +411,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 					'file_name' => $new_name,
 					'file_url' => sprintf(
 						'%s/attachments/imgs/users/%s/raw/%s',
-						$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+						$config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
 						$user_uuid,
 						$new_name
 					),
@@ -439,20 +439,20 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 
 			$deleteUrl = sprintf(
 				'%s/api/user/images/delete/%s',
-				$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
 				$new_name
 			);
 
 			$imageUrl = sprintf(
 				'%s/attachments/imgs/users/%s/raw/%s',
-				$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
 				$user_uuid,
 				$new_name
 			);
 
 			$embedUrl = sprintf(
 				'%s/i/%s',
-				$config->getSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
 				$new_name
 			);
 

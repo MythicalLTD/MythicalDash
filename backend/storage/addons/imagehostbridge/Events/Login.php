@@ -15,7 +15,7 @@ class Login extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 		$app = App::getInstance(true);
 		$config = $app->getConfig();
 		$logger = $app->getLogger();
-		if ($config->getSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
+		if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
 			$user = User::getTokenFromEmail($login);
 			$api_key = User::getInfo($user, UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false);
 

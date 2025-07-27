@@ -25,11 +25,11 @@ class Firewall implements MiddlewareBuilder
         /**
          * Firewall check.
          */
-        if ($app->getConfig()->getSetting(ConfigInterface::FIREWALL_ENABLED, 'false') == 'true') {
+        if ($app->getConfig()->getDBSetting(ConfigInterface::FIREWALL_ENABLED, 'false') == 'true') {
             /**
              * Block VPNs.
              */
-            if ($app->getConfig()->getSetting(ConfigInterface::FIREWALL_BLOCK_VPN, 'false') == 'true') {
+            if ($app->getConfig()->getDBSetting(ConfigInterface::FIREWALL_BLOCK_VPN, 'false') == 'true') {
                 if (ProxyCheck::hasProxy($context)) {
                     $app->BadRequest('You are using a vpn or a proxy!', ['error_code' => 'PROXY_DETECTED']);
                 }

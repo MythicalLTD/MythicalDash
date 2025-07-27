@@ -74,8 +74,8 @@ class Servers extends ServersResource
     {
         try {
             $serversResource = new ServersResource(
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
             $server = $serversResource->getServer($serverId);
@@ -117,8 +117,8 @@ class Servers extends ServersResource
     {
         try {
             $serversResource = new ServersResource(
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
             $serversResource->getServer($serverIdentifier);
@@ -142,8 +142,8 @@ class Servers extends ServersResource
     {
         try {
             $serversResource = new ServersResource(
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
             $serversResource->suspendServer($serverId);
@@ -163,8 +163,8 @@ class Servers extends ServersResource
     {
         try {
             $serversResource = new ServersResource(
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
             $serversResource->unsuspendServer($serverId);
@@ -187,8 +187,8 @@ class Servers extends ServersResource
     {
         try {
             $serversResource = new ServersResource(
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
             $serversResource->deleteServer($serverId, $force);
@@ -203,8 +203,8 @@ class Servers extends ServersResource
 
         try {
             $serversResource = new ServersResource(
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
             return $serversResource->updateServerBuild($serverId, $updateData);
@@ -237,8 +237,8 @@ class Servers extends ServersResource
 
         try {
             $serversResource = new ServersResource(
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
             return $serversResource->updateServerDetails($serverId, $updateData);
@@ -270,13 +270,21 @@ class Servers extends ServersResource
 
         try {
             $locationResource = new LocationsResource(
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
             $location = $locationResource->getLocation($locationId);
 
-            return count($location['attributes']['relationships']['servers']['data'], COUNT_NORMAL);
+            if (!isset($location['attributes']) || !isset($location['attributes']['relationships'])
+                || !isset($location['attributes']['relationships']['servers'])
+                || !isset($location['attributes']['relationships']['servers']['data'])) {
+                $appInstance->getLogger()->warning('[Pterodactyl/Admin/Servers#getServerCountByLocation] Server data not found in location attributes');
+
+                return 0;
+            }
+
+            return count($location['attributes']['relationships']['servers']['data']);
         } catch (ResourceNotFoundException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getServerCountByLocation] Locations not found: ' . $e->getMessage(), false);
 
@@ -294,8 +302,8 @@ class Servers extends ServersResource
 
         try {
             $serversResource = new ServersResource(
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                App::getInstance(true)->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
             return $serversResource->listServers();
@@ -326,8 +334,8 @@ class Servers extends ServersResource
         $appInstance = App::getInstance(true);
         try {
             $userResource = new UsersResource(
-                $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
-                $appInstance->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
+                $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                $appInstance->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
             $userInfo = $userResource->getUserWithServers($pterodactylUserId);
             $servers = $userInfo['attributes']['relationships']['servers']['data'] ?? [];

@@ -23,7 +23,7 @@ $router->post('/api/user/gift', function () {
     $appInstance->allowOnlyPOST();
     $config = $appInstance->getConfig();
 
-    if ($config->getSetting(ConfigInterface::ALLOW_COINS_SHARING, 'false') !== 'true') {
+    if ($config->getDBSetting(ConfigInterface::ALLOW_COINS_SHARING, 'false') !== 'true') {
         $appInstance->BadRequest('Coins sharing is not enabled!', ['error_code' => 'COINS_SHARING_NOT_ENABLED']);
     }
 
@@ -41,15 +41,15 @@ $router->post('/api/user/gift', function () {
             $appInstance->BadRequest('Recipient user not found!', ['error_code' => 'RECIPIENT_USER_NOT_FOUND']);
         }
 
-        $fee = (int) $config->getSetting(ConfigInterface::COINS_SHARE_FEE, 10);
+        $fee = (int) $config->getDBSetting(ConfigInterface::COINS_SHARE_FEE, 10);
         $feeAmount = ($coins * $fee) / 100;
         $coinsAfterFee = $coins + $feeAmount;
         if ($coinsAfterFee > $s->getInfo(UserColumns::CREDITS, false)) {
             $appInstance->BadRequest('Insufficient balance! You need ' . $coinsAfterFee . ' coins (including ' . $fee . '% fee)', ['error_code' => 'INSUFFICIENT_BALANCE']);
         }
 
-        $minAmount = $config->getSetting(ConfigInterface::COINS_SHARE_MIN_AMOUNT, 1);
-        $maxAmount = $config->getSetting(ConfigInterface::COINS_SHARE_MAX_AMOUNT, 1000);
+        $minAmount = $config->getDBSetting(ConfigInterface::COINS_SHARE_MIN_AMOUNT, 1);
+        $maxAmount = $config->getDBSetting(ConfigInterface::COINS_SHARE_MAX_AMOUNT, 1000);
 
         if ($coins < $minAmount) {
             $appInstance->BadRequest('Amount is too low! Minimum amount is ' . $minAmount . ' coins', ['error_code' => 'COINS_AMOUNT_TOO_LOW']);

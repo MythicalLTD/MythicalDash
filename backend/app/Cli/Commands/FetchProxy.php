@@ -31,7 +31,12 @@ class FetchProxy extends App implements CommandBuilder
 
         try {
             \MythicalDash\App::getInstance(true)->loadEnv();
-            $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
+            if (isset($_ENV['DATABASE_HOST']) && isset($_ENV['DATABASE_DATABASE']) && isset($_ENV['DATABASE_USER']) && isset($_ENV['DATABASE_PASSWORD']) && isset($_ENV['DATABASE_PORT'])) {
+                $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
+            } else {
+                $app->send('&cFailed to connect to the database: &rDatabase connection failed!');
+                exit;
+            }
             $db = $db->getPdo();
         } catch (\Exception $e) {
             $app->send('&cFailed to connect to the database: &r' . $e->getMessage());

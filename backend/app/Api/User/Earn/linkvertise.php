@@ -33,13 +33,13 @@ $router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
     global $eventManager;
 
     // Check if Linkvertise is enabled
-    if ($config->getSetting(ConfigInterface::L4R_LINKVERTISE_ENABLED, 'false') !== 'true') {
+    if ($config->getDBSetting(ConfigInterface::L4R_LINKVERTISE_ENABLED, 'false') !== 'true') {
         header('Location: /earn/links');
         exit;
     }
 
-    $dayLimit = $config->getSetting(ConfigInterface::L4R_LINKVERTISE_DAILY_LIMIT, 5);
-    $coolDown = $config->getSetting(ConfigInterface::L4R_LINKVERTISE_COOLDOWN_TIME, 3600);
+    $dayLimit = $config->getDBSetting(ConfigInterface::L4R_LINKVERTISE_DAILY_LIMIT, 5);
+    $coolDown = $config->getDBSetting(ConfigInterface::L4R_LINKVERTISE_COOLDOWN_TIME, 3600);
 
     $dayCount = 0;
     $links = Linkvertise::getAllByUser($session->getInfo(UserColumns::UUID, false), 35);
@@ -341,7 +341,7 @@ $router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
 				Go back
 			</a>
 			<script src="https://publisher.linkvertise.com/cdn/linkvertise.js"></script>
-			<script>linkvertise(<?php echo $config->getSetting(ConfigInterface::L4R_LINKVERTISE_USER_ID, '583258'); ?>, { whitelist: [], blacklist: [] });</script>
+			<script>linkvertise(<?php echo $config->getDBSetting(ConfigInterface::L4R_LINKVERTISE_USER_ID, '583258'); ?>, { whitelist: [], blacklist: [] });</script>
 		</div>
 	</body>
 
@@ -358,14 +358,14 @@ $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code)
     global $eventManager;
 
     // Check if Linkvertise is enabled
-    if ($config->getSetting(ConfigInterface::L4R_LINKVERTISE_ENABLED, 'false') !== 'true') {
+    if ($config->getDBSetting(ConfigInterface::L4R_LINKVERTISE_ENABLED, 'false') !== 'true') {
         header('Location: /earn/links?error=linkvertise_not_enabled');
         exit;
     }
 
-    $minToComplete = $config->getSetting(ConfigInterface::L4R_LINKVERTISE_MIN_TIME_TO_COMPLETE, 60);
-    $coolDown = $config->getSetting(ConfigInterface::L4R_LINKVERTISE_COOLDOWN_TIME, 3600);
-    $coinsPerLink = $config->getSetting(ConfigInterface::L4R_LINKVERTISE_COINS_PER_LINK, 60);
+    $minToComplete = $config->getDBSetting(ConfigInterface::L4R_LINKVERTISE_MIN_TIME_TO_COMPLETE, 60);
+    $coolDown = $config->getDBSetting(ConfigInterface::L4R_LINKVERTISE_COOLDOWN_TIME, 3600);
+    $coinsPerLink = $config->getDBSetting(ConfigInterface::L4R_LINKVERTISE_COINS_PER_LINK, 60);
 
     $linkId = Linkvertise::convertCodeToId($code);
     if ($linkId === 0) {

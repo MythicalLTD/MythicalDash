@@ -63,7 +63,7 @@ class MythicalCloudLogs
 
             $request = new \GuzzleHttp\Psr7\Request(
                 'PUT',
-                'https://mymythicalid.mythical.systems/api/system/license/' . $config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL') . '/logs',
+                'https://mymythicalid.mythical.systems/api/system/license/' . $config->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL') . '/logs',
                 $headers,
                 $body
             );
@@ -116,8 +116,8 @@ class MythicalCloudLogs
 
             if (empty($logs)) {
                 $logs = [
-					"Looks like the webserver logs are empty, this is good btw!"
-				];
+                    'Looks like the webserver logs are empty, this is good btw!',
+                ];
             }
 
             // Limit logs to 250 rows (keep the most recent logs)
@@ -137,7 +137,7 @@ class MythicalCloudLogs
 
             $request = new \GuzzleHttp\Psr7\Request(
                 'PUT',
-                'https://mymythicalid.mythical.systems/api/system/license/' . $config->getSetting(ConfigInterface::LICENSE_KEY, 'NULL') . '/logs',
+                'https://mymythicalid.mythical.systems/api/system/license/' . $config->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL') . '/logs',
                 $headers,
                 $body
             );

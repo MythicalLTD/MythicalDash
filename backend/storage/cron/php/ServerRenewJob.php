@@ -56,7 +56,7 @@ class ServerRenewJob implements TimeTask
 
 	private static function isServerRenewalEnabled($config): bool
 	{
-		$enabled = $config->getSetting(ConfigInterface::SERVER_RENEW_ENABLED, 'false');
+		$enabled = $config->getDBSetting(ConfigInterface::SERVER_RENEW_ENABLED, 'false');
 		return strtolower($enabled) === 'true';
 	}
 

@@ -29,17 +29,22 @@ class Init extends App implements CommandBuilder
 
         $appInstance = MainApp::getInstance(true, false);
         $appInstance->loadEnv();
-        $db = new Database(
-            $_ENV['DATABASE_HOST'],
-            $_ENV['DATABASE_DATABASE'],
-            $_ENV['DATABASE_USER'],
-            $_ENV['DATABASE_PASSWORD'],
-            $_ENV['DATABASE_PORT']
-        );
+        if (isset($_ENV['DATABASE_HOST']) && isset($_ENV['DATABASE_DATABASE']) && isset($_ENV['DATABASE_USER']) && isset($_ENV['DATABASE_PASSWORD']) && isset($_ENV['DATABASE_PORT'])) {
+            $db = new Database(
+                $_ENV['DATABASE_HOST'],
+                $_ENV['DATABASE_DATABASE'],
+                $_ENV['DATABASE_USER'],
+                $_ENV['DATABASE_PASSWORD'],
+                $_ENV['DATABASE_PORT']
+            );
+        } else {
+            $app->send('&cFailed to connect to the database: &rDatabase connection failed!');
+            exit;
+        }
         $config = new ConfigFactory($db->getPdo());
 
-        $licenseKeyCfg = $config->getSetting(ConfigInterface::LICENSE_KEY, null);
-        $appUrlCfg = $config->getSetting(ConfigInterface::APP_URL, null);
+        $licenseKeyCfg = $config->getDBSetting(ConfigInterface::LICENSE_KEY, null);
+        $appUrlCfg = $config->getDBSetting(ConfigInterface::APP_URL, null);
 
         $app->send('&7To use MythicalDash, you need a valid license key.');
         $app->send('&7You can obtain a license key from: &bhttps://mymythicalid.mythical.systems/');

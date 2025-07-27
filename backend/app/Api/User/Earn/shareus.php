@@ -33,14 +33,14 @@ $router->get('/api/user/earn/l4r/shareus/start', function (): void {
     global $eventManager;
 
     // Check if ShareUS is enabled
-    if ($config->getSetting(ConfigInterface::L4R_SHAREUS_ENABLED, 'false') !== 'true') {
+    if ($config->getDBSetting(ConfigInterface::L4R_SHAREUS_ENABLED, 'false') !== 'true') {
         header('Location: /earn/links?error=shareus_not_enabled');
         exit;
     }
 
-    $dayLimit = $config->getSetting(ConfigInterface::L4R_SHAREUS_DAILY_LIMIT, 5);
-    $coolDown = $config->getSetting(ConfigInterface::L4R_SHAREUS_COOLDOWN_TIME, 3600);
-    $appUrl = $config->getSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
+    $dayLimit = $config->getDBSetting(ConfigInterface::L4R_SHAREUS_DAILY_LIMIT, 5);
+    $coolDown = $config->getDBSetting(ConfigInterface::L4R_SHAREUS_COOLDOWN_TIME, 3600);
+    $appUrl = $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
 
     $dayCount = 0;
     $links = ShareUSDB::getAllByUser($session->getInfo(UserColumns::UUID, false), 35);
@@ -273,7 +273,7 @@ $router->get('/api/user/earn/l4r/shareus/start', function (): void {
     }
     $finalLink = $appUrl . '/api/user/earn/l4r/shareus/earn/' . $ShareUSUUID;
     try {
-        $shareUS = new ShareUS($config->getSetting(ConfigInterface::L4R_SHAREUS_API_KEY, ''));
+        $shareUS = new ShareUS($config->getDBSetting(ConfigInterface::L4R_SHAREUS_API_KEY, ''));
         $link = $shareUS->getLink($finalLink);
         $eventManager->emit(LinkForRewardEvent::onLinkForRewardCreated(), [
             'user' => $session->getInfo(UserColumns::UUID, false),
@@ -297,14 +297,14 @@ $router->get('/api/user/earn/l4r/shareus/earn/(.*)', function (string $code): vo
     global $eventManager;
 
     // Check if ShareUS is enabled
-    if ($config->getSetting(ConfigInterface::L4R_SHAREUS_ENABLED, 'false') !== 'true') {
+    if ($config->getDBSetting(ConfigInterface::L4R_SHAREUS_ENABLED, 'false') !== 'true') {
         header('Location: /earn/links');
         exit;
     }
 
-    $minToComplete = $config->getSetting(ConfigInterface::L4R_SHAREUS_MIN_TIME_TO_COMPLETE, 60);
-    $coolDown = $config->getSetting(ConfigInterface::L4R_SHAREUS_COOLDOWN_TIME, 3600);
-    $coinsPerLink = $config->getSetting(ConfigInterface::L4R_SHAREUS_COINS_PER_LINK, 60);
+    $minToComplete = $config->getDBSetting(ConfigInterface::L4R_SHAREUS_MIN_TIME_TO_COMPLETE, 60);
+    $coolDown = $config->getDBSetting(ConfigInterface::L4R_SHAREUS_COOLDOWN_TIME, 3600);
+    $coinsPerLink = $config->getDBSetting(ConfigInterface::L4R_SHAREUS_COINS_PER_LINK, 60);
 
     // Validate code format
     if (empty($code) || !preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', $code)) {

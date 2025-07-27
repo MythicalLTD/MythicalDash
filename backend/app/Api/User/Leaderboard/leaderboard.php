@@ -23,11 +23,11 @@ $router->add('/api/user/leaderboard/(.*)', function ($type) {
     new Session($appInstance);
 
     $config = $appInstance->getConfig();
-    if (!$config->getSetting(MythicalDash\Config\ConfigInterface::LEADERBOARD_ENABLED, 'false') == 'false') {
+    if (!$config->getDBSetting(MythicalDash\Config\ConfigInterface::LEADERBOARD_ENABLED, 'false') == 'false') {
         $appInstance->BadRequest('Leaderboard is disabled', ['error_code' => 'LEADERBOARD_DISABLED']);
     }
 
-    $limit = $config->getSetting(MythicalDash\Config\ConfigInterface::LEADERBOARD_LIMIT, 15);
+    $limit = $config->getDBSetting(MythicalDash\Config\ConfigInterface::LEADERBOARD_LIMIT, 15);
     if (!in_array($type, LeaderboardTypes::getLeaderboardTypes())) {
         $appInstance->BadRequest('Invalid type', ['error_code' => 'INVALID_TYPE']);
     }

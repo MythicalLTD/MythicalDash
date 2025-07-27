@@ -24,7 +24,7 @@ $router->get('/api/user/profile/(.*)', function ($uuid) {
     new Session($appInstance);
     $config = $appInstance->getConfig();
 
-    if ($config->getSetting(ConfigInterface::ALLOW_PUBLIC_PROFILES, 'false') === 'false') {
+    if ($config->getDBSetting(ConfigInterface::ALLOW_PUBLIC_PROFILES, 'false') === 'false') {
         $appInstance->BadRequest('Public profiles are not enabled!', ['error_code' => 'PUBLIC_PROFILES_NOT_ENABLED']);
     }
 

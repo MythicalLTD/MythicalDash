@@ -35,18 +35,19 @@ class FixSettings extends App implements CommandBuilder
             $pdo = $db->getPdo();
 
             // Find all names with duplicates
-            $sql = "SELECT name FROM mythicaldash_settings GROUP BY name HAVING COUNT(*) > 1";
+            $sql = 'SELECT name FROM mythicaldash_settings GROUP BY name HAVING COUNT(*) > 1';
             $stmt = $pdo->query($sql);
             $duplicates = $stmt->fetchAll(\PDO::FETCH_COLUMN);
 
             if (empty($duplicates)) {
                 $cliApp->send('&aNo duplicate settings found.');
+
                 return;
             }
 
             foreach ($duplicates as $name) {
                 // Get all ids for this name, ordered by id ASC (oldest first)
-                $sql = "SELECT id FROM mythicaldash_settings WHERE name = :name ORDER BY id ASC";
+                $sql = 'SELECT id FROM mythicaldash_settings WHERE name = :name ORDER BY id ASC';
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute(['name' => $name]);
                 $ids = $stmt->fetchAll(\PDO::FETCH_COLUMN);

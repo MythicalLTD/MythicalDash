@@ -36,7 +36,12 @@ class Setsetting extends App implements CommandBuilder
         \MythicalDash\App::getInstance(true)->loadEnv();
 
         try {
-            $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
+            if (isset($_ENV['DATABASE_HOST']) && isset($_ENV['DATABASE_DATABASE']) && isset($_ENV['DATABASE_USER']) && isset($_ENV['DATABASE_PASSWORD']) && isset($_ENV['DATABASE_PORT'])) {
+                $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
+            } else {
+                $cliApp->send('&cFailed to connect to the database: &rDatabase connection failed!');
+                exit;
+            }
             $config = new ConfigFactory($db->getPdo());
             $config->setSetting($setting, $value);
         } catch (\Exception $e) {

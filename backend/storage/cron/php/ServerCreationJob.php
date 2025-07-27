@@ -305,8 +305,8 @@ class ServerCreationJob implements TimeTask
 	{
 		$chat->sendOutputWithNewLine($servePrefix . "&aCreating server...");
 		self::logMessage($servePrefix . "&aCreating server...");
-		$baseUrl = $app->getConfig()->getSetting(ConfigInterface::PTERODACTYL_BASE_URL, 'https://pterodactyl.mythical.systems');
-		$apiKey = $app->getConfig()->getSetting(ConfigInterface::PTERODACTYL_API_KEY, 'mythical');
+		$baseUrl = $app->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, 'https://pterodactyl.mythical.systems');
+		$apiKey = $app->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, 'mythical');
 
 		$servers = new ServersResource($baseUrl, $apiKey);
 		$nests = new NestsResource($baseUrl, $apiKey);
@@ -358,9 +358,9 @@ class ServerCreationJob implements TimeTask
 				$chat->sendOutputWithNewLine($servePrefix . "&a" . $successMsg);
 				self::logMessage($servePrefix . "&a" . $successMsg);
 				$svID = Server::create($response['attributes']['id'], $id, $userUUID);
-				$isRenewal = $app->getConfig()->getSetting(ConfigInterface::SERVER_RENEW_ENABLED, 'false');
+				$isRenewal = $app->getConfig()->getDBSetting(ConfigInterface::SERVER_RENEW_ENABLED, 'false');
 				if ($isRenewal == 'true') {
-					$server_renew_days = (int) $app->getConfig()->getSetting(ConfigInterface::SERVER_RENEW_DAYS, 30);
+					$server_renew_days = (int) $app->getConfig()->getDBSetting(ConfigInterface::SERVER_RENEW_DAYS, 30);
 
 					// Get existing expiration date if it exists, otherwise use current time
 					$existingExpiration = Server::getExpirationTimestamp($svID);

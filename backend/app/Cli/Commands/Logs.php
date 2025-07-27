@@ -48,7 +48,7 @@ class Logs extends App implements CommandBuilder
             if (!$dashboardLogsUrl) {
                 $app->send('&c- Dashboard logs upload failed: ' . $dashboardLogsUrl);
             }
-            if (!$webServerLogsUrl) {	
+            if (!$webServerLogsUrl) {
                 $app->send('&c- Web server logs upload failed: ' . $webServerLogsUrl);
             }
         }
