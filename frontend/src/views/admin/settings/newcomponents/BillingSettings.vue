@@ -175,19 +175,14 @@
                             <h4 class="font-medium text-white">PayPal</h4>
                             <p class="text-sm text-gray-400">Accept payments via PayPal</p>
                         </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                class="sr-only peer"
-                                v-model="formData.enable_paypal"
-                                :true-value="'true'"
-                                :false-value="'false'"
-                                @change="markChanged('enable_paypal')"
-                            />
-                            <div
-                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"
-                            ></div>
-                        </label>
+                        <input
+                            type="checkbox"
+                            v-model="formData.enable_paypal"
+                            :true-value="'true'"
+                            :false-value="'false'"
+                            @change="markChanged('enable_paypal')"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
                     </div>
 
                     <div v-if="formData.enable_paypal === 'true'" class="pl-1 border-l-2 border-pink-500/50 space-y-4">
@@ -206,19 +201,14 @@
                         </div>
                         <div>
                             <div class="flex items-center mb-1">
-                                <label class="relative inline-flex items-center cursor-pointer mr-3">
-                                    <input
-                                        type="checkbox"
-                                        class="sr-only peer"
-                                        v-model="formData.paypal_is_sandbox"
-                                        :true-value="'true'"
-                                        :false-value="'false'"
-                                        @change="markChanged('paypal_is_sandbox')"
-                                    />
-                                    <div
-                                        class="w-9 h-5 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-pink-600"
-                                    ></div>
-                                </label>
+                                <input
+                                    type="checkbox"
+                                    v-model="formData.paypal_is_sandbox"
+                                    :true-value="'true'"
+                                    :false-value="'false'"
+                                    @change="markChanged('paypal_is_sandbox')"
+                                    class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500 mr-3"
+                                />
                                 <span class="text-sm font-medium text-gray-400">Use Sandbox Mode</span>
                             </div>
                             <p class="text-xs text-gray-500 ml-12">Enable for testing. Disable for live payments.</p>
@@ -233,19 +223,14 @@
                             <h4 class="font-medium text-white">Stripe</h4>
                             <p class="text-sm text-gray-400">Accept credit card payments via Stripe</p>
                         </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                class="sr-only peer"
-                                v-model="formData.enable_stripe"
-                                :true-value="'true'"
-                                :false-value="'false'"
-                                @change="markChanged('enable_stripe')"
-                            />
-                            <div
-                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"
-                            ></div>
-                        </label>
+                        <input
+                            type="checkbox"
+                            v-model="formData.enable_stripe"
+                            :true-value="'true'"
+                            :false-value="'false'"
+                            @change="markChanged('enable_stripe')"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
                     </div>
 
                     <div v-if="formData.enable_stripe === 'true'" class="pl-1 border-l-2 border-pink-500/50 space-y-4">

@@ -20,6 +20,7 @@ import {
     Image as ImageIcon,
     LinkIcon,
     Shield,
+    Server,
 } from 'lucide-vue-next';
 import type { MenuGroup, ProfileMenuItem } from '../types';
 import Session from '@/mythicaldash/Session';
@@ -43,6 +44,7 @@ interface DashboardCounts {
     images_count: number;
     redirect_links_count: number;
     roles_count: number;
+    j4r_servers_count: number;
 }
 
 interface DashboardData {
@@ -118,14 +120,7 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                         },
                     ],
                 },
-                {
-                    name: 'Redeem Codes',
-                    path: `${adminBaseUri}/redeem-codes`,
-                    icon: Coin,
-                    count: computed(() => dashBoard.value.count.redeem_codes_count || 0),
-                    active: route.path === `${adminBaseUri}/redeem-codes`,
-                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_REDEEM_CODES_LIST)),
-                },
+
                 {
                     name: 'Departments',
                     path: `${adminBaseUri}/departments`,
@@ -141,6 +136,27 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     count: computed(() => dashBoard.value.count.roles_count || 0),
                     active: route.path === `${adminBaseUri}/roles`,
                     visible: computed(() => Session.Permission.Has(Permissions.ADMIN_ROLES_LIST)),
+                },
+            ],
+        },
+        {
+            title: 'Earning',
+            items: [
+                {
+                    name: 'J4R Servers',
+                    path: `${adminBaseUri}/j4r-servers`,
+                    icon: Server,
+                    count: computed(() => dashBoard.value.count.j4r_servers_count || 0),
+                    active: route.path === `${adminBaseUri}/j4r-servers`,
+                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_J4R_SERVERS_LIST)),
+                },
+                {
+                    name: 'Redeem Codes',
+                    path: `${adminBaseUri}/redeem-codes`,
+                    icon: Coin,
+                    count: computed(() => dashBoard.value.count.redeem_codes_count || 0),
+                    active: route.path === `${adminBaseUri}/redeem-codes`,
+                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_REDEEM_CODES_LIST)),
                 },
             ],
         },

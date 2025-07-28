@@ -129,6 +129,7 @@ const dashBoard = ref({
         images_count: 0,
         redirect_links_count: 0,
         roles_count: 0,
+        j4r_servers_count: 0,
     },
 });
 

@@ -185,19 +185,12 @@
                             <h4 class="font-medium text-white">Leaderboard</h4>
                             <p class="text-sm text-gray-400">Enable the public leaderboard feature</p>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    v-model="formData.leaderboard_enabled"
-                                    @change="markChanged('leaderboard_enabled')"
-                                    class="sr-only peer"
-                                />
-                                <div
-                                    class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"
-                                ></div>
-                            </label>
-                        </div>
+                        <input
+                            type="checkbox"
+                            v-model="formData.leaderboard_enabled"
+                            @change="markChanged('leaderboard_enabled')"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
                     </div>
 
                     <!-- Tickets -->
@@ -206,19 +199,12 @@
                             <h4 class="font-medium text-white">Support Tickets</h4>
                             <p class="text-sm text-gray-400">Allow users to create support tickets</p>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    v-model="formData.allow_tickets"
-                                    @change="markChanged('allow_tickets')"
-                                    class="sr-only peer"
-                                />
-                                <div
-                                    class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"
-                                ></div>
-                            </label>
-                        </div>
+                        <input
+                            type="checkbox"
+                            v-model="formData.allow_tickets"
+                            @change="markChanged('allow_tickets')"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
                     </div>
 
                     <!-- Servers -->
@@ -227,19 +213,12 @@
                             <h4 class="font-medium text-white">Server Management</h4>
                             <p class="text-sm text-gray-400">Allow users to manage their servers</p>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    v-model="formData.allow_servers"
-                                    @change="markChanged('allow_servers')"
-                                    class="sr-only peer"
-                                />
-                                <div
-                                    class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"
-                                ></div>
-                            </label>
-                        </div>
+                        <input
+                            type="checkbox"
+                            v-model="formData.allow_servers"
+                            @change="markChanged('allow_servers')"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
                     </div>
 
                     <!-- Public Profiles -->
@@ -248,19 +227,12 @@
                             <h4 class="font-medium text-white">Public Profiles</h4>
                             <p class="text-sm text-gray-400">Allow users to have public profiles</p>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    v-model="formData.allow_public_profiles"
-                                    @change="markChanged('allow_public_profiles')"
-                                    class="sr-only peer"
-                                />
-                                <div
-                                    class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"
-                                ></div>
-                            </label>
-                        </div>
+                        <input
+                            type="checkbox"
+                            v-model="formData.allow_public_profiles"
+                            @change="markChanged('allow_public_profiles')"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
                     </div>
 
                     <!-- Coins Sharing -->
@@ -269,19 +241,12 @@
                             <h4 class="font-medium text-white">Coins Sharing</h4>
                             <p class="text-sm text-gray-400">Allow users to share coins with each other</p>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    v-model="formData.allow_coins_sharing"
-                                    @change="markChanged('allow_coins_sharing')"
-                                    class="sr-only peer"
-                                />
-                                <div
-                                    class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"
-                                ></div>
-                            </label>
-                        </div>
+                        <input
+                            type="checkbox"
+                            v-model="formData.allow_coins_sharing"
+                            @change="markChanged('allow_coins_sharing')"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
                     </div>
 
                     <!-- Daily Backup -->
@@ -290,19 +255,12 @@
                             <h4 class="font-medium text-white">Daily Backup</h4>
                             <p class="text-sm text-gray-400">Enable automatic daily database backups</p>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    v-model="formData.daily_backup_enabled"
-                                    @change="markChanged('daily_backup_enabled')"
-                                    class="sr-only peer"
-                                />
-                                <div
-                                    class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"
-                                ></div>
-                            </label>
-                        </div>
+                        <input
+                            type="checkbox"
+                            v-model="formData.daily_backup_enabled"
+                            @change="markChanged('daily_backup_enabled')"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
                     </div>
                 </div>
             </div>

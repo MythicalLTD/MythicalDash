@@ -233,7 +233,18 @@
                                               .replace(/^https?:\/\//, '')
                                               .replace(/^\/+/, '')
                                         : Settings.getSetting('app_url')
-                                }}/api/user/auth/callback/discord/login
+                                }}/api/user/auth/callback/discord/login </code
+                            ><br />
+                            <code class="text-sm text-indigo-400 break-all">
+                                {{
+                                    Settings.getSetting('app_url') &&
+                                    !Settings.getSetting('app_url').startsWith('https://')
+                                        ? 'https://' +
+                                          Settings.getSetting('app_url')
+                                              .replace(/^https?:\/\//, '')
+                                              .replace(/^\/+/, '')
+                                        : Settings.getSetting('app_url')
+                                }}/api/user/auth/callback/discord/j4r
                             </code>
                         </div>
                     </div>

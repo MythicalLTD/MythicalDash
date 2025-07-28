@@ -1,26 +1,30 @@
 <template>
     <LayoutDashboard>
-        <!-- Legacy Settings Notice -->
+        <!-- CLI Configuration Notice -->
         <div
-            class="bg-blue-500/20 border border-blue-500/30 text-blue-400 p-4 rounded-lg mb-6 flex items-center justify-between"
+            class="bg-yellow-500/20 border border-yellow-500/30 text-yellow-400 p-4 rounded-lg mb-6 flex items-center justify-between"
         >
             <div class="flex items-center">
-                <AlertCircleIcon class="w-5 h-5 mr-3" />
+                <AlertTriangleIcon class="w-5 h-5 mr-3" />
                 <div>
-                    <p class="font-medium">Welcome to our brand new settings page!</p>
-                    <p class="text-sm text-blue-300">
-                        If anything fails or is missing, you can check out our legacy settings page that will be removed
-                        in the future.
+                    <p class="font-medium">Recommended: Use CLI for Configuration</p>
+                    <p class="text-sm text-yellow-300">
+                        For better reliability and advanced configuration options, we recommend using the CLI command:
+                        <code class="bg-yellow-600/30 px-2 py-1 rounded text-xs font-mono"
+                            >php mythicaldash settings</code
+                        >
                     </p>
                 </div>
             </div>
-            <a
-                href="/mc-admin/settings/old"
-                class="flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm"
-            >
-                <SettingsIcon class="w-4 h-4 mr-2" />
-                Legacy Settings
-            </a>
+            <div class="flex items-center space-x-2">
+                <a
+                    href="/mc-admin/settings/old"
+                    class="flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm"
+                >
+                    <SettingsIcon class="w-4 h-4 mr-2" />
+                    Legacy Settings
+                </a>
+            </div>
         </div>
 
         <!-- Header -->
@@ -272,6 +276,7 @@ import {
     RotateCcw as RotateCcwIcon,
     CheckCircle as CheckCircleIcon,
     AlertCircle as AlertCircleIcon,
+    AlertTriangle as AlertTriangleIcon,
     LoaderIcon,
     X as XIcon,
 } from 'lucide-vue-next';

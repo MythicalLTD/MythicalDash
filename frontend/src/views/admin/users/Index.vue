@@ -32,8 +32,6 @@ interface User {
     id: number;
     username: string;
     uuid: string;
-    first_name: string;
-    last_name: string;
     email: string;
     avatar: string;
     role: number;
@@ -103,14 +101,6 @@ const columns = [
         accessorKey: 'username',
         header: 'Username',
         cell: (info: { getValue: () => string }) => info.getValue(),
-    },
-    {
-        id: 'fullName',
-        header: 'Full Name',
-        cell: (info: { row: { original: User } }) => {
-            const user = info.row.original;
-            return `${user.first_name} ${user.last_name}`;
-        },
     },
     {
         accessorKey: 'email',

@@ -4,9 +4,9 @@ This document provides a comprehensive overview of all permission nodes used in 
 
 ## Overview
 
-- **Total Permissions:** 80
-- **Categories:** 25
-- **With Descriptions:** 80
+- **Total Permissions:** 84
+- **Categories:** 26
+- **With Descriptions:** 84
 
 ## Format
 
@@ -76,6 +76,15 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_USERS_EDIT` | `admin.users.edit` | Edit existing users |
 | `ADMIN_USERS_DELETE` | `admin.users.delete` | Delete users |
 | `ADMIN_USERS_LIST` | `admin.users.list` | List all users |
+
+## Admin J4R Servers
+
+| Permission | Node | Description |
+|------------|------|-------------|
+| `ADMIN_J4R_SERVERS_CREATE` | `admin.j4r.servers.create` | Create new J4R (Join for Rewards) servers |
+| `ADMIN_J4R_SERVERS_EDIT` | `admin.j4r.servers.edit` | Edit existing J4R (Join for Rewards) servers |
+| `ADMIN_J4R_SERVERS_DELETE` | `admin.j4r.servers.delete` | Delete J4R (Join for Rewards) servers |
+| `ADMIN_J4R_SERVERS_LIST` | `admin.j4r.servers.list` | List all J4R (Join for Rewards) servers |
 
 ## Admin Locations
 
@@ -264,4 +273,4 @@ To add a new permission node:
 
 ---
 
-*This documentation was auto-generated on 2025-07-27 23:52:00*
+*This documentation was auto-generated on 2025-07-28 15:34:57*

@@ -63,6 +63,7 @@ class UserColumns
     public const DISCORD_EMAIL = 'discord_email';
     public const DISCORD_LINKED = 'discord_linked';
     public const DISCORD_SERVERS = 'discord_servers';
+    public const J4R_JOINED_SERVERS = 'j4r_joined_servers';
 
     public const GITHUB_ID = 'github_id';
     public const GITHUB_USERNAME = 'github_username';
@@ -124,6 +125,7 @@ class UserColumns
             self::DISCORD_GLOBAL_NAME,
             self::DISCORD_EMAIL,
             self::DISCORD_LINKED,
+            self::J4R_JOINED_SERVERS,
             self::GITHUB_ID,
             self::GITHUB_USERNAME,
             self::GITHUB_EMAIL,

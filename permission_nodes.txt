@@ -29,6 +29,11 @@ ADMIN_USERS_EDIT=admin.users.edit | Admin Users | Edit existing users
 ADMIN_USERS_DELETE=admin.users.delete | Admin Users | Delete users
 ADMIN_USERS_LIST=admin.users.list | Admin Users | List all users
 
+ADMIN_J4R_SERVERS_CREATE=admin.j4r.servers.create | Admin J4R Servers | Create new J4R (Join for Rewards) servers
+ADMIN_J4R_SERVERS_EDIT=admin.j4r.servers.edit | Admin J4R Servers | Edit existing J4R (Join for Rewards) servers
+ADMIN_J4R_SERVERS_DELETE=admin.j4r.servers.delete | Admin J4R Servers | Delete J4R (Join for Rewards) servers
+ADMIN_J4R_SERVERS_LIST=admin.j4r.servers.list | Admin J4R Servers | List all J4R (Join for Rewards) servers
+
 
 # Admin Locations
 ADMIN_LOCATIONS_CREATE=admin.locations.create | Admin Locations | Create new locations

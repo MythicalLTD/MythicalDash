@@ -31,7 +31,7 @@ $router->get('/api/admin/users', function (): void {
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_USERS_LIST, $session);
-    $user = User::getListWithFilters(['id', 'username', 'first_name', 'last_name', 'email', 'avatar', 'pterodactyl_user_id', 'role', 'last_seen', 'uuid'], ['first_name', 'last_name']);
+    $user = User::getListWithFilters(['id', 'username','email', 'avatar', 'pterodactyl_user_id', 'role', 'last_seen', 'uuid'], []);
 
     $appInstance->OK('Users data retrieved successfully.', [
         'users' => $user,
@@ -117,15 +117,9 @@ $router->post('/api/admin/user/(.*)/update', function ($userId): void {
         $appInstance->BadRequest('User ID is required', ['error_code' => 'USER_ID_REQUIRED']);
     }
     if (User::exists(UserColumns::UUID, $userId)) {
-        if (isset($_POST['column']) && isset($_POST['value']) && isset($_POST['encrypted'])) {
+        if (isset($_POST['column']) && isset($_POST['value'])) {
             $column = $_POST['column'];
             $value = $_POST['value'];
-            $encrypted = $_POST['encrypted'];
-            if ($encrypted === 'true') {
-                $encrypted = true;
-            } else {
-                $encrypted = false;
-            }
             UserActivities::add(
                 $session->getInfo(UserColumns::UUID, false),
                 UserActivitiesTypes::$admin_user_update,
@@ -138,7 +132,18 @@ $router->post('/api/admin/user/(.*)/update', function ($userId): void {
                 'user' => $userId,
             ]);
             $token = User::getTokenFromUUID($userId);
-            if (User::updateInfo($token, $column, $value, $encrypted)) {
+			
+			// Define which columns should be encrypted
+			$encryptedColumns = [
+				UserColumns::FIRST_NAME,
+				UserColumns::LAST_NAME,
+				UserColumns::PASSWORD,
+			];
+			
+			// Use the built-in is_encrypted flag instead of manual encryption
+			$isEncrypted = in_array($column, $encryptedColumns);
+
+            if (User::updateInfo($token, $column, $value, $isEncrypted)) {
                 $appInstance->OK('User updated successfully.', ['error_code' => 'USER_UPDATED']);
             } else {
                 $appInstance->InternalServerError('Failed to update user', ['error_code' => 'USER_UPDATE_FAILED']);

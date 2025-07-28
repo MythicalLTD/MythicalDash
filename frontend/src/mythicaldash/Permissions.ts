@@ -51,6 +51,16 @@ class Permissions {
     /** List all users */
     public static ADMIN_USERS_LIST = 'admin.users.list';
 
+    // Admin J4R Servers Permissions
+    /** Create new J4R (Join for Rewards) servers */
+    public static ADMIN_J4R_SERVERS_CREATE = 'admin.j4r.servers.create';
+    /** Edit existing J4R (Join for Rewards) servers */
+    public static ADMIN_J4R_SERVERS_EDIT = 'admin.j4r.servers.edit';
+    /** Delete J4R (Join for Rewards) servers */
+    public static ADMIN_J4R_SERVERS_DELETE = 'admin.j4r.servers.delete';
+    /** List all J4R (Join for Rewards) servers */
+    public static ADMIN_J4R_SERVERS_LIST = 'admin.j4r.servers.list';
+
     // Admin Locations Permissions
     /** Create new locations */
     public static ADMIN_LOCATIONS_CREATE = 'admin.locations.create';
@@ -315,6 +325,30 @@ class Permissions {
                 value: Permissions.ADMIN_USERS_LIST,
                 category: 'Admin Users',
                 description: 'List all users',
+            },
+            {
+                constant: 'ADMIN_J4R_SERVERS_CREATE',
+                value: Permissions.ADMIN_J4R_SERVERS_CREATE,
+                category: 'Admin J4R Servers',
+                description: 'Create new J4R (Join for Rewards) servers',
+            },
+            {
+                constant: 'ADMIN_J4R_SERVERS_EDIT',
+                value: Permissions.ADMIN_J4R_SERVERS_EDIT,
+                category: 'Admin J4R Servers',
+                description: 'Edit existing J4R (Join for Rewards) servers',
+            },
+            {
+                constant: 'ADMIN_J4R_SERVERS_DELETE',
+                value: Permissions.ADMIN_J4R_SERVERS_DELETE,
+                category: 'Admin J4R Servers',
+                description: 'Delete J4R (Join for Rewards) servers',
+            },
+            {
+                constant: 'ADMIN_J4R_SERVERS_LIST',
+                value: Permissions.ADMIN_J4R_SERVERS_LIST,
+                category: 'Admin J4R Servers',
+                description: 'List all J4R (Join for Rewards) servers',
             },
             {
                 constant: 'ADMIN_LOCATIONS_CREATE',

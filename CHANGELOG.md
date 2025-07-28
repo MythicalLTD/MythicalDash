@@ -2,39 +2,42 @@
 
 ## Bug Fixes
 
-- **Server Management**: Resolved null server reference issues that could cause dashboard crashes
-- **Environment Variables**: Fixed critical bug where environment values were returning null, affecting system stability
-- **Redis Dependency**: Addressed startup failure when Redis service is unavailable
-- **Pterodactyl Integration**: Fixed empty or null values being returned from Pterodactyl API calls
-- **File Permissions**: Resolved dashboard file access issues caused by incorrect permission settings
-- **Server Updates**: Fixed server update process that sometimes required unexpected dependencies
-- **Version Management**: Updated application version handling for better compatibility
-- **User Interface**: Fixed profile dropdown and notification bar UI rendering issues
-- **User Management**: Resolved bug where disabled profiles were still being displayed
-- **Data Validation**: Fixed NaN (Not a Number) errors appearing in form fields with missing values
-- **System Configuration**: Corrected timezone settings that were not being properly applied
-- **Code Quality**: Removed unnecessary imports of `defineEmits` in Vue `<script setup>` blocks, as it is a compiler macro and does not need to be imported. This prevents potential warnings and improves code clarity.
-- **Authentication**: Fixed an issue where some login values could be null during authentication. The system now checks for missing or null login values and fails the login gracefully to prevent downstream errors.
-- **Plugin System**: Fixed an issue where settings could not be applied via plugins due to variable name reuse. The settings update logic now uses unique variable names to prevent conflicts when plugins attempt to modify settings.
-- **Authentication**: Completely rewrote the GitHub and Discord user authentication methods. The new implementation provides improved reliability, clearer error handling, and better integration with the dashboard's event and activity logging systems. The refactored code ensures secure OAuth flows, robust session management, and enhanced support for linking, logging in, and unlinking user accounts via GitHub and Discord. This update also lays the groundwork for future enhancements and improved third-party integration security.
+- Fixed null server reference issues
+- Fixed environment values returning null
+- Fixed Redis dependency startup failure
+- Fixed Pterodactyl API null values
+- Fixed file permission issues
+- Fixed server update dependencies
+- Fixed version handling
+- Fixed profile dropdown UI
+- Fixed disabled profiles display
+- Fixed NaN form field errors
+- Fixed timezone settings
+- Removed unnecessary `defineEmits` imports
+- Fixed null login values during authentication
+- Fixed plugin settings variable conflicts
+- Rewrote GitHub and Discord authentication
+- Fixed user data corruption in admin area
 
 ## Enhancements
 
-- **Plugin System**: Implemented early plugin injection support with Mixin architecture
-- **API Performance**: Added bulk settings update endpoint for improved efficiency
-- **Settings Management**: Enhanced settings reading with proper default value handling
-- **User Experience**: Completely redesigned settings page with modern interface and improved usability
-- **Image Hosting**: Added support for image host when `app_url` does not start with `https://`. The system now automatically prepends `https://` if missing, ensuring correct URL generation for image hosting features.
-- **Email System**: Fixed email template URL generation to always prepend `https://` to `app_url` if missing, ensuring all links in emails are valid and secure.
-- **Server List**: Added a search bar to the server list, allowing users to quickly filter and find servers by name or identifier.
-- **Language Selector**: Improved the language selector in the top navigation bar. The new selector displays language names with their respective flags, provides clearer active state indication, and offers a more accessible dropdown experience for users choosing their preferred language.
-- **Startup Health Checks**: Added automatic health checks during application startup. The system now verifies critical dependencies and configuration before running, preventing the app from starting if major issues are detected. This helps avoid cascading errors and ensures a more stable experience.
-- **Discord & GitHub Integration**: The system now automatically prepends `https://` to Discord and GitHub URLs if missing. This ensures all integration links are valid and secure, improving reliability for OAuth and webhooks.
-- **Admin Settings**: The admin settings page now fully supports and enforces `https://` for all relevant URLs. When entering integration URLs (such as for Discord, GitHub, or image hosting), the system will automatically prepend `https://` if it is missing, ensuring all links are secure and valid throughout the dashboard.
-- **Daily Backups**: Added support for daily backups. Admins can now enable or disable daily backups from the settings page. When enabled, the system will automatically take daily backups of the dashboard data to help prevent data loss.
-- **Admin UI**: Made small UI fixes in the admin area for improved consistency and visual polish. Adjusted spacing, alignment, and color contrast in settings forms and sidebar. Improved toggle switch accessibility and fixed minor layout issues in integration settings.
-- **Discord Integration**: Added the ability to fetch a user's Discord guilds and force them to join the hosting provider's Discord server during account linking. This ensures users are automatically added to the required Discord server if the "Force Join Server" setting is enabled. The system now also stores the user's Discord server list for future reference and management.
-
+- Added early plugin injection support
+- Added bulk settings update endpoint
+- Enhanced settings reading with defaults
+- Redesigned settings page
+- Added HTTPS auto-prepend for image hosting
+- Fixed email template URL generation
+- Added server list search bar
+- Improved language selector
+- Added startup health checks
+- Added HTTPS auto-prepend for Discord/GitHub
+- Added HTTPS enforcement in admin settings
+- Added daily backups support
+- Fixed admin UI consistency
+- Added Discord guild fetching
+- Added J4R (Join for Reward) support
+- Added CLI settings command
+- Added CLI encrypt command
 
 ## Breaking Changes
 - None

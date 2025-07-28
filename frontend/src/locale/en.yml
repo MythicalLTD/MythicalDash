@@ -77,6 +77,7 @@ Components:
             cpu: 'CPU'
             disk: 'Disk'
             actions: 'Actions'
+
     ManageAccount:
         title: 'My Profile'
         description: 'Your account information'
@@ -1423,6 +1424,136 @@ store:
                         one: 'MySQL/MariaDB'
                         two: 'Automated backups'
                         three: 'Secure access'
+
+j4r:
+    notEnabled:
+        title: 'Join For Rewards'
+        text: 'Join For Rewards is not enabled on this host!'
+        footer: 'Please contact support for assistance'
+        confirmButtonText: 'OK'
+    pages:
+        index:
+            title: 'Join For Rewards'
+            subTitle: 'Join Discord servers to earn coins'
+            loading: 'Loading servers...'
+            empty: 'No servers available'
+            claimButton: 'Claim Rewards'
+            claiming: 'Claiming...'
+            checkButton: 'Check for Rewards'
+            checking: 'Checking...'
+            serverList:
+                title: 'Available Servers'
+                description: 'Join these Discord servers to earn rewards'
+                joined: 'Joined'
+                notJoined: 'Not Joined'
+                joinServer: 'Join Server'
+                alreadyJoined: 'Already Joined'
+                members: 'members'
+                online: 'online'
+                coins: 'coins'
+                inviteLink: 'Join Server'
+                serverBanner: 'Server Banner'
+                serverIcon: 'Server Icon'
+            stats:
+                title: 'Your Stats'
+                description: 'J4R participation statistics'
+                currentBalance: 'Current Balance'
+                totalEarned: 'Total Earned'
+                serversJoined: 'Servers Joined'
+                availableServers: 'Available Servers'
+                remainingCoins: 'Remaining Coins'
+            alerts:
+                success:
+                    title: 'Success'
+                    rewards_claimed: 'Rewards claimed successfully!'
+                    coins_earned: 'You earned {0} coins!'
+                    servers_joined: 'You joined {0} new server(s)!'
+                    footer: 'Your rewards have been added to your account'
+                error:
+                    title: 'Error'
+                    discord_not_linked: 'You must link your Discord account first'
+                    discord_not_enabled: 'Discord integration is not enabled'
+                    check_failed: 'Failed to check for rewards'
+                    claim_failed: 'Failed to claim rewards'
+                    generic: 'An error occurred. Please try again later'
+                    footer: 'Please contact support for assistance'
+            steps:
+                title: 'How It Works'
+                description: 'Join Discord servers for rewards'
+                one:
+                    title: 'Link Discord'
+                    number: '1'
+                    description: 'Connect your Discord account to participate'
+                two:
+                    title: 'Join Servers'
+                    number: '2'
+                    description: 'Join the Discord servers listed below'
+                three:
+                    title: 'Claim Rewards'
+                    number: '3'
+                    description: 'Click "Claim Rewards" to receive your coins'
+                four:
+                    title: 'Get Rewarded'
+                    number: '4'
+                    description: 'Coins will be added to your account automatically'
+            messages:
+                checkBackLater: 'Check back later for new opportunities'
+                noServersDescription: 'No servers available right now'
+                loadingServers: 'Loading available servers...'
+                claimRewardsDescription: 'Click to check for new server joins and claim your rewards'
+                discordRequired: 'Discord Account Required'
+                discordRequiredDescription: 'You need to link your Discord account to participate in Join for Rewards.'
+                linkDiscordButton: 'Link Discord Account'
+                claimButtonDescription: 'Check for new server joins and claim rewards'
+                claimingDescription: 'Checking your Discord servers and claiming rewards...'
+                serverCard:
+                    joinCommunity: 'Join our community!'
+                    rewardCoins: '{0} coins'
+                    statusJoined: 'Joined'
+                    statusNotJoined: 'Not Joined'
+                    joinServerButton: 'Join Server'
+                statsCard:
+                    coinBalance: 'Current Balance'
+                    totalEarned: 'Total Earned'
+                    serversJoined: 'Servers Joined'
+                    availableServers: 'Available Servers'
+                    remainingCoins: 'Remaining Coins'
+                howItWorks:
+                    title: 'How It Works'
+                    description: 'Earn by joining Discord servers'
+                    step1:
+                        title: 'Browse Available Servers'
+                        description: 'Explore our list of partnered Discord servers'
+                    step2:
+                        title: 'Join Server'
+                        description: 'Click "Join Server" to open Discord and join the community'
+                    step3:
+                        title: 'Verify Membership'
+                        description: 'Our system will verify your membership automatically'
+                    step4:
+                        title: 'Receive Rewards'
+                        description: 'Get coins credited to your account within minutes'
+                statusMessages:
+                    success:
+                        title: 'Check Completed'
+                        description: 'J4R check completed successfully! Check your coin balance.'
+                        rewardsEarned: '🎉 You earned {0} coins for joining {1} new server(s)!'
+                    error:
+                        title: 'Check Failed'
+                        description: 'Failed to check for rewards. Please try again.'
+                        discordNotLinked: 'You must link your Discord account first'
+                        discordNotEnabled: 'Discord integration is not enabled'
+                        checkFailed: 'Failed to check for rewards'
+                        claimFailed: 'Failed to claim rewards'
+                        generic: 'An error occurred. Please try again later'
+                urlParams:
+                    success: 'j4r_check_completed'
+                    error: 'error'
+                    discordNotEnabled: 'discord_not_enabled'
+                    discordNotLinked: 'discord_not_linked'
+                    discordTokenFailed: 'discord_token_failed'
+                    discordUserFailed: 'discord_user_failed'
+                    discordUserMismatch: 'discord_user_mismatch'
 
 l4r:
     notEnabled:

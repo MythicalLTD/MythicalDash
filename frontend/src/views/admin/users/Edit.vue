@@ -444,14 +444,14 @@ const fetchUser = async (): Promise<void> => {
 };
 
 // Save a specific field
-const saveField = async (column: string, value: string | number, encrypted: boolean = false): Promise<void> => {
+const saveField = async (column: string, value: string | number): Promise<void> => {
     saving[column] = true;
 
     try {
         // Convert number to string for API
         const stringValue = value.toString();
 
-        const response = await Users.updateUser(userId, column, stringValue, encrypted);
+        const response = await Users.updateUser(userId, column, stringValue);
 
         if (response.success) {
             playSuccess();
@@ -657,7 +657,7 @@ onMounted(() => {
                                 v-model="formData.password"
                                 type="password"
                                 :saving="saving.password"
-                                @save="saveField('password', formData.password, true)"
+                                @save="saveField('password', formData.password)"
                             />
                             <FormField
                                 label="Avatar URL"

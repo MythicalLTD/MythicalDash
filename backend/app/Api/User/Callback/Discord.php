@@ -18,6 +18,7 @@ use MythicalDash\Services\DiscordUtils;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\Chat\J4RServers\J4RServers;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\DiscordEvent;
@@ -189,6 +190,103 @@ class DiscordOAuthHelper
             }
         } catch (Exception $e) {
             $this->app->getLogger()->error('Error adding user to Discord server: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Check J4R server joins and process rewards.
+     */
+    public function checkJ4RServerJoins(string $discordId, string $accessToken, Session $session): void
+    {
+        try {
+            // Get user's guilds from Discord
+            $userGuilds = $this->discordUtils->getUserGuilds($accessToken);
+            if (!is_array($userGuilds)) {
+                $this->app->getLogger()->warning('Failed to get user guilds for J4R check');
+
+                return;
+            }
+
+            // Get all available J4R servers
+            $j4rServers = J4RServers::getAvailableList();
+            if (empty($j4rServers)) {
+                $this->app->getLogger()->debug('No J4R servers available for checking');
+
+                return;
+            }
+
+            $userUuid = $session->getInfo(UserColumns::UUID, false);
+            $joinedServers = $session->getInfo(UserColumns::J4R_JOINED_SERVERS, false);
+            $joinedServersArray = !empty($joinedServers) ? json_decode($joinedServers, true) : [];
+
+            if (!is_array($joinedServersArray)) {
+                $joinedServersArray = [];
+            }
+
+            $rewardsGiven = 0;
+            $newJoins = [];
+
+            foreach ($j4rServers as $j4rServer) {
+                $serverId = $j4rServer['server_id'];
+
+                // Skip if user already joined this server
+                if (in_array($serverId, $joinedServersArray)) {
+                    continue;
+                }
+
+                // Check if user is in this Discord server
+                $isInServer = false;
+                foreach ($userGuilds as $guild) {
+                    if (isset($guild['id']) && $guild['id'] === $serverId) {
+                        $isInServer = true;
+                        break;
+                    }
+                }
+
+                if ($isInServer) {
+                    // User joined this server, give rewards
+                    $coins = (int) $j4rServer['coins'];
+                    $currentCoins = (int) $session->getInfo(UserColumns::CREDITS, false);
+                    $newCoins = $currentCoins + $coins;
+
+                    // Update user's coins
+                    $session->setInfo(UserColumns::CREDITS, (string) $newCoins, false);
+
+                    // Mark server as joined
+                    $joinedServersArray[] = $serverId;
+                    $newJoins[] = $serverId;
+
+                    ++$rewardsGiven;
+
+                    // Log the reward
+                    UserActivities::add(
+                        $userUuid,
+                        UserActivitiesTypes::$j4r_reward,
+                        CloudFlareRealIP::getRealIP(),
+                        "J4R Reward: +{$coins} coins for joining server '{$j4rServer['name']}' (ID: {$serverId})"
+                    );
+
+                    $this->app->getLogger()->info("J4R Reward: User {$discordId} received {$coins} coins for joining server '{$j4rServer['name']}'");
+                }
+            }
+
+            // Update joined servers list if there were new joins
+            if (!empty($newJoins)) {
+                $session->setInfo(UserColumns::J4R_JOINED_SERVERS, json_encode($joinedServersArray), false);
+
+                // Log overall J4R activity
+                UserActivities::add(
+                    $userUuid,
+                    UserActivitiesTypes::$j4r_check,
+                    CloudFlareRealIP::getRealIP(),
+                    "J4R Check: {$rewardsGiven} new server joins, +{$rewardsGiven} total rewards given"
+                );
+
+                $this->app->getLogger()->info("J4R Check: User {$discordId} joined {$rewardsGiven} new servers and received rewards");
+            }
+
+        } catch (Exception $e) {
+            $this->app->getLogger()->error('Error checking J4R server joins: ' . $e->getMessage());
         }
     }
 
@@ -372,6 +470,10 @@ $router->get('/api/user/auth/callback/discord/login', function () {
         // Force join server if enabled
         $helper->forceJoinServer($userInfo['id'], $accessToken);
 
+        // Check J4R server joins for existing user
+        $session = new Session($appInstance);
+        $helper->checkJ4RServerJoins($userInfo['id'], $accessToken, $session);
+
         // Perform login
         $email = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::EMAIL, false);
         $password = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::PASSWORD, true);
@@ -390,6 +492,62 @@ $router->get('/api/user/auth/callback/discord/login', function () {
             'Logged in with Discord'
         );
 
+        exit;
+    }
+
+    // Redirect to Discord authorization
+    header('Location: ' . $helper->getAuthUrl($redirectUri));
+});
+
+// Discord J4R Check Callback
+$router->get('/api/user/auth/callback/discord/j4r', function () {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $helper = new DiscordOAuthHelper($appInstance);
+    $session = new Session($appInstance);
+
+    if (!$helper->validateConfig()) {
+        header('Location: /earn/j4r?error=discord_not_enabled');
+        exit;
+    }
+
+    $redirectUri = $helper->getSecureBaseUrl() . '/api/user/auth/callback/discord/j4r';
+
+    if (isset($_GET['code'])) {
+        $code = $_GET['code'];
+        $accessToken = $helper->exchangeCodeForToken($code, $redirectUri);
+
+        if (!$accessToken) {
+            header('Location: /earn/j4r?error=discord_token_failed');
+            exit;
+        }
+
+        $userInfo = $helper->getUserInfo($accessToken);
+        if (!$userInfo) {
+            header('Location: /earn/j4r?error=discord_user_failed');
+            exit;
+        }
+
+        // Verify this is the same user
+        $sessionDiscordId = $session->getInfo(UserColumns::DISCORD_ID, false);
+        if ($sessionDiscordId !== $userInfo['id']) {
+            header('Location: /earn/j4r?error=discord_user_mismatch');
+            exit;
+        }
+
+        // Check J4R server joins
+        $helper->checkJ4RServerJoins($userInfo['id'], $accessToken, $session);
+
+        // Log J4R check activity
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$j4r_check,
+            CloudFlareRealIP::getRealIP(),
+            'Performed J4R check via dedicated endpoint'
+        );
+
+        // Redirect back to j4r with success message
+        header('Location: /earn/j4r?success=j4r_check_completed');
         exit;
     }
 

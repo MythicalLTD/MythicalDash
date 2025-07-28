@@ -12,19 +12,12 @@
                             Allow users to earn coins by staying active on the dashboard.
                         </p>
                     </div>
-                    <div class="ml-4 flex items-center">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                v-model="afkEnabled"
-                                class="sr-only peer"
-                                @change="markChanged('afk_enabled')"
-                            />
-                            <div
-                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                            ></div>
-                        </label>
-                    </div>
+                    <input
+                        type="checkbox"
+                        v-model="afkEnabled"
+                        @change="markChanged('afk_enabled')"
+                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                    />
                 </div>
 
                 <div v-if="afkEnabled" class="mb-4">
@@ -54,19 +47,12 @@
                         <h3 class="text-lg font-medium text-white">Code Redemption</h3>
                         <p class="text-sm text-gray-400">Allow users to redeem promo codes for rewards.</p>
                     </div>
-                    <div class="ml-4 flex items-center">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                v-model="codeRedemptionEnabled"
-                                class="sr-only peer"
-                                @change="markChanged('code_redemption_enabled')"
-                            />
-                            <div
-                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                            ></div>
-                        </label>
-                    </div>
+                    <input
+                        type="checkbox"
+                        v-model="codeRedemptionEnabled"
+                        @change="markChanged('code_redemption_enabled')"
+                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                    />
                 </div>
             </div>
 
@@ -74,23 +60,15 @@
             <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
                 <div class="flex justify-between items-start mb-4">
                     <div>
-                        <h3 class="text-lg font-medium text-white">Join for Rewards (J4R) [Disabled]</h3>
+                        <h3 class="text-lg font-medium text-white">Join for Rewards (J4R)</h3>
                         <p class="text-sm text-gray-400">Allow users to join Discord servers to earn rewards.</p>
                     </div>
-                    <div class="ml-4 flex items-center">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                v-model="j4rEnabled"
-                                class="sr-only peer"
-                                @change="markChanged('j4r_enabled')"
-                                disabled
-                            />
-                            <div
-                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                            ></div>
-                        </label>
-                    </div>
+                    <input
+                        type="checkbox"
+                        v-model="j4rEnabled"
+                        @change="markChanged('j4r_enabled')"
+                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                    />
                 </div>
             </div>
 
@@ -101,19 +79,12 @@
                         <h3 class="text-lg font-medium text-white">Link for Rewards (L4R)</h3>
                         <p class="text-sm text-gray-400">Allow users to visit links to earn rewards.</p>
                     </div>
-                    <div class="ml-4 flex items-center">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                v-model="l4rEnabled"
-                                class="sr-only peer"
-                                @change="markChanged('l4r_enabled')"
-                            />
-                            <div
-                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                            ></div>
-                        </label>
-                    </div>
+                    <input
+                        type="checkbox"
+                        v-model="l4rEnabled"
+                        @change="markChanged('l4r_enabled')"
+                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                    />
                 </div>
 
                 <div v-if="l4rEnabled" class="space-y-6 mt-4">
@@ -124,19 +95,12 @@
                                 <h4 class="font-medium text-white">LinkAdvertise</h4>
                                 <p class="text-xs text-gray-400">Enable earning from LinkAdvertise shortlinks</p>
                             </div>
-                            <div class="ml-4 flex items-center">
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        v-model="l4rLinkAdvertiseEnabled"
-                                        class="sr-only peer"
-                                        @change="markChanged('l4r_linkadvertise_enabled')"
-                                    />
-                                    <div
-                                        class="w-9 h-5 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                                    ></div>
-                                </label>
-                            </div>
+                            <input
+                                type="checkbox"
+                                v-model="l4rLinkAdvertiseEnabled"
+                                @change="markChanged('l4r_linkadvertise_enabled')"
+                                class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                            />
                         </div>
 
                         <div v-if="l4rLinkAdvertiseEnabled" class="space-y-3">
@@ -249,19 +213,12 @@
                                 <h4 class="font-medium text-white">ShareUs</h4>
                                 <p class="text-xs text-gray-400">Enable earning from ShareUs shortlinks</p>
                             </div>
-                            <div class="ml-4 flex items-center">
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        v-model="l4rShareUsEnabled"
-                                        class="sr-only peer"
-                                        @change="markChanged('l4r_shareus_enabled')"
-                                    />
-                                    <div
-                                        class="w-9 h-5 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                                    ></div>
-                                </label>
-                            </div>
+                            <input
+                                type="checkbox"
+                                v-model="l4rShareUsEnabled"
+                                @change="markChanged('l4r_shareus_enabled')"
+                                class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                            />
                         </div>
 
                         <div v-if="l4rShareUsEnabled" class="space-y-3">
@@ -371,19 +328,12 @@
                                 <h4 class="font-medium text-white">LinkPays</h4>
                                 <p class="text-xs text-gray-400">Enable earning from LinkPays shortlinks</p>
                             </div>
-                            <div class="ml-4 flex items-center">
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        v-model="l4rLinkPaysEnabled"
-                                        class="sr-only peer"
-                                        @change="markChanged('l4r_linkpays_enabled')"
-                                    />
-                                    <div
-                                        class="w-9 h-5 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                                    ></div>
-                                </label>
-                            </div>
+                            <input
+                                type="checkbox"
+                                v-model="l4rLinkPaysEnabled"
+                                @change="markChanged('l4r_linkpays_enabled')"
+                                class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                            />
                         </div>
 
                         <div v-if="l4rLinkPaysEnabled" class="space-y-3">
@@ -493,19 +443,12 @@
                                 <h4 class="font-medium text-white">GyaniLinks</h4>
                                 <p class="text-xs text-gray-400">Enable earning from GyaniLinks shortlinks</p>
                             </div>
-                            <div class="ml-4 flex items-center">
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        v-model="l4rGyaniLinksEnabled"
-                                        class="sr-only peer"
-                                        @change="markChanged('l4r_gyanilinks_enabled')"
-                                    />
-                                    <div
-                                        class="w-9 h-5 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                                    ></div>
-                                </label>
-                            </div>
+                            <input
+                                type="checkbox"
+                                v-model="l4rGyaniLinksEnabled"
+                                @change="markChanged('l4r_gyanilinks_enabled')"
+                                class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                            />
                         </div>
 
                         <div v-if="l4rGyaniLinksEnabled" class="space-y-3">
@@ -620,19 +563,12 @@
                         <h3 class="text-lg font-medium text-white">Referral System</h3>
                         <p class="text-sm text-gray-400">Allow users to refer others and earn rewards.</p>
                     </div>
-                    <div class="ml-4 flex items-center">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                v-model="referralsEnabled"
-                                class="sr-only peer"
-                                @change="markChanged('referrals_enabled')"
-                            />
-                            <div
-                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                            ></div>
-                        </label>
-                    </div>
+                    <input
+                        type="checkbox"
+                        v-model="referralsEnabled"
+                        @change="markChanged('referrals_enabled')"
+                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                    />
                 </div>
 
                 <div v-if="referralsEnabled" class="space-y-4 mt-4">
@@ -685,19 +621,12 @@
                         <h3 class="text-lg font-medium text-white">Early Supporters</h3>
                         <p class="text-sm text-gray-400">Configure early supporter rewards and limits.</p>
                     </div>
-                    <div class="ml-4 flex items-center">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                v-model="earlySupportersEnabled"
-                                class="sr-only peer"
-                                @change="markChanged('early_supporters_enabled')"
-                            />
-                            <div
-                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                            ></div>
-                        </label>
-                    </div>
+                    <input
+                        type="checkbox"
+                        v-model="earlySupportersEnabled"
+                        @change="markChanged('early_supporters_enabled')"
+                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                    />
                 </div>
 
                 <div v-if="earlySupportersEnabled" class="space-y-4 mt-4">
@@ -726,19 +655,12 @@
                         <h3 class="text-lg font-medium text-white">Server Renewals</h3>
                         <p class="text-sm text-gray-400">Configure server renewal settings for users.</p>
                     </div>
-                    <div class="ml-4 flex items-center">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                v-model="serverRenewEnabled"
-                                class="sr-only peer"
-                                @change="markChanged('server_renew_enabled')"
-                            />
-                            <div
-                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                            ></div>
-                        </label>
-                    </div>
+                    <input
+                        type="checkbox"
+                        v-model="serverRenewEnabled"
+                        @change="markChanged('server_renew_enabled')"
+                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                    />
                 </div>
 
                 <div v-if="serverRenewEnabled" class="space-y-4 mt-4">
@@ -777,12 +699,9 @@
                             <input
                                 type="checkbox"
                                 v-model="serverRenewSendMail"
-                                class="sr-only peer"
                                 @change="markChanged('server_renew_send_mail')"
+                                class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
                             />
-                            <div
-                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                            ></div>
                             <span class="ml-3 text-sm font-medium text-gray-400">Send Email Notifications</span>
                         </label>
                         <p class="mt-1 text-xs text-gray-500">
@@ -801,19 +720,12 @@
                             Enable the in-dashboard store for users to spend their earned coins.
                         </p>
                     </div>
-                    <div class="ml-4 flex items-center">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                v-model="storeEnabled"
-                                class="sr-only peer"
-                                @change="markChanged('store_enabled')"
-                            />
-                            <div
-                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                            ></div>
-                        </label>
-                    </div>
+                    <input
+                        type="checkbox"
+                        v-model="storeEnabled"
+                        @change="markChanged('store_enabled')"
+                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                    />
                 </div>
 
                 <div v-if="storeEnabled" class="space-y-4 mt-4">
@@ -1198,19 +1110,12 @@
                             Enable Google Ads and set your AdSense client code for monetization.
                         </p>
                     </div>
-                    <div class="ml-4 flex items-center">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                v-model="googleAdsEnabled"
-                                class="sr-only peer"
-                                @change="markChanged('google_ads_enabled')"
-                            />
-                            <div
-                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
-                            ></div>
-                        </label>
-                    </div>
+                    <input
+                        type="checkbox"
+                        v-model="googleAdsEnabled"
+                        @change="markChanged('google_ads_enabled')"
+                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                    />
                 </div>
                 <div v-if="googleAdsEnabled">
                     <label for="google_ads_client_id" class="block text-sm font-medium text-gray-400 mb-1">

@@ -34,11 +34,10 @@ class Users {
      *
      * @returns Promise with the response
      */
-    public static async updateUser(userId: string, column: string, value: string, encrypted: boolean = false) {
+    public static async updateUser(userId: string, column: string, value: string) {
         const formData = new FormData();
         formData.append('column', column);
         formData.append('value', value);
-        formData.append('encrypted', encrypted ? 'true' : 'false');
 
         const response = await fetch(`/api/admin/user/${userId}/update`, {
             method: 'POST',

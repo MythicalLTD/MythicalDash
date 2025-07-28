@@ -76,6 +76,12 @@ class UserActivitiesTypes
     public static string $github_unlink = 'github:unlink';
 
     /**
+     * J4R (Join for Rewards).
+     */
+    public static string $j4r_reward = 'j4r:reward';
+    public static string $j4r_check = 'j4r:check';
+
+    /**
      * Store.
      */
     public static string $store_buy = 'store:buy';
@@ -165,4 +171,13 @@ class UserActivitiesTypes
     public static string $admin_permission_create = 'admin:permission:create';
     public static string $admin_permission_update = 'admin:permission:update';
     public static string $admin_permission_delete = 'admin:permission:delete';
+
+    /**
+     * J4R Servers.
+     */
+    public static string $j4r_server_create = 'admin:j4r_server:create';
+    public static string $j4r_server_update = 'admin:j4r_server:update';
+    public static string $j4r_server_delete = 'admin:j4r_server:delete';
+    public static string $j4r_server_lock = 'admin:j4r_server:lock';
+    public static string $j4r_server_unlock = 'admin:j4r_server:unlock';
 }
