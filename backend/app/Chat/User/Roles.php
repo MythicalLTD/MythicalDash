@@ -107,6 +107,7 @@ class Roles extends Database
     {
         if ($uuid === null) {
             self::db_Error('Failed to get role name: UUID is null');
+
             return null;
         }
         try {
@@ -114,11 +115,13 @@ class Roles extends Database
             $token = User::getTokenFromUUID($uuid);
             if ($token === null) {
                 self::db_Error('Failed to get role name: Token is null for UUID ' . $uuid);
+
                 return null;
             }
             $id = User::getInfo($token, UserColumns::ROLE_ID, false);
             if ($id === null) {
                 self::db_Error('Failed to get role name: Role ID is null for UUID ' . $uuid);
+
                 return null;
             }
             $stmt = $con->prepare('SELECT name FROM ' . self::TABLE_NAME . ' WHERE id = :id AND deleted = \'false\'');
@@ -128,6 +131,7 @@ class Roles extends Database
             return $stmt->fetchColumn();
         } catch (\Exception $e) {
             self::db_Error('Failed to get role name: ' . $e->getMessage());
+
             return null;
         }
     }

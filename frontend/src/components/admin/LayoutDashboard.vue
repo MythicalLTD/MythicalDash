@@ -1,7 +1,7 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
-    <div class="min-h-screen bg-gradient-to-b from-[#0A0B14] to-[#070A16] text-gray-100 font-sans">
+    <div class="min-h-screen bg-gradient-to-br from-[#0A0B14] via-[#0D0F1A] to-[#070A16] text-gray-100 font-sans">
         <!-- Mobile Menu Button -->
         <MobileMenuButton :is-sidebar-open="isSidebarOpen" @toggle="isSidebarOpen = !isSidebarOpen" />
 
@@ -33,7 +33,25 @@
             <!-- Main Content -->
             <main class="flex-1 p-6">
                 <div class="max-w-7xl mx-auto">
-                    <slot></slot>
+                    <div class="relative">
+                        <!-- Background Pattern -->
+                        <div class="absolute inset-0 opacity-30">
+                            <div
+                                class="absolute inset-0"
+                                style="
+                                    background-image: radial-gradient(
+                                        circle at 1px 1px,
+                                        rgba(255, 255, 255, 0.05) 1px,
+                                        transparent 0
+                                    );
+                                    background-size: 20px 20px;
+                                "
+                            ></div>
+                        </div>
+                        <div class="relative z-10">
+                            <slot></slot>
+                        </div>
+                    </div>
                 </div>
             </main>
 

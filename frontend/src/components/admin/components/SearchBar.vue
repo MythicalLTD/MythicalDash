@@ -6,13 +6,13 @@
                 @input="$emit('update:searchQuery', ($event.target as HTMLInputElement).value)"
                 type="search"
                 placeholder="Search anything... (Ctrl + K)"
-                class="w-full bg-gray-800/50 text-gray-100 placeholder-gray-500 rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
+                class="w-full bg-gray-800/60 text-gray-100 placeholder-gray-500 rounded-xl py-3 pl-11 pr-12 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-gray-800/80 transition-all duration-200 border border-gray-700/50 hover:border-gray-600/50"
                 @focus="$emit('update:isSearchFocused', true)"
                 @blur="$emit('handleSearchBlur')"
             />
-            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
+            <Search class="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
             <kbd
-                class="absolute right-3 top-1/2 transform -translate-y-1/2 hidden md:flex items-center justify-center h-5 px-1.5 text-[10px] font-mono text-gray-500 bg-gray-700/50 rounded border border-gray-600"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 hidden md:flex items-center justify-center h-6 px-2 text-[10px] font-mono text-gray-400 bg-gray-700/70 rounded-md border border-gray-600/50"
             >
                 Ctrl+K
             </kbd>
@@ -21,7 +21,7 @@
         <!-- Search Results Dropdown -->
         <div
             v-if="isSearchFocused && filteredResults.length > 0"
-            class="absolute z-50 w-full mt-2 bg-[#0F1322] rounded-xl shadow-2xl border border-gray-800/30 overflow-hidden animate-fadeIn"
+            class="absolute z-50 w-full mt-2 bg-gradient-to-b from-[#0F1322] to-[#0A0E1A] rounded-xl shadow-2xl border border-gray-800/50 overflow-hidden animate-fadeIn backdrop-blur-xl"
         >
             <div class="py-2">
                 <div class="px-4 py-2 text-xs text-gray-500 uppercase font-semibold border-b border-gray-800/30">

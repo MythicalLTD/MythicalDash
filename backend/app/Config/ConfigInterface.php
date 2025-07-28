@@ -208,7 +208,9 @@ interface ConfigInterface
     public const DISCORD_SERVER_ID = 'discord_server_id';
     public const DISCORD_CLIENT_ID = 'discord_client_id';
     public const DISCORD_CLIENT_SECRET = 'discord_client_secret';
+    public const DISCORD_BOT_TOKEN = 'discord_bot_token';
     public const DISCORD_LINK_ALLOWED = 'discord_link_allowed';
+    public const DISCORD_FORCE_JOIN_SERVER = 'discord_force_join_server';
 
     /**
      * Github Integration.

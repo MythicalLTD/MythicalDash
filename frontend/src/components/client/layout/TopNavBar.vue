@@ -64,19 +64,19 @@
                         :class="topNavSettings.borderGlow ? 'focus:shadow-lg focus:shadow-indigo-500/20' : ''"
                     >
                         <div class="w-5 h-5 rounded-sm overflow-hidden flex-shrink-0">
-                            <img 
-                                :src="getFlagUrl(currentLocale)" 
+                            <img
+                                :src="getFlagUrl(currentLocale)"
                                 :alt="currentLocale"
                                 class="w-full h-full object-cover"
                             />
                         </div>
                         <span class="font-medium">{{ getLanguageName(currentLocale) }}</span>
-                        <ChevronDownIcon 
+                        <ChevronDownIcon
                             class="w-4 h-4 text-gray-400 transition-transform duration-200"
                             :class="{ 'rotate-180': isLanguageDropdownOpen }"
                         />
                     </button>
-                    
+
                     <!-- Dropdown Menu -->
                     <div
                         v-if="isLanguageDropdownOpen"
@@ -92,11 +92,7 @@
                                 :class="{ 'bg-indigo-500/20 text-indigo-300': currentLocale === lang }"
                             >
                                 <div class="w-5 h-5 rounded-sm overflow-hidden flex-shrink-0">
-                                    <img 
-                                        :src="getFlagUrl(lang)" 
-                                        :alt="lang"
-                                        class="w-full h-full object-cover"
-                                    />
+                                    <img :src="getFlagUrl(lang)" :alt="lang" class="w-full h-full object-cover" />
                                 </div>
                                 <span class="font-medium">{{ getLanguageName(lang) }}</span>
                                 <span class="text-xs text-gray-400 ml-auto">{{ lang }}</span>
@@ -189,22 +185,22 @@ const currentLocale = computed(() => locale.value);
 
 // Language names mapping
 const languageNames = {
-    'EN': 'English',
-    'RO': 'Română',
-    'FR': 'Français',
-    'DE': 'Deutsch',
-    'ES': 'Español',
-    'MD': 'Moldovenească'
+    EN: 'English',
+    RO: 'Română',
+    FR: 'Français',
+    DE: 'Deutsch',
+    ES: 'Español',
+    MD: 'Moldovenească',
 };
 
 // Flag URLs mapping
 const flagUrls = {
-    'EN': 'https://flagcdn.com/w40/gb.png',
-    'RO': 'https://flagcdn.com/w40/ro.png',
-    'FR': 'https://flagcdn.com/w40/fr.png',
-    'DE': 'https://flagcdn.com/w40/de.png',
-    'ES': 'https://flagcdn.com/w40/es.png',
-    'MD': 'https://flagcdn.com/w40/md.png'
+    EN: 'https://flagcdn.com/w40/gb.png',
+    RO: 'https://flagcdn.com/w40/ro.png',
+    FR: 'https://flagcdn.com/w40/fr.png',
+    DE: 'https://flagcdn.com/w40/de.png',
+    ES: 'https://flagcdn.com/w40/es.png',
+    MD: 'https://flagcdn.com/w40/md.png',
 };
 
 // Methods

@@ -111,28 +111,28 @@ const filteredServers = computed(() => {
     if (!searchQuery.value.trim()) {
         return [...servers.value, ...queuedServers.value];
     }
-    
+
     const query = searchQuery.value.toLowerCase().trim();
-    
+
     const allServers = [...servers.value, ...queuedServers.value];
-    
-    return allServers.filter(server => {
+
+    return allServers.filter((server) => {
         // Search by name
         if (server.name.toLowerCase().includes(query)) return true;
-        
+
         // Search by identifier
         const identifier = getServerIdentifier(server);
         if (identifier.toLowerCase().includes(query)) return true;
-        
+
         // Search by location
         if (server.location?.name?.toLowerCase().includes(query)) return true;
-        
+
         // Search by service/egg
         if (server.service?.name?.toLowerCase().includes(query)) return true;
-        
+
         // Search by category
         if (server.category?.name?.toLowerCase().includes(query)) return true;
-        
+
         return false;
     });
 });
@@ -418,7 +418,12 @@ onMounted(() => {
                     </button>
                 </div>
                 <div v-if="searchQuery" class="mt-2 text-sm text-gray-400">
-                    {{ t('Components.ServerList.searchResults', [filteredServers.length, servers.length + queuedServers.length]) }}
+                    {{
+                        t('Components.ServerList.searchResults', [
+                            filteredServers.length,
+                            servers.length + queuedServers.length,
+                        ])
+                    }}
                 </div>
             </div>
 
@@ -440,7 +445,10 @@ onMounted(() => {
             </div>
 
             <!-- Card Layout -->
-            <div v-if="preferredLayout === 'cards' && filteredServers.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div
+                v-if="preferredLayout === 'cards' && filteredServers.length > 0"
+                class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+            >
                 <template v-for="server in filteredServers" :key="getServerId(server)">
                     <div
                         class="group relative bg-gray-900/40 border border-gray-800 rounded-xl p-5 hover:bg-gray-800/40 transition-all duration-200 hover:border-gray-700"

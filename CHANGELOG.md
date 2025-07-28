@@ -16,6 +16,7 @@
 - **Code Quality**: Removed unnecessary imports of `defineEmits` in Vue `<script setup>` blocks, as it is a compiler macro and does not need to be imported. This prevents potential warnings and improves code clarity.
 - **Authentication**: Fixed an issue where some login values could be null during authentication. The system now checks for missing or null login values and fails the login gracefully to prevent downstream errors.
 - **Plugin System**: Fixed an issue where settings could not be applied via plugins due to variable name reuse. The settings update logic now uses unique variable names to prevent conflicts when plugins attempt to modify settings.
+- **Authentication**: Completely rewrote the GitHub and Discord user authentication methods. The new implementation provides improved reliability, clearer error handling, and better integration with the dashboard's event and activity logging systems. The refactored code ensures secure OAuth flows, robust session management, and enhanced support for linking, logging in, and unlinking user accounts via GitHub and Discord. This update also lays the groundwork for future enhancements and improved third-party integration security.
 
 ## Enhancements
 
@@ -28,6 +29,11 @@
 - **Server List**: Added a search bar to the server list, allowing users to quickly filter and find servers by name or identifier.
 - **Language Selector**: Improved the language selector in the top navigation bar. The new selector displays language names with their respective flags, provides clearer active state indication, and offers a more accessible dropdown experience for users choosing their preferred language.
 - **Startup Health Checks**: Added automatic health checks during application startup. The system now verifies critical dependencies and configuration before running, preventing the app from starting if major issues are detected. This helps avoid cascading errors and ensures a more stable experience.
+- **Discord & GitHub Integration**: The system now automatically prepends `https://` to Discord and GitHub URLs if missing. This ensures all integration links are valid and secure, improving reliability for OAuth and webhooks.
+- **Admin Settings**: The admin settings page now fully supports and enforces `https://` for all relevant URLs. When entering integration URLs (such as for Discord, GitHub, or image hosting), the system will automatically prepend `https://` if it is missing, ensuring all links are secure and valid throughout the dashboard.
+- **Daily Backups**: Added support for daily backups. Admins can now enable or disable daily backups from the settings page. When enabled, the system will automatically take daily backups of the dashboard data to help prevent data loss.
+- **Admin UI**: Made small UI fixes in the admin area for improved consistency and visual polish. Adjusted spacing, alignment, and color contrast in settings forms and sidebar. Improved toggle switch accessibility and fixed minor layout issues in integration settings.
+- **Discord Integration**: Added the ability to fetch a user's Discord guilds and force them to join the hosting provider's Discord server during account linking. This ensures users are automatically added to the required Discord server if the "Force Join Server" setting is enabled. The system now also stores the user's Discord server list for future reference and management.
 
 
 ## Breaking Changes

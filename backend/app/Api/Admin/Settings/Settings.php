@@ -71,6 +71,7 @@ $router->post('/api/admin/settings/update/bulk', function (): void {
 
     if (!$data || !is_array($data)) {
         $appInstance->BadRequest('Invalid JSON body', ['error_code' => 'INVALID_JSON']);
+
         return;
     }
 

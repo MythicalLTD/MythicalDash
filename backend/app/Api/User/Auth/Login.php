@@ -105,7 +105,7 @@ $router->add('/api/user/auth/login', function (): void {
             UserColumns::USERNAME => 'username',
             UserColumns::EMAIL => 'email',
             UserColumns::UUID => 'UUID',
-            UserColumns::PTERODACTYL_USER_ID => 'Pterodactyl user ID'
+            UserColumns::PTERODACTYL_USER_ID => 'Pterodactyl user ID',
         ];
 
         foreach ($criticalFields as $field => $fieldName) {

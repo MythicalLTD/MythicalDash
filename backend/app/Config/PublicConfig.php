@@ -172,6 +172,7 @@ class PublicConfig extends ConfigFactory
             ConfigInterface::DISCORD_SERVER_ID => '',
             ConfigInterface::DISCORD_CLIENT_ID => '',
             ConfigInterface::DISCORD_LINK_ALLOWED => 'false',
+            ConfigInterface::DISCORD_FORCE_JOIN_SERVER => 'false',
 
             // Github Integration
             ConfigInterface::GITHUB_ENABLED => 'false',

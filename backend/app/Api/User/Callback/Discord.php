@@ -14,6 +14,7 @@
 use MythicalDash\App;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
+use MythicalDash\Services\DiscordUtils;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
@@ -21,37 +22,85 @@ use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\DiscordEvent;
 
-$router->get('/api/user/auth/callback/discord/link', function () {
-    App::init();
-    $appInstance = App::getInstance(true);
-    $config = $appInstance->getConfig();
-    $s = new Session($appInstance);
-    global $eventManager;
-    if (
-        $config->getDBSetting(ConfigInterface::DISCORD_ENABLED, 'false') === 'false'
-        || $config->getDBSetting(ConfigInterface::DISCORD_CLIENT_ID, '') === ''
-        || $config->getDBSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '') === ''
-    ) {
-        header('Location: /account?error=discord_not_enabled');
-        exit;
+/**
+ * Discord OAuth Helper Class.
+ */
+class DiscordOAuthHelper
+{
+    private App $app;
+    private $config;
+    private DiscordUtils $discordUtils;
+    private string $appId;
+    private string $appSecret;
+    private string $baseUrl;
+
+    public function __construct(App $app)
+    {
+        $this->app = $app;
+        $this->config = $app->getConfig();
+        $this->discordUtils = new DiscordUtils($app);
+        $this->appId = $this->config->getDBSetting(ConfigInterface::DISCORD_CLIENT_ID, '');
+        $this->appSecret = $this->config->getDBSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '');
+        $this->baseUrl = $this->getSecureBaseUrl();
     }
 
-    $appId = $config->getDBSetting(ConfigInterface::DISCORD_CLIENT_ID, '');
-    $appSecret = $config->getDBSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '');
-    $url = $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
-    $redirectUri = $url . '/api/user/auth/callback/discord/link';
+    /**
+     * Get secure base URL with HTTPS enforcement.
+     */
+    public function getSecureBaseUrl(): string
+    {
+        $url = $this->config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
 
-    if (isset($_GET['code'])) {
-        $code = $_GET['code'];
+        // Always enforce HTTPS
+        if (strpos($url, 'https://') !== 0) {
+            $url = preg_replace('/^http:\/\//i', '', $url);
+            $url = 'https://' . ltrim($url, '/');
+        }
+
+        return rtrim($url, '/');
+    }
+
+    /**
+     * Validate Discord configuration.
+     */
+    public function validateConfig(): bool
+    {
+        return $this->config->getDBSetting(ConfigInterface::DISCORD_ENABLED, 'false') === 'true'
+               && !empty($this->appId)
+               && !empty($this->appSecret);
+    }
+
+    /**
+     * Get Discord authorization URL with required scopes.
+     */
+    public function getAuthUrl(string $redirectUri): string
+    {
+        $requiredScopes = ['identify', 'guilds', 'email', 'guilds.join'];
+        $scope = implode(' ', $requiredScopes);
+
+        return 'https://discord.com/api/oauth2/authorize?' . http_build_query([
+            'client_id' => $this->appId,
+            'redirect_uri' => $redirectUri,
+            'response_type' => 'code',
+            'scope' => $scope,
+        ]);
+    }
+
+    /**
+     * Exchange authorization code for access token.
+     */
+    public function exchangeCodeForToken(string $code, string $redirectUri): ?string
+    {
         $tokenUrl = 'https://discord.com/api/oauth2/token';
         $data = [
-            'client_id' => $appId,
-            'client_secret' => $appSecret,
+            'client_id' => $this->appId,
+            'client_secret' => $this->appSecret,
             'grant_type' => 'authorization_code',
             'code' => $code,
             'redirect_uri' => $redirectUri,
             'scope' => 'identify guilds email guilds.join',
         ];
+
         $options = [
             'http' => [
                 'header' => "Content-type: application/x-www-form-urlencoded\r\n",
@@ -59,23 +108,26 @@ $router->get('/api/user/auth/callback/discord/link', function () {
                 'content' => http_build_query($data),
             ],
         ];
+
         $context = stream_context_create($options);
         $result = file_get_contents($tokenUrl, false, $context);
 
         if ($result === false) {
-            $appInstance->getLogger()->error('Failed to make HTTP request to Discord token endpoint');
-            header('Location: ' . $url . '/auth/login?error=discord_request_failed');
-            exit;
+            $this->app->getLogger()->error('Failed to make HTTP request to Discord token endpoint');
+
+            return null;
         }
 
         $tokenData = json_decode($result, true);
-        $accessToken = $tokenData['access_token'] ?? null;
-        if (!$accessToken) {
-            $appInstance->getLogger()->error('Failed to get access token from Discord: ' . $result);
-            header('Location: ' . $url . '/auth/login?error=discord');
-            exit;
-        }
 
+        return $tokenData['access_token'] ?? null;
+    }
+
+    /**
+     * Get Discord user information.
+     */
+    public function getUserInfo(string $accessToken): ?array
+    {
         $userUrl = 'https://discord.com/api/users/@me';
 
         $options = [
@@ -84,206 +136,263 @@ $router->get('/api/user/auth/callback/discord/link', function () {
                 'method' => 'GET',
             ],
         ];
+
         $context = stream_context_create($options);
         $result = file_get_contents($userUrl, false, $context);
 
         if ($result === false) {
-            $appInstance->getLogger()->error('Failed to make HTTP request to Discord user endpoint');
-            header('Location: ' . $url . '/auth/login?error=discord_request_failed');
-            exit;
+            $this->app->getLogger()->error('Failed to make HTTP request to Discord user endpoint');
+
+            return null;
         }
 
         $userInfo = json_decode($result, true);
-        if (!$userInfo || !isset($userInfo['id'])) {
-            $appInstance->getLogger()->error('Failed to get user info from Discord: ' . $result);
-            header('Location: ' . $url . '/auth/login?error=discord');
-            exit;
-        }
-        if (isset($userInfo['id']) && isset($userInfo['username']) && isset($userInfo['global_name']) && isset($userInfo['email'])) {
-            $id = $userInfo['id'];
-            $username = $userInfo['username'];
-            $global_name = $userInfo['global_name'];
-            $email = $userInfo['email'];
-        } else {
-            $appInstance->getLogger()->error('Failed to get user info from Discord: ' . $result);
-            header('Location: ' . $url . '/auth/login?error=discord');
-            exit;
+
+        // Validate required fields to prevent tampering
+        if (!$userInfo || !isset($userInfo['id']) || !isset($userInfo['username'])) {
+            $this->app->getLogger()->error('Invalid Discord user info response: ' . $result);
+
+            return null;
         }
 
-        if (isset($userInfo)) {
-            // Check if user is already linked to Discord
-            $isLinked = $s->getInfo(UserColumns::DISCORD_LINKED, false);
-            if ($isLinked === 'true') {
-                header('Location: ' . $url . '/account?error=discord_already_linked');
-                exit;
+        return $userInfo;
+    }
+
+    /**
+     * Force user to join Discord server if enabled.
+     */
+    public function forceJoinServer(string $discordId, string $accessToken): void
+    {
+        try {
+            $forceJoinEnabled = $this->config->getDBSetting(ConfigInterface::DISCORD_FORCE_JOIN_SERVER, 'false');
+            if ($forceJoinEnabled !== 'true') {
+                $this->app->getLogger()->debug('Force join server is disabled, skipping server join');
+
+                return;
             }
 
-            $s->setInfo(UserColumns::DISCORD_ID, $id, false);
-            $s->setInfo(UserColumns::DISCORD_USERNAME, $username, false);
-            $s->setInfo(UserColumns::DISCORD_GLOBAL_NAME, $global_name, false);
-            $s->setInfo(UserColumns::DISCORD_EMAIL, $email, false);
-            $s->setInfo(UserColumns::DISCORD_LINKED, 'true', false);
-            $eventManager->emit(DiscordEvent::onDiscordLink(), [
-                'user' => $s->getInfo(UserColumns::UUID, false),
-            ]);
-            UserActivities::add(
-                $s->getInfo(UserColumns::UUID, false),
-                UserActivitiesTypes::$discord_link,
-                CloudFlareRealIP::getRealIP(),
-                "Linked Discord account: $id"
-            );
-            header('Location: ' . $url . '/');
+            $guildId = $this->config->getDBSetting(ConfigInterface::DISCORD_SERVER_ID, '');
+            if (empty($guildId)) {
+                $this->app->getLogger()->warning('Discord server ID not configured, skipping server join');
+
+                return;
+            }
+
+            $this->app->getLogger()->debug("Attempting to force user {$discordId} to join Discord server {$guildId}");
+
+            $joinResult = $this->discordUtils->addUserToGuild($discordId, $accessToken, $guildId);
+
+            if ($joinResult) {
+                $this->app->getLogger()->debug("Successfully added user {$discordId} to Discord server {$guildId}");
+            } else {
+                $this->app->getLogger()->warning("Failed to add user {$discordId} to Discord server {$guildId}");
+            }
+        } catch (Exception $e) {
+            $this->app->getLogger()->error('Error adding user to Discord server: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Store user's Discord guilds.
+     */
+    public function storeUserGuilds(Session $session, string $accessToken): void
+    {
+        try {
+            $guilds = $this->discordUtils->getUserGuilds($accessToken);
+            $session->setInfo(UserColumns::DISCORD_SERVERS, json_encode(is_array($guilds) ? $guilds : []), false);
+        } catch (Exception $e) {
+            $this->app->getLogger()->error('Exception while fetching Discord guilds: ' . $e->getMessage());
+            $session->setInfo(UserColumns::DISCORD_SERVERS, json_encode([]), false);
+        }
+    }
+
+    /**
+     * Store Discord user data.
+     */
+    public function storeDiscordData(Session $session, array $userInfo): void
+    {
+        $session->setInfo(UserColumns::DISCORD_ID, $userInfo['id'], false);
+        $session->setInfo(UserColumns::DISCORD_USERNAME, $userInfo['username'], false);
+        $session->setInfo(UserColumns::DISCORD_GLOBAL_NAME, $userInfo['global_name'] ?? '', false);
+        $session->setInfo(UserColumns::DISCORD_EMAIL, $userInfo['email'] ?? '', false);
+        $session->setInfo(UserColumns::DISCORD_LINKED, 'true', false);
+    }
+
+    /**
+     * Clear Discord user data.
+     */
+    public function clearDiscordData(Session $session): void
+    {
+        $session->setInfo(UserColumns::DISCORD_ID, null, false);
+        $session->setInfo(UserColumns::DISCORD_USERNAME, null, false);
+        $session->setInfo(UserColumns::DISCORD_GLOBAL_NAME, null, false);
+        $session->setInfo(UserColumns::DISCORD_EMAIL, null, false);
+        $session->setInfo(UserColumns::DISCORD_LINKED, 'false', false);
+    }
+}
+
+// Discord Link Callback
+$router->get('/api/user/auth/callback/discord/link', function () {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $helper = new DiscordOAuthHelper($appInstance);
+
+    if (!$helper->validateConfig()) {
+        header('Location: /account?error=discord_not_enabled');
+        exit;
+    }
+
+    $redirectUri = $helper->getSecureBaseUrl() . '/api/user/auth/callback/discord/link';
+    $session = new Session($appInstance);
+    global $eventManager;
+
+    if (isset($_GET['code'])) {
+        $code = $_GET['code'];
+        $accessToken = $helper->exchangeCodeForToken($code, $redirectUri);
+
+        if (!$accessToken) {
+            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord');
             exit;
         }
-        header('Location: ' . $url . '/api/user/auth/callback/discord/link');
 
-    } else {
-        $authorizeUrl = 'https://discord.com/api/oauth2/authorize?client_id=' . $appId . '&redirect_uri=' . urlencode($redirectUri) . '&response_type=code&scope=' . urlencode('identify guilds email guilds.join');
-        header('Location: ' . $authorizeUrl);
+        $userInfo = $helper->getUserInfo($accessToken);
+        if (!$userInfo) {
+            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord');
+            exit;
+        }
+
+        // Check if user is already linked
+        $isLinked = $session->getInfo(UserColumns::DISCORD_LINKED, false);
+        if ($isLinked === 'true') {
+            header('Location: ' . $helper->getSecureBaseUrl() . '/account?error=discord_already_linked');
+            exit;
+        }
+
+        // Store Discord data
+        $helper->storeDiscordData($session, $userInfo);
+
+        // Force join server if enabled
+        $helper->forceJoinServer($userInfo['id'], $accessToken);
+
+        // Store user guilds
+        $helper->storeUserGuilds($session, $accessToken);
+
+        // Emit events and log activity
+        $eventManager->emit(DiscordEvent::onDiscordLink(), [
+            'user' => $session->getInfo(UserColumns::UUID, false),
+        ]);
+
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$discord_link,
+            CloudFlareRealIP::getRealIP(),
+            "Linked Discord account: {$userInfo['id']}"
+        );
+
+        header('Location: ' . $helper->getSecureBaseUrl() . '/');
+        exit;
     }
+
+    // Redirect to Discord authorization
+    header('Location: ' . $helper->getAuthUrl($redirectUri));
 });
 
+// Discord Unlink Callback
 $router->get('/api/user/auth/callback/discord/unlink', function () {
     App::init();
     $appInstance = App::getInstance(true);
+    $helper = new DiscordOAuthHelper($appInstance);
+    $session = new Session($appInstance);
     global $eventManager;
-    $config = $appInstance->getConfig();
-    $s = new Session($appInstance);
 
-    // Check if user is currently linked to Discord
-    $isLinked = $s->getInfo(UserColumns::DISCORD_LINKED, false);
+    // Check if user is currently linked
+    $isLinked = $session->getInfo(UserColumns::DISCORD_LINKED, false);
     if ($isLinked !== 'true') {
         header('Location: /account?error=discord_not_linked');
         exit;
     }
 
-    $s->setInfo(UserColumns::DISCORD_ID, null, false);
-    $s->setInfo(UserColumns::DISCORD_USERNAME, null, false);
-    $s->setInfo(UserColumns::DISCORD_GLOBAL_NAME, null, false);
-    $s->setInfo(UserColumns::DISCORD_EMAIL, null, false);
-    $s->setInfo(UserColumns::DISCORD_LINKED, 'false', false);
+    // Clear Discord data
+    $helper->clearDiscordData($session);
+
+    // Emit events and log activity
     $eventManager->emit(DiscordEvent::onDiscordUnlink(), [
-        'user' => $s->getInfo(UserColumns::UUID, false),
+        'user' => $session->getInfo(UserColumns::UUID, false),
     ]);
+
     UserActivities::add(
-        $s->getInfo(UserColumns::UUID, false),
+        $session->getInfo(UserColumns::UUID, false),
         UserActivitiesTypes::$discord_unlink,
         CloudFlareRealIP::getRealIP(),
         'Unlinked Discord account'
     );
+
     header('Location: /account');
     exit;
 });
 
+// Discord Login Callback
 $router->get('/api/user/auth/callback/discord/login', function () {
     App::init();
     $appInstance = App::getInstance(true);
-    $config = $appInstance->getConfig();
+    $helper = new DiscordOAuthHelper($appInstance);
 
-    if (
-        $config->getDBSetting(ConfigInterface::DISCORD_ENABLED, 'false') === 'false'
-        || $config->getDBSetting(ConfigInterface::DISCORD_CLIENT_ID, '') === ''
-        || $config->getDBSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '') === ''
-    ) {
+    if (!$helper->validateConfig()) {
         header('Location: /account?error=discord_not_enabled');
         exit;
     }
 
+    $redirectUri = $helper->getSecureBaseUrl() . '/api/user/auth/callback/discord/login';
     global $eventManager;
-    $appId = $config->getDBSetting(ConfigInterface::DISCORD_CLIENT_ID, '');
-    $appSecret = $config->getDBSetting(ConfigInterface::DISCORD_CLIENT_SECRET, '');
-    $url = $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
-    $redirectUri = $url . '/api/user/auth/callback/discord/login';
 
     if (isset($_GET['code'])) {
         $code = $_GET['code'];
-        $tokenUrl = 'https://discord.com/api/oauth2/token';
-        $data = [
-            'client_id' => $appId,
-            'client_secret' => $appSecret,
-            'grant_type' => 'authorization_code',
-            'code' => $code,
-            'redirect_uri' => $redirectUri,
-            'scope' => 'identify guilds email guilds.join',
-        ];
-        $options = [
-            'http' => [
-                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method' => 'POST',
-                'content' => http_build_query($data),
-            ],
-        ];
-        $context = stream_context_create($options);
-        $result = file_get_contents($tokenUrl, false, $context);
+        $accessToken = $helper->exchangeCodeForToken($code, $redirectUri);
 
-        if ($result === false) {
-            $appInstance->getLogger()->error('Failed to make HTTP request to Discord token endpoint');
-            header('Location: ' . $url . '/auth/login?error=discord_request_failed');
-            exit;
-        }
-
-        $tokenData = json_decode($result, true);
-        $accessToken = $tokenData['access_token'] ?? null;
         if (!$accessToken) {
-            $appInstance->getLogger()->error('Failed to get access token from Discord: ' . $result);
-            header('Location: ' . $url . '/auth/login?error=discord');
+            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord');
             exit;
         }
 
-        $userUrl = 'https://discord.com/api/users/@me';
-
-        $options = [
-            'http' => [
-                'header' => "Authorization: Bearer $accessToken\r\n",
-                'method' => 'GET',
-            ],
-        ];
-        $context = stream_context_create($options);
-        $result = file_get_contents($userUrl, false, $context);
-
-        if ($result === false) {
-            $appInstance->getLogger()->error('Failed to make HTTP request to Discord user endpoint');
-            header('Location: ' . $url . '/auth/login?error=discord_request_failed');
+        $userInfo = $helper->getUserInfo($accessToken);
+        if (!$userInfo) {
+            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord');
             exit;
         }
 
-        $userInfo = json_decode($result, true);
-
-        if (isset($userInfo['id'])) {
-            $id = $userInfo['id'];
-        } else {
-            $appInstance->getLogger()->error('Failed to get user info from Discord: ' . $result);
-            header('Location: ' . $url . '/auth/login?error=discord');
+        // Check if user exists
+        if (!User::exists(UserColumns::DISCORD_ID, $userInfo['id'])) {
+            $appInstance->getLogger()->error('Discord login failed for user: ' . $userInfo['id']);
+            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord');
             exit;
         }
 
-        if (isset($userInfo['id'])) {
-            if (User::exists(UserColumns::DISCORD_ID, $id)) {
-                $uuid = User::getUUIDFromDiscordID($id);
-                $email = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::EMAIL, false);
-                $password = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::PASSWORD, true);
-                header('Location: ' . $url . '/auth/login?email=' . urlencode(base64_encode($email)) . '&password=' . urlencode(base64_encode($password)) . '&performLogin=true');
-                $eventManager->emit(DiscordEvent::onDiscordLogin(), [
-                    'user' => $uuid,
-                ]);
-                UserActivities::add(
-                    $uuid,
-                    UserActivitiesTypes::$discord_login,
-                    CloudFlareRealIP::getRealIP(),
-                    'Logged in with Discord'
-                );
-                exit;
-            }
-            $appInstance->getLogger()->error('Discord login failed for user: ' . $id . ' with context: ' . json_encode($userInfo));
-            header('Location: ' . $url . '/auth/login?error=discord');
-            exit;
+        $uuid = User::getUUIDFromDiscordID($userInfo['id']);
 
-        }
-        header('Location: ' . $url . '/api/user/auth/callback/discord/login');
+        // Force join server if enabled
+        $helper->forceJoinServer($userInfo['id'], $accessToken);
 
-    } else {
-        $authorizeUrl = 'https://discord.com/api/oauth2/authorize?client_id=' . $appId . '&redirect_uri=' . urlencode($redirectUri) . '&response_type=code&scope=' . urlencode('identify guilds email guilds.join');
-        header('Location: ' . $authorizeUrl);
+        // Perform login
+        $email = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::EMAIL, false);
+        $password = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::PASSWORD, true);
+
+        header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?email=' . urlencode(base64_encode($email)) . '&password=' . urlencode(base64_encode($password)) . '&performLogin=true');
+
+        // Emit events and log activity
+        $eventManager->emit(DiscordEvent::onDiscordLogin(), [
+            'user' => $uuid,
+        ]);
+
+        UserActivities::add(
+            $uuid,
+            UserActivitiesTypes::$discord_login,
+            CloudFlareRealIP::getRealIP(),
+            'Logged in with Discord'
+        );
+
+        exit;
     }
 
+    // Redirect to Discord authorization
+    header('Location: ' . $helper->getAuthUrl($redirectUri));
 });

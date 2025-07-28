@@ -30,8 +30,7 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
             exit('We detected that you are not running this command from the root directory of MythicalDash. Please run this command from the root directory.');
         }
 
-		$this->runStartupHealthChecks();
-
+        $this->runStartupHealthChecks();
 
         // Try plugin commands first, then fall back to built-in commands
         if ($this->registerPluginCommands($commandName, $args)) {
@@ -353,31 +352,31 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
     }
 
     /**
-     * Run startup health checks (only critical errors)
+     * Run startup health checks (only critical errors).
      */
     private function runStartupHealthChecks(): void
     {
         // Import and run health checks
         require_once __DIR__ . '/Extra/HealthCheck.php';
-        $healthCheck = new \MythicalDash\Cli\Extra\HealthCheck($this);
+        $healthCheck = new Extra\HealthCheck($this);
         $results = $healthCheck->run();
 
         // Only report if there are critical errors
         if (!empty($results['errors'])) {
             $this->send("\e[31m❌ CRITICAL ERRORS DETECTED:\e[0m");
             $this->send("\n");
-            
+
             foreach ($results['errors'] as $error) {
                 $this->send("\e[31m  • {$error['message']}\e[0m");
             }
-            
+
             $this->send("\n\e[31m⚠️  Please fix these errors before running MythicalDash.\e[0m");
             exit(1);
         }
     }
 
     /**
-     * Run health checks and display results
+     * Run health checks and display results.
      */
     private function runHealthChecks(): void
     {
@@ -386,7 +385,7 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
 
         // Import and run health checks
         require_once __DIR__ . '/Extra/HealthCheck.php';
-        $healthCheck = new \MythicalDash\Cli\Extra\HealthCheck($this);
+        $healthCheck = new Extra\HealthCheck($this);
         $results = $healthCheck->run();
 
         // Display the report
@@ -423,10 +422,10 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
 
         // Final status
         $this->send("\n\e[36mHealth Check Summary:\e[0m");
-        $this->send("  • Total checks: " . count($results['results']));
-        $this->send("  • Passed: " . count(array_filter($results['results'], fn($r) => $r['status'] === 'pass')));
-        $this->send("  • Errors: " . count($results['errors']));
-        $this->send("  • Warnings: " . count($results['warnings']));
+        $this->send('  • Total checks: ' . count($results['results']));
+        $this->send('  • Passed: ' . count(array_filter($results['results'], fn ($r) => $r['status'] === 'pass')));
+        $this->send('  • Errors: ' . count($results['errors']));
+        $this->send('  • Warnings: ' . count($results['warnings']));
 
         if ($results['status'] === 'healthy') {
             $this->send("\n\e[32m🎉 MythicalDash is healthy and ready to run!\e[0m");

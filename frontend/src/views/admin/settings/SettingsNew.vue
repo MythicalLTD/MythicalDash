@@ -183,9 +183,18 @@
                             />
                         </div>
 
-                        <!-- Advanced Settings -->
-                        <div v-show="activeCategory === 'advanced'" class="space-y-6">
-                            <AdvancedSettings
+                        <!-- Mail Settings -->
+                        <div v-show="activeCategory === 'mail'" class="space-y-6">
+                            <MailSettings
+                                :settings="settings"
+                                @update="updateSetting"
+                                @bulk-update="bulkUpdateSettings"
+                            />
+                        </div>
+
+                        <!-- Image Hosting Settings -->
+                        <div v-show="activeCategory === 'image-hosting'" class="space-y-6">
+                            <ImageHostingSettings
                                 :settings="settings"
                                 @update="updateSetting"
                                 @bulk-update="bulkUpdateSettings"
@@ -257,6 +266,8 @@ import {
     FileText as FileTextIcon,
     Code as CodeIcon,
     Database as DatabaseIcon,
+    Mail as MailIcon,
+    Image as ImageIcon,
     Save as SaveIcon,
     RotateCcw as RotateCcwIcon,
     CheckCircle as CheckCircleIcon,
@@ -266,15 +277,15 @@ import {
 } from 'lucide-vue-next';
 
 // Import new settings components
-import GeneralSettings from './components/GeneralSettings.vue';
-import MailSettings from './components/MailSettings.vue';
-import SecuritySettings from './components/SecuritySettings.vue';
-import IntegrationSettings from './components/IntegrationSettings.vue';
-import EarnSettings from './components/EarnSettings.vue';
-import BillingSettings from './components/BillingSettings.vue';
-import LegalSettings from './components/LegalSettings.vue';
-import CustomCodeSettings from './components/CustomCodeSettings.vue';
-import ImageHostingSettings from './components/ImageHostingSettings.vue';
+import GeneralSettings from './newcomponents/GeneralSettings.vue';
+import MailSettings from './newcomponents/MailSettings.vue';
+import SecuritySettings from './newcomponents/SecuritySettings.vue';
+import IntegrationSettings from './newcomponents/IntegrationSettings.vue';
+import EarnSettings from './newcomponents/EarnSettings.vue';
+import BillingSettings from './newcomponents/BillingSettings.vue';
+import LegalSettings from './newcomponents/LegalSettings.vue';
+import CustomCodeSettings from './newcomponents/CustomCodeSettings.vue';
+import ImageHostingSettings from './newcomponents/ImageHostingSettings.vue';
 
 // Settings categories
 const categories = [
@@ -297,6 +308,20 @@ const categories = [
         name: 'Integrations',
         icon: LinkIcon,
         description: 'Third-party integrations and API settings',
+        badge: null,
+    },
+    {
+        id: 'mail',
+        name: 'Mail Server',
+        icon: MailIcon,
+        description: 'Email server configuration and SMTP settings',
+        badge: null,
+    },
+    {
+        id: 'image-hosting',
+        name: 'Image Hosting',
+        icon: ImageIcon,
+        description: 'Image hosting and file upload settings',
         badge: null,
     },
     {

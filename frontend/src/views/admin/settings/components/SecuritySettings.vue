@@ -540,7 +540,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch} from 'vue';
+import { ref, computed, watch } from 'vue';
 import { EyeIcon, EyeOffIcon, ExternalLinkIcon } from 'lucide-vue-next';
 
 interface Props {

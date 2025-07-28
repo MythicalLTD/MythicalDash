@@ -1,13 +1,13 @@
 <template>
     <header
-        class="bg-[#0F1322]/80 backdrop-blur-lg border-b border-gray-800/20 px-6 py-3 flex items-center justify-between sticky top-0 z-30"
+        class="bg-gradient-to-r from-[#0F1322]/95 via-[#0D0F1A]/95 to-[#0A0E1A]/95 backdrop-blur-xl border-b border-gray-800/30 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-lg"
     >
         <div class="flex items-center gap-6 flex-1">
             <!-- Breadcrumb -->
             <div class="hidden md:flex items-center text-sm">
-                <span class="text-indigo-400">Dashboard</span>
-                <ChevronRight class="w-4 h-4 mx-1 text-gray-500" />
-                <span class="text-gray-300">{{ currentSection }}</span>
+                <span class="text-indigo-400 font-medium">Dashboard</span>
+                <ChevronRight class="w-4 h-4 mx-2 text-gray-500" />
+                <span class="text-gray-200 font-medium">{{ currentSection }}</span>
             </div>
 
             <!-- Search -->

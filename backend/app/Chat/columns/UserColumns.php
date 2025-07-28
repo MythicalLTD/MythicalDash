@@ -62,6 +62,7 @@ class UserColumns
     public const DISCORD_GLOBAL_NAME = 'discord_global_name';
     public const DISCORD_EMAIL = 'discord_email';
     public const DISCORD_LINKED = 'discord_linked';
+    public const DISCORD_SERVERS = 'discord_servers';
 
     public const GITHUB_ID = 'github_id';
     public const GITHUB_USERNAME = 'github_username';
@@ -127,7 +128,7 @@ class UserColumns
             self::GITHUB_USERNAME,
             self::GITHUB_EMAIL,
             self::GITHUB_LINKED,
-
+            self::DISCORD_SERVERS,
             self::IMAGE_HOSTING_ENABLED,
             self::IMAGE_HOSTING_EMBED_ENABLED,
             self::IMAGE_HOSTING_EMBED_TITLE,
