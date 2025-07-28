@@ -99,6 +99,23 @@ $router->add('/api/user/auth/login', function (): void {
             UserColumns::LAST_NAME,
             UserColumns::PASSWORD,
         ]);
+
+        // Validate critical user data - if any critical field is null, block login
+        $criticalFields = [
+            UserColumns::USERNAME => 'username',
+            UserColumns::EMAIL => 'email',
+            UserColumns::UUID => 'UUID',
+            UserColumns::PTERODACTYL_USER_ID => 'Pterodactyl user ID'
+        ];
+
+        foreach ($criticalFields as $field => $fieldName) {
+            if (!isset($userInfoArray[$field]) || $userInfoArray[$field] === null || $userInfoArray[$field] === '') {
+                $appInstance->getLogger()->error("Critical user data missing: {$fieldName} for user {$login}");
+                $eventManager->emit(AuthEvent::onAuthLoginFailed(), ['login' => $login, 'error_code' => 'INVALID_USER_DATA']);
+                $appInstance->BadRequest('Invalid user data', ['error_code' => 'INVALID_USER_DATA']);
+            }
+        }
+
     } catch (\Exception $e) {
         $appInstance->getLogger()->error('Failed to get user info: ' . $e->getMessage());
         $appInstance->InternalServerError('Internal Server Error', ['error_code' => 'DATABASE_ERROR']);
@@ -110,14 +127,14 @@ $router->add('/api/user/auth/login', function (): void {
     $telemetry = $appInstance->getTelemetry();
     $telemetry->sendLogin(
         $userInfoArray[UserColumns::USERNAME],
-        $userInfoArray[UserColumns::FIRST_NAME],
-        $userInfoArray[UserColumns::LAST_NAME],
+        $userInfoArray[UserColumns::FIRST_NAME] ?? '',
+        $userInfoArray[UserColumns::LAST_NAME] ?? '',
         $userInfoArray[UserColumns::EMAIL],
-        $userInfoArray[UserColumns::CREDITS],
+        $userInfoArray[UserColumns::CREDITS] ?? '0',
         $userInfoArray[UserColumns::UUID],
         CloudFlareRealIP::getRealIP(),
-        $userInfoArray[UserColumns::BANNED],
-        $userInfoArray[UserColumns::VERIFIED],
+        $userInfoArray[UserColumns::BANNED] ?? 'NO',
+        $userInfoArray[UserColumns::VERIFIED] ?? 'false',
         $userInfoArray[UserColumns::DISCORD_ID] ?? '',
         $userInfoArray[UserColumns::GITHUB_ID] ?? ''
     );
@@ -127,7 +144,7 @@ $router->add('/api/user/auth/login', function (): void {
     }
 
     // Check account verification if mail is enabled
-    if ($userInfoArray[UserColumns::VERIFIED] == 'false' && Mail::isEnabled()) {
+    if (($userInfoArray[UserColumns::VERIFIED] ?? 'false') == 'false' && Mail::isEnabled()) {
         User::logout();
         $eventManager->emit(AuthEvent::onAuthLoginFailed(), ['login' => $login, 'error_code' => 'ACCOUNT_NOT_VERIFIED']);
         $appInstance->BadRequest('Account not verified', ['error_code' => 'ACCOUNT_NOT_VERIFIED']);
@@ -136,21 +153,21 @@ $router->add('/api/user/auth/login', function (): void {
     $appInstance->getLogger()->debug('User info array: ' . json_encode($userInfoArray));
 
     // Check if account is banned
-    if (!$userInfoArray[UserColumns::BANNED] == 'NO') {
+    if (($userInfoArray[UserColumns::BANNED] ?? 'NO') !== 'NO') {
         User::logout();
         $eventManager->emit(AuthEvent::onAuthLoginFailed(), ['login' => $login, 'error_code' => 'ACCOUNT_BANNED']);
         $appInstance->BadRequest('Account is banned', ['error_code' => 'ACCOUNT_BANNED']);
     }
 
     // Check if account is deleted
-    if ($userInfoArray[UserColumns::DELETED] == 'true') {
+    if (($userInfoArray[UserColumns::DELETED] ?? 'false') == 'true') {
         User::logout();
         $eventManager->emit(AuthEvent::onAuthLoginFailed(), ['login' => $login, 'error_code' => 'ACCOUNT_DELETED']);
         $appInstance->BadRequest('Account is deleted', ['error_code' => 'ACCOUNT_DELETED']);
     }
 
     // Handle 2FA if enabled
-    if ($userInfoArray[UserColumns::TWO_FA_ENABLED] == 'true') {
+    if (($userInfoArray[UserColumns::TWO_FA_ENABLED] ?? 'false') == 'true') {
         User::updateInfo($login, UserColumns::TWO_FA_BLOCKED, 'true', false);
     }
 
@@ -169,9 +186,9 @@ $router->add('/api/user/auth/login', function (): void {
             $userInfoArray[UserColumns::PTERODACTYL_USER_ID],
             $userInfoArray[UserColumns::EMAIL],
             $userInfoArray[UserColumns::USERNAME],
-            $userInfoArray[UserColumns::FIRST_NAME],
-            $userInfoArray[UserColumns::LAST_NAME],
-            $userInfoArray[UserColumns::PASSWORD],
+            $userInfoArray[UserColumns::FIRST_NAME] ?? '',
+            $userInfoArray[UserColumns::LAST_NAME] ?? '',
+            $userInfoArray[UserColumns::PASSWORD] ?? '',
         );
     } catch (\Exception $e) {
         $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performLogin:1] Failed to login user in Pterodactyl: ' . $e->getMessage());

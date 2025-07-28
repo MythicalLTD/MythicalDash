@@ -9,10 +9,13 @@
 - **File Permissions**: Resolved dashboard file access issues caused by incorrect permission settings
 - **Server Updates**: Fixed server update process that sometimes required unexpected dependencies
 - **Version Management**: Updated application version handling for better compatibility
-- **User Interface**: Fixed profile dropdown UI rendering issues
+- **User Interface**: Fixed profile dropdown and notification bar UI rendering issues
 - **User Management**: Resolved bug where disabled profiles were still being displayed
 - **Data Validation**: Fixed NaN (Not a Number) errors appearing in form fields with missing values
 - **System Configuration**: Corrected timezone settings that were not being properly applied
+- **Code Quality**: Removed unnecessary imports of `defineEmits` in Vue `<script setup>` blocks, as it is a compiler macro and does not need to be imported. This prevents potential warnings and improves code clarity.
+- **Authentication**: Fixed an issue where some login values could be null during authentication. The system now checks for missing or null login values and fails the login gracefully to prevent downstream errors.
+- **Plugin System**: Fixed an issue where settings could not be applied via plugins due to variable name reuse. The settings update logic now uses unique variable names to prevent conflicts when plugins attempt to modify settings.
 
 ## Enhancements
 
@@ -20,6 +23,11 @@
 - **API Performance**: Added bulk settings update endpoint for improved efficiency
 - **Settings Management**: Enhanced settings reading with proper default value handling
 - **User Experience**: Completely redesigned settings page with modern interface and improved usability
+- **Image Hosting**: Added support for image host when `app_url` does not start with `https://`. The system now automatically prepends `https://` if missing, ensuring correct URL generation for image hosting features.
+- **Email System**: Fixed email template URL generation to always prepend `https://` to `app_url` if missing, ensuring all links in emails are valid and secure.
+- **Server List**: Added a search bar to the server list, allowing users to quickly filter and find servers by name or identifier.
+- **Language Selector**: Improved the language selector in the top navigation bar. The new selector displays language names with their respective flags, provides clearer active state indication, and offers a more accessible dropdown experience for users choosing their preferred language.
+- **Startup Health Checks**: Added automatic health checks during application startup. The system now verifies critical dependencies and configuration before running, preventing the app from starting if major issues are detected. This helps avoid cascading errors and ensures a more stable experience.
 
 
 ## Breaking Changes

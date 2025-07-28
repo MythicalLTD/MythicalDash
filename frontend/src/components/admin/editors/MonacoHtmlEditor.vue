@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, defineEmits, defineAsyncComponent } from 'vue';
+import { ref, watch, onMounted, defineAsyncComponent } from 'vue';
 
 const MonacoEditor = defineAsyncComponent(() => import('monaco-editor-vue3'));
 

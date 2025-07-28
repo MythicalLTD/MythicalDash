@@ -73,6 +73,10 @@ class Mail
         $appTimezone = $config->getDBSetting(ConfigInterface::APP_TIMEZONE, 'UTC') ?? 'UTC';
         $appVersion = $config->getDBSetting(ConfigInterface::APP_VERSION, '1.0.0') ?? '1.0.0';
 
+		if (strpos($appUrl, "https://") !== 0) {
+			$appUrl = "https://" . $appUrl;
+		}
+		
         // Replace template variables with config values
         $template = str_replace('${app_name}', (string) $appName, $template);
         $template = str_replace('${app_url}', (string) $appUrl, $template);

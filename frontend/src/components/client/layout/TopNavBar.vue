@@ -57,31 +57,51 @@
                 <SocialMediaLinks class="hidden lg:flex" />
 
                 <!-- Language Selector -->
-                <div class="relative group">
-                    <select
-                        v-model="locale"
-                        @change="changeLocale"
-                        class="appearance-none bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg pl-8 pr-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all duration-200 cursor-pointer hover:bg-[#1a1a2e]/50 group-hover:border-indigo-500/30 backdrop-blur-sm"
+                <div class="relative group language-selector">
+                    <button
+                        @click="toggleLanguageDropdown"
+                        class="flex items-center gap-2 px-3 py-2 bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all duration-200 cursor-pointer hover:bg-[#1a1a2e]/50 group-hover:border-indigo-500/30 backdrop-blur-sm"
                         :class="topNavSettings.borderGlow ? 'focus:shadow-lg focus:shadow-indigo-500/20' : ''"
                     >
-                        <option
-                            v-for="lang in availableLocales"
-                            :key="lang"
-                            :value="lang"
-                            class="bg-[#12121f] text-gray-200"
-                        >
-                            {{ lang }}
-                        </option>
-                    </select>
+                        <div class="w-5 h-5 rounded-sm overflow-hidden flex-shrink-0">
+                            <img 
+                                :src="getFlagUrl(currentLocale)" 
+                                :alt="currentLocale"
+                                class="w-full h-full object-cover"
+                            />
+                        </div>
+                        <span class="font-medium">{{ getLanguageName(currentLocale) }}</span>
+                        <ChevronDownIcon 
+                            class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                            :class="{ 'rotate-180': isLanguageDropdownOpen }"
+                        />
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
                     <div
-                        class="absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none transition-all duration-200 group-hover:text-indigo-400"
+                        v-if="isLanguageDropdownOpen"
+                        class="absolute top-full right-0 mt-2 w-48 bg-[#1a1a2e]/95 backdrop-blur-md border border-[#2a2a3f]/50 rounded-lg shadow-xl z-50 overflow-hidden"
+                        :class="topNavSettings.borderGlow ? 'shadow-indigo-500/20' : ''"
                     >
-                        <GlobeIcon class="w-4 h-4 text-gray-400" />
-                    </div>
-                    <div
-                        class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none transition-all duration-200 group-hover:text-indigo-400"
-                    >
-                        <ChevronDownIcon class="w-4 h-4 text-gray-400" />
+                        <div class="py-1">
+                            <div
+                                v-for="lang in availableLocales"
+                                :key="lang"
+                                @click="selectLanguage(lang)"
+                                class="flex items-center gap-3 px-4 py-3 text-sm text-gray-200 hover:bg-[#2a2a3f]/50 transition-colors duration-200 cursor-pointer group"
+                                :class="{ 'bg-indigo-500/20 text-indigo-300': currentLocale === lang }"
+                            >
+                                <div class="w-5 h-5 rounded-sm overflow-hidden flex-shrink-0">
+                                    <img 
+                                        :src="getFlagUrl(lang)" 
+                                        :alt="lang"
+                                        class="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <span class="font-medium">{{ getLanguageName(lang) }}</span>
+                                <span class="text-xs text-gray-400 ml-auto">{{ lang }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -149,7 +169,7 @@ import {
 } from 'lucide-vue-next';
 import { useSettingsStore } from '@/stores/settings';
 import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import Session from '@/mythicaldash/Session';
 import SocialMediaLinks from './SocialMediaLinks.vue';
 import { useSkinSettings } from '@/composables/useSkinSettings';
@@ -163,11 +183,64 @@ const { topNavSettings } = useSkinSettings();
 const Settings = useSettingsStore();
 const availableLocales = ['EN', 'RO', 'FR', 'DE', 'ES', 'MD'];
 
-const changeLocale = (event: Event) => {
-    const target = event.target as HTMLSelectElement;
-    localStorage.setItem('locale', target.value);
-    window.location.href = '/';
+// Language dropdown state
+const isLanguageDropdownOpen = ref(false);
+const currentLocale = computed(() => locale.value);
+
+// Language names mapping
+const languageNames = {
+    'EN': 'English',
+    'RO': 'Română',
+    'FR': 'Français',
+    'DE': 'Deutsch',
+    'ES': 'Español',
+    'MD': 'Moldovenească'
 };
+
+// Flag URLs mapping
+const flagUrls = {
+    'EN': 'https://flagcdn.com/w40/gb.png',
+    'RO': 'https://flagcdn.com/w40/ro.png',
+    'FR': 'https://flagcdn.com/w40/fr.png',
+    'DE': 'https://flagcdn.com/w40/de.png',
+    'ES': 'https://flagcdn.com/w40/es.png',
+    'MD': 'https://flagcdn.com/w40/md.png'
+};
+
+// Methods
+const toggleLanguageDropdown = () => {
+    isLanguageDropdownOpen.value = !isLanguageDropdownOpen.value;
+};
+
+const selectLanguage = (lang: string) => {
+    localStorage.setItem('locale', lang);
+    window.location.href = '/';
+    isLanguageDropdownOpen.value = false;
+};
+
+const getLanguageName = (lang: string) => {
+    return languageNames[lang as keyof typeof languageNames] || lang;
+};
+
+const getFlagUrl = (lang: string) => {
+    return flagUrls[lang as keyof typeof flagUrls] || '';
+};
+
+// Close dropdown when clicking outside
+const handleClickOutside = (event: Event) => {
+    const target = event.target as Element;
+    if (!target.closest('.language-selector')) {
+        isLanguageDropdownOpen.value = false;
+    }
+};
+
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+    document.removeEventListener('click', handleClickOutside);
+});
 
 defineProps<{
     isSidebarOpen: boolean;

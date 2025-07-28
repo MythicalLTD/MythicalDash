@@ -64,6 +64,11 @@ Components:
         noServersDescription: 'Sie haben noch keine Server.'
         serverLimit: '{0} / {1} Server'
         newServer: 'Neuer Server'
+        searchPlaceholder: 'Server nach Name, Standort oder Service suchen...'
+        searchResults: '{0} von {1} Servern'
+        noSearchResults: 'Keine Server gefunden'
+        noSearchResultsDescription: 'Versuchen Sie, Ihre Suchbegriffe anzupassen oder löschen Sie die Suche, um alle Server zu sehen.'
+        clearSearch: 'Suche löschen'
         table:
             name: 'Name'
             location: 'Standort'

@@ -11,6 +11,8 @@ import {
     LayoutGrid as GridIcon,
     Table as TableIcon,
     List as ListIcon,
+    Search as SearchIcon,
+    X as XIcon,
 } from 'lucide-vue-next';
 import CardComponent from '../../ui/Card/CardComponent.vue';
 import Servers from '@/mythicaldash/Pterodactyl/Servers';
@@ -100,6 +102,45 @@ const router = useRouter();
 const loading = ref(true);
 const servers = ref<Server[]>([]);
 const queuedServers = ref<QueuedServer[]>([]);
+
+// Add search functionality
+const searchQuery = ref('');
+
+// Computed filtered servers
+const filteredServers = computed(() => {
+    if (!searchQuery.value.trim()) {
+        return [...servers.value, ...queuedServers.value];
+    }
+    
+    const query = searchQuery.value.toLowerCase().trim();
+    
+    const allServers = [...servers.value, ...queuedServers.value];
+    
+    return allServers.filter(server => {
+        // Search by name
+        if (server.name.toLowerCase().includes(query)) return true;
+        
+        // Search by identifier
+        const identifier = getServerIdentifier(server);
+        if (identifier.toLowerCase().includes(query)) return true;
+        
+        // Search by location
+        if (server.location?.name?.toLowerCase().includes(query)) return true;
+        
+        // Search by service/egg
+        if (server.service?.name?.toLowerCase().includes(query)) return true;
+        
+        // Search by category
+        if (server.category?.name?.toLowerCase().includes(query)) return true;
+        
+        return false;
+    });
+});
+
+// Clear search
+const clearSearch = () => {
+    searchQuery.value = '';
+};
 
 // Format bytes to human readable
 const formatBytes = (bytes: number) => {
@@ -321,7 +362,7 @@ onMounted(() => {
                         <p class="text-sm text-gray-400">
                             {{
                                 t('Components.ServerList.serverLimit', [
-                                    servers.length + queuedServers.length,
+                                    filteredServers.length,
                                     Session.getInfoInt('server_limit'),
                                 ])
                             }}
@@ -356,9 +397,51 @@ onMounted(() => {
                 </div>
             </div>
 
+            <!-- Search Bar -->
+            <div class="relative mb-6">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <SearchIcon class="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                        v-model="searchQuery"
+                        type="text"
+                        class="block w-full pl-10 pr-10 py-3 border border-gray-700 rounded-lg bg-gray-800/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                        :placeholder="t('Components.ServerList.searchPlaceholder')"
+                    />
+                    <button
+                        v-if="searchQuery"
+                        @click="clearSearch"
+                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300 transition-colors"
+                    >
+                        <XIcon class="h-5 w-5" />
+                    </button>
+                </div>
+                <div v-if="searchQuery" class="mt-2 text-sm text-gray-400">
+                    {{ t('Components.ServerList.searchResults', [filteredServers.length, servers.length + queuedServers.length]) }}
+                </div>
+            </div>
+
+            <!-- No Search Results -->
+            <div
+                v-if="searchQuery && filteredServers.length === 0"
+                class="flex flex-col items-center justify-center py-12 text-center"
+            >
+                <SearchIcon class="w-12 h-12 text-gray-600 mb-3" />
+                <h3 class="text-gray-300 font-medium mb-1">{{ t('Components.ServerList.noSearchResults') }}</h3>
+                <p class="text-gray-500 text-sm mb-4">{{ t('Components.ServerList.noSearchResultsDescription') }}</p>
+                <button
+                    @click="clearSearch"
+                    class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                >
+                    <XIcon class="w-4 h-4" />
+                    {{ t('Components.ServerList.clearSearch') }}
+                </button>
+            </div>
+
             <!-- Card Layout -->
-            <div v-if="preferredLayout === 'cards'" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                <template v-for="server in [...servers, ...queuedServers]" :key="getServerId(server)">
+            <div v-if="preferredLayout === 'cards' && filteredServers.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <template v-for="server in filteredServers" :key="getServerId(server)">
                     <div
                         class="group relative bg-gray-900/40 border border-gray-800 rounded-xl p-5 hover:bg-gray-800/40 transition-all duration-200 hover:border-gray-700"
                     >
@@ -481,7 +564,7 @@ onMounted(() => {
 
             <!-- Table Layout -->
             <div
-                v-else-if="preferredLayout === 'table'"
+                v-else-if="preferredLayout === 'table' && filteredServers.length > 0"
                 class="relative overflow-x-auto rounded-lg border border-gray-800"
             >
                 <table class="w-full text-sm text-left text-gray-300">
@@ -498,7 +581,7 @@ onMounted(() => {
                     </thead>
                     <tbody>
                         <tr
-                            v-for="server in [...servers, ...queuedServers]"
+                            v-for="server in filteredServers"
                             :key="getServerId(server)"
                             class="border-b border-gray-800 bg-gray-900/20 hover:bg-gray-800/30 transition-colors"
                         >
@@ -590,9 +673,9 @@ onMounted(() => {
             </div>
 
             <!-- Compact List Layout -->
-            <div v-else-if="preferredLayout === 'compact'" class="space-y-2">
+            <div v-else-if="preferredLayout === 'compact' && filteredServers.length > 0" class="space-y-2">
                 <div
-                    v-for="server in [...servers, ...queuedServers]"
+                    v-for="server in filteredServers"
                     :key="getServerId(server)"
                     class="group bg-gray-900/40 border border-gray-800 rounded-lg hover:bg-gray-800/40 transition-all duration-200 hover:border-gray-700"
                 >

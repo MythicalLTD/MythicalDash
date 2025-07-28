@@ -54,7 +54,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 				if (!isset($body['color']) || $body['color'] == "") {
 					$app->BadRequest("Color is required", ['error_code' => 'color_required']);
 				}
-			
+
 
 				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_TITLE, $body['title'], false);
 				$session->setInfo(UserColumns::IMAGE_HOSTING_EMBED_DESCRIPTION, $body['description'], false);
@@ -76,10 +76,13 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 			}
 			header('Content-Type: application/json');
 			header('Content-Disposition: attachment; filename="sharex_config.sxcu"');
-
+			$appUrl = $config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems");
+			if (strpos($appUrl, "https://") !== 0) {
+				$appUrl = "https://" . $appUrl;
+			}
 			echo json_encode(ShareXApi::createConfig(
 				$config->getDBSetting(ConfigInterface::APP_NAME, "MythicalDash"),
-				$config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$appUrl,
 				$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)
 			));
 		});
@@ -88,7 +91,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 			if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, false)) {
 				$userDir = APP_PUBLIC . "/attachments/imgs/users/" . $session->getInfo(UserColumns::UUID, false);
 				$dataDir = $userDir . "/data";
-				
+
 				// Check if user directory exists
 				if (!is_dir($userDir)) {
 					$app->OK("Success", [
@@ -112,7 +115,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 				}
 
 				$images = glob($dataDir . "/*.json");
-				
+
 				// Create array of image data with timestamps for sorting
 				$imageData = [];
 				foreach ($images as $image) {
@@ -126,7 +129,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 				}
 
 				// Sort by timestamp in descending order (latest first)
-				usort($imageData, function($a, $b) {
+				usort($imageData, function ($a, $b) {
 					return $b['timestamp'] - $a['timestamp'];
 				});
 
@@ -223,7 +226,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 
 			// Get the full filename without extension for metadata lookup
 			$filename = pathinfo($name, PATHINFO_FILENAME);
-			
+
 			// Construct paths using the public directory
 			$baseDir = APP_PUBLIC . "/attachments/imgs/users/" . $user_uuid;
 			$metadataPath = $baseDir . "/data/" . $filename . ".json";
@@ -244,11 +247,14 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 				$app->NotFound("Invalid image metadata");
 				return;
 			}
-
+			$appUrl = $config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems");
+			if (strpos($appUrl, "https://") !== 0) {
+				$appUrl = "https://" . $appUrl;
+			}
 			// Update the file URL in metadata to match our naming scheme
 			$metadata['metadata']['file_url'] = sprintf(
 				'%s/attachments/imgs/users/%s/raw/%s',
-				$config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$appUrl,
 				$user_uuid,
 				$name
 			);
@@ -272,7 +278,10 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 				$embedInfo = $metadata['embed_info'];
 
 				// Helper to safely get string values
-				function safe($val) { return htmlspecialchars((string)($val ?? ''), ENT_QUOTES, 'UTF-8'); }
+				function safe($val)
+				{
+					return htmlspecialchars((string) ($val ?? ''), ENT_QUOTES, 'UTF-8');
+				}
 
 				// Prepare replacements
 				$replacements = [
@@ -400,7 +409,10 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 				ShareXApi::showError($app, "Failed to save uploaded file.");
 				return;
 			}
-
+			$appUrl = $config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems");
+			if (strpos($appUrl, "https://") !== 0) {
+				$appUrl = "https://" . $appUrl;
+			}
 			// Store metadata
 			$metadata = [
 				'original_name' => $file['name'],
@@ -411,7 +423,7 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 					'file_name' => $new_name,
 					'file_url' => sprintf(
 						'%s/attachments/imgs/users/%s/raw/%s',
-						$config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+						$appUrl,
 						$user_uuid,
 						$new_name
 					),
@@ -439,20 +451,20 @@ class Router extends \MythicalDash\Addons\imagehostbridge\ImageHostBridge
 
 			$deleteUrl = sprintf(
 				'%s/api/user/images/delete/%s',
-				$config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$appUrl,
 				$new_name
 			);
 
 			$imageUrl = sprintf(
 				'%s/attachments/imgs/users/%s/raw/%s',
-				$config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$appUrl,
 				$user_uuid,
 				$new_name
 			);
 
 			$embedUrl = sprintf(
 				'%s/i/%s',
-				$config->getDBSetting(ConfigInterface::APP_URL, "https://mythicaldash-v3.mythical.systems"),
+				$appUrl,
 				$new_name
 			);
 

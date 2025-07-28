@@ -103,11 +103,24 @@ class Roles extends Database
      *
      * @return string|null The role name
      */
-    public static function getUserRoleName(string $uuid): ?string
+    public static function getUserRoleName(?string $uuid): ?string
     {
+        if ($uuid === null) {
+            self::db_Error('Failed to get role name: UUID is null');
+            return null;
+        }
         try {
             $con = self::getPdoConnection();
-            $id = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::ROLE_ID, false);
+            $token = User::getTokenFromUUID($uuid);
+            if ($token === null) {
+                self::db_Error('Failed to get role name: Token is null for UUID ' . $uuid);
+                return null;
+            }
+            $id = User::getInfo($token, UserColumns::ROLE_ID, false);
+            if ($id === null) {
+                self::db_Error('Failed to get role name: Role ID is null for UUID ' . $uuid);
+                return null;
+            }
             $stmt = $con->prepare('SELECT name FROM ' . self::TABLE_NAME . ' WHERE id = :id AND deleted = \'false\'');
             $stmt->bindParam(':id', $id);
             $stmt->execute();
@@ -115,7 +128,6 @@ class Roles extends Database
             return $stmt->fetchColumn();
         } catch (\Exception $e) {
             self::db_Error('Failed to get role name: ' . $e->getMessage());
-
             return null;
         }
     }

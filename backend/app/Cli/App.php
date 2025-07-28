@@ -23,13 +23,15 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
 
     public function __construct(string $commandName, array $args)
     {
-
         $this->handleCustomCommands($commandName, $args);
         self::$instance = $this;
 
         if (getcwd() !== '/var/www/mythicaldash-v3') {
             exit('We detected that you are not running this command from the root directory of MythicalDash. Please run this command from the root directory.');
         }
+
+		$this->runStartupHealthChecks();
+
 
         // Try plugin commands first, then fall back to built-in commands
         if ($this->registerPluginCommands($commandName, $args)) {
@@ -348,5 +350,91 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
         } else {
             $this->sendOutput($this->prefix . $output);
         }
+    }
+
+    /**
+     * Run startup health checks (only critical errors)
+     */
+    private function runStartupHealthChecks(): void
+    {
+        // Import and run health checks
+        require_once __DIR__ . '/Extra/HealthCheck.php';
+        $healthCheck = new \MythicalDash\Cli\Extra\HealthCheck($this);
+        $results = $healthCheck->run();
+
+        // Only report if there are critical errors
+        if (!empty($results['errors'])) {
+            $this->send("\e[31m❌ CRITICAL ERRORS DETECTED:\e[0m");
+            $this->send("\n");
+            
+            foreach ($results['errors'] as $error) {
+                $this->send("\e[31m  • {$error['message']}\e[0m");
+            }
+            
+            $this->send("\n\e[31m⚠️  Please fix these errors before running MythicalDash.\e[0m");
+            exit(1);
+        }
+    }
+
+    /**
+     * Run health checks and display results
+     */
+    private function runHealthChecks(): void
+    {
+        $this->send("\e[36mRunning MythicalDash Health Checks...\e[0m");
+        $this->send("\n");
+
+        // Import and run health checks
+        require_once __DIR__ . '/Extra/HealthCheck.php';
+        $healthCheck = new \MythicalDash\Cli\Extra\HealthCheck($this);
+        $results = $healthCheck->run();
+
+        // Display the report
+        $report = $healthCheck->getReport();
+        $this->send($report);
+
+        // Display detailed results with colors
+        $this->send("\e[36mDetailed Results:\e[0m");
+        $this->send("\n");
+
+        foreach ($results['results'] as $check => $result) {
+            if ($result['status'] === 'pass') {
+                $this->send("\e[32m✅ {$result['message']}\e[0m");
+            } else {
+                $this->send("\e[31m❌ {$result['message']}\e[0m");
+            }
+        }
+
+        // Display errors
+        if (!empty($results['errors'])) {
+            $this->send("\n\e[31m❌ ERRORS:\e[0m");
+            foreach ($results['errors'] as $error) {
+                $this->send("\e[31m  • {$error['message']}\e[0m");
+            }
+        }
+
+        // Display warnings
+        if (!empty($results['warnings'])) {
+            $this->send("\n\e[33m⚠️  WARNINGS:\e[0m");
+            foreach ($results['warnings'] as $warning) {
+                $this->send("\e[33m  • {$warning['message']}\e[0m");
+            }
+        }
+
+        // Final status
+        $this->send("\n\e[36mHealth Check Summary:\e[0m");
+        $this->send("  • Total checks: " . count($results['results']));
+        $this->send("  • Passed: " . count(array_filter($results['results'], fn($r) => $r['status'] === 'pass')));
+        $this->send("  • Errors: " . count($results['errors']));
+        $this->send("  • Warnings: " . count($results['warnings']));
+
+        if ($results['status'] === 'healthy') {
+            $this->send("\n\e[32m🎉 MythicalDash is healthy and ready to run!\e[0m");
+        } else {
+            $this->send("\n\e[31m⚠️  Please fix the errors above before running MythicalDash.\e[0m");
+        }
+
+        $this->send("\n");
+        exit;
     }
 }

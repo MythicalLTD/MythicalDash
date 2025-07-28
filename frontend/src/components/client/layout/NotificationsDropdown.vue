@@ -1,6 +1,11 @@
 <template>
     <Transition :name="animationClass" mode="out-in">
-        <div v-if="isOpen" :class="dropdownClasses" :style="backgroundStyle" @click.stop>
+        <div
+            v-if="isOpen"
+            :class="dropdownClasses"
+            :style="[backgroundStyle, { position: 'fixed', top: '4rem', right: '1rem', zIndex: 1000 }]"
+            @click.stop
+        >
             <!-- Decorative header gradient -->
             <div
                 v-if="notificationSettings.showBackground"

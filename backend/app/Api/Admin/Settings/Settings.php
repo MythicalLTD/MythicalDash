@@ -34,8 +34,8 @@ $router->post('/api/admin/settings/update', function (): void {
             $appInstance->BadRequest('Invalid request', ['error_code' => 'INVALID_REQUEST']);
         }
 
-        $config = $config->setSetting($key, $value);
-        if ($config) {
+        $setResult = $config->setSetting($key, $value);
+        if ($setResult) {
             global $eventManager;
             $eventManager->emit(SettingsEvent::onSettingsUpdated(), [
                 'key' => $key,
@@ -71,7 +71,6 @@ $router->post('/api/admin/settings/update/bulk', function (): void {
 
     if (!$data || !is_array($data)) {
         $appInstance->BadRequest('Invalid JSON body', ['error_code' => 'INVALID_JSON']);
-
         return;
     }
 
@@ -102,8 +101,8 @@ $router->post('/api/admin/settings/update/bulk', function (): void {
         }
 
         try {
-            $config = $config->setSetting($key, $value);
-            if ($config) {
+            $setResult = $config->setSetting($key, $value);
+            if ($setResult) {
                 $updatedSettings[] = [
                     'key' => $key,
                     'value' => $value,
