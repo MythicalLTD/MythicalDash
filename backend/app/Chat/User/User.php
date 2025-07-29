@@ -112,7 +112,7 @@ class User extends Database
              */
             if (Mail::isEnabled()) {
                 try {
-                    if ($config->getDBSetting(ConfigInterface::FORCE_MAIL_LINK, false)) {
+                    if ($config->getDBSetting(ConfigInterface::FORCE_MAIL_LINK, 'false') == 'true') {
                         $verify_token = App::getInstance(true)->generateCode();
                         $appInstance->getLogger()->debug('Verify token: ' . $verify_token);
                         Verification::add($verify_token, $uuid, EmailVerificationColumns::$type_verify);

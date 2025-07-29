@@ -529,6 +529,14 @@ $router->post('/api/user/server/create', function (): void {
             return;
         }
     }
+    if ($config->getDBSetting(ConfigInterface::FORCE_MAIL_LINK, 'false') == 'true') {
+        $emailVerified = User::getInfo($accountToken, UserColumns::VERIFIED, false);
+        if ($emailVerified == 'false') {
+            $appInstance->BadRequest('Email verification is required', ['error_code' => 'EMAIL_VERIFICATION_REQUIRED']);
+
+            return;
+        }
+    }
     if (
         !isset($_POST['name'])
         || !isset($_POST['description'])

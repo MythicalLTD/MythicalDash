@@ -82,6 +82,23 @@ const checkAccountLinkingRequirements = () => {
     }
 };
 
+// Computed property to check if session data is ready
+const isSessionReady = computed(() => {
+    const uuid = Session.getInfo('uuid');
+    const discordLinked = Session.getInfo('discord_linked');
+    const githubLinked = Session.getInfo('github_linked');
+    
+    // Session is ready when we have basic user data and account linking status
+    return uuid && discordLinked !== null && githubLinked !== null;
+});
+
+// Watch for session readiness and trigger account linking check
+watch(isSessionReady, (ready) => {
+    if (ready) {
+        checkAccountLinkingRequirements();
+    }
+}, { immediate: true });
+
 const loading = ref(true);
 const isSidebarOpen = ref(false);
 const isSearchOpen = ref(false);
@@ -188,11 +205,6 @@ onMounted(() => {
     }
 
     fetchRoles();
-
-    // Check account linking requirements after session is loaded
-    setTimeout(() => {
-        checkAccountLinkingRequirements();
-    }, 1000);
 });
 
 const userBackground = computed(() => {
@@ -272,11 +284,7 @@ const reloadUserData = async () => {
         await Session.cleanup();
         await Session.startSession();
 
-        // Check account linking requirements after reload
-        setTimeout(() => {
-            checkAccountLinkingRequirements();
-        }, 1000);
-
+        // The account linking check will be triggered by the watcher when session data is ready
         setTimeout(() => {
             isReloading.value = false;
         }, 3500);
@@ -292,21 +300,11 @@ const reloadUserData = async () => {
 
 // Watch for session changes to check account linking requirements
 watch(
-    () => Session.getInfo('discord_linked'),
-    () => {
-        checkAccountLinkingRequirements();
-    },
-);
-
-watch(
-    () => Session.getInfo('github_linked'),
-    () => {
-        checkAccountLinkingRequirements();
-    },
-);
-
-watch(
-    () => Session.getInfo('email_verified'),
+    () => [
+        Session.getInfo('discord_linked'),
+        Session.getInfo('github_linked'),
+        Session.getInfo('email_verified')
+    ],
     () => {
         checkAccountLinkingRequirements();
     },

@@ -153,8 +153,13 @@ dashboard:
     alerts:
         account_linking:
             title: Account Linking Required
+            # Generic fallback message (legacy - prefer specific variants below)
             message: You need to link your Discord or GitHub account to access all features. You will be redirected to your account settings to complete this step.
+            # Use when exactly ONE account type needs linking (Discord OR GitHub)
             message_single: You need to link your {type} account to access all features. You will be redirected to your account settings to complete this step.
+            # Use when exactly TWO account types need linking (Discord AND GitHub)
+            message_two: You need to link your {first} and {second} accounts to access all features. You will be redirected to your account settings to complete this step.
+            # Use when THREE or more account types need linking (Discord, GitHub, Email, etc.)
             message_multiple: You need to link your {types} accounts to access all features. You will be redirected to your account settings to complete this step.
             footer: This is required by the host to ensure account security and verification.
             continue: Continue to Account Settings
@@ -231,9 +236,13 @@ auth:
                 warning:
                     account_linking:
                         title: Account Linking Required
+                        # Generic fallback message (legacy - prefer specific variants below)
                         message: This host requires you to link your Discord or GitHub account after registration. You will need to complete this step to access all features.
+                        # Use when exactly ONE account type needs linking (Discord OR GitHub)
                         message_single: This host requires you to link your {type} account after registration. You will need to complete this step to access all features.
+                        # Use when exactly TWO account types need linking (Discord AND GitHub)
                         message_two: This host requires you to link your {first} and {second} accounts after registration. You will need to complete these steps to access all features.
+                        # Use when THREE or more account types need linking (Discord, GitHub, Email, etc.)
                         message_multiple: This host requires you to link your {types} accounts after registration. You will need to complete these steps to access all features.
                         footer: You can link your accounts from your account settings after logging in.
                         continue: Continue to Login
