@@ -160,10 +160,9 @@ class DiscordOAuthHelper
      */
     public function forceJoinServer(string $discordId, string $accessToken): void
     {
-        $forceJoinEnabled = $this->config->getDBSetting(ConfigInterface::DISCORD_FORCE_JOIN_SERVER, 'false');
-        $forceJoinServerId = $this->config->getDBSetting(ConfigInterface::DISCORD_SERVER_ID, '');
+        $forceJoinServerId = $this->config->getDBSetting(ConfigInterface::DISCORD_FORCE_JOIN_SERVER, 'false');
 
-        if ($forceJoinEnabled !== 'true' || empty($forceJoinServerId)) {
+        if ($forceJoinServerId === 'false' || empty($forceJoinServerId)) {
             return;
         }
 
