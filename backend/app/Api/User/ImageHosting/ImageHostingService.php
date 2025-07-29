@@ -505,3 +505,228 @@ $router->post('/api/user/images/upload', function () use ($app, $logger, $config
         $deleteUrl
     );
 });
+
+$router->get('/api/user/images/upload/config', function () use ($app, $config) {
+    $session = new Session($app);
+    if (!$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)) {
+        $app->BadRequest('You do not have permission to upload images.', [
+            'status' => 400,
+            'data' => [
+                'error' => 'You do not have permission to upload images.',
+            ],
+        ]);
+    }
+
+    $app->OK('Success', [
+        'status' => 200,
+        'data' => [
+            'max_file_size' => (int) $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_MAX_FILE_SIZE, 10),
+            'coins_per_image_enabled' => $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED, 'false'),
+            'coins_per_image' => (int) $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1),
+            'allowed_types' => ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+        ],
+    ]);
+});
+
+$router->post('/api/user/images/upload/web', function () use ($app, $logger, $config) {
+    $session = new Session($app);
+    if (!$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)) {
+        $app->BadRequest('You do not have permission to upload images.', [
+            'status' => 400,
+            'data' => [
+                'error' => 'You do not have permission to upload images.',
+            ],
+        ]);
+    }
+
+    if (!isset($_FILES['file'])) {
+        $app->BadRequest('No file uploaded.', [
+            'status' => 400,
+            'data' => [
+                'error' => 'No file uploaded.',
+            ],
+        ]);
+    }
+
+    $file = $_FILES['file'];
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+    if (!in_array($ext, $allowed)) {
+        $app->BadRequest('Invalid file type. Allowed types: ' . implode(', ', $allowed), [
+            'status' => 400,
+            'data' => [
+                'error' => 'Invalid file type. Allowed types: ' . implode(', ', $allowed),
+            ],
+        ]);
+    }
+
+    // Get max size in bytes (default 10MB)
+    $maxSize = (int) $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_MAX_FILE_SIZE, 10) * 1024 * 1024;
+
+    if ($file['size'] <= 0) {
+        $app->BadRequest('Invalid file size: File appears to be empty.', [
+            'status' => 400,
+            'data' => [
+                'error' => 'Invalid file size: File appears to be empty.',
+            ],
+        ]);
+    }
+
+    if ($file['size'] > $maxSize) {
+        $app->BadRequest(sprintf(
+            'File is too large. Max size: %d MB, Provided: %.2f MB',
+            $maxSize / (1024 * 1024),
+            $file['size'] / (1024 * 1024)
+        ), [
+            'status' => 400,
+            'data' => [
+                'error' => sprintf(
+                    'File is too large. Max size: %d MB, Provided: %.2f MB',
+                    $maxSize / (1024 * 1024),
+                    $file['size'] / (1024 * 1024)
+                ),
+            ],
+        ]);
+    }
+
+    $user_uuid = $session->getInfo(UserColumns::UUID, false);
+
+    // Create user-specific directories
+    $userDir = APP_PUBLIC . '/attachments/imgs/users/' . $user_uuid;
+    $rawDir = $userDir . '/raw';
+    $dataDir = $userDir . '/data';
+
+    foreach ([$userDir, $rawDir, $dataDir] as $dir) {
+        if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
+            $logger->error('Failed to create directory: ' . $dir);
+            $app->InternalServerError('Failed to create upload directory.', [
+                'status' => 500,
+                'data' => [
+                    'error' => 'Failed to create upload directory.',
+                ],
+            ]);
+        }
+    }
+
+    // Generate unique filename
+    $timestamp = time();
+    $new_name = sprintf(
+        '%s-%s.%s',
+        $user_uuid,
+        $timestamp,
+        $ext
+    );
+
+    $targetPath = $rawDir . '/' . $new_name;
+
+    /**
+     * Coins per image enabled.
+     */
+    if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED, 'false') == 'true') {
+        $coins = User::getInfoUUID($user_uuid, UserColumns::CREDITS, false);
+        if ($coins <= 0) {
+            $app->BadRequest('You do not have enough coins to upload images.', [
+                'status' => 400,
+                'data' => [
+                    'error' => 'You do not have enough coins to upload images.',
+                ],
+            ]);
+        }
+        if ($coins < $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1)) {
+            $app->BadRequest('You do not have enough coins to upload images.', [
+                'status' => 400,
+                'data' => [
+                    'error' => 'You do not have enough coins to upload images.',
+                ],
+            ]);
+        }
+        User::removeCredits(User::getTokenFromUUID($user_uuid), $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1));
+    }
+
+    if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+        $logger->error('Failed to move uploaded file to: ' . $targetPath);
+        $app->InternalServerError('Failed to save uploaded file.', [
+            'status' => 500,
+            'data' => [
+                'error' => 'Failed to save uploaded file.',
+            ],
+        ]);
+    }
+
+    $appUrl = $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
+    if (strpos($appUrl, 'https://') !== 0) {
+        $appUrl = 'https://' . $appUrl;
+    }
+
+    // Store metadata
+    $metadata = [
+        'original_name' => $file['name'],
+        'uploaded_at' => $timestamp,
+        'metadata' => [
+            'file_size' => $file['size'],
+            'file_type' => $file['type'],
+            'file_name' => $new_name,
+            'file_url' => sprintf(
+                '%s/attachments/imgs/users/%s/raw/%s',
+                $appUrl,
+                $user_uuid,
+                $new_name
+            ),
+            'uploaded_at' => $timestamp,
+        ],
+        'user_uuid' => $user_uuid,
+        'user_name' => User::getInfoUUID($user_uuid, UserColumns::USERNAME, false),
+        'embed' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_ENABLED, false) == 'true' ? true : false,
+        'embed_info' => [
+            'title' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_TITLE, false),
+            'description' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_DESCRIPTION, false),
+            'color' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_COLOR, false),
+            'author_name' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_AUTHOR_NAME, false),
+            'image' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_IMAGE, false),
+            'thumbnail' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_THUMBNAIL, false),
+            'url' => User::getInfoUUID($user_uuid, UserColumns::IMAGE_HOSTING_EMBED_URL, false),
+        ],
+    ];
+
+    $metadataPath = $dataDir . '/' . pathinfo($new_name, PATHINFO_FILENAME) . '.json';
+    if (!file_put_contents($metadataPath, json_encode($metadata, JSON_PRETTY_PRINT))) {
+        $logger->error('Failed to save metadata for: ' . $new_name);
+    }
+
+    $deleteUrl = sprintf(
+        '%s/api/user/images/delete/%s',
+        $appUrl,
+        $new_name
+    );
+
+    $imageUrl = sprintf(
+        '%s/attachments/imgs/users/%s/raw/%s',
+        $appUrl,
+        $user_uuid,
+        $new_name
+    );
+
+    $embedUrl = sprintf(
+        '%s/i/%s',
+        $appUrl,
+        $new_name
+    );
+
+    $logger->debug('Web upload - Embed URL: ' . $embedUrl);
+    $logger->debug('Web upload - Image URL: ' . $imageUrl);
+    $logger->debug('Web upload - Delete URL: ' . $deleteUrl);
+
+    $app->OK('Image uploaded successfully', [
+        'status' => 200,
+        'data' => [
+            'success' => true,
+            'image_url' => $imageUrl,
+            'embed_url' => $embedUrl,
+            'delete_url' => $deleteUrl,
+            'filename' => $new_name,
+            'size' => $file['size'],
+            'type' => $file['type'],
+        ],
+    ]);
+});

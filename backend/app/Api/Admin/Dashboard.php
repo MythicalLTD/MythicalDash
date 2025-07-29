@@ -47,6 +47,8 @@ $router->get('/api/admin', function (): void {
         $pluginsCount = Database::getTableRowCount('mythicaldash_addons', true);
         $imagesCount = Database::getTableRowCount('mythicaldash_image_db', true);
         $redirectLinksCount = Database::getTableRowCount('mythicaldash_redirect_links', true);
+        $imageReportsCount = Database::getTableRowCount('mythicaldash_image_reports', true);
+        $j4rServersCount = Database::getTableRowCount('mythicaldash_j4r_servers', true);
         $DashboardLogs = $appInstance->getLogger()->getLogs(false);
         $WebServerLogs = $appInstance->getWebServerLogger()->getLogs(true);
         // Limit logs to 250 lines (keep most recent)
@@ -83,6 +85,8 @@ $router->get('/api/admin', function (): void {
                 'plugins_count' => $pluginsCount,
                 'images_count' => $imagesCount,
                 'redirect_links_count' => $redirectLinksCount,
+                'image_reports_count' => $imageReportsCount,
+                'j4r_servers_count' => $j4rServersCount,
             ],
             'etc' => [
                 'activity' => $activity,

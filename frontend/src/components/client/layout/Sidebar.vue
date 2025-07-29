@@ -139,6 +139,12 @@ const imageHostingMenuItem = {
             active: isActiveRoute(['/images']),
         },
         {
+            name: t('components.sidebar.upload'),
+            icon: ImageIcon,
+            href: '/images/upload',
+            active: isActiveRoute(['/images/upload']),
+        },
+        {
             name: t('components.sidebar.config'),
             icon: Images,
             href: '/images/config',
@@ -151,7 +157,7 @@ const imageHostingMenuItem = {
             active: isActiveRoute(['/account']),
         },
     ],
-    active: isActiveRoute(['/images', '/images/config']),
+    active: isActiveRoute(['/images', '/images/config', '/images/upload']),
 };
 
 // Define Join For Rewards menu item

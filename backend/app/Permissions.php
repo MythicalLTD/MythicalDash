@@ -247,6 +247,16 @@ class Permissions
     /** The VIP permission that allows you to create servers on vip eggs or nodes */
     public const USER_PERMISSION_VIP = 'user.permission.vip';
 
+    // Admin Image Reports Permissions
+    /** View image reports */
+    public const ADMIN_IMAGE_REPORTS_VIEW = 'admin.image.reports.view';
+    /** List image reports */
+    public const ADMIN_IMAGE_REPORTS_LIST = 'admin.image.reports.list';
+    /** Edit image reports */
+    public const ADMIN_IMAGE_REPORTS_EDIT = 'admin.image.reports.edit';
+    /** Delete image reports */
+    public const ADMIN_IMAGE_REPORTS_DELETE = 'admin.image.reports.delete';
+
     /**
      * Returns all permission nodes with metadata.
      */
@@ -756,6 +766,30 @@ class Permissions
                 'value' => self::USER_PERMISSION_VIP,
                 'category' => 'VIP',
                 'description' => 'The VIP permission that allows you to create servers on vip eggs or nodes',
+            ],
+            [
+                'constant' => 'ADMIN_IMAGE_REPORTS_VIEW',
+                'value' => self::ADMIN_IMAGE_REPORTS_VIEW,
+                'category' => 'Admin Image Reports',
+                'description' => 'View image reports',
+            ],
+            [
+                'constant' => 'ADMIN_IMAGE_REPORTS_LIST',
+                'value' => self::ADMIN_IMAGE_REPORTS_LIST,
+                'category' => 'Admin Image Reports',
+                'description' => 'List image reports',
+            ],
+            [
+                'constant' => 'ADMIN_IMAGE_REPORTS_EDIT',
+                'value' => self::ADMIN_IMAGE_REPORTS_EDIT,
+                'category' => 'Admin Image Reports',
+                'description' => 'Edit image reports',
+            ],
+            [
+                'constant' => 'ADMIN_IMAGE_REPORTS_DELETE',
+                'value' => self::ADMIN_IMAGE_REPORTS_DELETE,
+                'category' => 'Admin Image Reports',
+                'description' => 'Delete image reports',
             ],
         ];
     }

@@ -907,6 +907,7 @@ components:
         general: General
         image_hosting: Image Hosting
         images: Images
+        upload: Upload Image
         quota: Quota
     profileDropdown:
         settings: Settings
@@ -1182,7 +1183,7 @@ create:
             slots: 'Slots'
             vip_only: 'VIP Only'
             vip_access: 'VIP Access'
-            terms_and_conditions: 'Terms and Conditions'
+            terms_of_conditions: 'Terms and Conditions'
             privacy_policy: 'Privacy Policy'
             and: 'and'
             i_accept_the_terms_and_conditions: 'I accept the terms and conditions'
@@ -1986,6 +1987,30 @@ images:
             description: 'Download your ShareX config file'
             download: 'Download'
             filename: 'sharex-config.sxcu'
+    upload:
+        title: 'Upload Image'
+        description: 'Upload images directly from your browser. Drag and drop files or click to select. Supported formats: JPG, PNG, GIF, WebP.'
+        back_to_gallery: 'Back to Gallery'
+        success_message: 'Image uploaded successfully!'
+        image_url: 'Image URL'
+        embed_url: 'Embed URL'
+        copy_url: 'Copy URL'
+        copy_embed: 'Copy Embed URL'
+        auto_copied: 'Auto-copied to clipboard'
+        drag_drop_title: 'Drag & Drop Images Here'
+        drag_drop_description: 'Drop your image files here, or click to browse'
+        select_file: 'Select File'
+        uploading: 'Uploading...'
+        selected_file: 'Selected File'
+        file_name: 'File Name'
+        file_size: 'File Size'
+        file_type: 'File Type'
+        upload_file: 'Upload File'
+        limits:
+            title: 'Upload Limits'
+            max_size: 'Maximum file size: {size}MB'
+            allowed_types: 'Allowed types: JPG, PNG, GIF, WebP'
+            coins_per_image: 'Cost per image: {coins} coins'
 terms_of_service:
     title: 'Terms of Service'
     subtitle: 'Last updated: {date}'

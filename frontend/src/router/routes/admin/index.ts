@@ -18,6 +18,7 @@ import imagesRoutes from './images.ts';
 import redirectLinks from './redirectLinks.ts';
 import rolesRoutes from './roles.ts';
 import j4rRoutes from './j4r.ts';
+import imageReportsRoutes from './image-reports.ts';
 import Session from '@/mythicaldash/Session';
 import Permissions from '@/mythicaldash/Permissions';
 
@@ -79,6 +80,7 @@ const adminRoutes: RouteRecordRaw[] = [
     ...redirectLinks,
     ...rolesRoutes,
     ...j4rRoutes,
+    ...imageReportsRoutes,
 ];
 
 export default adminRoutes;
