@@ -29,9 +29,7 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
         if (getcwd() !== '/var/www/mythicaldash-v3') {
             exit('We detected that you are not running this command from the root directory of MythicalDash. Please run this command from the root directory.');
         }
-
-        $this->runStartupHealthChecks();
-
+        
         $addonDir = getcwd() . '/backend/storage/addons/imagehostbridge';
         if (is_dir($addonDir)) {
             // Recursively delete the directory and its contents
