@@ -427,7 +427,7 @@ $router->post('/api/user/images/upload', function () use ($app, $logger, $config
 
             return;
         }
-        User::removeCredits(User::getTokenFromUUID($user_uuid), $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1));
+        // Note: Coin deduction moved to after successful file upload
     }
 
     if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
@@ -641,7 +641,7 @@ $router->post('/api/user/images/upload/web', function () use ($app, $logger, $co
                 ],
             ]);
         }
-        User::removeCredits(User::getTokenFromUUID($user_uuid), $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1));
+        // Note: Coin deduction moved to after successful file upload
     }
 
     if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
@@ -652,6 +652,11 @@ $router->post('/api/user/images/upload/web', function () use ($app, $logger, $co
                 'error' => 'Failed to save uploaded file.',
             ],
         ]);
+    }
+
+    // Deduct coins only after successful file upload
+    if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED, 'false') == 'true') {
+        User::removeCredits(User::getTokenFromUUID($user_uuid), $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1));
     }
 
     $appUrl = $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');

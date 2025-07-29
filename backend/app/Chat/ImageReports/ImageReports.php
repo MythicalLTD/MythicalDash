@@ -56,15 +56,64 @@ class ImageReports extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $sql = 'UPDATE ' . self::TABLE_NAME . ' SET status = :status, admin_notes = :admin_notes, resolved_at = NOW(), resolved_by = :resolved_by WHERE id = :id';
+            
+            // Build SQL query conditionally based on status
+            if ($status === 'resolved') {
+                $sql = 'UPDATE ' . self::TABLE_NAME . ' SET status = :status, admin_notes = :admin_notes, resolved_at = NOW(), resolved_by = :resolved_by WHERE id = :id';
+            } else {
+                $sql = 'UPDATE ' . self::TABLE_NAME . ' SET status = :status, admin_notes = :admin_notes WHERE id = :id';
+            }
+            
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':status', $status);
             $stmt->bindParam(':admin_notes', $adminNotes);
-            $stmt->bindParam(':resolved_by', $resolvedBy);
+            
+            // Only bind resolved_by parameter if status is 'resolved'
+            if ($status === 'resolved') {
+                $stmt->bindParam(':resolved_by', $resolvedBy);
+            }
+            
             $stmt->execute();
         } catch (\Exception $e) {
             self::db_Error('Failed to update image report: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update an existing image report within a transaction.
+     * This method should be used when file deletion is also required.
+     */
+    public static function updateWithTransaction(int $id, string $status, ?string $adminNotes = null, ?string $resolvedBy = null): void
+    {
+        try {
+            $con = self::getPdoConnection();
+            $con->beginTransaction();
+            
+            // Build SQL query conditionally based on status
+            if ($status === 'resolved') {
+                $sql = 'UPDATE ' . self::TABLE_NAME . ' SET status = :status, admin_notes = :admin_notes, resolved_at = NOW(), resolved_by = :resolved_by WHERE id = :id';
+            } else {
+                $sql = 'UPDATE ' . self::TABLE_NAME . ' SET status = :status, admin_notes = :admin_notes WHERE id = :id';
+            }
+            
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            $stmt->bindParam(':status', $status);
+            $stmt->bindParam(':admin_notes', $adminNotes);
+            
+            // Only bind resolved_by parameter if status is 'resolved'
+            if ($status === 'resolved') {
+                $stmt->bindParam(':resolved_by', $resolvedBy);
+            }
+            
+            $stmt->execute();
+            
+            $con->commit();
+        } catch (\Exception $e) {
+            $con->rollBack();
+            self::db_Error('Failed to update image report with transaction: ' . $e->getMessage());
+            throw $e;
         }
     }
 

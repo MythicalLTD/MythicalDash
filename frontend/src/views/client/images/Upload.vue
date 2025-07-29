@@ -311,22 +311,22 @@ const uploadFile = async () => {
         });
 
         const data: ApiResponse = await response.json();
-        
+
         if (data.success || data.data) {
-            const responseData: UploadResponse = data.data || data as UploadResponse;
+            const responseData: UploadResponse = data.data || (data as UploadResponse);
             uploadSuccess.value = true;
             uploadedImage.value = {
                 url: responseData.image_url,
                 embedUrl: responseData.embed_url,
                 deleteUrl: responseData.delete_url,
             };
-            
+
             // Reset form
             selectedFile.value = null;
             if (fileInput.value) {
                 fileInput.value.value = '';
             }
-            
+
             // Automatically copy embed URL to clipboard
             try {
                 if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -354,7 +354,7 @@ const uploadFile = async () => {
                     confirmButtonText: 'OK',
                 });
             }
-            
+
             // Show success message
             Swal.fire({
                 icon: 'success',

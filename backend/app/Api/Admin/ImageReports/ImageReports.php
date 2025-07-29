@@ -15,8 +15,12 @@ use MythicalDash\App;
 use MythicalDash\Permissions;
 use MythicalDash\Chat\User\Session;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\ImageReports\ImageReports;
 use MythicalDash\Middleware\PermissionMiddleware;
+use MythicalDash\Chat\interface\UserActivitiesTypes;
+use MythicalDash\Plugins\Events\Events\ImageHostingReportEvent;
 
 $router->get('/api/admin/image-reports', function (): void {
     App::init();
@@ -29,6 +33,19 @@ $router->get('/api/admin/image-reports', function (): void {
     $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
     $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 20;
     $status = $_GET['status'] ?? null;
+
+    // Validate and sanitize pagination parameters
+    if ($page < 1) {
+        $page = 1;
+    }
+
+    // Set maximum limit to prevent performance issues
+    $maxLimit = 100;
+    if ($limit < 1) {
+        $limit = 20;
+    } elseif ($limit > $maxLimit) {
+        $limit = $maxLimit;
+    }
 
     // Validate status if provided
     if ($status !== null) {
@@ -78,6 +95,14 @@ $router->get('/api/admin/image-reports/(.*)', function ($reportId): void {
 
         return;
     }
+
+    // Log user activity for viewing report
+    UserActivities::add(
+        $session->getInfo(UserColumns::UUID, false),
+        UserActivitiesTypes::$image_report_view,
+        CloudFlareRealIP::getRealIP(),
+        "Viewed image report: $reportId (Image: {$report['image_id']})"
+    );
 
     $appInstance->OK('Image report retrieved successfully.', [
         'report' => $report,
@@ -145,51 +170,109 @@ $router->put('/api/admin/image-reports/(.*)', function ($reportId): void {
         $wasResolved = $currentReport && $currentReport['status'] === 'resolved';
         $willBeResolved = $body['status'] === 'resolved';
 
-        // Update the report
-        ImageReports::update((int) $reportId, $body['status'], $adminNotes, $currentUser);
-
-        // If the report is being marked as resolved and wasn't already resolved, delete the image
+        // If the report is being marked as resolved and wasn't already resolved, use transaction
         if ($willBeResolved && !$wasResolved && $currentReport) {
-            $imageDeleted = false;
-            $imageId = $currentReport['image_id'];
+            // Use transaction for atomic operation
+            try {
+                // Update the report within transaction
+                ImageReports::updateWithTransaction((int) $reportId, $body['status'], $adminNotes, $currentUser);
 
-            // Extract UUID and filename from image_id (format: uuid-timestamp.ext)
-            if (preg_match('/^([0-9a-f\-]{36})-(\d+)\.([a-zA-Z0-9]+)$/', $imageId, $matches)) {
-                $userUuid = $matches[1];
-                $timestamp = $matches[2];
-                $extension = $matches[3];
-                $filename = $imageId; // Full filename
-                $nameNoExt = pathinfo($filename, PATHINFO_FILENAME);
+                // File deletion logic - if this fails, the transaction will be rolled back
+                $imageDeleted = false;
+                $imageId = $currentReport['image_id'];
 
-                // Construct paths
-                $imagePath = APP_PUBLIC . '/attachments/imgs/users/' . $userUuid . '/raw/' . $filename;
-                $metadataPath = APP_PUBLIC . '/attachments/imgs/users/' . $userUuid . '/data/' . $nameNoExt . '.json';
+                // Extract UUID and filename from image_id (format: uuid-timestamp.ext)
+                if (preg_match('/^([0-9a-f\-]{36})-(\d+)\.([a-zA-Z0-9]+)$/', $imageId, $matches)) {
+                    $userUuid = $matches[1];
+                    $timestamp = $matches[2];
+                    $extension = $matches[3];
+                    $filename = $imageId; // Full filename
+                    $nameNoExt = pathinfo($filename, PATHINFO_FILENAME);
 
-                // Delete the image file if it exists
-                if (file_exists($imagePath)) {
-                    if (unlink($imagePath)) {
-                        $imageDeleted = true;
-                        $appInstance->getLogger()->info("Deleted image file: $imagePath for resolved report: $reportId");
-                    } else {
-                        $appInstance->getLogger()->error("Failed to delete image file: $imagePath for report: $reportId");
+                    // Construct paths
+                    $imagePath = APP_PUBLIC . '/attachments/imgs/users/' . $userUuid . '/raw/' . $filename;
+                    $metadataPath = APP_PUBLIC . '/attachments/imgs/users/' . $userUuid . '/data/' . $nameNoExt . '.json';
+
+                    // Delete the image file if it exists
+                    if (file_exists($imagePath)) {
+                        if (unlink($imagePath)) {
+                            $imageDeleted = true;
+                            $appInstance->getLogger()->info("Deleted image file: $imagePath for resolved report: $reportId");
+                        } else {
+                            throw new Exception("Failed to delete image file: $imagePath for report: $reportId");
+                        }
                     }
-                }
 
-                // Delete the metadata file if it exists
-                if (file_exists($metadataPath)) {
-                    if (unlink($metadataPath)) {
-                        $appInstance->getLogger()->info("Deleted metadata file: $metadataPath for resolved report: $reportId");
-                    } else {
-                        $appInstance->getLogger()->error("Failed to delete metadata file: $metadataPath for report: $reportId");
+                    // Delete the metadata file if it exists
+                    if (file_exists($metadataPath)) {
+                        if (unlink($metadataPath)) {
+                            $appInstance->getLogger()->info("Deleted metadata file: $metadataPath for resolved report: $reportId");
+                        } else {
+                            throw new Exception("Failed to delete metadata file: $metadataPath for report: $reportId");
+                        }
                     }
+
+                    if ($imageDeleted) {
+                        $appInstance->getLogger()->info("Successfully deleted image and metadata for resolved report: $reportId, image: $imageId");
+                    }
+                } else {
+                    throw new Exception("Could not parse image ID format: $imageId for report: $reportId");
                 }
 
-                if ($imageDeleted) {
-                    $appInstance->getLogger()->info("Successfully deleted image and metadata for resolved report: $reportId, image: $imageId");
-                }
-            } else {
-                $appInstance->getLogger()->warning("Could not parse image ID format: $imageId for report: $reportId");
+            } catch (Exception $e) {
+                // Transaction will be rolled back automatically
+                $appInstance->getLogger()->error("Transaction failed for report $reportId: " . $e->getMessage());
+                throw $e;
             }
+        } else {
+            // Regular update without file deletion
+            ImageReports::update((int) $reportId, $body['status'], $adminNotes, $currentUser);
+        }
+
+        // Emit events based on status change
+        global $eventManager;
+        $eventData = [
+            'report_id' => $reportId,
+            'image_id' => $currentReport['image_id'],
+            'old_status' => $currentReport['status'],
+            'new_status' => $body['status'],
+            'updated_by' => $currentUser,
+            'admin_notes' => $adminNotes,
+        ];
+
+        // Emit general update event
+        $eventManager->emit(ImageHostingReportEvent::onImageReportUpdated(), $eventData);
+
+        // Emit specific status events
+        if ($body['status'] === 'resolved') {
+            $eventManager->emit(ImageHostingReportEvent::onImageReportResolved(), $eventData);
+        } elseif ($body['status'] === 'dismissed') {
+            $eventManager->emit(ImageHostingReportEvent::onImageReportDismissed(), $eventData);
+        }
+
+        // Log user activity for updating report
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$image_report_update,
+            CloudFlareRealIP::getRealIP(),
+            "Updated image report: $reportId (Status: {$body['status']})"
+        );
+
+        // Log specific activity for resolve/dismiss actions
+        if ($body['status'] === 'resolved') {
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$image_report_resolve,
+                CloudFlareRealIP::getRealIP(),
+                "Resolved image report: $reportId (Image: {$currentReport['image_id']})"
+            );
+        } elseif ($body['status'] === 'dismissed') {
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$image_report_dismiss,
+                CloudFlareRealIP::getRealIP(),
+                "Dismissed image report: $reportId (Image: {$currentReport['image_id']})"
+            );
         }
 
         $appInstance->OK('Image report updated successfully.', [
@@ -227,7 +310,27 @@ $router->delete('/api/admin/image-reports/(.*)', function ($reportId): void {
     }
 
     try {
+        // Get report data before deletion for event
+        $report = ImageReports::get((int) $reportId);
+
         ImageReports::delete((int) $reportId);
+
+        // Emit event for report deleted
+        global $eventManager;
+        $eventManager->emit(ImageHostingReportEvent::onImageReportDeleted(), [
+            'report_id' => $reportId,
+            'image_id' => $report['image_id'],
+            'status' => $report['status'],
+            'deleted_by' => $session->getInfo(UserColumns::USERNAME, false),
+        ]);
+
+        // Log user activity for deleting report
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$image_report_delete,
+            CloudFlareRealIP::getRealIP(),
+            "Deleted image report: $reportId (Image: {$report['image_id']})"
+        );
 
         $appInstance->OK('Image report deleted successfully.', [
             'report_id' => $reportId,

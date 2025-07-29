@@ -15,6 +15,7 @@ use MythicalDash\App;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Chat\ImageReports\ImageReports;
+use MythicalDash\Plugins\Events\Events\ImageHostingReportEvent;
 
 $router->post('/api/system/imagehosting/report', function (): void {
     App::init();
@@ -65,10 +66,37 @@ $router->post('/api/system/imagehosting/report', function (): void {
     $imageUrl = $body['image_url'];
     $appUrl = $config->getDBSetting(ConfigInterface::APP_URL, '');
 
-    // Check if the image URL belongs to this application
-    if (!str_contains($imageUrl, $appUrl) && !str_contains($imageUrl, $_SERVER['HTTP_HOST'])) {
-        $appInstance->BadRequest('Invalid image URL', ['error_code' => 'INVALID_IMAGE_URL']);
+    // Parse the image URL to extract the host
+    $parsedImageUrl = parse_url($imageUrl);
+    if (!$parsedImageUrl || !isset($parsedImageUrl['host'])) {
+        $appInstance->BadRequest('Invalid image URL format', ['error_code' => 'INVALID_IMAGE_URL_FORMAT']);
+        return;
+    }
 
+    $imageHost = $parsedImageUrl['host'];
+    $serverHost = $_SERVER['HTTP_HOST'] ?? '';
+    
+    // Parse the configured app URL to extract its host
+    $parsedAppUrl = parse_url($appUrl);
+    $appHost = $parsedAppUrl['host'] ?? '';
+
+    // Validate that the image URL host matches either the configured app URL host or the server's HTTP_HOST
+    $isValidHost = false;
+    
+    if (!empty($appHost) && $imageHost === $appHost) {
+        $isValidHost = true;
+    }
+    
+    if (!empty($serverHost) && $imageHost === $serverHost) {
+        $isValidHost = true;
+    }
+
+    if (!$isValidHost) {
+        $appInstance->BadRequest('Invalid image URL - host does not match application domain', [
+            'error_code' => 'INVALID_IMAGE_URL_HOST',
+            'provided_host' => $imageHost,
+            'expected_hosts' => array_filter([$appHost, $serverHost])
+        ]);
         return;
     }
 
@@ -101,7 +129,12 @@ $router->post('/api/system/imagehosting/report', function (): void {
         if ($reportId === 0) {
             throw new Exception('Failed to create image report');
         }
-
+        global $eventManager;
+        $eventManager->emit(ImageHostingReportEvent::onImageHostingReport(), [
+            'image_id' => $imageId,
+            'image_url' => $imageUrl,
+            'reason' => $body['reason'],
+        ]);
         $appInstance->OK('Report submitted successfully', [
             'report_id' => $reportId,
             'message' => 'Thank you for your report. Our team will review it shortly.',
