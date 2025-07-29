@@ -62,6 +62,7 @@
 </template>
 
 <script setup lang="ts">
+import Swal from 'sweetalert2';
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Session from '@/mythicaldash/Session';
@@ -98,10 +99,6 @@ try {
     Session.startSession();
 } catch (error) {
     console.error('Session failed:', error);
-}
-
-if (Session.getInfo('role') == '1' && Session.getInfo('role') == '2') {
-    router.push('/dashboard');
 }
 
 // State management
@@ -182,6 +179,19 @@ const footerLinks = [
 // Keyboard shortcuts
 onMounted(() => {
     document.addEventListener('keydown', handleKeyDown);
+    if (Settings.getSetting('force_2fa') == 'true' && Session.getInfo('2fa_enabled') == 'false') {
+        Swal.fire({
+            title: 'Two-factor authentication is required',
+            text: 'Please enable 2FA in your account settings.',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6',
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            cancelButtonColor: '#d33',
+        });
+        router.push('/account?tab=2fa');
+    }
 });
 
 onUnmounted(() => {

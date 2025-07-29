@@ -262,6 +262,20 @@
                             class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
                         />
                     </div>
+
+                    <!-- Force 2FA -->
+                    <div class="flex items-center justify-between p-4 bg-gray-800/30 rounded-lg border border-gray-700">
+                        <div class="flex-1">
+                            <h4 class="font-medium text-white">Force 2FA for Admin Users</h4>
+                            <p class="text-sm text-gray-400">Require two-factor authentication for all admin users</p>
+                        </div>
+                        <input
+                            type="checkbox"
+                            v-model="formData.force_2fa"
+                            @change="markChanged('force_2fa')"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -357,6 +371,7 @@ const formData = ref({
     allow_public_profiles: false,
     allow_coins_sharing: false,
     daily_backup_enabled: false,
+    force_2fa: false,
     coins_share_max_amount: '100',
     coins_share_min_amount: '1',
     coins_share_fee: '10',
@@ -853,6 +868,7 @@ watch(
                 allow_public_profiles: newSettings['allow_public_profiles'] === 'true',
                 allow_coins_sharing: newSettings['allow_coins_sharing'] === 'true',
                 daily_backup_enabled: newSettings['daily_backup_enabled'] === 'true',
+                force_2fa: newSettings['force_2fa'] === 'true',
                 coins_share_max_amount: newSettings['coins_share_max_amount'] || '100',
                 coins_share_min_amount: newSettings['coins_share_min_amount'] || '1',
                 coins_share_fee: newSettings['coins_share_fee'] || '10',

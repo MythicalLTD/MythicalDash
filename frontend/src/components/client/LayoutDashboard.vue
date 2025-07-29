@@ -87,17 +87,21 @@ const isSessionReady = computed(() => {
     const uuid = Session.getInfo('uuid');
     const discordLinked = Session.getInfo('discord_linked');
     const githubLinked = Session.getInfo('github_linked');
-    
+
     // Session is ready when we have basic user data and account linking status
     return uuid && discordLinked !== null && githubLinked !== null;
 });
 
 // Watch for session readiness and trigger account linking check
-watch(isSessionReady, (ready) => {
-    if (ready) {
-        checkAccountLinkingRequirements();
-    }
-}, { immediate: true });
+watch(
+    isSessionReady,
+    (ready) => {
+        if (ready) {
+            checkAccountLinkingRequirements();
+        }
+    },
+    { immediate: true },
+);
 
 const loading = ref(true);
 const isSidebarOpen = ref(false);
@@ -300,11 +304,7 @@ const reloadUserData = async () => {
 
 // Watch for session changes to check account linking requirements
 watch(
-    () => [
-        Session.getInfo('discord_linked'),
-        Session.getInfo('github_linked'),
-        Session.getInfo('email_verified')
-    ],
+    () => [Session.getInfo('discord_linked'), Session.getInfo('github_linked'), Session.getInfo('email_verified')],
     () => {
         checkAccountLinkingRequirements();
     },
