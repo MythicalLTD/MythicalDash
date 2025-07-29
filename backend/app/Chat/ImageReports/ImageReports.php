@@ -56,24 +56,24 @@ class ImageReports extends Database
     {
         try {
             $con = self::getPdoConnection();
-            
+
             // Build SQL query conditionally based on status
             if ($status === 'resolved') {
                 $sql = 'UPDATE ' . self::TABLE_NAME . ' SET status = :status, admin_notes = :admin_notes, resolved_at = NOW(), resolved_by = :resolved_by WHERE id = :id';
             } else {
                 $sql = 'UPDATE ' . self::TABLE_NAME . ' SET status = :status, admin_notes = :admin_notes WHERE id = :id';
             }
-            
+
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':status', $status);
             $stmt->bindParam(':admin_notes', $adminNotes);
-            
+
             // Only bind resolved_by parameter if status is 'resolved'
             if ($status === 'resolved') {
                 $stmt->bindParam(':resolved_by', $resolvedBy);
             }
-            
+
             $stmt->execute();
         } catch (\Exception $e) {
             self::db_Error('Failed to update image report: ' . $e->getMessage());
@@ -89,26 +89,26 @@ class ImageReports extends Database
         try {
             $con = self::getPdoConnection();
             $con->beginTransaction();
-            
+
             // Build SQL query conditionally based on status
             if ($status === 'resolved') {
                 $sql = 'UPDATE ' . self::TABLE_NAME . ' SET status = :status, admin_notes = :admin_notes, resolved_at = NOW(), resolved_by = :resolved_by WHERE id = :id';
             } else {
                 $sql = 'UPDATE ' . self::TABLE_NAME . ' SET status = :status, admin_notes = :admin_notes WHERE id = :id';
             }
-            
+
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':status', $status);
             $stmt->bindParam(':admin_notes', $adminNotes);
-            
+
             // Only bind resolved_by parameter if status is 'resolved'
             if ($status === 'resolved') {
                 $stmt->bindParam(':resolved_by', $resolvedBy);
             }
-            
+
             $stmt->execute();
-            
+
             $con->commit();
         } catch (\Exception $e) {
             $con->rollBack();

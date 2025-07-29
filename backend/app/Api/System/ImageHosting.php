@@ -70,23 +70,24 @@ $router->post('/api/system/imagehosting/report', function (): void {
     $parsedImageUrl = parse_url($imageUrl);
     if (!$parsedImageUrl || !isset($parsedImageUrl['host'])) {
         $appInstance->BadRequest('Invalid image URL format', ['error_code' => 'INVALID_IMAGE_URL_FORMAT']);
+
         return;
     }
 
     $imageHost = $parsedImageUrl['host'];
     $serverHost = $_SERVER['HTTP_HOST'] ?? '';
-    
+
     // Parse the configured app URL to extract its host
     $parsedAppUrl = parse_url($appUrl);
     $appHost = $parsedAppUrl['host'] ?? '';
 
     // Validate that the image URL host matches either the configured app URL host or the server's HTTP_HOST
     $isValidHost = false;
-    
+
     if (!empty($appHost) && $imageHost === $appHost) {
         $isValidHost = true;
     }
-    
+
     if (!empty($serverHost) && $imageHost === $serverHost) {
         $isValidHost = true;
     }
@@ -95,8 +96,9 @@ $router->post('/api/system/imagehosting/report', function (): void {
         $appInstance->BadRequest('Invalid image URL - host does not match application domain', [
             'error_code' => 'INVALID_IMAGE_URL_HOST',
             'provided_host' => $imageHost,
-            'expected_hosts' => array_filter([$appHost, $serverHost])
+            'expected_hosts' => array_filter([$appHost, $serverHost]),
         ]);
+
         return;
     }
 
