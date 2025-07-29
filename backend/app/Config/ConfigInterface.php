@@ -240,6 +240,7 @@ interface ConfigInterface
     public const DEFAULT_DATABASES = 'default_databases';
     public const DEFAULT_SERVER_SLOTS = 'default_server_slots';
     public const DEFAULT_BACKUPS = 'default_backups';
+    public const DEFAULT_BG = 'default_bg';
 
     /**
      * Block Resources.

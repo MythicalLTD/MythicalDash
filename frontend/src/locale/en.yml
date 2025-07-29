@@ -1202,6 +1202,7 @@ create:
             no_category_found: 'No category found'
             no_egg_found: 'No egg found'
             no_location_found: 'No location found'
+            terms_and_conditions: 'Terms and Conditions'
             create_server: 'Create Server'
             previous: 'Previous'
             next: 'Next'

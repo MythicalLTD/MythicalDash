@@ -1,4 +1,4 @@
-# v3.2.3-Nexus 
+# v3.3.0-Nexus 
 
 ## Bug Fixes
 
@@ -18,6 +18,7 @@
 - Fixed plugin settings variable conflicts
 - Rewrote GitHub and Discord authentication
 - Fixed user data corruption in admin area
+- Fixed missing translations keys
 
 ## Enhancements
 
@@ -46,6 +47,9 @@
 - Ability to report images and manage reports from admin ui!
 - Ability to be able to upload images via the client ui!
 - Ability to use anti adblocker (With bypass permission for roles!)
+- Users page now allows you to see their servers
+- Users page now allows you to see their (Discord,Github) info
+- You can now change the default bg!
 
 ## Breaking Changes
 - None

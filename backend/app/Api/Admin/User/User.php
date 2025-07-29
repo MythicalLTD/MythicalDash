@@ -13,12 +13,16 @@
 
 use MythicalDash\App;
 use MythicalDash\Permissions;
+use MythicalDash\Chat\Eggs\Eggs;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Mails;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\Locations\Locations;
+use MythicalDash\Chat\Servers\ServerQueue;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Hooks\Pterodactyl\Admin\Nodes;
 use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 use MythicalDash\Middleware\PermissionMiddleware;
 use MythicalDash\Plugins\Events\Events\UserEvent;
@@ -53,6 +57,8 @@ $router->get('/api/admin/user/(.*)/info', function ($userId): void {
         $userInfo = User::getInfoArray(
             $targetUser,
             [
+                // Basic Info
+                UserColumns::ID,
                 UserColumns::USERNAME,
                 UserColumns::PASSWORD,
                 UserColumns::EMAIL,
@@ -76,6 +82,8 @@ $router->get('/api/admin/user/(.*)/info', function ($userId): void {
                 UserColumns::LAST_SEEN,
                 UserColumns::FIRST_SEEN,
                 UserColumns::BACKGROUND,
+
+                // Resource Limits
                 UserColumns::DISK_LIMIT,
                 UserColumns::MEMORY_LIMIT,
                 UserColumns::CPU_LIMIT,
@@ -83,8 +91,37 @@ $router->get('/api/admin/user/(.*)/info', function ($userId): void {
                 UserColumns::BACKUP_LIMIT,
                 UserColumns::DATABASE_LIMIT,
                 UserColumns::ALLOCATION_LIMIT,
+
+                // AFK
                 UserColumns::MINUTES_AFK,
                 UserColumns::LAST_SEEN_AFK,
+
+                // Discord
+                UserColumns::DISCORD_ID,
+                UserColumns::DISCORD_USERNAME,
+                UserColumns::DISCORD_GLOBAL_NAME,
+                UserColumns::DISCORD_EMAIL,
+                UserColumns::DISCORD_LINKED,
+                UserColumns::DISCORD_SERVERS,
+                UserColumns::J4R_JOINED_SERVERS,
+
+                // GitHub
+                UserColumns::GITHUB_ID,
+                UserColumns::GITHUB_USERNAME,
+                UserColumns::GITHUB_EMAIL,
+                UserColumns::GITHUB_LINKED,
+
+                // Image Hosting
+                UserColumns::IMAGE_HOSTING_ENABLED,
+                UserColumns::IMAGE_HOSTING_EMBED_ENABLED,
+                UserColumns::IMAGE_HOSTING_EMBED_TITLE,
+                UserColumns::IMAGE_HOSTING_EMBED_DESCRIPTION,
+                UserColumns::IMAGE_HOSTING_EMBED_COLOR,
+                UserColumns::IMAGE_HOSTING_EMBED_IMAGE,
+                UserColumns::IMAGE_HOSTING_EMBED_THUMBNAIL,
+                UserColumns::IMAGE_HOSTING_EMBED_URL,
+                UserColumns::IMAGE_HOSTING_EMBED_AUTHOR_NAME,
+                UserColumns::IMAGE_HOSTING_UPLOAD_KEY,
             ],
             [
                 UserColumns::FIRST_NAME,
@@ -93,13 +130,85 @@ $router->get('/api/admin/user/(.*)/info', function ($userId): void {
             ]
         );
 
+        // Ensure discord_servers and j4r_joined_servers are decoded from JSON if present
+        if (isset($userInfo[UserColumns::DISCORD_SERVERS]) && is_string($userInfo[UserColumns::DISCORD_SERVERS])) {
+            $decoded = json_decode($userInfo[UserColumns::DISCORD_SERVERS], true);
+            $userInfo[UserColumns::DISCORD_SERVERS] = is_array($decoded) ? $decoded : [];
+        }
+        if (isset($userInfo[UserColumns::J4R_JOINED_SERVERS]) && is_string($userInfo[UserColumns::J4R_JOINED_SERVERS])) {
+            $decoded = json_decode($userInfo[UserColumns::J4R_JOINED_SERVERS], true);
+            $userInfo[UserColumns::J4R_JOINED_SERVERS] = is_array($decoded) ? $decoded : [];
+        }
+
         $activity = UserActivities::get($userInfo[UserColumns::UUID], 1000);
         $mails = Mails::getAll($userInfo[UserColumns::UUID]);
+
+        // Get user servers with full information (same logic as Session.php)
+        $pterodactylUserId = $userInfo[UserColumns::PTERODACTYL_USER_ID];
+        $servers = Servers::getUserServersList($pterodactylUserId);
+        foreach ($servers as &$server) {
+            $nodeId = $server['node'] ?? 0;
+            $locationId = Nodes::getLocationIdFromNode((int) $nodeId);
+            if ($locationId != 0) {
+                $location = Locations::getLocationByPterodactylLocationId((int) $locationId);
+            } else {
+                $location = [];
+            }
+            $server['location'] = $location;
+
+            $eggId = $server['egg'] ?? 0;
+            if ($eggId != 0) {
+                $egg = Eggs::getByPterodactylEggId((int) $eggId);
+            } else {
+                $egg = [];
+            }
+            $server['service'] = $egg[0] ?? [];
+
+            $nestId = $server['nest'] ?? 0;
+            if ($nestId != 0) {
+                $nest = MythicalDash\Chat\Eggs\EggCategories::getByPterodactylNestId((int) $nestId);
+            } else {
+                $nest = [];
+            }
+            $server['category'] = $nest[0] ?? [];
+        }
+        unset($server); // Unset the reference to avoid potential issues
+
+        // Get servers in queue
+        $serversInQ = ServerQueue::getByUser($userInfo[UserColumns::UUID], [], false);
+        foreach ($serversInQ as &$server) {
+            // Get location data
+            $server['location'] = Locations::get((int) $server['location']);
+
+            // Get egg data and set it as service to match active servers structure
+            $egg = Eggs::getById((int) $server['egg']);
+            $server['service'] = $egg[0] ?? [];
+
+            // Get category data
+            $server['category'] = MythicalDash\Chat\Eggs\EggCategories::get((int) $server['nest']);
+
+            // Set limits to match active servers structure
+            $server['limits'] = [
+                'memory' => $server['ram'],
+                'disk' => $server['disk'],
+                'cpu' => $server['cpu'],
+            ];
+
+            // Set feature limits to match active servers structure
+            $server['feature_limits'] = [
+                'databases' => $server['databases'],
+                'allocations' => $server['ports'],
+                'backups' => $server['backups'],
+            ];
+        }
+        unset($server); // Unset the reference to avoid potential issues
 
         $appInstance->OK('User info retrieved successfully.', [
             'user' => $userInfo,
             'activity' => $activity,
             'mails' => $mails,
+            'servers' => $servers,
+            'servers_queue' => $serversInQ,
         ]);
     } else {
         $appInstance->NotFound('User not found', ['error_code' => 'USER_NOT_FOUND']);

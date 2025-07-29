@@ -95,6 +95,35 @@
                 <p class="mt-1 text-xs text-gray-500">URL for your application logo. Recommended size: 512x512px.</p>
             </div>
 
+            <!-- Default User Background -->
+            <div>
+                <label for="default_bg" class="block text-sm font-medium text-gray-400 mb-1"
+                    >Default User Background</label
+                >
+                <div class="flex gap-4">
+                    <input
+                        id="default_bg"
+                        type="url"
+                        v-model="formData.default_bg"
+                        @input="markChanged('default_bg')"
+                        class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        placeholder="https://yourdomain.com/default-bg.jpg"
+                    />
+                    <div class="h-10 w-32 bg-gray-800 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img
+                            v-if="formData.default_bg"
+                            :src="formData.default_bg"
+                            alt="Background Preview"
+                            class="h-full w-full object-cover"
+                        />
+                        <ImageIcon v-else class="h-5 w-5 text-gray-500" />
+                    </div>
+                </div>
+                <p class="mt-1 text-xs text-gray-500">
+                    Default background image for new user profiles. Recommended size: 1920x1080px.
+                </p>
+            </div>
+
             <!-- SEO Settings -->
             <div class="pt-4 border-t border-gray-700">
                 <div class="mb-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
@@ -361,6 +390,7 @@ const formData = ref({
     app_url: '',
     app_timezone: 'UTC',
     app_logo: '',
+    default_bg: '',
     seo_description: '',
     seo_keywords: '',
     leaderboard_enabled: false,
@@ -857,6 +887,7 @@ watch(
                 app_url: newSettings['app_url'] || '',
                 app_timezone: newSettings['app_timezone'] || 'UTC',
                 app_logo: newSettings['app_logo'] || '',
+                default_bg: newSettings['default_bg'] || '',
                 seo_description: newSettings['seo_description'] || '',
                 seo_keywords: newSettings['seo_keywords'] || '',
                 leaderboard_enabled: newSettings['leaderboard_enabled'] === 'true',

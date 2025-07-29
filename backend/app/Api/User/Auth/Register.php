@@ -238,6 +238,7 @@ $router->add('/api/user/auth/register', function (): void {
         $defaultDatabases = (int) $config->getDBSetting(ConfigInterface::DEFAULT_DATABASES, 1);
         $defaultServerSlots = (int) $config->getDBSetting(ConfigInterface::DEFAULT_SERVER_SLOTS, 1);
         $defaultBackups = (int) $config->getDBSetting(ConfigInterface::DEFAULT_BACKUPS, 5);
+        $defaultBg = $config->getDBSetting(ConfigInterface::DEFAULT_BG, 'https://cdn.mythical.systems/mc.jpg');
 
         if ($defaultDatabases > 0) {
             $defaultDatabases = 1;
@@ -259,6 +260,7 @@ $router->add('/api/user/auth/register', function (): void {
         User::updateInfo($newUserToken, UserColumns::DATABASE_LIMIT, $defaultDatabases, false);
         User::updateInfo($newUserToken, UserColumns::SERVER_LIMIT, $defaultServerSlots, false);
         User::updateInfo($newUserToken, UserColumns::BACKUP_LIMIT, $defaultBackups, false);
+        User::updateInfo($newUserToken, UserColumns::BACKGROUND, $defaultBg, false);
 
         $eventManager->emit(AuthEvent::onAuthRegisterSuccess(), ['username' => $username, 'email' => $email]);
         // Optimize image hosting API key generation

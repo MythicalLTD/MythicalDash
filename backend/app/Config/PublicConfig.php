@@ -275,6 +275,9 @@ class PublicConfig extends ConfigFactory
 
             // Anti Adblocker
             ConfigInterface::ANTI_ADBLOCKER_ENABLED => 'false',
+
+            // Default BG
+            ConfigInterface::DEFAULT_BG => 'https://cdn.mythical.systems/mc.jpg',
         ];
 
     }
