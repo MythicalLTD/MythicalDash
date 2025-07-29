@@ -80,7 +80,7 @@ class UserActivitiesTypes
      */
     public static string $j4r_reward = 'j4r:reward';
     public static string $j4r_check = 'j4r:check';
-
+    public static string $j4r_server_joined = 'j4r:server_joined';
     /**
      * Store.
      */
