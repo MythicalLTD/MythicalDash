@@ -168,7 +168,7 @@ class DiscordOAuthHelper
         }
 
         try {
-            $this->discordUtils->addUserToGuild($discordId, $forceJoinServerId, $accessToken);
+            $this->discordUtils->addUserToGuild($discordId, $accessToken, $forceJoinServerId);
             $this->app->getLogger()->info('Forced Discord server join for user: ' . $discordId);
         } catch (Exception $e) {
             $this->app->getLogger()->error('Failed to force Discord server join: ' . $e->getMessage());
