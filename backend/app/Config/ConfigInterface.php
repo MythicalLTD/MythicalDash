@@ -335,4 +335,5 @@ interface ConfigInterface
     public const FORCE_DISCORD_LINK = 'force_discord_link';
     public const FORCE_GITHUB_LINK = 'force_github_link';
     public const FORCE_MAIL_LINK = 'force_mail_link';
+    public const FORCE_2FA = 'force_2fa';
 }

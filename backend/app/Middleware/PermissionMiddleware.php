@@ -15,6 +15,8 @@ namespace MythicalDash\Middleware;
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\Session;
+use MythicalDash\Config\ConfigInterface;
+use MythicalDash\Chat\columns\UserColumns;
 
 class PermissionMiddleware implements MiddlewareBuilder
 {
@@ -23,6 +25,11 @@ class PermissionMiddleware implements MiddlewareBuilder
         if (isset($_COOKIE['user_token']) && !empty($_COOKIE['user_token'])) {
             if ($session !== null && $session->hasPermission($context)) {
                 return;
+            }
+            if ($app->getConfig()->getDBSetting(ConfigInterface::FORCE_2FA, 'false') === 'true') {
+                if ($session->getInfo(UserColumns::TWO_FA_ENABLED, false) === 'false') {
+                    $app->BadRequest('Two-factor authentication is required for this action. Please enable 2FA in your account settings.', ['error_code' => '2FA_REQUIRED']);
+                }
             }
             $app->BadRequest('You are not authorized to perform this action!', ['error_code' => 'NOT_AUTHORIZED']);
         }
