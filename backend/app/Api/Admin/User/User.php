@@ -31,7 +31,7 @@ $router->get('/api/admin/users', function (): void {
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_USERS_LIST, $session);
-    $user = User::getListWithFilters(['id', 'username','email', 'avatar', 'pterodactyl_user_id', 'role', 'last_seen', 'uuid'], []);
+    $user = User::getListWithFilters(['id', 'username', 'email', 'avatar', 'pterodactyl_user_id', 'role', 'last_seen', 'uuid'], []);
 
     $appInstance->OK('Users data retrieved successfully.', [
         'users' => $user,
@@ -132,16 +132,16 @@ $router->post('/api/admin/user/(.*)/update', function ($userId): void {
                 'user' => $userId,
             ]);
             $token = User::getTokenFromUUID($userId);
-			
-			// Define which columns should be encrypted
-			$encryptedColumns = [
-				UserColumns::FIRST_NAME,
-				UserColumns::LAST_NAME,
-				UserColumns::PASSWORD,
-			];
-			
-			// Use the built-in is_encrypted flag instead of manual encryption
-			$isEncrypted = in_array($column, $encryptedColumns);
+
+            // Define which columns should be encrypted
+            $encryptedColumns = [
+                UserColumns::FIRST_NAME,
+                UserColumns::LAST_NAME,
+                UserColumns::PASSWORD,
+            ];
+
+            // Use the built-in is_encrypted flag instead of manual encryption
+            $isEncrypted = in_array($column, $encryptedColumns);
 
             if (User::updateInfo($token, $column, $value, $isEncrypted)) {
                 $appInstance->OK('User updated successfully.', ['error_code' => 'USER_UPDATED']);

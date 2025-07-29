@@ -259,6 +259,7 @@ const redeemCode = async () => {
 
             // Clear input
             codeInput.value = '';
+            location.reload();
         } else {
             // Error redeeming code
             Swal.fire({

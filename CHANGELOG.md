@@ -38,6 +38,8 @@
 - Added J4R (Join for Reward) support
 - Added CLI settings command
 - Added CLI encrypt command
+- Image hosting is now built in (No more plugin)
+- Added a health check cli command for more checks!
 
 ## Breaking Changes
 - None

@@ -229,6 +229,8 @@ auth:
                     cloudflare_error: You have been blocked by Cloudflare Turnstile
                     pterodactyl_not_enabled: Pterodactyl is not enabled
                     pterodactyl_error: Failed to register user in Pterodactyl panel
+                    discord_required: Discord account linking is required for registration
+                    github_required: GitHub account linking is required for registration
                     footer: Please contact support for assistance
             page:
                 title: Register
@@ -274,6 +276,18 @@ auth:
                         and: and
                         privacy: Privacy Policy
                         required: You must accept the Terms of Service and Privacy Policy to register.
+                    account_linking:
+                        title: Account Linking Requirements
+                        discord_required: Discord account linking is required for registration
+                        github_required: GitHub account linking is required for registration
+                        discord_description: To use our platform, you must link your Discord account during registration
+                        github_description: To use our platform, you must link your GitHub account during registration
+                        link_discord: Link Discord Account
+                        link_github: Link GitHub Account
+                        linked_discord: Discord Account Linked
+                        linked_github: GitHub Account Linked
+                        not_linked: Not Linked
+                        required_for_registration: Required for registration
                     generate_username:
                         label: Generate
                         tooltip: Generate a random username

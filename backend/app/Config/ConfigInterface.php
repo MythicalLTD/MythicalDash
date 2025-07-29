@@ -329,4 +329,9 @@ interface ConfigInterface
      */
     public const GOOGLE_ADS_ENABLED = 'google_ads_enabled';
     public const GOOGLE_ADS_CLIENT_ID = 'google_ads_client_id';
+    /**
+     * Force Link.
+     */
+    public const FORCE_DISCORD_LINK = 'force_discord_link';
+    public const FORCE_GITHUB_LINK = 'force_github_link';
 }

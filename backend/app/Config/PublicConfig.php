@@ -266,6 +266,10 @@ class PublicConfig extends ConfigFactory
             // Google Ads
             ConfigInterface::GOOGLE_ADS_ENABLED => 'false',
             ConfigInterface::GOOGLE_ADS_CLIENT_ID => '',
+
+            // Force Links
+            ConfigInterface::FORCE_DISCORD_LINK => 'false',
+            ConfigInterface::FORCE_GITHUB_LINK => 'false',
         ];
 
     }

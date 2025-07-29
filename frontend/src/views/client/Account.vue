@@ -58,7 +58,8 @@ import LinkedAccounts from '@/components/client/Dashboard/Account/LinkedAccounts
 import ImageHosting from '@/components/client/Dashboard/Account/ImageHosting.vue';
 import LayoutAccount from '@/components/client/Dashboard/Account/Layout.vue';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import {
     Settings as SettingsIcon,
     Lock as SecurityIcon,
@@ -71,9 +72,32 @@ import {
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
+const route = useRoute();
+const router = useRouter();
+
 MythicalDOM.setPageTitle(t('account.pages.index.title'));
 
-const activeTab = ref(t('account.pages.index.tabs.settings'));
+// Get available tab names for validation
+const availableTabs = [
+    t('account.pages.index.tabs.settings'),
+    t('account.pages.index.tabs.security'),
+    t('account.pages.index.tabs.emails'),
+    t('account.pages.index.tabs.activity'),
+    t('account.pages.index.tabs.apikey'),
+    t('account.pages.index.tabs.linked_accounts'),
+    t('account.pages.index.tabs.image_hosting'),
+];
+
+// Initialize active tab from URL or default to settings
+const getInitialTab = () => {
+    const tabFromUrl = route.query.tab as string;
+    if (tabFromUrl && availableTabs.includes(tabFromUrl)) {
+        return tabFromUrl;
+    }
+    return t('account.pages.index.tabs.settings');
+};
+
+const activeTab = ref(getInitialTab());
 
 const tabs = [
     { name: t('account.pages.index.tabs.settings'), icon: SettingsIcon },
@@ -84,6 +108,28 @@ const tabs = [
     { name: t('account.pages.index.tabs.linked_accounts'), icon: LinkedAccountsIcon },
     { name: t('account.pages.index.tabs.image_hosting'), icon: ImageHostingIcon },
 ];
+
+// Update URL when tab changes
+const updateUrl = (tabName: string) => {
+    router.replace({
+        query: { ...route.query, tab: tabName },
+    });
+};
+
+// Watch for tab changes and update URL
+watch(activeTab, (newTab) => {
+    updateUrl(newTab);
+});
+
+// Watch for route changes and update active tab
+watch(
+    () => route.query.tab,
+    (newTab) => {
+        if (newTab && availableTabs.includes(newTab as string)) {
+            activeTab.value = newTab as string;
+        }
+    },
+);
 </script>
 
 <style scoped>

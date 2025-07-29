@@ -24,6 +24,7 @@ use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
 use MythicalDash\Chat\IPRelationships\IPRelationship;
+use MythicalDash\Hooks\MythicalSystems\User\UUIDManager;
 use MythicalDash\Hooks\MythicalSystems\CloudFlare\Turnstile;
 
 $router->add('/api/user/auth/login', function (): void {
@@ -94,6 +95,7 @@ $router->add('/api/user/auth/login', function (): void {
             UserColumns::DISCORD_ID,
             UserColumns::GITHUB_ID,
             UserColumns::AVATAR,
+            UserColumns::IMAGE_HOSTING_UPLOAD_KEY,
         ], [
             UserColumns::FIRST_NAME,
             UserColumns::LAST_NAME,
@@ -299,7 +301,18 @@ $router->add('/api/user/auth/login', function (): void {
 
     }
     $login = $userInfoArray[UserColumns::EMAIL];
-    // Emit successful login event before sending response
+
+    // Optimize image hosting API key generation
+    if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, 'false') === 'true') {
+        $api_key = $userInfoArray[UserColumns::IMAGE_HOSTING_UPLOAD_KEY] ?? '';
+
+        if (empty($api_key)) {
+            $api_key = UUIDManager::generateUUID();
+            User::updateInfo($loginResult, UserColumns::IMAGE_HOSTING_UPLOAD_KEY, $api_key, false);
+            $appInstance->getLogger()->debug('Generated new image hosting API key for user: ' . $userInfoArray[UserColumns::USERNAME]);
+        }
+    }
+
     $eventManager->emit(AuthEvent::onAuthLoginSuccess(), ['login' => $login]);
     $appInstance->OK('Successfully logged in', []);
 });

@@ -260,6 +260,12 @@ $router->add('/api/user/auth/register', function (): void {
         User::updateInfo($newUserToken, UserColumns::BACKUP_LIMIT, $defaultBackups, false);
 
         $eventManager->emit(AuthEvent::onAuthRegisterSuccess(), ['username' => $username, 'email' => $email]);
+        // Optimize image hosting API key generation
+        if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, 'false') === 'true') {
+            $api_key = UUIDManager::generateUUID();
+            User::updateInfo($newUserToken, UserColumns::IMAGE_HOSTING_UPLOAD_KEY, $api_key, false);
+            $appInstance->getLogger()->debug('Generated image hosting API key for new user: ' . $username);
+        }
         IPRelationship::create($newUserUuid, CloudFlareRealIP::getRealIP());
         /**
          * Zero Trust.

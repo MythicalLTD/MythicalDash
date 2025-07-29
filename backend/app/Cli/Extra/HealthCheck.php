@@ -36,8 +36,13 @@ class HealthCheck
         $this->checkRequiredExtensions();
         $this->checkOptionalExtensions();
         $this->checkSystemRequirements();
+        $this->checkPhpIniSettings();
+        $this->checkSecuritySettings();
+        $this->checkRedisConnectivity();
         $this->checkDirectoryPermissions();
         $this->checkCronFile();
+        $this->checkEnvironmentFile();
+        $this->checkComposerDependencies();
 
         return [
             'status' => empty($this->errors) ? 'healthy' : 'unhealthy',
@@ -249,7 +254,7 @@ class HealthCheck
         } else {
             $this->warnings[] = [
                 'type' => 'upload_max_filesize',
-                'message' => "Upload max filesize {$uploadMaxFilesize} may be too low",
+                'message' => "Upload max filesize {$uploadMaxFilesize} may be too low modify this in your /etc/php/8.3/fpm/php.ini file. (upload_max_filesize = 10M)",
                 'current' => $uploadMaxFilesize,
                 'recommended' => '10M',
             ];
@@ -314,6 +319,252 @@ class HealthCheck
             $this->errors[] = [
                 'type' => 'cron_file',
                 'message' => 'Cron check file missing: cron jobs may not run!',
+            ];
+        }
+    }
+
+    /**
+     * Check additional PHP INI settings.
+     */
+    private function checkPhpIniSettings(): void
+    {
+        // Check post max size
+        $postMaxSize = ini_get('post_max_size');
+        $postMaxSizeBytes = $this->parseMemoryLimit($postMaxSize);
+        $requiredPostSize = 10 * 1024 * 1024; // 10MB
+
+        if ($postMaxSize === '-1') {
+            $this->results['post_max_size'] = [
+                'status' => 'pass',
+                'current' => $postMaxSize,
+                'required' => '10M',
+                'message' => 'Post max size is unlimited (optimal)',
+            ];
+        } elseif ($postMaxSizeBytes >= $requiredPostSize) {
+            $this->results['post_max_size'] = [
+                'status' => 'pass',
+                'current' => $postMaxSize,
+                'required' => '10M',
+                'message' => "Post max size {$postMaxSize} is sufficient",
+            ];
+        } else {
+            $this->warnings[] = [
+                'type' => 'post_max_size',
+                'message' => "Post max size {$postMaxSize} may be too low for file uploads modify this in your /etc/php/8.3/fpm/php.ini file. (post_max_size = 10M)",
+                'current' => $postMaxSize,
+                'recommended' => '10M',
+            ];
+        }
+
+        // Check max input vars
+        $maxInputVars = ini_get('max_input_vars');
+        if ($maxInputVars >= 1000) {
+            $this->results['max_input_vars'] = [
+                'status' => 'pass',
+                'current' => $maxInputVars,
+                'message' => 'Max input vars is adequate',
+            ];
+        } else {
+            $this->warnings[] = [
+                'type' => 'max_input_vars',
+                'message' => "Max input vars {$maxInputVars} may be too low for complex forms",
+                'current' => $maxInputVars,
+                'recommended' => '1000',
+            ];
+        }
+
+        // Check max file uploads
+        $maxFileUploads = ini_get('max_file_uploads');
+        if ($maxFileUploads >= 20) {
+            $this->results['max_file_uploads'] = [
+                'status' => 'pass',
+                'current' => $maxFileUploads,
+                'message' => 'Max file uploads is adequate',
+            ];
+        } else {
+            $this->warnings[] = [
+                'type' => 'max_file_uploads',
+                'message' => "Max file uploads {$maxFileUploads} may be too low for image hosting",
+                'current' => $maxFileUploads,
+                'recommended' => '20',
+            ];
+        }
+
+        // Check display errors (should be off in production)
+        $displayErrors = ini_get('display_errors');
+        if ($displayErrors === 'Off' || $displayErrors === '0') {
+            $this->results['display_errors'] = [
+                'status' => 'pass',
+                'current' => $displayErrors,
+                'message' => 'Display errors is disabled (secure)',
+            ];
+        } else {
+            $this->warnings[] = [
+                'type' => 'display_errors',
+                'message' => 'Display errors is enabled (security risk in production) modify this in your /etc/php/8.3/fpm/php.ini file. (display_errors = Off)',
+                'current' => $displayErrors,
+                'recommended' => 'Off',
+            ];
+        }
+
+        // Check log errors
+        $logErrors = ini_get('log_errors');
+        if ($logErrors === 'On' || $logErrors === '1') {
+            $this->results['log_errors'] = [
+                'status' => 'pass',
+                'current' => $logErrors,
+                'message' => 'Error logging is enabled',
+            ];
+        } else {
+            $this->warnings[] = [
+                'type' => 'log_errors',
+                'message' => 'Error logging is disabled (recommended for debugging)',
+                'current' => $logErrors,
+                'recommended' => 'On',
+            ];
+        }
+
+        // Check allow url fopen
+        $allowUrlFopen = ini_get('allow_url_fopen');
+        if ($allowUrlFopen === 'On' || $allowUrlFopen === '1') {
+            $this->results['allow_url_fopen'] = [
+                'status' => 'pass',
+                'current' => $allowUrlFopen,
+                'message' => 'URL fopen is enabled (required for some features)',
+            ];
+        } else {
+            $this->warnings[] = [
+                'type' => 'allow_url_fopen',
+                'message' => 'URL fopen is disabled (may affect some features)',
+                'current' => $allowUrlFopen,
+                'recommended' => 'On',
+            ];
+        }
+
+        // Check timezone
+        $timezone = ini_get('date.timezone');
+        if (!empty($timezone)) {
+            $this->results['timezone'] = [
+                'status' => 'pass',
+                'current' => $timezone,
+                'message' => "Timezone is set to {$timezone}",
+            ];
+        } else {
+            $this->warnings[] = [
+                'type' => 'timezone',
+                'message' => 'Timezone is not set (may cause date/time issues)',
+                'current' => 'Not set',
+                'recommended' => 'UTC or your local timezone',
+            ];
+        }
+    }
+
+    /**
+     * Check security-related settings.
+     */
+    private function checkSecuritySettings(): void
+    {
+        // Check expose PHP
+        $exposePhp = ini_get('expose_php');
+        if ($exposePhp === 'Off' || $exposePhp === '0') {
+            $this->results['expose_php'] = [
+                'status' => 'pass',
+                'current' => $exposePhp,
+                'message' => 'PHP exposure is disabled (secure)',
+            ];
+        } else {
+            $this->warnings[] = [
+                'type' => 'expose_php',
+                'message' => 'PHP exposure is enabled (security risk in production) modify this in your /etc/php/8.3/fpm/php.ini file. (expose_php = Off)',
+                'current' => $exposePhp,
+                'recommended' => 'Off',
+            ];
+        }
+    }
+
+    /**
+     * Check Redis connectivity.
+     */
+    private function checkRedisConnectivity(): void
+    {
+        if (extension_loaded('redis')) {
+            try {
+                $redis = new \Redis();
+                $redis->connect('127.0.0.1', 6379, 2);
+                if ($redis->isConnected() && $redis->ping()) {
+                    $this->results['redis_connectivity'] = [
+                        'status' => 'pass',
+                        'message' => 'Redis connection successful',
+                    ];
+                } else {
+                    $this->warnings[] = [
+                        'type' => 'redis_connectivity',
+                        'message' => 'Redis connection failed (service not responding)',
+                    ];
+                }
+            } catch (\Exception $e) {
+                $this->warnings[] = [
+                    'type' => 'redis_connectivity',
+                    'message' => 'Redis connection failed (service may not be running)',
+                    'error' => $e->getMessage(),
+                ];
+            }
+        } else {
+            $this->warnings[] = [
+                'type' => 'redis_connectivity',
+                'message' => 'Redis extension not loaded (caching may be affected)',
+            ];
+        }
+    }
+
+    /**
+     * Check environment file.
+     */
+    private function checkEnvironmentFile(): void
+    {
+        $envFile = getcwd() . '/backend/storage/.env';
+        if (file_exists($envFile)) {
+            $this->results['environment_file'] = [
+                'status' => 'pass',
+                'message' => 'Environment file (.env) exists',
+            ];
+        } else {
+            $this->errors[] = [
+                'type' => 'environment_file',
+                'message' => 'Environment file (.env) is missing',
+            ];
+        }
+    }
+
+    /**
+     * Check Composer dependencies.
+     */
+    private function checkComposerDependencies(): void
+    {
+        $composerLock = getcwd() . '/backend/composer.lock';
+        $vendorDir = getcwd() . '/backend/storage/packages';
+
+        if (file_exists($composerLock)) {
+            $this->results['composer_lock'] = [
+                'status' => 'pass',
+                'message' => 'Composer lock file exists',
+            ];
+        } else {
+            $this->warnings[] = [
+                'type' => 'composer_lock',
+                'message' => 'Composer lock file missing (run composer install)',
+            ];
+        }
+
+        if (is_dir($vendorDir)) {
+            $this->results['vendor_directory'] = [
+                'status' => 'pass',
+                'message' => 'Vendor directory exists',
+            ];
+        } else {
+            $this->errors[] = [
+                'type' => 'vendor_directory',
+                'message' => 'Vendor directory missing (run composer install)',
             ];
         }
     }

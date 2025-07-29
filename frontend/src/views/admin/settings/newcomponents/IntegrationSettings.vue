@@ -198,6 +198,21 @@
                         <span class="text-sm text-gray-400">Allow users to link their GitHub accounts</span>
                     </label>
                 </div>
+
+                <!-- Force GitHub Link -->
+                <div class="mb-4">
+                    <label class="flex items-center space-x-2">
+                        <input
+                            type="checkbox"
+                            v-model="formData.force_github_link"
+                            @change="markChanged('force_github_link')"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
+                        <span class="text-sm text-gray-400"
+                            >Force users to link their GitHub account (required for registration)</span
+                        >
+                    </label>
+                </div>
             </div>
             <!-- Discord Integration -->
             <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
@@ -352,6 +367,21 @@
                             class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
                         />
                         <span class="text-sm text-gray-400">Allow users to link their Discord account</span>
+                    </label>
+                </div>
+
+                <!-- Force Discord Link -->
+                <div class="mb-4">
+                    <label class="flex items-center space-x-2">
+                        <input
+                            type="checkbox"
+                            v-model="formData.force_discord_link"
+                            @change="markChanged('force_discord_link')"
+                            class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                        />
+                        <span class="text-sm text-gray-400"
+                            >Force users to link their Discord account (required for registration)</span
+                        >
                     </label>
                 </div>
 
@@ -601,6 +631,7 @@ const formData = ref({
     discord_bot_token: '',
     discord_link_allowed: 'false',
     discord_force_join_server: 'false',
+    force_discord_link: 'false',
     discord_invite_url: '',
     twitter_url: '',
     github_url: '',
@@ -616,6 +647,7 @@ const formData = ref({
     github_client_id: '',
     github_client_secret: '',
     github_link_allowed: 'false',
+    force_github_link: 'false',
 });
 
 // UI state
@@ -660,6 +692,7 @@ watch(
                 discord_client_secret: newSettings['discord_client_secret'] || '',
                 discord_link_allowed: newSettings['discord_link_allowed'] || 'false',
                 discord_force_join_server: newSettings['discord_force_join_server'] || 'false',
+                force_discord_link: newSettings['force_discord_link'] || 'false',
                 discord_invite_url: newSettings['discord_invite_url'] || '',
                 twitter_url: newSettings['twitter_url'] || '',
                 github_url: newSettings['github_url'] || '',
@@ -675,6 +708,7 @@ watch(
                 github_client_id: newSettings['github_client_id'] || '',
                 github_client_secret: newSettings['github_client_secret'] || '',
                 github_link_allowed: newSettings['github_link_allowed'] || 'false',
+                force_github_link: newSettings['force_github_link'] || 'false',
                 discord_bot_token: newSettings['discord_bot_token'] || '',
             };
 
