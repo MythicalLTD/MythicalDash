@@ -12,12 +12,19 @@
                             Allow users to earn coins by staying active on the dashboard.
                         </p>
                     </div>
-                    <input
-                        type="checkbox"
-                        v-model="afkEnabled"
-                        @change="markChanged('afk_enabled')"
-                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                    />
+                    <div class="ml-4 flex items-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="afkEnabled"
+                                class="sr-only peer"
+                                @change="updateSetting('afk_enabled', afkEnabled ? 'true' : 'false')"
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                        </label>
+                    </div>
                 </div>
 
                 <div v-if="afkEnabled" class="mb-4">
@@ -31,7 +38,7 @@
                             min="1"
                             max="60"
                             v-model="formData.afk_min_per_coin"
-                            @change="markChanged('afk_min_per_coin')"
+                            @change="updateSetting('afk_min_per_coin', formData.afk_min_per_coin)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                         <span class="text-gray-400 whitespace-nowrap">coins</span>
@@ -47,12 +54,21 @@
                         <h3 class="text-lg font-medium text-white">Code Redemption</h3>
                         <p class="text-sm text-gray-400">Allow users to redeem promo codes for rewards.</p>
                     </div>
-                    <input
-                        type="checkbox"
-                        v-model="codeRedemptionEnabled"
-                        @change="markChanged('code_redemption_enabled')"
-                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                    />
+                    <div class="ml-4 flex items-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="codeRedemptionEnabled"
+                                class="sr-only peer"
+                                @change="
+                                    updateSetting('code_redemption_enabled', codeRedemptionEnabled ? 'true' : 'false')
+                                "
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -63,12 +79,19 @@
                         <h3 class="text-lg font-medium text-white">Join for Rewards (J4R)</h3>
                         <p class="text-sm text-gray-400">Allow users to join Discord servers to earn rewards.</p>
                     </div>
-                    <input
-                        type="checkbox"
-                        v-model="j4rEnabled"
-                        @change="markChanged('j4r_enabled')"
-                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                    />
+                    <div class="ml-4 flex items-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="j4rEnabled"
+                                class="sr-only peer"
+                                @change="updateSetting('j4r_enabled', j4rEnabled ? 'true' : 'false')"
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -79,12 +102,19 @@
                         <h3 class="text-lg font-medium text-white">Link for Rewards (L4R)</h3>
                         <p class="text-sm text-gray-400">Allow users to visit links to earn rewards.</p>
                     </div>
-                    <input
-                        type="checkbox"
-                        v-model="l4rEnabled"
-                        @change="markChanged('l4r_enabled')"
-                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                    />
+                    <div class="ml-4 flex items-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="l4rEnabled"
+                                class="sr-only peer"
+                                @change="updateSetting('l4r_enabled', l4rEnabled ? 'true' : 'false')"
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                        </label>
+                    </div>
                 </div>
 
                 <div v-if="l4rEnabled" class="space-y-6 mt-4">
@@ -95,12 +125,24 @@
                                 <h4 class="font-medium text-white">LinkAdvertise</h4>
                                 <p class="text-xs text-gray-400">Enable earning from LinkAdvertise shortlinks</p>
                             </div>
-                            <input
-                                type="checkbox"
-                                v-model="l4rLinkAdvertiseEnabled"
-                                @change="markChanged('l4r_linkadvertise_enabled')"
-                                class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                            />
+                            <div class="ml-4 flex items-center">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        v-model="l4rLinkAdvertiseEnabled"
+                                        class="sr-only peer"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_linkadvertise_enabled',
+                                                l4rLinkAdvertiseEnabled ? 'true' : 'false',
+                                            )
+                                        "
+                                    />
+                                    <div
+                                        class="w-9 h-5 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                                    ></div>
+                                </label>
+                            </div>
                         </div>
 
                         <div v-if="l4rLinkAdvertiseEnabled" class="space-y-3">
@@ -115,7 +157,9 @@
                                     id="l4r_linkadvertise_user_id"
                                     type="text"
                                     v-model="formData.l4r_linkadvertise_user_id"
-                                    @change="markChanged('l4r_linkadvertise_user_id')"
+                                    @change="
+                                        updateSetting('l4r_linkadvertise_user_id', formData.l4r_linkadvertise_user_id)
+                                    "
                                     class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                 />
                             </div>
@@ -132,7 +176,12 @@
                                         id="l4r_linkadvertise_coins_per_link"
                                         type="number"
                                         v-model="formData.l4r_linkadvertise_coins_per_link"
-                                        @change="markChanged('l4r_linkadvertise_coins_per_link')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_linkadvertise_coins_per_link',
+                                                formData.l4r_linkadvertise_coins_per_link,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -148,7 +197,12 @@
                                         id="l4r_linkadvertise_daily_limit"
                                         type="number"
                                         v-model="formData.l4r_linkadvertise_daily_limit"
-                                        @change="markChanged('l4r_linkadvertise_daily_limit')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_linkadvertise_daily_limit',
+                                                formData.l4r_linkadvertise_daily_limit,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -166,7 +220,12 @@
                                         id="l4r_linkadvertise_min_time_to_complete"
                                         type="number"
                                         v-model="formData.l4r_linkadvertise_min_time_to_complete"
-                                        @change="markChanged('l4r_linkadvertise_min_time_to_complete')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_linkadvertise_min_time_to_complete',
+                                                formData.l4r_linkadvertise_min_time_to_complete,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -182,7 +241,12 @@
                                         id="l4r_linkadvertise_time_to_expire"
                                         type="number"
                                         v-model="formData.l4r_linkadvertise_time_to_expire"
-                                        @change="markChanged('l4r_linkadvertise_time_to_expire')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_linkadvertise_time_to_expire',
+                                                formData.l4r_linkadvertise_time_to_expire,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -199,7 +263,12 @@
                                     id="l4r_linkadvertise_cooldown_time"
                                     type="number"
                                     v-model="formData.l4r_linkadvertise_cooldown_time"
-                                    @change="markChanged('l4r_linkadvertise_cooldown_time')"
+                                    @change="
+                                        updateSetting(
+                                            'l4r_linkadvertise_cooldown_time',
+                                            formData.l4r_linkadvertise_cooldown_time,
+                                        )
+                                    "
                                     class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                 />
                             </div>
@@ -213,12 +282,21 @@
                                 <h4 class="font-medium text-white">ShareUs</h4>
                                 <p class="text-xs text-gray-400">Enable earning from ShareUs shortlinks</p>
                             </div>
-                            <input
-                                type="checkbox"
-                                v-model="l4rShareUsEnabled"
-                                @change="markChanged('l4r_shareus_enabled')"
-                                class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                            />
+                            <div class="ml-4 flex items-center">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        v-model="l4rShareUsEnabled"
+                                        class="sr-only peer"
+                                        @change="
+                                            updateSetting('l4r_shareus_enabled', l4rShareUsEnabled ? 'true' : 'false')
+                                        "
+                                    />
+                                    <div
+                                        class="w-9 h-5 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                                    ></div>
+                                </label>
+                            </div>
                         </div>
 
                         <div v-if="l4rShareUsEnabled" class="space-y-3">
@@ -230,7 +308,7 @@
                                     id="l4r_shareus_api_key"
                                     type="text"
                                     v-model="formData.l4r_shareus_api_key"
-                                    @change="markChanged('l4r_shareus_api_key')"
+                                    @change="updateSetting('l4r_shareus_api_key', formData.l4r_shareus_api_key)"
                                     class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                 />
                             </div>
@@ -247,7 +325,12 @@
                                         id="l4r_shareus_coins_per_link"
                                         type="number"
                                         v-model="formData.l4r_shareus_coins_per_link"
-                                        @change="markChanged('l4r_shareus_coins_per_link')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_shareus_coins_per_link',
+                                                formData.l4r_shareus_coins_per_link,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -263,7 +346,9 @@
                                         id="l4r_shareus_daily_limit"
                                         type="number"
                                         v-model="formData.l4r_shareus_daily_limit"
-                                        @change="markChanged('l4r_shareus_daily_limit')"
+                                        @change="
+                                            updateSetting('l4r_shareus_daily_limit', formData.l4r_shareus_daily_limit)
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -281,7 +366,12 @@
                                         id="l4r_shareus_min_time_to_complete"
                                         type="number"
                                         v-model="formData.l4r_shareus_min_time_to_complete"
-                                        @change="markChanged('l4r_shareus_min_time_to_complete')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_shareus_min_time_to_complete',
+                                                formData.l4r_shareus_min_time_to_complete,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -297,7 +387,12 @@
                                         id="l4r_shareus_time_to_expire"
                                         type="number"
                                         v-model="formData.l4r_shareus_time_to_expire"
-                                        @change="markChanged('l4r_shareus_time_to_expire')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_shareus_time_to_expire',
+                                                formData.l4r_shareus_time_to_expire,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -314,7 +409,9 @@
                                     id="l4r_shareus_cooldown_time"
                                     type="number"
                                     v-model="formData.l4r_shareus_cooldown_time"
-                                    @change="markChanged('l4r_shareus_cooldown_time')"
+                                    @change="
+                                        updateSetting('l4r_shareus_cooldown_time', formData.l4r_shareus_cooldown_time)
+                                    "
                                     class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                 />
                             </div>
@@ -328,12 +425,21 @@
                                 <h4 class="font-medium text-white">LinkPays</h4>
                                 <p class="text-xs text-gray-400">Enable earning from LinkPays shortlinks</p>
                             </div>
-                            <input
-                                type="checkbox"
-                                v-model="l4rLinkPaysEnabled"
-                                @change="markChanged('l4r_linkpays_enabled')"
-                                class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                            />
+                            <div class="ml-4 flex items-center">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        v-model="l4rLinkPaysEnabled"
+                                        class="sr-only peer"
+                                        @change="
+                                            updateSetting('l4r_linkpays_enabled', l4rLinkPaysEnabled ? 'true' : 'false')
+                                        "
+                                    />
+                                    <div
+                                        class="w-9 h-5 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                                    ></div>
+                                </label>
+                            </div>
                         </div>
 
                         <div v-if="l4rLinkPaysEnabled" class="space-y-3">
@@ -345,7 +451,7 @@
                                     id="l4r_linkpays_api_key"
                                     type="text"
                                     v-model="formData.l4r_linkpays_api_key"
-                                    @change="markChanged('l4r_linkpays_api_key')"
+                                    @change="updateSetting('l4r_linkpays_api_key', formData.l4r_linkpays_api_key)"
                                     class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                 />
                             </div>
@@ -362,7 +468,12 @@
                                         id="l4r_linkpays_coins_per_link"
                                         type="number"
                                         v-model="formData.l4r_linkpays_coins_per_link"
-                                        @change="markChanged('l4r_linkpays_coins_per_link')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_linkpays_coins_per_link',
+                                                formData.l4r_linkpays_coins_per_link,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -378,7 +489,9 @@
                                         id="l4r_linkpays_daily_limit"
                                         type="number"
                                         v-model="formData.l4r_linkpays_daily_limit"
-                                        @change="markChanged('l4r_linkpays_daily_limit')"
+                                        @change="
+                                            updateSetting('l4r_linkpays_daily_limit', formData.l4r_linkpays_daily_limit)
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -396,7 +509,12 @@
                                         id="l4r_linkpays_min_time_to_complete"
                                         type="number"
                                         v-model="formData.l4r_linkpays_min_time_to_complete"
-                                        @change="markChanged('l4r_linkpays_min_time_to_complete')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_linkpays_min_time_to_complete',
+                                                formData.l4r_linkpays_min_time_to_complete,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -412,7 +530,12 @@
                                         id="l4r_linkpays_time_to_expire"
                                         type="number"
                                         v-model="formData.l4r_linkpays_time_to_expire"
-                                        @change="markChanged('l4r_linkpays_time_to_expire')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_linkpays_time_to_expire',
+                                                formData.l4r_linkpays_time_to_expire,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -429,7 +552,9 @@
                                     id="l4r_linkpays_cooldown_time"
                                     type="number"
                                     v-model="formData.l4r_linkpays_cooldown_time"
-                                    @change="markChanged('l4r_linkpays_cooldown_time')"
+                                    @change="
+                                        updateSetting('l4r_linkpays_cooldown_time', formData.l4r_linkpays_cooldown_time)
+                                    "
                                     class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                 />
                             </div>
@@ -443,12 +568,24 @@
                                 <h4 class="font-medium text-white">GyaniLinks</h4>
                                 <p class="text-xs text-gray-400">Enable earning from GyaniLinks shortlinks</p>
                             </div>
-                            <input
-                                type="checkbox"
-                                v-model="l4rGyaniLinksEnabled"
-                                @change="markChanged('l4r_gyanilinks_enabled')"
-                                class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                            />
+                            <div class="ml-4 flex items-center">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        v-model="l4rGyaniLinksEnabled"
+                                        class="sr-only peer"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_gyanilinks_enabled',
+                                                l4rGyaniLinksEnabled ? 'true' : 'false',
+                                            )
+                                        "
+                                    />
+                                    <div
+                                        class="w-9 h-5 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                                    ></div>
+                                </label>
+                            </div>
                         </div>
 
                         <div v-if="l4rGyaniLinksEnabled" class="space-y-3">
@@ -463,7 +600,7 @@
                                     id="l4r_gyanilinks_api_key"
                                     type="text"
                                     v-model="formData.l4r_gyanilinks_api_key"
-                                    @change="markChanged('l4r_gyanilinks_api_key')"
+                                    @change="updateSetting('l4r_gyanilinks_api_key', formData.l4r_gyanilinks_api_key)"
                                     class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                 />
                             </div>
@@ -480,7 +617,12 @@
                                         id="l4r_gyanilinks_coins_per_link"
                                         type="number"
                                         v-model="formData.l4r_gyanilinks_coins_per_link"
-                                        @change="markChanged('l4r_gyanilinks_coins_per_link')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_gyanilinks_coins_per_link',
+                                                formData.l4r_gyanilinks_coins_per_link,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -496,7 +638,12 @@
                                         id="l4r_gyanilinks_daily_limit"
                                         type="number"
                                         v-model="formData.l4r_gyanilinks_daily_limit"
-                                        @change="markChanged('l4r_gyanilinks_daily_limit')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_gyanilinks_daily_limit',
+                                                formData.l4r_gyanilinks_daily_limit,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -514,7 +661,12 @@
                                         id="l4r_gyanilinks_min_time_to_complete"
                                         type="number"
                                         v-model="formData.l4r_gyanilinks_min_time_to_complete"
-                                        @change="markChanged('l4r_gyanilinks_min_time_to_complete')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_gyanilinks_min_time_to_complete',
+                                                formData.l4r_gyanilinks_min_time_to_complete,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -530,7 +682,12 @@
                                         id="l4r_gyanilinks_time_to_expire"
                                         type="number"
                                         v-model="formData.l4r_gyanilinks_time_to_expire"
-                                        @change="markChanged('l4r_gyanilinks_time_to_expire')"
+                                        @change="
+                                            updateSetting(
+                                                'l4r_gyanilinks_time_to_expire',
+                                                formData.l4r_gyanilinks_time_to_expire,
+                                            )
+                                        "
                                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                     />
                                 </div>
@@ -547,7 +704,12 @@
                                     id="l4r_gyanilinks_cooldown_time"
                                     type="number"
                                     v-model="formData.l4r_gyanilinks_cooldown_time"
-                                    @change="markChanged('l4r_gyanilinks_cooldown_time')"
+                                    @change="
+                                        updateSetting(
+                                            'l4r_gyanilinks_cooldown_time',
+                                            formData.l4r_gyanilinks_cooldown_time,
+                                        )
+                                    "
                                     class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                                 />
                             </div>
@@ -563,12 +725,19 @@
                         <h3 class="text-lg font-medium text-white">Referral System</h3>
                         <p class="text-sm text-gray-400">Allow users to refer others and earn rewards.</p>
                     </div>
-                    <input
-                        type="checkbox"
-                        v-model="referralsEnabled"
-                        @change="markChanged('referrals_enabled')"
-                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                    />
+                    <div class="ml-4 flex items-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="referralsEnabled"
+                                class="sr-only peer"
+                                @change="updateSetting('referrals_enabled', referralsEnabled ? 'true' : 'false')"
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                        </label>
+                    </div>
                 </div>
 
                 <div v-if="referralsEnabled" class="space-y-4 mt-4">
@@ -584,7 +753,9 @@
                                 id="referrals_coins_per_referral"
                                 type="number"
                                 v-model="formData.referrals_coins_per_referral"
-                                @change="markChanged('referrals_coins_per_referral')"
+                                @change="
+                                    updateSetting('referrals_coins_per_referral', formData.referrals_coins_per_referral)
+                                "
                                 class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             />
                             <p class="mt-1 text-xs text-gray-500">
@@ -603,7 +774,12 @@
                                 id="referrals_coins_per_referral_redeemer"
                                 type="number"
                                 v-model="formData.referrals_coins_per_referral_redeemer"
-                                @change="markChanged('referrals_coins_per_referral_redeemer')"
+                                @change="
+                                    updateSetting(
+                                        'referrals_coins_per_referral_redeemer',
+                                        formData.referrals_coins_per_referral_redeemer,
+                                    )
+                                "
                                 class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             />
                             <p class="mt-1 text-xs text-gray-500">
@@ -621,12 +797,21 @@
                         <h3 class="text-lg font-medium text-white">Early Supporters</h3>
                         <p class="text-sm text-gray-400">Configure early supporter rewards and limits.</p>
                     </div>
-                    <input
-                        type="checkbox"
-                        v-model="earlySupportersEnabled"
-                        @change="markChanged('early_supporters_enabled')"
-                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                    />
+                    <div class="ml-4 flex items-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="earlySupportersEnabled"
+                                class="sr-only peer"
+                                @change="
+                                    updateSetting('early_supporters_enabled', earlySupportersEnabled ? 'true' : 'false')
+                                "
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                        </label>
+                    </div>
                 </div>
 
                 <div v-if="earlySupportersEnabled" class="space-y-4 mt-4">
@@ -638,7 +823,7 @@
                             id="early_supporters_amount"
                             type="number"
                             v-model="formData.early_supporters_amount"
-                            @change="markChanged('early_supporters_amount')"
+                            @change="updateSetting('early_supporters_amount', formData.early_supporters_amount)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                         <p class="mt-1 text-xs text-gray-500">
@@ -655,12 +840,19 @@
                         <h3 class="text-lg font-medium text-white">Server Renewals</h3>
                         <p class="text-sm text-gray-400">Configure server renewal settings for users.</p>
                     </div>
-                    <input
-                        type="checkbox"
-                        v-model="serverRenewEnabled"
-                        @change="markChanged('server_renew_enabled')"
-                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                    />
+                    <div class="ml-4 flex items-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="serverRenewEnabled"
+                                class="sr-only peer"
+                                @change="updateSetting('server_renew_enabled', serverRenewEnabled ? 'true' : 'false')"
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                        </label>
+                    </div>
                 </div>
 
                 <div v-if="serverRenewEnabled" class="space-y-4 mt-4">
@@ -673,7 +865,7 @@
                                 id="server_renew_cost"
                                 type="number"
                                 v-model="formData.server_renew_cost"
-                                @change="markChanged('server_renew_cost')"
+                                @change="updateSetting('server_renew_cost', formData.server_renew_cost)"
                                 class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             />
                             <p class="mt-1 text-xs text-gray-500">Cost in coins to renew a server</p>
@@ -687,7 +879,7 @@
                                 id="server_renew_days"
                                 type="number"
                                 v-model="formData.server_renew_days"
-                                @change="markChanged('server_renew_days')"
+                                @change="updateSetting('server_renew_days', formData.server_renew_days)"
                                 class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             />
                             <p class="mt-1 text-xs text-gray-500">Number of days added when renewing a server</p>
@@ -699,9 +891,14 @@
                             <input
                                 type="checkbox"
                                 v-model="serverRenewSendMail"
-                                @change="markChanged('server_renew_send_mail')"
-                                class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
+                                class="sr-only peer"
+                                @change="
+                                    updateSetting('server_renew_send_mail', serverRenewSendMail ? 'true' : 'false')
+                                "
                             />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
                             <span class="ml-3 text-sm font-medium text-gray-400">Send Email Notifications</span>
                         </label>
                         <p class="mt-1 text-xs text-gray-500">
@@ -720,12 +917,19 @@
                             Enable the in-dashboard store for users to spend their earned coins.
                         </p>
                     </div>
-                    <input
-                        type="checkbox"
-                        v-model="storeEnabled"
-                        @change="markChanged('store_enabled')"
-                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                    />
+                    <div class="ml-4 flex items-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="storeEnabled"
+                                class="sr-only peer"
+                                @change="updateSetting('store_enabled', storeEnabled ? 'true' : 'false')"
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                        </label>
+                    </div>
                 </div>
 
                 <div v-if="storeEnabled" class="space-y-4 mt-4">
@@ -738,7 +942,7 @@
                                 id="store_ram_price"
                                 type="number"
                                 v-model="formData.store_ram_price"
-                                @change="markChanged('store_ram_price')"
+                                @change="updateSetting('store_ram_price', formData.store_ram_price)"
                                 class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             />
                         </div>
@@ -751,7 +955,7 @@
                                 id="store_disk_price"
                                 type="number"
                                 v-model="formData.store_disk_price"
-                                @change="markChanged('store_disk_price')"
+                                @change="updateSetting('store_disk_price', formData.store_disk_price)"
                                 class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             />
                         </div>
@@ -764,7 +968,7 @@
                                 id="store_cpu_price"
                                 type="number"
                                 v-model="formData.store_cpu_price"
-                                @change="markChanged('store_cpu_price')"
+                                @change="updateSetting('store_cpu_price', formData.store_cpu_price)"
                                 class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             />
                         </div>
@@ -777,7 +981,7 @@
                                 id="store_ports_price"
                                 type="number"
                                 v-model="formData.store_ports_price"
-                                @change="markChanged('store_ports_price')"
+                                @change="updateSetting('store_ports_price', formData.store_ports_price)"
                                 class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             />
                         </div>
@@ -790,7 +994,7 @@
                                 id="store_databases_price"
                                 type="number"
                                 v-model="formData.store_databases_price"
-                                @change="markChanged('store_databases_price')"
+                                @change="updateSetting('store_databases_price', formData.store_databases_price)"
                                 class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             />
                         </div>
@@ -803,7 +1007,7 @@
                                 id="store_backups_price"
                                 type="number"
                                 v-model="formData.store_backups_price"
-                                @change="markChanged('store_backups_price')"
+                                @change="updateSetting('store_backups_price', formData.store_backups_price)"
                                 class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             />
                         </div>
@@ -816,7 +1020,7 @@
                                 id="store_server_slot_price"
                                 type="number"
                                 v-model="formData.store_server_slot_price"
-                                @change="markChanged('store_server_slot_price')"
+                                @change="updateSetting('store_server_slot_price', formData.store_server_slot_price)"
                                 class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             />
                         </div>
@@ -839,7 +1043,7 @@
                             id="default_ram"
                             type="number"
                             v-model="formData.default_ram"
-                            @change="markChanged('default_ram')"
+                            @change="updateSetting('default_ram', formData.default_ram)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                         <p class="mt-1 text-xs text-gray-500">The default amount of RAM for new users.</p>
@@ -850,7 +1054,7 @@
                             id="default_disk"
                             type="number"
                             v-model="formData.default_disk"
-                            @change="markChanged('default_disk')"
+                            @change="updateSetting('default_disk', formData.default_disk)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                         <p class="mt-1 text-xs text-gray-500">The default amount of disk for new users.</p>
@@ -861,7 +1065,7 @@
                             id="default_cpu"
                             type="number"
                             v-model="formData.default_cpu"
-                            @change="markChanged('default_cpu')"
+                            @change="updateSetting('default_cpu', formData.default_cpu)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                         <p class="mt-1 text-xs text-gray-500">The default amount of CPU for new users.</p>
@@ -872,7 +1076,7 @@
                             id="default_ports"
                             type="number"
                             v-model="formData.default_ports"
-                            @change="markChanged('default_ports')"
+                            @change="updateSetting('default_ports', formData.default_ports)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                         <p class="mt-1 text-xs text-gray-500">The default number of ports for new users.</p>
@@ -885,7 +1089,7 @@
                             id="default_databases"
                             type="number"
                             v-model="formData.default_databases"
-                            @change="markChanged('default_databases')"
+                            @change="updateSetting('default_databases', formData.default_databases)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                         <p class="mt-1 text-xs text-gray-500">The default number of databases for new users.</p>
@@ -898,7 +1102,7 @@
                             id="default_server_slots"
                             type="number"
                             v-model="formData.default_server_slots"
-                            @change="markChanged('default_server_slots')"
+                            @change="updateSetting('default_server_slots', formData.default_server_slots)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                         <p class="mt-1 text-xs text-gray-500">The default number of server slots for new users.</p>
@@ -911,7 +1115,7 @@
                             id="default_backups"
                             type="number"
                             v-model="formData.default_backups"
-                            @change="markChanged('default_backups')"
+                            @change="updateSetting('default_backups', formData.default_backups)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                         <p class="mt-1 text-xs text-gray-500">The default number of backups for new users.</p>
@@ -934,7 +1138,7 @@
                             id="block_ram"
                             type="checkbox"
                             v-model="formData.block_ram"
-                            @change="markChanged('block_ram')"
+                            @change="updateSetting('block_ram', formData.block_ram)"
                         />
                         <p class="mt-1 text-xs text-gray-500">Block users from purchasing RAM.</p>
                     </div>
@@ -944,7 +1148,7 @@
                             id="block_disk"
                             type="checkbox"
                             v-model="formData.block_disk"
-                            @change="markChanged('block_disk')"
+                            @change="updateSetting('block_disk', formData.block_disk)"
                         />
                         <p class="mt-1 text-xs text-gray-500">Block users from purchasing disk.</p>
                     </div>
@@ -954,7 +1158,7 @@
                             id="block_cpu"
                             type="checkbox"
                             v-model="formData.block_cpu"
-                            @change="markChanged('block_cpu')"
+                            @change="updateSetting('block_cpu', formData.block_cpu)"
                         />
                         <p class="mt-1 text-xs text-gray-500">Block users from purchasing CPU.</p>
                     </div>
@@ -964,7 +1168,7 @@
                             id="block_ports"
                             type="checkbox"
                             v-model="formData.block_ports"
-                            @change="markChanged('block_ports')"
+                            @change="updateSetting('block_ports', formData.block_ports)"
                         />
                         <p class="mt-1 text-xs text-gray-500">Block users from purchasing ports.</p>
                     </div>
@@ -974,7 +1178,7 @@
                             id="block_backups"
                             type="checkbox"
                             v-model="formData.block_backups"
-                            @change="markChanged('block_backups')"
+                            @change="updateSetting('block_backups', formData.block_backups)"
                         />
                         <p class="mt-1 text-xs text-gray-500">Block users from purchasing backups.</p>
                     </div>
@@ -986,7 +1190,7 @@
                             id="block_databases"
                             type="checkbox"
                             v-model="formData.block_databases"
-                            @change="markChanged('block_databases')"
+                            @change="updateSetting('block_databases', formData.block_databases)"
                         />
                         <p class="mt-1 text-xs text-gray-500">Block users from purchasing databases.</p>
                     </div>
@@ -998,7 +1202,7 @@
                             id="block_server_slots"
                             type="checkbox"
                             v-model="formData.block_server_slots"
-                            @change="markChanged('block_server_slots')"
+                            @change="updateSetting('block_server_slots', formData.block_server_slots)"
                         />
                         <p class="mt-1 text-xs text-gray-500">Block users from purchasing server slots.</p>
                     </div>
@@ -1021,7 +1225,7 @@
                             id="max_ram"
                             type="number"
                             v-model="formData.max_ram"
-                            @change="markChanged('max_ram')"
+                            @change="updateSetting('max_ram', formData.max_ram)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                     </div>
@@ -1034,7 +1238,7 @@
                             id="max_disk"
                             type="number"
                             v-model="formData.max_disk"
-                            @change="markChanged('max_disk')"
+                            @change="updateSetting('max_disk', formData.max_disk)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                     </div>
@@ -1045,7 +1249,7 @@
                             id="max_cpu"
                             type="number"
                             v-model="formData.max_cpu"
-                            @change="markChanged('max_cpu')"
+                            @change="updateSetting('max_cpu', formData.max_cpu)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                     </div>
@@ -1056,7 +1260,7 @@
                             id="max_ports"
                             type="number"
                             v-model="formData.max_ports"
-                            @change="markChanged('max_ports')"
+                            @change="updateSetting('max_ports', formData.max_ports)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                     </div>
@@ -1069,7 +1273,7 @@
                             id="max_databases"
                             type="number"
                             v-model="formData.max_databases"
-                            @change="markChanged('max_databases')"
+                            @change="updateSetting('max_databases', formData.max_databases)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                     </div>
@@ -1082,7 +1286,7 @@
                             id="max_server_slots"
                             type="number"
                             v-model="formData.max_server_slots"
-                            @change="markChanged('max_server_slots')"
+                            @change="updateSetting('max_server_slots', formData.max_server_slots)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                     </div>
@@ -1095,7 +1299,7 @@
                             id="max_backups"
                             type="number"
                             v-model="formData.max_backups"
-                            @change="markChanged('max_backups')"
+                            @change="updateSetting('max_backups', formData.max_backups)"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         />
                     </div>
@@ -1110,12 +1314,19 @@
                             Enable Google Ads and set your AdSense client code for monetization.
                         </p>
                     </div>
-                    <input
-                        type="checkbox"
-                        v-model="googleAdsEnabled"
-                        @change="markChanged('google_ads_enabled')"
-                        class="rounded border-gray-700 text-indigo-500 focus:ring-indigo-500"
-                    />
+                    <div class="ml-4 flex items-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                v-model="googleAdsEnabled"
+                                class="sr-only peer"
+                                @change="updateSetting('google_ads_enabled', googleAdsEnabled ? 'true' : 'false')"
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-500 peer-checked:to-violet-500"
+                            ></div>
+                        </label>
+                    </div>
                 </div>
                 <div v-if="googleAdsEnabled">
                     <label for="google_ads_client_id" class="block text-sm font-medium text-gray-400 mb-1">
@@ -1125,7 +1336,7 @@
                         id="google_ads_client_id"
                         type="text"
                         v-model="formData.google_ads_client_id"
-                        @change="markChanged('google_ads_client_id')"
+                        @change="updateSetting('google_ads_client_id', formData.google_ads_client_id)"
                         placeholder="ca-pub-xxxxxxxxxxxxxxxx"
                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                     />
@@ -1146,10 +1357,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits<{
-    update: [key: string, value: string];
-    'bulk-update': [updates: Record<string, string>];
-}>();
+const emit = defineEmits(['update']);
 
 // Form state
 const formData = ref({
@@ -1219,18 +1427,6 @@ const formData = ref({
     google_ads_enabled: 'false',
     google_ads_client_id: '',
 });
-
-// Track changed fields
-const changedFields = ref<Set<string>>(new Set());
-
-// Mark a field as changed
-const markChanged = (field: string) => {
-    changedFields.value.add(field);
-
-    // Emit the change to parent
-    const value = formData.value[field as keyof typeof formData.value];
-    emit('update', field, value);
-};
 
 // Computed properties for toggles
 const afkEnabled = computed({
@@ -1405,11 +1601,13 @@ watch(
                 google_ads_enabled: newSettings['google_ads_enabled'] || 'false',
                 google_ads_client_id: newSettings['google_ads_client_id'] || '',
             };
-
-            // Clear changed fields when settings are loaded
-            changedFields.value.clear();
         }
     },
     { immediate: true },
 );
+
+// Update a setting
+const updateSetting = (key: string, value: string) => {
+    emit('update', key, value);
+};
 </script>
