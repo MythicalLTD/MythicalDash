@@ -241,6 +241,10 @@ class Permissions {
     /** Delete image reports */
     public static ADMIN_IMAGE_REPORTS_DELETE = 'admin.image.reports.delete';
 
+    // Adblocker Permissions
+    /** The permission that lets you bypass the antiadblocker! */
+    public static USER_PERMISSION_BYPASS_ADBLOCKER = 'user.permission.adblocker';
+
     /**
      * Returns all permission nodes with metadata.
      */
@@ -773,6 +777,12 @@ class Permissions {
                 value: Permissions.ADMIN_IMAGE_REPORTS_DELETE,
                 category: 'Admin Image Reports',
                 description: 'Delete image reports',
+            },
+            {
+                constant: 'USER_PERMISSION_BYPASS_ADBLOCKER',
+                value: Permissions.USER_PERMISSION_BYPASS_ADBLOCKER,
+                category: 'Adblocker',
+                description: 'The permission that lets you bypass the antiadblocker!',
             },
         ];
     }

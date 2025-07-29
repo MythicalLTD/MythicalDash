@@ -272,6 +272,9 @@ class PublicConfig extends ConfigFactory
             ConfigInterface::FORCE_GITHUB_LINK => 'false',
             ConfigInterface::FORCE_MAIL_LINK => 'false',
             ConfigInterface::FORCE_2FA => 'false',
+
+            // Anti Adblocker
+            ConfigInterface::ANTI_ADBLOCKER_ENABLED => 'false',
         ];
 
     }

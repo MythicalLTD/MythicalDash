@@ -26,6 +26,107 @@ const router = useRouter();
 const { t } = useI18n();
 const Settings = useSettingsStore();
 
+// Adblocker detection state
+const isAdblockerEnabled = ref(false);
+const isAdblockerDetected = ref(false);
+const isBlockedByAdblocker = ref(false);
+const adblockerCheckCompleted = ref(false);
+
+// Adblocker detection methods
+const detectAdblocker = () => {
+    console.log('🔍 Starting adblocker detection...');
+
+    // Check if anti-adblocker is enabled in settings
+    const antiAdblockerEnabled = Settings.getSetting('anti_adblocker_enabled') === 'true';
+    console.log('⚙️ Anti-adblocker enabled:', antiAdblockerEnabled);
+
+    if (!antiAdblockerEnabled) {
+        console.log('❌ Anti-adblocker disabled in settings, skipping detection');
+        adblockerCheckCompleted.value = true;
+        return;
+    }
+
+    console.log('🔍 Testing adblocker detection with offsetHeight method...');
+
+    let fakeAd = document.createElement('div');
+    fakeAd.className = 'textads banner-ads banner_ads ad-unit ad-zone ad-space adsbox';
+    fakeAd.style.height = '1px';
+
+    document.body.appendChild(fakeAd);
+
+    let x_width = fakeAd.offsetHeight;
+    console.log('📊 offsetHeight result:', x_width);
+
+    if (x_width) {
+        console.log('✅ No adblocker detected - element is visible');
+        isAdblockerDetected.value = false;
+    } else {
+        console.log('🚨 Adblocker detected - element is hidden!');
+        isAdblockerDetected.value = true;
+        isAdblockerEnabled.value = antiAdblockerEnabled;
+
+        if (antiAdblockerEnabled) {
+            console.log('🚨 Showing blocking modal...');
+            handleAdblockerDetected();
+        }
+    }
+
+    document.body.removeChild(fakeAd);
+    adblockerCheckCompleted.value = true;
+};
+
+const handleAdblockerDetected = () => {
+    isBlockedByAdblocker.value = true;
+
+    Swal.fire({
+        icon: 'warning',
+        title: t('dashboard.alerts.adblocker_detected.title'),
+        text: t('dashboard.alerts.adblocker_detected.message'),
+        footer: t('dashboard.alerts.adblocker_detected.footer'),
+        showCancelButton: false,
+        confirmButtonText: t('dashboard.alerts.adblocker_detected.disable_adblocker'),
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        allowEscapeKey: false,
+        backdrop: `
+            rgba(0,0,123,0.4)
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff0000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18.364 18.364A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728'/%3E%3C/svg%3E")
+            no-repeat
+            center
+        `,
+        didOpen: () => {
+            // Prevent any interaction with the page
+            document.body.style.pointerEvents = 'none';
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // User clicked "Disable Ad Blocker"
+            Swal.fire({
+                icon: 'info',
+                title: t('dashboard.alerts.adblocker_detected.instructions_title'),
+                text: t('dashboard.alerts.adblocker_detected.instructions_text'),
+                confirmButtonText: t('dashboard.alerts.adblocker_detected.refresh_page'),
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showCancelButton: false,
+                showConfirmButton: false,
+            }).then(() => {
+                window.location.reload();
+            });
+        }
+    });
+};
+
+// Check for adblocker on mount
+onMounted(() => {
+    // Delay adblocker detection to ensure page is fully loaded
+    setTimeout(() => {
+        if (!Session.hasPermission(Permissions.USER_PERMISSION_BYPASS_ADBLOCKER)) {
+            detectAdblocker();
+        }
+    }, 1000);
+});
+
 if (!Session.isSessionValid()) {
     router.push('/auth/login');
 }
@@ -347,7 +448,46 @@ const getRoleInfo = (roleId: number) => {
         <div class="relative z-10 min-h-screen">
             <LoadingScreen v-if="loading" />
 
-            <template v-if="!loading">
+            <!-- Adblocker Blocking Overlay -->
+            <div
+                v-if="isBlockedByAdblocker && isAdblockerEnabled"
+                class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center"
+            >
+                <div class="bg-gray-900/95 border border-red-500/30 rounded-lg p-8 max-w-md mx-4 text-center">
+                    <div class="mb-6">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-16 w-16 mx-auto text-red-500 mb-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M18.364 18.364A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"
+                            />
+                        </svg>
+                        <h2 class="text-2xl font-bold text-white mb-2">
+                            {{ t('dashboard.alerts.adblocker_detected.title') }}
+                        </h2>
+                        <p class="text-gray-300 mb-6">
+                            {{ t('dashboard.alerts.adblocker_detected.blocked_message') }}
+                        </p>
+                    </div>
+                    <div class="space-y-3">
+                        <button
+                            @click="handleAdblockerDetected"
+                            class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200"
+                        >
+                            {{ t('dashboard.alerts.adblocker_detected.disable_adblocker') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <template v-if="!loading && !isBlockedByAdblocker">
                 <!-- Backdrop for mobile sidebar -->
                 <div
                     v-if="isSidebarOpen"

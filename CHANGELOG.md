@@ -45,6 +45,7 @@
 - Email verify is not required if not configured!
 - Ability to report images and manage reports from admin ui!
 - Ability to be able to upload images via the client ui!
+- Ability to use anti adblocker (With bypass permission for roles!)
 
 ## Breaking Changes
 - None

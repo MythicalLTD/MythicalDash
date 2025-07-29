@@ -163,6 +163,16 @@ dashboard:
             message_multiple: You need to link your {types} accounts to access all features. You will be redirected to your account settings to complete this step.
             footer: This is required by the host to ensure account security and verification.
             continue: Continue to Account Settings
+        adblocker_detected:
+            title: Ad Blocker Detected
+            message: We detected that you are using an ad blocker. To ensure the best experience and support our platform, please disable your ad blocker for this site. And refresh the page!
+            footer: This helps us maintain our services and provide you with the best experience possible.
+            disable_adblocker: Disable Ad Blocker
+            continue_anyway: Continue Anyway
+            blocked_message: Access blocked due to ad blocker usage. Please disable your ad blocker to continue.
+            instructions_title: Instructions
+            instructions_text: Please disable your ad blocker and refresh the page to continue.
+            refresh_page: Refresh Page
 
 auth:
     logic:

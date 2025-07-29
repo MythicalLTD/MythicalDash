@@ -148,3 +148,6 @@ ADMIN_IMAGE_REPORTS_VIEW=admin.image.reports.view | Admin Image Reports | View i
 ADMIN_IMAGE_REPORTS_LIST=admin.image.reports.list | Admin Image Reports | List image reports
 ADMIN_IMAGE_REPORTS_EDIT=admin.image.reports.edit | Admin Image Reports | Edit image reports
 ADMIN_IMAGE_REPORTS_DELETE=admin.image.reports.delete | Admin Image Reports | Delete image reports
+
+# Adblocker
+USER_PERMISSION_BYPASS_ADBLOCKER=user.permission.adblocker | Adblocker | The permission that lets you bypass the antiadblocker!

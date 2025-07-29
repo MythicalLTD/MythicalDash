@@ -209,6 +209,62 @@
                 </div>
             </div>
 
+            <!-- Anti-Adblocker Section -->
+            <div class="bg-gray-800/30 p-5 rounded-lg border border-gray-700">
+                <div class="flex items-center mb-4">
+                    <div class="flex-1">
+                        <h3 class="text-lg font-medium text-white">Anti-Adblocker Protection</h3>
+                        <p class="text-sm text-gray-400">
+                            Detect and handle users with ad blockers enabled. This can help ensure users see important
+                            content and comply with your site's requirements.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Enable Anti-Adblocker -->
+                <div class="flex items-center space-x-2">
+                    <input
+                        type="checkbox"
+                        id="anti_adblocker_enabled"
+                        v-model="antiAdblockerEnabled"
+                        @change="markChanged('anti_adblocker_enabled')"
+                        class="rounded border-gray-700 text-pink-500 focus:ring-pink-500 bg-gray-800/30"
+                    />
+                    <label for="anti_adblocker_enabled" class="text-sm font-medium text-gray-400"
+                        >Enable Anti-Adblocker Detection</label
+                    >
+                </div>
+
+                <div
+                    v-if="antiAdblockerEnabled"
+                    class="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg"
+                >
+                    <div class="flex items-start text-yellow-500">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4 mr-2 flex-shrink-0 mt-0.5"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                            ></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <span class="text-xs">
+                            When enabled, users with ad blockers may be prompted to disable them or may have limited
+                            access to certain features. This helps ensure users see important content and comply with
+                            site requirements.
+                        </span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Zero Trust Section -->
             <div
                 class="bg-gray-800/30 p-5 rounded-lg border border-gray-700/80 shadow-lg relative overflow-hidden group transition-all duration-300 hover:shadow-pink-500/20 hover:border-pink-500/40"
@@ -547,6 +603,7 @@ const firewallEnabled = ref(false);
 const firewallBlockVPN = ref(false);
 const firewallBlockAlts = ref(false);
 const showNodePing = ref(false);
+const antiAdblockerEnabled = ref(false);
 const zeroTrustServerScanEnabled = ref(false);
 const zeroTrustWhitelistIPsEnabled = ref(false);
 const zeroTrustBlockTorEnabled = ref(false);
@@ -580,6 +637,9 @@ const markChanged = (field: string) => {
             break;
         case 'show_node_ping':
             value = showNodePing.value ? 'true' : 'false';
+            break;
+        case 'anti_adblocker_enabled':
+            value = antiAdblockerEnabled.value ? 'true' : 'false';
             break;
         case 'zero_trust_server_scan_tool_enabled':
             value = zeroTrustServerScanEnabled.value ? 'true' : 'false';
@@ -618,6 +678,7 @@ watch(
             firewallBlockVPN.value = newSettings['firewall_block_vpn'] === 'true';
             firewallBlockAlts.value = newSettings['firewall_block_alts'] === 'true';
             showNodePing.value = newSettings['show_node_ping'] === 'true';
+            antiAdblockerEnabled.value = newSettings['anti_adblocker_enabled'] === 'true';
             zeroTrustServerScanEnabled.value = newSettings['zero_trust_server_scan_tool_enabled'] === 'true';
             zeroTrustWhitelistIPsEnabled.value = newSettings['zero_trust_whitelist_ips_enabled'] === 'true';
             zeroTrustBlockTorEnabled.value = newSettings['zero_trust_block_tor_enabled'] === 'true';

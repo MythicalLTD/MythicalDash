@@ -4,9 +4,9 @@ This document provides a comprehensive overview of all permission nodes used in 
 
 ## Overview
 
-- **Total Permissions:** 88
-- **Categories:** 27
-- **With Descriptions:** 88
+- **Total Permissions:** 89
+- **Categories:** 28
+- **With Descriptions:** 89
 
 ## Format
 
@@ -260,6 +260,12 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_IMAGE_REPORTS_EDIT` | `admin.image.reports.edit` | Edit image reports |
 | `ADMIN_IMAGE_REPORTS_DELETE` | `admin.image.reports.delete` | Delete image reports |
 
+## Adblocker
+
+| Permission | Node | Description |
+|------------|------|-------------|
+| `USER_PERMISSION_BYPASS_ADBLOCKER` | `user.permission.adblocker` | The permission that lets you bypass the antiadblocker! |
+
 ## Adding New Permissions
 
 To add a new permission node:
@@ -282,4 +288,4 @@ To add a new permission node:
 
 ---
 
-*This documentation was auto-generated on 2025-07-29 10:03:38*
+*This documentation was auto-generated on 2025-07-29 10:23:50*
