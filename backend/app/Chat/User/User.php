@@ -18,6 +18,7 @@ use Gravatar\Gravatar;
 use MythicalDash\Mail\Mail;
 use MythicalDash\Chat\Database;
 use MythicalDash\Mail\templates\Verify;
+use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Mail\templates\NewLogin;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Mail\templates\ResetPassword;
@@ -45,6 +46,7 @@ class User extends Database
      */
     public static function register(string $username, string $password, string $email, string $first_name, string $last_name, string $ip, int $pterodactylUserId): void
     {
+        $config = App::getInstance(true)->getConfig();
         try {
             $appInstance = App::getInstance(true);
             $first_name = $appInstance->encrypt($first_name);
@@ -110,12 +112,16 @@ class User extends Database
              */
             if (Mail::isEnabled()) {
                 try {
-                    $verify_token = App::getInstance(true)->generateCode();
-                    $appInstance->getLogger()->debug('Verify token: ' . $verify_token);
-                    Verification::add($verify_token, $uuid, EmailVerificationColumns::$type_verify);
-                    $appInstance->getLogger()->debug('Verification added');
-                    Verify::sendMail($uuid, $verify_token);
-                    $appInstance->getLogger()->debug('Email sent');
+                    if ($config->getDBSetting(ConfigInterface::FORCE_MAIL_LINK, 'false') == 'true') {
+                        $verify_token = App::getInstance(true)->generateCode();
+                        $appInstance->getLogger()->debug('Verify token: ' . $verify_token);
+                        Verification::add($verify_token, $uuid, EmailVerificationColumns::$type_verify);
+                        $appInstance->getLogger()->debug('Verification added');
+                        Verify::sendMail($uuid, $verify_token);
+                        $appInstance->getLogger()->debug('Email sent');
+                    } else {
+                        self::updateInfo($token, UserColumns::VERIFIED, 'true', false);
+                    }
                 } catch (\Exception $e) {
                     App::getInstance(true)->getLogger()->error('Failed to send email: ' . $e->getMessage());
                     $appInstance->getLogger()->debug('Failed to send email');

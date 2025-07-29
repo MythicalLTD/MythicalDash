@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, watch, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, watch, onMounted, onUnmounted, computed } from 'vue';
 import Layout from '@/components/client/Layout.vue';
 import FormCard from '@/components/client/Auth/FormCard.vue';
 import FormInput from '@/components/client/Auth/FormInput.vue';
@@ -20,7 +20,27 @@ const { play: playSuccess } = useSound(successAlertSfx);
 const router = useRouter();
 const isDiscordLink = ref(false);
 const isGithubLink = ref(false);
+const isMailLink = ref(false);
 const { t } = useI18n();
+
+// Computed property to get all required account links
+const requiredAccountLinks = computed(() => {
+    const links = [];
+    if (isDiscordLink.value) links.push('Discord');
+    if (isGithubLink.value) links.push('GitHub');
+    if (isMailLink.value) links.push('Email');
+    return links;
+});
+
+// Computed property to check if any account linking is required
+const hasAccountLinkingRequirements = computed(() => {
+    return isDiscordLink.value || isGithubLink.value || isMailLink.value;
+});
+
+// Computed property to get the count of required links
+const requiredLinksCount = computed(() => {
+    return requiredAccountLinks.value.length;
+});
 
 const loading = ref(false);
 const form = reactive({
@@ -36,11 +56,11 @@ const form = reactive({
 // Add email suggestions
 const emailSuggestions = ref<string[]>([]);
 const showSuggestions = ref(false);
-const commonDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'protonmail.com'];
+const commonDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'proton.me', 'pm.me'];
 
 const generateUsername = () => {
     const adjectives = ['happy', 'clever', 'brave', 'swift', 'bright', 'calm', 'eager', 'fair', 'kind', 'lively'];
-    const nouns = ['panda', 'tiger', 'eagle', 'dolphin', 'wolf', 'phoenix', 'dragon', 'lion', 'bear', 'fox'];
+    const nouns = ['panda', 'tiger', 'eagle', 'dolphin', 'wolf', 'phoenix', 'dragon', 'lion', 'bear', 'fox', 'cat'];
     const numbers = Math.floor(Math.random() * 1000);
     const randomAdj = adjectives[Math.floor(Math.random() * adjectives.length)];
     const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
@@ -120,6 +140,9 @@ onMounted(() => {
     if (Settings.getSetting('force_github_link') == 'true') {
         isGithubLink.value = true;
     }
+    if (Settings.getSetting('force_mail_link') == 'true') {
+        isMailLink.value = true;
+    }
 });
 
 onUnmounted(() => {
@@ -167,19 +190,6 @@ const validateForm = () => {
     // Password: required, min 8 chars
     if (!form.password || form.password.length < 8) {
         validationErrors.value.password = t('auth.pages.register.page.form.password.validation');
-    }
-
-    // Account linking requirements
-    if (isDiscordLink.value) {
-        // Check if Discord is linked (this would need to be implemented with actual linking logic)
-        // For now, we'll add a placeholder validation
-        validationErrors.value.discord = t('auth.pages.register.page.form.account_linking.discord_required');
-    }
-
-    if (isGithubLink.value) {
-        // Check if GitHub is linked (this would need to be implemented with actual linking logic)
-        // For now, we'll add a placeholder validation
-        validationErrors.value.github = t('auth.pages.register.page.form.account_linking.github_required');
     }
 
     return Object.keys(validationErrors.value).length === 0;
@@ -262,6 +272,39 @@ const handleSubmit = async () => {
             footer: t('auth.pages.register.alerts.success.footer'),
             showConfirmButton: true,
         });
+
+        // Show account linking warning if required
+        if (hasAccountLinkingRequirements.value) {
+            setTimeout(() => {
+                const linkTypes = requiredAccountLinks.value;
+                let message = '';
+
+                if (linkTypes.length === 1) {
+                    message = t('auth.pages.register.alerts.warning.account_linking.message_single', {
+                        type: linkTypes[0],
+                    });
+                } else if (linkTypes.length === 2) {
+                    message = t('auth.pages.register.alerts.warning.account_linking.message_two', {
+                        first: linkTypes[0],
+                        second: linkTypes[1],
+                    });
+                } else {
+                    message = t('auth.pages.register.alerts.warning.account_linking.message_multiple', {
+                        types: linkTypes.join(', '),
+                    });
+                }
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: t('auth.pages.register.alerts.warning.account_linking.title'),
+                    text: message,
+                    footer: t('auth.pages.register.alerts.warning.account_linking.footer'),
+                    showConfirmButton: true,
+                    confirmButtonText: t('auth.pages.register.alerts.warning.account_linking.continue'),
+                });
+            }, 2000);
+        }
+
         setTimeout(() => {
             router.push('/auth/login');
         }, 1500);
@@ -388,11 +431,14 @@ const handleSubmit = async () => {
             </div>
             <!-- Account Linking Requirements -->
             <div
-                v-if="isDiscordLink || isGithubLink"
+                v-if="hasAccountLinkingRequirements"
                 class="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg"
             >
                 <h3 class="text-lg font-medium text-blue-400 mb-3">
                     {{ t('auth.pages.register.page.form.account_linking.title') }}
+                    <span class="text-sm text-gray-400 ml-2">
+                        ({{ requiredLinksCount }} {{ requiredLinksCount === 1 ? 'requirement' : 'requirements' }})
+                    </span>
                 </h3>
 
                 <!-- Discord Requirement -->
@@ -410,17 +456,6 @@ const handleSubmit = async () => {
                             <p class="text-sm text-gray-400 mt-1">
                                 {{ t('auth.pages.register.page.form.account_linking.discord_description') }}
                             </p>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2 py-1 text-xs rounded-md bg-red-500/20 text-red-400">
-                                {{ t('auth.pages.register.page.form.account_linking.required_for_registration') }}
-                            </span>
-                            <button
-                                type="button"
-                                class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded transition-colors"
-                            >
-                                {{ t('auth.pages.register.page.form.account_linking.link_discord') }}
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -441,16 +476,24 @@ const handleSubmit = async () => {
                                 {{ t('auth.pages.register.page.form.account_linking.github_description') }}
                             </p>
                         </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2 py-1 text-xs rounded-md bg-red-500/20 text-red-400">
-                                {{ t('auth.pages.register.page.form.account_linking.required_for_registration') }}
-                            </span>
-                            <button
-                                type="button"
-                                class="px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white text-sm rounded transition-colors"
-                            >
-                                {{ t('auth.pages.register.page.form.account_linking.link_github') }}
-                            </button>
+                    </div>
+                </div>
+
+                <!-- Mail Requirement -->
+                <div v-if="isMailLink" class="mb-4 p-3 bg-gray-800/50 rounded-lg border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <h4 class="font-medium text-white flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
+                                    />
+                                </svg>
+                                Email Verification
+                            </h4>
+                            <p class="text-sm text-gray-400 mt-1">
+                                {{ t('auth.pages.register.page.form.account_linking.mail_description') }}
+                            </p>
                         </div>
                     </div>
                 </div>

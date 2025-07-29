@@ -39,6 +39,18 @@
             </div>
 
             <div v-if="formData.smtp_enabled === 'true'">
+                <div class="flex items-center space-x-2 mb-4">
+                    <input
+                        type="checkbox"
+                        id="force_mail_link"
+                        v-model="formData.force_mail_link"
+                        @change="markChanged('force_mail_link')"
+                        class="rounded border-gray-700 text-pink-500 focus:ring-pink-500 bg-gray-800/30"
+                    />
+                    <label for="force_mail_link" class="text-sm font-medium text-gray-400">
+                        Force users to link their email (required for registration)
+                    </label>
+                </div>
                 <!-- SMTP Host -->
                 <div class="mb-4">
                     <label for="smtp_host" class="block text-sm font-medium text-gray-400 mb-1">SMTP Host</label>
@@ -174,6 +186,7 @@ const formData = ref({
     smtp_user: '',
     smtp_pass: '',
     smtp_from: '',
+    force_mail_link: 'false',
 });
 
 const showPassword = ref(false);
@@ -203,6 +216,7 @@ watch(
                 smtp_user: newSettings['smtp_user'] || '',
                 smtp_pass: newSettings['smtp_pass'] || '',
                 smtp_from: newSettings['smtp_from'] || '',
+                force_mail_link: newSettings['force_mail_link'] || 'false',
             };
 
             // Clear changed fields when settings are loaded

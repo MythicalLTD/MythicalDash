@@ -40,6 +40,8 @@ class ConfigFactory
      * @param string $name The name of the setting
      *
      * @return string|null The value of the setting
+     *
+     * @deprecated Use getDBSetting instead
      */
     public function getSetting(string $name, ?string $fallback = null): ?string
     {

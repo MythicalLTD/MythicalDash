@@ -40,6 +40,8 @@
 - Added CLI encrypt command
 - Image hosting is now built in (No more plugin)
 - Added a health check cli command for more checks!
+- More search results inside the admin area!
+- Email verify is not required if not configured!
 
 ## Breaking Changes
 - None
