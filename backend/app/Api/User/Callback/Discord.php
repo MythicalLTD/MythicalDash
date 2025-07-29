@@ -20,6 +20,7 @@ use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\Chat\J4RServers\J4RServers;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Plugins\Events\Events\J4REvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\DiscordEvent;
 
@@ -257,6 +258,29 @@ class DiscordOAuthHelper
                     $newJoins[] = $serverId;
 
                     ++$rewardsGiven;
+
+                    // Emit event for server joined
+                    global $eventManager;
+                    $eventManager->emit(J4REvent::onJ4RServerJoined(), [
+                        'user_uuid' => $userUuid,
+                        'username' => $session->getInfo(UserColumns::USERNAME, false),
+                        'server_id' => $serverId,
+                        'server_name' => $j4rServer['name'],
+                        'coins_earned' => $coins,
+                        'discord_id' => $discordId,
+                    ]);
+
+                    // Emit event for reward claimed
+                    $eventManager->emit(J4REvent::onJ4RRewardsClaimed(), [
+                        'user_uuid' => $userUuid,
+                        'username' => $session->getInfo(UserColumns::USERNAME, false),
+                        'server_id' => $serverId,
+                        'server_name' => $j4rServer['name'],
+                        'coins_earned' => $coins,
+                        'old_balance' => $currentCoins,
+                        'new_balance' => $newCoins,
+                        'discord_id' => $discordId,
+                    ]);
 
                     // Log the reward
                     UserActivities::add(

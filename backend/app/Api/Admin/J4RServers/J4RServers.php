@@ -17,6 +17,7 @@ use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\Chat\J4RServers\J4RServers;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Plugins\Events\Events\J4REvent;
 use MythicalDash\Middleware\PermissionMiddleware;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 
@@ -172,6 +173,19 @@ $router->post('/api/admin/j4r/servers/create', function () {
         $appInstance->InternalServerError('Failed to create J4R server', ['error_code' => 'FAILED_TO_CREATE_SERVER']);
     }
 
+    // Emit event for server creation
+    global $eventManager;
+    $eventManager->emit(J4REvent::onJ4RServerCreated(), [
+        'server_id' => $newServerId,
+        'name' => $name,
+        'invite_code' => $inviteCode,
+        'coins' => $coins,
+        'discord_server_id' => $serverId,
+        'description' => $description,
+        'icon_url' => $iconUrl,
+        'created_by' => $session->getInfo(UserColumns::USERNAME, false),
+    ]);
+
     UserActivities::add(
         $session->getInfo(UserColumns::UUID, false),
         UserActivitiesTypes::$j4r_server_create,
@@ -260,6 +274,19 @@ $router->post('/api/admin/j4r/servers/(.*)/update', function ($id) {
         $appInstance->InternalServerError('Failed to update J4R server', ['error_code' => 'FAILED_TO_UPDATE_SERVER']);
     }
 
+    // Emit event for server update
+    global $eventManager;
+    $eventManager->emit(J4REvent::onJ4RServerUpdated(), [
+        'server_id' => $serverId,
+        'name' => $name,
+        'invite_code' => $inviteCode,
+        'coins' => $coins,
+        'discord_server_id' => $discordServerId,
+        'description' => $description,
+        'icon_url' => $iconUrl,
+        'updated_by' => $session->getInfo(UserColumns::USERNAME, false),
+    ]);
+
     UserActivities::add(
         $session->getInfo(UserColumns::UUID, false),
         UserActivitiesTypes::$j4r_server_update,
@@ -302,6 +329,19 @@ $router->post('/api/admin/j4r/servers/(.*)/delete', function ($id) {
         $appInstance->InternalServerError('Failed to delete J4R server', ['error_code' => 'FAILED_TO_DELETE_SERVER']);
     }
 
+    // Emit event for server deletion
+    global $eventManager;
+    $eventManager->emit(J4REvent::onJ4RServerDeleted(), [
+        'server_id' => $serverId,
+        'name' => $serverName,
+        'invite_code' => $server['invite_code'] ?? '',
+        'coins' => $server['coins'] ?? 0,
+        'discord_server_id' => $server['server_id'] ?? '',
+        'description' => $server['description'] ?? '',
+        'icon_url' => $server['icon_url'] ?? '',
+        'deleted_by' => $session->getInfo(UserColumns::USERNAME, false),
+    ]);
+
     UserActivities::add(
         $session->getInfo(UserColumns::UUID, false),
         UserActivitiesTypes::$j4r_server_delete,
@@ -342,6 +382,14 @@ $router->post('/api/admin/j4r/servers/(.*)/lock', function ($id) {
     if (!$result) {
         $appInstance->InternalServerError('Failed to lock J4R server', ['error_code' => 'FAILED_TO_LOCK_SERVER']);
     }
+
+    // Emit event for server lock
+    global $eventManager;
+    $eventManager->emit(J4REvent::onJ4RServerLocked(), [
+        'server_id' => $serverId,
+        'name' => $serverName,
+        'locked_by' => $session->getInfo(UserColumns::USERNAME, false),
+    ]);
 
     UserActivities::add(
         $session->getInfo(UserColumns::UUID, false),
@@ -384,6 +432,14 @@ $router->post('/api/admin/j4r/servers/(.*)/unlock', function ($id) {
     if (!$result) {
         $appInstance->InternalServerError('Failed to unlock J4R server', ['error_code' => 'FAILED_TO_UNLOCK_SERVER']);
     }
+
+    // Emit event for server unlock
+    global $eventManager;
+    $eventManager->emit(J4REvent::onJ4RServerUnlocked(), [
+        'server_id' => $serverId,
+        'name' => $serverName,
+        'unlocked_by' => $session->getInfo(UserColumns::USERNAME, false),
+    ]);
 
     UserActivities::add(
         $session->getInfo(UserColumns::UUID, false),

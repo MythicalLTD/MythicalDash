@@ -45,6 +45,7 @@ interface DashboardCounts {
     redirect_links_count: number;
     roles_count: number;
     j4r_servers_count: number;
+    image_reports_count: number;
 }
 
 interface DashboardData {
@@ -157,6 +158,19 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     count: computed(() => dashBoard.value.count.redeem_codes_count || 0),
                     active: route.path === `${adminBaseUri}/redeem-codes`,
                     visible: computed(() => Session.Permission.Has(Permissions.ADMIN_REDEEM_CODES_LIST)),
+                },
+            ],
+        },
+        {
+            title: 'Image Hosting',
+            items: [
+                {
+                    name: 'Image Reports',
+                    path: `${adminBaseUri}/image-reports`,
+                    icon: ImageIcon,
+                    count: computed(() => dashBoard.value.count.image_reports_count || 0),
+                    active: route.path === `${adminBaseUri}/image-reports`,
+                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_IMAGE_REPORTS_VIEW)),
                 },
             ],
         },

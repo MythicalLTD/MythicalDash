@@ -4,9 +4,9 @@ This document provides a comprehensive overview of all permission nodes used in 
 
 ## Overview
 
-- **Total Permissions:** 84
-- **Categories:** 26
-- **With Descriptions:** 84
+- **Total Permissions:** 88
+- **Categories:** 27
+- **With Descriptions:** 88
 
 ## Format
 
@@ -251,6 +251,15 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 |------------|------|-------------|
 | `USER_PERMISSION_VIP` | `user.permission.vip` | The VIP permission that allows you to create servers on vip eggs or nodes |
 
+## Admin Image Reports
+
+| Permission | Node | Description |
+|------------|------|-------------|
+| `ADMIN_IMAGE_REPORTS_VIEW` | `admin.image.reports.view` | View image reports |
+| `ADMIN_IMAGE_REPORTS_LIST` | `admin.image.reports.list` | List image reports |
+| `ADMIN_IMAGE_REPORTS_EDIT` | `admin.image.reports.edit` | Edit image reports |
+| `ADMIN_IMAGE_REPORTS_DELETE` | `admin.image.reports.delete` | Delete image reports |
+
 ## Adding New Permissions
 
 To add a new permission node:
@@ -273,4 +282,4 @@ To add a new permission node:
 
 ---
 
-*This documentation was auto-generated on 2025-07-28 15:34:57*
+*This documentation was auto-generated on 2025-07-29 10:03:38*

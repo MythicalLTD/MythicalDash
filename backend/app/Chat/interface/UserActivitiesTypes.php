@@ -180,4 +180,14 @@ class UserActivitiesTypes
     public static string $j4r_server_delete = 'admin:j4r_server:delete';
     public static string $j4r_server_lock = 'admin:j4r_server:lock';
     public static string $j4r_server_unlock = 'admin:j4r_server:unlock';
+
+    /**
+     * Image Reports.
+     */
+    public static string $image_report_create = 'image_report:create';
+    public static string $image_report_update = 'admin:image_report:update';
+    public static string $image_report_delete = 'admin:image_report:delete';
+    public static string $image_report_view = 'admin:image_report:view';
+    public static string $image_report_resolve = 'admin:image_report:resolve';
+    public static string $image_report_dismiss = 'admin:image_report:dismiss';
 }

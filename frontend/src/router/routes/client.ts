@@ -26,6 +26,14 @@ const clientRoutes: RouteRecordRaw[] = [
         },
     },
     {
+        path: '/images/upload',
+        name: 'Upload Image',
+        component: () => import('@/views/client/images/Upload.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         path: '/privacy-policy',
         name: 'Privacy Policy',
         component: () => import('@/views/guest/PrivacyPolicy.vue'),

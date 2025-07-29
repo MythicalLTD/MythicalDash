@@ -142,3 +142,9 @@ ADMIN_REDEEM_CODES_LIST=admin.redeem.codes.list | Admin Redeem Codes | List all 
 
 # User Permissions
 USER_PERMISSION_VIP=user.permission.vip | VIP | The VIP permission that allows you to create servers on vip eggs or nodes 
+
+# Image Reports
+ADMIN_IMAGE_REPORTS_VIEW=admin.image.reports.view | Admin Image Reports | View image reports
+ADMIN_IMAGE_REPORTS_LIST=admin.image.reports.list | Admin Image Reports | List image reports
+ADMIN_IMAGE_REPORTS_EDIT=admin.image.reports.edit | Admin Image Reports | Edit image reports
+ADMIN_IMAGE_REPORTS_DELETE=admin.image.reports.delete | Admin Image Reports | Delete image reports

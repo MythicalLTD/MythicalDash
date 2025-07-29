@@ -41,7 +41,10 @@
 - Image hosting is now built in (No more plugin)
 - Added a health check cli command for more checks!
 - More search results inside the admin area!
+- More Events for plugins :)
 - Email verify is not required if not configured!
+- Ability to report images and manage reports from admin ui!
+- Ability to be able to upload images via the client ui!
 
 ## Breaking Changes
 - None

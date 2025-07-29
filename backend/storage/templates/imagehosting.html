@@ -10,6 +10,7 @@
     <meta property="og:url" content="{{url}}" />
     <meta name="theme-color" content="{{color}}" />
     <meta name="twitter:card" content="summary_large_image" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             min-height: 100vh;
@@ -189,6 +190,92 @@
             .card { padding: 1rem 0.2rem; }
             .title { font-size: 1.1rem; }
         }
+        
+        /* SweetAlert Custom Styles */
+        .swal2-popup {
+            background: rgba(28, 29, 40, 0.98) !important;
+            border: 1.5px solid #23243a !important;
+            border-radius: 18px !important;
+            color: #fff !important;
+        }
+        
+        .swal2-title {
+            color: #fff !important;
+            font-weight: 600 !important;
+        }
+        
+        .swal2-html-container {
+            color: #b5bac1 !important;
+        }
+        
+        .swal2-select {
+            background: #23243a !important;
+            color: #fff !important;
+            border: 1px solid #23243a !important;
+            border-radius: 7px !important;
+            padding: 12px !important;
+            font-size: 14px !important;
+            width: 100% !important;
+        }
+        
+        .swal2-select:focus {
+            border-color: #5865f2 !important;
+            box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.2) !important;
+        }
+        
+        .swal2-textarea {
+            background: #23243a !important;
+            color: #fff !important;
+            border: 1px solid #23243a !important;
+            border-radius: 7px !important;
+            padding: 12px !important;
+            font-size: 14px !important;
+            width: 100% !important;
+            resize: none !important;
+            font-family: inherit !important;
+        }
+        
+        .swal2-textarea:focus {
+            border-color: #5865f2 !important;
+            box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.2) !important;
+        }
+        
+        .swal2-confirm {
+            background: #ff5f6d !important;
+            border: 1px solid #ff5f6d !important;
+            border-radius: 7px !important;
+            font-weight: 500 !important;
+            transition: all 0.15s !important;
+        }
+        
+        .swal2-confirm:hover {
+            background: #e54d5b !important;
+            border-color: #e54d5b !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        .swal2-cancel {
+            background: #6c757d !important;
+            border: 1px solid #6c757d !important;
+            border-radius: 7px !important;
+            font-weight: 500 !important;
+            transition: all 0.15s !important;
+        }
+        
+        .swal2-cancel:hover {
+            background: #5a6268 !important;
+            border-color: #5a6268 !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        .swal2-validation-message {
+            color: #ff5f6d !important;
+            background: rgba(255, 95, 109, 0.1) !important;
+            border: 1px solid rgba(255, 95, 109, 0.3) !important;
+            border-radius: 7px !important;
+            padding: 8px 12px !important;
+            margin-top: 10px !important;
+        }
     </style>
 </head>
 <body>
@@ -243,7 +330,186 @@
                 });
         }
         function reportImage() {
-            alert('Thank you for reporting this image. Our team will review it shortly.');
+            // Get the current image URL for the report
+            const imageUrl = window.location.href;
+            
+            Swal.fire({
+                title: '<span style="color: #ff5f6d; font-weight: 600;">Report Image</span>',
+                html: `
+                    <div style="text-align: left; margin-bottom: 20px;">
+                        <p style="color: #b5bac1; margin-bottom: 15px; font-size: 14px;">
+                            Help us understand why you're reporting this image:
+                        </p>
+                    </div>
+                `,
+                input: 'select',
+                inputOptions: {
+                    '': 'Select a reason...',
+                    'inappropriate': '🚫 Inappropriate content',
+                    'copyright': '⚖️ Copyright violation',
+                    'spam': '📧 Spam or misleading',
+                    'harassment': '😡 Harassment or bullying',
+                    'violence': '💀 Violence or gore',
+                    'other': '❓ Other'
+                },
+                inputPlaceholder: 'Select a reason...',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Please select a reason for reporting';
+                    }
+                },
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-flag"></i> Submit Report',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#ff5f6d',
+                cancelButtonColor: '#6c757d',
+                showLoaderOnConfirm: true,
+                width: '500px',
+                customClass: {
+                    popup: 'swal2-custom-popup',
+                    title: 'swal2-custom-title',
+                    htmlContainer: 'swal2-custom-html',
+                    input: 'swal2-custom-input',
+                    actions: 'swal2-custom-actions',
+                    confirmButton: 'swal2-custom-confirm',
+                    cancelButton: 'swal2-custom-cancel'
+                },
+                didOpen: () => {
+                    // Add custom styling after modal opens
+                    const popup = document.querySelector('.swal2-popup');
+                    if (popup) {
+                        popup.style.background = 'rgba(28, 29, 40, 0.98)';
+                        popup.style.border = '1.5px solid #23243a';
+                        popup.style.borderRadius = '18px';
+                    }
+                    
+                    // Style the select input
+                    const select = document.querySelector('.swal2-select');
+                    if (select) {
+                        select.style.background = '#23243a';
+                        select.style.color = '#fff';
+                        select.style.border = '1px solid #23243a';
+                        select.style.borderRadius = '7px';
+                        select.style.padding = '12px';
+                        select.style.fontSize = '14px';
+                        select.style.width = '100%';
+                    }
+                },
+                preConfirm: (reason) => {
+                    if (!reason) {
+                        Swal.showValidationMessage('Please select a reason for reporting');
+                        return false;
+                    }
+                    
+                    // Show additional details input
+                    return Swal.fire({
+                        title: '<span style="color: #ff5f6d; font-weight: 600;">Additional Details</span>',
+                        html: `
+                            <div style="text-align: left; margin-bottom: 20px;">
+                                <p style="color: #b5bac1; margin-bottom: 15px; font-size: 14px;">
+                                    Please provide additional details (optional):
+                                </p>
+                            </div>
+                        `,
+                        input: 'textarea',
+                        inputPlaceholder: 'Describe the issue in detail...',
+                        inputAttributes: {
+                            'maxlength': '500',
+                            'rows': '4'
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: '<i class="fas fa-paper-plane"></i> Submit Report',
+                        cancelButtonText: 'Back',
+                        confirmButtonColor: '#ff5f6d',
+                        cancelButtonColor: '#6c757d',
+                        showLoaderOnConfirm: true,
+                        width: '500px',
+                        customClass: {
+                            popup: 'swal2-custom-popup',
+                            title: 'swal2-custom-title',
+                            htmlContainer: 'swal2-custom-html',
+                            input: 'swal2-custom-textarea',
+                            actions: 'swal2-custom-actions',
+                            confirmButton: 'swal2-custom-confirm',
+                            cancelButton: 'swal2-custom-cancel'
+                        },
+                        didOpen: () => {
+                            // Add custom styling after modal opens
+                            const popup = document.querySelector('.swal2-popup');
+                            if (popup) {
+                                popup.style.background = 'rgba(28, 29, 40, 0.98)';
+                                popup.style.border = '1.5px solid #23243a';
+                                popup.style.borderRadius = '18px';
+                            }
+                            
+                            // Style the textarea
+                            const textarea = document.querySelector('.swal2-textarea');
+                            if (textarea) {
+                                textarea.style.background = '#23243a';
+                                textarea.style.color = '#fff';
+                                textarea.style.border = '1px solid #23243a';
+                                textarea.style.borderRadius = '7px';
+                                textarea.style.padding = '12px';
+                                textarea.style.fontSize = '14px';
+                                textarea.style.width = '100%';
+                                textarea.style.resize = 'none';
+                                textarea.style.fontFamily = 'inherit';
+                            }
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            return { reason, details: result.value || '' };
+                        }
+                        return false;
+                    });
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    submitReport(result.value.reason, result.value.details, imageUrl);
+                }
+            });
+        }
+        
+        function submitReport(reason, details, imageUrl) {
+            fetch('/api/system/imagehosting/report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    image_url: imageUrl,
+                    reason: reason,
+                    details: details
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Report Submitted',
+                        text: 'Thank you for your report. Our team will review it shortly.',
+                        confirmButtonColor: '#43e97b'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Report Failed',
+                        text: data.message || 'Failed to submit report. Please try again.',
+                        confirmButtonColor: '#ff5f6d'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting report:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Connection Error',
+                    text: 'Failed to submit report. Please check your connection and try again.',
+                    confirmButtonColor: '#ff5f6d'
+                });
+            });
         }
     </script>
 </body>

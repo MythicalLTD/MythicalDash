@@ -18,6 +18,7 @@ use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\Chat\J4RServers\J4RServers;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
+use MythicalDash\Plugins\Events\Events\J4REvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 
 // Import DiscordOAuthHelper class
@@ -57,6 +58,14 @@ $router->get('/api/user/j4r/check', function () {
         // Generate Discord OAuth URL for J4R check
         $redirectUri = $discordHelper->getSecureBaseUrl() . '/api/user/auth/callback/discord/j4r';
         $authUrl = $discordHelper->getAuthUrl($redirectUri);
+
+        // Emit event for J4R check initiation
+        global $eventManager;
+        $eventManager->emit(J4REvent::onJ4RCheckInitiated(), [
+            'user_uuid' => $session->getInfo(UserColumns::UUID, false),
+            'username' => $session->getInfo(UserColumns::USERNAME, false),
+            'discord_linked' => true,
+        ]);
 
         // Redirect to Discord OAuth
         header('Location: ' . $authUrl);
