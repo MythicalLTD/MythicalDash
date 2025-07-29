@@ -32,6 +32,22 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
 
         $this->runStartupHealthChecks();
 
+        $addonDir = getcwd() . '/backend/storage/addons/imagehostbridge';
+        if (is_dir($addonDir)) {
+            // Recursively delete the directory and its contents
+            $iterator = new \RecursiveDirectoryIterator($addonDir, \FilesystemIterator::SKIP_DOTS);
+            $files = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::CHILD_FIRST);
+            foreach ($files as $file) {
+                if ($file->isDir()) {
+                    rmdir($file->getPathname());
+                } else {
+                    unlink($file->getPathname());
+                }
+            }
+            rmdir($addonDir);
+			exit("Upgrade complete! Please run the command again.");
+        }
+
         // Try plugin commands first, then fall back to built-in commands
         if ($this->registerPluginCommands($commandName, $args)) {
             return;

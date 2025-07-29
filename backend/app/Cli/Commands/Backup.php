@@ -23,7 +23,14 @@ class Backup extends App implements CommandBuilder
         $app = App::getInstance();
 
         if (count($args) > 0) {
-            switch ($args[1]) {
+            $subcommand = $args[1] ?? null;
+            
+            if (!$subcommand) {
+                self::getInstance()->send('&cPlease provide a subcommand!');
+                return;
+            }
+            
+            switch ($subcommand) {
                 case 'take':
                     // Install an addon.
                     self::takeBackup($app);
