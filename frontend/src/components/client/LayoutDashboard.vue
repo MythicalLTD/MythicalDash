@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import LoadingScreen from '@/components/client/ui/LoadingScreen.vue';
 import TopNavBar from '@/components/client/layout/TopNavBar.vue';
@@ -16,6 +16,7 @@ import Permissions from '@/mythicaldash/Permissions';
 import Roles from '@/mythicaldash/admin/Roles';
 import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '@/stores/settings';
+import Swal from 'sweetalert2';
 
 MythicalDash.download();
 
@@ -34,6 +35,52 @@ try {
 } catch (error) {
     console.error('Session failed:', error);
 }
+
+// Account linking check function
+const checkAccountLinkingRequirements = () => {
+    const forceDiscordLink = Settings.getSetting('force_discord_link') === 'true';
+    const forceGithubLink = Settings.getSetting('force_github_link') === 'true';
+
+    const discordLinked = Session.getInfo('discord_linked') === 'true';
+    const githubLinked = Session.getInfo('github_linked') === 'true';
+
+    // Check if user needs to link any accounts
+    const needsDiscordLink = forceDiscordLink && !discordLinked;
+    const needsGithubLink = forceGithubLink && !githubLinked;
+
+    // If any linking is required and not completed, redirect to account page
+    if (needsDiscordLink || needsGithubLink) {
+        // Only redirect if not already on account page to avoid infinite redirects
+        if (router.currentRoute.value.path !== '/account') {
+            // Determine which accounts need linking for dynamic message
+            const requiredAccounts = [];
+            if (needsDiscordLink) requiredAccounts.push('Discord');
+            if (needsGithubLink) requiredAccounts.push('GitHub');
+
+            let message = '';
+            if (requiredAccounts.length === 1) {
+                message = t('dashboard.alerts.account_linking.message_single', { type: requiredAccounts[0] });
+            } else {
+                message = t('dashboard.alerts.account_linking.message_multiple', {
+                    types: requiredAccounts.join(' and '),
+                });
+            }
+
+            // Show alert before redirecting
+            Swal.fire({
+                icon: 'warning',
+                title: t('dashboard.alerts.account_linking.title'),
+                text: message,
+                footer: t('dashboard.alerts.account_linking.footer'),
+                showConfirmButton: true,
+                confirmButtonText: t('dashboard.alerts.account_linking.continue'),
+                allowOutsideClick: false,
+            }).then(() => {
+                router.push('/account?tab=' + t('account.pages.index.tabs.linked_accounts'));
+            });
+        }
+    }
+};
 
 const loading = ref(true);
 const isSidebarOpen = ref(false);
@@ -141,6 +188,11 @@ onMounted(() => {
     }
 
     fetchRoles();
+
+    // Check account linking requirements after session is loaded
+    setTimeout(() => {
+        checkAccountLinkingRequirements();
+    }, 1000);
 });
 
 const userBackground = computed(() => {
@@ -220,6 +272,11 @@ const reloadUserData = async () => {
         await Session.cleanup();
         await Session.startSession();
 
+        // Check account linking requirements after reload
+        setTimeout(() => {
+            checkAccountLinkingRequirements();
+        }, 1000);
+
         setTimeout(() => {
             isReloading.value = false;
         }, 3500);
@@ -232,6 +289,28 @@ const reloadUserData = async () => {
         isReloading.value = false;
     }
 };
+
+// Watch for session changes to check account linking requirements
+watch(
+    () => Session.getInfo('discord_linked'),
+    () => {
+        checkAccountLinkingRequirements();
+    },
+);
+
+watch(
+    () => Session.getInfo('github_linked'),
+    () => {
+        checkAccountLinkingRequirements();
+    },
+);
+
+watch(
+    () => Session.getInfo('email_verified'),
+    () => {
+        checkAccountLinkingRequirements();
+    },
+);
 
 const fetchRoles = async () => {
     try {

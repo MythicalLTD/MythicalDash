@@ -513,6 +513,22 @@ $router->post('/api/user/server/create', function (): void {
 
         return;
     }
+    if ($config->getDBSetting(ConfigInterface::FORCE_DISCORD_LINK, 'false') == 'true') {
+        $discordLinked = User::getInfo($accountToken, UserColumns::DISCORD_LINKED, false);
+        if ($discordLinked == 'false') {
+            $appInstance->BadRequest('Discord account linking is required', ['error_code' => 'DISCORD_LINKING_REQUIRED']);
+
+            return;
+        }
+    }
+    if ($config->getDBSetting(ConfigInterface::FORCE_GITHUB_LINK, 'false') == 'true') {
+        $githubLinked = User::getInfo($accountToken, UserColumns::GITHUB_LINKED, false);
+        if ($githubLinked == 'false') {
+            $appInstance->BadRequest('GitHub account linking is required', ['error_code' => 'GITHUB_LINKING_REQUIRED']);
+
+            return;
+        }
+    }
     if (
         !isset($_POST['name'])
         || !isset($_POST['description'])

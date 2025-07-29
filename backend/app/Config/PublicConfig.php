@@ -270,6 +270,7 @@ class PublicConfig extends ConfigFactory
             // Force Links
             ConfigInterface::FORCE_DISCORD_LINK => 'false',
             ConfigInterface::FORCE_GITHUB_LINK => 'false',
+            ConfigInterface::FORCE_MAIL_LINK => 'false',
         ];
 
     }
