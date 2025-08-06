@@ -48,6 +48,23 @@ const errorMessages = {
     PTERODACTYL_NOT_ENABLED: t('auth.pages.login.alerts.error.pterodactyl_not_enabled'),
     PROXY_DETECTED: t('auth.pages.login.alerts.error.proxy_detected'),
     MULTIPLE_ACCOUNTS: t('auth.pages.login.alerts.error.multiple_accounts'),
+    // OAuth Error Messages
+    DISCORD_NOT_ENABLED: t('auth.pages.login.alerts.error.discord_not_enabled'),
+    GITHUB_NOT_ENABLED: t('auth.pages.login.alerts.error.github_not_enabled'),
+    DISCORD_TOKEN_FAILED: t('auth.pages.login.alerts.error.discord_token_failed'),
+    GITHUB_TOKEN_FAILED: t('auth.pages.login.alerts.error.github_token_failed'),
+    DISCORD_USER_FAILED: t('auth.pages.login.alerts.error.discord_user_failed'),
+    GITHUB_USER_FAILED: t('auth.pages.login.alerts.error.github_user_failed'),
+    DISCORD_USER_NOT_FOUND: t('auth.pages.login.alerts.error.discord_user_not_found'),
+    GITHUB_USER_NOT_FOUND: t('auth.pages.login.alerts.error.github_user_not_found'),
+    DISCORD_USER_MISMATCH: t('auth.pages.login.alerts.error.discord_user_mismatch'),
+    GITHUB_USER_MISMATCH: t('auth.pages.login.alerts.error.github_user_mismatch'),
+    DISCORD_ALREADY_LINKED: t('auth.pages.login.alerts.error.discord_already_linked'),
+    GITHUB_ALREADY_LINKED: t('auth.pages.login.alerts.error.github_already_linked'),
+    DISCORD_NOT_LINKED: t('auth.pages.login.alerts.error.discord_not_linked'),
+    GITHUB_NOT_LINKED: t('auth.pages.login.alerts.error.github_not_linked'),
+    DISCORD_AUTH_FAILED: t('auth.pages.login.alerts.error.discord_auth_failed'),
+    GITHUB_AUTH_FAILED: t('auth.pages.login.alerts.error.github_auth_failed'),
 };
 
 const handleSubmit = async () => {
@@ -148,6 +165,38 @@ onMounted(() => {
     const email = base64_decode(urlParams.get('email'));
     const password = base64_decode(urlParams.get('password'));
     const performLogin = urlParams.get('performLogin');
+    const error = urlParams.get('error');
+    const message = urlParams.get('message');
+
+    // Handle OAuth errors
+    if (error) {
+        const error_code = error.toUpperCase() as keyof typeof errorMessages;
+
+        if (errorMessages[error_code]) {
+            playError();
+            Swal.fire({
+                icon: 'error',
+                title: t('auth.pages.login.alerts.error.title'),
+                text: message ? `${errorMessages[error_code]}: ${message}` : errorMessages[error_code],
+                footer: t('auth.pages.login.alerts.error.footer'),
+                showConfirmButton: true,
+            });
+        } else {
+            // Generic error handling
+            playError();
+            Swal.fire({
+                icon: 'error',
+                title: t('auth.pages.login.alerts.error.title'),
+                text: message || t('auth.pages.login.alerts.error.generic'),
+                footer: t('auth.pages.login.alerts.error.footer'),
+                showConfirmButton: true,
+            });
+        }
+
+        // Clear URL parameters
+        window.history.replaceState({}, '', window.location.pathname);
+        return;
+    }
 
     if (email && password && performLogin === 'true') {
         form.email = email;

@@ -10,9 +10,9 @@
  *
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
  */
+
 namespace MythicalDash\Hooks;
 
-use Exception;
 use MythicalDash\App;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
@@ -24,7 +24,6 @@ use MythicalDash\Chat\J4RServers\J4RServers;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\J4REvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
-use MythicalDash\Plugins\Events\Events\DiscordEvent;
 
 /**
  * Discord OAuth Helper Class.
@@ -121,10 +120,21 @@ class DiscordOAuthHelper
 
         if ($httpCode !== 200 || !$response) {
             $this->app->getLogger()->error('Discord token exchange failed: HTTP ' . $httpCode . ' - ' . $response);
+
+            // Log additional details for debugging
+            if ($httpCode === 400) {
+                $this->app->getLogger()->error('Discord OAuth: Bad request - invalid authorization code or redirect URI');
+            } elseif ($httpCode === 401) {
+                $this->app->getLogger()->error('Discord OAuth: Unauthorized - invalid client credentials');
+            } elseif ($httpCode === 403) {
+                $this->app->getLogger()->error('Discord OAuth: Forbidden - insufficient permissions');
+            }
+
             return null;
         }
 
         $tokenData = json_decode($response, true);
+
         return $tokenData['access_token'] ?? null;
     }
 
@@ -149,6 +159,16 @@ class DiscordOAuthHelper
 
         if ($httpCode !== 200 || !$response) {
             $this->app->getLogger()->error('Discord user info failed: HTTP ' . $httpCode . ' - ' . $response);
+
+            // Log additional details for debugging
+            if ($httpCode === 401) {
+                $this->app->getLogger()->error('Discord OAuth: Unauthorized - invalid or expired access token');
+            } elseif ($httpCode === 403) {
+                $this->app->getLogger()->error('Discord OAuth: Forbidden - insufficient permissions to access user info');
+            } elseif ($httpCode === 429) {
+                $this->app->getLogger()->error('Discord OAuth: Rate limited - too many requests');
+            }
+
             return null;
         }
 
@@ -169,7 +189,7 @@ class DiscordOAuthHelper
         try {
             $this->discordUtils->addUserToGuild($discordId, $accessToken, $forceJoinServerId);
             $this->app->getLogger()->info('Forced Discord server join for user: ' . $discordId);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->app->getLogger()->error('Failed to force Discord server join: ' . $e->getMessage());
         }
     }
@@ -203,6 +223,7 @@ class DiscordOAuthHelper
 
             if ($httpCode !== 200 || !$response) {
                 $this->app->getLogger()->error('Failed to get Discord guilds: HTTP ' . $httpCode);
+
                 return;
             }
 
@@ -279,7 +300,7 @@ class DiscordOAuthHelper
                 $this->app->getLogger()->info('J4R rewards claimed for user: ' . $session->getInfo(UserColumns::USERNAME, false) . ' (+' . $totalCoinsEarned . ' coins)');
             }
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->app->getLogger()->error('Error checking J4R server joins: ' . $e->getMessage());
         }
     }
@@ -310,7 +331,7 @@ class DiscordOAuthHelper
                     $session->setInfo(UserColumns::DISCORD_SERVERS, json_encode($guilds), false);
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->app->getLogger()->error('Error storing Discord guilds: ' . $e->getMessage());
         }
     }

@@ -171,15 +171,110 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         UserColumns::SERVER_LIMIT,
     ], []);
 
-    $free_resources = [
-        'memory' => $available_resources[UserColumns::MEMORY_LIMIT] - $resources['memory'],
-        'disk' => $available_resources[UserColumns::DISK_LIMIT] - $resources['disk'],
-        'cpu' => $available_resources[UserColumns::CPU_LIMIT] - $resources['cpu'],
-        'databases' => $available_resources[UserColumns::DATABASE_LIMIT] - $resources['databases'],
-        'backups' => $available_resources[UserColumns::BACKUP_LIMIT] - $resources['backups'],
-        'allocations' => $available_resources[UserColumns::ALLOCATION_LIMIT] - $resources['allocations'],
-        'servers' => $available_resources[UserColumns::SERVER_LIMIT] - $resources['servers'],
+    // Get current server resources to calculate the difference
+    $currentServerResources = [
+        'memory' => $server['attributes']['limits']['memory'],
+        'disk' => $server['attributes']['limits']['disk'],
+        'cpu' => $server['attributes']['limits']['cpu'],
+        'databases' => $server['attributes']['feature_limits']['databases'],
+        'backups' => $server['attributes']['feature_limits']['backups'],
+        'allocations' => $server['attributes']['feature_limits']['allocations'],
     ];
+
+    // Calculate resource difference (new - current)
+    $resourceDifference = [
+        'memory' => $memory - $currentServerResources['memory'],
+        'disk' => $disk - $currentServerResources['disk'],
+        'cpu' => $cpu - $currentServerResources['cpu'],
+        'databases' => $databases - $currentServerResources['databases'],
+        'backups' => $backups - $currentServerResources['backups'],
+        'allocations' => $allocations - $currentServerResources['allocations'],
+    ];
+
+    // Check if the update would exceed available resources
+    if ($resourceDifference['memory'] > 0) {
+        $freeMemory = $available_resources[UserColumns::MEMORY_LIMIT] - $resources['memory'];
+        if ($resourceDifference['memory'] > $freeMemory) {
+            $appInstance->BadRequest('This update would exceed your maximum memory limit', [
+                'error_code' => 'MAX_MEMORY_LIMIT',
+                'required' => $available_resources[UserColumns::MEMORY_LIMIT],
+                'current_usage' => $resources['memory'],
+                'attempted_to_add' => $resourceDifference['memory'],
+            ]);
+
+            return;
+        }
+    }
+
+    if ($resourceDifference['disk'] > 0) {
+        $freeDisk = $available_resources[UserColumns::DISK_LIMIT] - $resources['disk'];
+        if ($resourceDifference['disk'] > $freeDisk) {
+            $appInstance->BadRequest('This update would exceed your maximum disk limit', [
+                'error_code' => 'MAX_DISK_LIMIT',
+                'required' => $available_resources[UserColumns::DISK_LIMIT],
+                'current_usage' => $resources['disk'],
+                'attempted_to_add' => $resourceDifference['disk'],
+            ]);
+
+            return;
+        }
+    }
+
+    if ($resourceDifference['cpu'] > 0) {
+        $freeCpu = $available_resources[UserColumns::CPU_LIMIT] - $resources['cpu'];
+        if ($resourceDifference['cpu'] > $freeCpu) {
+            $appInstance->BadRequest('This update would exceed your maximum CPU limit', [
+                'error_code' => 'MAX_CPU_LIMIT',
+                'required' => $available_resources[UserColumns::CPU_LIMIT],
+                'current_usage' => $resources['cpu'],
+                'attempted_to_add' => $resourceDifference['cpu'],
+            ]);
+
+            return;
+        }
+    }
+
+    if ($resourceDifference['databases'] > 0) {
+        $freeDatabases = $available_resources[UserColumns::DATABASE_LIMIT] - $resources['databases'];
+        if ($resourceDifference['databases'] > $freeDatabases) {
+            $appInstance->BadRequest('This update would exceed your maximum databases limit', [
+                'error_code' => 'MAX_DATABASES_LIMIT',
+                'required' => $available_resources[UserColumns::DATABASE_LIMIT],
+                'current_usage' => $resources['databases'],
+                'attempted_to_add' => $resourceDifference['databases'],
+            ]);
+
+            return;
+        }
+    }
+
+    if ($resourceDifference['backups'] > 0) {
+        $freeBackups = $available_resources[UserColumns::BACKUP_LIMIT] - $resources['backups'];
+        if ($resourceDifference['backups'] > $freeBackups) {
+            $appInstance->BadRequest('This update would exceed your maximum backups limit', [
+                'error_code' => 'MAX_BACKUPS_LIMIT',
+                'required' => $available_resources[UserColumns::BACKUP_LIMIT],
+                'current_usage' => $resources['backups'],
+                'attempted_to_add' => $resourceDifference['backups'],
+            ]);
+
+            return;
+        }
+    }
+
+    if ($resourceDifference['allocations'] > 0) {
+        $freeAllocations = $available_resources[UserColumns::ALLOCATION_LIMIT] - $resources['allocations'];
+        if ($resourceDifference['allocations'] > $freeAllocations) {
+            $appInstance->BadRequest('This update would exceed your maximum allocations limit', [
+                'error_code' => 'MAX_ALLOCATIONS_LIMIT',
+                'required' => $available_resources[UserColumns::ALLOCATION_LIMIT],
+                'current_usage' => $resources['allocations'],
+                'attempted_to_add' => $resourceDifference['allocations'],
+            ]);
+
+            return;
+        }
+    }
 
     // Update server details
     try {

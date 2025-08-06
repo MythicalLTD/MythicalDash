@@ -19,13 +19,6 @@ class ACheckCron implements TimeTask
 				$app = \MythicalDash\App::getInstance(false, true);
 				$chat = new BungeeChatApi();
 				$config = $app->getConfig();
-
-				$chat->sendOutputWithNewLine('&8[&bACheckCron&8] &7Status: &aEnabled');
-
-					$chat->sendOutputWithNewLine('&8[&bACheckCron&8] &7Starting check...');
-					$chat->sendOutputWithNewLine('&8[&bACheckCron&8] &7Check started at ' . date('Y-m-d H:i:s'));
-					Backup::takeBackup();
-					$chat->sendOutputWithNewLine('&8[&bACheckCron&8] &7Check completed at ' . date('Y-m-d H:i:s'));
 			});
 		} catch (\Throwable $e) {
 			echo $e->getMessage();

@@ -26,7 +26,6 @@ class Session extends Database
 
     public function __construct(App $app)
     {
-        Firewall::handle($app, CloudFlareRealIP::getRealIP());
         if (isset($_COOKIE['user_token']) && !$_COOKIE['user_token'] == '') {
             if (User::exists(UserColumns::ACCOUNT_TOKEN, $_COOKIE['user_token'])) {
                 try {
@@ -41,6 +40,8 @@ class Session extends Database
                     if ($this->getInfo(UserColumns::TWO_FA_BLOCKED, false) == 'true') {
                         $app->Unauthorized('Please verify 2fa to access this endpoint.', ['error_code' => 'TWO_FA_BLOCKED']);
                     }
+                    // Re-check firewall with session for authenticated users (VPN bypass permission)
+                    Firewall::handle($app, CloudFlareRealIP::getRealIP(), $this);
                 } catch (\Exception $e) {
                     $app->Unauthorized('Bad Request', ['error_code' => 'INVALID_ACCOUNT_TOKEN']);
                 }

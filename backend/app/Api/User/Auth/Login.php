@@ -20,6 +20,7 @@ use MythicalDash\Chat\Servers\Server;
 use MythicalDash\Middleware\Firewall;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Chat\User\PermissionUtils;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
@@ -213,7 +214,11 @@ $router->add('/api/user/auth/login', function (): void {
     }
     $userUuid = $userInfoArray[UserColumns::UUID];
     $currentIP = CloudFlareRealIP::getRealIP();
-    if ($config->getDBSetting(ConfigInterface::FIREWALL_BLOCK_ALTS, 'false') == 'true') {
+
+    // Check if user has alt bypass permission
+    $hasAltBypassPermission = PermissionUtils::userHasPermission($loginResult, \MythicalDash\Permissions::USER_PERMISSION_BYPASS_ALTING);
+
+    if ($config->getDBSetting(ConfigInterface::FIREWALL_BLOCK_ALTS, 'false') == 'true' && !$hasAltBypassPermission) {
         $processedUsers = []; // Initialize the array
 
         // Create the IP relationship
@@ -226,11 +231,12 @@ $router->add('/api/user/auth/login', function (): void {
             // Log the warning
             $appInstance->getLogger()->warning(
                 sprintf(
-                    'User %s logged in from %s. Found %d shared accounts and %d shared IPs',
+                    'User %s logged in from %s. Found %d shared accounts and %d shared IPs (Alt bypass permission: %s)',
                     $userUuid,
                     $currentIP,
                     count($multipleAccounts['shared_users']),
-                    count($multipleAccounts['shared_ips'])
+                    count($multipleAccounts['shared_ips']),
+                    $hasAltBypassPermission ? 'true' : 'false'
                 )
             );
 
@@ -298,7 +304,15 @@ $router->add('/api/user/auth/login', function (): void {
         if (!empty($processedUsers)) {
             $appInstance->BadRequest('Multiple accounts detected and banned', ['error_code' => 'MULTIPLE_ACCOUNTS', 'info' => $processedUsers]);
         }
-
+    } elseif ($hasAltBypassPermission) {
+        // Log that user has alt bypass permission
+        $appInstance->getLogger()->info(
+            sprintf(
+                'User %s (UUID: %s) has alt bypass permission - skipping alt detection',
+                $userInfoArray[UserColumns::USERNAME],
+                $userUuid
+            )
+        );
     }
     $login = $userInfoArray[UserColumns::EMAIL];
 

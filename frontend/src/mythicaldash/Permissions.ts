@@ -245,6 +245,14 @@ class Permissions {
     /** The permission that lets you bypass the antiadblocker! */
     public static USER_PERMISSION_BYPASS_ADBLOCKER = 'user.permission.adblocker';
 
+    // AntiAlting Permissions
+    /** This permissions bypasses the system that does alt checks! */
+    public static USER_PERMISSION_BYPASS_ALTING = 'user.permission.alt';
+
+    // AntiVPN Permissions
+    /** This permission does a full bypass of the antivpn system! */
+    public static USER_PERMISSION_BYPASS_VPN = 'user.permission.vpn';
+
     /**
      * Returns all permission nodes with metadata.
      */
@@ -783,6 +791,18 @@ class Permissions {
                 value: Permissions.USER_PERMISSION_BYPASS_ADBLOCKER,
                 category: 'Adblocker',
                 description: 'The permission that lets you bypass the antiadblocker!',
+            },
+            {
+                constant: 'USER_PERMISSION_BYPASS_ALTING',
+                value: Permissions.USER_PERMISSION_BYPASS_ALTING,
+                category: 'AntiAlting',
+                description: 'This permissions bypasses the system that does alt checks!',
+            },
+            {
+                constant: 'USER_PERMISSION_BYPASS_VPN',
+                value: Permissions.USER_PERMISSION_BYPASS_VPN,
+                category: 'AntiVPN',
+                description: 'This permission does a full bypass of the antivpn system!',
             },
         ];
     }

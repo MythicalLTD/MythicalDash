@@ -16,11 +16,11 @@ use MythicalDash\Chat\User\Session;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
+use MythicalDash\Hooks\DiscordOAuthHelper;
 use MythicalDash\Chat\J4RServers\J4RServers;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\J4REvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
-use MythicalDash\Hooks\DiscordOAuthHelper;
 
 /**
  * J4R Check Endpoint.

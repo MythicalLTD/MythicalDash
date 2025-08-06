@@ -90,56 +90,9 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Resource allocation -->
-                <div class="bg-gray-800/80 backdrop-blur-sm rounded-xl p-4 border border-gray-800/50">
-                    <h3 class="text-sm font-medium text-gray-400 mb-4">Resource Allocation</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <div class="flex justify-between mb-1">
-                                <span class="text-sm text-gray-400">Memory Usage</span>
-                                <span class="text-sm text-gray-400">
-                                    {{ formatMemory(analytics.resource_usage?.memory || 0) }}
-                                </span>
-                            </div>
-                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                <div
-                                    class="h-full bg-gradient-to-r from-blue-500 to-indigo-600"
-                                    :style="{
-                                        width: `${Math.min((analytics.resource_usage?.memory || 0) / 1024 / 100, 100)}%`,
-                                    }"
-                                ></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between mb-1">
-                                <span class="text-sm text-gray-400">Disk Usage</span>
-                                <span class="text-sm text-gray-400">
-                                    {{ formatDisk(analytics.resource_usage?.disk || 0) }}
-                                </span>
-                            </div>
-                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                <div
-                                    class="h-full bg-gradient-to-r from-green-500 to-emerald-600"
-                                    :style="{
-                                        width: `${Math.min((analytics.resource_usage?.disk || 0) / 1024 / 100, 100)}%`,
-                                    }"
-                                ></div>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 pt-4 border-t border-gray-700/20">
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-400">Total Servers</span>
-                                <span class="text-lg font-bold text-white">
-                                    {{ analytics.resource_usage?.server_count || 0 }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Activity by hour -->
-                <div class="md:col-span-2 bg-gray-800/80 backdrop-blur-sm rounded-xl p-4 border border-gray-800/50">
+                <div class="md:col-span-3 bg-gray-800/80 backdrop-blur-sm rounded-xl p-4 border border-gray-800/50">
                     <h3 class="text-sm font-medium text-gray-400 mb-4">User Activity (Last 24h)</h3>
                     <div class="h-60">
                         <canvas ref="activityChart"></canvas>

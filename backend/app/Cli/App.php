@@ -29,7 +29,7 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
         if (getcwd() !== '/var/www/mythicaldash-v3') {
             exit('We detected that you are not running this command from the root directory of MythicalDash. Please run this command from the root directory.');
         }
-        
+
         $addonDir = getcwd() . '/backend/storage/addons/imagehostbridge';
         if (is_dir($addonDir)) {
             // Recursively delete the directory and its contents
@@ -43,7 +43,7 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
                 }
             }
             rmdir($addonDir);
-			exit("Upgrade complete! Please run the command again.");
+            exit('Upgrade complete! Please run the command again.');
         }
 
         // Try plugin commands first, then fall back to built-in commands

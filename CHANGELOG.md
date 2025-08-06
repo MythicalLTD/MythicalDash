@@ -1,3 +1,29 @@
+# v3.3.1-Nexus
+
+## Bug Fixes
+
+- Fixed a bug where users can go over their limits!
+- Fixed null type check on discord login
+- Fixed a dumb issues where croncheck will take backups for some reason.
+- Pteordactyl responses were not parased on some endpoints!
+- Broken At-a-Glance Analytics stats with ram/disk
+- Cache pterodactyl info on configure!
+- Fix small problems with the license server!
+- Ability to suspend servers from users edit page!
+- Banned users now get their servers suspended/unsuspended!
+
+## Enhancements
+
+- Added a permission to support vpn check bypass!
+- Added a permission to support alting bypass!
+- Added error messages for discord/github auth!
+- Made it easy for noobs to build the dash!
+- Admin area now checks for futures if they are enabled!
+- You can now change the bg of auth/error pages!
+
+## Breaking Changes
+
+
 # v3.3.0-Nexus 
 
 ## Bug Fixes

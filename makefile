@@ -86,11 +86,17 @@ release:
 	@echo -e "\n${BOLD}${BLUE}Release Build${NC} ${ROCKET}"
 	@echo -e "${CYAN}=================${NC}"
 	@echo -e "${YELLOW}${WARN} Starting comprehensive release build...${NC}\n"
+	@echo -e "${PURPLE}${INFO} Installing backend dependencies...${NC}"
+	@cd $(BACKEND_DIR) && $(COMPOSER) install
+	@echo -e "${GREEN}${CHECK} Backend dependencies installed${NC}\n"
+
+	@echo -e "${PURPLE}${INFO} Installing frontend dependencies...${NC}" 
+	@cd $(FRONTEND_DIR) && $(YARN)
+	@echo -e "${GREEN}${CHECK} Frontend dependencies installed${NC}\n"
 
 	@echo -e "${PURPLE}${INFO} Exporting permissions...${NC}"
 	@php mythicaldash ExportPermissions
 	@echo -e "${GREEN}${CHECK} Permissions exported${NC}\n"
-
 	
 	@echo -e "${PURPLE}${INFO} Frontend checks...${NC}"
 

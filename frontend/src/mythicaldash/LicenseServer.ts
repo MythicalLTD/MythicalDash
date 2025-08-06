@@ -1,9 +1,26 @@
 import { useSettingsStore } from '@/stores/settings';
 
 interface LicenseResponse {
+    code: number;
     success: boolean;
     message: string;
-    error?: string;
+    error?: string | null;
+    valid: boolean;
+    core?: {
+        debug_os: string;
+        debug_os_kernel: string;
+        debug_name: string;
+        debug_debug: boolean;
+        debug_version: string;
+        debug_telemetry: boolean;
+        debug: {
+            useRedis: boolean;
+            rateLimit: {
+                enabled: boolean;
+                limit: number;
+            };
+        };
+    };
 }
 
 interface LicenseCache {
@@ -30,10 +47,10 @@ export class LicenseServer {
             const response = await fetch(`/api/system/license/${type}`);
             const data: LicenseResponse = await response.json();
 
-            // Cache the result
-            this.cacheLicense(data.success);
+            // Cache the result - use the 'valid' field from the response
+            this.cacheLicense(data.valid);
 
-            return data.success;
+            return data.valid;
         } catch (error) {
             console.error('License validation failed:', error);
             return false;

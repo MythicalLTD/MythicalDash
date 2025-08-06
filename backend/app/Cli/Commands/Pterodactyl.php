@@ -276,12 +276,7 @@ class Pterodactyl extends CliApp implements CommandBuilder
             );
             $config = new ConfigFactory($db->getPdo());
 
-            // Get current values
-            $currentUrl = $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, '');
-            $currentApiKey = $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '');
-
-            $cliApp->send("&7Current panel URL: &e{$currentUrl}");
-            $cliApp->send('&7Enter new panel URL (or press enter to keep current):');
+            $cliApp->send('&7Enter your pterodactyl panel url:');
             $newUrl = readline('> ');
 
             if (!empty($newUrl)) {
@@ -289,8 +284,7 @@ class Pterodactyl extends CliApp implements CommandBuilder
                 $cliApp->send('&aPanel URL updated successfully!');
             }
 
-            $cliApp->send('&7Current API key is ' . (!empty($currentApiKey) ? '&aset' : '&cnot set'));
-            $cliApp->send('&7Enter new API key (or press enter to keep current):');
+            $cliApp->send('&7Enter your pterodactyl panel api key:');
             $newApiKey = readline('> ');
 
             if (!empty($newApiKey)) {

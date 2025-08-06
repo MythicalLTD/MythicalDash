@@ -4,9 +4,9 @@ This document provides a comprehensive overview of all permission nodes used in 
 
 ## Overview
 
-- **Total Permissions:** 89
-- **Categories:** 28
-- **With Descriptions:** 89
+- **Total Permissions:** 91
+- **Categories:** 30
+- **With Descriptions:** 91
 
 ## Format
 
@@ -266,6 +266,18 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 |------------|------|-------------|
 | `USER_PERMISSION_BYPASS_ADBLOCKER` | `user.permission.adblocker` | The permission that lets you bypass the antiadblocker! |
 
+## AntiAlting
+
+| Permission | Node | Description |
+|------------|------|-------------|
+| `USER_PERMISSION_BYPASS_ALTING` | `user.permission.alt` | This permissions bypasses the system that does alt checks! |
+
+## AntiVPN
+
+| Permission | Node | Description |
+|------------|------|-------------|
+| `USER_PERMISSION_BYPASS_VPN` | `user.permission.vpn` | This permission does a full bypass of the antivpn system! |
+
 ## Adding New Permissions
 
 To add a new permission node:
@@ -288,4 +300,4 @@ To add a new permission node:
 
 ---
 
-*This documentation was auto-generated on 2025-07-29 11:29:11*
+*This documentation was auto-generated on 2025-08-06 11:44:59*

@@ -248,6 +248,27 @@ $router->post('/api/admin/user/(.*)/update', function ($userId): void {
                 UserColumns::LAST_NAME,
                 UserColumns::PASSWORD,
             ];
+            /**
+             * Inject the banned column to suspend/unsuspend all servers of the user.
+             */
+            if ($column == UserColumns::BANNED) {
+                if ($value == 'true') {
+                    $serversQ = ServerQueue::getByUser($userId, [], false);
+                    foreach ($serversQ as $server) {
+                        ServerQueue::updateStatus((int) $server['id'], 'failed');
+                    }
+                    $servers = Servers::getUserServersList(User::getInfo($token, UserColumns::PTERODACTYL_USER_ID, false));
+                    foreach ($servers as $server) {
+                        Servers::performSuspendServer($server['id']);
+                    }
+                } else {
+                    $servers = Servers::getUserServersList(User::getInfo($token, UserColumns::PTERODACTYL_USER_ID, false));
+                    foreach ($servers as $server) {
+                        Servers::performUnsuspendServer($server['id']);
+                    }
+                }
+                $appInstance->OK('User updated successfully.', ['error_code' => 'USER_UPDATED']);
+            }
 
             // Use the built-in is_encrypted flag instead of manual encryption
             $isEncrypted = in_array($column, $encryptedColumns);

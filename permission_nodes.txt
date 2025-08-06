@@ -151,3 +151,9 @@ ADMIN_IMAGE_REPORTS_DELETE=admin.image.reports.delete | Admin Image Reports | De
 
 # Adblocker
 USER_PERMISSION_BYPASS_ADBLOCKER=user.permission.adblocker | Adblocker | The permission that lets you bypass the antiadblocker!
+
+# AntiAlt
+USER_PERMISSION_BYPASS_ALTING=user.permission.alt | AntiAlting | This permissions bypasses the system that does alt checks!
+
+# AntiVPN
+USER_PERMISSION_BYPASS_VPN=user.permission.vpn | AntiVPN | This permission does a full bypass of the antivpn system!

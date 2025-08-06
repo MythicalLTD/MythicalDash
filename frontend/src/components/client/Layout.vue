@@ -1,10 +1,12 @@
 <!-- src/components/Auth/Layout.vue -->
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { LicenseServer } from '@/mythicaldash/LicenseServer';
+import { useSettingsStore } from '@/stores/settings';
 
 const showFooter = ref(true);
+const Settings = useSettingsStore();
 
 onMounted(async () => {
     try {
@@ -15,12 +17,22 @@ onMounted(async () => {
         showFooter.value = true;
     }
 });
+
+const bg = computed(() => Settings.getSetting('default_bg'));
 </script>
 
 <template>
     <div class="min-h-screen bg-[#0a0a0f] relative overflow-hidden">
         <!-- Background elements -->
-        <div class="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-[#12121f] to-[#0a0a0f]">
+        <div
+            class="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-[#12121f] to-[#0a0a0f]"
+            :style="{
+                backgroundImage: `url(${bg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+            }"
+        >
             <!-- Enhanced star field -->
             <div class="stars-small"></div>
             <div class="stars-medium"></div>

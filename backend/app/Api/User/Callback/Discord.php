@@ -14,16 +14,12 @@
 use MythicalDash\App;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
-use MythicalDash\Services\DiscordUtils;
-use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
-use MythicalDash\Chat\J4RServers\J4RServers;
+use MythicalDash\Hooks\DiscordOAuthHelper;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
-use MythicalDash\Plugins\Events\Events\J4REvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\DiscordEvent;
-use MythicalDash\Hooks\DiscordOAuthHelper;
 
 // Discord Link Callback
 $router->get('/api/user/auth/callback/discord/link', function () {
@@ -32,7 +28,8 @@ $router->get('/api/user/auth/callback/discord/link', function () {
     $helper = new DiscordOAuthHelper($appInstance);
 
     if (!$helper->validateConfig()) {
-        header('Location: /account?error=discord_not_enabled');
+        // Discord integration is not enabled
+        header('Location: /auth/login?error=discord_not_enabled');
         exit;
     }
 
@@ -45,19 +42,22 @@ $router->get('/api/user/auth/callback/discord/link', function () {
         $accessToken = $helper->exchangeCodeForToken($code, $redirectUri);
 
         if (!$accessToken) {
-            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord');
+            // Failed to exchange code for token
+            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord_token_failed');
             exit;
         }
 
         $userInfo = $helper->getUserInfo($accessToken);
         if (!$userInfo) {
-            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord');
+            // Failed to fetch user info from Discord
+            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord_user_failed');
             exit;
         }
 
         // Check if user is already linked
         $isLinked = $session->getInfo(UserColumns::DISCORD_LINKED, false);
         if ($isLinked === 'true') {
+            // User already linked Discord
             header('Location: ' . $helper->getSecureBaseUrl() . '/account?error=discord_already_linked');
             exit;
         }
@@ -102,6 +102,7 @@ $router->get('/api/user/auth/callback/discord/unlink', function () {
     // Check if user is currently linked
     $isLinked = $session->getInfo(UserColumns::DISCORD_LINKED, false);
     if ($isLinked !== 'true') {
+        // User is not linked
         header('Location: /account?error=discord_not_linked');
         exit;
     }
@@ -132,7 +133,8 @@ $router->get('/api/user/auth/callback/discord/login', function () {
     $helper = new DiscordOAuthHelper($appInstance);
 
     if (!$helper->validateConfig()) {
-        header('Location: /account?error=discord_not_enabled');
+        // Discord integration is not enabled
+        header('Location: /auth/login?error=discord_not_enabled');
         exit;
     }
 
@@ -144,20 +146,23 @@ $router->get('/api/user/auth/callback/discord/login', function () {
         $accessToken = $helper->exchangeCodeForToken($code, $redirectUri);
 
         if (!$accessToken) {
-            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord');
+            // Failed to exchange code for token
+            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord_token_failed');
             exit;
         }
 
         $userInfo = $helper->getUserInfo($accessToken);
         if (!$userInfo) {
-            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord');
+            // Failed to fetch user info from Discord
+            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord_user_failed');
             exit;
         }
 
         // Check if user exists
         if (!User::exists(UserColumns::DISCORD_ID, $userInfo['id'])) {
+            // No user found for this Discord ID
             $appInstance->getLogger()->error('Discord login failed for user: ' . $userInfo['id']);
-            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord');
+            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord_user_not_found');
             exit;
         }
 
@@ -173,6 +178,11 @@ $router->get('/api/user/auth/callback/discord/login', function () {
         // Perform login
         $email = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::EMAIL, false);
         $password = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::PASSWORD, true);
+        if (!$email || !$password) {
+            // User record missing email or password
+            header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?error=discord_user_not_found');
+            exit;
+        }
 
         header('Location: ' . $helper->getSecureBaseUrl() . '/auth/login?email=' . urlencode(base64_encode($email)) . '&password=' . urlencode(base64_encode($password)) . '&performLogin=true');
 
@@ -203,6 +213,7 @@ $router->get('/api/user/auth/callback/discord/j4r', function () {
     $session = new Session($appInstance);
 
     if (!$helper->validateConfig()) {
+        // Discord integration is not enabled
         header('Location: /earn/j4r?error=discord_not_enabled');
         exit;
     }
@@ -214,12 +225,14 @@ $router->get('/api/user/auth/callback/discord/j4r', function () {
         $accessToken = $helper->exchangeCodeForToken($code, $redirectUri);
 
         if (!$accessToken) {
+            // Failed to exchange code for token
             header('Location: /earn/j4r?error=discord_token_failed');
             exit;
         }
 
         $userInfo = $helper->getUserInfo($accessToken);
         if (!$userInfo) {
+            // Failed to fetch user info from Discord
             header('Location: /earn/j4r?error=discord_user_failed');
             exit;
         }
@@ -227,6 +240,7 @@ $router->get('/api/user/auth/callback/discord/j4r', function () {
         // Verify this is the same user
         $sessionDiscordId = $session->getInfo(UserColumns::DISCORD_ID, false);
         if ($sessionDiscordId !== $userInfo['id']) {
+            // Discord user mismatch
             header('Location: /earn/j4r?error=discord_user_mismatch');
             exit;
         }

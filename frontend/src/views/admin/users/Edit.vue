@@ -677,7 +677,7 @@ const toggleSuspend = async (server: Server) => {
     if (result.isConfirmed) {
         try {
             // Call the suspend/unsuspend server API
-            const response = await fetch(`/api/admin/server/${server.identifier}/${action}`, {
+            const response = await fetch(`/api/admin/servers/toggle-suspend/${server.id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

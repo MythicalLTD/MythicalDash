@@ -17,6 +17,7 @@ use MythicalDash\App;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Hooks\MythicalSystems\User\UUIDManager;
 
 class ImageHostingService
 {

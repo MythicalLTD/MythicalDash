@@ -30,8 +30,22 @@ class Firewall implements MiddlewareBuilder
              * Block VPNs.
              */
             if ($app->getConfig()->getDBSetting(ConfigInterface::FIREWALL_BLOCK_VPN, 'false') == 'true') {
-                if (ProxyCheck::hasProxy($context)) {
+                // Check if user has VPN bypass permission
+                $hasVpnBypassPermission = false;
+                if ($session !== null) {
+                    $hasVpnBypassPermission = $session->hasPermission(\MythicalDash\Permissions::USER_PERMISSION_BYPASS_VPN);
+                }
+
+                if (ProxyCheck::hasProxy($context) && !$hasVpnBypassPermission) {
                     $app->BadRequest('You are using a vpn or a proxy!', ['error_code' => 'PROXY_DETECTED']);
+                } elseif ($hasVpnBypassPermission) {
+                    // Log that user has VPN bypass permission
+                    $app->getLogger()->info(
+                        sprintf(
+                            'User has VPN bypass permission - allowing VPN/proxy connection from %s',
+                            $context
+                        )
+                    );
                 }
             }
         }

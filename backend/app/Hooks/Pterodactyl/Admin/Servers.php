@@ -302,21 +302,21 @@ class Servers extends ServersResource
 
         try {
             $serversResource = new ServersResource(
-                App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
+                App::getInstance(softBoot: true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''),
                 App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
             return $serversResource->listServers();
         } catch (ResourceNotFoundException $e) {
-            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] User not found', false);
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getAllServers] User not found: ' . $e->getMessage(), false);
 
             return [];
         } catch (PterodactylException|ValidationException $e) {
-            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Failed to fetch user data', false);
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getAllServers] Failed to fetch user data: ' . $e->getMessage(), false);
 
             return [];
         } catch (\Throwable $e) {
-            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Unexpected error', false);
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getAllServers] Unexpected pterodactyl panel error: ' . $e->getMessage(), false);
 
             return [];
         }
@@ -396,11 +396,11 @@ class Servers extends ServersResource
                 'servers' => $serversList,
             ];
         } catch (ResourceNotFoundException $e) {
-            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] User not found', false);
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] User not found: ' . $e->getMessage(), false);
         } catch (PterodactylException|ValidationException $e) {
-            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Failed to fetch user data', false);
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Failed to fetch user data: ' . $e->getMessage(), false);
         } catch (\Throwable $e) {
-            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Unexpected error', false);
+            $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Unexpected pterodactyl panel error: ' . $e->getMessage(), false);
         }
 
         return ['resources' => [], 'servers' => []];

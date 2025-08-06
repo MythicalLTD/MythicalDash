@@ -25,6 +25,7 @@ import {
 import type { MenuGroup, ProfileMenuItem } from '../types';
 import Session from '@/mythicaldash/Session';
 import Permissions from '@/mythicaldash/Permissions';
+import { useFeatureFlags } from '@/composables/useFeatureFlags';
 
 // Define the dashboard data type inline to avoid import issues
 interface DashboardCounts {
@@ -55,6 +56,15 @@ interface DashboardData {
 // Use a simpler type for the route
 export function useAdminMenu(route: { path: string }, dashBoard: { value: DashboardData }) {
     const adminBaseUri = '/mc-admin';
+    const {
+        isAllowTickets,
+        isAllowServers,
+        isImageHostingEnabled,
+        isJ4REnabled,
+        isCodeRedemptionEnabled,
+        isDailyBackupEnabled,
+        isSMTPEnabled,
+    } = useFeatureFlags();
 
     const menuGroups = ref<MenuGroup[]>([
         {
@@ -78,7 +88,6 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
         },
         {
             title: 'Management',
-
             items: [
                 {
                     name: 'Users',
@@ -121,7 +130,6 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                         },
                     ],
                 },
-
                 {
                     name: 'Departments',
                     path: `${adminBaseUri}/departments`,
@@ -149,7 +157,9 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     icon: Server,
                     count: computed(() => dashBoard.value.count.j4r_servers_count || 0),
                     active: route.path === `${adminBaseUri}/j4r-servers`,
-                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_J4R_SERVERS_LIST)),
+                    visible: computed(
+                        () => Session.Permission.Has(Permissions.ADMIN_J4R_SERVERS_LIST) && isJ4REnabled.value,
+                    ),
                 },
                 {
                     name: 'Redeem Codes',
@@ -157,7 +167,11 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     icon: Coin,
                     count: computed(() => dashBoard.value.count.redeem_codes_count || 0),
                     active: route.path === `${adminBaseUri}/redeem-codes`,
-                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_REDEEM_CODES_LIST)),
+                    visible: computed(
+                        () =>
+                            Session.Permission.Has(Permissions.ADMIN_REDEEM_CODES_LIST) &&
+                            isCodeRedemptionEnabled.value,
+                    ),
                 },
             ],
         },
@@ -170,7 +184,10 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     icon: ImageIcon,
                     count: computed(() => dashBoard.value.count.image_reports_count || 0),
                     active: route.path === `${adminBaseUri}/image-reports`,
-                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_IMAGE_REPORTS_VIEW)),
+                    visible: computed(
+                        () =>
+                            Session.Permission.Has(Permissions.ADMIN_IMAGE_REPORTS_VIEW) && isImageHostingEnabled.value,
+                    ),
                 },
             ],
         },
@@ -186,21 +203,29 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     count: computed(() => dashBoard.value.count.server_queue_count || 0),
                     visible: computed(
                         () =>
-                            Session.Permission.Has(Permissions.ADMIN_SERVER_QUEUE_LIST) ||
-                            Session.Permission.Has(Permissions.ADMIN_SERVER_QUEUE_LOGS_VIEW),
+                            (Session.Permission.Has(Permissions.ADMIN_SERVER_QUEUE_LIST) ||
+                                Session.Permission.Has(Permissions.ADMIN_SERVER_QUEUE_LOGS_VIEW)) &&
+                            isAllowServers.value,
                     ),
                     subMenu: [
                         {
                             name: 'Server Queue',
                             path: `${adminBaseUri}/server-queue`,
                             icon: ServerCrash,
-                            visible: computed(() => Session.Permission.Has(Permissions.ADMIN_SERVER_QUEUE_LIST)),
+                            visible: computed(
+                                () =>
+                                    Session.Permission.Has(Permissions.ADMIN_SERVER_QUEUE_LIST) && isAllowServers.value,
+                            ),
                         },
                         {
                             name: 'Server Queue Logs',
                             path: `${adminBaseUri}/server-queue/logs`,
                             icon: LogsIcon,
-                            visible: computed(() => Session.Permission.Has(Permissions.ADMIN_SERVER_QUEUE_LOGS_VIEW)),
+                            visible: computed(
+                                () =>
+                                    Session.Permission.Has(Permissions.ADMIN_SERVER_QUEUE_LOGS_VIEW) &&
+                                    isAllowServers.value,
+                            ),
                         },
                     ],
                 },
@@ -210,7 +235,9 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     active: route.path === `${adminBaseUri}/servers`,
                     count: computed(() => dashBoard.value.count.servers_count || 0),
                     path: `${adminBaseUri}/servers`,
-                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_SERVERS_LIST)),
+                    visible: computed(
+                        () => Session.Permission.Has(Permissions.ADMIN_SERVERS_LIST) && isAllowServers.value,
+                    ),
                 },
             ],
         },
@@ -223,7 +250,9 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     icon: InfoIcon,
                     active: route.path === `${adminBaseUri}/tickets`,
                     count: computed(() => dashBoard.value.count.tickets_count || 0),
-                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_TICKETS_LIST)),
+                    visible: computed(
+                        () => Session.Permission.Has(Permissions.ADMIN_TICKETS_LIST) && isAllowTickets.value,
+                    ),
                 },
                 {
                     name: 'Announcements',
@@ -246,7 +275,6 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     count: computed(() => dashBoard.value.count.settings_count || 0),
                     visible: computed(() => Session.Permission.Has(Permissions.ADMIN_SETTINGS_VIEW)),
                 },
-
                 {
                     name: 'Plugins',
                     path: `${adminBaseUri}/plugins`,
@@ -268,7 +296,9 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     icon: Database,
                     active: route.path === `${adminBaseUri}/backups`,
                     count: computed(() => dashBoard.value.count.backups_count || 0),
-                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_BACKUPS_LIST)),
+                    visible: computed(
+                        () => Session.Permission.Has(Permissions.ADMIN_BACKUPS_LIST) && isDailyBackupEnabled.value,
+                    ),
                 },
             ],
         },
@@ -281,7 +311,9 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     icon: ImageIcon,
                     active: route.path === `${adminBaseUri}/images`,
                     count: computed(() => dashBoard.value.count.images_count || 0),
-                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_IMAGES_LIST)),
+                    visible: computed(
+                        () => Session.Permission.Has(Permissions.ADMIN_IMAGES_LIST) && isImageHostingEnabled.value,
+                    ),
                 },
                 {
                     name: 'Mail Templates',
@@ -289,7 +321,9 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     icon: MailIcon,
                     active: route.path === `${adminBaseUri}/mail-templates`,
                     count: computed(() => dashBoard.value.count.mail_templates_count || 0),
-                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_MAIL_TEMPLATES_LIST)),
+                    visible: computed(
+                        () => Session.Permission.Has(Permissions.ADMIN_MAIL_TEMPLATES_LIST) && isSMTPEnabled.value,
+                    ),
                 },
                 {
                     name: 'Redirect Links',

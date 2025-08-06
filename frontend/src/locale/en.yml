@@ -267,6 +267,22 @@ auth:
                     pterodactyl_error: Failed to register user in Pterodactyl panel
                     discord_required: Discord account linking is required for registration
                     github_required: GitHub account linking is required for registration
+                    discord_not_enabled: Discord integration is not enabled
+                    github_not_enabled: GitHub integration is not enabled
+                    discord_token_failed: Failed to authenticate with Discord
+                    github_token_failed: Failed to authenticate with GitHub
+                    discord_user_failed: Failed to fetch Discord user information
+                    github_user_failed: Failed to fetch GitHub user information
+                    discord_user_not_found: No account found with this Discord ID
+                    github_user_not_found: No account found with this GitHub ID
+                    discord_user_mismatch: Discord account mismatch
+                    github_user_mismatch: GitHub account mismatch
+                    discord_already_linked: Discord account is already linked
+                    github_already_linked: GitHub account is already linked
+                    discord_not_linked: Discord account is not linked
+                    github_not_linked: GitHub account is not linked
+                    discord_auth_failed: Discord authentication failed
+                    github_auth_failed: GitHub authentication failed
                     footer: Please contact support for assistance
             page:
                 title: Register

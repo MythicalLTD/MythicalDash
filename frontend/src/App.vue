@@ -23,6 +23,7 @@ export default defineComponent({
 
         onMounted(async () => {
             licenseValid.value = await LicenseServer.isLicenseValid('theme-customization');
+            console.log('Theme customization license valid:', licenseValid.value);
         });
 
         // Transition settings
