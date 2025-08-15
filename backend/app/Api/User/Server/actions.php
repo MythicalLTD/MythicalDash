@@ -116,7 +116,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     }
 
     if (isset($_POST['disk']) && !empty($_POST['disk'])) {
-        $disk = $_POST['disk'];
+        $disk = (int) $_POST['disk'];
     } else {
         $appInstance->BadRequest('Disk is required', ['error_code' => 'DISK_REQUIRED']);
 
