@@ -229,7 +229,6 @@ $router->add('/api/user/auth/register', function (): void {
                                 });
 
                                 UserLock::executeWithLock($referrerUuid, function () use ($referrerToken, $referrerBonus) {
-                                    $currentCredits = intval(User::getInfo($referrerToken, UserColumns::CREDITS, false));
                                     User::addCredits($referrerToken, (int) intval($referrerBonus));
                                 });
 
