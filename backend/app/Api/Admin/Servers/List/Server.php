@@ -74,9 +74,9 @@ $router->post('/api/admin/servers/delete/(.*)', function (string $id): void {
     $appInstance->allowOnlyPOST();
     $session = new MythicalDash\Chat\User\Session($appInstance);
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SERVERS_DELETE, $session);
-    if (MythicalDash\Hooks\Pterodactyl\Admin\Servers::serverExists((int)$id)) {
-        MythicalDash\Hooks\Pterodactyl\Admin\Servers::deletePterodactylServer((int)$id);
-        MythicalDash\Chat\Servers\Server::deleteServerByPterodactylId((int)$id);
+    if (MythicalDash\Hooks\Pterodactyl\Admin\Servers::serverExists((int) $id)) {
+        MythicalDash\Hooks\Pterodactyl\Admin\Servers::deletePterodactylServer((int) $id);
+        MythicalDash\Chat\Servers\Server::deleteServerByPterodactylId((int) $id);
         global $eventManager;
         $eventManager->emit(ServerEvent::onServerDeleted(), [
             'server' => $id,

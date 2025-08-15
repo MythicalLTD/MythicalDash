@@ -85,43 +85,100 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
 
         return;
     }
-    if (isset($_POST['memory']) && !empty($_POST['memory'])) {
-        $memory = $_POST['memory'];
-    } else {
+    // Validate memory field
+    if (!isset($_POST['memory'])) {
         $appInstance->BadRequest('Memory is required', ['error_code' => 'MEMORY_REQUIRED']);
 
         return;
     }
+
+    if (!is_numeric($_POST['memory'])) {
+        $appInstance->BadRequest('Memory must be a numeric value', ['error_code' => 'MEMORY_INVALID_TYPE']);
+
+        return;
+    }
+
+    $memory = (int) $_POST['memory'];
+
+    // Validate that memory is not negative
+    if ($memory < 0) {
+        $appInstance->BadRequest('Memory cannot be a negative number', ['error_code' => 'MEMORY_NEGATIVE']);
+
+        return;
+    }
+
     if (isset($_POST['cpu']) && !empty($_POST['cpu'])) {
-        $cpu = $_POST['cpu'];
+        $cpu = (int) $_POST['cpu'];
     } else {
         $appInstance->BadRequest('CPU is required', ['error_code' => 'CPU_REQUIRED']);
 
         return;
     }
+
+    // Validate that CPU is not negative
+    if ($cpu < 0) {
+        $appInstance->BadRequest('CPU cannot be a negative number', ['error_code' => 'CPU_NEGATIVE']);
+
+        return;
+    }
     if (isset($_POST['disk']) && !empty($_POST['disk'])) {
-        $disk = $_POST['disk'];
+        $disk = (int) $_POST['disk'];
     } else {
         $appInstance->BadRequest('Disk is required', ['error_code' => 'DISK_REQUIRED']);
+
+        return;
+    }
+
+    // Validate that disk is not negative
+    if ($disk < 0) {
+        $appInstance->BadRequest('Disk cannot be a negative number', ['error_code' => 'DISK_NEGATIVE']);
 
         return;
     }
     if (isset($_POST['databases']) && !empty($_POST['databases'])) {
         $databases = max(0, intval($_POST['databases']));
     } else {
-		//Servers may not require databases
-		$databases = 0;
+        // Servers may not require databases
+        $databases = 0;
     }
-    if (isset($_POST['backups']) && !empty($_POST['backups'])) {
-        $backups = max(0, intval($_POST['backups']));
-    } else {
-		//Servers may not require backups
-		$backups = 0;
+    // Validate that databases is not negative
+    if ($databases < 0) {
+        $appInstance->BadRequest('Databases cannot be a negative number', ['error_code' => 'DATABASES_NEGATIVE']);
+
+        return;
+    }
+    // Validate backups field
+    if (!isset($_POST['backups'])) {
+        $appInstance->BadRequest('Backups is required', ['error_code' => 'BACKUPS_REQUIRED']);
+
+        return;
+    }
+
+    if (!is_numeric($_POST['backups'])) {
+        $appInstance->BadRequest('Backups must be a numeric value', ['error_code' => 'BACKUPS_INVALID_TYPE']);
+
+        return;
+    }
+
+    $backups = (int) $_POST['backups'];
+
+    // Validate that backups is not negative
+    if ($backups < 0) {
+        $appInstance->BadRequest('Backups cannot be a negative number', ['error_code' => 'BACKUPS_NEGATIVE']);
+
+        return;
     }
     if (isset($_POST['allocations']) && !empty($_POST['allocations'])) {
         $allocations = $_POST['allocations'];
     } else {
         $appInstance->BadRequest('Allocations is required', ['error_code' => 'ALLOCATIONS_REQUIRED']);
+
+        return;
+    }
+
+    // Validate that allocations is not negative
+    if ($allocations < 0) {
+        $appInstance->BadRequest('Allocations cannot be a negative number', ['error_code' => 'ALLOCATIONS_NEGATIVE']);
 
         return;
     }
@@ -246,7 +303,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         }
     }
 
-		if ($resourceDifference['backups'] > 0 && $available_resources[UserColumns::BACKUP_LIMIT] > 0) {
+    if ($resourceDifference['backups'] > 0 && $available_resources[UserColumns::BACKUP_LIMIT] > 0) {
         $freeBackups = $available_resources[UserColumns::BACKUP_LIMIT] - $resources['backups'];
         if ($resourceDifference['backups'] > $freeBackups) {
             $appInstance->BadRequest('This update would exceed your maximum backups limit', [
@@ -683,9 +740,51 @@ $router->post('/api/user/server/create', function (): void {
     $memory = (int) $_POST['memory'];
     $cpu = (int) $_POST['cpu'];
     $disk = (int) $_POST['disk'];
+
+    // Validate that memory is not negative
+    if ($memory < 0) {
+        $appInstance->BadRequest('Memory cannot be a negative number', ['error_code' => 'MEMORY_NEGATIVE']);
+
+        return;
+    }
+
+    // Validate that CPU is not negative
+    if ($cpu < 0) {
+        $appInstance->BadRequest('CPU cannot be a negative number', ['error_code' => 'CPU_NEGATIVE']);
+
+        return;
+    }
+
+    // Validate that disk is not negative
+    if ($disk < 0) {
+        $appInstance->BadRequest('Disk cannot be a negative number', ['error_code' => 'DISK_NEGATIVE']);
+
+        return;
+    }
     $databases = (int) $_POST['databases'];
     $backups = (int) $_POST['backups'];
     $allocations = (int) $_POST['allocations'];
+
+    // Validate that databases is not negative
+    if ($databases < 0) {
+        $appInstance->BadRequest('Databases cannot be a negative number', ['error_code' => 'DATABASES_NEGATIVE']);
+
+        return;
+    }
+
+    // Validate that backups is not negative
+    if ($backups < 0) {
+        $appInstance->BadRequest('Backups cannot be a negative number', ['error_code' => 'BACKUPS_NEGATIVE']);
+
+        return;
+    }
+
+    // Validate that allocations is not negative
+    if ($allocations < 0) {
+        $appInstance->BadRequest('Allocations cannot be a negative number', ['error_code' => 'ALLOCATIONS_NEGATIVE']);
+
+        return;
+    }
 
     if (!Locations::exists($location_id)) {
         $appInstance->BadRequest('Location does not exist', ['error_code' => 'LOCATION_DOES_NOT_EXIST']);

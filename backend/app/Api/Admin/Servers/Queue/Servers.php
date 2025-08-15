@@ -86,8 +86,50 @@ $router->post('/api/admin/server-queue/create', function (): void {
         $disk = (int) $_POST['disk'];
         $cpu = (int) $_POST['cpu'];
         $ports = (int) $_POST['ports'];
+
+        // Validate and sanitize numeric inputs
+        if (!is_numeric($_POST['ram']) || ($ram = (int) $_POST['ram']) < 0) {
+            $appInstance->BadRequest('RAM cannot be a negative number', ['error_code' => 'RAM_NEGATIVE']);
+
+            return;
+        }
+
+        // Validate that disk is not negative
+        if (!is_numeric($_POST['disk']) || ($disk = (int) $_POST['disk']) < 0) {
+            $appInstance->BadRequest('Disk cannot be a negative number', ['error_code' => 'DISK_NEGATIVE']);
+
+            return;
+        }
+
+        // Validate that CPU is not negative
+        if (!is_numeric($_POST['cpu']) || ($cpu = (int) $_POST['cpu']) < 0) {
+            $appInstance->BadRequest('CPU cannot be a negative number', ['error_code' => 'CPU_NEGATIVE']);
+
+            return;
+        }
+
+        // Validate that ports is not negative
+        if (!is_numeric($_POST['ports']) || ($ports = (int) $_POST['ports']) < 0) {
+            $appInstance->BadRequest('Ports cannot be a negative number', ['error_code' => 'PORTS_NEGATIVE']);
+
+            return;
+        }
         $databases = (int) $_POST['databases'];
         $backups = (int) $_POST['backups'];
+        $location = (int) $_POST['location'];
+
+        if (!is_numeric($_POST['databases']) || ($databases = (int) $_POST['databases']) < 0) {
+            $appInstance->BadRequest('Databases cannot be a negative number', ['error_code' => 'DATABASES_NEGATIVE']);
+
+            return;
+        }
+
+        if (!is_numeric($_POST['backups']) || ($backups = (int) $_POST['backups']) < 0) {
+            $appInstance->BadRequest('Backups cannot be a negative number', ['error_code' => 'BACKUPS_NEGATIVE']);
+
+            return;
+        }
+
         $location = (int) $_POST['location'];
         $user = $_POST['user'];
         $nest = (int) $_POST['nest'];
