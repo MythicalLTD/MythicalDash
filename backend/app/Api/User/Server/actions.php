@@ -130,7 +130,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         return;
     }
     if (isset($_POST['databases']) && !empty($_POST['databases'])) {
-        $databases = $_POST['databases'];
+        $databases = (int) $_POST['databases'];
     } else {
         $appInstance->BadRequest('Databases is required', ['error_code' => 'DATABASES_REQUIRED']);
 
@@ -143,7 +143,6 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
 
         return;
     }
-
     if (isset($_POST['backups']) && !empty($_POST['backups'])) {
         $backups = $_POST['backups'];
     } else {
