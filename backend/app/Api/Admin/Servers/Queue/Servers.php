@@ -118,19 +118,19 @@ $router->post('/api/admin/server-queue/create', function (): void {
         $backups = (int) $_POST['backups'];
         $location = (int) $_POST['location'];
 
-        // Validate that databases is not negative
-        if ($databases < 0) {
+        if (!is_numeric($_POST['databases']) || ($databases = (int) $_POST['databases']) < 0) {
             $appInstance->BadRequest('Databases cannot be a negative number', ['error_code' => 'DATABASES_NEGATIVE']);
 
             return;
         }
 
-        // Validate that backups is not negative
-        if ($backups < 0) {
+        if (!is_numeric($_POST['backups']) || ($backups = (int) $_POST['backups']) < 0) {
             $appInstance->BadRequest('Backups cannot be a negative number', ['error_code' => 'BACKUPS_NEGATIVE']);
 
             return;
         }
+
+        $location = (int) $_POST['location'];
         $user = $_POST['user'];
         $nest = (int) $_POST['nest'];
         $egg = (int) $_POST['egg'];
