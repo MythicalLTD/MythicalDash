@@ -20,7 +20,6 @@ use MythicalDash\Chat\Referral\ReferralUses;
 use MythicalDash\Chat\Referral\ReferralCodes;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
-use MythicalDash\Chat\IPRelationships\IPRelationship;
 use MythicalDash\Plugins\Events\Events\ReferralsEvent;
 use MythicalDash\Hooks\MythicalSystems\User\UUIDManager;
 use MythicalDash\Hooks\MythicalSystems\CloudFlare\Turnstile;
