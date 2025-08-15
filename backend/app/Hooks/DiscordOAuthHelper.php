@@ -285,11 +285,13 @@ class DiscordOAuthHelper
                 try {
                     $userUuid = $session->getInfo(UserColumns::UUID, false);
 
-                    UserLock::executeWithLock($userUuid, function () use ($session, $joinedServersArray, $totalCoinsEarned) {
-                        // Update user's joined servers list
+                    // Update user's joined servers list
+                    UserLock::executeWithLock($userUuid, function () use ($session, $joinedServersArray) {
                         $session->setInfo(UserColumns::J4R_JOINED_SERVERS, json_encode($joinedServersArray), false);
+                    });
 
-                        // Add coins to user's balance
+                    // Add coins to user's balance
+                    UserLock::executeWithLock($userUuid, function () use ($session, $totalCoinsEarned) {
                         $currentCoins = (int) $session->getInfo(UserColumns::CREDITS, false);
                         $newCoins = $currentCoins + $totalCoinsEarned;
                         $session->setInfo(UserColumns::CREDITS, (string) $newCoins, false);
