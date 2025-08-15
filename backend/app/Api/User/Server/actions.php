@@ -88,19 +88,22 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     // Validate memory field
     if (!isset($_POST['memory'])) {
         $appInstance->BadRequest('Memory is required', ['error_code' => 'MEMORY_REQUIRED']);
+
         return;
     }
 
     if (!is_numeric($_POST['memory'])) {
         $appInstance->BadRequest('Memory must be a numeric value', ['error_code' => 'MEMORY_INVALID_TYPE']);
+
         return;
     }
 
-    $memory = (int)$_POST['memory'];
+    $memory = (int) $_POST['memory'];
 
     // Validate that memory is not negative
     if ($memory < 0) {
         $appInstance->BadRequest('Memory cannot be a negative number', ['error_code' => 'MEMORY_NEGATIVE']);
+
         return;
     }
 
@@ -135,8 +138,8 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     if (isset($_POST['databases']) && !empty($_POST['databases'])) {
         $databases = max(0, intval($_POST['databases']));
     } else {
-		//Servers may not require databases
-		$databases = 0;
+        // Servers may not require databases
+        $databases = 0;
     }
     // Validate that databases is not negative
     if ($databases < 0) {
@@ -147,15 +150,17 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     // Validate backups field
     if (!isset($_POST['backups'])) {
         $appInstance->BadRequest('Backups is required', ['error_code' => 'BACKUPS_REQUIRED']);
+
         return;
     }
 
     if (!is_numeric($_POST['backups'])) {
         $appInstance->BadRequest('Backups must be a numeric value', ['error_code' => 'BACKUPS_INVALID_TYPE']);
+
         return;
     }
 
-    $backups = (int)$_POST['backups'];
+    $backups = (int) $_POST['backups'];
 
     // Validate that backups is not negative
     if ($backups < 0) {
@@ -298,7 +303,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         }
     }
 
-		if ($resourceDifference['backups'] > 0 && $available_resources[UserColumns::BACKUP_LIMIT] > 0) {
+    if ($resourceDifference['backups'] > 0 && $available_resources[UserColumns::BACKUP_LIMIT] > 0) {
         $freeBackups = $available_resources[UserColumns::BACKUP_LIMIT] - $resources['backups'];
         if ($resourceDifference['backups'] > $freeBackups) {
             $appInstance->BadRequest('This update would exceed your maximum backups limit', [
