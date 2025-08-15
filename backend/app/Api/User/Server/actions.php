@@ -101,7 +101,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     }
 
     if (isset($_POST['cpu']) && !empty($_POST['cpu'])) {
-        $cpu = $_POST['cpu'];
+        $cpu = (int) $_POST['cpu'];
     } else {
         $appInstance->BadRequest('CPU is required', ['error_code' => 'CPU_REQUIRED']);
 
@@ -114,7 +114,6 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
 
         return;
     }
-
     if (isset($_POST['disk']) && !empty($_POST['disk'])) {
         $disk = (int) $_POST['disk'];
     } else {
