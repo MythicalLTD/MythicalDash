@@ -328,7 +328,22 @@ $router->add('/api/user/auth/login', function (): void {
                     // Double-check that the key is still empty after acquiring lock
                     $currentKey = User::getInfo($loginResult, UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false);
                     if (empty($currentKey)) {
-                        $api_key = UUIDManager::generateUUID();
+                        try {
+                            $generatedKey = null;
+                            // Execute API key generation with user lock protection to prevent race conditions
+                            UserLock::executeWithLock($userUuid, function () use ($loginResult, $userInfoArray, $appInstance, &$generatedKey) {
+                                // Double-check that the key is still empty after acquiring lock
+                                $currentKey = User::getInfo($loginResult, UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false);
+                                if (empty($currentKey)) {
+                                    $generatedKey = UUIDManager::generateUUID();
+                                    User::updateInfo($loginResult, UserColumns::IMAGE_HOSTING_UPLOAD_KEY, $generatedKey, false);
+                                    $appInstance->getLogger()->debug('Generated new image hosting API key for user: ' . $userInfoArray[UserColumns::USERNAME]);
+                                }
+                            });
+                            if ($generatedKey !== null) {
+                                $api_key = $generatedKey;
+                            }
+                        } catch (\Exception $e) {
                         User::updateInfo($loginResult, UserColumns::IMAGE_HOSTING_UPLOAD_KEY, $api_key, false);
                         $appInstance->getLogger()->debug('Generated new image hosting API key for user: ' . $userInfoArray[UserColumns::USERNAME]);
                     }
