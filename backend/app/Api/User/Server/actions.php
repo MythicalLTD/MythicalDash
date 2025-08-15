@@ -107,13 +107,13 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         return;
     }
     if (isset($_POST['databases']) && !empty($_POST['databases'])) {
-        $databases = $_POST['databases'];
+        $databases = max(0, intval($_POST['databases']));
     } else {
 		//Servers may not require databases
 		$databases = 0;
     }
     if (isset($_POST['backups']) && !empty($_POST['backups'])) {
-        $backups = $_POST['backups'];
+        $backups = max(0, intval($_POST['backups']));
     } else {
 		//Servers may not require backups
 		$backups = 0;
