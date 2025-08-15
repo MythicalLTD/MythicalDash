@@ -87,29 +87,29 @@ $router->post('/api/admin/server-queue/create', function (): void {
         $cpu = (int) $_POST['cpu'];
         $ports = (int) $_POST['ports'];
 
-        // Validate that ram is not negative
-        if ($ram < 0) {
+        // Validate and sanitize numeric inputs
+        if (!is_numeric($_POST['ram']) || ($ram = (int) $_POST['ram']) < 0) {
             $appInstance->BadRequest('RAM cannot be a negative number', ['error_code' => 'RAM_NEGATIVE']);
 
             return;
         }
 
         // Validate that disk is not negative
-        if ($disk < 0) {
+        if (!is_numeric($_POST['disk']) || ($disk = (int) $_POST['disk']) < 0) {
             $appInstance->BadRequest('Disk cannot be a negative number', ['error_code' => 'DISK_NEGATIVE']);
 
             return;
         }
 
         // Validate that CPU is not negative
-        if ($cpu < 0) {
+        if (!is_numeric($_POST['cpu']) || ($cpu = (int) $_POST['cpu']) < 0) {
             $appInstance->BadRequest('CPU cannot be a negative number', ['error_code' => 'CPU_NEGATIVE']);
 
             return;
         }
 
         // Validate that ports is not negative
-        if ($ports < 0) {
+        if (!is_numeric($_POST['ports']) || ($ports = (int) $_POST['ports']) < 0) {
             $appInstance->BadRequest('Ports cannot be a negative number', ['error_code' => 'PORTS_NEGATIVE']);
 
             return;
