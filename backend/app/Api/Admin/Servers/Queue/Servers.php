@@ -86,9 +86,51 @@ $router->post('/api/admin/server-queue/create', function (): void {
         $disk = (int) $_POST['disk'];
         $cpu = (int) $_POST['cpu'];
         $ports = (int) $_POST['ports'];
+
+        // Validate that ram is not negative
+        if ($ram < 0) {
+            $appInstance->BadRequest('RAM cannot be a negative number', ['error_code' => 'RAM_NEGATIVE']);
+
+            return;
+        }
+
+        // Validate that disk is not negative
+        if ($disk < 0) {
+            $appInstance->BadRequest('Disk cannot be a negative number', ['error_code' => 'DISK_NEGATIVE']);
+
+            return;
+        }
+
+        // Validate that CPU is not negative
+        if ($cpu < 0) {
+            $appInstance->BadRequest('CPU cannot be a negative number', ['error_code' => 'CPU_NEGATIVE']);
+
+            return;
+        }
+
+        // Validate that ports is not negative
+        if ($ports < 0) {
+            $appInstance->BadRequest('Ports cannot be a negative number', ['error_code' => 'PORTS_NEGATIVE']);
+
+            return;
+        }
         $databases = (int) $_POST['databases'];
         $backups = (int) $_POST['backups'];
         $location = (int) $_POST['location'];
+
+        // Validate that databases is not negative
+        if ($databases < 0) {
+            $appInstance->BadRequest('Databases cannot be a negative number', ['error_code' => 'DATABASES_NEGATIVE']);
+
+            return;
+        }
+
+        // Validate that backups is not negative
+        if ($backups < 0) {
+            $appInstance->BadRequest('Backups cannot be a negative number', ['error_code' => 'BACKUPS_NEGATIVE']);
+
+            return;
+        }
         $user = $_POST['user'];
         $nest = (int) $_POST['nest'];
         $egg = (int) $_POST['egg'];
