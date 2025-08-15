@@ -14,8 +14,8 @@
 namespace MythicalDash\Hooks;
 
 use MythicalDash\App;
-use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
+use MythicalDash\Chat\User\UserLock;
 use MythicalDash\Services\DiscordUtils;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
@@ -281,23 +281,34 @@ class DiscordOAuthHelper
 
             // Update user's joined servers list
             if (!empty($newlyJoinedServers)) {
-                $session->setInfo(UserColumns::J4R_JOINED_SERVERS, json_encode($joinedServersArray), false);
+                // Execute J4R reward operations with user lock protection to prevent race conditions
+                try {
+                    $userUuid = $session->getInfo(UserColumns::UUID, false);
 
-                // Add coins to user's balance
-                $currentCoins = (int) $session->getInfo(UserColumns::CREDITS, false);
-                $newCoins = $currentCoins + $totalCoinsEarned;
-                $session->setInfo(UserColumns::CREDITS, (string) $newCoins, false);
+                    UserLock::executeWithLock($userUuid, function () use ($session, $joinedServersArray, $totalCoinsEarned) {
+                        // Update user's joined servers list
+                        $session->setInfo(UserColumns::J4R_JOINED_SERVERS, json_encode($joinedServersArray), false);
 
-                // Emit event for rewards claimed
-                global $eventManager;
-                $eventManager->emit(J4REvent::onJ4RRewardsClaimed(), [
-                    'user_uuid' => $session->getInfo(UserColumns::UUID, false),
-                    'username' => $session->getInfo(UserColumns::USERNAME, false),
-                    'coins_earned' => $totalCoinsEarned,
-                    'servers_joined' => $newlyJoinedServers,
-                ]);
+                        // Add coins to user's balance
+                        $currentCoins = (int) $session->getInfo(UserColumns::CREDITS, false);
+                        $newCoins = $currentCoins + $totalCoinsEarned;
+                        $session->setInfo(UserColumns::CREDITS, (string) $newCoins, false);
+                    });
 
-                $this->app->getLogger()->info('J4R rewards claimed for user: ' . $session->getInfo(UserColumns::USERNAME, false) . ' (+' . $totalCoinsEarned . ' coins)');
+                    // Emit event for rewards claimed
+                    global $eventManager;
+                    $eventManager->emit(J4REvent::onJ4RRewardsClaimed(), [
+                        'user_uuid' => $session->getInfo(UserColumns::UUID, false),
+                        'username' => $session->getInfo(UserColumns::USERNAME, false),
+                        'coins_earned' => $totalCoinsEarned,
+                        'servers_joined' => $newlyJoinedServers,
+                    ]);
+
+                    $this->app->getLogger()->info('J4R rewards claimed for user: ' . $session->getInfo(UserColumns::USERNAME, false) . ' (+' . $totalCoinsEarned . ' coins)');
+
+                } catch (\Exception $e) {
+                    $this->app->getLogger()->error('Failed to process J4R rewards: ' . $e->getMessage());
+                }
             }
 
         } catch (\Exception $e) {

@@ -14,6 +14,7 @@
 use MythicalDash\App;
 use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
+use MythicalDash\Chat\User\UserLock;
 use MythicalDash\Services\ShareXApi;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
@@ -656,7 +657,14 @@ $router->post('/api/user/images/upload/web', function () use ($app, $logger, $co
 
     // Deduct coins only after successful file upload
     if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED, 'false') == 'true') {
-        User::removeCredits(User::getTokenFromUUID($user_uuid), $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1));
+        try {
+            UserLock::executeWithLock($user_uuid, function () use ($user_uuid, $config) {
+                User::removeCredits(User::getTokenFromUUID($user_uuid), $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1));
+            });
+        } catch (Exception $e) {
+            // Log the error but don't fail the upload
+            error_log('Failed to deduct credits for image upload: ' . $e->getMessage());
+        }
     }
 
     $appUrl = $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');

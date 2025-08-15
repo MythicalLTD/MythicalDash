@@ -13,6 +13,7 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\Session;
+use MythicalDash\Chat\User\UserLock;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
@@ -431,7 +432,17 @@ $router->get('/api/user/earn/l4r/linkpays/earn/(.*)', function (string $code): v
     // User took enough time, give them coins
     LinkPaysDB::markAsCompleted($linkId);
     $coinsToAdd = (int) $coinsPerLink;
-    $session->addCredits((int) intval($coinsToAdd));
+
+    // Execute credit addition with user lock protection to prevent race conditions
+    try {
+        UserLock::executeWithLock($session->getInfo(UserColumns::UUID, false), function () use ($session, $coinsToAdd) {
+            $session->addCredits((int) intval($coinsToAdd));
+        });
+    } catch (Exception $e) {
+        // Log the error but continue with the process
+        error_log('Failed to add credits for link completion: ' . $e->getMessage());
+    }
+
     $eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
         'user' => $session->getInfo(UserColumns::UUID, false),
         'link' => $linkId,

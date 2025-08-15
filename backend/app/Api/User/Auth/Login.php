@@ -16,6 +16,7 @@ namespace MythicalDash\Api\User\Auth;
 use MythicalDash\App;
 use MythicalDash\Mail\Mail;
 use MythicalDash\Chat\User\User;
+use MythicalDash\Chat\User\UserLock;
 use MythicalDash\Chat\Servers\Server;
 use MythicalDash\Middleware\Firewall;
 use MythicalDash\Config\ConfigInterface;
@@ -321,9 +322,21 @@ $router->add('/api/user/auth/login', function (): void {
         $api_key = $userInfoArray[UserColumns::IMAGE_HOSTING_UPLOAD_KEY] ?? '';
 
         if (empty($api_key)) {
-            $api_key = UUIDManager::generateUUID();
-            User::updateInfo($loginResult, UserColumns::IMAGE_HOSTING_UPLOAD_KEY, $api_key, false);
-            $appInstance->getLogger()->debug('Generated new image hosting API key for user: ' . $userInfoArray[UserColumns::USERNAME]);
+            try {
+                // Execute API key generation with user lock protection to prevent race conditions
+                UserLock::executeWithLock($userUuid, function () use ($loginResult, $userInfoArray, $appInstance) {
+                    // Double-check that the key is still empty after acquiring lock
+                    $currentKey = User::getInfo($loginResult, UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false);
+                    if (empty($currentKey)) {
+                        $api_key = UUIDManager::generateUUID();
+                        User::updateInfo($loginResult, UserColumns::IMAGE_HOSTING_UPLOAD_KEY, $api_key, false);
+                        $appInstance->getLogger()->debug('Generated new image hosting API key for user: ' . $userInfoArray[UserColumns::USERNAME]);
+                    }
+                });
+            } catch (\Exception $e) {
+                $appInstance->getLogger()->error('Failed to generate image hosting API key: ' . $e->getMessage());
+                // Continue with login even if API key generation fails
+            }
         }
     }
 

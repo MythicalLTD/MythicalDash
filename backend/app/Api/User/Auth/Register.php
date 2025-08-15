@@ -13,6 +13,7 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\User;
+use MythicalDash\Chat\User\UserLock;
 use MythicalDash\Middleware\Firewall;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
@@ -20,6 +21,7 @@ use MythicalDash\Chat\Referral\ReferralUses;
 use MythicalDash\Chat\Referral\ReferralCodes;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\AuthEvent;
+use MythicalDash\Chat\IPRelationships\IPRelationship;
 use MythicalDash\Plugins\Events\Events\ReferralsEvent;
 use MythicalDash\Hooks\MythicalSystems\User\UUIDManager;
 use MythicalDash\Hooks\MythicalSystems\CloudFlare\Turnstile;
@@ -215,10 +217,26 @@ $router->add('/api/user/auth/register', function (): void {
                                 'user' => $referrerUuid,
                                 'referral_code' => $_GET['ref'],
                             ]);
-                            $newUserBonus = intval($appInstance->getConfig()->getDBSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER, 15));
-                            User::addCredits($newUserToken, (int) intval($newUserBonus));
-                            $referrerBonus = intval($appInstance->getConfig()->getDBSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL, 35)) + intval(User::getInfo($referrerToken, UserColumns::CREDITS, false));
-                            User::addCredits($referrerToken, (int) intval($referrerBonus));
+
+                            // Execute referral credit operations with user lock protection to prevent race conditions
+                            try {
+                                $newUserBonus = intval($appInstance->getConfig()->getDBSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER, 15));
+                                $referrerBonus = intval($appInstance->getConfig()->getDBSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL, 35));
+
+                                // Lock both users to prevent race conditions
+                                UserLock::executeWithLock($newUserUuid, function () use ($newUserToken, $newUserBonus) {
+                                    User::addCredits($newUserToken, (int) intval($newUserBonus));
+                                });
+
+                                UserLock::executeWithLock($referrerUuid, function () use ($referrerToken, $referrerBonus) {
+                                    $currentCredits = intval(User::getInfo($referrerToken, UserColumns::CREDITS, false));
+                                    User::addCredits($referrerToken, (int) intval($referrerBonus));
+                                });
+
+                            } catch (Exception $e) {
+                                $appInstance->getLogger()->error('Failed to process referral credits: ' . $e->getMessage());
+                                // Continue with registration even if referral credits fail
+                            }
                         }
                     } else {
                         $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'REFERRAL_CODE_NOT_FOUND']);

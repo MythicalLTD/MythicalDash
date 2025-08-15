@@ -17,6 +17,7 @@ use MythicalDash\App;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use MythicalDash\Chat\User\User;
+use MythicalDash\Chat\User\UserLock;
 use MythicalDash\Chat\Gateways\PayPalDB;
 use MythicalDash\Config\ConfigInterface;
 use GuzzleHttp\Exception\GuzzleException;
@@ -162,14 +163,23 @@ class PayPalIPN
         PayPalDB::updateStatus($code, 'processed');
 
         $token = User::getTokenFromUUID($uuid);
-        $currentCredits = User::getInfo($token, UserColumns::CREDITS, false);
         $payment = PayPalDB::getByCode($code);
 
-        User::updateInfo(
-            $token,
-            UserColumns::CREDITS,
-            $currentCredits + $payment['coins'],
-            false
-        );
+        // Execute credit addition with user lock protection to prevent race conditions
+        try {
+            UserLock::executeWithLock($uuid, function () use ($token, $payment) {
+                $currentCredits = User::getInfo($token, UserColumns::CREDITS, false);
+                User::updateInfo(
+                    $token,
+                    UserColumns::CREDITS,
+                    $currentCredits + $payment['coins'],
+                    false
+                );
+            });
+        } catch (\Exception $e) {
+            // Log the error but don't fail the IPN processing
+            // The user can contact support if credits are missing
+            error_log('Failed to credit user account for PayPal payment: ' . $e->getMessage());
+        }
     }
 }

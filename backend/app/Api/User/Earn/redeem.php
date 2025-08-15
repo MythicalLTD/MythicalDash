@@ -12,8 +12,8 @@
  */
 
 use MythicalDash\App;
-use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\User\Session;
+use MythicalDash\Chat\User\UserLock;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\Redeem\RedeemCoins;
 use MythicalDash\Chat\columns\UserColumns;
@@ -42,64 +42,90 @@ $router->post('/api/user/earn/redeem', function (): void {
     global $eventManager;
 
     $code = $_POST['code'];
+    $userUuid = $session->getInfo(UserColumns::UUID, false);
 
-    // Check if code exists
-    if (!RedeemCoins::existsByCode($code)) {
-        $appInstance->BadRequest('Invalid redeem code', ['error_code' => 'INVALID_CODE']);
-        $eventManager->emit(RedeemEvent::onRedeemFailed(), [
+    // Execute code redemption with user lock protection to prevent race conditions
+    try {
+        $result = UserLock::executeWithLock($userUuid, function () use ($code, $session) {
+            // Check if code exists
+            if (!RedeemCoins::existsByCode($code)) {
+                throw new Exception('Invalid redeem code');
+            }
+
+            $codeDB = RedeemCoins::getByCode($code);
+
+            $coinsToAdd = $codeDB['coins'];
+            $usesLeft = $codeDB['uses'];
+
+            if ($usesLeft <= 0) {
+                throw new Exception('This code has reached its usage limit');
+            }
+
+            if (RedeemRedeems::isCodeRedeemed($codeDB['id'], $session->getInfo(UserColumns::UUID, false))) {
+                throw new Exception('This code has already been redeemed');
+            }
+
+            // Process the redemption
+            RedeemRedeems::redeemCode($codeDB['id'], $session->getInfo(UserColumns::UUID, false));
+            $newCredits = $session->getInfo(UserColumns::CREDITS, false) + $coinsToAdd;
+            $session->addCredits((int) intval($coinsToAdd));
+            RedeemCoins::removeUsage($codeDB['id']);
+
+            return [
+                'success' => true,
+                'coins_added' => $coinsToAdd,
+                'total_credits' => $newCredits,
+            ];
+        });
+
+        // If we get here, the redemption was successful
+        UserActivities::add(
+            $userUuid,
+            UserActivitiesTypes::$user_redeemed_code,
+            CloudFlareRealIP::getRealIP(),
+            "Redeemed code: $code for {$result['coins_added']} credits"
+        );
+
+        $eventManager->emit(RedeemEvent::onRedeemSuccess(), [
             'code' => $code,
-            'user' => $session->getInfo(UserColumns::UUID, false),
+            'user' => $userUuid,
+            'credits_added' => $result['coins_added'],
         ]);
 
-        return;
-    }
-
-    $codeDB = RedeemCoins::getByCode($code);
-
-    $coinsToAdd = $codeDB['coins'];
-    $usesLeft = $codeDB['uses'];
-
-    if ($usesLeft <= 0) {
-        $appInstance->BadRequest('This code has reached its usage limit', ['error_code' => 'CODE_DEPLETED']);
-        $eventManager->emit(RedeemEvent::onRedeemAlreadyRedeemed(), [
-            'code' => $code,
-            'user' => $session->getInfo(UserColumns::UUID, false),
+        $appInstance->OK('Code redeemed successfully', [
+            'credits_added' => $result['coins_added'],
+            'total_credits' => $result['total_credits'],
         ]);
 
-        return;
+    } catch (Exception $e) {
+        $errorMessage = $e->getMessage();
+
+        // Handle specific error cases
+        if ($errorMessage === 'Invalid redeem code') {
+            $eventManager->emit(RedeemEvent::onRedeemFailed(), [
+                'code' => $code,
+                'user' => $userUuid,
+            ]);
+            $appInstance->BadRequest('Invalid redeem code', ['error_code' => 'INVALID_CODE']);
+        } elseif ($errorMessage === 'This code has reached its usage limit') {
+            $eventManager->emit(RedeemEvent::onRedeemAlreadyRedeemed(), [
+                'code' => $code,
+                'user' => $userUuid,
+            ]);
+            $appInstance->BadRequest('This code has reached its usage limit', ['error_code' => 'CODE_DEPLETED']);
+        } elseif ($errorMessage === 'This code has already been redeemed') {
+            $eventManager->emit(RedeemEvent::onRedeemAlreadyRedeemed(), [
+                'code' => $code,
+                'user' => $userUuid,
+            ]);
+            $appInstance->BadRequest('This code has already been redeemed', ['error_code' => 'CODE_ALREADY_REDEEMED']);
+        } else {
+            $appInstance->BadRequest('Failed to redeem code', [
+                'error_code' => 'REDEEM_FAILED',
+                'message' => $errorMessage,
+            ]);
+        }
     }
-
-    if (RedeemRedeems::isCodeRedeemed($codeDB['id'], $session->getInfo(UserColumns::UUID, false))) {
-        $appInstance->BadRequest('This code has already been redeemed', ['error_code' => 'CODE_ALREADY_REDEEMED']);
-        $eventManager->emit(RedeemEvent::onRedeemAlreadyRedeemed(), [
-            'code' => $code,
-            'user' => $session->getInfo(UserColumns::UUID, false),
-        ]);
-
-        return;
-    }
-
-    RedeemRedeems::redeemCode($codeDB['id'], $session->getInfo(UserColumns::UUID, false));
-    $newCredits = $session->getInfo(UserColumns::CREDITS, false) + $coinsToAdd;
-    $session->addCredits((int) intval($coinsToAdd));
-    RedeemCoins::removeUsage($codeDB['id']);
-
-    // Add user activity log
-    UserActivities::add(
-        $session->getInfo(UserColumns::UUID, false),
-        UserActivitiesTypes::$user_redeemed_code,
-        CloudFlareRealIP::getRealIP(),
-        "Redeemed code: $code for $coinsToAdd credits"
-    );
-    $eventManager->emit(RedeemEvent::onRedeemSuccess(), [
-        'code' => $code,
-        'user' => $session->getInfo(UserColumns::UUID, false),
-        'credits_added' => $coinsToAdd,
-    ]);
-    $appInstance->OK('Code redeemed successfully', [
-        'credits_added' => $coinsToAdd,
-        'total_credits' => $newCredits,
-    ]);
 });
 
 // Redeem code check - validates a code without redeeming it

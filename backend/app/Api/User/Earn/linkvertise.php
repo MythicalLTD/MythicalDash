@@ -13,6 +13,7 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\Session;
+use MythicalDash\Chat\User\UserLock;
 use MythicalDash\Chat\Earn\Linkvertise;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
@@ -487,7 +488,17 @@ $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code)
     Linkvertise::markAsCompleted($linkId);
 
     $coinsToAdd = (int) $coinsPerLink;
-    $session->addCredits($coinsToAdd);
+
+    // Execute credit addition with user lock protection to prevent race conditions
+    try {
+        UserLock::executeWithLock($session->getInfo(UserColumns::UUID, false), function () use ($session, $coinsToAdd) {
+            $session->addCredits($coinsToAdd);
+        });
+    } catch (Exception $e) {
+        // Log the error but continue with the process
+        error_log('Failed to add credits for link completion: ' . $e->getMessage());
+    }
+
     $eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
         'user' => $session->getInfo(UserColumns::UUID, false),
         'link' => $linkId,

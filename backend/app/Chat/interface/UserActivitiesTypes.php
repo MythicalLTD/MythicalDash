@@ -190,4 +190,11 @@ class UserActivitiesTypes
     public static string $image_report_view = 'admin:image_report:view';
     public static string $image_report_resolve = 'admin:image_report:resolve';
     public static string $image_report_dismiss = 'admin:image_report:dismiss';
+
+    /**
+     * Gift.
+     */
+    public static string $user_gift = 'user:gift';
+    public static string $user_gift_received = 'user:gift_received';
+    public static string $user_gifted_coins = 'user:gift_sent';
 }

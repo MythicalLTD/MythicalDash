@@ -13,6 +13,7 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\Session;
+use MythicalDash\Chat\User\UserLock;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Plugins\Events\Events\AfkEvent;
@@ -33,29 +34,50 @@ $router->post('/api/user/earn/afk/work', function (): void {
 
     $coinsToAward = (int) $config->getDBSetting(ConfigInterface::AFK_MIN_PER_COIN, 1);
 
-    // Always increment AFK time by 1 minute per request
-    $newAfkTime = $afkTime + 1;
+    // Execute AFK operations with user lock protection to prevent race conditions
+    try {
+        $result = UserLock::executeWithLock($uuid, function () use ($s, $afkTime, $coinsToAward) {
+            // Always increment AFK time by 1 minute per request
+            $newAfkTime = $afkTime + 1;
 
-    // Update user stats
-    $s->setInfo(UserColumns::MINUTES_AFK, $newAfkTime, false);
-    if ($coinsToAward > 0) {
-        $s->addCredits($coinsToAward);
-    }
+            // Update user stats
+            $s->setInfo(UserColumns::MINUTES_AFK, $newAfkTime, false);
+            if ($coinsToAward > 0) {
+                $s->addCredits($coinsToAward);
+            }
 
-    $eventManager->emit(
-        $coinsToAward > 0 ? AfkEvent::onAfk() : AfkEvent::onAfkEarly(),
-        [
-            'user' => $uuid,
+            return [
+                'new_afk_time' => $newAfkTime,
+                'coins_awarded' => $coinsToAward,
+            ];
+        });
+
+        $newAfkTime = $result['new_afk_time'];
+        $coinsToAward = $result['coins_awarded'];
+
+        $eventManager->emit(
+            $coinsToAward > 0 ? AfkEvent::onAfk() : AfkEvent::onAfkEarly(),
+            [
+                'user' => $uuid,
+                'coins_awarded' => $coinsToAward,
+                'time_spent' => 1,
+                'total_coins' => $coins + $coinsToAward,
+                'total_afk_time' => $newAfkTime,
+            ]
+        );
+
+        App::OK('AFK stats updated', [
             'coins_awarded' => $coinsToAward,
-            'time_spent' => 1,
             'total_coins' => $coins + $coinsToAward,
             'total_afk_time' => $newAfkTime,
-        ]
-    );
+        ]);
 
-    App::OK('AFK stats updated', [
-        'coins_awarded' => $coinsToAward,
-        'total_coins' => $coins + $coinsToAward,
-        'total_afk_time' => $newAfkTime,
-    ]);
+    } catch (Exception $e) {
+        // Log the error and return an error response
+        error_log('Failed to process AFK request: ' . $e->getMessage());
+        App::BadRequest('Failed to process AFK request', [
+            'error_code' => 'AFK_PROCESSING_FAILED',
+            'message' => $e->getMessage(),
+        ]);
+    }
 });
