@@ -612,7 +612,7 @@ const deleteServer = async (server: Server) => {
     if (result.isConfirmed) {
         try {
             // Call the delete server API
-            const response = await fetch(`/api/admin/server/${server.identifier}/delete`, {
+            const response = await fetch(`/api/admin/servers/delete/${server.id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
