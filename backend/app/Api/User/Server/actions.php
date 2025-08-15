@@ -133,13 +133,11 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         return;
     }
     if (isset($_POST['databases']) && !empty($_POST['databases'])) {
-        $databases = (int) $_POST['databases'];
+        $databases = max(0, intval($_POST['databases']));
     } else {
-        $appInstance->BadRequest('Databases is required', ['error_code' => 'DATABASES_REQUIRED']);
-
-        return;
+		//Servers may not require databases
+		$databases = 0;
     }
-
     // Validate that databases is not negative
     if ($databases < 0) {
         $appInstance->BadRequest('Databases cannot be a negative number', ['error_code' => 'DATABASES_NEGATIVE']);
@@ -286,7 +284,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         }
     }
 
-    if ($resourceDifference['databases'] > 0) {
+    if ($resourceDifference['databases'] > 0 && $available_resources[UserColumns::DATABASE_LIMIT] > 0) {
         $freeDatabases = $available_resources[UserColumns::DATABASE_LIMIT] - $resources['databases'];
         if ($resourceDifference['databases'] > $freeDatabases) {
             $appInstance->BadRequest('This update would exceed your maximum databases limit', [
@@ -300,7 +298,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         }
     }
 
-    if ($resourceDifference['backups'] > 0) {
+		if ($resourceDifference['backups'] > 0 && $available_resources[UserColumns::BACKUP_LIMIT] > 0) {
         $freeBackups = $available_resources[UserColumns::BACKUP_LIMIT] - $resources['backups'];
         if ($resourceDifference['backups'] > $freeBackups) {
             $appInstance->BadRequest('This update would exceed your maximum backups limit', [

@@ -100,9 +100,14 @@ $router->post('/api/admin/permissions/delete', function (): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
     PermissionMiddleware::handle($appInstance, PermissionsIndex::ADMIN_PERMISSIONS_DELETE, $session);
     if (isset($_POST['id'])) {
-        $id = $_POST['id'];
-        $deleted = Permissions::deletePermission((int) $id);
-        if ($deleted) {
+        if (isset($_POST['id']) && is_numeric($_POST['id'])) {
+            $id = (int) $_POST['id'];
+            if ($id <= 0) {
+                $appInstance->BadRequest('Invalid permission id', ['error_code' => 'INVALID_ID']);
+                return;
+            }
+            $deleted = Permissions::deletePermission($id);
+            if ($deleted) {
             UserActivities::add($session->getInfo(UserColumns::UUID, false), UserActivitiesTypes::$admin_permission_delete, CloudFlareRealIP::getRealIP(), 'Permission deleted successfully');
             $appInstance->OK('Permission deleted successfully', []);
         } else {
