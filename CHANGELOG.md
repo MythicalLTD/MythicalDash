@@ -23,6 +23,7 @@
 - Feature: New makeadmin command ui!
 - Feature: New users command so you can edit users via cli!
 - Feature: Log files get created on first app boot now!
+- Feature: Support for an upgrade command built in!
 
 # Features Removed:
 
