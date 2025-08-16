@@ -115,14 +115,14 @@ $router->post('/api/user/store/purchase', function (): void {
 
     $item = $items[$itemId];
     $price = $item['price'];
-    $currentCoins = (int) $session->getInfo(UserColumns::CREDITS, false);
 
-    // Validate user has enough coins
-    if ($currentCoins < $price) {
+    // Check if user has sufficient credits atomically (prevents race conditions)
+    $creditCheck = $session->checkCreditsAtomic($price);
+    if (!$creditCheck['has_sufficient']) {
         $appInstance->BadRequest('Insufficient coins', [
             'error_code' => 'INSUFFICIENT_COINS',
             'required' => $price,
-            'available' => $currentCoins,
+            'available' => $creditCheck['current_credits'],
         ]);
 
         return;
@@ -300,13 +300,23 @@ $router->post('/api/user/store/purchase', function (): void {
             break;
     }
 
-    // Process purchase
+    // Process purchase atomically (prevents race conditions)
     try {
-        // Deduct coins
-        $session->removeCredits((int) intval($price));
+        $purchaseResult = $session->processPurchaseAtomic($price, function($session) use ($item) {
+            // Apply item effect
+            $item['effect']($session);
+        });
 
-        // Apply item effect
-        $item['effect']($session);
+        if (!$purchaseResult['success']) {
+            $appInstance->BadRequest('Failed to process purchase', [
+                'error_code' => $purchaseResult['error_code'],
+                'required' => $purchaseResult['required'] ?? null,
+                'available' => $purchaseResult['available'] ?? null,
+                'message' => $purchaseResult['message'] ?? null,
+            ]);
+            return;
+        }
+
         global $eventManager;
         $eventManager->emit(StoreEvent::onStoreBuy(), [
             'user' => $session->getInfo(UserColumns::UUID, false),
@@ -327,7 +337,7 @@ $router->post('/api/user/store/purchase', function (): void {
                 'id' => $itemId,
                 'price' => $price,
             ],
-            'remaining_coins' => $currentCoins - $price,
+            'remaining_coins' => $purchaseResult['remaining_coins'],
         ]);
     } catch (Exception $e) {
         $appInstance->BadRequest('Failed to process purchase', [

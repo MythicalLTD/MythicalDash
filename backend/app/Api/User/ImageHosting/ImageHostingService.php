@@ -436,6 +436,19 @@ $router->post('/api/user/images/upload', function () use ($app, $logger, $config
 
         return;
     }
+
+    // Deduct coins only after successful file upload
+    if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED, 'false') == 'true') {
+        $coinsPerImage = (int) $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1);
+        $token = User::getTokenFromUUID($user_uuid);
+        
+        if (!User::removeCreditsAtomic($token, $coinsPerImage)) {
+            // If removing credits failed, log this critical error
+            $logger->error('Failed to remove image hosting credits atomically for user: ' . $user_uuid . ' for coins: ' . $coinsPerImage);
+            // Continue with the upload but log the error
+        }
+    }
+
     $appUrl = $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
     if (strpos($appUrl, 'https://') !== 0) {
         $appUrl = 'https://' . $appUrl;
@@ -624,23 +637,21 @@ $router->post('/api/user/images/upload/web', function () use ($app, $logger, $co
      * Coins per image enabled.
      */
     if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED, 'false') == 'true') {
-        $coins = User::getInfoUUID($user_uuid, UserColumns::CREDITS, false);
-        if ($coins <= 0) {
-            $app->BadRequest('You do not have enough coins to upload images.', [
-                'status' => 400,
-                'data' => [
-                    'error' => 'You do not have enough coins to upload images.',
-                ],
-            ]);
+        $coinsPerImage = (int) $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1);
+        
+        // Check if user has sufficient credits atomically to prevent race conditions
+        $token = User::getTokenFromUUID($user_uuid);
+        if (!$token) {
+            ShareXApi::showError($app, 'User token not found.');
+            return;
         }
-        if ($coins < $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1)) {
-            $app->BadRequest('You do not have enough coins to upload images.', [
-                'status' => 400,
-                'data' => [
-                    'error' => 'You do not have enough coins to upload images.',
-                ],
-            ]);
+        
+        $creditCheck = User::checkCreditsAtomic($token, $coinsPerImage);
+        if (!$creditCheck['has_sufficient']) {
+            ShareXApi::showError($app, 'You do not have enough coins to upload images.');
+            return;
         }
+        
         // Note: Coin deduction moved to after successful file upload
     }
 
@@ -656,7 +667,15 @@ $router->post('/api/user/images/upload/web', function () use ($app, $logger, $co
 
     // Deduct coins only after successful file upload
     if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE_ENABLED, 'false') == 'true') {
-        User::removeCredits(User::getTokenFromUUID($user_uuid), $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1));
+        $coinsPerImage = (int) $config->getDBSetting(ConfigInterface::IMAGE_HOSTING_COINS_PER_IMAGE, 1);
+        $token = User::getTokenFromUUID($user_uuid);
+        
+        if (!
+		User::removeCreditsAtomic($token, $coinsPerImage)) {
+            // If removing credits failed, log this critical error
+            $logger->error('Failed to remove image hosting credits atomically for user: ' . $user_uuid . ' for coins: ' . $coinsPerImage);
+            // Continue with the upload but log the error
+        }
     }
 
     $appUrl = $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');

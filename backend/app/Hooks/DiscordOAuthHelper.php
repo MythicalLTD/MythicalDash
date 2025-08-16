@@ -283,21 +283,24 @@ class DiscordOAuthHelper
             if (!empty($newlyJoinedServers)) {
                 $session->setInfo(UserColumns::J4R_JOINED_SERVERS, json_encode($joinedServersArray), false);
 
-                // Add coins to user's balance
-                $currentCoins = (int) $session->getInfo(UserColumns::CREDITS, false);
-                $newCoins = $currentCoins + $totalCoinsEarned;
-                $session->setInfo(UserColumns::CREDITS, (string) $newCoins, false);
+                // Add coins to user's balance atomically to prevent race conditions
+                if (!$session->addCreditsAtomic($totalCoinsEarned)) {
+                    // If adding credits failed, log this critical error
+                    $this->app->getLogger()->error('Failed to add J4R rewards atomically for user: ' . $session->getInfo(UserColumns::USERNAME, false) . ' for coins: ' . $totalCoinsEarned);
+                    // Continue with the request but don't show the new total
+                    $this->app->getLogger()->warning('J4R rewards failed to add but servers were marked as joined for user: ' . $session->getInfo(UserColumns::USERNAME, false));
+                } else {
+                    // Emit event for rewards claimed
+                    global $eventManager;
+                    $eventManager->emit(J4REvent::onJ4RRewardsClaimed(), [
+                        'user_uuid' => $session->getInfo(UserColumns::UUID, false),
+                        'username' => $session->getInfo(UserColumns::USERNAME, false),
+                        'coins_earned' => $totalCoinsEarned,
+                        'servers_joined' => $newlyJoinedServers,
+                    ]);
 
-                // Emit event for rewards claimed
-                global $eventManager;
-                $eventManager->emit(J4REvent::onJ4RRewardsClaimed(), [
-                    'user_uuid' => $session->getInfo(UserColumns::UUID, false),
-                    'username' => $session->getInfo(UserColumns::USERNAME, false),
-                    'coins_earned' => $totalCoinsEarned,
-                    'servers_joined' => $newlyJoinedServers,
-                ]);
-
-                $this->app->getLogger()->info('J4R rewards claimed for user: ' . $session->getInfo(UserColumns::USERNAME, false) . ' (+' . $totalCoinsEarned . ' coins)');
+                    $this->app->getLogger()->info('J4R rewards claimed for user: ' . $session->getInfo(UserColumns::USERNAME, false) . ' (+' . $totalCoinsEarned . ' coins)');
+                }
             }
 
         } catch (\Exception $e) {

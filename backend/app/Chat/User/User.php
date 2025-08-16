@@ -731,6 +731,8 @@ class User extends Database
      * @param string $token The token
      *
      * @return int The user's credits
+	 * 
+	 * @deprecated Use checkCreditsAtomic instead
      */
     public static function getCredits(string $token): int
     {
@@ -742,6 +744,8 @@ class User extends Database
      *
      * @param string $token The token
      * @param int $credits The number of credits to add
+	 * 
+	 * @deprecated Use addCreditsAtomic instead
      */
     public static function addCredits(string $token, int $credits): void
     {
@@ -754,11 +758,124 @@ class User extends Database
      *
      * @param string $token The token
      * @param int $credits The number of credits to remove
-     */
+	 * 
+	 * @deprecated Use removeCreditsAtomic instead
+    */
     public static function removeCredits(string $token, int $credits): void
     {
         $currentCredits = self::getCredits($token);
         self::updateInfo($token, UserColumns::CREDITS, $currentCredits - $credits, false);
+    }
+
+    /**
+     * Remove credits from the user's account atomically with row-level locking.
+     * This method prevents race conditions by using database transactions.
+     *
+     * @param string $token The token
+     * @param int $credits The number of credits to remove
+     * @return bool true if successful, false if insufficient credits or operation failed
+     */
+    public static function removeCreditsAtomic(string $token, int $credits): bool
+    {
+        try {
+            $con = self::getPdoConnection();
+            $con->beginTransaction();
+
+            // Use SELECT FOR UPDATE to lock the row and get current credits
+            $stmt = $con->prepare('SELECT credits FROM ' . self::TABLE_NAME . ' WHERE token = ? FOR UPDATE');
+            $stmt->execute([$token]);
+            $currentCredits = (int) $stmt->fetchColumn();
+
+            // Check if user has enough credits
+            if ($currentCredits < $credits) {
+                $con->rollBack();
+                return false;
+            }
+
+            // Update credits atomically
+            $stmt = $con->prepare('UPDATE ' . self::TABLE_NAME . ' SET credits = ? WHERE token = ?');
+            $stmt->execute([$currentCredits - $credits, $token]);
+
+            $con->commit();
+            return true;
+        } catch (\Exception $e) {
+            if (isset($con)) {
+                $con->rollBack();
+            }
+            self::db_Error('Failed to remove credits atomically: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Add credits to the user's account atomically with row-level locking.
+     * This method prevents race conditions by using database transactions.
+     *
+     * @param string $token The token
+     * @param int $credits The number of credits to add
+     * @return bool true if successful, false if operation failed
+     */
+    public static function addCreditsAtomic(string $token, int $credits): bool
+    {
+        try {
+            $con = self::getPdoConnection();
+            $con->beginTransaction();
+
+            // Use SELECT FOR UPDATE to lock the row and get current credits
+            $stmt = $con->prepare('SELECT credits FROM ' . self::TABLE_NAME . ' WHERE token = ? FOR UPDATE');
+            $stmt->execute([$token]);
+            $currentCredits = (int) $stmt->fetchColumn();
+
+            // Update credits atomically
+            $stmt = $con->prepare('UPDATE ' . self::TABLE_NAME . ' SET credits = ? WHERE token = ?');
+            $stmt->execute([$currentCredits + $credits, $token]);
+
+            $con->commit();
+            return true;
+        } catch (\Exception $e) {
+            if (isset($con)) {
+                $con->rollBack();
+            }
+            self::db_Error('Failed to add credits atomically: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Check if user has sufficient credits atomically with row-level locking.
+     * This method prevents race conditions by using database transactions.
+     *
+     * @param string $token The token
+     * @param int $requiredCredits The number of credits required
+     * @return array with 'has_sufficient' boolean and 'current_credits' integer
+     */
+    public static function checkCreditsAtomic(string $token, int $requiredCredits): array
+    {
+        try {
+            $con = self::getPdoConnection();
+            $con->beginTransaction();
+
+            // Use SELECT FOR UPDATE to lock the row and get current credits
+            $stmt = $con->prepare('SELECT credits FROM ' . self::TABLE_NAME . ' WHERE token = ? FOR UPDATE');
+            $stmt->execute([$token]);
+            $currentCredits = (int) $stmt->fetchColumn();
+
+            $con->commit();
+
+            return [
+                'has_sufficient' => $currentCredits >= $requiredCredits,
+                'current_credits' => $currentCredits
+            ];
+        } catch (\Exception $e) {
+            if (isset($con)) {
+                $con->rollBack();
+            }
+            self::db_Error('Failed to check credits atomically: ' . $e->getMessage());
+            return [
+                'has_sufficient' => false,
+                'current_credits' => 0
+            ];
+        }
     }
 
     public static function getUserByUploadKey(string $uploadKey): ?string

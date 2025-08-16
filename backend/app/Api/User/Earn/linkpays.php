@@ -430,8 +430,14 @@ $router->get('/api/user/earn/l4r/linkpays/earn/(.*)', function (string $code): v
 
     // User took enough time, give them coins
     LinkPaysDB::markAsCompleted($linkId);
+    
+    // Add credits atomically to prevent race conditions
     $coinsToAdd = (int) $coinsPerLink;
-    $session->addCredits((int) intval($coinsToAdd));
+    if (!$session->addCreditsAtomic($coinsToAdd)) {
+        // If adding credits failed, log the error but don't fail the entire request
+        $appInstance->getLogger()->error('Failed to add LinkPays credits atomically for user: ' . $session->getInfo(UserColumns::UUID, false));
+    }
+    
     $eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
         'user' => $session->getInfo(UserColumns::UUID, false),
         'link' => $linkId,

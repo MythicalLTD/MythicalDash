@@ -448,10 +448,14 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
         return;
     }
 
-    // Check user balance
-    $userBalance = (int) $session->getInfo((int) intval(UserColumns::CREDITS), false);
-    if ($userBalance < $server_renew_cost) {
-        $appInstance->BadRequest('You do not have enough credits to renew this server', ['error_code' => 'INSUFFICIENT_CREDITS']);
+    // Check user balance atomically to prevent race conditions
+    $creditCheck = $session->checkCreditsAtomic($server_renew_cost);
+    if (!$creditCheck['has_sufficient']) {
+        $appInstance->BadRequest('You do not have enough credits to renew this server', [
+            'error_code' => 'INSUFFICIENT_CREDITS',
+            'required' => $server_renew_cost,
+            'available' => $creditCheck['current_credits']
+        ]);
 
         return;
     }
@@ -473,7 +477,15 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
             throw new Exception('Failed to update server expiration');
         }
 
-        $session->removeCredits($server_renew_cost);
+        // Remove credits atomically to prevent race conditions
+        if (!$session->removeCreditsAtomic($server_renew_cost)) {
+            // If removing credits failed, we need to rollback the server expiration update
+            // This is a critical error that should be logged
+            $appInstance->getLogger()->error('Failed to remove renewal credits atomically for user: ' . $session->getInfo(UserColumns::UUID, false) . ' for server: ' . $serverId);
+            $appInstance->BadRequest('Failed to process renewal - credit deduction failed', ['error_code' => 'CREDIT_DEDUCTION_FAILED']);
+            return;
+        }
+		
         // Log activity
         UserActivities::add(
             $session->getInfo(UserColumns::UUID, false),

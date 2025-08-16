@@ -38,8 +38,17 @@ $router->post('/api/user/earn/afk/work', function (): void {
 
     // Update user stats
     $s->setInfo(UserColumns::MINUTES_AFK, $newAfkTime, false);
+    
+    // Add credits atomically to prevent race conditions
+    $newTotalCoins = $coins;
     if ($coinsToAward > 0) {
-        $s->addCredits($coinsToAward);
+        if ($s->addCreditsAtomic($coinsToAward)) {
+            $newTotalCoins = $coins + $coinsToAward;
+        } else {
+            // If adding credits failed, log the error but don't fail the entire request
+            $appInstance->getLogger()->error('Failed to add AFK credits atomically for user: ' . $uuid);
+            $newTotalCoins = $coins; // Keep original amount
+        }
     }
 
     $eventManager->emit(
@@ -48,14 +57,14 @@ $router->post('/api/user/earn/afk/work', function (): void {
             'user' => $uuid,
             'coins_awarded' => $coinsToAward,
             'time_spent' => 1,
-            'total_coins' => $coins + $coinsToAward,
+            'total_coins' => $newTotalCoins,
             'total_afk_time' => $newAfkTime,
         ]
     );
 
     App::OK('AFK stats updated', [
         'coins_awarded' => $coinsToAward,
-        'total_coins' => $coins + $coinsToAward,
+        'total_coins' => $newTotalCoins,
         'total_afk_time' => $newAfkTime,
     ]);
 });

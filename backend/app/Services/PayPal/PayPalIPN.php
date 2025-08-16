@@ -162,14 +162,14 @@ class PayPalIPN
         PayPalDB::updateStatus($code, 'processed');
 
         $token = User::getTokenFromUUID($uuid);
-        $currentCredits = User::getInfo($token, UserColumns::CREDITS, false);
         $payment = PayPalDB::getByCode($code);
 
-        User::updateInfo(
-            $token,
-            UserColumns::CREDITS,
-            $currentCredits + $payment['coins'],
-            false
-        );
+        // Add credits atomically to prevent race conditions
+        if (!User::addCreditsAtomic($token, (int) $payment['coins'])) {
+            // If adding credits failed, log this critical error
+            // The payment was already marked as processed, so we can't rollback easily
+            $this->app->getLogger()->error('Failed to add PayPal credits atomically for user: ' . $uuid . ' for payment: ' . $code);
+            throw new \RuntimeException("Failed to credit user account for payment: $code");
+        }
     }
 }
