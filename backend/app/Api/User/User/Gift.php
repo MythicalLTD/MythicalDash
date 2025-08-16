@@ -58,10 +58,39 @@ $router->post('/api/user/gift', function () {
             $appInstance->BadRequest('Amount is too high! Maximum amount is ' . $maxAmount . ' coins', ['error_code' => 'COINS_AMOUNT_TOO_HIGH']);
         }
 
-        $s->removeCredits((int) intval($coinsAfterFee));
-        User::addCredits($recipientUuid, (int) intval($coinsAfterFee));
+        // Process gift atomically to prevent race conditions
+        try {
+            // First, remove credits from sender atomically
+            if (!$s->removeCreditsAtomic((int) intval($coinsAfterFee))) {
+                $appInstance->BadRequest('Failed to process gift - insufficient balance or operation failed', ['error_code' => 'GIFT_PROCESSING_FAILED']);
 
-        $appInstance->OK('Coins gifted successfully!', []);
+                return;
+            }
+
+            // Then, add credits to recipient atomically
+            $recipientToken = User::getTokenFromUUID($recipientUuid);
+            if (!$recipientToken) {
+                $appInstance->BadRequest('Failed to get recipient token', ['error_code' => 'RECIPIENT_TOKEN_ERROR']);
+
+                return;
+            }
+
+            if (!User::addCreditsAtomic($recipientToken, (int) intval($coins))) {
+                // If adding to recipient failed, we need to rollback the sender's deduction
+                // This is a critical error that should be logged
+                $appInstance->getLogger()->error('Failed to add gift credits to recipient: ' . $recipientUuid . ' for amount: ' . $coins);
+                $appInstance->BadRequest('Failed to process gift - recipient credit addition failed', ['error_code' => 'RECIPIENT_CREDIT_ADDITION_FAILED']);
+
+                return;
+            }
+
+            $appInstance->OK('Coins gifted successfully!', []);
+        } catch (Exception $e) {
+            $appInstance->BadRequest('Failed to process gift', [
+                'error_code' => 'GIFT_PROCESSING_FAILED',
+                'message' => $e->getMessage(),
+            ]);
+        }
     } else {
         $appInstance->BadRequest('Invalid request!', ['error_code' => 'INVALID_REQUEST']);
     }

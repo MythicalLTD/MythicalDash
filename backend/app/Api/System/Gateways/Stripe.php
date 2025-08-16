@@ -41,8 +41,14 @@ $router->add('/api/stripe/processed', function (): void {
             if (StripeDB::isPending($code)) {
 
                 Stripe\Stripe::setApiKey($appInstance->getConfig()->getDBSetting(ConfigInterface::STRIPE_SECRET_KEY, 'NULL'));
-                $coins = User::getInfo($token, UserColumns::CREDITS, false) + $coins;
-                $coins = User::updateInfo($token, UserColumns::CREDITS, $coins, false);
+
+                // Add credits atomically to prevent race conditions
+                if (!User::addCreditsAtomic($token, (int) $coins)) {
+                    // If adding credits failed, log this critical error
+                    $appInstance->getLogger()->error('Failed to add Stripe credits atomically for user: ' . $uuid . ' for payment: ' . $code);
+                    exit(header('location: /?error=stripe_error=credit_addition_failed'));
+                }
+
                 StripeDB::updateStatus($code, 'processed');
 
                 exit(header('location: /?success=coins_added'));

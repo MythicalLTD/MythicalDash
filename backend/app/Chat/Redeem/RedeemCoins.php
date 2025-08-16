@@ -230,14 +230,137 @@ class RedeemCoins extends Database
         try {
             $dbConn = Database::getPdoConnection();
             $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE id = :id AND deleted = "false"');
-            $stmt->bindParam(':id', $id);
-            $stmt->execute();
+            $stmt->execute([$id]);
 
             return $stmt->fetch(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
             self::db_Error('Failed to get redeem code: ' . $e->getMessage());
 
             return null;
+        }
+    }
+
+    /**
+     * Redeem a code atomically with row-level locking to prevent race conditions.
+     * This method checks if the code can be redeemed and decrements usage in a single transaction.
+     *
+     * @param string $code The redeem code to redeem
+     * @param string $userUuid The user UUID redeeming the code
+     *
+     * @return array|false Array with redemption data on success, false on failure
+     */
+    public static function redeemCodeAtomic(string $code, string $userUuid): array|false
+    {
+        try {
+            $dbConn = Database::getPdoConnection();
+            $dbConn->beginTransaction();
+
+            // Use SELECT FOR UPDATE to lock the row and get current code data
+            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE code = :code AND deleted = "false" AND enabled = "true" FOR UPDATE');
+            $stmt->execute([$code]);
+            $codeData = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$codeData) {
+                $dbConn->rollBack();
+
+                return false;
+            }
+
+            // Check if code has uses left
+            if ((int) $codeData['uses'] <= 0) {
+                $dbConn->rollBack();
+
+                return false;
+            }
+
+            // Check if user has already redeemed this code
+            $stmt = $dbConn->prepare('SELECT COUNT(*) FROM ' . RedeemRedeems::getTableName() . ' WHERE code = :code AND user = :user AND deleted = "false" FOR UPDATE');
+            $stmt->execute([$codeData['id'], $userUuid]);
+            if ($stmt->fetchColumn() > 0) {
+                $dbConn->rollBack();
+
+                return false;
+            }
+
+            // Decrement usage count
+            $stmt = $dbConn->prepare('UPDATE ' . self::getTableName() . ' SET uses = uses - 1 WHERE id = :id AND uses > 0');
+            $stmt->execute([$codeData['id']]);
+
+            // Create redemption record
+            $stmt = $dbConn->prepare('INSERT INTO ' . RedeemRedeems::getTableName() . ' (user, code) VALUES (:user, :code)');
+            $stmt->execute([$userUuid, $codeData['id']]);
+
+            $dbConn->commit();
+
+            return [
+                'id' => $codeData['id'],
+                'coins' => (int) $codeData['coins'],
+                'uses_left' => (int) $codeData['uses'] - 1,
+            ];
+        } catch (\Exception $e) {
+            if (isset($dbConn)) {
+                $dbConn->rollBack();
+            }
+            self::db_Error('Failed to redeem code atomically: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
+    /**
+     * Check if a code can be redeemed atomically with row-level locking.
+     * This method prevents race conditions by locking the row during validation.
+     *
+     * @param string $code The redeem code to check
+     * @param string $userUuid The user UUID to check against
+     *
+     * @return array|false Array with validation data on success, false on failure
+     */
+    public static function validateCodeAtomic(string $code, string $userUuid): array|false
+    {
+        try {
+            $dbConn = Database::getPdoConnection();
+            $dbConn->beginTransaction();
+
+            // Use SELECT FOR UPDATE to lock the row and get current code data
+            $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE code = :code AND deleted = "false" AND enabled = "true" FOR UPDATE');
+            $stmt->execute([$code]);
+            $codeData = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$codeData) {
+                $dbConn->rollBack();
+
+                return false;
+            }
+
+            // Check if code has uses left
+            if ((int) $codeData['uses'] <= 0) {
+                $dbConn->rollBack();
+
+                return false;
+            }
+
+            // Check if user has already redeemed this code
+            $stmt = $dbConn->prepare('SELECT COUNT(*) FROM ' . RedeemRedeems::getTableName() . ' WHERE code = :code AND user = :user AND deleted = "false"');
+            $stmt->execute([$codeData['id'], $userUuid]);
+            $alreadyRedeemed = $stmt->fetchColumn() > 0;
+
+            $dbConn->commit();
+
+            return [
+                'id' => $codeData['id'],
+                'coins' => (int) $codeData['coins'],
+                'uses_left' => (int) $codeData['uses'],
+                'already_redeemed' => $alreadyRedeemed,
+                'can_redeem' => !$alreadyRedeemed && (int) $codeData['uses'] > 0,
+            ];
+        } catch (\Exception $e) {
+            if (isset($dbConn)) {
+                $dbConn->rollBack();
+            }
+            self::db_Error('Failed to validate code atomically: ' . $e->getMessage());
+
+            return false;
         }
     }
 }

@@ -216,10 +216,20 @@ $router->add('/api/user/auth/register', function (): void {
                                 'user' => $referrerUuid,
                                 'referral_code' => $_GET['ref'],
                             ]);
+
+                            // Add credits atomically to prevent race conditions
                             $newUserBonus = intval($appInstance->getConfig()->getDBSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER, 15));
-                            User::addCredits($newUserToken, (int) intval($newUserBonus));
-                            $referrerBonus = intval($appInstance->getConfig()->getDBSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL, 35)) + intval(User::getInfo($referrerToken, UserColumns::CREDITS, false));
-                            User::addCredits($referrerToken, (int) intval($referrerBonus));
+                            if (!User::addCreditsAtomic($newUserToken, $newUserBonus)) {
+                                // Log the error but don't fail the registration
+                                $appInstance->getLogger()->error('Failed to add referral bonus credits atomically for new user: ' . $newUserUuid);
+                            }
+
+                            // Calculate referrer bonus and add atomically
+                            $referrerBonus = intval($appInstance->getConfig()->getDBSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL, 35));
+                            if (!User::addCreditsAtomic($referrerToken, $referrerBonus)) {
+                                // Log the error but don't fail the registration
+                                $appInstance->getLogger()->error('Failed to add referral bonus credits atomically for referrer: ' . $referrerUuid);
+                            }
                         }
                     } else {
                         $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'REFERRAL_CODE_NOT_FOUND']);

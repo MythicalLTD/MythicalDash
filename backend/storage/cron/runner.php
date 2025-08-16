@@ -12,11 +12,11 @@ define('APP_LOGS_DIR', APP_STORAGE_DIR . 'logs');
 define('APP_ADDONS_DIR', APP_STORAGE_DIR . 'addons');
 define('APP_SOURCECODE_DIR', APP_DIR . 'app');
 define('APP_ROUTES_DIR', APP_SOURCECODE_DIR . '/Api');
-define('APP_DEBUG', true);
+define('APP_DEBUG', false);
 define('SYSTEM_OS_NAME', gethostname() . '/' . PHP_OS_FAMILY);
 define('SYSTEM_KERNEL_NAME', php_uname('s'));
 define('TELEMETRY', true);
-define('APP_VERSION', '3.3.1-nexus');
+define('APP_VERSION', '3.3.2-nexus');
 define('APP_UPSTREAM', 'github.com/mythicalltd/mythicaldash');
 
 require(__DIR__ . '/../packages/autoload.php');

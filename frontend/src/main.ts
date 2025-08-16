@@ -184,15 +184,3 @@ const mountApp = async () => {
 };
 
 mountApp();
-
-// Web vitals monitoring for production
-if (import.meta.env.PROD) {
-    import('web-vitals').then((webVitals) => {
-        const { onCLS, onFID, onFCP, onLCP, onTTFB } = webVitals;
-        onCLS((metric) => console.log('CLS:', metric));
-        onFID((metric) => console.log('FID:', metric));
-        onFCP((metric) => console.log('FCP:', metric));
-        onLCP((metric) => console.log('LCP:', metric));
-        onTTFB((metric) => console.log('TTFB:', metric));
-    });
-}

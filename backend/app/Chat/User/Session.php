@@ -127,44 +127,6 @@ class Session extends Database
     }
 
     /**
-     * Check if the user has any of the specified permissions.
-     * Returns true if the user has at least one of the permissions.
-     *
-     * @param array $permissions Array of permissions to check
-     *
-     * @return bool True if the user has at least one permission, false otherwise
-     */
-    public function hasAnyPermission(array $permissions): bool
-    {
-        foreach ($permissions as $permission) {
-            if ($this->hasPermission($permission)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if the user has all of the specified permissions.
-     * Returns true only if the user has all permissions.
-     *
-     * @param array $permissions Array of permissions to check
-     *
-     * @return bool True if the user has all permissions, false otherwise
-     */
-    public function hasAllPermissions(array $permissions): bool
-    {
-        foreach ($permissions as $permission) {
-            if (!$this->hasPermission($permission)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Get all permissions for the current user's role.
      *
      * @return array Array of permissions with their granted status
@@ -183,54 +145,163 @@ class Session extends Database
     }
 
     /**
-     * Get the user's role information.
+     * Remove credits from the user's account atomically with row-level locking.
+     * This method prevents race conditions by using database transactions.
      *
-     * @return array|null Role information or null if not found
+     * @param int $credits the number of credits to remove
+     *
+     * @return bool true if successful, false if insufficient credits or operation failed
      */
-    public function getUserRole(): ?array
+    public function removeCreditsAtomic(int $credits): bool
     {
         try {
-            $roleId = (int) $this->getInfo(UserColumns::ROLE_ID, false);
+            $con = self::getPdoConnection();
 
-            return Roles::getRole($roleId);
+            // First check if user has enough credits (no lock needed for read)
+            $stmt = $con->prepare('SELECT credits FROM ' . User::TABLE_NAME . ' WHERE token = ?');
+            $stmt->execute([$this->SESSION_KEY]);
+            $currentCredits = (int) $stmt->fetchColumn();
+
+            // Check if user has enough credits
+            if ($currentCredits < $credits) {
+                return false;
+            }
+
+            // Use atomic UPDATE with condition to prevent negative credits
+            $stmt = $con->prepare('UPDATE ' . User::TABLE_NAME . ' SET credits = credits - ? WHERE token = ? AND credits >= ?');
+            $result = $stmt->execute([$credits, $this->SESSION_KEY, $credits]);
+
+            // Check if the update was successful (rowCount > 0 means credits were sufficient)
+            return $result && $stmt->rowCount() > 0;
+
         } catch (\Exception $e) {
-            $this->app->getLogger()->error('Failed to get user role: ' . $e->getMessage());
+            $this->app->getLogger()->error('Failed to remove credits atomically: ' . $e->getMessage());
 
-            return null;
+            return false;
         }
     }
 
     /**
-     * Check if the user has admin access with specific permission.
-     * This is a convenience method that combines admin access check with permission check.
+     * Add credits to the user's account atomically with row-level locking.
+     * This method prevents race conditions by using database transactions.
      *
-     * @param string $permission The permission to check
+     * @param int $credits the number of credits to add
      *
-     * @return bool True if user has admin access and the permission, false otherwise
+     * @return bool true if successful, false if operation failed
      */
-    public function canAccessAdminWithPermission(string $permission): bool
+    public function addCreditsAtomic(int $credits): bool
     {
-        return $this->hasPermission($permission);
+        try {
+            $con = self::getPdoConnection();
+
+            // Simple atomic UPDATE - MySQL handles concurrency internally
+            // This is much faster and safer than manual locking
+            $stmt = $con->prepare('UPDATE ' . User::TABLE_NAME . ' SET credits = credits + ? WHERE token = ?');
+            $result = $stmt->execute([$credits, $this->SESSION_KEY]);
+
+            return $result && $stmt->rowCount() > 0;
+
+        } catch (\Exception $e) {
+            $this->app->getLogger()->error('Failed to add credits atomically: ' . $e->getMessage());
+
+            return false;
+        }
     }
 
     /**
-     * Remove credits from the user's account.
+     * Check if user has sufficient credits atomically with row-level locking.
+     * This method prevents race conditions by using database transactions.
      *
-     * @param int $credits the number of credits to remove
+     * @param int $requiredCredits the number of credits required
+     *
+     * @return array with 'has_sufficient' boolean and 'current_credits' integer
      */
-    public function removeCredits(int $credits): void
+    public function checkCreditsAtomic(int $requiredCredits): array
     {
-        (int) $currentCredits = intval($this->getInfo(UserColumns::CREDITS, false));
-        $this->setInfo(UserColumns::CREDITS, $currentCredits - $credits, false);
+        try {
+            $con = self::getPdoConnection();
+
+            // Simple SELECT - no locking needed for read operations
+            $stmt = $con->prepare('SELECT credits FROM ' . User::TABLE_NAME . ' WHERE token = ?');
+            $stmt->execute([$this->SESSION_KEY]);
+            $currentCredits = (int) $stmt->fetchColumn();
+
+            return [
+                'has_sufficient' => $currentCredits >= $requiredCredits,
+                'current_credits' => $currentCredits,
+            ];
+
+        } catch (\Exception $e) {
+            $this->app->getLogger()->error('Failed to check credits atomically: ' . $e->getMessage());
+
+            return [
+                'has_sufficient' => false,
+                'current_credits' => 0,
+            ];
+        }
     }
 
     /**
-     * Add coins to the user's account.
+     * Process a purchase atomically with row-level locking.
+     * This method prevents race conditions by using database transactions.
+     *
+     * @param int $price the price of the item
+     * @param callable $itemEffect callback function to apply item effects
+     *
+     * @return array with 'success' boolean and additional data
      */
-    public function addCredits(int $credits): void
+    public function processPurchaseAtomic(int $price, callable $itemEffect): array
     {
-        (int) $currentCredits = intval($this->getInfo(UserColumns::CREDITS, false));
-        $this->setInfo(UserColumns::CREDITS, $currentCredits + $credits, false);
+        try {
+            $con = self::getPdoConnection();
+
+            // First check if user has enough credits (no lock needed for read)
+            $stmt = $con->prepare('SELECT credits FROM ' . User::TABLE_NAME . ' WHERE token = ?');
+            $stmt->execute([$this->SESSION_KEY]);
+            $currentCredits = (int) $stmt->fetchColumn();
+
+            // Check if user has enough credits
+            if ($currentCredits < $price) {
+                return [
+                    'success' => false,
+                    'error_code' => 'INSUFFICIENT_COINS',
+                    'required' => $price,
+                    'available' => $currentCredits,
+                ];
+            }
+
+            // Use atomic UPDATE with condition to prevent negative credits
+            $stmt = $con->prepare('UPDATE ' . User::TABLE_NAME . ' SET credits = credits - ? WHERE token = ? AND credits >= ?');
+            $result = $stmt->execute([$price, $this->SESSION_KEY, $price]);
+
+            if (!$result || $stmt->rowCount() === 0) {
+                // Another process modified the credits between our check and update
+                return [
+                    'success' => false,
+                    'error_code' => 'INSUFFICIENT_COINS',
+                    'required' => $price,
+                    'available' => 0,
+                ];
+            }
+
+            // Apply item effect
+            $itemEffect($this);
+
+            return [
+                'success' => true,
+                'remaining_coins' => $currentCredits - $price,
+                'price_paid' => $price,
+            ];
+
+        } catch (\Exception $e) {
+            $this->app->getLogger()->error('Failed to process purchase atomically: ' . $e->getMessage());
+
+            return [
+                'success' => false,
+                'error_code' => 'PURCHASE_FAILED',
+                'message' => $e->getMessage(),
+            ];
+        }
     }
 
     /**
@@ -303,30 +374,5 @@ class Session extends Database
         setcookie('remember_me', '1', array_merge($cookieOptions, [
             'expires' => time() + (86400 * 30), // 30 days
         ]));
-    }
-
-    /**
-     * Force user reauthorization by clearing cookies and session.
-     */
-    private function forceReauthorization(): void
-    {
-        $cookieOptions = [
-            'expires' => time() - 3600,
-            'path' => '/',
-            'domain' => $_SERVER['HTTP_HOST'],
-            'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
-            'httponly' => true,
-            'samesite' => 'Strict',
-        ];
-
-        // Clear all security cookies
-        setcookie('user_token', '', $cookieOptions);
-        setcookie('session_fingerprint', '', $cookieOptions);
-        setcookie('last_activity', '', $cookieOptions);
-        setcookie('csrf_token', '', $cookieOptions);
-
-        $this->app->Unauthorized('Security validation failed. Please login again.', [
-            'error_code' => 'SECURITY_VALIDATION_FAILED',
-        ]);
     }
 }

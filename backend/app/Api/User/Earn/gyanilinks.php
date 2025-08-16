@@ -431,7 +431,13 @@ $router->get('/api/user/earn/l4r/gyanilinks/earn/(.*)', function (string $code):
 
     // User took enough time, give them coins
     GyaniLinksDB::markAsCompleted($linkId);
-    $session->addCredits((int) intval($coinsPerLink));
+
+    // Add credits atomically to prevent race conditions
+    if (!$session->addCreditsAtomic((int) intval($coinsPerLink))) {
+        // If adding credits failed, log the error but don't fail the entire request
+        $appInstance->getLogger()->error('Failed to add GyaniLinks credits atomically for user: ' . $session->getInfo(UserColumns::UUID, false));
+    }
+
     $eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
         'user' => $session->getInfo(UserColumns::UUID, false),
         'link' => $linkId,

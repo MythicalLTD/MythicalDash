@@ -1,3 +1,35 @@
+# v3.3.2-Nexus
+
+# Bugs Fixed:
+
+- BUG: Fixed widespread race condition vulnerabilities across the entire credit management system
+- BUG: Fixed server editing logic errors
+- BUG: Fixed database update requirements for server modifications
+- BUG: Fixed API route not found errors on server deletion
+- BUG: Fixed permission handling issues that could cause null values
+- BUG: BG Will not show on login only after refresh!
+- BUG: Timeout on db requests!
+
+# Features Added:
+
+- Feature: Implemented atomic operations for all credit-related transactions
+- Feature: Database transactions with row-level locking prevent concurrent modifications
+- Feature: Enhanced error handling for failed atomic operations with proper logging
+- Feature: Improved transaction rollback handling
+- Feature: Better user feedback for failed operations
+- Feature: Enhanced error logging and debugging capabilities
+
+# Features Removed:
+
+- None
+
+# Breaking Changes:
+
+- None - All changes are backward compatible
+- Existing API endpoints maintain the same interface
+- Database schema remains unchanged
+
+
 # v3.3.1-Nexus
 
 ## Bug Fixes

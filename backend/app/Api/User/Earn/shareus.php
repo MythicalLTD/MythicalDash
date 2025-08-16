@@ -442,10 +442,19 @@ $router->get('/api/user/earn/l4r/shareus/earn/(.*)', function (string $code): vo
 
     // User took enough time, give them coins
     ShareUSDB::markAsCompleted($linkId);
-    $currentCredits = (int) $session->getInfo(UserColumns::CREDITS, false);
+
+    // Add credits atomically to prevent race conditions
     $coinsToAdd = (int) $coinsPerLink;
-    $newTotal = (string) ($currentCredits + $coinsToAdd);
-    $session->addCredits((int) intval($coinsToAdd));
+    if (!$session->addCreditsAtomic($coinsToAdd)) {
+        // If adding credits failed, log the error but don't fail the entire request
+        $appInstance->getLogger()->error('Failed to add ShareUS credits atomically for user: ' . $session->getInfo(UserColumns::UUID, false));
+        // Continue with the request but don't show the new total
+        $newTotal = 'unknown';
+    } else {
+        // Get the new credit balance for response
+        $newTotal = (string) $session->getInfo(UserColumns::CREDITS, false);
+    }
+
     $eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
         'user' => $session->getInfo(UserColumns::UUID, false),
         'link' => $linkId,
