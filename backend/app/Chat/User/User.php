@@ -780,31 +780,25 @@ class User extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $con->beginTransaction();
 
-            // Use SELECT FOR UPDATE to lock the row and get current credits
-            $stmt = $con->prepare('SELECT credits FROM ' . self::TABLE_NAME . ' WHERE token = ? FOR UPDATE');
+            // First check if user has enough credits (no lock needed for read)
+            $stmt = $con->prepare('SELECT credits FROM ' . self::TABLE_NAME . ' WHERE token = ?');
             $stmt->execute([$token]);
             $currentCredits = (int) $stmt->fetchColumn();
 
             // Check if user has enough credits
             if ($currentCredits < $credits) {
-                $con->rollBack();
-
                 return false;
             }
 
-            // Update credits atomically
-            $stmt = $con->prepare('UPDATE ' . self::TABLE_NAME . ' SET credits = ? WHERE token = ?');
-            $stmt->execute([$currentCredits - $credits, $token]);
+            // Use atomic UPDATE with condition to prevent negative credits
+            $stmt = $con->prepare('UPDATE ' . self::TABLE_NAME . ' SET credits = credits - ? WHERE token = ? AND credits >= ?');
+            $result = $stmt->execute([$credits, $token, $credits]);
 
-            $con->commit();
+            // Check if the update was successful (rowCount > 0 means credits were sufficient)
+            return $result && $stmt->rowCount() > 0;
 
-            return true;
         } catch (\Exception $e) {
-            if (isset($con)) {
-                $con->rollBack();
-            }
             self::db_Error('Failed to remove credits atomically: ' . $e->getMessage());
 
             return false;
@@ -824,24 +818,15 @@ class User extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $con->beginTransaction();
 
-            // Use SELECT FOR UPDATE to lock the row and get current credits
-            $stmt = $con->prepare('SELECT credits FROM ' . self::TABLE_NAME . ' WHERE token = ? FOR UPDATE');
-            $stmt->execute([$token]);
-            $currentCredits = (int) $stmt->fetchColumn();
+            // Simple atomic UPDATE - MySQL handles concurrency internally
+            // This is much faster and safer than manual locking
+            $stmt = $con->prepare('UPDATE ' . self::TABLE_NAME . ' SET credits = credits + ? WHERE token = ?');
+            $result = $stmt->execute([$credits, $token]);
 
-            // Update credits atomically
-            $stmt = $con->prepare('UPDATE ' . self::TABLE_NAME . ' SET credits = ? WHERE token = ?');
-            $stmt->execute([$currentCredits + $credits, $token]);
+            return $result && $stmt->rowCount() > 0;
 
-            $con->commit();
-
-            return true;
         } catch (\Exception $e) {
-            if (isset($con)) {
-                $con->rollBack();
-            }
             self::db_Error('Failed to add credits atomically: ' . $e->getMessage());
 
             return false;
@@ -861,23 +846,18 @@ class User extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $con->beginTransaction();
 
-            // Use SELECT FOR UPDATE to lock the row and get current credits
-            $stmt = $con->prepare('SELECT credits FROM ' . self::TABLE_NAME . ' WHERE token = ? FOR UPDATE');
+            // Simple SELECT - no locking needed for read operations
+            $stmt = $con->prepare('SELECT credits FROM ' . self::TABLE_NAME . ' WHERE token = ?');
             $stmt->execute([$token]);
             $currentCredits = (int) $stmt->fetchColumn();
-
-            $con->commit();
 
             return [
                 'has_sufficient' => $currentCredits >= $requiredCredits,
                 'current_credits' => $currentCredits,
             ];
+
         } catch (\Exception $e) {
-            if (isset($con)) {
-                $con->rollBack();
-            }
             self::db_Error('Failed to check credits atomically: ' . $e->getMessage());
 
             return [

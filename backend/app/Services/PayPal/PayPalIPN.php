@@ -168,7 +168,10 @@ class PayPalIPN
             // If adding credits failed, log this critical error
             // The payment was already marked as processed, so we can't rollback easily
             $this->app->getLogger()->error('Failed to add PayPal credits atomically for user: ' . $uuid . ' for payment: ' . $code);
-            throw new \RuntimeException("Failed to credit user account for payment: $code");
+
+            // Don't throw exception - this would break IPN processing
+            // Instead, log the failure and continue. The user can contact support if credits are missing.
+            $this->app->getLogger()->warning('PayPal payment processed but credits failed to add for user: ' . $uuid . ' payment: ' . $code);
         }
     }
 }

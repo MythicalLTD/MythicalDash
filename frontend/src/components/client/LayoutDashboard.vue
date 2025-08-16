@@ -311,10 +311,27 @@ onMounted(() => {
 
     fetchRoles();
 });
+const userBackground = ref('');
 
-const userBackground = computed(() => {
-    return Session.getInfo('background');
-});
+// Watch for session changes and user data updates
+watch(
+    () => Session.getInfo('background'),
+    (newBackground) => {
+        userBackground.value = newBackground || '';
+    },
+    { immediate: true },
+);
+
+// Also update when user data is reloaded
+const updateUserBackground = () => {
+    userBackground.value = Session.getInfo('background') || '';
+};
+
+// Call update function after user data reload
+const reloadUserDataWithBackground = async () => {
+    await reloadUserData();
+    updateUserBackground();
+};
 
 const pageBackgroundStyle = computed(() => {
     if (!userBackground.value) {

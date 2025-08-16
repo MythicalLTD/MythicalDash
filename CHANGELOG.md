@@ -7,6 +7,8 @@
 - BUG: Fixed database update requirements for server modifications
 - BUG: Fixed API route not found errors on server deletion
 - BUG: Fixed permission handling issues that could cause null values
+- BUG: BG Will not show on login only after refresh!
+- BUG: Timeout on db requests!
 
 # Features Added:
 

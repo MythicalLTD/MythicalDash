@@ -156,31 +156,25 @@ class Session extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $con->beginTransaction();
 
-            // Use SELECT FOR UPDATE to lock the row and get current credits
-            $stmt = $con->prepare('SELECT credits FROM ' . User::TABLE_NAME . ' WHERE token = ? FOR UPDATE');
+            // First check if user has enough credits (no lock needed for read)
+            $stmt = $con->prepare('SELECT credits FROM ' . User::TABLE_NAME . ' WHERE token = ?');
             $stmt->execute([$this->SESSION_KEY]);
             $currentCredits = (int) $stmt->fetchColumn();
 
             // Check if user has enough credits
             if ($currentCredits < $credits) {
-                $con->rollBack();
-
                 return false;
             }
 
-            // Update credits atomically
-            $stmt = $con->prepare('UPDATE ' . User::TABLE_NAME . ' SET credits = ? WHERE token = ?');
-            $stmt->execute([$currentCredits - $credits, $this->SESSION_KEY]);
+            // Use atomic UPDATE with condition to prevent negative credits
+            $stmt = $con->prepare('UPDATE ' . User::TABLE_NAME . ' SET credits = credits - ? WHERE token = ? AND credits >= ?');
+            $result = $stmt->execute([$credits, $this->SESSION_KEY, $credits]);
 
-            $con->commit();
+            // Check if the update was successful (rowCount > 0 means credits were sufficient)
+            return $result && $stmt->rowCount() > 0;
 
-            return true;
         } catch (\Exception $e) {
-            if (isset($con)) {
-                $con->rollBack();
-            }
             $this->app->getLogger()->error('Failed to remove credits atomically: ' . $e->getMessage());
 
             return false;
@@ -199,24 +193,15 @@ class Session extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $con->beginTransaction();
 
-            // Use SELECT FOR UPDATE to lock the row and get current credits
-            $stmt = $con->prepare('SELECT credits FROM ' . User::TABLE_NAME . ' WHERE token = ? FOR UPDATE');
-            $stmt->execute([$this->SESSION_KEY]);
-            $currentCredits = (int) $stmt->fetchColumn();
+            // Simple atomic UPDATE - MySQL handles concurrency internally
+            // This is much faster and safer than manual locking
+            $stmt = $con->prepare('UPDATE ' . User::TABLE_NAME . ' SET credits = credits + ? WHERE token = ?');
+            $result = $stmt->execute([$credits, $this->SESSION_KEY]);
 
-            // Update credits atomically
-            $stmt = $con->prepare('UPDATE ' . User::TABLE_NAME . ' SET credits = ? WHERE token = ?');
-            $stmt->execute([$currentCredits + $credits, $this->SESSION_KEY]);
+            return $result && $stmt->rowCount() > 0;
 
-            $con->commit();
-
-            return true;
         } catch (\Exception $e) {
-            if (isset($con)) {
-                $con->rollBack();
-            }
             $this->app->getLogger()->error('Failed to add credits atomically: ' . $e->getMessage());
 
             return false;
@@ -235,23 +220,18 @@ class Session extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $con->beginTransaction();
 
-            // Use SELECT FOR UPDATE to lock the row and get current credits
-            $stmt = $con->prepare('SELECT credits FROM ' . User::TABLE_NAME . ' WHERE token = ? FOR UPDATE');
+            // Simple SELECT - no locking needed for read operations
+            $stmt = $con->prepare('SELECT credits FROM ' . User::TABLE_NAME . ' WHERE token = ?');
             $stmt->execute([$this->SESSION_KEY]);
             $currentCredits = (int) $stmt->fetchColumn();
-
-            $con->commit();
 
             return [
                 'has_sufficient' => $currentCredits >= $requiredCredits,
                 'current_credits' => $currentCredits,
             ];
+
         } catch (\Exception $e) {
-            if (isset($con)) {
-                $con->rollBack();
-            }
             $this->app->getLogger()->error('Failed to check credits atomically: ' . $e->getMessage());
 
             return [
@@ -274,17 +254,14 @@ class Session extends Database
     {
         try {
             $con = self::getPdoConnection();
-            $con->beginTransaction();
 
-            // Use SELECT FOR UPDATE to lock the row and get current credits
-            $stmt = $con->prepare('SELECT credits FROM ' . User::TABLE_NAME . ' WHERE token = ? FOR UPDATE');
+            // First check if user has enough credits (no lock needed for read)
+            $stmt = $con->prepare('SELECT credits FROM ' . User::TABLE_NAME . ' WHERE token = ?');
             $stmt->execute([$this->SESSION_KEY]);
             $currentCredits = (int) $stmt->fetchColumn();
 
             // Check if user has enough credits
             if ($currentCredits < $price) {
-                $con->rollBack();
-
                 return [
                     'success' => false,
                     'error_code' => 'INSUFFICIENT_COINS',
@@ -293,24 +270,30 @@ class Session extends Database
                 ];
             }
 
-            // Deduct credits atomically
-            $stmt = $con->prepare('UPDATE ' . User::TABLE_NAME . ' SET credits = ? WHERE token = ?');
-            $stmt->execute([$currentCredits - $price, $this->SESSION_KEY]);
+            // Use atomic UPDATE with condition to prevent negative credits
+            $stmt = $con->prepare('UPDATE ' . User::TABLE_NAME . ' SET credits = credits - ? WHERE token = ? AND credits >= ?');
+            $result = $stmt->execute([$price, $this->SESSION_KEY, $price]);
+
+            if (!$result || $stmt->rowCount() === 0) {
+                // Another process modified the credits between our check and update
+                return [
+                    'success' => false,
+                    'error_code' => 'INSUFFICIENT_COINS',
+                    'required' => $price,
+                    'available' => 0,
+                ];
+            }
 
             // Apply item effect
             $itemEffect($this);
-
-            $con->commit();
 
             return [
                 'success' => true,
                 'remaining_coins' => $currentCredits - $price,
                 'price_paid' => $price,
             ];
+
         } catch (\Exception $e) {
-            if (isset($con)) {
-                $con->rollBack();
-            }
             $this->app->getLogger()->error('Failed to process purchase atomically: ' . $e->getMessage());
 
             return [
