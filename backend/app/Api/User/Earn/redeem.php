@@ -18,7 +18,6 @@ use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\Redeem\RedeemCoins;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
-use MythicalDash\Chat\Redeem\RedeemRedeems;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Plugins\Events\Events\RedeemEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
@@ -51,6 +50,7 @@ $router->post('/api/user/earn/redeem', function (): void {
             'code' => $code,
             'user' => $session->getInfo(UserColumns::UUID, false),
         ]);
+
         return;
     }
 
@@ -61,6 +61,7 @@ $router->post('/api/user/earn/redeem', function (): void {
             'code' => $code,
             'user' => $session->getInfo(UserColumns::UUID, false),
         ]);
+
         return;
     }
 
@@ -71,6 +72,7 @@ $router->post('/api/user/earn/redeem', function (): void {
             'code' => $code,
             'user' => $session->getInfo(UserColumns::UUID, false),
         ]);
+
         return;
     }
 
@@ -80,9 +82,10 @@ $router->post('/api/user/earn/redeem', function (): void {
     try {
         // Redeem the code atomically (this handles all the database operations in one transaction)
         $redemptionResult = RedeemCoins::redeemCodeAtomic($code, $session->getInfo(UserColumns::UUID, false));
-        
+
         if (!$redemptionResult) {
             $appInstance->BadRequest('Failed to redeem code', ['error_code' => 'REDEMPTION_FAILED']);
+
             return;
         }
 
@@ -91,6 +94,7 @@ $router->post('/api/user/earn/redeem', function (): void {
             // If adding credits failed, we need to log this critical error
             // The code was already redeemed, so we can't rollback easily
             $appInstance->BadRequest('Failed to add credits', ['error_code' => 'CREDIT_ADDITION_FAILED']);
+
             return;
         }
 
@@ -104,13 +108,13 @@ $router->post('/api/user/earn/redeem', function (): void {
             CloudFlareRealIP::getRealIP(),
             "Redeemed code: $code for $coinsToAdd credits"
         );
-        
+
         $eventManager->emit(RedeemEvent::onRedeemSuccess(), [
             'code' => $code,
             'user' => $session->getInfo(UserColumns::UUID, false),
             'credits_added' => $coinsToAdd,
         ]);
-        
+
         $appInstance->OK('Code redeemed successfully', [
             'credits_added' => $coinsToAdd,
             'total_credits' => $newCredits,

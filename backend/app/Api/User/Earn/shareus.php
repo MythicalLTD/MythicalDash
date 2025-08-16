@@ -442,7 +442,7 @@ $router->get('/api/user/earn/l4r/shareus/earn/(.*)', function (string $code): vo
 
     // User took enough time, give them coins
     ShareUSDB::markAsCompleted($linkId);
-    
+
     // Add credits atomically to prevent race conditions
     $coinsToAdd = (int) $coinsPerLink;
     if (!$session->addCreditsAtomic($coinsToAdd)) {
@@ -454,7 +454,7 @@ $router->get('/api/user/earn/l4r/shareus/earn/(.*)', function (string $code): vo
         // Get the new credit balance for response
         $newTotal = (string) $session->getInfo(UserColumns::CREDITS, false);
     }
-    
+
     $eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
         'user' => $session->getInfo(UserColumns::UUID, false),
         'link' => $linkId,

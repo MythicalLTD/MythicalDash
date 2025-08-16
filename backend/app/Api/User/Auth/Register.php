@@ -216,14 +216,14 @@ $router->add('/api/user/auth/register', function (): void {
                                 'user' => $referrerUuid,
                                 'referral_code' => $_GET['ref'],
                             ]);
-                            
+
                             // Add credits atomically to prevent race conditions
                             $newUserBonus = intval($appInstance->getConfig()->getDBSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL_REDEEMER, 15));
                             if (!User::addCreditsAtomic($newUserToken, $newUserBonus)) {
                                 // Log the error but don't fail the registration
                                 $appInstance->getLogger()->error('Failed to add referral bonus credits atomically for new user: ' . $newUserUuid);
                             }
-                            
+
                             // Calculate referrer bonus and add atomically
                             $referrerBonus = intval($appInstance->getConfig()->getDBSetting(ConfigInterface::REFERRALS_COINS_PER_REFERRAL, 35));
                             if (!User::addCreditsAtomic($referrerToken, $referrerBonus)) {

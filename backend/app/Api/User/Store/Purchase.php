@@ -302,7 +302,7 @@ $router->post('/api/user/store/purchase', function (): void {
 
     // Process purchase atomically (prevents race conditions)
     try {
-        $purchaseResult = $session->processPurchaseAtomic($price, function($session) use ($item) {
+        $purchaseResult = $session->processPurchaseAtomic($price, function ($session) use ($item) {
             // Apply item effect
             $item['effect']($session);
         });
@@ -314,6 +314,7 @@ $router->post('/api/user/store/purchase', function (): void {
                 'available' => $purchaseResult['available'] ?? null,
                 'message' => $purchaseResult['message'] ?? null,
             ]);
+
             return;
         }
 

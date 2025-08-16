@@ -38,7 +38,7 @@ $router->post('/api/user/earn/afk/work', function (): void {
 
     // Update user stats
     $s->setInfo(UserColumns::MINUTES_AFK, $newAfkTime, false);
-    
+
     // Add credits atomically to prevent race conditions
     $newTotalCoins = $coins;
     if ($coinsToAward > 0) {

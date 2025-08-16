@@ -731,8 +731,8 @@ class User extends Database
      * @param string $token The token
      *
      * @return int The user's credits
-	 * 
-	 * @deprecated Use checkCreditsAtomic instead
+     *
+     * @deprecated Use checkCreditsAtomic instead
      */
     public static function getCredits(string $token): int
     {
@@ -744,8 +744,8 @@ class User extends Database
      *
      * @param string $token The token
      * @param int $credits The number of credits to add
-	 * 
-	 * @deprecated Use addCreditsAtomic instead
+     *
+     * @deprecated Use addCreditsAtomic instead
      */
     public static function addCredits(string $token, int $credits): void
     {
@@ -758,9 +758,9 @@ class User extends Database
      *
      * @param string $token The token
      * @param int $credits The number of credits to remove
-	 * 
-	 * @deprecated Use removeCreditsAtomic instead
-    */
+     *
+     * @deprecated Use removeCreditsAtomic instead
+     */
     public static function removeCredits(string $token, int $credits): void
     {
         $currentCredits = self::getCredits($token);
@@ -773,6 +773,7 @@ class User extends Database
      *
      * @param string $token The token
      * @param int $credits The number of credits to remove
+     *
      * @return bool true if successful, false if insufficient credits or operation failed
      */
     public static function removeCreditsAtomic(string $token, int $credits): bool
@@ -789,6 +790,7 @@ class User extends Database
             // Check if user has enough credits
             if ($currentCredits < $credits) {
                 $con->rollBack();
+
                 return false;
             }
 
@@ -797,12 +799,14 @@ class User extends Database
             $stmt->execute([$currentCredits - $credits, $token]);
 
             $con->commit();
+
             return true;
         } catch (\Exception $e) {
             if (isset($con)) {
                 $con->rollBack();
             }
             self::db_Error('Failed to remove credits atomically: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -813,6 +817,7 @@ class User extends Database
      *
      * @param string $token The token
      * @param int $credits The number of credits to add
+     *
      * @return bool true if successful, false if operation failed
      */
     public static function addCreditsAtomic(string $token, int $credits): bool
@@ -831,12 +836,14 @@ class User extends Database
             $stmt->execute([$currentCredits + $credits, $token]);
 
             $con->commit();
+
             return true;
         } catch (\Exception $e) {
             if (isset($con)) {
                 $con->rollBack();
             }
             self::db_Error('Failed to add credits atomically: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -847,6 +854,7 @@ class User extends Database
      *
      * @param string $token The token
      * @param int $requiredCredits The number of credits required
+     *
      * @return array with 'has_sufficient' boolean and 'current_credits' integer
      */
     public static function checkCreditsAtomic(string $token, int $requiredCredits): array
@@ -864,16 +872,17 @@ class User extends Database
 
             return [
                 'has_sufficient' => $currentCredits >= $requiredCredits,
-                'current_credits' => $currentCredits
+                'current_credits' => $currentCredits,
             ];
         } catch (\Exception $e) {
             if (isset($con)) {
                 $con->rollBack();
             }
             self::db_Error('Failed to check credits atomically: ' . $e->getMessage());
+
             return [
                 'has_sufficient' => false,
-                'current_credits' => 0
+                'current_credits' => 0,
             ];
         }
     }

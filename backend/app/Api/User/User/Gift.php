@@ -63,6 +63,7 @@ $router->post('/api/user/gift', function () {
             // First, remove credits from sender atomically
             if (!$s->removeCreditsAtomic((int) intval($coinsAfterFee))) {
                 $appInstance->BadRequest('Failed to process gift - insufficient balance or operation failed', ['error_code' => 'GIFT_PROCESSING_FAILED']);
+
                 return;
             }
 
@@ -70,6 +71,7 @@ $router->post('/api/user/gift', function () {
             $recipientToken = User::getTokenFromUUID($recipientUuid);
             if (!$recipientToken) {
                 $appInstance->BadRequest('Failed to get recipient token', ['error_code' => 'RECIPIENT_TOKEN_ERROR']);
+
                 return;
             }
 
@@ -78,6 +80,7 @@ $router->post('/api/user/gift', function () {
                 // This is a critical error that should be logged
                 $appInstance->getLogger()->error('Failed to add gift credits to recipient: ' . $recipientUuid . ' for amount: ' . $coins);
                 $appInstance->BadRequest('Failed to process gift - recipient credit addition failed', ['error_code' => 'RECIPIENT_CREDIT_ADDITION_FAILED']);
+
                 return;
             }
 

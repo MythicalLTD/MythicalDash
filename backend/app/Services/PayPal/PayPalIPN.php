@@ -20,7 +20,6 @@ use MythicalDash\Chat\User\User;
 use MythicalDash\Chat\Gateways\PayPalDB;
 use MythicalDash\Config\ConfigInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use MythicalDash\Chat\columns\UserColumns;
 
 class PayPalIPN
 {

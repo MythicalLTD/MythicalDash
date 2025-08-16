@@ -492,7 +492,7 @@ $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code)
         // If adding credits failed, log the error but don't fail the entire request
         $appInstance->getLogger()->error('Failed to add Linkvertise credits atomically for user: ' . $session->getInfo(UserColumns::UUID, false));
     }
-    
+
     $eventManager->emit(LinkForRewardEvent::onLinkRedeemed(), [
         'user' => $session->getInfo(UserColumns::UUID, false),
         'link' => $linkId,

@@ -149,6 +149,7 @@ class Session extends Database
      * This method prevents race conditions by using database transactions.
      *
      * @param int $credits the number of credits to remove
+     *
      * @return bool true if successful, false if insufficient credits or operation failed
      */
     public function removeCreditsAtomic(int $credits): bool
@@ -165,6 +166,7 @@ class Session extends Database
             // Check if user has enough credits
             if ($currentCredits < $credits) {
                 $con->rollBack();
+
                 return false;
             }
 
@@ -173,12 +175,14 @@ class Session extends Database
             $stmt->execute([$currentCredits - $credits, $this->SESSION_KEY]);
 
             $con->commit();
+
             return true;
         } catch (\Exception $e) {
             if (isset($con)) {
                 $con->rollBack();
             }
             $this->app->getLogger()->error('Failed to remove credits atomically: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -188,6 +192,7 @@ class Session extends Database
      * This method prevents race conditions by using database transactions.
      *
      * @param int $credits the number of credits to add
+     *
      * @return bool true if successful, false if operation failed
      */
     public function addCreditsAtomic(int $credits): bool
@@ -206,12 +211,14 @@ class Session extends Database
             $stmt->execute([$currentCredits + $credits, $this->SESSION_KEY]);
 
             $con->commit();
+
             return true;
         } catch (\Exception $e) {
             if (isset($con)) {
                 $con->rollBack();
             }
             $this->app->getLogger()->error('Failed to add credits atomically: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -221,6 +228,7 @@ class Session extends Database
      * This method prevents race conditions by using database transactions.
      *
      * @param int $requiredCredits the number of credits required
+     *
      * @return array with 'has_sufficient' boolean and 'current_credits' integer
      */
     public function checkCreditsAtomic(int $requiredCredits): array
@@ -238,16 +246,17 @@ class Session extends Database
 
             return [
                 'has_sufficient' => $currentCredits >= $requiredCredits,
-                'current_credits' => $currentCredits
+                'current_credits' => $currentCredits,
             ];
         } catch (\Exception $e) {
             if (isset($con)) {
                 $con->rollBack();
             }
             $this->app->getLogger()->error('Failed to check credits atomically: ' . $e->getMessage());
+
             return [
                 'has_sufficient' => false,
-                'current_credits' => 0
+                'current_credits' => 0,
             ];
         }
     }
@@ -258,6 +267,7 @@ class Session extends Database
      *
      * @param int $price the price of the item
      * @param callable $itemEffect callback function to apply item effects
+     *
      * @return array with 'success' boolean and additional data
      */
     public function processPurchaseAtomic(int $price, callable $itemEffect): array
@@ -274,11 +284,12 @@ class Session extends Database
             // Check if user has enough credits
             if ($currentCredits < $price) {
                 $con->rollBack();
+
                 return [
                     'success' => false,
                     'error_code' => 'INSUFFICIENT_COINS',
                     'required' => $price,
-                    'available' => $currentCredits
+                    'available' => $currentCredits,
                 ];
             }
 
@@ -294,17 +305,18 @@ class Session extends Database
             return [
                 'success' => true,
                 'remaining_coins' => $currentCredits - $price,
-                'price_paid' => $price
+                'price_paid' => $price,
             ];
         } catch (\Exception $e) {
             if (isset($con)) {
                 $con->rollBack();
             }
             $this->app->getLogger()->error('Failed to process purchase atomically: ' . $e->getMessage());
+
             return [
                 'success' => false,
                 'error_code' => 'PURCHASE_FAILED',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ];
         }
     }

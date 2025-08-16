@@ -246,6 +246,7 @@ class RedeemCoins extends Database
      *
      * @param string $code The redeem code to redeem
      * @param string $userUuid The user UUID redeeming the code
+     *
      * @return array|false Array with redemption data on success, false on failure
      */
     public static function redeemCodeAtomic(string $code, string $userUuid): array|false
@@ -261,12 +262,14 @@ class RedeemCoins extends Database
 
             if (!$codeData) {
                 $dbConn->rollBack();
+
                 return false;
             }
 
             // Check if code has uses left
             if ((int) $codeData['uses'] <= 0) {
                 $dbConn->rollBack();
+
                 return false;
             }
 
@@ -275,6 +278,7 @@ class RedeemCoins extends Database
             $stmt->execute([$codeData['id'], $userUuid]);
             if ($stmt->fetchColumn() > 0) {
                 $dbConn->rollBack();
+
                 return false;
             }
 
@@ -291,13 +295,14 @@ class RedeemCoins extends Database
             return [
                 'id' => $codeData['id'],
                 'coins' => (int) $codeData['coins'],
-                'uses_left' => (int) $codeData['uses'] - 1
+                'uses_left' => (int) $codeData['uses'] - 1,
             ];
         } catch (\Exception $e) {
             if (isset($dbConn)) {
                 $dbConn->rollBack();
             }
             self::db_Error('Failed to redeem code atomically: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -308,6 +313,7 @@ class RedeemCoins extends Database
      *
      * @param string $code The redeem code to check
      * @param string $userUuid The user UUID to check against
+     *
      * @return array|false Array with validation data on success, false on failure
      */
     public static function validateCodeAtomic(string $code, string $userUuid): array|false
@@ -323,12 +329,14 @@ class RedeemCoins extends Database
 
             if (!$codeData) {
                 $dbConn->rollBack();
+
                 return false;
             }
 
             // Check if code has uses left
             if ((int) $codeData['uses'] <= 0) {
                 $dbConn->rollBack();
+
                 return false;
             }
 
@@ -344,13 +352,14 @@ class RedeemCoins extends Database
                 'coins' => (int) $codeData['coins'],
                 'uses_left' => (int) $codeData['uses'],
                 'already_redeemed' => $alreadyRedeemed,
-                'can_redeem' => !$alreadyRedeemed && (int) $codeData['uses'] > 0
+                'can_redeem' => !$alreadyRedeemed && (int) $codeData['uses'] > 0,
             ];
         } catch (\Exception $e) {
             if (isset($dbConn)) {
                 $dbConn->rollBack();
             }
             self::db_Error('Failed to validate code atomically: ' . $e->getMessage());
+
             return false;
         }
     }
