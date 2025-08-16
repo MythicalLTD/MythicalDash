@@ -43,18 +43,16 @@ SHELL := /bin/bash
 
 # Default target
 help:
-	@echo -e "${BOLD}${BLUE}MythicalDash Build System${NC}"
+	@echo -e "${BOLD}${BLUE}MythicalDash Development System${NC}"
 	@echo -e "${CYAN}================================${NC}\n"
 	@echo -e "${BOLD}Available commands:${NC}"
 	@echo -e "  ${GREEN}make frontend${NC}    ${ROCKET} Builds the frontend for production"
 	@echo -e "  ${GREEN}make backend${NC}     ${BUILD} Builds the backend components"
 	@echo -e "  ${GREEN}make release${NC}     ${PACKAGE} Prepares a full release build"
-	@echo -e "  ${GREEN}make install${NC}     ${INFO} Installs all dependencies"
 	@echo -e "  ${GREEN}make clean${NC}       ${CLEAN} Cleans all build artifacts"
-	@echo -e "  ${GREEN}make test${NC}        ${CHECK} Runs all tests"
 	@echo -e "  ${GREEN}make set-prod${NC}    ${PROD} Sets APP_DEBUG to false for production\n"
 	@echo -e "  ${GREEN}make set-dev${NC}     ${DEV} Sets APP_DEBUG to true for development"
-	@echo -e "  ${GREEN}make get-frontend${NC} ${DEV} Uses the official frontend repository instead of the local one"
+	@echo -e "  ${GREEN}make get-tools${NC}  ${TOOLS} Installs development tools (NVM, Yarn, PNPM)"
 	@echo -e "${YELLOW}Use 'make <command>' to execute a command${NC}\n"
 
 # Frontend tasks
@@ -105,7 +103,7 @@ release:
 	@echo -e "${GREEN}${CHECK} Frontend checks complete${NC}\n"
 	
 	@echo -e "${PURPLE}${INFO} Updating dependencies...${NC}"
-	@cd $(FRONTEND_DIR) && $(YARN) upgrade
+	@cd $(FRONTEND_DIR) && $(YARN)
 	@cd $(BACKEND_DIR) && $(COMPOSER) update
 	@echo -e "${GREEN}${CHECK} Dependencies updated${NC}\n"
 	
@@ -119,16 +117,6 @@ release:
 lint: 
 	@cd $(BACKEND_DIR) && $(COMPOSER) run lint
 	@cd $(FRONTEND_DIR) && $(YARN) format
-# Install dependencies
-install:
-	@echo -e "\n${BOLD}${BLUE}Installing Dependencies${NC} ${PACKAGE}"
-	@echo -e "${CYAN}=======================${NC}"
-	@echo -e "${GREEN}${INFO} Installing frontend packages...${NC}"
-	@cd $(FRONTEND_DIR) && $(YARN) install
-	@echo -e "${GREEN}${CHECK} Frontend packages installed${NC}\n"
-	@echo -e "${GREEN}${INFO} Installing backend packages...${NC}"
-	@cd $(BACKEND_DIR) && $(COMPOSER) install
-	@echo -e "${GREEN}${CHECK} Backend packages installed${NC}\n"
 
 # Clean build artifacts
 clean:
@@ -136,15 +124,8 @@ clean:
 	@echo -e "${CYAN}=======================${NC}"
 	@echo -e "${YELLOW}${WARN} Removing artifacts and caches...${NC}"
 	@cd $(FRONTEND_DIR) && rm -rf dist node_modules/
+	@rm -rf $(BACKEND_DIR)/storage/packages/
 	@echo -e "${GREEN}${CHECK} Clean complete!${NC}\n"
-
-# Run tests
-test:
-	@echo -e "\n${BOLD}${BLUE}Running Tests${NC} ${CHECK}"
-	@echo -e "${CYAN}=============${NC}"
-	@echo -e "${GREEN}${INFO} Running backend tests...${NC}"
-	@cd $(BACKEND_DIR) && $(COMPOSER) test
-	@echo -e "${GREEN}${CHECK} All tests complete!${NC}\n"
 
 # Set production mode
 set-prod:
@@ -161,12 +142,38 @@ set-dev:
 	@find $(BACKEND_DIR) -type f -name "*.php" -exec $(SED) -i 's/define('\''APP_DEBUG'\'', false);/define('\''APP_DEBUG'\'', true);/g' {} +
 	@echo -e "${GREEN}${CHECK} Development mode set successfully!${NC}\n"
 
-get-frontend:
-	@echo -e "\n${BOLD}${BLUE}Getting Frontend Repository${NC} ${ROCKET}"
-	@echo -e "${CYAN}=======================${NC}"
-	@echo -e "${GREEN}${INFO} Cloning frontend repository...${NC}"
-	@cd $(FRONTEND_DIR) && rm -rf dist
-	@cd $(FRONTEND_DIR) && curl -Lo Frontend.zip https://github.com/MythicalLTD/MythicalDash/releases/latest/download/Frontend.zip
-	@cd $(FRONTEND_DIR) && unzip Frontend.zip -d .
-	@cd $(FRONTEND_DIR) && rm Frontend.zip
-	@echo -e "${GREEN}${CHECK} Frontend repository cloned successfully!${NC}\n"
+get-tools: 
+	@echo -e "\n${BOLD}${BLUE}Installing Development Tools${NC} ${TOOLS}"
+	@echo -e "${CYAN}==========================${NC}"
+	@echo -e "${GREEN}${INFO} Installing NVM (Node Version Manager)...${NC}"
+	@curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+	@echo -e "${GREEN}${INFO} Setting up NVM environment...${NC}"
+	@export NVM_DIR="$$([ -z "$${XDG_CONFIG_HOME-}" ] && printf %s "$${HOME}/.nvm" || printf %s "$${XDG_CONFIG_HOME}/nvm")"
+	@[ -s "$$NVM_DIR/nvm.sh" ] && \. "$$NVM_DIR/nvm.sh" # This loads nvm
+	@echo -e "${GREEN}${CHECK} Development tools installed successfully!${NC}\n"
+	@echo -e "${YELLOW}${WARN} Please restart your terminal or run 'source ~/.bashrc' to use nvm${NC}\n"
+	@echo -e "${GREEN}${INFO} Attempting to source NVM and install Node.js 24...${NC}"
+	@bash -c 'export NVM_DIR="$$([ -z "$${XDG_CONFIG_HOME-}" ] && printf %s "$${HOME}/.nvm" || printf %s "$${XDG_CONFIG_HOME}/nvm")"; \
+		[ -s "$$NVM_DIR/nvm.sh" ] && \. "$$NVM_DIR/nvm.sh"; \
+		nvm install 24 && nvm use 24 && echo -e "${GREEN}${CHECK} Node.js 24 installed and activated${NC}"' || \
+		echo -e "${YELLOW}${WARN} Could not automatically install Node.js 24. Please run 'nvm install 24 && nvm use 24' manually${NC}"
+	@echo -e "${GREEN}${INFO} Installing Yarn package manager globally...${NC}"
+	@bash -c 'export NVM_DIR="$$([ -z "$${XDG_CONFIG_HOME-}" ] && printf %s "$${HOME}/.nvm" || printf %s "$${XDG_CONFIG_HOME}/nvm")"; \
+		[ -s "$$NVM_DIR/nvm.sh" ] && \. "$$NVM_DIR/nvm.sh"; \
+		npm i -g yarn && echo -e "${GREEN}${CHECK} Yarn installed successfully${NC}"' || \
+		echo -e "${YELLOW}${WARN} Could not install Yarn. Please run 'npm i -g yarn' manually${NC}"
+	@echo -e "${GREEN}${INFO} Installing PNPM package manager globally (for future use)...${NC}"
+	@bash -c 'export NVM_DIR="$$([ -z "$${XDG_CONFIG_HOME-}" ] && printf %s "$${HOME}/.nvm" || printf %s "$${XDG_CONFIG_HOME}/nvm")"; \
+		[ -s "$$NVM_DIR/nvm.sh" ] && \. "$$NVM_DIR/nvm.sh"; \
+		npm i -g pnpm && echo -e "${GREEN}${CHECK} PNPM installed successfully${NC}"' || \
+		echo -e "${YELLOW}${WARN} Could not install PNPM. Please run 'npm i -g pnpm' manually${NC}"
+	@echo -e "${GREEN}${INFO} Installing frontend packages with Yarn...${NC}"
+	@bash -c 'export NVM_DIR="$$([ -z "$${XDG_CONFIG_HOME-}" ] && printf %s "$${HOME}/.nvm" || printf %s "$${XDG_CONFIG_HOME}/nvm")"; \
+		[ -s "$$NVM_DIR/nvm.sh" ] && \. "$$NVM_DIR/nvm.sh"; \
+		cd $(FRONTEND_DIR) && yarn && echo -e "${GREEN}${CHECK} Frontend packages installed successfully${NC}"' || \
+		echo -e "${YELLOW}${WARN} Could not install frontend packages. Please run 'cd $(FRONTEND_DIR) && yarn' manually${NC}"
+	@echo -e "${GREEN}${CHECK} All development tools installed successfully!${NC}\n"
+	@echo -e "${GREEN}${INFO} Installing backend dependencies with Composer...${NC}"
+	@cd $(BACKEND_DIR) && $(COMPOSER) install && echo -e "${GREEN}${CHECK} Backend dependencies installed successfully${NC}" || \
+		echo -e "${YELLOW}${WARN} Could not install backend dependencies. Please run 'cd $(BACKEND_DIR) && composer install' manually${NC}"
+	@echo -e "${BOLD}${GREEN}🎉 Tools are installed and you are ready to build MythicalDash! 🎉${NC}\n"

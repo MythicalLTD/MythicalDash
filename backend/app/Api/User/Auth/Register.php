@@ -9,6 +9,11 @@
  * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
  *
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ * Make sure to read the docs before making any changes. And note that any changes you make will be overwritten by the next update.
+ *
+ * Be careful with the code you write, and make sure to test it before committing it.
+ *
+ * Please rather than modifying the dashboard code try to report the thing you wish on our github or write a plugin
  */
 
 use MythicalDash\App;
@@ -280,10 +285,6 @@ $router->add('/api/user/auth/register', function (): void {
             $appInstance->getLogger()->debug('Generated image hosting API key for new user: ' . $username);
         }
         IPRelationship::create($newUserUuid, CloudFlareRealIP::getRealIP());
-        /**
-         * Zero Trust.
-         */
-        $appInstance->getTelemetry()->sendRegister($username, $firstName, $lastName, $email, CloudFlareRealIP::getRealIP());
         App::OK('User registered', ['is_first_user' => false]);
     } catch (Exception $e) {
         $eventManager->emit(AuthEvent::onAuthRegisterFailed(), ['error_code' => 'DATABASE_ERROR']);

@@ -9,6 +9,11 @@
  * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
  *
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ * Make sure to read the docs before making any changes. And note that any changes you make will be overwritten by the next update.
+ *
+ * Be careful with the code you write, and make sure to test it before committing it.
+ *
+ * Please rather than modifying the dashboard code try to report the thing you wish on our github or write a plugin
  */
 
 namespace MythicalDash\Config;
@@ -133,12 +138,19 @@ interface ConfigInterface
      */
     public const STORE_ENABLED = 'store_enabled';
     public const STORE_RAM_PRICE = 'store_ram_price';
+    public const STORE_RAM_QUANTITY = 'store_ram_quantity';
     public const STORE_DISK_PRICE = 'store_disk_price';
+    public const STORE_DISK_QUANTITY = 'store_disk_quantity';
     public const STORE_CPU_PRICE = 'store_cpu_price';
+    public const STORE_CPU_QUANTITY = 'store_cpu_quantity';
     public const STORE_PORTS_PRICE = 'store_ports_price';
+    public const STORE_ALLOCATION_QUANTITY = 'store_allocation_quantity';
     public const STORE_DATABASES_PRICE = 'store_databases_price';
+    public const STORE_DATABASES_QUANTITY = 'store_databases_quantity';
     public const STORE_SERVER_SLOT_PRICE = 'store_server_slot_price';
+    public const STORE_SERVER_SLOT_QUANTITY = 'store_server_slot_quantity';
     public const STORE_BACKUPS_PRICE = 'store_backups_price';
+    public const STORE_BACKUPS_QUANTITY = 'store_backups_quantity';
 
     /**
      * Misc.

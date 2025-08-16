@@ -1374,7 +1374,7 @@ store:
         alerts:
             buy:
                 title: 'Do you want to buy this?'
-                description: 'Are you sure you want to buy this?'
+                description: 'Are you sure you want to buy this? {name} for {price} coins'
                 confirmButtonText: 'OK'
                 cancelButtonText: 'Cancel'
             error:
@@ -1449,49 +1449,49 @@ store:
                         confirmButtonText: 'OK'
                 ram:
                     title: 'Additional RAM'
-                    description: "Increase your server's memory capacity"
+                    description: "Increase your server's memory capacity by {quantity} MB"
                     features:
                         one: 'Instant allocation'
                         two: 'Flexible scaling'
                         three: 'No restart required'
                 disk:
                     title: 'Additional Storage'
-                    description: "Increase your server's storage capacity"
+                    description: "Increase your server's storage capacity by {quantity} MB"
                     features:
                         one: 'Instant allocation'
                         two: 'Flexible scaling'
                         three: 'No restart required'
                 cpu:
                     title: 'Additional CPU'
-                    description: "Increase your server's CPU capacity"
+                    description: "Increase your server's CPU capacity by {quantity}%"
                     features:
                         one: 'High-performance cores'
                         two: 'Dedicated resources'
                         three: 'Real-time scaling'
                 server_slot:
                     title: 'Server Slot'
-                    description: 'Add an additional server to your account'
+                    description: 'Add an additional server to your account by {quantity}'
                     features:
                         one: 'Full server access'
                         two: 'Custom configuration'
                         three: 'Instant deployment'
                 server_backup:
                     title: 'Backup Slot'
-                    description: 'Additional backup storage for your servers'
+                    description: 'Additional backup storage for your servers by {quantity}'
                     features:
                         one: 'Automated backups'
                         two: 'Instant restoration'
                         three: 'Secure storage'
                 server_allocation:
                     title: 'Server Allocation'
-                    description: 'Additional server allocation for your servers'
+                    description: 'Additional server allocation for your servers by {quantity}'
                     features:
                         one: 'Unlimited allocation'
                         two: 'Flexible scaling'
                         three: 'No restart required'
                 server_database:
                     title: 'Database'
-                    description: 'Additional database for your servers'
+                    description: 'Additional database for your servers by {quantity}'
                     features:
                         one: 'MySQL/MariaDB'
                         two: 'Automated backups'

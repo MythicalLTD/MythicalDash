@@ -9,6 +9,11 @@
  * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
  *
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ * Make sure to read the docs before making any changes. And note that any changes you make will be overwritten by the next update.
+ *
+ * Be careful with the code you write, and make sure to test it before committing it.
+ *
+ * Please rather than modifying the dashboard code try to report the thing you wish on our github or write a plugin
  */
 
 use MythicalDash\App;
@@ -46,54 +51,68 @@ $router->post('/api/user/store/purchase', function (): void {
 
         return;
     }
-    // Define available items with their prices and effects
+    // Define available items with their prices, quantities, and effects
     $items = [
         'ram' => [
             'price' => (int) $config->getDBSetting(ConfigInterface::STORE_RAM_PRICE, 150),
-            'effect' => function ($session) {
-                $session->setInfo(UserColumns::MEMORY_LIMIT, $session->getInfo(UserColumns::MEMORY_LIMIT, false) + 1024, false);
+            'quantity' => (int) $config->getDBSetting(ConfigInterface::STORE_RAM_QUANTITY, 1024),
+            'effect' => function ($session) use ($config) {
+                $quantity = (int) $config->getDBSetting(ConfigInterface::STORE_RAM_QUANTITY, 1024);
+                $session->setInfo(UserColumns::MEMORY_LIMIT, $session->getInfo(UserColumns::MEMORY_LIMIT, false) + $quantity, false);
             },
             'blocked' => $config->getDBSetting(ConfigInterface::BLOCK_RAM, 'false') === 'true',
         ],
         'disk' => [
             'price' => (int) $config->getDBSetting(ConfigInterface::STORE_DISK_PRICE, 200),
-            'effect' => function ($session) {
-                $session->setInfo(UserColumns::DISK_LIMIT, $session->getInfo(UserColumns::DISK_LIMIT, false) + 1024, false);
+            'quantity' => (int) $config->getDBSetting(ConfigInterface::STORE_DISK_QUANTITY, 1024),
+            'effect' => function ($session) use ($config) {
+                $quantity = (int) $config->getDBSetting(ConfigInterface::STORE_DISK_QUANTITY, 1024);
+                $session->setInfo(UserColumns::DISK_LIMIT, $session->getInfo(UserColumns::DISK_LIMIT, false) + $quantity, false);
             },
             'blocked' => $config->getDBSetting(ConfigInterface::BLOCK_DISK, 'false') === 'true',
         ],
         'cpu' => [
             'price' => (int) $config->getDBSetting(ConfigInterface::STORE_CPU_PRICE, 300),
-            'effect' => function ($session) {
-                $session->setInfo(UserColumns::CPU_LIMIT, $session->getInfo(UserColumns::CPU_LIMIT, false) + 100, false);
+            'quantity' => (int) $config->getDBSetting(ConfigInterface::STORE_CPU_QUANTITY, 100),
+            'effect' => function ($session) use ($config) {
+                $quantity = (int) $config->getDBSetting(ConfigInterface::STORE_CPU_QUANTITY, 100);
+                $session->setInfo(UserColumns::CPU_LIMIT, $session->getInfo(UserColumns::CPU_LIMIT, false) + $quantity, false);
             },
             'blocked' => $config->getDBSetting(ConfigInterface::BLOCK_CPU, 'false') === 'true',
         ],
         'server_slot' => [
             'price' => (int) $config->getDBSetting(ConfigInterface::STORE_SERVER_SLOT_PRICE, 500),
-            'effect' => function ($session) {
-                $session->setInfo(UserColumns::SERVER_LIMIT, $session->getInfo(UserColumns::SERVER_LIMIT, false) + 1, false);
+            'quantity' => (int) $config->getDBSetting(ConfigInterface::STORE_SERVER_SLOT_QUANTITY, 1),
+            'effect' => function ($session) use ($config) {
+                $quantity = (int) $config->getDBSetting(ConfigInterface::STORE_SERVER_SLOT_QUANTITY, 1);
+                $session->setInfo(UserColumns::SERVER_LIMIT, $session->getInfo(UserColumns::SERVER_LIMIT, false) + $quantity, false);
             },
             'blocked' => $config->getDBSetting(ConfigInterface::BLOCK_SERVER_SLOTS, 'false') === 'true',
         ],
         'server_backup' => [
             'price' => (int) $config->getDBSetting(ConfigInterface::STORE_BACKUPS_PRICE, 150),
-            'effect' => function ($session) {
-                $session->setInfo(UserColumns::BACKUP_LIMIT, $session->getInfo(UserColumns::BACKUP_LIMIT, false) + 1, false);
+            'quantity' => (int) $config->getDBSetting(ConfigInterface::STORE_BACKUPS_QUANTITY, 1),
+            'effect' => function ($session) use ($config) {
+                $quantity = (int) $config->getDBSetting(ConfigInterface::STORE_BACKUPS_QUANTITY, 1);
+                $session->setInfo(UserColumns::BACKUP_LIMIT, $session->getInfo(UserColumns::BACKUP_LIMIT, false) + $quantity, false);
             },
             'blocked' => $config->getDBSetting(ConfigInterface::BLOCK_BACKUPS, 'false') === 'true',
         ],
         'server_allocation' => [
             'price' => (int) $config->getDBSetting(ConfigInterface::STORE_PORTS_PRICE, 100),
-            'effect' => function ($session) {
-                $session->setInfo(UserColumns::ALLOCATION_LIMIT, $session->getInfo(UserColumns::ALLOCATION_LIMIT, false) + 1, false);
+            'quantity' => (int) $config->getDBSetting(ConfigInterface::STORE_ALLOCATION_QUANTITY, 2),
+            'effect' => function ($session) use ($config) {
+                $quantity = (int) $config->getDBSetting(ConfigInterface::STORE_ALLOCATION_QUANTITY, 2);
+                $session->setInfo(UserColumns::ALLOCATION_LIMIT, $session->getInfo(UserColumns::ALLOCATION_LIMIT, false) + $quantity, false);
             },
             'blocked' => $config->getDBSetting(ConfigInterface::BLOCK_PORTS, 'false') === 'true',
         ],
         'server_database' => [
             'price' => (int) $config->getDBSetting(ConfigInterface::STORE_DATABASES_PRICE, 200),
-            'effect' => function ($session) {
-                $session->setInfo(UserColumns::DATABASE_LIMIT, $session->getInfo(UserColumns::DATABASE_LIMIT, false) + 1, false);
+            'quantity' => (int) $config->getDBSetting(ConfigInterface::STORE_DATABASES_QUANTITY, 1),
+            'effect' => function ($session) use ($config) {
+                $quantity = (int) $config->getDBSetting(ConfigInterface::STORE_DATABASES_QUANTITY, 1);
+                $session->setInfo(UserColumns::DATABASE_LIMIT, $session->getInfo(UserColumns::DATABASE_LIMIT, false) + $quantity, false);
             },
             'blocked' => $config->getDBSetting(ConfigInterface::BLOCK_DATABASES, 'false') === 'true',
         ],
@@ -133,7 +152,7 @@ $router->post('/api/user/store/purchase', function (): void {
         case 'ram':
             $maxRam = $config->getDBSetting(ConfigInterface::MAX_RAM, 1024);
             $currentRam = (int) $session->getInfo(UserColumns::MEMORY_LIMIT, false);
-            $ramToAdd = isset($item['ram']) ? (int) $item['ram'] : 1024;
+            $ramToAdd = $item['quantity'];
             if ($currentRam >= (int) $maxRam) {
                 $appInstance->BadRequest('You have reached the maximum RAM limit', [
                     'error_code' => 'MAX_RAM_LIMIT',
@@ -157,7 +176,7 @@ $router->post('/api/user/store/purchase', function (): void {
         case 'disk':
             $maxDisk = $config->getDBSetting(ConfigInterface::MAX_DISK, 1024);
             $currentDisk = (int) $session->getInfo(UserColumns::DISK_LIMIT, false);
-            $diskToAdd = isset($item['disk']) ? (int) $item['disk'] : 1024;
+            $diskToAdd = $item['quantity'];
             if ($currentDisk >= (int) $maxDisk) {
                 $appInstance->BadRequest('You have reached the maximum disk limit', [
                     'error_code' => 'MAX_DISK_LIMIT',
@@ -181,7 +200,7 @@ $router->post('/api/user/store/purchase', function (): void {
         case 'cpu':
             $maxCpu = $config->getDBSetting(ConfigInterface::MAX_CPU, 100);
             $currentCpu = (int) $session->getInfo(UserColumns::CPU_LIMIT, false);
-            $cpuToAdd = isset($item['cpu']) ? (int) $item['cpu'] : 100;
+            $cpuToAdd = $item['quantity'];
             if ($currentCpu >= (int) $maxCpu) {
                 $appInstance->BadRequest('You have reached the maximum CPU limit', [
                     'error_code' => 'MAX_CPU_LIMIT',
@@ -214,7 +233,7 @@ $router->post('/api/user/store/purchase', function (): void {
 
                 return;
             }
-            $slotsToAdd = isset($item['slots']) ? (int) $item['slots'] : 1;
+            $slotsToAdd = $item['quantity'];
             if (($currentSlots + $slotsToAdd) > (int) $maxServerSlots) {
                 $appInstance->BadRequest('This purchase would exceed your maximum server slots limit', [
                     'error_code' => 'MAX_SERVER_SLOTS_LIMIT',
@@ -229,7 +248,7 @@ $router->post('/api/user/store/purchase', function (): void {
         case 'server_backup':
             $maxBackups = $config->getDBSetting(ConfigInterface::MAX_BACKUPS, 5);
             $currentBackups = (int) $session->getInfo(UserColumns::BACKUP_LIMIT, false);
-            $backupsToAdd = isset($item['backups']) ? (int) $item['backups'] : 1;
+            $backupsToAdd = $item['quantity'];
             if ($currentBackups >= (int) $maxBackups) {
                 $appInstance->BadRequest('You have reached the maximum backups limit', [
                     'error_code' => 'MAX_BACKUPS_LIMIT',
@@ -253,7 +272,7 @@ $router->post('/api/user/store/purchase', function (): void {
         case 'server_allocation':
             $maxPorts = $config->getDBSetting(ConfigInterface::MAX_PORTS, 2);
             $currentPorts = (int) $session->getInfo(UserColumns::ALLOCATION_LIMIT, false);
-            $portsToAdd = isset($item['ports']) ? (int) $item['ports'] : 1;
+            $portsToAdd = $item['quantity'];
             if ($currentPorts >= (int) $maxPorts) {
                 $appInstance->BadRequest('You have reached the maximum ports limit', [
                     'error_code' => 'MAX_PORTS_LIMIT',
@@ -277,7 +296,7 @@ $router->post('/api/user/store/purchase', function (): void {
         case 'server_database':
             $maxDatabases = $config->getDBSetting(ConfigInterface::MAX_DATABASES, 1);
             $currentDatabases = (int) $session->getInfo(UserColumns::DATABASE_LIMIT, false);
-            $databasesToAdd = isset($item['databases']) ? (int) $item['databases'] : 1;
+            $databasesToAdd = $item['quantity'];
             if ($currentDatabases >= (int) $maxDatabases) {
                 $appInstance->BadRequest('You have reached the maximum databases limit', [
                     'error_code' => 'MAX_DATABASES_LIMIT',

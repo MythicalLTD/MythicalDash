@@ -932,97 +932,226 @@
                     </div>
                 </div>
 
-                <div v-if="storeEnabled" class="space-y-4 mt-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="store_ram_price" class="block text-sm font-medium text-gray-400 mb-1">
-                                RAM Price
-                            </label>
-                            <input
-                                id="store_ram_price"
-                                type="number"
-                                v-model="formData.store_ram_price"
-                                @change="updateSetting('store_ram_price', formData.store_ram_price)"
-                                class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            />
-                        </div>
+                <div v-if="storeEnabled" class="space-y-6 mt-4">
+                    <!-- Store Prices -->
+                    <div>
+                        <h4 class="font-medium text-white mb-3">Resource Prices (coins)</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="store_ram_price" class="block text-sm font-medium text-gray-400 mb-1">
+                                    RAM Price
+                                </label>
+                                <input
+                                    id="store_ram_price"
+                                    type="number"
+                                    v-model="formData.store_ram_price"
+                                    @change="updateSetting('store_ram_price', formData.store_ram_price)"
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                            </div>
 
-                        <div>
-                            <label for="store_disk_price" class="block text-sm font-medium text-gray-400 mb-1">
-                                Disk Price
-                            </label>
-                            <input
-                                id="store_disk_price"
-                                type="number"
-                                v-model="formData.store_disk_price"
-                                @change="updateSetting('store_disk_price', formData.store_disk_price)"
-                                class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            />
-                        </div>
+                            <div>
+                                <label for="store_disk_price" class="block text-sm font-medium text-gray-400 mb-1">
+                                    Disk Price
+                                </label>
+                                <input
+                                    id="store_disk_price"
+                                    type="number"
+                                    v-model="formData.store_disk_price"
+                                    @change="updateSetting('store_disk_price', formData.store_disk_price)"
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                            </div>
 
-                        <div>
-                            <label for="store_cpu_price" class="block text-sm font-medium text-gray-400 mb-1">
-                                CPU Price
-                            </label>
-                            <input
-                                id="store_cpu_price"
-                                type="number"
-                                v-model="formData.store_cpu_price"
-                                @change="updateSetting('store_cpu_price', formData.store_cpu_price)"
-                                class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            />
-                        </div>
+                            <div>
+                                <label for="store_cpu_price" class="block text-sm font-medium text-gray-400 mb-1">
+                                    CPU Price
+                                </label>
+                                <input
+                                    id="store_cpu_price"
+                                    type="number"
+                                    v-model="formData.store_cpu_price"
+                                    @change="updateSetting('store_cpu_price', formData.store_cpu_price)"
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                            </div>
 
-                        <div>
-                            <label for="store_ports_price" class="block text-sm font-medium text-gray-400 mb-1">
-                                Ports Price
-                            </label>
-                            <input
-                                id="store_ports_price"
-                                type="number"
-                                v-model="formData.store_ports_price"
-                                @change="updateSetting('store_ports_price', formData.store_ports_price)"
-                                class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            />
-                        </div>
+                            <div>
+                                <label for="store_ports_price" class="block text-sm font-medium text-gray-400 mb-1">
+                                    Ports Price
+                                </label>
+                                <input
+                                    id="store_ports_price"
+                                    type="number"
+                                    v-model="formData.store_ports_price"
+                                    @change="updateSetting('store_ports_price', formData.store_ports_price)"
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                            </div>
 
-                        <div>
-                            <label for="store_databases_price" class="block text-sm font-medium text-gray-400 mb-1">
-                                Databases Price
-                            </label>
-                            <input
-                                id="store_databases_price"
-                                type="number"
-                                v-model="formData.store_databases_price"
-                                @change="updateSetting('store_databases_price', formData.store_databases_price)"
-                                class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            />
-                        </div>
+                            <div>
+                                <label for="store_databases_price" class="block text-sm font-medium text-gray-400 mb-1">
+                                    Databases Price
+                                </label>
+                                <input
+                                    id="store_databases_price"
+                                    type="number"
+                                    v-model="formData.store_databases_price"
+                                    @change="updateSetting('store_databases_price', formData.store_databases_price)"
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                            </div>
 
-                        <div>
-                            <label for="store_backups_price" class="block text-sm font-medium text-gray-400 mb-1">
-                                Backups Price
-                            </label>
-                            <input
-                                id="store_backups_price"
-                                type="number"
-                                v-model="formData.store_backups_price"
-                                @change="updateSetting('store_backups_price', formData.store_backups_price)"
-                                class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            />
-                        </div>
+                            <div>
+                                <label for="store_backups_price" class="block text-sm font-medium text-gray-400 mb-1">
+                                    Backups Price
+                                </label>
+                                <input
+                                    id="store_backups_price"
+                                    type="number"
+                                    v-model="formData.store_backups_price"
+                                    @change="updateSetting('store_backups_price', formData.store_backups_price)"
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                            </div>
 
-                        <div>
-                            <label for="store_server_slot_price" class="block text-sm font-medium text-gray-400 mb-1">
-                                Server Slot Price
-                            </label>
-                            <input
-                                id="store_server_slot_price"
-                                type="number"
-                                v-model="formData.store_server_slot_price"
-                                @change="updateSetting('store_server_slot_price', formData.store_server_slot_price)"
-                                class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            />
+                            <div>
+                                <label
+                                    for="store_server_slot_price"
+                                    class="block text-sm font-medium text-gray-400 mb-1"
+                                >
+                                    Server Slot Price
+                                </label>
+                                <input
+                                    id="store_server_slot_price"
+                                    type="number"
+                                    v-model="formData.store_server_slot_price"
+                                    @change="updateSetting('store_server_slot_price', formData.store_server_slot_price)"
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Store Quantities -->
+                    <div>
+                        <h4 class="font-medium text-white mb-3">Resource Quantities</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="store_ram_quantity" class="block text-sm font-medium text-gray-400 mb-1">
+                                    RAM Quantity (MB)
+                                </label>
+                                <input
+                                    id="store_ram_quantity"
+                                    type="number"
+                                    v-model="formData.store_ram_quantity"
+                                    @change="updateSetting('store_ram_quantity', formData.store_ram_quantity)"
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                                <p class="mt-1 text-xs text-gray-500">Amount of RAM in MB per purchase</p>
+                            </div>
+
+                            <div>
+                                <label for="store_disk_quantity" class="block text-sm font-medium text-gray-400 mb-1">
+                                    Disk Quantity (MB)
+                                </label>
+                                <input
+                                    id="store_disk_quantity"
+                                    type="number"
+                                    v-model="formData.store_disk_quantity"
+                                    @change="updateSetting('store_disk_quantity', formData.store_disk_quantity)"
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                                <p class="mt-1 text-xs text-gray-500">Amount of disk space in MB per purchase</p>
+                            </div>
+
+                            <div>
+                                <label for="store_cpu_quantity" class="block text-sm font-medium text-gray-400 mb-1">
+                                    CPU Quantity (%)
+                                </label>
+                                <input
+                                    id="store_cpu_quantity"
+                                    type="number"
+                                    v-model="formData.store_cpu_quantity"
+                                    @change="updateSetting('store_cpu_quantity', formData.store_cpu_quantity)"
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                                <p class="mt-1 text-xs text-gray-500">Amount of CPU in percentage per purchase</p>
+                            </div>
+
+                            <div>
+                                <label
+                                    for="store_allocation_quantity"
+                                    class="block text-sm font-medium text-gray-400 mb-1"
+                                >
+                                    Ports Quantity
+                                </label>
+                                <input
+                                    id="store_allocation_quantity"
+                                    type="number"
+                                    v-model="formData.store_allocation_quantity"
+                                    @change="
+                                        updateSetting('store_allocation_quantity', formData.store_allocation_quantity)
+                                    "
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                                <p class="mt-1 text-xs text-gray-500">Number of ports per purchase</p>
+                            </div>
+
+                            <div>
+                                <label
+                                    for="store_databases_quantity"
+                                    class="block text-sm font-medium text-gray-400 mb-1"
+                                >
+                                    Databases Quantity
+                                </label>
+                                <input
+                                    id="store_databases_quantity"
+                                    type="number"
+                                    v-model="formData.store_databases_quantity"
+                                    @change="
+                                        updateSetting('store_databases_quantity', formData.store_databases_quantity)
+                                    "
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                                <p class="mt-1 text-xs text-gray-500">Number of databases per purchase</p>
+                            </div>
+
+                            <div>
+                                <label
+                                    for="store_server_slot_quantity"
+                                    class="block text-sm font-medium text-gray-400 mb-1"
+                                >
+                                    Server Slot Quantity
+                                </label>
+                                <input
+                                    id="store_server_slot_quantity"
+                                    type="number"
+                                    v-model="formData.store_server_slot_quantity"
+                                    @change="
+                                        updateSetting('store_server_slot_quantity', formData.store_server_slot_quantity)
+                                    "
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                                <p class="mt-1 text-xs text-gray-500">Number of server slots per purchase</p>
+                            </div>
+
+                            <div>
+                                <label
+                                    for="store_backups_quantity"
+                                    class="block text-sm font-medium text-gray-400 mb-1"
+                                >
+                                    Backups Quantity
+                                </label>
+                                <input
+                                    id="store_backups_quantity"
+                                    type="number"
+                                    v-model="formData.store_backups_quantity"
+                                    @change="updateSetting('store_backups_quantity', formData.store_backups_quantity)"
+                                    class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                />
+                                <p class="mt-1 text-xs text-gray-500">Number of backups per purchase</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1369,6 +1498,13 @@ const formData = ref({
     store_databases_price: '100',
     store_backups_price: '100',
     store_server_slot_price: '100',
+    store_ram_quantity: '1024',
+    store_disk_quantity: '1024',
+    store_cpu_quantity: '100',
+    store_allocation_quantity: '2',
+    store_databases_quantity: '1',
+    store_server_slot_quantity: '1',
+    store_backups_quantity: '1',
     l4r_linkadvertise_user_id: '',
     l4r_linkadvertise_coins_per_link: '100',
     l4r_linkadvertise_daily_limit: '5',
@@ -1543,6 +1679,13 @@ watch(
                 store_databases_price: newSettings['store_databases_price'] || '100',
                 store_backups_price: newSettings['store_backups_price'] || '100',
                 store_server_slot_price: newSettings['store_server_slot_price'] || '100',
+                store_ram_quantity: newSettings['store_ram_quantity'] || '1024',
+                store_disk_quantity: newSettings['store_disk_quantity'] || '1024',
+                store_cpu_quantity: newSettings['store_cpu_quantity'] || '100',
+                store_allocation_quantity: newSettings['store_allocation_quantity'] || '2',
+                store_databases_quantity: newSettings['store_databases_quantity'] || '1',
+                store_server_slot_quantity: newSettings['store_server_slot_quantity'] || '1',
+                store_backups_quantity: newSettings['store_backups_quantity'] || '1',
                 l4r_linkadvertise_user_id: newSettings['l4r_linkadvertise_user_id'] || '',
                 l4r_linkadvertise_coins_per_link: newSettings['l4r_linkadvertise_coins_per_link'] || '100',
                 l4r_linkadvertise_daily_limit: newSettings['l4r_linkadvertise_daily_limit'] || '5',

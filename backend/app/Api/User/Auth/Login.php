@@ -9,6 +9,11 @@
  * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
  *
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ * Make sure to read the docs before making any changes. And note that any changes you make will be overwritten by the next update.
+ *
+ * Be careful with the code you write, and make sure to test it before committing it.
+ *
+ * Please rather than modifying the dashboard code try to report the thing you wish on our github or write a plugin
  */
 
 namespace MythicalDash\Api\User\Auth;
@@ -124,23 +129,6 @@ $router->add('/api/user/auth/login', function (): void {
         $appInstance->InternalServerError('Internal Server Error', ['error_code' => 'DATABASE_ERROR']);
     }
 
-    /**
-     * Zero Trust.
-     */
-    $telemetry = $appInstance->getTelemetry();
-    $telemetry->sendLogin(
-        $userInfoArray[UserColumns::USERNAME],
-        $userInfoArray[UserColumns::FIRST_NAME] ?? '',
-        $userInfoArray[UserColumns::LAST_NAME] ?? '',
-        $userInfoArray[UserColumns::EMAIL],
-        $userInfoArray[UserColumns::CREDITS] ?? '0',
-        $userInfoArray[UserColumns::UUID],
-        CloudFlareRealIP::getRealIP(),
-        $userInfoArray[UserColumns::BANNED] ?? 'NO',
-        $userInfoArray[UserColumns::VERIFIED] ?? 'false',
-        $userInfoArray[UserColumns::DISCORD_ID] ?? '',
-        $userInfoArray[UserColumns::GITHUB_ID] ?? ''
-    );
     if ($userInfoArray[UserColumns::PTERODACTYL_USER_ID] == 0) {
         $eventManager->emit(AuthEvent::onAuthLoginFailed(), ['login' => $login, 'error_code' => 'PTERODACTYL_USER_NOT_FOUND']);
         $appInstance->BadRequest('Pterodactyl user not found', ['error_code' => 'PTERODACTYL_USER_NOT_FOUND']);

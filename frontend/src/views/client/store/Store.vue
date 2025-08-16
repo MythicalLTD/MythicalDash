@@ -362,7 +362,9 @@ const storeItems = ref<StoreItem[]>([]);
 const itemMetadata: Record<string, { name: string; description: string; features: string[]; icon: unknown }> = {
     ram: {
         name: t('store.pages.index.info.ram.title'),
-        description: t('store.pages.index.info.ram.description'),
+        description: t('store.pages.index.info.ram.description', {
+            quantity: Settings.getSetting('store_ram_quantity'),
+        }),
         features: [
             t('store.pages.index.info.ram.features.one'),
             t('store.pages.index.info.ram.features.two'),
@@ -372,7 +374,9 @@ const itemMetadata: Record<string, { name: string; description: string; features
     },
     disk: {
         name: t('store.pages.index.info.disk.title'),
-        description: t('store.pages.index.info.disk.description'),
+        description: t('store.pages.index.info.disk.description', {
+            quantity: Settings.getSetting('store_disk_quantity'),
+        }),
         features: [
             t('store.pages.index.info.disk.features.one'),
             t('store.pages.index.info.disk.features.two'),
@@ -382,7 +386,9 @@ const itemMetadata: Record<string, { name: string; description: string; features
     },
     cpu: {
         name: t('store.pages.index.info.cpu.title'),
-        description: t('store.pages.index.info.cpu.description'),
+        description: t('store.pages.index.info.cpu.description', {
+            quantity: Settings.getSetting('store_cpu_quantity'),
+        }),
         features: [
             t('store.pages.index.info.cpu.features.one'),
             t('store.pages.index.info.cpu.features.two'),
@@ -392,7 +398,9 @@ const itemMetadata: Record<string, { name: string; description: string; features
     },
     server_slot: {
         name: t('store.pages.index.info.server_slot.title'),
-        description: t('store.pages.index.info.server_slot.description'),
+        description: t('store.pages.index.info.server_slot.description', {
+            quantity: Settings.getSetting('store_server_slot_quantity'),
+        }),
         features: [
             t('store.pages.index.info.server_slot.features.one'),
             t('store.pages.index.info.server_slot.features.two'),
@@ -402,7 +410,9 @@ const itemMetadata: Record<string, { name: string; description: string; features
     },
     server_backup: {
         name: t('store.pages.index.info.server_backup.title'),
-        description: t('store.pages.index.info.server_backup.description'),
+        description: t('store.pages.index.info.server_backup.description', {
+            quantity: Settings.getSetting('store_backups_quantity'),
+        }),
         features: [
             t('store.pages.index.info.server_backup.features.one'),
             t('store.pages.index.info.server_backup.features.two'),
@@ -412,7 +422,9 @@ const itemMetadata: Record<string, { name: string; description: string; features
     },
     server_allocation: {
         name: t('store.pages.index.info.server_allocation.title'),
-        description: t('store.pages.index.info.server_allocation.description'),
+        description: t('store.pages.index.info.server_allocation.description', {
+            quantity: Settings.getSetting('store_allocation_quantity'),
+        }),
         features: [
             t('store.pages.index.info.server_allocation.features.one'),
             t('store.pages.index.info.server_allocation.features.two'),
@@ -422,7 +434,9 @@ const itemMetadata: Record<string, { name: string; description: string; features
     },
     server_database: {
         name: t('store.pages.index.info.server_database.title'),
-        description: t('store.pages.index.info.server_database.description'),
+        description: t('store.pages.index.info.server_database.description', {
+            quantity: Settings.getSetting('store_databases_quantity'),
+        }),
         features: [
             t('store.pages.index.info.server_database.features.one'),
             t('store.pages.index.info.server_database.features.two'),

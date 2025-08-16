@@ -9,6 +9,11 @@
  * ## Copyright (c) 2021–2025 MythicalSystems and Cassian Gherman
  *
  * Breaking any of the following rules will result in a permanent ban from the MythicalSystems community and all of its services.
+ * Make sure to read the docs before making any changes. And note that any changes you make will be overwritten by the next update.
+ *
+ * Be careful with the code you write, and make sure to test it before committing it.
+ *
+ * Please rather than modifying the dashboard code try to report the thing you wish on our github or write a plugin
  */
 
 namespace MythicalDash;
@@ -17,7 +22,6 @@ use RateLimit\Rate;
 use MythicalDash\Chat\Database;
 use RateLimit\RedisRateLimiter;
 use MythicalDash\Hooks\MythicalAPP;
-use MythicalDash\Hooks\MythicalZero;
 use MythicalDash\Hooks\LicenseSystem;
 use MythicalDash\Router\Router as rt;
 use MythicalDash\Config\ConfigFactory;
@@ -33,7 +37,6 @@ class App extends MythicalAPP
     public static App $instance;
     public Database $db;
     public LicenseSystem $LicenseSystem;
-    public MythicalZero $telemetry;
     public rt $router;
 
     public function __construct(bool $softBoot, bool $isCron = false)
@@ -181,15 +184,7 @@ class App extends MythicalAPP
             exit;
         }
 
-        /**
-         * MythicalZero.
-         */
-        $this->telemetry = new MythicalZero(
-            'https://mymythicalid.mythical.systems',
-            APP_VERSION,
-            preg_replace('/^https?:\/\//', '', $this->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'NULL')),
-            $this->getConfig()->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL'),
-        );
+
         $this->router->add('/(.*)', function ($route): void {
             self::init();
             self::NotFound('The api route does not exist!', ['error_code' => 'API_ROUTE_NOT_FOUND', 'route' => $route]);
@@ -266,14 +261,6 @@ class App extends MythicalAPP
         }
     }
 
-    /**
-     * Get the telemetry.
-     */
-    public function getTelemetry(): MythicalZero
-    {
-        return $this->telemetry;
-    }
-
     public function getLicenseSystem(): LicenseSystem
     {
         return $this->LicenseSystem;
@@ -295,13 +282,22 @@ class App extends MythicalAPP
             return false; // Return false if .env file doesn't exist
         }
 
-        // Read the .env file into an array of lines
-        $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        // Read the .env file into an array of lines (preserve all lines including empty and comments)
+        $lines = file($envFile, FILE_IGNORE_NEW_LINES);
+        if ($lines === false) {
+            $this->getLogger()->error('Failed to read .env file');
+            return false;
+        }
 
         $updated = false;
         foreach ($lines as &$line) {
-            // Skip comments and lines that don't contain '='
-            if (strpos(trim($line), '#') === 0 || strpos($line, '=') === false) {
+            // Skip comments and empty lines - preserve them as is
+            if (empty(trim($line)) || strpos(trim($line), '#') === 0) {
+                continue;
+            }
+
+            // Only process lines that contain '='
+            if (strpos($line, '=') === false) {
                 continue;
             }
 
@@ -310,31 +306,51 @@ class App extends MythicalAPP
 
             // Trim whitespace from the key
             if (trim($envKey) === $key) {
-                // Update the value
+                // Update the value while preserving the original format
                 $line = "$key=\"$value\"";
                 $updated = true;
+                break; // Exit loop once we find and update the key
             }
         }
 
-        // If the key doesn't exist, add it
+        // If the key doesn't exist, add it at the end
         if (!$updated) {
-            $lines[] = "$key=$value";
+            $lines[] = "$key=\"$value\"";
         }
 
-        // Write the updated lines back to the .env file
         // Check if we have write permissions
         if (!is_writable($envFile)) {
             $this->getLogger()->error('Cannot write to .env file - insufficient permissions');
-
             return false;
         }
 
-        // Try to write the file
-        try {
-            return file_put_contents($envFile, implode(PHP_EOL, $lines)) !== false;
-        } catch (\Exception $e) {
-            $this->getLogger()->error('Failed to write to .env file: ' . $e->getMessage());
+        // Create a backup of the original .env file before writing
+        $backupFile = $envFile . '.backup.' . date('Y-m-d_H-i-s');
+        if (!copy($envFile, $backupFile)) {
+            $this->getLogger()->error('Failed to create backup of .env file');
+            return false;
+        }
 
+        // Try to write the file with proper line endings
+        try {
+            $content = implode(PHP_EOL, $lines);
+            if (file_put_contents($envFile, $content) === false) {
+                // Restore from backup if write fails
+                copy($backupFile, $envFile);
+                $this->getLogger()->error('Failed to write to .env file - restored from backup');
+                return false;
+            }
+
+            // Clean up backup file after successful write
+            unlink($backupFile);
+            return true;
+        } catch (\Exception $e) {
+            // Restore from backup if an exception occurs
+            if (file_exists($backupFile)) {
+                copy($backupFile, $envFile);
+                unlink($backupFile);
+            }
+            $this->getLogger()->error('Failed to write to .env file: ' . $e->getMessage() . ' - restored from backup');
             return false;
         }
     }

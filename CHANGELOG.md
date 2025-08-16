@@ -18,10 +18,15 @@
 - Feature: Improved transaction rollback handling
 - Feature: Better user feedback for failed operations
 - Feature: Enhanced error logging and debugging capabilities
+- Feature: Implemented a way to change the default store values for what the user gets!
+- Feature: New dev docs on how the codebase works!
+- Feature: New makeadmin command ui!
+- Feature: New users command so you can edit users via cli!
+- Feature: Log files get created on first app boot now!
 
 # Features Removed:
 
-- None
+- ZeroTrust has been removed!
 
 # Breaking Changes:
 
