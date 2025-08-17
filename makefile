@@ -39,7 +39,7 @@ DEV = 🔍
 # Make sure we use bash
 SHELL := /bin/bash
 
-.PHONY: help frontend backend dev release install clean test set-prod set-dev
+.PHONY: help frontend backend dev release install clean test set-prod set-dev make-release-package
 
 # Default target
 help:
@@ -54,6 +54,7 @@ help:
 	@echo -e "  ${GREEN}make set-dev${NC}     ${DEV} Sets APP_DEBUG to true for development"
 	@echo -e "  ${GREEN}make get-tools${NC}  ${TOOLS} Installs development tools (NVM, Yarn, PNPM)"
 	@echo -e "  ${GREEN}make upgrade-core${NC} ${UPGRADE} Upgrades the core of MythicalDash"
+	@echo -e "  ${GREEN}make release-package${NC} ${PACKAGE} Creates a release package MythicalDash.zip"
 	@echo -e "${YELLOW}Use 'make <command>' to execute a command${NC}\n"
 
 # Frontend tasks
@@ -115,6 +116,27 @@ release:
 	@echo -e "${GREEN}${CHECK} Build complete${NC}\n"
 	
 	@echo -e "${GREEN}${ROCKET} Release build successful!${NC}\n"
+
+# Create release package
+release-package:
+	@echo -e "\n${BOLD}${BLUE}Creating Release Package${NC} ${PACKAGE}"
+	@echo -e "${CYAN}=========================${NC}"
+	@echo -e "${GREEN}${INFO} Installing latest frontend packages...${NC}"
+	@cd $(FRONTEND_DIR) && $(YARN) install
+	@echo -e "${GREEN}${CHECK} Frontend packages installed${NC}\n"
+	
+	@echo -e "${GREEN}${INFO} Building frontend for production...${NC}"
+	@cd $(FRONTEND_DIR) && $(YARN) build
+	@echo -e "${GREEN}${CHECK} Frontend production build complete${NC}\n"
+	
+	@echo -e "${GREEN}${INFO} Creating MythicalDash.zip package...${NC}"
+	@echo -e "${YELLOW}${WARN} Creating package with tracked files and frontend dist...${NC}"
+	@rm -f MythicalDash.zip
+	@git ls-files | zip MythicalDash.zip -@
+	@zip -r MythicalDash.zip $(FRONTEND_DIR)/dist
+	@echo -e "${GREEN}${CHECK} Release package created: MythicalDash.zip${NC}\n"
+	@echo -e "${BOLD}${GREEN}🎉 Release package ready for distribution! 🎉${NC}\n"
+
 lint: 
 	@cd $(BACKEND_DIR) && $(COMPOSER) run lint
 	@cd $(FRONTEND_DIR) && $(YARN) format
