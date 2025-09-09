@@ -74,7 +74,7 @@
 		"tailwindcss": "^4.1.13",
 		"terser": "^5.44.0",
 		"typescript": "~5.8.3",
-		"vite": "7.0.4",
+		"vite": "7.0.7",
 		"vite-plugin-oxlint": "^1.4.0",
 		"vite-plugin-vue-devtools": "^7.7.7",
 		"vue": "^3.5.21",
