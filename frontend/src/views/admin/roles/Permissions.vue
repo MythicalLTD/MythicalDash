@@ -204,10 +204,15 @@ const permissionCategories = computed(() => {
     const categories: { [key: string]: PermissionNode[] } = {};
 
     allPermissions.forEach((permission) => {
-        if (!categories[permission.category]) {
-            categories[permission.category] = [];
+        if (permission.category) {
+            if (!categories[permission.category]) {
+                categories[permission.category] = [];
+            }
+            const categoryArray = categories[permission.category];
+            if (categoryArray) {
+                categoryArray.push(permission);
+            }
         }
-        categories[permission.category].push(permission);
     });
 
     return Object.entries(categories).map(([name, permissions]) => ({

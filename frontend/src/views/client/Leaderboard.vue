@@ -63,8 +63,8 @@
                                     <div class="relative w-20 h-20 mb-4">
                                         <div class="absolute inset-0 bg-gray-700/30 rounded-full"></div>
                                         <img
-                                            :src="leaderboardData[1].avatar"
-                                            :alt="leaderboardData[1].username"
+                                            :src="leaderboardData[1]?.avatar"
+                                            :alt="leaderboardData[1]?.username"
                                             class="w-20 h-20 rounded-full border-4 border-gray-400 object-cover relative z-10"
                                         />
                                         <div
@@ -74,13 +74,13 @@
                                         </div>
                                     </div>
                                     <h3 class="text-base font-semibold text-gray-300 mb-1">
-                                        {{ leaderboardData[1].username }}
+                                        {{ leaderboardData[1]?.username }}
                                     </h3>
                                     <span class="text-gray-400 text-sm mb-2">{{
-                                        getRoleName(leaderboardData[1].role)
+                                        leaderboardData[1] ? getRoleName(leaderboardData[1].role) : ''
                                     }}</span>
                                     <span class="bg-gray-700/30 text-gray-300 px-3 py-1 rounded-md text-sm font-medium">
-                                        {{ formatValue(getCategoryValue(leaderboardData[1]), activeCategory) }}
+                                        {{ leaderboardData[1] ? formatValue(getCategoryValue(leaderboardData[1]), activeCategory) : '' }}
                                     </span>
                                 </div>
 
@@ -89,8 +89,8 @@
                                     <div class="relative w-24 h-24 mb-4">
                                         <div class="absolute inset-0 bg-amber-900/30 rounded-full"></div>
                                         <img
-                                            :src="leaderboardData[0].avatar"
-                                            :alt="leaderboardData[0].username"
+                                            :src="leaderboardData[0]?.avatar"
+                                            :alt="leaderboardData[0]?.username"
                                             class="w-24 h-24 rounded-full border-4 border-amber-500 object-cover relative z-10"
                                         />
                                         <div
@@ -110,14 +110,14 @@
                                             ></path>
                                         </svg>
                                     </div>
-                                    <h3 class="text-lg font-bold text-white mb-1">{{ leaderboardData[0].username }}</h3>
+                                    <h3 class="text-lg font-bold text-white mb-1">{{ leaderboardData[0]?.username }}</h3>
                                     <span class="text-gray-400 text-sm mb-2">{{
-                                        getRoleName(leaderboardData[0].role)
+                                        leaderboardData[0] ? getRoleName(leaderboardData[0].role) : ''
                                     }}</span>
                                     <span
                                         class="bg-amber-900/30 text-amber-400 px-4 py-1.5 rounded-md text-base font-medium"
                                     >
-                                        {{ formatValue(getCategoryValue(leaderboardData[0]), activeCategory) }}
+                                        {{ leaderboardData[0] ? formatValue(getCategoryValue(leaderboardData[0]), activeCategory) : '' }}
                                     </span>
                                 </div>
 
@@ -126,8 +126,8 @@
                                     <div class="relative w-20 h-20 mb-4">
                                         <div class="absolute inset-0 bg-amber-800/20 rounded-full"></div>
                                         <img
-                                            :src="leaderboardData[2].avatar"
-                                            :alt="leaderboardData[2].username"
+                                            :src="leaderboardData[2]?.avatar"
+                                            :alt="leaderboardData[2]?.username"
                                             class="w-20 h-20 rounded-full border-4 border-amber-700/50 object-cover relative z-10"
                                         />
                                         <div
@@ -137,15 +137,15 @@
                                         </div>
                                     </div>
                                     <h3 class="text-base font-semibold text-gray-300 mb-1">
-                                        {{ leaderboardData[2].username }}
+                                        {{ leaderboardData[2]?.username }}
                                     </h3>
                                     <span class="text-gray-400 text-sm mb-2">{{
-                                        getRoleName(leaderboardData[2].role)
+                                        leaderboardData[2] ? getRoleName(leaderboardData[2].role) : ''
                                     }}</span>
                                     <span
                                         class="bg-amber-800/20 text-amber-600 px-3 py-1 rounded-md text-sm font-medium"
                                     >
-                                        {{ formatValue(getCategoryValue(leaderboardData[2]), activeCategory) }}
+                                        {{ leaderboardData[2] ? formatValue(getCategoryValue(leaderboardData[2]), activeCategory) : '' }}
                                     </span>
                                 </div>
                             </div>
@@ -287,7 +287,8 @@ const error = ref<string | null>(null);
 
 // Get the active category details
 const getActiveCategory = computed((): Category => {
-    return leaderboardCategories.find((cat) => cat.type === activeCategory.value) || leaderboardCategories[0];
+    const found = leaderboardCategories.find((cat) => cat.type === activeCategory.value);
+    return found || leaderboardCategories[0] || { type: 'credits', name: 'Credits', icon: {} };
 });
 
 // Current date formatted
@@ -333,7 +334,7 @@ const getCategoryValue = (user: LeaderboardUser): number => {
     };
 
     const key = valueMap[activeCategory.value];
-    const value = user[key];
+    const value = key ? user[key] : 0;
 
     // Convert to number and provide default of 0
     return typeof value === 'number' ? value : 0;

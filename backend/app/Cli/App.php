@@ -31,7 +31,7 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
         $this->handleCustomCommands($commandName, $args);
         self::$instance = $this;
 
-        if (getcwd() !== '/var/www/mythicaldash-v3') {
+        if (getcwd() !== '/var/www/mythicaldash-v3' && getcwd() !== '/var/www/html' && getcwd() !== '/var/www/html/backend') {
             exit('We detected that you are not running this command from the root directory of MythicalDash. Please run this command from the root directory.');
         }
 

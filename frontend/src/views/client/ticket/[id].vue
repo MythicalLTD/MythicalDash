@@ -312,7 +312,10 @@ onUnmounted(() => {
 
 const removeFile = (index: number) => {
     selectedFiles.value = selectedFiles.value.filter((_: File, i: number) => i !== index);
-    URL.revokeObjectURL(previewUrls.value[index]);
+    const url = previewUrls.value[index];
+    if (url) {
+        URL.revokeObjectURL(url);
+    }
     previewUrls.value = previewUrls.value.filter((_, i) => i !== index);
 };
 

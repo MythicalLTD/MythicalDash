@@ -1,0 +1,47 @@
+# Dependencies
+storage/packages
+vendor
+
+# Logs
+storage/logs/*
+!storage/logs/.gitkeep
+
+# Cache
+storage/caches/*
+!storage/caches/.gitkeep
+
+# Environment files
+storage/.env
+storage/.env.local
+storage/.env.production
+storage/.env.staging
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Documentation
+README.md
+*.md
+
+# Tests
+tests
+phpunit.xml
+
+# Development tools
+.php-cs-fixer.cache
+.php-cs-fixer.dist.php

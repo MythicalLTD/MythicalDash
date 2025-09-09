@@ -13,11 +13,8 @@ import { useSettingsStore } from '@/stores/settings';
 const Settings = useSettingsStore();
 import { useRouter } from 'vue-router';
 import Session from '@/mythicaldash/Session';
-import StorageMonitor from '@/mythicaldash/StorageMonitor';
 import Auth from '@/mythicaldash/Auth';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
-
-new StorageMonitor();
 
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);

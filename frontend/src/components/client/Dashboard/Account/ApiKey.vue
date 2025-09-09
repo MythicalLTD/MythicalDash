@@ -24,8 +24,8 @@ const isResetting = ref(false);
 const getTokenFromCookies = (): string | null => {
     const cookies = document.cookie.split(';');
     for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.startsWith('user_token=')) {
+        const cookie = cookies[i]?.trim();
+        if (cookie && cookie.startsWith('user_token=')) {
             return cookie.substring('user_token='.length, cookie.length);
         }
     }

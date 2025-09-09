@@ -31,7 +31,10 @@ export class MythicalDOM {
         link.type = type;
         link.rel = 'shortcut icon';
         link.href = iconUrl;
-        document.getElementsByTagName('head')[0].appendChild(link);
+        const head = document.getElementsByTagName('head')[0];
+        if (head) {
+            head.appendChild(link);
+        }
     }
 
     /**
@@ -43,7 +46,10 @@ export class MythicalDOM {
             document.querySelector("meta[name='theme-color']") || document.createElement('meta');
         meta.name = 'theme-color';
         meta.content = color;
-        document.getElementsByTagName('head')[0].appendChild(meta);
+        const head = document.getElementsByTagName('head')[0];
+        if (head) {
+            head.appendChild(meta);
+        }
     }
 
     /**
@@ -55,7 +61,10 @@ export class MythicalDOM {
         const meta: HTMLMetaElement = document.querySelector(`meta[name='${name}']`) || document.createElement('meta');
         meta.name = name;
         meta.content = content;
-        document.getElementsByTagName('head')[0].appendChild(meta);
+        const head = document.getElementsByTagName('head')[0];
+        if (head) {
+            head.appendChild(meta);
+        }
     }
 
     /**
@@ -75,7 +84,10 @@ export class MythicalDOM {
                     document.querySelector(`meta[property='og:${key}']`) || document.createElement('meta');
                 meta.setAttribute('property', `og:${key}`);
                 meta.content = value;
-                document.getElementsByTagName('head')[0].appendChild(meta);
+                const head = document.getElementsByTagName('head')[0];
+                if (head) {
+                    head.appendChild(meta);
+                }
             }
         });
     }
@@ -84,7 +96,10 @@ export class MythicalDOM {
         link.type = type;
         link.rel = 'shortcut icon';
         link.href = iconUrl;
-        document.getElementsByTagName('head')[0].appendChild(link);
+        const head = document.getElementsByTagName('head')[0];
+        if (head) {
+            head.appendChild(link);
+        }
     }
     /**
      * Checks if the page is currently visible to the user

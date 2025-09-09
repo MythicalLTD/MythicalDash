@@ -117,7 +117,7 @@ const table = useVueTable({
                     <thead class="bg-[#0a0a0f]/70">
                         <tr>
                             <th
-                                v-for="header in table.getHeaderGroups()[0].headers"
+                                v-for="header in table.getHeaderGroups()[0]?.headers || []"
                                 :key="header.id"
                                 scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"

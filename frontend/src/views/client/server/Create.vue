@@ -249,18 +249,18 @@
                                                     v-if="locationPings[location.id] !== undefined"
                                                     class="text-xs px-2 py-0.5 rounded-full flex items-center space-x-1"
                                                     :class="
-                                                        locationPings[location.id] < 0
+                                                        (locationPings[location.id] ?? -1) < 0
                                                             ? 'bg-red-900/30 text-red-400'
-                                                            : locationPings[location.id] < 100
+                                                            : (locationPings[location.id] ?? -1) < 100
                                                               ? 'bg-green-900/30 text-green-400'
-                                                              : locationPings[location.id] < 200
+                                                              : (locationPings[location.id] ?? -1) < 200
                                                                 ? 'bg-yellow-900/30 text-yellow-400'
                                                                 : 'bg-red-900/30 text-red-400'
                                                     "
                                                 >
                                                     <Wifi class="w-3 h-3" />
                                                     <span>{{
-                                                        locationPings[location.id] < 0
+                                                        (locationPings[location.id] ?? -1) < 0
                                                             ? 'N/A'
                                                             : `${locationPings[location.id]}ms`
                                                     }}</span>

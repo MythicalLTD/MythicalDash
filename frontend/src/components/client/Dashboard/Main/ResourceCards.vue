@@ -639,8 +639,11 @@ const toggleLayout = () => {
     const layouts = ['cards', 'table', 'compact'];
     const currentIndex = layouts.indexOf(preferredLayout.value);
     const nextIndex = (currentIndex + 1) % layouts.length;
-    preferredLayout.value = layouts[nextIndex];
-    localStorage.setItem('resource_cards_layout', preferredLayout.value);
+    const nextLayout = layouts[nextIndex];
+    if (nextLayout) {
+        preferredLayout.value = nextLayout;
+        localStorage.setItem('resource_cards_layout', preferredLayout.value);
+    }
 };
 
 // Computed properties for usage percentages

@@ -48,7 +48,10 @@ const selectedOption = computed(() => {
 
 onMounted(() => {
     if (!props.modelValue && props.options.length > 0) {
-        emit('update:modelValue', props.options[0].value);
+        const firstOption = props.options[0];
+        if (firstOption) {
+            emit('update:modelValue', firstOption.value);
+        }
     }
 
     document.addEventListener('click', handleClickOutside);
@@ -107,7 +110,10 @@ const handleKeydown = (event: KeyboardEvent) => {
             break;
         case 'Enter':
             if (selectedIndex.value >= 0 && selectedIndex.value < filteredOptions.value.length) {
-                selectOption(filteredOptions.value[selectedIndex.value]);
+                const option = filteredOptions.value[selectedIndex.value];
+                if (option) {
+                    selectOption(option);
+                }
             }
             break;
     }

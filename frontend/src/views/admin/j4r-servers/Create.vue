@@ -237,10 +237,16 @@ const createServer = async (): Promise<void> => {
         // Clean invite code (remove discord.gg/ if present)
         let inviteCode = serverForm.value.invite_code.trim();
         if (inviteCode.includes('discord.gg/')) {
-            inviteCode = inviteCode.split('discord.gg/')[1];
+            const splitResult = inviteCode.split('discord.gg/')[1];
+            if (splitResult) {
+                inviteCode = splitResult;
+            }
         }
         if (inviteCode.includes('discordapp.com/invite/')) {
-            inviteCode = inviteCode.split('discordapp.com/invite/')[1];
+            const splitResult = inviteCode.split('discordapp.com/invite/')[1];
+            if (splitResult) {
+                inviteCode = splitResult;
+            }
         }
 
         const formData = new FormData();

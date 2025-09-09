@@ -386,7 +386,10 @@ const navigateToResult = (result: SearchResult) => {
 
 const handleEnter = () => {
     if (searchResults.value.length > 0) {
-        navigateToResult(searchResults.value[selectedIndex.value]);
+        const result = searchResults.value[selectedIndex.value];
+        if (result) {
+            navigateToResult(result);
+        }
     }
 };
 

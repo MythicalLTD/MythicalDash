@@ -46,7 +46,7 @@
                         <label for="pterodactyl_nest_id" class="block text-sm font-medium text-gray-400 mb-1">
                             Pterodactyl Nest
                         </label>
-                        
+
                         <!-- Toggle between dropdown and manual input -->
                         <div class="flex space-x-2 mb-2">
                             <button
@@ -54,9 +54,9 @@
                                 @click="useDropdown = true"
                                 :class="[
                                     'px-3 py-1 text-xs rounded transition-colors',
-                                    useDropdown 
-                                        ? 'bg-pink-500 text-white' 
-                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                    useDropdown
+                                        ? 'bg-pink-500 text-white'
+                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600',
                                 ]"
                             >
                                 Select from List
@@ -66,9 +66,9 @@
                                 @click="useDropdown = false"
                                 :class="[
                                     'px-3 py-1 text-xs rounded transition-colors',
-                                    !useDropdown 
-                                        ? 'bg-pink-500 text-white' 
-                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                    !useDropdown
+                                        ? 'bg-pink-500 text-white'
+                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600',
                                 ]"
                             >
                                 Enter Manually
@@ -98,11 +98,12 @@
                             class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             placeholder="Enter Pterodactyl nest ID"
                         />
-                        
+
                         <p class="text-xs text-gray-400 mt-1">
-                            {{ useDropdown 
-                                ? 'Select from available Pterodactyl nests' 
-                                : 'Enter the numeric ID of the Pterodactyl nest'
+                            {{
+                                useDropdown
+                                    ? 'Select from available Pterodactyl nests'
+                                    : 'Enter the numeric ID of the Pterodactyl nest'
                             }}
                         </p>
                     </div>
@@ -256,11 +257,14 @@ watch(manualNestId, (newValue) => {
 });
 
 // Watch for changes in dropdown to sync to manual input
-watch(() => categoryForm.value.pterodactyl_nest_id, (newValue) => {
-    if (useDropdown.value && newValue) {
-        manualNestId.value = newValue;
-    }
-});
+watch(
+    () => categoryForm.value.pterodactyl_nest_id,
+    (newValue) => {
+        if (useDropdown.value && newValue) {
+            manualNestId.value = newValue;
+        }
+    },
+);
 
 EggCategories.getPterodactylNests().then((response) => {
     if (response.success) {
@@ -273,9 +277,7 @@ const saveCategory = async () => {
 
     try {
         // Determine which nest ID to use
-        const pterodactylNestId = useDropdown.value 
-            ? categoryForm.value.pterodactyl_nest_id 
-            : manualNestId.value;
+        const pterodactylNestId = useDropdown.value ? categoryForm.value.pterodactyl_nest_id : manualNestId.value;
 
         // Validate nest ID
         if (!pterodactylNestId || pterodactylNestId <= 0) {

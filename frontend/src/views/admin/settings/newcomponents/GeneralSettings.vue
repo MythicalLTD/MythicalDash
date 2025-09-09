@@ -857,10 +857,12 @@ const groupedTimezones = computed(() => {
         if (timezone === 'UTC') return; // Skip UTC as we already added it
 
         const [continent] = timezone.split('/');
-        if (!grouped[continent]) {
-            grouped[continent] = [];
+        if (continent) {
+            if (!grouped[continent]) {
+                grouped[continent] = [];
+            }
+            grouped[continent].push(timezone);
         }
-        grouped[continent].push(timezone);
     });
 
     return grouped;
@@ -871,7 +873,8 @@ const formatTimezone = (timezone: string) => {
     if (timezone === 'UTC') return 'UTC';
 
     const parts = timezone.split('/');
-    const location = parts[parts.length - 1].replace('_', ' ');
+    const lastPart = parts[parts.length - 1];
+    const location = lastPart ? lastPart.replace('_', ' ') : timezone;
 
     return location;
 };

@@ -106,7 +106,7 @@ const columns = [
             // Show only first image with count indicator if there are more
             return h('div', { class: 'relative inline-block' }, [
                 h('img', {
-                    src: assets[0].images,
+                    src: assets[0]?.images,
                     alt: 'Announcement image',
                     class: 'w-10 h-10 object-cover rounded-md',
                 }),

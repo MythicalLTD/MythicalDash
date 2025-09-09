@@ -1,0 +1,80 @@
+
+services:
+  mysql:
+    image: mariadb:11.4
+    container_name: mythicaldash_v3_mysql
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-mythicaldash_v3_root}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-mythicaldash_v3}
+      MARIADB_USER: ${MARIADB_USER:-mythicaldash_v3}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-mythicaldash_v3_password}
+      MARIADB_AUTO_UPGRADE: "1"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - mythicaldash_v3_network
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-pmythicaldash_v3_root"]
+      timeout: 20s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: mythicaldash_v3_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-mythicaldash_v3_redis}
+    volumes:
+      - redis_data:/data
+    networks:
+      - mythicaldash_v3_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mythicaldash_v3_backend
+    restart: unless-stopped
+    environment:
+      - DATABASE_HOST=mysql
+      - DATABASE_PORT=3306
+      - DATABASE_DATABASE=${MARIADB_DATABASE:-mythicaldash_v3}
+      - DATABASE_USER=${MARIADB_USER:-mythicaldash_v3}
+      - DATABASE_PASSWORD=${MARIADB_PASSWORD:-mythicaldash_v3_password}
+      - DATABASE_ENCRYPTION=plaintext
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-mythicaldash_v3_redis}
+    volumes:
+      - ./backend/storage:/var/www/html/storage
+      - ./backend/public:/var/www/html/public
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - mythicaldash_v3_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mythicaldash_v3_frontend
+    restart: unless-stopped
+    ports:
+      - "4831:80"
+    depends_on:
+      - backend
+    networks:
+      - mythicaldash_v3_network
+
+volumes:
+  mariadb_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  mythicaldash_v3_network:
+    driver: bridge

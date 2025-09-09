@@ -10,6 +10,8 @@
     "builtin": true
   },
   "ignorePatterns": [
+    "**/node_modules/**",
+	"**/.vite/**",
     "**/dist/**",
     "**/dist-ssr/**",
     "**/coverage/**",

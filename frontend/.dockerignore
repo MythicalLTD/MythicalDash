@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+dist
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+
+# Documentation
+README.md
+*.md
+

@@ -32,8 +32,11 @@ const toggleLayout = () => {
     const layouts = ['cards', 'table', 'compact'];
     const currentIndex = layouts.indexOf(preferredLayout.value);
     const nextIndex = (currentIndex + 1) % layouts.length;
-    preferredLayout.value = layouts[nextIndex];
-    localStorage.setItem('server_list_layout', preferredLayout.value);
+    const nextLayout = layouts[nextIndex];
+    if (nextLayout) {
+        preferredLayout.value = nextLayout;
+        localStorage.setItem('server_list_layout', preferredLayout.value);
+    }
 };
 
 const isServersEnabled = computed(() => {

@@ -15,12 +15,15 @@
 - Feature: Added manual ID input support for nest creation and editing  
 - Feature: Server listing now supports more than 100 servers  
 - Feature: Logs are now handled through a 3rd-party API  
+- Feature: Safewall to prevent users from running the dash with no reverse proxy!
+- Feature: Add docker support to box mythicaldash!
 
 # Features Removed:
 
 - Removed: License system  
 - Removed: Requirement for `excimer`  
 - Removed: All telemetry from MythicalDash  
+- Removed: Usage of the dash on a local port and host!
 
 # Breaking Changes:
 

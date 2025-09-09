@@ -298,7 +298,7 @@ const getDirectImageUrl = (imageUrl: string) => {
     if (match) {
         const imageId = match[1];
         // Extract UUID from image ID
-        const uuidMatch = imageId.match(/^([0-9a-f\-]{36})-/);
+        const uuidMatch = imageId?.match(/^([0-9a-f\-]{36})-/);
         if (uuidMatch) {
             const uuid = uuidMatch[1];
             // Construct direct file URL

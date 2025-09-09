@@ -79,7 +79,6 @@
 <script setup lang="ts">
 import { ref, onMounted, defineAsyncComponent, computed, watch } from 'vue';
 import { SaveIcon, LoaderIcon } from 'lucide-vue-next';
-import '@/utils/monaco';
 import { useSettingsStore } from '@/stores/settings';
 
 const MonacoEditor = defineAsyncComponent(() => import('monaco-editor-vue3'));

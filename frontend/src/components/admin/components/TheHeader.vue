@@ -53,13 +53,14 @@ const currentSection = computed(() => {
     const parts = path.split('/');
     const lastPart = parts[parts.length - 1];
 
-    // Convert kebab-case to Title Case
-    return (
-        lastPart
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ') || 'Overview'
-    );
+    // Convert kebab-case to Title Case, handle undefined lastPart
+    if (!lastPart) {
+        return 'Overview';
+    }
+    return lastPart
+        .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
 });
 
 defineProps<{

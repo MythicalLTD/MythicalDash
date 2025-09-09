@@ -221,8 +221,8 @@ const initChart = () => {
                     mode: 'index',
                     intersect: false,
                     callbacks: {
-                        title: (items) => {
-                            if (items.length > 0) {
+                        title: (items: Array<{ label?: string }>) => {
+                            if (items && items.length > 0 && items[0]?.label !== undefined) {
                                 return `Hour: ${items[0].label}`;
                             }
                             return '';
@@ -240,6 +240,8 @@ const initChart = () => {
 // Update chart with new data
 const updateChart = () => {
     if (!chart) return;
+    if (!chart.data?.datasets || !chart.data.datasets[0]) return;
+    if (!analytics.value || !analytics.value.hourly_activity) return;
 
     chart.data.datasets[0].data = analytics.value.hourly_activity;
     chart.update();

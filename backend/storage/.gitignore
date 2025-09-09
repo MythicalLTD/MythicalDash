@@ -7,3 +7,4 @@
 /caches/mails/*.html
 /caches/other/
 .env
+.env-copy

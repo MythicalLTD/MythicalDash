@@ -74,7 +74,7 @@
                         <label for="pterodactyl_location_id" class="block text-sm font-medium text-gray-400 mb-1">
                             Pterodactyl Location
                         </label>
-                        
+
                         <!-- Toggle between dropdown and manual input -->
                         <div class="flex space-x-2 mb-2">
                             <button
@@ -82,9 +82,9 @@
                                 @click="useDropdown = true"
                                 :class="[
                                     'px-3 py-1 text-xs rounded transition-colors',
-                                    useDropdown 
-                                        ? 'bg-pink-500 text-white' 
-                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                    useDropdown
+                                        ? 'bg-pink-500 text-white'
+                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600',
                                 ]"
                             >
                                 Select from List
@@ -94,9 +94,9 @@
                                 @click="useDropdown = false"
                                 :class="[
                                     'px-3 py-1 text-xs rounded transition-colors',
-                                    !useDropdown 
-                                        ? 'bg-pink-500 text-white' 
-                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                    !useDropdown
+                                        ? 'bg-pink-500 text-white'
+                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600',
                                 ]"
                             >
                                 Enter Manually
@@ -126,11 +126,12 @@
                             class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                             placeholder="Enter Pterodactyl location ID"
                         />
-                        
+
                         <p class="text-xs text-gray-400 mt-1">
-                            {{ useDropdown 
-                                ? 'Select from available Pterodactyl locations' 
-                                : 'Enter the numeric ID of the Pterodactyl location'
+                            {{
+                                useDropdown
+                                    ? 'Select from available Pterodactyl locations'
+                                    : 'Enter the numeric ID of the Pterodactyl location'
                             }}
                         </p>
                     </div>
@@ -301,11 +302,14 @@ watch(manualLocationId, (newValue) => {
 });
 
 // Watch for changes in dropdown to sync to manual input
-watch(() => locationForm.value.pterodactyl_location_id, (newValue) => {
-    if (useDropdown.value && newValue) {
-        manualLocationId.value = newValue;
-    }
-});
+watch(
+    () => locationForm.value.pterodactyl_location_id,
+    (newValue) => {
+        if (useDropdown.value && newValue) {
+            manualLocationId.value = newValue;
+        }
+    },
+);
 
 onMounted(() => {
     fetchImages();
@@ -316,8 +320,8 @@ const saveLocation = async () => {
 
     try {
         // Determine which location ID to use
-        const pterodactylLocationId = useDropdown.value 
-            ? locationForm.value.pterodactyl_location_id 
+        const pterodactylLocationId = useDropdown.value
+            ? locationForm.value.pterodactyl_location_id
             : manualLocationId.value;
 
         // Validate location ID

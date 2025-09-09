@@ -66,7 +66,6 @@ import Swal from 'sweetalert2';
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Session from '@/mythicaldash/Session';
-import StorageMonitor from '@/mythicaldash/StorageMonitor';
 import { useSettingsStore } from '@/stores/settings';
 import Dashboard from '@/mythicaldash/admin/Dashboard';
 
@@ -86,9 +85,6 @@ MythicalDOM.setPageTitle('Admin');
 const Settings = useSettingsStore();
 const router = useRouter();
 const route = useRoute();
-
-// Initialize storage monitor
-new StorageMonitor();
 
 // Authentication checks
 if (!Session.isSessionValid()) {

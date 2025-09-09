@@ -259,7 +259,9 @@ const handleFileSelect = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
         const file = target.files[0];
-        validateAndSetFile(file);
+        if (file) {
+            validateAndSetFile(file);
+        }
     }
 };
 
@@ -269,7 +271,9 @@ const handleDrop = (event: DragEvent) => {
 
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
         const file = event.dataTransfer.files[0];
-        validateAndSetFile(file);
+        if (file) {
+            validateAndSetFile(file);
+        }
     }
 };
 

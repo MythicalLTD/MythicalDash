@@ -9,7 +9,6 @@ import NotificationsDropdown from '@/components/client/layout/NotificationsDropd
 import ProfileDropdown from '@/components/client/layout/ProfileDropdown.vue';
 import { SettingsIcon, UserIcon, UsersIcon } from 'lucide-vue-next';
 import Session from '@/mythicaldash/Session';
-import StorageMonitor from '@/mythicaldash/StorageMonitor';
 import MythicalDash from '@/mythicaldash/MythicalDash';
 import Permissions from '@/mythicaldash/Permissions';
 import Roles from '@/mythicaldash/admin/Roles';
@@ -18,8 +17,6 @@ import { useSettingsStore } from '@/stores/settings';
 import Swal from 'sweetalert2';
 
 MythicalDash.download();
-
-new StorageMonitor();
 
 const router = useRouter();
 const { t } = useI18n();
