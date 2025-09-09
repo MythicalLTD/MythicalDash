@@ -16,7 +16,6 @@ import {
     LogsIcon,
     Database,
     HeartHandshakeIcon,
-    Cloud,
     Image as ImageIcon,
     LinkIcon,
     Shield,
@@ -282,13 +281,6 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     active: route.path === `${adminBaseUri}/plugins`,
                     count: computed(() => dashBoard.value.count.plugins_count || 0),
                     visible: computed(() => Session.Permission.Has(Permissions.ADMIN_PLUGINS_LIST)),
-                },
-                {
-                    name: 'MythicalCloud',
-                    path: `${adminBaseUri}/mythicalcloud`,
-                    icon: Cloud,
-                    active: route.path === `${adminBaseUri}/mythicalcloud`,
-                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_MYTHICALCLOUD_VIEW)),
                 },
                 {
                     name: 'Backups',

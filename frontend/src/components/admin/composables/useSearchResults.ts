@@ -78,9 +78,6 @@ export function useSearchResults(searchQuery: Ref<string>) {
         // J4R (Just 4 Runners) # Inside joke
         { id: 68, name: 'J4R Servers', path: `${adminBaseUri}/j4r` },
         { id: 69, name: 'Create J4R Server', path: `${adminBaseUri}/j4r/create` },
-
-        // MythicalCloud
-        { id: 72, name: 'MythicalCloud', path: `${adminBaseUri}/mythicalcloud` },
     ];
 
     const filteredResults = computed(() => {

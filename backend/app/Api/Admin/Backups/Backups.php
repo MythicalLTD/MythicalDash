@@ -19,8 +19,6 @@
 use MythicalDash\App;
 use MythicalDash\Permissions;
 use MythicalDash\Hooks\Backup;
-use MythicalDash\Hooks\MythicalCloud;
-use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
@@ -53,50 +51,6 @@ $router->get('/api/admin/backup/(.*)/restore', function (string $backupId): void
         $appInstance->OK('Backup restored successfully', ['backup' => $backup]);
     } else {
         $appInstance->InternalServerError('Failed to restore backup', ['error_code' => 'BACKUP_RESTORE_FAILED']);
-    }
-});
-
-$router->post('/api/admin/backup/(.*)/upload-to-cloud', function (string $backupId): void {
-    App::init();
-    $appInstance = App::getInstance(true);
-    $appInstance->allowOnlyPOST();
-    $session = new MythicalDash\Chat\User\Session($appInstance);
-
-    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MYTHICALCLOUD_UPLOAD, $session);
-    try {
-
-        try {
-            if (Backup::exists($backupId)) {
-                $bkPath = __DIR__ . '/../../../../storage/backups/backup_' . $backupId . '.mydb';
-            } else {
-                throw new Exception('Backup not found');
-            }
-        } catch (Exception $e) {
-            $appInstance->InternalServerError($e->getMessage(), ['error_code' => 'BACKUP_NOT_FOUND']);
-        }
-        // Get license key for MythicalCloud
-        $licenseKey = $appInstance->getConfig()->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL');
-        if (!$licenseKey) {
-            throw new Exception('MythicalCloud license key not configured');
-        }
-
-        try {
-            // Upload the backup to MythicalCloud
-            if (file_exists($bkPath)) {
-                $result = MythicalCloud::uploadBackup($licenseKey, $bkPath, 'Windows', '10.0', 'x64');
-                if ($result === null || !$result) {
-                    $appInstance->InternalServerError('Failed to upload backup to MythicalCloud', ['error_code' => 'UPLOAD_ERROR']);
-                }
-            } else {
-                $appInstance->InternalServerError('Backup not found', ['error_code' => 'BACKUP_NOT_FOUND', 'path' => $bkPath]);
-            }
-
-        } catch (Exception $e) {
-            $appInstance->InternalServerError($e->getMessage(), ['error_code' => 'UPLOAD_ERROR']);
-        }
-        $appInstance->OK('Backup uploaded to MythicalCloud successfully', $result);
-    } catch (Exception $e) {
-        $appInstance->InternalServerError($e->getMessage(), ['error_code' => 'UPLOAD_ERROR']);
     }
 });
 

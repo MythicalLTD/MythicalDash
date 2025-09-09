@@ -19,14 +19,11 @@
 namespace MythicalDash\Services\Cloud;
 
 use MythicalDash\App;
-use MythicalDash\Chat\Database;
-use MythicalDash\Config\ConfigFactory;
-use MythicalDash\Config\ConfigInterface;
 
 class MythicalCloudLogs
 {
     /**
-     * Upload logs to the cloud and return the log URL.
+     * Upload dashboard logs to mclo.gs and return the log URL.
      *
      * @return string|null Returns the log URL on success, null on failure
      */
@@ -35,15 +32,6 @@ class MythicalCloudLogs
         try {
             $appInstance = App::getInstance(true, false);
             $logs = $appInstance->getLogger()->getLogs(false);
-            $appInstance->loadEnv();
-            $db = new Database(
-                $_ENV['DATABASE_HOST'],
-                $_ENV['DATABASE_DATABASE'],
-                $_ENV['DATABASE_USER'],
-                $_ENV['DATABASE_PASSWORD'],
-                $_ENV['DATABASE_PORT'],
-            );
-            $config = new ConfigFactory($db->getPdo());
 
             if (empty($logs)) {
                 App::getInstance(true)->getLogger()->warning('No logs to upload');
@@ -51,73 +39,60 @@ class MythicalCloudLogs
                 return null;
             }
 
-            // Limit logs to 250 rows (keep the most recent logs)
-            if (count($logs) > 250) {
-                $logs = array_slice($logs, -250);
-                App::getInstance(true)->getLogger()->debug('Web server logs truncated to 250 rows for upload');
+            // Convert logs array to string content
+            $logContent = implode("\n", $logs);
+
+            // Limit content to 10MiB and 25k lines as per mclo.gs limits
+            $lines = explode("\n", $logContent);
+            if (count($lines) > 25000) {
+                $lines = array_slice($lines, -25000);
+                $logContent = implode("\n", $lines);
+                App::getInstance(true)->getLogger()->debug('Dashboard logs truncated to 25000 lines for upload');
+            }
+
+            if (strlen($logContent) > 10485760) { // 10MiB
+                $logContent = substr($logContent, -10485760);
+                App::getInstance(true)->getLogger()->debug('Dashboard logs truncated to 10MiB for upload');
             }
 
             $client = new \GuzzleHttp\Client();
-            $headers = [
-                'Content-Type' => 'application/json',
-            ];
 
-            $body = json_encode([
-                'logs' => $logs,
+            $response = $client->post('https://api.mclo.gs/1/log', [
+                'form_params' => [
+                    'content' => $logContent,
+                ],
+                'timeout' => 30,
             ]);
 
-            $request = new \GuzzleHttp\Psr7\Request(
-                'PUT',
-                'https://mymythicalid.mythical.systems/api/system/license/' . $config->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL') . '/logs',
-                $headers,
-                $body
-            );
+            $responseData = json_decode($response->getBody()->getContents(), true);
 
-            $response = $client->sendAsync($request)->wait();
-            $responseBody = $response->getBody()->getContents();
-
-            $responseData = json_decode($responseBody, true);
-            if ($responseData === null) {
-                App::getInstance(true)->getLogger()->error('Failed to decode response JSON');
+            if (!$responseData || !$responseData['success']) {
+                App::getInstance(true)->getLogger()->error('mclo.gs API error: ' . ($responseData['error'] ?? 'Unknown error'));
 
                 return null;
             }
 
-            if (!isset($responseData['success']) || !$responseData['success']) {
-                App::getInstance(true)->getLogger()->error('API error: ' . ($responseData['message'] ?? 'Unknown error'));
+            App::getInstance(true)->getLogger()->debug('Dashboard logs uploaded to mclo.gs successfully');
 
-                return null;
-            }
-            if (!isset($responseData['logs'])) {
-                App::getInstance(true)->getLogger()->error('No log URL in response');
-
-                return null;
-            }
-            App::getInstance(true)->getLogger()->debug('Web server logs uploaded successfully');
-
-            return $responseData['logs'];
+            return $responseData['url'];
 
         } catch (\Exception $e) {
-            App::getInstance(true)->getLogger()->error('Failed to upload logs: ' . $e->getMessage());
+            App::getInstance(true)->getLogger()->error('Failed to upload dashboard logs to mclo.gs: ' . $e->getMessage());
 
             return null;
         }
     }
 
+    /**
+     * Upload web server logs to mclo.gs and return the log URL.
+     *
+     * @return string|null Returns the log URL on success, null on failure
+     */
     public static function uploadWebServerLogsToCloud(): ?string
     {
         try {
             $appInstance = App::getInstance(true, false);
             $logs = $appInstance->getWebServerLogger()->getLogs(true);
-            $appInstance->loadEnv();
-            $db = new Database(
-                $_ENV['DATABASE_HOST'],
-                $_ENV['DATABASE_DATABASE'],
-                $_ENV['DATABASE_USER'],
-                $_ENV['DATABASE_PASSWORD'],
-                $_ENV['DATABASE_PORT'],
-            );
-            $config = new ConfigFactory($db->getPdo());
 
             if (empty($logs)) {
                 $logs = [
@@ -125,67 +100,253 @@ class MythicalCloudLogs
                 ];
             }
 
-            // Limit logs to 250 rows (keep the most recent logs)
-            if (count($logs) > 250) {
-                $logs = array_slice($logs, -250);
-                App::getInstance(true)->getLogger()->debug('Web server logs truncated to 250 rows for upload');
+            // Convert logs array to string content
+            $logContent = implode("\n", $logs);
+
+            // Limit content to 10MiB and 25k lines as per mclo.gs limits
+            $lines = explode("\n", $logContent);
+            if (count($lines) > 25000) {
+                $lines = array_slice($lines, -25000);
+                $logContent = implode("\n", $lines);
+                App::getInstance(true)->getLogger()->debug('Web server logs truncated to 25000 lines for upload');
+            }
+
+            if (strlen($logContent) > 10485760) { // 10MiB
+                $logContent = substr($logContent, -10485760);
+                App::getInstance(true)->getLogger()->debug('Web server logs truncated to 10MiB for upload');
             }
 
             $client = new \GuzzleHttp\Client();
-            $headers = [
-                'Content-Type' => 'application/json',
-            ];
 
-            $body = json_encode([
-                'logs' => $logs,
+            $response = $client->post('https://api.mclo.gs/1/log', [
+                'form_params' => [
+                    'content' => $logContent,
+                ],
+                'timeout' => 30,
             ]);
 
-            $request = new \GuzzleHttp\Psr7\Request(
-                'PUT',
-                'https://mymythicalid.mythical.systems/api/system/license/' . $config->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL') . '/logs',
-                $headers,
-                $body
-            );
+            $responseData = json_decode($response->getBody()->getContents(), true);
 
-            $response = $client->sendAsync($request)->wait();
-            $responseBody = $response->getBody()->getContents();
-
-            $responseData = json_decode($responseBody, true);
-            if ($responseData === null) {
-                App::getInstance(true)->getLogger()->error('Failed to decode response JSON');
+            if (!$responseData || !$responseData['success']) {
+                App::getInstance(true)->getLogger()->error('mclo.gs API error: ' . ($responseData['error'] ?? 'Unknown error'));
 
                 return null;
             }
 
-            if (!isset($responseData['success']) || !$responseData['success']) {
-                App::getInstance(true)->getLogger()->error('API error: ' . ($responseData['message'] ?? 'Unknown error'));
+            App::getInstance(true)->getLogger()->debug('Web server logs uploaded to mclo.gs successfully');
 
-                return null;
-            }
-            if (!isset($responseData['logs'])) {
-                App::getInstance(true)->getLogger()->error('No log URL in response');
-
-                return null;
-            }
-            App::getInstance(true)->getLogger()->debug('Web server logs uploaded successfully');
-
-            return $responseData['logs'];
+            return $responseData['url'];
 
         } catch (\Exception $e) {
-            App::getInstance(true)->getLogger()->error('Failed to upload logs: ' . $e->getMessage());
+            App::getInstance(true)->getLogger()->error('Failed to upload web server logs to mclo.gs: ' . $e->getMessage());
 
             return null;
         }
     }
 
     /**
-     * Get logs from the cloud.
+     * Upload any log content to mclo.gs and return the log URL.
      *
-     * @return array|null Returns the logs on success, null on failure
+     * @param string $logContent The raw log content
+     * @param string $logType Optional log type for identification
+     *
+     * @return array|null Returns array with url, id, and raw url on success, null on failure
      */
-    public static function getLogsFromCloud(): ?array
+    public static function uploadLogContent(string $logContent, string $logType = 'MythicalDash Log'): ?array
     {
-        // Implementation for getting logs from cloud
-        return null;
+        try {
+            if (empty($logContent)) {
+                App::getInstance(true)->getLogger()->warning('No log content to upload');
+
+                return null;
+            }
+
+            // Limit content to 10MiB and 25k lines as per mclo.gs limits
+            $lines = explode("\n", $logContent);
+            if (count($lines) > 25000) {
+                $lines = array_slice($lines, -25000);
+                $logContent = implode("\n", $lines);
+                App::getInstance(true)->getLogger()->debug('Log content truncated to 25000 lines for upload');
+            }
+
+            if (strlen($logContent) > 10485760) { // 10MiB
+                $logContent = substr($logContent, -10485760);
+                App::getInstance(true)->getLogger()->debug('Log content truncated to 10MiB for upload');
+            }
+
+            $client = new \GuzzleHttp\Client();
+
+            $response = $client->post('https://api.mclo.gs/1/log', [
+                'form_params' => [
+                    'content' => $logContent,
+                ],
+                'timeout' => 30,
+            ]);
+
+            $responseData = json_decode($response->getBody()->getContents(), true);
+
+            if (!$responseData || !$responseData['success']) {
+                App::getInstance(true)->getLogger()->error('mclo.gs API error: ' . ($responseData['error'] ?? 'Unknown error'));
+
+                return null;
+            }
+
+            App::getInstance(true)->getLogger()->debug("Log content uploaded to mclo.gs successfully: {$responseData['url']}");
+
+            return $responseData;
+
+        } catch (\Exception $e) {
+            App::getInstance(true)->getLogger()->error('Failed to upload log content to mclo.gs: ' . $e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
+     * Analyze log content using mclo.gs without saving it.
+     *
+     * @param string $logContent The raw log content to analyze
+     *
+     * @return array|null Returns analysis data on success, null on failure
+     */
+    public static function analyzeLogContent(string $logContent): ?array
+    {
+        try {
+            if (empty($logContent)) {
+                App::getInstance(true)->getLogger()->warning('No log content to analyze');
+
+                return null;
+            }
+
+            // Limit content to 10MiB and 25k lines as per mclo.gs limits
+            $lines = explode("\n", $logContent);
+            if (count($lines) > 25000) {
+                $lines = array_slice($lines, -25000);
+                $logContent = implode("\n", $lines);
+            }
+
+            if (strlen($logContent) > 10485760) { // 10MiB
+                $logContent = substr($logContent, -10485760);
+            }
+
+            $client = new \GuzzleHttp\Client();
+
+            $response = $client->post('https://api.mclo.gs/1/analyse', [
+                'form_params' => [
+                    'content' => $logContent,
+                ],
+                'timeout' => 30,
+            ]);
+
+            $responseData = json_decode($response->getBody()->getContents(), true);
+
+            if (!$responseData || !$responseData['success']) {
+                App::getInstance(true)->getLogger()->error('mclo.gs analysis error: ' . ($responseData['error'] ?? 'Unknown error'));
+
+                return null;
+            }
+
+            App::getInstance(true)->getLogger()->debug('Log content analyzed successfully');
+
+            return $responseData;
+
+        } catch (\Exception $e) {
+            App::getInstance(true)->getLogger()->error('Failed to analyze log content with mclo.gs: ' . $e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
+     * Get raw log content from mclo.gs by ID.
+     *
+     * @param string $logId The log ID from mclo.gs
+     *
+     * @return string|null Returns raw log content on success, null on failure
+     */
+    public static function getRawLogContent(string $logId): ?string
+    {
+        try {
+            $client = new \GuzzleHttp\Client();
+
+            $response = $client->get("https://api.mclo.gs/1/raw/{$logId}", [
+                'timeout' => 30,
+            ]);
+
+            if ($response->getStatusCode() === 200) {
+                return $response->getBody()->getContents();
+            }
+
+            return null;
+
+        } catch (\Exception $e) {
+            App::getInstance(true)->getLogger()->error("Failed to get raw log content from mclo.gs (ID: {$logId}): " . $e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
+     * Get log insights from mclo.gs by ID.
+     *
+     * @param string $logId The log ID from mclo.gs
+     *
+     * @return array|null Returns insights data on success, null on failure
+     */
+    public static function getLogInsights(string $logId): ?array
+    {
+        try {
+            $client = new \GuzzleHttp\Client();
+
+            $response = $client->get("https://api.mclo.gs/1/insights/{$logId}", [
+                'timeout' => 30,
+            ]);
+
+            $responseData = json_decode($response->getBody()->getContents(), true);
+
+            if (!$responseData || !$responseData['success']) {
+                App::getInstance(true)->getLogger()->error('mclo.gs insights error: ' . ($responseData['error'] ?? 'Unknown error'));
+
+                return null;
+            }
+
+            return $responseData;
+
+        } catch (\Exception $e) {
+            App::getInstance(true)->getLogger()->error("Failed to get log insights from mclo.gs (ID: {$logId}): " . $e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
+     * Check mclo.gs storage limits.
+     *
+     * @return array|null Returns limits data on success, null on failure
+     */
+    public static function getStorageLimits(): ?array
+    {
+        try {
+            $client = new \GuzzleHttp\Client();
+
+            $response = $client->get('https://api.mclo.gs/1/limits', [
+                'timeout' => 30,
+            ]);
+
+            $responseData = json_decode($response->getBody()->getContents(), true);
+
+            if (!$responseData) {
+                App::getInstance(true)->getLogger()->error('Failed to get mclo.gs storage limits');
+
+                return null;
+            }
+
+            return $responseData;
+
+        } catch (\Exception $e) {
+            App::getInstance(true)->getLogger()->error('Failed to get mclo.gs storage limits: ' . $e->getMessage());
+
+            return null;
+        }
     }
 }

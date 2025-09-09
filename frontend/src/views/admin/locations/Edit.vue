@@ -75,16 +75,65 @@
                         <label for="pterodactyl_location_id" class="block text-sm font-medium text-gray-400 mb-1">
                             Pterodactyl Location
                         </label>
+                        
+                        <!-- Toggle between dropdown and manual input -->
+                        <div class="flex space-x-2 mb-2">
+                            <button
+                                type="button"
+                                @click="useDropdown = true"
+                                :class="[
+                                    'px-3 py-1 text-xs rounded transition-colors',
+                                    useDropdown 
+                                        ? 'bg-pink-500 text-white' 
+                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                ]"
+                            >
+                                Select from List
+                            </button>
+                            <button
+                                type="button"
+                                @click="useDropdown = false"
+                                :class="[
+                                    'px-3 py-1 text-xs rounded transition-colors',
+                                    !useDropdown 
+                                        ? 'bg-pink-500 text-white' 
+                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                ]"
+                            >
+                                Enter Manually
+                            </button>
+                        </div>
+
+                        <!-- Dropdown input -->
                         <select
+                            v-if="useDropdown"
                             id="pterodactyl_location_id"
                             v-model="locationForm.pterodactyl_location_id"
                             class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         >
+                            <option value="0">Select a location</option>
                             <option v-for="location in pterodactylLocations" :key="location.id" :value="location.id">
-                                {{ location.short }}
+                                {{ location.short }} - {{ location.long }}
                             </option>
                         </select>
-                        <p class="text-xs text-gray-400 mt-1">This is used to identify the Pterodactyl location</p>
+
+                        <!-- Manual input -->
+                        <input
+                            v-else
+                            id="pterodactyl_location_id_manual"
+                            v-model="manualLocationId"
+                            type="number"
+                            min="1"
+                            class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="Enter Pterodactyl location ID"
+                        />
+                        
+                        <p class="text-xs text-gray-400 mt-1">
+                            {{ useDropdown 
+                                ? 'Select from available Pterodactyl locations' 
+                                : 'Enter the numeric ID of the Pterodactyl location'
+                            }}
+                        </p>
                     </div>
 
                     <div>
@@ -176,7 +225,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import { ArrowLeftIcon, SaveIcon, LoaderIcon } from 'lucide-vue-next';
@@ -190,6 +239,10 @@ const loading = ref(true);
 const saving = ref(false);
 const error = ref('');
 const successMessage = ref('');
+
+// Input type toggle
+const useDropdown = ref(true);
+const manualLocationId = ref<number | null>(null);
 
 // Form state with default values
 const locationForm = ref({
@@ -257,6 +310,35 @@ const fetchImages = async () => {
         loadingImages.value = false;
     }
 };
+
+// Sync values between dropdown and manual input
+watch(useDropdown, (newValue) => {
+    if (newValue) {
+        // Switching to dropdown - sync manual input to dropdown
+        if (manualLocationId.value) {
+            locationForm.value.pterodactyl_location_id = manualLocationId.value;
+        }
+    } else {
+        // Switching to manual input - sync dropdown to manual input
+        if (locationForm.value.pterodactyl_location_id) {
+            manualLocationId.value = locationForm.value.pterodactyl_location_id;
+        }
+    }
+});
+
+// Watch for changes in manual input to sync to dropdown
+watch(manualLocationId, (newValue) => {
+    if (!useDropdown.value && newValue) {
+        locationForm.value.pterodactyl_location_id = newValue;
+    }
+});
+
+// Watch for changes in dropdown to sync to manual input
+watch(() => locationForm.value.pterodactyl_location_id, (newValue) => {
+    if (useDropdown.value && newValue) {
+        manualLocationId.value = newValue;
+    }
+});
 
 onMounted(async () => {
     try {
@@ -349,6 +431,18 @@ const updateLocation = async () => {
     error.value = '';
 
     try {
+        // Determine which location ID to use
+        const pterodactylLocationId = useDropdown.value 
+            ? locationForm.value.pterodactyl_location_id 
+            : manualLocationId.value;
+
+        // Validate location ID
+        if (!pterodactylLocationId || pterodactylLocationId <= 0) {
+            error.value = 'Please select a Pterodactyl location or enter a valid location ID';
+            saving.value = false;
+            return;
+        }
+
         // Create FormData object
         const formData = new FormData();
         formData.append('name', locationForm.value.name);
@@ -358,8 +452,8 @@ const updateLocation = async () => {
         formData.append('slots', locationForm.value.slots.toString());
         formData.append('vip_only', locationForm.value.vip_only.toString());
 
-        if (locationForm.value.pterodactyl_location_id) {
-            formData.append('pterodactyl_location_id', locationForm.value.pterodactyl_location_id.toString());
+        if (pterodactylLocationId) {
+            formData.append('pterodactyl_location_id', pterodactylLocationId.toString());
         }
         if (locationForm.value.image_id) {
             formData.append('image_id', locationForm.value.image_id.toString());

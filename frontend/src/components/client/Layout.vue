@@ -2,21 +2,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { LicenseServer } from '@/mythicaldash/LicenseServer';
 import { useSettingsStore } from '@/stores/settings';
 
-const showFooter = ref(true);
 const Settings = useSettingsStore();
-
-onMounted(async () => {
-    try {
-        const isValid = await LicenseServer.isLicenseValid('branding-removal');
-        showFooter.value = !isValid;
-    } catch (error) {
-        console.error('Error checking license:', error);
-        showFooter.value = true;
-    }
-});
 
 const bg = computed(() => Settings.getSetting('default_bg'));
 </script>
@@ -52,8 +40,8 @@ const bg = computed(() => Settings.getSetting('default_bg'));
         <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
             <slot></slot>
 
-            <!-- Footer - Only shown if license is not valid -->
-            <div v-if="showFooter" class="absolute bottom-4 text-center text-sm text-gray-500">
+            <!-- Footer -->
+            <div class="absolute bottom-4 text-center text-sm text-gray-500">
                 <a href="https://mythical.systems" class="hover:text-indigo-400 transition-colors duration-200"
                     >MythicalSystems</a
                 >

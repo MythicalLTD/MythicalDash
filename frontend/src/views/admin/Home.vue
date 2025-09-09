@@ -266,34 +266,6 @@
                         </div>
                     </div>
 
-                    <!-- Premium Upgrade -->
-                    <div
-                        class="bg-gray-800/50 rounded-xl border border-gray-800/30"
-                        v-if="Session.hasPermission(Permissions.ADMIN_DASHBOARD_COMPONENTS_PREMIUM_VIEW)"
-                    >
-                        <div class="p-4 border-b border-gray-800/30">
-                            <h2 class="text-lg font-medium text-white">Premium Edition</h2>
-                        </div>
-                        <div class="p-4">
-                            <div class="mb-4">
-                                <p class="text-indigo-200/90">
-                                    Get access to additional features, priority support, and advanced customization
-                                    options.
-                                </p>
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <a
-                                    href="https://mymythicalid.mythical.systems"
-                                    target="_blank"
-                                    class="flex items-center justify-center gap-2 w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-lg shadow-indigo-900/30 transition-all duration-200"
-                                >
-                                    <Sparkles class="w-4 h-4" />
-                                    <span>Upgrade Now</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- System Logs -->
                     <div
                         class="bg-gray-800/50 rounded-xl border border-gray-800/30"

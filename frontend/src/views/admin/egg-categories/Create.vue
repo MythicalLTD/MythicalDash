@@ -46,17 +46,64 @@
                         <label for="pterodactyl_nest_id" class="block text-sm font-medium text-gray-400 mb-1">
                             Pterodactyl Nest
                         </label>
+                        
+                        <!-- Toggle between dropdown and manual input -->
+                        <div class="flex space-x-2 mb-2">
+                            <button
+                                type="button"
+                                @click="useDropdown = true"
+                                :class="[
+                                    'px-3 py-1 text-xs rounded transition-colors',
+                                    useDropdown 
+                                        ? 'bg-pink-500 text-white' 
+                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                ]"
+                            >
+                                Select from List
+                            </button>
+                            <button
+                                type="button"
+                                @click="useDropdown = false"
+                                :class="[
+                                    'px-3 py-1 text-xs rounded transition-colors',
+                                    !useDropdown 
+                                        ? 'bg-pink-500 text-white' 
+                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                ]"
+                            >
+                                Enter Manually
+                            </button>
+                        </div>
+
+                        <!-- Dropdown input -->
                         <select
+                            v-if="useDropdown"
                             id="pterodactyl_nest_id"
                             v-model="categoryForm.pterodactyl_nest_id"
                             class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                         >
+                            <option value="0">Select a nest</option>
                             <option v-for="nest in pterodactylNests" :key="nest.id" :value="nest.id">
                                 {{ nest.name }}
                             </option>
                         </select>
+
+                        <!-- Manual input -->
+                        <input
+                            v-else
+                            id="pterodactyl_nest_id_manual"
+                            v-model="manualNestId"
+                            type="number"
+                            min="1"
+                            class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="Enter Pterodactyl nest ID"
+                        />
+                        
                         <p class="text-xs text-gray-400 mt-1">
-                            This is used to link the category to a Pterodactyl nest
+                            {{ useDropdown 
+                                ? 'Select from available Pterodactyl nests' 
+                                : 'Enter the numeric ID of the Pterodactyl nest'
+                            }}
                         </p>
                     </div>
 
@@ -109,7 +156,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import { ArrowLeftIcon, SaveIcon, LoaderIcon } from 'lucide-vue-next';
@@ -123,6 +170,10 @@ const router = useRouter();
 const loading = ref(false);
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);
+
+// Input type toggle
+const useDropdown = ref(true);
+const manualNestId = ref<number | null>(null);
 
 // Form state
 const categoryForm = ref({
@@ -182,6 +233,35 @@ const fetchImages = async () => {
     }
 };
 
+// Sync values between dropdown and manual input
+watch(useDropdown, (newValue) => {
+    if (newValue) {
+        // Switching to dropdown - sync manual input to dropdown
+        if (manualNestId.value) {
+            categoryForm.value.pterodactyl_nest_id = manualNestId.value;
+        }
+    } else {
+        // Switching to manual input - sync dropdown to manual input
+        if (categoryForm.value.pterodactyl_nest_id) {
+            manualNestId.value = categoryForm.value.pterodactyl_nest_id;
+        }
+    }
+});
+
+// Watch for changes in manual input to sync to dropdown
+watch(manualNestId, (newValue) => {
+    if (!useDropdown.value && newValue) {
+        categoryForm.value.pterodactyl_nest_id = newValue;
+    }
+});
+
+// Watch for changes in dropdown to sync to manual input
+watch(() => categoryForm.value.pterodactyl_nest_id, (newValue) => {
+    if (useDropdown.value && newValue) {
+        manualNestId.value = newValue;
+    }
+});
+
 EggCategories.getPterodactylNests().then((response) => {
     if (response.success) {
         pterodactylNests.value = response.nests;
@@ -192,10 +272,28 @@ const saveCategory = async () => {
     loading.value = true;
 
     try {
+        // Determine which nest ID to use
+        const pterodactylNestId = useDropdown.value 
+            ? categoryForm.value.pterodactyl_nest_id 
+            : manualNestId.value;
+
+        // Validate nest ID
+        if (!pterodactylNestId || pterodactylNestId <= 0) {
+            playError();
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please select a Pterodactyl nest or enter a valid nest ID',
+                showConfirmButton: true,
+            });
+            loading.value = false;
+            return;
+        }
+
         const response = await EggCategories.createCategory(
             categoryForm.value.name,
             categoryForm.value.description,
-            categoryForm.value.pterodactyl_nest_id,
+            pterodactylNestId,
             categoryForm.value.enabled,
             categoryForm.value.image_id,
         );

@@ -44,7 +44,38 @@
                         <label for="pterodactyl_egg_id" class="block text-sm font-medium text-gray-300 mb-1"
                             >Pterodactyl Egg</label
                         >
+                        
+                        <!-- Toggle between dropdown and manual input -->
+                        <div class="flex space-x-2 mb-2">
+                            <button
+                                type="button"
+                                @click="useDropdown = true"
+                                :class="[
+                                    'px-3 py-1 text-xs rounded transition-colors',
+                                    useDropdown 
+                                        ? 'bg-pink-500 text-white' 
+                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                ]"
+                            >
+                                Select from List
+                            </button>
+                            <button
+                                type="button"
+                                @click="useDropdown = false"
+                                :class="[
+                                    'px-3 py-1 text-xs rounded transition-colors',
+                                    !useDropdown 
+                                        ? 'bg-pink-500 text-white' 
+                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                ]"
+                            >
+                                Enter Manually
+                            </button>
+                        </div>
+
+                        <!-- Dropdown input -->
                         <select
+                            v-if="useDropdown"
                             id="pterodactyl_egg_id"
                             v-model="eggForm.pterodactyl_egg_id"
                             class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
@@ -55,6 +86,25 @@
                                 {{ egg.name }}
                             </option>
                         </select>
+
+                        <!-- Manual input -->
+                        <input
+                            v-else
+                            id="pterodactyl_egg_id_manual"
+                            v-model="manualEggId"
+                            type="number"
+                            min="1"
+                            class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="Enter Pterodactyl egg ID"
+                            required
+                        />
+                        
+                        <p class="text-xs text-gray-400 mt-1">
+                            {{ useDropdown 
+                                ? 'Select from available Pterodactyl eggs' 
+                                : 'Enter the numeric ID of the Pterodactyl egg'
+                            }}
+                        </p>
                     </div>
 
                     <div>
@@ -150,6 +200,10 @@ const loading = ref(true);
 const saving = ref(false);
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);
+
+// Input type toggle
+const useDropdown = ref(true);
+const manualEggId = ref<number | null>(null);
 
 const eggId = parseInt(route.params.id as string);
 
@@ -288,6 +342,35 @@ const fetchEgg = async () => {
     }
 };
 
+// Sync values between dropdown and manual input
+watch(useDropdown, (newValue) => {
+    if (newValue) {
+        // Switching to dropdown - sync manual input to dropdown
+        if (manualEggId.value) {
+            eggForm.value.pterodactyl_egg_id = manualEggId.value;
+        }
+    } else {
+        // Switching to manual input - sync dropdown to manual input
+        if (eggForm.value.pterodactyl_egg_id) {
+            manualEggId.value = eggForm.value.pterodactyl_egg_id;
+        }
+    }
+});
+
+// Watch for changes in manual input to sync to dropdown
+watch(manualEggId, (newValue) => {
+    if (!useDropdown.value && newValue) {
+        eggForm.value.pterodactyl_egg_id = newValue;
+    }
+});
+
+// Watch for changes in dropdown to sync to manual input
+watch(() => eggForm.value.pterodactyl_egg_id, (newValue) => {
+    if (useDropdown.value && newValue) {
+        manualEggId.value = newValue;
+    }
+});
+
 // Watch for category changes to load the appropriate Pterodactyl eggs
 const watchCategory = () => {
     if (eggForm.value.category > 0) {
@@ -306,12 +389,30 @@ const updateEgg = async () => {
     saving.value = true;
 
     try {
+        // Determine which egg ID to use
+        const pterodactylEggId = useDropdown.value 
+            ? eggForm.value.pterodactyl_egg_id 
+            : manualEggId.value;
+
+        // Validate egg ID
+        if (!pterodactylEggId || pterodactylEggId <= 0) {
+            playError();
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please select a Pterodactyl egg or enter a valid egg ID',
+                showConfirmButton: true,
+            });
+            saving.value = false;
+            return;
+        }
+
         const response = await Eggs.updateEgg(
             eggId,
             eggForm.value.name,
             eggForm.value.description,
             eggForm.value.category,
-            eggForm.value.pterodactyl_egg_id,
+            pterodactylEggId,
             eggForm.value.enabled,
             eggForm.value.image_id,
             eggForm.value.vip_only,

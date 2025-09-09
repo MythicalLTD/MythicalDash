@@ -3,7 +3,6 @@ import { LogOutIcon } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 import { useSkinSettings } from '@/composables/useSkinSettings';
 import { optimizeImage } from '@/utils/performance';
-import { LicenseServer } from '@/mythicaldash/LicenseServer';
 
 interface Props {
     isOpen: boolean;
@@ -34,18 +33,6 @@ const props = withDefaults(defineProps<Props>(), {
         coins: '0',
         servers: '0',
     }),
-});
-
-const showAd = ref(true);
-
-onMounted(async () => {
-    try {
-        const isValid = await LicenseServer.isLicenseValid('branding-removal');
-        showAd.value = !isValid;
-    } catch (error) {
-        console.error('Error checking license:', error);
-        showAd.value = true;
-    }
 });
 const { dropdownSettings } = useSkinSettings();
 
@@ -216,7 +203,6 @@ const optimizedAvatar = computed(() => {
 
             <!-- Footer -->
             <div
-                v-if="showAd"
                 class="p-4 bg-gradient-to-r from-[#1a1a2e]/30 to-[#2a2a3f]/20 text-center text-xs text-gray-500 border-t border-[#2a2a3f]/30"
             >
                 <p class="flex items-center justify-center gap-2">

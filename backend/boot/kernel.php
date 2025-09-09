@@ -56,13 +56,6 @@ if (!is_writable(__DIR__ . '/../storage')) {
     exit(json_encode(['error' => 'Please make sure the storage directory is writable.', 'code' => 500, 'message' => 'Please make sure the storage directory is writable.', 'success' => false]));
 }
 
-\Sentry\init([
-    'dsn' => 'https://b1d78f7281cc4ddb10e693d2a8c3f509@o4508434822791168.ingest.de.sentry.io/4509679592144976',
-    // Specify a fixed sample rate
-    'traces_sample_rate' => 1.0,
-
-]);
-
 if (file_exists(APP_DIR . 'storage/.env')) {
     /**
      * Initialize the plugin manager.

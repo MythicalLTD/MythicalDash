@@ -16,7 +16,6 @@ ADMIN_DASHBOARD_COMPONENTS_SYSTEM_LOGS=admin.dashboard.components.system.logs | 
 # Dashboard Components - Analytics & Support
 ADMIN_DASHBOARD_COMPONENTS_ANALYTICS_VIEW=admin.dashboard.components.ataglanceanalytics.view | Admin Dashboard Components | View analytics at-a-glance component
 ADMIN_DASHBOARD_COMPONENTS_SUPPORT_VIEW=admin.dashboard.components.support.view | Admin Dashboard Components | View support component
-ADMIN_DASHBOARD_COMPONENTS_PREMIUM_VIEW=admin.dashboard.components.premiumedition.view | Admin Dashboard Components | View premium edition component
 ADMIN_DASHBOARD_COMPONENTS_GITHUB_VIEW=admin.dashboard.components.githubrepo.view | Admin Dashboard Components | View GitHub repository component
 ADMIN_DASHBOARD_COMPONENTS_QUICK_ACTIONS=admin.dashboard.components.quickactions.view | Admin Dashboard Components | View quick actions component
 ADMIN_DASHBOARD_COMPONENTS_ACTIVITY_VIEW=admin.dashboard.components.activity.view | Admin Dashboard Components | View activity feed component
@@ -105,11 +104,6 @@ ADMIN_SETTINGS_EDIT=admin.settings.edit | Admin Settings | Edit system settings
 # Plugins
 ADMIN_PLUGINS_EDIT=admin.plugins.edit | Admin Plugins | Edit existing plugins
 ADMIN_PLUGINS_LIST=admin.plugins.list | Admin Plugins | List all plugins
-
-# MythicalCloud
-ADMIN_MYTHICALCLOUD_VIEW=admin.mythicalcloud.view | Admin MythicalCloud | View MythicalCloud settings
-ADMIN_MYTHICALCLOUD_DOWNLOAD=admin.mythicalcloud.download | Admin MythicalCloud | Download MythicalCloud backups
-ADMIN_MYTHICALCLOUD_UPLOAD=admin.mythicalcloud.upload | Admin MythicalCloud | Upload files to MythicalCloud
 
 # Backups
 ADMIN_BACKUPS_CREATE=admin.backups.create | Admin Backups | Create new backups

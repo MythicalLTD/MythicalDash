@@ -136,7 +136,6 @@ class HealthCheck
             'intl',
             'bcmath',
             'xml',
-            'excimer',
             'redis',
         ];
 

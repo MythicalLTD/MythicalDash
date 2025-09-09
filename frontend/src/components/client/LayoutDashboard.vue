@@ -11,7 +11,6 @@ import { SettingsIcon, UserIcon, UsersIcon } from 'lucide-vue-next';
 import Session from '@/mythicaldash/Session';
 import StorageMonitor from '@/mythicaldash/StorageMonitor';
 import MythicalDash from '@/mythicaldash/MythicalDash';
-import { LicenseServer } from '@/mythicaldash/LicenseServer';
 import Permissions from '@/mythicaldash/Permissions';
 import Roles from '@/mythicaldash/admin/Roles';
 import { useI18n } from 'vue-i18n';
@@ -385,18 +384,6 @@ const userInfo = computed(() => {
     };
 });
 
-const showFooter = ref(true);
-
-onMounted(async () => {
-    try {
-        const isValid = await LicenseServer.isLicenseValid('branding-removal');
-        showFooter.value = !isValid;
-    } catch (error) {
-        console.error('Error checking license:', error);
-        showFooter.value = true;
-    }
-});
-
 const reloadUserData = async () => {
     isReloading.value = true;
 
@@ -568,7 +555,7 @@ const getRoleInfo = (roleId: number) => {
                 />
 
                 <!-- Footer -->
-                <footer v-if="showFooter" class="relative z-10 py-4 px-6 text-center text-sm text-gray-500">
+                <footer class="relative z-10 py-4 px-6 text-center text-sm text-gray-500">
                     <a href="https://mythical.systems" class="hover:text-indigo-400 transition-colors">
                         MythicalSystems
                     </a>

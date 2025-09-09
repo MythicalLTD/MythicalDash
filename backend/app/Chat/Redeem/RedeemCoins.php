@@ -235,7 +235,8 @@ class RedeemCoins extends Database
         try {
             $dbConn = Database::getPdoConnection();
             $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE id = :id AND deleted = "false"');
-            $stmt->execute([$id]);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
 
             return $stmt->fetch(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
@@ -262,7 +263,8 @@ class RedeemCoins extends Database
 
             // Use SELECT FOR UPDATE to lock the row and get current code data
             $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE code = :code AND deleted = "false" AND enabled = "true" FOR UPDATE');
-            $stmt->execute([$code]);
+            $stmt->bindParam(':code', $code);
+            $stmt->execute();
             $codeData = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if (!$codeData) {
@@ -280,7 +282,9 @@ class RedeemCoins extends Database
 
             // Check if user has already redeemed this code
             $stmt = $dbConn->prepare('SELECT COUNT(*) FROM ' . RedeemRedeems::getTableName() . ' WHERE code = :code AND user = :user AND deleted = "false" FOR UPDATE');
-            $stmt->execute([$codeData['id'], $userUuid]);
+            $stmt->bindParam(':code', $codeData['id']);
+            $stmt->bindParam(':user', $userUuid);
+            $stmt->execute();
             if ($stmt->fetchColumn() > 0) {
                 $dbConn->rollBack();
 
@@ -289,11 +293,14 @@ class RedeemCoins extends Database
 
             // Decrement usage count
             $stmt = $dbConn->prepare('UPDATE ' . self::getTableName() . ' SET uses = uses - 1 WHERE id = :id AND uses > 0');
-            $stmt->execute([$codeData['id']]);
+            $stmt->bindParam(':id', $codeData['id']);
+            $stmt->execute();
 
             // Create redemption record
             $stmt = $dbConn->prepare('INSERT INTO ' . RedeemRedeems::getTableName() . ' (user, code) VALUES (:user, :code)');
-            $stmt->execute([$userUuid, $codeData['id']]);
+            $stmt->bindParam(':user', $userUuid);
+            $stmt->bindParam(':code', $codeData['id']);
+            $stmt->execute();
 
             $dbConn->commit();
 
@@ -329,7 +336,8 @@ class RedeemCoins extends Database
 
             // Use SELECT FOR UPDATE to lock the row and get current code data
             $stmt = $dbConn->prepare('SELECT * FROM ' . self::getTableName() . ' WHERE code = :code AND deleted = "false" AND enabled = "true" FOR UPDATE');
-            $stmt->execute([$code]);
+            $stmt->bindParam(':code', $code);
+            $stmt->execute();
             $codeData = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if (!$codeData) {
@@ -347,7 +355,9 @@ class RedeemCoins extends Database
 
             // Check if user has already redeemed this code
             $stmt = $dbConn->prepare('SELECT COUNT(*) FROM ' . RedeemRedeems::getTableName() . ' WHERE code = :code AND user = :user AND deleted = "false"');
-            $stmt->execute([$codeData['id'], $userUuid]);
+            $stmt->bindParam(':code', $codeData['id']);
+            $stmt->bindParam(':user', $userUuid);
+            $stmt->execute();
             $alreadyRedeemed = $stmt->fetchColumn() > 0;
 
             $dbConn->commit();

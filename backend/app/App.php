@@ -22,7 +22,6 @@ use RateLimit\Rate;
 use MythicalDash\Chat\Database;
 use RateLimit\RedisRateLimiter;
 use MythicalDash\Hooks\MythicalAPP;
-use MythicalDash\Hooks\LicenseSystem;
 use MythicalDash\Router\Router as rt;
 use MythicalDash\Config\ConfigFactory;
 use MythicalDash\Logger\LoggerFactory;
@@ -36,7 +35,6 @@ class App extends MythicalAPP
 {
     public static App $instance;
     public Database $db;
-    public LicenseSystem $LicenseSystem;
     public rt $router;
 
     public function __construct(bool $softBoot, bool $isCron = false)
@@ -163,28 +161,6 @@ class App extends MythicalAPP
         $eventManager->emit(AppEvent::onAppLoad(), []);
         $eventManager->emit(AppEvent::onRouterReady(), [$this->router]);
 
-        try {
-            $this->LicenseSystem = new LicenseSystem();
-            try {
-                if (!$this->LicenseSystem->validateLicense($this->getConfig()->getDBSetting(ConfigInterface::LICENSE_KEY, 'NULL'), $this->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'true'))) {
-                    define('HAS_VALID_LICENSE', false);
-                } else {
-                    define('HAS_VALID_LICENSE', true);
-                }
-            } catch (\Exception $e) {
-                define('HAS_VALID_LICENSE', false);
-            }
-        } catch (\Exception $e) {
-            App::getInstance(true)->getLogger()->error('License validator error: ' . $e->getMessage());
-        }
-
-        if (!HAS_VALID_LICENSE) {
-            self::getLogger()->error('License is invalid!');
-            self::ServiceUnavailable('License is invalid!', ['error_code' => 'LICENSE_INVALID']);
-            exit;
-        }
-
-
         $this->router->add('/(.*)', function ($route): void {
             self::init();
             self::NotFound('The api route does not exist!', ['error_code' => 'API_ROUTE_NOT_FOUND', 'route' => $route]);
@@ -261,11 +237,6 @@ class App extends MythicalAPP
         }
     }
 
-    public function getLicenseSystem(): LicenseSystem
-    {
-        return $this->LicenseSystem;
-    }
-
     /**
      * Update the value of an environment variable.
      *
@@ -286,6 +257,7 @@ class App extends MythicalAPP
         $lines = file($envFile, FILE_IGNORE_NEW_LINES);
         if ($lines === false) {
             $this->getLogger()->error('Failed to read .env file');
+
             return false;
         }
 
@@ -321,6 +293,7 @@ class App extends MythicalAPP
         // Check if we have write permissions
         if (!is_writable($envFile)) {
             $this->getLogger()->error('Cannot write to .env file - insufficient permissions');
+
             return false;
         }
 
@@ -328,6 +301,7 @@ class App extends MythicalAPP
         $backupFile = $envFile . '.backup.' . date('Y-m-d_H-i-s');
         if (!copy($envFile, $backupFile)) {
             $this->getLogger()->error('Failed to create backup of .env file');
+
             return false;
         }
 
@@ -338,11 +312,13 @@ class App extends MythicalAPP
                 // Restore from backup if write fails
                 copy($backupFile, $envFile);
                 $this->getLogger()->error('Failed to write to .env file - restored from backup');
+
                 return false;
             }
 
             // Clean up backup file after successful write
             unlink($backupFile);
+
             return true;
         } catch (\Exception $e) {
             // Restore from backup if an exception occurs
@@ -351,6 +327,7 @@ class App extends MythicalAPP
                 unlink($backupFile);
             }
             $this->getLogger()->error('Failed to write to .env file: ' . $e->getMessage() . ' - restored from backup');
+
             return false;
         }
     }

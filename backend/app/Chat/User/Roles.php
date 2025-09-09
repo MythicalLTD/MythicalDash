@@ -251,6 +251,9 @@ class Roles extends Database
     public static function deleteRole(int $id): bool
     {
         try {
+            if ($id === 1 || $id === 7) {
+                return false;
+            }
             $con = self::getPdoConnection();
             $stmt = $con->prepare('UPDATE ' . self::TABLE_NAME . ' SET deleted = \'true\' WHERE id = :id');
             $stmt->bindParam(':id', $id);

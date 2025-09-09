@@ -35,7 +35,7 @@ define('APP_DEBUG', false);
 define('SYSTEM_OS_NAME', gethostname() . '/' . PHP_OS_FAMILY);
 define('SYSTEM_KERNEL_NAME', php_uname('s'));
 define('TELEMETRY', true);
-define('APP_VERSION', '3.3.2-nexus');
+define('APP_VERSION', '3.4.0-nexus');
 define('APP_UPSTREAM', 'github.com/mythicalltd/mythicaldash');
 
 if (APP_DEBUG) {

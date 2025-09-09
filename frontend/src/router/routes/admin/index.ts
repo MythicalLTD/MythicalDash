@@ -6,7 +6,6 @@ import eggCategoryRoutes from './egg-categories.ts';
 import userRoutes from './users.ts';
 import announcementRoutes from './announcements.ts';
 import ticketRoutes from './tickets.ts';
-import mythicalcloudRoutes from './mythicalcloud.ts';
 import queueRoutes from './queue.ts';
 import mailTemplatesRoutes from './mail-templates.ts';
 import settingsRoutes from './settings.ts';
@@ -69,7 +68,6 @@ const adminRoutes: RouteRecordRaw[] = [
     ...settingsRoutes,
     ...announcementRoutes,
     ...ticketRoutes,
-    ...mythicalcloudRoutes,
     ...queueRoutes,
     ...mailTemplatesRoutes,
     ...redeemRoutes,

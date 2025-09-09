@@ -4,9 +4,9 @@ This document provides a comprehensive overview of all permission nodes used in 
 
 ## Overview
 
-- **Total Permissions:** 91
-- **Categories:** 30
-- **With Descriptions:** 91
+- **Total Permissions:** 87
+- **Categories:** 29
+- **With Descriptions:** 87
 
 ## Format
 
@@ -58,7 +58,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_DASHBOARD_COMPONENTS_SYSTEM_LOGS` | `admin.dashboard.components.system.logs` | View system logs component |
 | `ADMIN_DASHBOARD_COMPONENTS_ANALYTICS_VIEW` | `admin.dashboard.components.ataglanceanalytics.view` | View analytics at-a-glance component |
 | `ADMIN_DASHBOARD_COMPONENTS_SUPPORT_VIEW` | `admin.dashboard.components.support.view` | View support component |
-| `ADMIN_DASHBOARD_COMPONENTS_PREMIUM_VIEW` | `admin.dashboard.components.premiumedition.view` | View premium edition component |
 | `ADMIN_DASHBOARD_COMPONENTS_GITHUB_VIEW` | `admin.dashboard.components.githubrepo.view` | View GitHub repository component |
 | `ADMIN_DASHBOARD_COMPONENTS_QUICK_ACTIONS` | `admin.dashboard.components.quickactions.view` | View quick actions component |
 | `ADMIN_DASHBOARD_COMPONENTS_ACTIVITY_VIEW` | `admin.dashboard.components.activity.view` | View activity feed component |
@@ -193,14 +192,6 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_PLUGINS_EDIT` | `admin.plugins.edit` | Edit existing plugins |
 | `ADMIN_PLUGINS_LIST` | `admin.plugins.list` | List all plugins |
 
-## Admin MythicalCloud
-
-| Permission | Node | Description |
-|------------|------|-------------|
-| `ADMIN_MYTHICALCLOUD_VIEW` | `admin.mythicalcloud.view` | View MythicalCloud settings |
-| `ADMIN_MYTHICALCLOUD_DOWNLOAD` | `admin.mythicalcloud.download` | Download MythicalCloud backups |
-| `ADMIN_MYTHICALCLOUD_UPLOAD` | `admin.mythicalcloud.upload` | Upload files to MythicalCloud |
-
 ## Admin Backups
 
 | Permission | Node | Description |
@@ -300,4 +291,4 @@ To add a new permission node:
 
 ---
 
-*This documentation was auto-generated on 2025-08-16 16:47:02*
+*This documentation was auto-generated on 2025-09-09 19:41:11*

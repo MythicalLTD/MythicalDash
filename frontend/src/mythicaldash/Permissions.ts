@@ -30,8 +30,6 @@ class Permissions {
     public static ADMIN_DASHBOARD_COMPONENTS_ANALYTICS_VIEW = 'admin.dashboard.components.ataglanceanalytics.view';
     /** View support component */
     public static ADMIN_DASHBOARD_COMPONENTS_SUPPORT_VIEW = 'admin.dashboard.components.support.view';
-    /** View premium edition component */
-    public static ADMIN_DASHBOARD_COMPONENTS_PREMIUM_VIEW = 'admin.dashboard.components.premiumedition.view';
     /** View GitHub repository component */
     public static ADMIN_DASHBOARD_COMPONENTS_GITHUB_VIEW = 'admin.dashboard.components.githubrepo.view';
     /** View quick actions component */
@@ -171,14 +169,6 @@ class Permissions {
     /** List all plugins */
     public static ADMIN_PLUGINS_LIST = 'admin.plugins.list';
 
-    // Admin MythicalCloud Permissions
-    /** View MythicalCloud settings */
-    public static ADMIN_MYTHICALCLOUD_VIEW = 'admin.mythicalcloud.view';
-    /** Download MythicalCloud backups */
-    public static ADMIN_MYTHICALCLOUD_DOWNLOAD = 'admin.mythicalcloud.download';
-    /** Upload files to MythicalCloud */
-    public static ADMIN_MYTHICALCLOUD_UPLOAD = 'admin.mythicalcloud.upload';
-
     // Admin Backups Permissions
     /** Create new backups */
     public static ADMIN_BACKUPS_CREATE = 'admin.backups.create';
@@ -299,12 +289,6 @@ class Permissions {
                 value: Permissions.ADMIN_DASHBOARD_COMPONENTS_SUPPORT_VIEW,
                 category: 'Admin Dashboard Components',
                 description: 'View support component',
-            },
-            {
-                constant: 'ADMIN_DASHBOARD_COMPONENTS_PREMIUM_VIEW',
-                value: Permissions.ADMIN_DASHBOARD_COMPONENTS_PREMIUM_VIEW,
-                category: 'Admin Dashboard Components',
-                description: 'View premium edition component',
             },
             {
                 constant: 'ADMIN_DASHBOARD_COMPONENTS_GITHUB_VIEW',
@@ -623,24 +607,6 @@ class Permissions {
                 value: Permissions.ADMIN_PLUGINS_LIST,
                 category: 'Admin Plugins',
                 description: 'List all plugins',
-            },
-            {
-                constant: 'ADMIN_MYTHICALCLOUD_VIEW',
-                value: Permissions.ADMIN_MYTHICALCLOUD_VIEW,
-                category: 'Admin MythicalCloud',
-                description: 'View MythicalCloud settings',
-            },
-            {
-                constant: 'ADMIN_MYTHICALCLOUD_DOWNLOAD',
-                value: Permissions.ADMIN_MYTHICALCLOUD_DOWNLOAD,
-                category: 'Admin MythicalCloud',
-                description: 'Download MythicalCloud backups',
-            },
-            {
-                constant: 'ADMIN_MYTHICALCLOUD_UPLOAD',
-                value: Permissions.ADMIN_MYTHICALCLOUD_UPLOAD,
-                category: 'Admin MythicalCloud',
-                description: 'Upload files to MythicalCloud',
             },
             {
                 constant: 'ADMIN_BACKUPS_CREATE',

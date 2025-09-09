@@ -1,3 +1,33 @@
+# v3.4.0-Nexus
+
+# Bugs Fixed:
+
+- BUG: Fixed servers being deleted in the database before removal in the Pterodactyl panel  
+- BUG: Fixed bug allowing unlimited database slots and backups  
+- BUG: Fixed invalid redeem code issue  
+- BUG: Fixed missing translation keys  
+- BUG: Prevented users from deleting core roles  
+
+# Features Added:
+
+- Feature: Added manual ID input support for location creation and editing  
+- Feature: Added manual ID input support for egg creation and editing  
+- Feature: Added manual ID input support for nest creation and editing  
+- Feature: Server listing now supports more than 100 servers  
+- Feature: Logs are now handled through a 3rd-party API  
+
+# Features Removed:
+
+- Removed: License system  
+- Removed: Requirement for `excimer`  
+- Removed: All telemetry from MythicalDash  
+
+# Breaking Changes:
+
+- None – all changes are backward compatible  
+- Existing API endpoints remain unchanged  
+- Database schema remains unaffected  
+
 # v3.3.2-Nexus
 
 # Bugs Fixed:

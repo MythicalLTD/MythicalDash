@@ -19,7 +19,6 @@
 use MythicalDash\App;
 use MythicalDash\Permissions;
 use MythicalDash\Chat\Eggs\Eggs;
-use MythicalDash\Chat\Eggs\EggCategories;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Locations\Locations;
 use MythicalDash\Chat\User\UserActivities;
@@ -110,29 +109,43 @@ $router->get('/api/admin/servers/list', function (): void {
     $serversWithInfo = [];
     if (isset($servers['data'])) {
         foreach ($servers['data'] as $server) {
-            // Add additional server information
-            $serverData = $server;
+            // Only include essential data for the frontend
+            $serverData = [
+                'object' => $server['object'],
+                'attributes' => [
+                    'id' => $server['attributes']['id'],
+                    'name' => $server['attributes']['name'],
+                    'suspended' => $server['attributes']['suspended'],
+                    'created_at' => $server['attributes']['created_at'],
+                    'limits' => [
+                        'memory' => $server['attributes']['limits']['memory'],
+                        'cpu' => $server['attributes']['limits']['cpu'],
+                        'disk' => $server['attributes']['limits']['disk'],
+                    ],
+                ],
+            ];
+
+            // Add location info (only name needed)
             if (isset($server['attributes']['node'])) {
                 $locationId = MythicalDash\Hooks\Pterodactyl\Admin\Nodes::getLocationIdFromNode((int) $server['attributes']['node']);
                 $location = Locations::getLocationByPterodactylLocationId($locationId);
-                if ($location) {
-                    $serverData['location'] = $location;
+                if ($location && isset($location['id']) && isset($location['name'])) {
+                    $serverData['location'] = [
+                        'id' => $location['id'],
+                        'name' => $location['name'],
+                    ];
                 }
             }
 
+            // Add service info (only name needed)
             if (isset($server['attributes']['egg'])) {
                 $eggId = $server['attributes']['egg'];
                 $egg = Eggs::getByPterodactylEggId($eggId);
-                if ($egg) {
-                    $serverData['service'] = $egg;
-                }
-            }
-
-            if (isset($server['attributes']['nest'])) {
-                $nestId = $server['attributes']['nest'];
-                $nest = EggCategories::getByPterodactylNestId($nestId);
-                if ($nest) {
-                    $serverData['category'] = $nest;
+                if ($egg && isset($egg['id']) && isset($egg['name'])) {
+                    $serverData['service'] = [
+                        'id' => $egg['id'],
+                        'name' => $egg['name'],
+                    ];
                 }
             }
 

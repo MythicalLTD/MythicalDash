@@ -294,7 +294,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         }
     }
 
-    if ($resourceDifference['databases'] > 0 && $available_resources[UserColumns::DATABASE_LIMIT] > 0) {
+    if ($resourceDifference['databases'] > 0 && $available_resources[UserColumns::DATABASE_LIMIT] >= 0) {
         $freeDatabases = $available_resources[UserColumns::DATABASE_LIMIT] - $resources['databases'];
         if ($resourceDifference['databases'] > $freeDatabases) {
             $appInstance->BadRequest('This update would exceed your maximum databases limit', [
@@ -308,7 +308,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         }
     }
 
-    if ($resourceDifference['backups'] > 0 && $available_resources[UserColumns::BACKUP_LIMIT] > 0) {
+    if ($resourceDifference['backups'] > 0 && $available_resources[UserColumns::BACKUP_LIMIT] >= 0) {
         $freeBackups = $available_resources[UserColumns::BACKUP_LIMIT] - $resources['backups'];
         if ($resourceDifference['backups'] > $freeBackups) {
             $appInstance->BadRequest('This update would exceed your maximum backups limit', [
@@ -549,12 +549,16 @@ $router->post('/api/user/server/(.*)/delete', function (string $id): void {
         return;
     }
     $serverId = $server['attributes']['id'];
-    if (MythicalDash\Chat\Servers\Server::doesServerExistByPterodactylId($serverId)) {
-        MythicalDash\Chat\Servers\Server::deleteServerByPterodactylId($serverId);
-    }
 
     try {
+        // Delete from Pterodactyl first
         Servers::deletePterodactylServer($serverId, false);
+
+        // Only delete from database after successful Pterodactyl deletion
+        if (MythicalDash\Chat\Servers\Server::doesServerExistByPterodactylId($serverId)) {
+            MythicalDash\Chat\Servers\Server::deleteServerByPterodactylId($serverId);
+        }
+
         global $eventManager;
         $eventManager->emit(ServerEvent::onServerDeleted(), [
             'server' => $serverId,

@@ -7,7 +7,6 @@ import type { NetworkLog, ErrorLog, ConsoleLog } from './types/debug';
 import type { TransitionType } from './types/transitions.ts';
 import { useSkinSettings } from '@/composables/useSkinSettings';
 import { updatePerformanceSettings } from '@/utils/performance';
-import { LicenseServer } from '@/mythicaldash/LicenseServer';
 export default defineComponent({
     name: 'App',
     components: {
@@ -19,12 +18,6 @@ export default defineComponent({
         const debugPanel = ref<InstanceType<typeof DebugPanel> | null>(null);
         const isPageTransitioning = ref(false);
         const { performanceSettings } = useSkinSettings();
-        const licenseValid = ref(false);
-
-        onMounted(async () => {
-            licenseValid.value = await LicenseServer.isLicenseValid('theme-customization');
-            console.log('Theme customization license valid:', licenseValid.value);
-        });
 
         // Transition settings
         const selectedTransition = ref<TransitionType>('fade');
@@ -174,7 +167,6 @@ export default defineComponent({
             showTransitionSelector,
             toggleTransitionSelector,
             setTransition,
-            licenseValid,
         };
     },
 });
@@ -183,12 +175,7 @@ export default defineComponent({
 <template>
     <div class="app-container">
         <!-- Transition settings button -->
-        <button
-            v-if="licenseValid"
-            @click="toggleTransitionSelector"
-            class="transition-settings-button"
-            title="Page Transition Settings"
-        >
+        <button @click="toggleTransitionSelector" class="transition-settings-button" title="Page Transition Settings">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
