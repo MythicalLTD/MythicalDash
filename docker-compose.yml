@@ -67,7 +67,7 @@ services:
     container_name: mythicaldash_v3_frontend
     restart: unless-stopped
     ports:
-      - "4831:80"
+      - "4830:80"
     depends_on:
       - backend
     networks:
