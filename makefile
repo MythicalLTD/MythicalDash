@@ -121,14 +121,8 @@ release:
 release-package:
 	@echo -e "\n${BOLD}${BLUE}Creating Release Package${NC} ${PACKAGE}"
 	@echo -e "${CYAN}=========================${NC}"
-	@echo -e "${GREEN}${INFO} Installing latest frontend packages...${NC}"
-	@cd $(FRONTEND_DIR) && $(YARN) install
-	@echo -e "${GREEN}${CHECK} Frontend packages installed${NC}\n"
-	
-	@echo -e "${GREEN}${INFO} Building frontend for production...${NC}"
-	@cd $(FRONTEND_DIR) && $(YARN) build
-	@echo -e "${GREEN}${CHECK} Frontend production build complete${NC}\n"
-	
+	@$(MAKE) set-prod
+	@$(MAKE) release
 	@echo -e "${GREEN}${INFO} Creating MythicalDash.zip package...${NC}"
 	@echo -e "${YELLOW}${WARN} Creating package with tracked files and frontend dist...${NC}"
 	@rm -f MythicalDash.zip
