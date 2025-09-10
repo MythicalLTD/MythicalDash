@@ -17,6 +17,22 @@ import { useSettingsStore } from '@/stores/settings';
 import Swal from 'sweetalert2';
 
 MythicalDash.download();
+// Check for refresh flag and refresh if needed
+const checkRefreshFlag = () => {
+    const needsRefresh = localStorage.getItem('needs_refresh');
+    if (needsRefresh === 'true') {
+        setTimeout(() => {
+            localStorage.removeItem('needs_refresh');
+            console.log('Refreshing page...');
+            window.location.reload();
+        }, 3500);
+    }
+};
+
+// Check refresh flag on mount
+onMounted(() => {
+    checkRefreshFlag();
+});
 
 const router = useRouter();
 const { t } = useI18n();

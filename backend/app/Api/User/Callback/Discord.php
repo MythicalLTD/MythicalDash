@@ -176,10 +176,6 @@ $router->get('/api/user/auth/callback/discord/login', function () {
         // Force join server if enabled
         $helper->forceJoinServer($userInfo['id'], $accessToken);
 
-        // Check J4R server joins for existing user
-        $session = new Session($appInstance);
-        $helper->checkJ4RServerJoins($userInfo['id'], $accessToken, $session);
-
         // Perform login
         $email = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::EMAIL, false);
         $password = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::PASSWORD, true);

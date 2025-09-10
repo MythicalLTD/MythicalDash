@@ -219,6 +219,7 @@ auth:
                     pterodactyl_error: Failed to register user in Pterodactyl panel
                     pterodactyl_not_enabled: Pterodactyl is not enabled
                     discord_user_not_found: Discord user not found.
+                    discord_token_failed: Failed to authenticate with Discord
                     github_user_not_found: GitHub user not found.
                     proxy_detected: You are using a vpn or a proxy!
                     multiple_accounts: Multiple accounts detected

@@ -141,6 +141,7 @@ const handleSubmit = async () => {
             showConfirmButton: true,
         });
         loading.value = false;
+        localStorage.setItem('needs_refresh', 'true');
         setTimeout(() => {
             router.push('/');
         }, 1500);

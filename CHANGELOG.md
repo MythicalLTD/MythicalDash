@@ -6,7 +6,9 @@
 - BUG: Fixed bug allowing unlimited database slots and backups  
 - BUG: Fixed invalid redeem code issue  
 - BUG: Fixed missing translation keys  
-- BUG: Prevented users from deleting core roles  
+- BUG: Prevented users from deleting core roles 
+- BUG: Discord auth required auth while it being the auth sorce
+- BUG: The background not being shown on login!
 
 # Features Added:
 
