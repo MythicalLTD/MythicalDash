@@ -54,13 +54,8 @@ ENV DEBIAN_FRONTEND=
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy application files
-COPY . /var/www/html/
-
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 777 /var/www/html/storage
+# Copy application files with correct ownership
+COPY --chown=www-data:www-data . .
 
 # Install PHP dependencies
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader
@@ -104,12 +99,18 @@ RUN mkdir -p /var/log/supervisor \
 COPY init.sh /usr/local/bin/init.sh
 RUN chmod +x /usr/local/bin/init.sh
 
+ 
+# Create cron directory
+RUN mkdir -p /var/spool/cron/crontabs \
+    && mkdir -p /var/www/html/storage/cron
 
-# Add cronjobs for www-data user
-RUN echo '* * * * * php /var/www/html/storage/cron/runner.php >> /dev/null 2>&1' > /var/spool/cron/crontabs/www-data \
-    && echo '* * * * * bash /var/www/html/storage/cron/runner.bash >> /dev/null 2>&1' >> /var/spool/cron/crontabs/www-data \
-    && chmod 600 /var/spool/cron/crontabs/www-data \
-    && chown www-data:crontab /var/spool/cron/crontabs/www-data
+# Copy and make cron setup script executable
+COPY setup-cron.sh /usr/local/bin/setup-cron.sh
+RUN chmod +x /usr/local/bin/setup-cron.sh
+
+# Copy and make cron runner script executable
+COPY cron-runner.sh /usr/local/bin/cron-runner.sh
+RUN chmod +x /usr/local/bin/cron-runner.sh
 
 # Expose port 80
 EXPOSE 80

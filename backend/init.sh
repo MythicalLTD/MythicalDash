@@ -65,5 +65,12 @@ chown -R www-data:www-data /var/www/html
 chmod -R 777 /var/www/html
 echo "Ownership and permissions set."
 
+# Setup cron jobs (fallback method)
+echo "Setting up cron jobs..."
+/usr/local/bin/setup-cron.sh
+echo "Cron jobs setup completed."
+
+# Note: The main cron execution will be handled by supervisord using cron-runner.sh
+
 # Start the main application
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

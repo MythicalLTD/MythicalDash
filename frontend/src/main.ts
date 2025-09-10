@@ -34,49 +34,50 @@ const checkAccessMethod = () => {
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;
     const port = window.location.port;
-    
+
     // Helper function to validate if hostname is a proper domain
     const isValidDomain = (host: string): boolean => {
         // Must contain at least one dot and not start with a number
         if (!host.includes('.') || /^[0-9]/.test(host)) return false;
-        
+
         // Must not be localhost or IP-like patterns
-        if (host === 'localhost' || 
+        if (
+            host === 'localhost' ||
             /^(\d{1,3}\.){3}\d{1,3}$/.test(host) ||
-            /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/.test(host)) return false;
-        
+            /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/.test(host)
+        )
+            return false;
+
         // Must have valid TLD (at least 2 characters)
         const parts = host.split('.');
         if (parts.length < 2) return false;
-        
+
         const tld = parts[parts.length - 1] ?? '';
         if (tld.length < 2) return false;
-        
+
         // Must not be private IP ranges
-        if (host.startsWith('192.168.') || 
-            host.startsWith('10.') || 
-            host.startsWith('172.')) return false;
-        
+        if (host.startsWith('192.168.') || host.startsWith('10.') || host.startsWith('172.')) return false;
+
         return true;
     };
-    
+
     // Check if accessing via HTTP (not HTTPS)
     const isHttp = protocol === 'http:';
-    
+
     // Check if accessing via invalid domain (IP, localhost, or malformed domain)
     const isInvalidDomain = !isValidDomain(hostname);
-    
+
     // Check if accessing via port (not standard 80/443)
     const isNonStandardPort = port && port !== '80' && port !== '443' && port !== '';
-    
+
     if (isHttp || isInvalidDomain || isNonStandardPort) {
         const currentUrl = window.location.href;
         const detectedIssues = [];
-        
+
         if (isHttp) detectedIssues.push('HTTP connection (use HTTPS)');
         if (isInvalidDomain) detectedIssues.push('Invalid domain access (use proper domain)');
         if (isNonStandardPort) detectedIssues.push(`Port ${port} (use reverse proxy)`);
-        
+
         // Create warning modal
         const warningModal = document.createElement('div');
         warningModal.innerHTML = `
@@ -95,7 +96,7 @@ const checkAccessMethod = () => {
                     <div class="bg-gray-800 rounded-lg p-4 mb-6">
                         <h3 class="text-red-400 font-semibold mb-3">Detected Issues:</h3>
                         <ul class="text-gray-300 text-sm space-y-1">
-                            ${detectedIssues.map(issue => `<li class="flex items-center"><span class="text-red-400 mr-2">•</span>${issue}</li>`).join('')}
+                            ${detectedIssues.map((issue) => `<li class="flex items-center"><span class="text-red-400 mr-2">•</span>${issue}</li>`).join('')}
                         </ul>
                         <div class="mt-3 pt-3 border-t border-gray-700">
                             <p class="text-gray-400 text-xs">
@@ -128,9 +129,9 @@ const checkAccessMethod = () => {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(warningModal);
-        
+
         // Prevent further execution
         throw new Error('Access denied: MythicalDash cannot be used on HTTP, IP, or port access');
     }

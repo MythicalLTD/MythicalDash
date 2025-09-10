@@ -30,29 +30,29 @@ const router = createRouter({
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
     // Check for requiresAuth meta
     if (to.meta.requiresAuth) {
-        console.log("This page requires authentication");
+        console.log('This page requires authentication');
         const authenticated = isAuthenticated();
-        console.log("Checking if session is authenticated");
+        console.log('Checking if session is authenticated');
         if (!authenticated) {
-            console.log("Session is not authenticated");
+            console.log('Session is not authenticated');
             // Store the intended destination for redirection after login
             localStorage.setItem('redirectAfterLogin', to.fullPath);
             console.log("Looks like we can't access this page");
             return next({ name: 'Login' });
         }
-        console.log("Session is authenticated");
-        console.log("Looks like we can access this page");
+        console.log('Session is authenticated');
+        console.log('Looks like we can access this page');
         return next();
     } else if (to.meta.isAuthPage) {
-        console.log("This page is an auth page");
+        console.log('This page is an auth page');
         // Guest middleware for auth pages
         return guestMiddleware(to, from, next);
     } else if (to.name === 'auth-redirect') {
-        console.log("This page is an auth redirect");
+        console.log('This page is an auth redirect');
         // Handle redirect after login
         return handleRedirectAfterLogin(to, from, next);
     } else {
-        console.log("This page is not an auth page");
+        console.log('This page is not an auth page');
         return next();
     }
 });

@@ -20,6 +20,7 @@ namespace MythicalDash\Cli\Commands;
 
 use MythicalDash\Cli\App;
 use MythicalDash\Chat\Database;
+use MythicalDash\App as MainApp;
 use MythicalDash\Cli\CommandBuilder;
 
 class Migrate extends App implements CommandBuilder
@@ -27,33 +28,47 @@ class Migrate extends App implements CommandBuilder
     public static function execute(array $args): void
     {
         $cliApp = App::getInstance();
+
+        // Display header
+        $cliApp->send('&6&l[FeatherPanel] &r&eDatabase Migration Tool');
+        $cliApp->send('&7' . str_repeat('─', 50));
+
         if (!file_exists(__DIR__ . '/../../../storage/.env')) {
-            \MythicalDash\App::getInstance(true)->getLogger()->warning('Executed a command without a .env file');
-            $cliApp->send('The .env file does not exist. Please create one before running this command');
+            MainApp::getInstance(true)->getLogger()->warning('Executed a command without a .env file');
+            $cliApp->send('&c&l❌ Error: &rThe .env file does not exist. Please create one before running this command');
             exit;
         }
+
         $sqlScript = self::getMigrationSQL();
+        $startTime = microtime(true);
+
         try {
-            \MythicalDash\App::getInstance(true)->loadEnv();
-            if (isset($_ENV['DATABASE_HOST']) && isset($_ENV['DATABASE_DATABASE']) && isset($_ENV['DATABASE_USER']) && isset($_ENV['DATABASE_PASSWORD']) && isset($_ENV['DATABASE_PORT'])) {
-                $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
-            } else {
-                $cliApp->send('&cFailed to connect to the database: &rDatabase connection failed!');
-                exit;
-            }
+            MainApp::getInstance(true)->loadEnv();
+            $cliApp->send('&e&l⏳ Connecting to database... &r&7' . $_ENV['DATABASE_HOST'] . ':' . $_ENV['DATABASE_PORT']);
+
+            $db = new Database($_ENV['DATABASE_HOST'], $_ENV['DATABASE_DATABASE'], $_ENV['DATABASE_USER'], $_ENV['DATABASE_PASSWORD'], $_ENV['DATABASE_PORT']);
+
             // --- Fix duplicate settings before running migrations that add unique constraints ---
             $pdo = $db->getPdo();
-            $query = $pdo->query("SHOW TABLES LIKE 'mythicaldash_settings'");
-            if ($query->rowCount() > 0) {
+            $tableExists = $pdo->query("SHOW TABLES LIKE 'mythicaldash_settings'")->rowCount() > 0;
+            if ($tableExists) {
+                $cliApp->send('&e&l🔧 Cleaning duplicate settings...');
                 $fixSql = 'DELETE FROM mythicaldash_settings WHERE id NOT IN (SELECT id FROM (SELECT MAX(id) as id FROM mythicaldash_settings GROUP BY name) as keep_ids);';
-                $pdo->exec($fixSql);
+                $deletedRows = $pdo->exec($fixSql);
+                if ($deletedRows > 0) {
+                    $cliApp->send('&a&l✅ Cleaned &r&f' . $deletedRows . '&r&a duplicate settings');
+                } else {
+                    $cliApp->send('&a&l✅ No duplicate settings found');
+                }
             }
             // --- End fix ---
         } catch (\Exception $e) {
-            $cliApp->send('&cFailed to connect to the database: &r' . $e->getMessage());
+            $cliApp->send('&c&l❌ Database Connection Failed: &r' . $e->getMessage());
             exit;
         }
-        $cliApp->send('&aConnected to the database!');
+
+        $connectionTime = round((microtime(true) - $startTime) * 1000, 2);
+        $cliApp->send('&a&l✅ Connected to database! &r&7(' . $connectionTime . 'ms)');
 
         /**
          * Check if the migrations table exists.
@@ -61,32 +76,37 @@ class Migrate extends App implements CommandBuilder
         try {
             $query = $db->getPdo()->query("SHOW TABLES LIKE 'mythicaldash_migrations'");
             if ($query->rowCount() > 0) {
+                $cliApp->send('&e&l📋 Migrations table already exists');
             } else {
+                $cliApp->send('&e&l🏗️  Creating migrations table...');
                 $db->getPdo()->exec(statement: $sqlScript);
-                $cliApp->send('&7The migrations table has been created!');
+                $cliApp->send('&a&l✅ Migrations table created successfully!');
             }
         } catch (\Exception $e) {
-            $cliApp->send('&cFailed to create the migrations table: &r' . $e->getMessage());
+            $cliApp->send('&c&l❌ Failed to create migrations table: &r' . $e->getMessage());
             exit;
         }
+
         /**
          * Get all the migration scripts.
          */
         $migrations = scandir(__DIR__ . '/../../../storage/migrations/');
-        foreach ($migrations as $migration) {
-            /**
-             * Skip the . and .. directories.
-             */
-            if ($migration == '.' || $migration == '..') {
-                continue;
-            }
-            /**
-             * Get the migration content.
-             */
-            $migration = __DIR__ . "/../../../storage/migrations/$migration";
-            $migrationContent = file_get_contents($migration);
-            $migrationName = explode('/', $migration);
-            $migrationName = end($migrationName);
+        $migrationFiles = array_filter($migrations, function ($file) {
+            return $file !== '.' && $file !== '..' && pathinfo($file, PATHINFO_EXTENSION) === 'sql';
+        });
+
+        $totalMigrations = count($migrationFiles);
+        $executedMigrations = 0;
+        $skippedMigrations = 0;
+        $failedMigrations = 0;
+
+        $cliApp->send('&e&l📊 Found &r&f' . $totalMigrations . '&r&e migration files');
+        $cliApp->send('&7' . str_repeat('─', 50));
+
+        foreach ($migrationFiles as $migration) {
+            $migrationPath = __DIR__ . "/../../../storage/migrations/$migration";
+            $migrationContent = file_get_contents($migrationPath);
+            $migrationName = $migration;
 
             /**
              * Check if the migration was already executed.
@@ -96,17 +116,34 @@ class Migrate extends App implements CommandBuilder
             $migrationExists = $stmt->fetchColumn();
 
             if ($migrationExists > 0) {
+                $cliApp->send('&7&l⏭️  Skipped: &r&7' . $migrationName . ' &8(already executed)');
+                ++$skippedMigrations;
                 continue;
             }
 
             /**
              * Execute the migration.
              */
+            $cliApp->send('&e&l🔄 Executing: &r&f' . $migrationName);
+            $migrationStartTime = microtime(true);
+
             try {
+                if ($migrationName == '2024-11-15-22.17-create-settings.sql') {
+                    $cliApp->send('&e&l🔄 Generating encryption key...');
+                    // Generate an encryption key for xchacha20
+                    $encryptionKey = \MythicalDash\Hooks\MythicalSystems\Utils\XChaCha20::generateStrongKey(true);
+                    MainApp::getInstance(true)->updateEnvValue('DATABASE_ENCRYPTION', 'xchacha20', false);
+                    MainApp::getInstance(true)->updateEnvValue('DATABASE_ENCRYPTION_KEY', $encryptionKey, true);
+                    $cliApp->send('&a&l✅ Encryption key generated successfully!');
+                }
                 $db->getPdo()->exec($migrationContent);
-                $cliApp->send("&7Migration executed successfully: &e$migrationName");
+                $migrationTime = round((microtime(true) - $migrationStartTime) * 1000, 2);
+                $cliApp->send('&a&l✅ Success: &r&f' . $migrationName . ' &7(' . $migrationTime . 'ms)');
+                ++$executedMigrations;
             } catch (\Exception $e) {
-                $cliApp->send('&cFailed to execute migration: &8[&4' . $migrationName . '&8] &r' . $e->getMessage());
+                $cliApp->send('&c&l❌ Failed: &r&f' . $migrationName);
+                $cliApp->send('&c&l   Error: &r' . $e->getMessage());
+                ++$failedMigrations;
                 exit;
             }
 
@@ -119,14 +156,28 @@ class Migrate extends App implements CommandBuilder
                     'script' => $migrationName,
                     'migrated' => 'true',
                 ]);
-                $cliApp->send('&aMigration saved to the database!');
             } catch (\Exception $e) {
-                $cliApp->send('&cFailed to save the migration to the database: &r' . $e->getMessage());
+                $cliApp->send('&c&l❌ Failed to save migration record: &r' . $e->getMessage());
                 exit;
             }
         }
-        $cliApp->send('&aAll migrations have been executed!');
-        $cliApp->send('&aPlease restart the server to apply the changes!');
+
+        $totalTime = round((microtime(true) - $startTime) * 1000, 2);
+
+        $cliApp->send('&7' . str_repeat('─', 50));
+        $cliApp->send('&6&l📈 Migration Summary:');
+        $cliApp->send('&a&l   ✅ Executed: &r&f' . $executedMigrations . '&r&a migrations');
+        $cliApp->send('&7&l   ⏭️  Skipped: &r&f' . $skippedMigrations . '&r&7 migrations');
+        $cliApp->send('&c&l   ❌ Failed: &r&f' . $failedMigrations . '&r&c migrations');
+        $cliApp->send('&e&l   ⏱️  Total Time: &r&f' . $totalTime . '&r&e ms');
+
+        if ($failedMigrations > 0) {
+            $cliApp->send('&c&l⚠️  Some migrations failed. Please check the errors above.');
+        } else {
+            $cliApp->send('&a&l🎉 All migrations completed successfully!');
+        }
+
+        $cliApp->send('&e&l🔄 Please restart the server to apply the changes!');
     }
 
     public static function getDescription(): string

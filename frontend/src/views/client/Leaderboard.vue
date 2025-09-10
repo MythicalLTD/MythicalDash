@@ -80,7 +80,11 @@
                                         leaderboardData[1] ? getRoleName(leaderboardData[1].role) : ''
                                     }}</span>
                                     <span class="bg-gray-700/30 text-gray-300 px-3 py-1 rounded-md text-sm font-medium">
-                                        {{ leaderboardData[1] ? formatValue(getCategoryValue(leaderboardData[1]), activeCategory) : '' }}
+                                        {{
+                                            leaderboardData[1]
+                                                ? formatValue(getCategoryValue(leaderboardData[1]), activeCategory)
+                                                : ''
+                                        }}
                                     </span>
                                 </div>
 
@@ -110,14 +114,20 @@
                                             ></path>
                                         </svg>
                                     </div>
-                                    <h3 class="text-lg font-bold text-white mb-1">{{ leaderboardData[0]?.username }}</h3>
+                                    <h3 class="text-lg font-bold text-white mb-1">
+                                        {{ leaderboardData[0]?.username }}
+                                    </h3>
                                     <span class="text-gray-400 text-sm mb-2">{{
                                         leaderboardData[0] ? getRoleName(leaderboardData[0].role) : ''
                                     }}</span>
                                     <span
                                         class="bg-amber-900/30 text-amber-400 px-4 py-1.5 rounded-md text-base font-medium"
                                     >
-                                        {{ leaderboardData[0] ? formatValue(getCategoryValue(leaderboardData[0]), activeCategory) : '' }}
+                                        {{
+                                            leaderboardData[0]
+                                                ? formatValue(getCategoryValue(leaderboardData[0]), activeCategory)
+                                                : ''
+                                        }}
                                     </span>
                                 </div>
 
@@ -145,7 +155,11 @@
                                     <span
                                         class="bg-amber-800/20 text-amber-600 px-3 py-1 rounded-md text-sm font-medium"
                                     >
-                                        {{ leaderboardData[2] ? formatValue(getCategoryValue(leaderboardData[2]), activeCategory) : '' }}
+                                        {{
+                                            leaderboardData[2]
+                                                ? formatValue(getCategoryValue(leaderboardData[2]), activeCategory)
+                                                : ''
+                                        }}
                                     </span>
                                 </div>
                             </div>
