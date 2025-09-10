@@ -4,7 +4,7 @@
 
 ---
 
-# MythicalDash V4
+# MythicalDash Remastered (Nexus)
 
 MythicalDash is a comprehensive client area/dashboard for Pterodactyl Game Panel, Pelican, and other platforms. It provides a powerful suite of tools for managing client servers, user accounts, billing, and much more.
 
@@ -92,7 +92,7 @@ Experience MythicalDash in action at our demo site:
 
 ## 🧪 Installation (For Testing Only)
 
-⚠️ **Warning**: This is a alpha version. Not recommended for production use!
+⚠️ **Warning**: This is a beta version. Not recommended for production use!
 
 > https://docs.mythical.systems/docs/mythicaldash-v3-remastered/os/pick
 
@@ -106,7 +106,7 @@ Experience MythicalDash in action at our demo site:
 
 ## 📄 License
 
-MythicalDash is licensed under the MythicalSystems License v2.0. See the LICENSE file for more details.
+MythicalDash is licensed under the MIT. See the LICENSE file for more details.
 
 ---
 

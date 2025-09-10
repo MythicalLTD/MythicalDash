@@ -61,10 +61,6 @@
         "lint": [
             "export COMPOSER_ALLOW_SUPERUSER=1",
             "storage/packages/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --show-progress bar && exit 0"
-        ],
-        "tests": [
-            "export COMPOSER_ALLOW_SUPERUSER=1",
-            "storage/packages/bin/phpunit tests/"
         ]
     }
 }

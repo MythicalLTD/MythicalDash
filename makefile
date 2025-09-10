@@ -200,6 +200,7 @@ get-tools:
 	@cd $(BACKEND_DIR) && $(COMPOSER) install && echo -e "${GREEN}${CHECK} Backend dependencies installed successfully${NC}" || \
 		echo -e "${YELLOW}${WARN} Could not install backend dependencies. Please run 'cd $(BACKEND_DIR) && composer install' manually${NC}"
 	@echo -e "${BOLD}${GREEN}🎉 Tools are installed and you are ready to build MythicalDash! 🎉${NC}\n"
+	
 # Upgrade MythicalDash
 upgrade-core:
 	@echo -e "\n${BOLD}${BLUE}MythicalDash Upgrade Process${NC} ${ROCKET}"

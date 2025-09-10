@@ -83,7 +83,6 @@ ADMIN_SERVER_QUEUE_DELETE=admin.server.queue.delete | Admin Server Queue | Delet
 ADMIN_SERVER_QUEUE_LIST=admin.server.queue.list | Admin Server Queue | List all server queue entries
 ADMIN_SERVER_QUEUE_VIEW=admin.server.queue.view | Admin Server Queue | View server queue details
 
-
 # Server Queue Logs
 ADMIN_SERVER_QUEUE_LOGS_VIEW=admin.server.queue.logs.view | Admin Server Queue Logs | View server queue logs
 

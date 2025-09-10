@@ -19,6 +19,7 @@
 - Feature: Logs are now handled through a 3rd-party API  
 - Feature: Safewall to prevent users from running the dash with no reverse proxy!
 - Feature: Add docker support to box mythicaldash!
+- Feature: Moved to MIT license!
 
 # Features Removed:
 
