@@ -63,7 +63,7 @@ $router->get('/api/user/auth/verify', function (): void {
                         CloudFlareRealIP::getRealIP()
                     );
                     header('location: /');
-                    exit();
+                    exit;
                 }
                 $appInstance->BadRequest('Bad Request', ['error_code' => 'INVALID_USER', 'email_code' => $code]);
 

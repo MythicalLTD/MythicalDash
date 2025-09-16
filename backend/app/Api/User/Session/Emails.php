@@ -55,12 +55,12 @@ $router->get('/api/user/session/emails/(.*)/raw', function (string $id): void {
     $appInstance = App::getInstance(true);
     if ($id == '') {
         header('location: /account');
-        exit();
+        exit;
     }
 
     if (!is_numeric($id)) {
         header('location: /account');
-        exit();
+        exit;
     }
     $id = (int) $id;
 
@@ -84,11 +84,11 @@ $router->get('/api/user/session/emails/(.*)/raw', function (string $id): void {
             exit;
         }
         header('location: /account');
-        exit();
+        exit;
 
     }
     header('location: /account');
-    exit();
+    exit;
 
 });
 

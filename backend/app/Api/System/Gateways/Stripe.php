@@ -65,24 +65,24 @@ $router->add('/api/stripe/processed', function (): void {
                     // If adding credits failed, log this critical error
                     $appInstance->getLogger()->error('Failed to add Stripe credits atomically for user: ' . $uuid . ' for payment: ' . $code);
                     header('location: /?error=stripe_error=credit_addition_failed');
-                    exit();
+                    exit;
                 }
 
                 StripeDB::updateStatus($code, 'processed');
 
                 header('location: /?success=coins_added');
-                exit();
+                exit;
             }
             header('location: /?error=stripe_error=invalid_code');
-            exit();
+            exit;
 
         }
         header('location: /?error=stripe_error=invalid_code');
-        exit();
+        exit;
 
     }
     header('location: /?error=missing_data');
-    exit();
+    exit;
 
 });
 
@@ -93,7 +93,7 @@ $router->add('/api/stripe/cancelled', function (): void {
     $session = new Session($appInstance);
     StripeDB::cancelLastTransactionForUser($session->getInfo(UserColumns::UUID, false));
     header('location: /?error=stripe_error=cancelled');
-    exit();
+    exit;
 });
 
 $router->add('/api/stripe/process', function (): void {
@@ -135,14 +135,14 @@ $router->add('/api/stripe/process', function (): void {
                 exit;
             } catch (Exception $e) {
                 header('location: /?error=stripe_error=' . $e->getMessage());
-                exit();
+                exit;
             }
         } else {
             header('location: /?error=db_error');
-            exit();
+            exit;
         }
     } else {
         header('location: /?error=missing_data');
-        exit();
+        exit;
     }
 });
