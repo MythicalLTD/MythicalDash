@@ -179,12 +179,33 @@ class App extends MythicalAPP
             self::NotFound('The api route does not exist!', ['error_code' => 'API_ROUTE_NOT_FOUND', 'route' => $route]);
         });
 
+        // Robust timezone setting with fallback and error handling
+        $timezone = 'UTC';
         try {
-            $timezone = $this->getConfig()->getDBSetting(ConfigInterface::APP_TIMEZONE, 'UTC');
+            $tzFromConfig = $this->getConfig()->getDBSetting(ConfigInterface::APP_TIMEZONE, 'UTC');
+            if ($tzFromConfig && in_array($tzFromConfig, \DateTimeZone::listIdentifiers())) {
+                $timezone = $tzFromConfig;
+            } else {
+                self::getLogger()->warning('Configured timezone "' . $tzFromConfig . '" is invalid or not recognized. Falling back to UTC.');
+            }
+        } catch (\Throwable $e) {
+            self::getLogger()->warning('Failed to get timezone from config, falling back to UTC: ' . $e->getMessage());
+        }
+
+        try {
             date_default_timezone_set($timezone);
-        } catch (\Exception $e) {
-            self::getLogger()->warning('Failed to set timezone ' . $timezone . ', falling back to UTC: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            self::getLogger()->warning('Failed to set timezone "' . $timezone . '", falling back to UTC: ' . $e->getMessage());
             date_default_timezone_set('UTC');
+        }
+
+        // Get the current host (without protocol or port)
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        // Always update to the current host if the config is still the default "framework"
+        if ($this->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'framework.mythical.systems') === 'framework.mythical.systems') {
+            if (!empty($host)) {
+                $this->getConfig()->setSetting(ConfigInterface::APP_URL, $host);
+            }
         }
 
         try {

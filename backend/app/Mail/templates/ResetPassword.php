@@ -35,8 +35,7 @@ use MythicalDash\App;
 use MythicalDash\Mail\Mail;
 use MythicalDash\Chat\Database;
 use MythicalDash\Chat\User\User;
-use MythicalDash\Chat\User\Mails;
-use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Config\ConfigInterface;
 
 class ResetPassword extends Mail
 {
@@ -45,9 +44,9 @@ class ResetPassword extends Mail
         try {
             $template = self::getFinalTemplate($uuid);
             $template = str_replace('${token}', $resetToken, $template);
-            $email = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::EMAIL, false);
-            Mails::add('Password Reset', $template, $uuid);
-            self::send($email, 'Password Reset', $template);
+            $appName = App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::APP_NAME, 'MythicalSystems');
+            \MythicalDash\Chat\Mails\MailList::addEmail('Reset Your ' . $appName . ' Password - Security Request', $template, $uuid);
+            // self::send($email, 'Password Reset', $template);
         } catch (\Exception $e) {
             App::getInstance(true)->getLogger()->error('(' . APP_SOURCECODE_DIR . '/Mail/templates/ResetPassword.php) [sendMail] Failed to send email: ' . $e->getMessage());
         }
@@ -62,7 +61,7 @@ class ResetPassword extends Mail
     {
         try {
             $conn = Database::getPdoConnection();
-            $query = $conn->prepare('SELECT content FROM mythicaldash_mail_templates WHERE name = :name');
+            $query = $conn->prepare('SELECT body FROM mythicaldash_mail_templates WHERE name = :name');
             $query->execute(['name' => 'reset_password']);
             $template = $query->fetchColumn();
 

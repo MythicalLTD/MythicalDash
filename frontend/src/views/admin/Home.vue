@@ -235,6 +235,69 @@
                         </div>
                     </div>
 
+                    <!-- Cron Jobs Status -->
+                    <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
+                        <div class="p-4 border-b border-gray-800/30">
+                            <h2 class="text-lg font-medium text-white">Cron Jobs Status</h2>
+                        </div>
+                        <div class="p-4">
+                            <div v-if="cronData?.summary" class="text-sm text-gray-400 mb-4">
+                                {{ cronData.summary }}
+                            </div>
+                            <div v-else class="space-y-3">
+                                <div
+                                    v-for="cron in cronData?.recent?.slice(0, 12)"
+                                    :key="cron.id"
+                                    class="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg border border-gray-600/30"
+                                >
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-2 h-2 rounded-full"
+                                            :class="{
+                                                'bg-green-500': !cron.late && cron.last_run_success,
+                                                'bg-yellow-500': cron.late && cron.last_run_success,
+                                                'bg-red-500': !cron.last_run_success,
+                                            }"
+                                        ></div>
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-200">
+                                                {{
+                                                    cron.task_name
+                                                        .replace(/-/g, ' ')
+                                                        .replace(/\b\w/g, (l) => l.toUpperCase())
+                                                }}
+                                            </h3>
+                                            <p class="text-xs text-gray-400">
+                                                {{ formatTimeAgo(cron.last_run_at) }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span
+                                            class="text-xs px-2 py-1 rounded-full"
+                                            :class="{
+                                                'bg-green-500/20 text-green-400': !cron.late && cron.last_run_success,
+                                                'bg-yellow-500/20 text-yellow-400': cron.late && cron.last_run_success,
+                                                'bg-red-500/20 text-red-400': !cron.last_run_success,
+                                            }"
+                                        >
+                                            {{ cron.late ? 'Late' : cron.last_run_success ? 'OK' : 'Failed' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <RouterLink
+                                    to="/mc-admin/health"
+                                    class="flex items-center justify-center gap-2 w-full py-2 bg-gray-700/50 hover:bg-gray-700/70 rounded-lg text-sm text-gray-300 transition-colors duration-200"
+                                >
+                                    <span>View All Cron Jobs</span>
+                                    <ArrowRight class="w-4 h-4" />
+                                </RouterLink>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Support & Resources -->
                     <div
                         class="bg-gray-800/50 rounded-xl border border-gray-800/30"
@@ -368,6 +431,9 @@ import {
     Settings as SettingsIcon2,
     Clock,
     X,
+    CheckCircle,
+    AlertTriangle,
+    XCircle,
 } from 'lucide-vue-next';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import { useSettingsStore } from '@/stores/settings';
@@ -376,9 +442,13 @@ import { RouterLink } from 'vue-router';
 import AtAGlanceAnalytics from '@/components/admin/Analytics/AtAGlanceAnalytics.vue';
 import Session from '@/mythicaldash/Session';
 import Permissions from '@/mythicaldash/Permissions';
+import { useHealthStore } from '@/stores/health';
+import type { CronData } from '@/types/health';
 
 const Settings = useSettingsStore();
+const healthStore = useHealthStore();
 const isRefreshing = ref(false);
+const cronData = ref<CronData | null>(null);
 
 // Add interfaces for GitHub data and activity
 interface GitHubOwner {
@@ -449,6 +519,31 @@ const isChecking = ref(false);
 const latestVersion = ref('');
 const lastCheckTime = ref('never');
 
+// Format time ago for cron jobs
+const formatTimeAgo = (dateString: string | null): string => {
+    if (!dateString) return 'Never';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffSeconds < 60) return `${diffSeconds}s ago`;
+    if (diffMinutes < 60) return `${diffMinutes}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return `${diffDays}d ago`;
+};
+
+// Format interval to human readable
+const formatInterval = (seconds: number): string => {
+    if (seconds < 60) return `${seconds}s`;
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
+    return `${Math.floor(seconds / 86400)}d`;
+};
+
 const checkForUpdates = async () => {
     isChecking.value = true;
     try {
@@ -485,6 +580,10 @@ onMounted(async () => {
         // Initialize displayed activities
         displayedActivities.value = dashboardData.value.activity.slice(0, activitiesPerLoad.value);
 
+        // Load health data including cron jobs
+        await healthStore.fetchHealthData();
+        cronData.value = healthStore.cronData;
+
         // Check for updates
         await checkForUpdates();
     } catch (error) {
@@ -505,6 +604,10 @@ const refreshData = async () => {
         };
         // Reset displayed activities
         displayedActivities.value = dashboardData.value.activity.slice(0, activitiesPerLoad.value);
+
+        // Refresh health data including cron jobs
+        await healthStore.fetchHealthData();
+        cronData.value = healthStore.cronData;
     } catch (error) {
         console.error('Failed to refresh dashboard data:', error);
     } finally {

@@ -28,8 +28,6 @@ $router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
     $config = $appInstance->getConfig();
     $appInstance->allowOnlyGET();
     $session = new Session($appInstance);
-    header('Content-Type: text/html');
-    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://publisher.linkvertise.com; style-src 'self' 'unsafe-inline';");
     global $eventManager;
 
     // Check if Linkvertise is enabled
@@ -38,91 +36,113 @@ $router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
         exit;
     }
 
-    $dayLimit = $config->getDBSetting(ConfigInterface::L4R_LINKVERTISE_DAILY_LIMIT, 5);
-    $coolDown = $config->getDBSetting(ConfigInterface::L4R_LINKVERTISE_COOLDOWN_TIME, 3600);
+    $uuid = $session->getInfo(UserColumns::UUID, false);
 
-    $dayCount = 0;
-    $links = Linkvertise::getAllByUser($session->getInfo(UserColumns::UUID, false), 35);
-    foreach ($links as $link) {
-        // Check if link was created within last 24 hours
-        $createdAt = strtotime($link['created_at']);
-        $now = time();
-        $dayAgo = $now - (24 * 60 * 60);
+    // Define a unique lock file path for this specific user
+    $lockFilePath = sys_get_temp_dir() . '/mythicaldash_l4r_' . $uuid . '.lock';
+    $lockFile = fopen($lockFilePath, 'c');
 
-        if ($createdAt > $dayAgo) {
-            ++$dayCount;
-            $timeSinceLastLink = $now - $createdAt;
-            if ($timeSinceLastLink < $coolDown) {
-                $waitTime = $coolDown - $timeSinceLastLink;
-                $waitMinutes = ceil($waitTime / 60);
-                $eventManager->emit(LinkForRewardEvent::onLinkCoolDownReached(), [
-                    'user' => $session->getInfo(UserColumns::UUID, false),
-                    'wait_time' => $waitMinutes,
+    if (!$lockFile) {
+        // Handle error if lock file cannot be created
+        header('Location: /earn/links?error=lock_failed');
+        exit;
+    }
+
+    // Acquire an exclusive lock to prevent race conditions
+    if (flock($lockFile, LOCK_EX)) {
+        try {
+            // --- CRITICAL SECTION START ---
+            // This code can only be run by one request at a time for this user.
+
+            header('Content-Type: text/html');
+            header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://publisher.linkvertise.com; style-src 'self' 'unsafe-inline';");
+
+            $dayLimit = $config->getDBSetting(ConfigInterface::L4R_LINKVERTISE_DAILY_LIMIT, 5);
+            $coolDown = $config->getDBSetting(ConfigInterface::L4R_LINKVERTISE_COOLDOWN_TIME, 3600);
+
+            $dayCount = 0;
+            $links = Linkvertise::getAllByUser($uuid, 35);
+            foreach ($links as $link) {
+                // Check if link was created within last 24 hours
+                $createdAt = strtotime($link['created_at']);
+                $now = time();
+                $dayAgo = $now - (24 * 60 * 60);
+
+                if ($createdAt > $dayAgo) {
+                    ++$dayCount;
+                    $timeSinceLastLink = $now - $createdAt;
+                    if ($timeSinceLastLink < $coolDown) {
+                        $waitTime = $coolDown - $timeSinceLastLink;
+                        $waitMinutes = ceil($waitTime / 60);
+                        $eventManager->emit(LinkForRewardEvent::onLinkCoolDownReached(), [
+                            'user' => $uuid,
+                            'wait_time' => $waitMinutes,
+                        ]);
+                        ?>
+						<!DOCTYPE html>
+						<html>
+
+						<head>
+							<title>Cooldown</title>
+							<style>
+								body {
+									margin: 0;
+									padding: 0;
+									background-color: #111827;
+									height: 100vh;
+									display: flex;
+									align-items: center;
+									justify-content: center;
+									font-family: system-ui, -apple-system, sans-serif;
+								}
+
+								.container {
+									text-align: center;
+								}
+
+								h1 {
+									color: #ffffff;
+									font-size: 1.875rem;
+									font-weight: bold;
+									margin-bottom: 1.5rem;
+								}
+
+								p {
+									color: #9CA3AF;
+									margin-bottom: 2rem;
+								}
+
+								.button {
+									background-color: #4F46E5;
+									color: #ffffff;
+									padding: 0.75rem 1.5rem;
+									border-radius: 0.5rem;
+									text-decoration: none;
+								}
+							</style>
+						</head>
+
+						<body>
+							<div class="container">
+								<h1>Please wait</h1>
+								<p>You need to wait <?php echo $waitMinutes; ?> minutes before creating another link</p>
+								<a href="/earn/links" class="button btn-back">Go back</a>
+							</div>
+						</body>
+
+						</html>
+						<?php
+                        exit;
+                    }
+                }
+            }
+
+            if ($dayCount >= $dayLimit) {
+                $eventManager->emit(LinkForRewardEvent::onLinkDailyLimitReached(), [
+                    'user' => $uuid,
+                    'day_limit' => $dayLimit,
                 ]);
                 ?>
-				<!DOCTYPE html>
-				<html>
-
-				<head>
-					<title>Cooldown</title>
-					<style>
-						body {
-							margin: 0;
-							padding: 0;
-							background-color: #111827;
-							height: 100vh;
-							display: flex;
-							align-items: center;
-							justify-content: center;
-							font-family: system-ui, -apple-system, sans-serif;
-						}
-
-						.container {
-							text-align: center;
-						}
-
-						h1 {
-							color: #ffffff;
-							font-size: 1.875rem;
-							font-weight: bold;
-							margin-bottom: 1.5rem;
-						}
-
-						p {
-							color: #9CA3AF;
-							margin-bottom: 2rem;
-						}
-
-						.button {
-							background-color: #4F46E5;
-							color: #ffffff;
-							padding: 0.75rem 1.5rem;
-							border-radius: 0.5rem;
-							text-decoration: none;
-						}
-					</style>
-				</head>
-
-				<body>
-					<div class="container">
-						<h1>Please wait</h1>
-						<p>You need to wait <?php echo $waitMinutes; ?> minutes before creating another link</p>
-						<a href="/earn/links" class="button btn-back">Go back</a>
-					</div>
-				</body>
-
-				</html>
-				<?php
-                exit;
-            }
-        }
-
-        if ($dayCount >= $dayLimit) {
-            $eventManager->emit(LinkForRewardEvent::onLinkDailyLimitReached(), [
-                'user' => $session->getInfo(UserColumns::UUID, false),
-                'day_limit' => $dayLimit,
-            ]);
-            ?>
 			<!DOCTYPE html>
 			<html>
 
@@ -190,17 +210,16 @@ $router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
 
 			</html>
 			<?php
-            exit;
-        }
-    }
+                exit;
+            }
 
-    $linkvertiseUUID = UUIDManager::generateUUID();
-    $id = Linkvertise::create($linkvertiseUUID, $session->getInfo(UserColumns::UUID, false));
-    if ($id === 0) {
-        $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
-            'user' => $session->getInfo(UserColumns::UUID, false),
-        ]);
-        ?>
+            $linkvertiseUUID = UUIDManager::generateUUID();
+            $id = Linkvertise::create($linkvertiseUUID, $uuid);
+            if ($id === 0) {
+                $eventManager->emit(LinkForRewardEvent::onLinkInvalid(), [
+                    'user' => $uuid,
+                ]);
+                ?>
 		<!DOCTYPE html>
 		<html>
 
@@ -268,10 +287,10 @@ $router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
 
 		</html>
 		<?php
-        return;
-    }
+                return;
+            }
 
-    ?>
+            ?>
 	<!DOCTYPE html>
 	<html>
 
@@ -347,6 +366,17 @@ $router->get('/api/user/earn/l4r/linkvertise/start', function (): void {
 
 	</html>
 	<?php
+            // --- CRITICAL SECTION END ---
+        } finally {
+            // ALWAYS release the lock when done.
+            flock($lockFile, LOCK_UN);
+        }
+    } else {
+        header('Location: /earn/links?error=lock_acquisition_failed');
+        exit;
+    }
+
+    fclose($lockFile);
 });
 
 $router->get('/api/user/earn/l4r/linkvertise/earn/(.*)', function (string $code): void {

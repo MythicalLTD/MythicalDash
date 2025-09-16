@@ -57,7 +57,7 @@ class PayPalIPN
         $this->app = App::getInstance(true);
         $this->isSandbox = $this->app->getConfig()->getDBSetting(ConfigInterface::PAYPAL_IS_SANDBOX, 'false') === 'true';
         $this->businessEmail = $this->app->getConfig()->getDBSetting(ConfigInterface::PAYPAL_CLIENT_ID, '');
-        $this->appUrl = $this->app->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
+        $this->appUrl = 'https://' . $this->app->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
 
         $this->client = new Client([
             'timeout' => 30,

@@ -6,7 +6,7 @@
 
 # MythicalDash Remastered (Nexus)
 
-MythicalDash is a comprehensive client area/dashboard for Pterodactyl Game Panel, Pelican, and other platforms. It provides a powerful suite of tools for managing client servers, user accounts, billing, and much more.
+MythicalDash is a comprehensive client area/dashboard for Pterodactyl Game Panel, and other platforms. It provides a powerful suite of tools for managing client servers, user accounts, billing, and much more.
 
 [View the Documentation Here](https://docs.mythical.systems/docs/mythicaldash-v3-remastered/welcome)
 
@@ -48,7 +48,6 @@ View the full roadmap [here](https://github.com/orgs/MythicalLTD/projects/5).
 | Public/Private Profiles                            | ✅           | ❌        | ❌                 | ❌          |
 | Cloudflare Turnstile                               | ✅           | ❌        | ❌                 | ❌          |
 | Firewall (AntiVPN, AntiAlting, AntiProxy)          | ✅           | ❌        | ❌                 | ❌          |
-| Pelican Panel Support (Alpha)                      | ✅           | ❌        | ❌                 | ❌          |
 | Linking (Discord, GitHub, Google, Facebook)        | ✅           | ❌        | ❌                 | ❌          |
 | 2FA Security                                       | ✅           | ❌        | ❌                 | ❌          |
 | Social Integration                                 | ✅           | ❌        | ❌                 | ❌          |

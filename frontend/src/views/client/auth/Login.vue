@@ -161,6 +161,20 @@ function base64_decode(str: string | null): string {
     }
 }
 
+const handleDiscordLogin = () => {
+    localStorage.setItem('needs_refresh', 'true');
+    setTimeout(() => {
+        window.location.href = '/api/user/auth/callback/discord/login';
+    }, 1000);
+};
+
+const handleGithubLogin = () => {
+    localStorage.setItem('needs_refresh', 'true');
+    setTimeout(() => {
+        window.location.href = '/api/user/auth/callback/github/login';
+    }, 1000);
+};
+
 onMounted(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const email = base64_decode(urlParams.get('email'));
@@ -264,9 +278,9 @@ if (isEnterpriseLogin) {
                 <div class="flex-1 border-t border-gray-600"></div>
             </div>
 
-            <a
+            <button
                 v-if="Settings.getSetting('discord_enabled') === 'true'"
-                href="/api/user/auth/callback/discord/login"
+                @click="handleDiscordLogin"
                 class="flex items-center justify-center w-full px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-lg transition-colors"
             >
                 <svg
@@ -283,11 +297,11 @@ if (isEnterpriseLogin) {
                     ></path>
                 </svg>
                 Continue with Discord
-            </a>
+            </button>
 
-            <a
+            <button
                 v-if="Settings.getSetting('github_enabled') === 'true'"
-                href="/api/user/auth/callback/github/login"
+                @click="handleGithubLogin"
                 class="flex items-center justify-center w-full px-4 py-2 bg-[#24292e] hover:bg-[#1b1f23] text-white rounded-lg transition-colors mt-2"
             >
                 <svg class="w-5 h-5 mr-2" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -297,7 +311,7 @@ if (isEnterpriseLogin) {
                     ></path>
                 </svg>
                 Continue with GitHub
-            </a>
+            </button>
 
             <p class="mt-4 text-center text-sm text-gray-400">
                 {{ $t('auth.pages.login.page.form.register.label') }}

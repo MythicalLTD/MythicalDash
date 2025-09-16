@@ -3,11 +3,9 @@
 namespace MythicalDash\Cron;
 
 
-use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Cron\Cron;
-use MythicalDash\Hooks\Backup;
-use MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi;
 use MythicalDash\Cron\TimeTask;
+use MythicalDash\Chat\TimedTask;
 
 class ACheckCron implements TimeTask
 {
@@ -16,12 +14,10 @@ class ACheckCron implements TimeTask
 		$cron = new Cron('a-check-cron', '1M');
 		try {
 			$cron->runIfDue(function () {
-				$app = \MythicalDash\App::getInstance(false, true);
-				$chat = new BungeeChatApi();
-				$config = $app->getConfig();
+				TimedTask::markRun('a-check-cron', true, 'ACheckCron heartbeat');
 			});
 		} catch (\Throwable $e) {
-			echo $e->getMessage();
+			TimedTask::markRun('a-check-cron', false, $e->getMessage());
 		}
 	}
 }

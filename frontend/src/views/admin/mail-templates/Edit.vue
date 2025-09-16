@@ -41,6 +41,18 @@
                     </div>
 
                     <div class="md:col-span-2">
+                        <label for="subject" class="block text-sm font-medium text-gray-400 mb-1">Subject</label>
+                        <input
+                            id="subject"
+                            v-model="templateForm.subject"
+                            type="text"
+                            required
+                            class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="Enter subject"
+                        />
+                    </div>
+
+                    <div class="md:col-span-2">
                         <div class="flex items-center justify-between mb-4">
                             <label for="content" class="block text-sm font-medium text-gray-400"
                                 >Template Content</label
@@ -71,7 +83,7 @@
                             <!-- Code Editor -->
                             <div class="flex flex-col">
                                 <SimpleHtmlEditor
-                                    v-model="templateForm.content"
+                                    v-model="templateForm.body"
                                     :height="splitView ? '70vh' : '65vh'"
                                     placeholder="Enter your HTML template content..."
                                 />
@@ -152,7 +164,7 @@
         <!-- Template Preview Modal -->
         <TemplatePreviewModal
             :is-open="previewModalOpen"
-            :html-content="templateForm.content"
+            :html-content="templateForm.body"
             @close="previewModalOpen = false"
         />
     </LayoutDashboard>
@@ -169,7 +181,8 @@ import { ArrowLeftIcon, SaveIcon, LoaderIcon, LoaderCircle, MaximizeIcon, Refres
 interface MailTemplate {
     id: number;
     name: string;
-    content: string;
+    subject: string;
+    body: string;
     active: string;
     locked: string;
     deleted: string;
@@ -178,7 +191,8 @@ interface MailTemplate {
 
 interface TemplateForm {
     name: string;
-    content: string;
+    subject: string;
+    body: string;
     isActive: boolean;
 }
 
@@ -204,7 +218,8 @@ const livePreviewFrame = ref<HTMLIFrameElement | null>(null);
 // Form state with default values
 const templateForm = ref<TemplateForm>({
     name: '',
-    content: '',
+    subject: '',
+    body: '',
     isActive: false,
 });
 
@@ -217,8 +232,8 @@ const previewValues = {
 };
 
 // Replace template variables with sample data
-const processContent = (content: string): string => {
-    let processed = content;
+const processContent = (body: string): string => {
+    let processed = body;
     Object.entries(previewValues).forEach(([key, value]) => {
         processed = processed.replace(new RegExp(key, 'g'), value);
     });
@@ -234,7 +249,7 @@ const openPreview = () => {
 const updateLivePreview = () => {
     if (!livePreviewFrame.value || !splitView.value) return;
 
-    const processed = processContent(templateForm.value.content);
+    const processed = processContent(templateForm.value.body);
 
     // Get the iframe document
     const doc = livePreviewFrame.value.contentDocument || livePreviewFrame.value.contentWindow?.document;
@@ -303,7 +318,8 @@ const fetchTemplateDetails = async (): Promise<void> => {
                 // Initialize form with template data
                 templateForm.value = {
                     name: foundTemplate.name,
-                    content: foundTemplate.content,
+                    subject: foundTemplate.subject,
+                    body: foundTemplate.body,
                     isActive: foundTemplate.active === 'true',
                 };
 
@@ -331,7 +347,8 @@ const updateTemplate = async (): Promise<void> => {
         // Create FormData object
         const formData = new FormData();
         formData.append('name', templateForm.value.name);
-        formData.append('content', templateForm.value.content);
+        formData.append('subject', templateForm.value.subject);
+        formData.append('body', templateForm.value.body);
         formData.append('active', templateForm.value.isActive ? 'true' : 'false');
 
         // Send update request to API
@@ -348,7 +365,8 @@ const updateTemplate = async (): Promise<void> => {
             // Update local template data
             if (template.value) {
                 template.value.name = templateForm.value.name;
-                template.value.content = templateForm.value.content;
+                template.value.subject = templateForm.value.subject;
+                template.value.body = templateForm.value.body;
                 template.value.active = templateForm.value.isActive ? 'true' : 'false';
             }
 
@@ -369,7 +387,16 @@ const updateTemplate = async (): Promise<void> => {
 
 // Watch for content changes to update the live preview
 watch(
-    () => templateForm.value.content,
+    () => templateForm.value.subject,
+    () => {
+        if (splitView.value) {
+            updateLivePreview();
+        }
+    },
+);
+
+watch(
+    () => templateForm.value.body,
     () => {
         if (splitView.value) {
             updateLivePreview();

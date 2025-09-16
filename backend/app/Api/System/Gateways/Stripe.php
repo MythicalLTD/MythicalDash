@@ -64,20 +64,25 @@ $router->add('/api/stripe/processed', function (): void {
                 if (!User::addCreditsAtomic($token, (int) $coins)) {
                     // If adding credits failed, log this critical error
                     $appInstance->getLogger()->error('Failed to add Stripe credits atomically for user: ' . $uuid . ' for payment: ' . $code);
-                    exit(header('location: /?error=stripe_error=credit_addition_failed'));
+                    header('location: /?error=stripe_error=credit_addition_failed');
+                    exit();
                 }
 
                 StripeDB::updateStatus($code, 'processed');
 
-                exit(header('location: /?success=coins_added'));
+                header('location: /?success=coins_added');
+                exit();
             }
-            exit(header('location: /?error=stripe_error=invalid_code'));
+            header('location: /?error=stripe_error=invalid_code');
+            exit();
 
         }
-        exit(header('location: /?error=stripe_error=invalid_code'));
+        header('location: /?error=stripe_error=invalid_code');
+        exit();
 
     }
-    exit(header('location: /?error=missing_data'));
+    header('location: /?error=missing_data');
+    exit();
 
 });
 
@@ -87,7 +92,8 @@ $router->add('/api/stripe/cancelled', function (): void {
     $appInstance->allowOnlyGET();
     $session = new Session($appInstance);
     StripeDB::cancelLastTransactionForUser($session->getInfo(UserColumns::UUID, false));
-    exit(header('location: /?error=stripe_error=cancelled'));
+    header('location: /?error=stripe_error=cancelled');
+    exit();
 });
 
 $router->add('/api/stripe/process', function (): void {
@@ -107,8 +113,8 @@ $router->add('/api/stripe/process', function (): void {
                 $checkout_session = Stripe\Checkout\Session::create([
                     'mode' => 'payment',
                     'customer_email' => $session->getInfo(UserColumns::EMAIL, false),
-                    'success_url' =>  $appInstance->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems') . '/api/stripe/processed?code=' . $code,
-                    'cancel_url' => $appInstance->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems') . '/api/stripe/cancelled',
+                    'success_url' =>  'https://' . $appInstance->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems') . '/api/stripe/processed?code=' . $code,
+                    'cancel_url' => 'https://' . $appInstance->getConfig()->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems') . '/api/stripe/cancelled',
                     'line_items' => [
                         [
                             'quantity' => 1,
@@ -128,12 +134,15 @@ $router->add('/api/stripe/process', function (): void {
                 header('location: ' . $checkout_session->url);
                 exit;
             } catch (Exception $e) {
-                exit(header('location: /?error=stripe_error=' . $e->getMessage()));
+                header('location: /?error=stripe_error=' . $e->getMessage());
+                exit();
             }
         } else {
-            exit(header('location: /?error=db_error'));
+            header('location: /?error=db_error');
+            exit();
         }
     } else {
-        exit(header('location: /?error=missing_data'));
+        header('location: /?error=missing_data');
+        exit();
     }
 });

@@ -35,9 +35,8 @@ use MythicalDash\App;
 use MythicalDash\Mail\Mail;
 use MythicalDash\Chat\Database;
 use MythicalDash\Chat\User\User;
-use MythicalDash\Chat\User\Mails;
 
-use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Config\ConfigInterface;
 
 class NewLogin extends Mail
 {
@@ -45,9 +44,12 @@ class NewLogin extends Mail
     {
         try {
             $template = self::getFinalTemplate($uuid);
-            $email = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::EMAIL, false);
-            Mails::add('New Login Detected', $template, $uuid);
-            self::send($email, 'New Login Detected', $template);
+
+            // Use the new MailList system to add email
+            $appName = App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::APP_NAME, 'MythicalSystems');
+            \MythicalDash\Chat\Mails\MailList::addEmail('New Login Detected - ' . $appName . ' Security Alert', $template, $uuid);
+
+            // self::send($email, 'New Login Detected', $template);
         } catch (\Exception $e) {
             App::getInstance(true)->getLogger()->error('(' . APP_SOURCECODE_DIR . '/Mail/templates/NewLogin.php) [sendMail] Failed to send email: ' . $e->getMessage());
         }
@@ -55,16 +57,26 @@ class NewLogin extends Mail
 
     private static function getFinalTemplate(string $uuid): string
     {
-        return self::processTemplate(self::getTemplate(), $uuid);
+        $template = self::getTemplate();
+        if ($template === null) {
+            throw new \Exception('Failed to load email template');
+        }
+
+        return self::processTemplate($template, $uuid);
     }
 
     private static function getTemplate(): ?string
     {
         try {
             $conn = Database::getPdoConnection();
-            $query = $conn->prepare('SELECT content FROM mythicaldash_mail_templates WHERE name = :name');
+            $query = $conn->prepare('SELECT body FROM mythicaldash_mail_templates WHERE name = :name');
             $query->execute(['name' => 'new_login']);
             $template = $query->fetchColumn();
+
+            // If no template found, return a default template
+            if (!$template) {
+                return '<!doctype html><html lang="en"><meta charset="UTF-8"><meta content="width=device-width,initial-scale=1" name="viewport"><title>New Login Detected - ${app_name}</title><style>body{font-family:Arial,sans-serif;line-height:1.6;color:#333;background-color:#1a103c;margin:0;padding:0}.container{max-width:600px;margin:20px auto;background-color:#fff;border-radius:8px;overflow:hidden}.header{background-color:#1a103c;color:#fff;text-align:center;padding:20px}.content{padding:20px}.button{display:inline-block;background-color:#6366f1;color:#fff;text-decoration:none;padding:10px 20px;border-radius:5px;margin-top:20px}.footer{background-color:#f4f4f4;text-align:center;padding:10px;font-size:12px;color:#666}</style><div class="container"><div class="header"><h1>${app_name}</h1></div><div class="content"><h2>New Login Detected</h2><p>Dear ${first_name} ${last_name},</p><p>We detected a new login to your ${app_name} account.</p><p>If this was you, you can safely ignore this email.</p><p>If you did not log in to your account, please secure your account immediately.</p></div><div class="footer"><p>© 2025 ${app_name}. All rights reserved.</p></div></div>';
+            }
 
             return $template;
         } catch (\Exception $e) {
@@ -77,7 +89,6 @@ class NewLogin extends Mail
     private static function processTemplate(string $template, string $uuid): string
     {
         try {
-            $template = self::getTemplate();
             $template = User::processTemplate($template, $uuid);
             $template = Mail::processEmailTemplateGlobal($template);
 

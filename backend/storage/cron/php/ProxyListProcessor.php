@@ -2,6 +2,7 @@
 
 namespace MythicalDash\Cron;
 
+use MythicalDash\Chat\TimedTask;
 use MythicalDash\Cron\Cron;
 use MythicalDash\Cron\TimeTask;
 use PDO;
@@ -41,75 +42,24 @@ class ProxyListProcessor implements TimeTask
 			'invalid' => 0
 		];
 
-		$mh = curl_multi_init();
-		$handles = [];
-		$results = [];
-		
-		// Setup curl handles for all sources
-		foreach ($this->proxyList() as $index => $proxyUrl) {
+		// Instead of multi-curl, process each source one by one and only clear the DB once at the start
+		foreach ($this->proxyList() as $proxyUrl) {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $proxyUrl);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 			curl_setopt($ch, CURLOPT_USERAGENT, 'MythicalDash/1.0');
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-			curl_setopt($ch, CURLOPT_NOPROGRESS, false);
-			
-			$results[$index] = [
-				'url' => $proxyUrl,
-				'status' => 'pending',
-				'downloaded' => 0,
-				'total' => 0,
-				'started' => false
-			];
-			
-			curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function($downloadSize, $downloaded, $uploadSize, $uploaded) use ($index, &$results) {
-				if ($downloadSize > 0) {
-					$results[$index]['started'] = true;
-					$results[$index]['total'] = $downloadSize;
-					$results[$index]['downloaded'] = $downloaded;
-					$results[$index]['status'] = 'processing';
-				}
-			});
-			
-			curl_multi_add_handle($mh, $ch);
-			$handles[$index] = $ch;
-		}
 
-		// Process curl handles
-		$running = null;
-		do {
-			$status = curl_multi_exec($mh, $running);
-			
-			// Check for completed transfers
-			while ($info = curl_multi_info_read($mh)) {
-				$index = array_search($info['handle'], $handles);
-				if ($index !== false) {
-					$httpCode = curl_getinfo($info['handle'], CURLINFO_HTTP_CODE);
-					if ($httpCode === 200) {
-						$results[$index]['status'] = 'success';
-					} else {
-						$results[$index]['status'] = 'failed';
-					}
-				}
-			}
-			
-			if ($running) {
-				curl_multi_select($mh, 0.1);
-			}
-		} while ($running > 0);
-
-		// Process results
-		foreach ($handles as $index => $ch) {
-			$content = curl_multi_getcontent($ch);
+			$content = curl_exec($ch);
 			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			
+
 			if ($content !== false && $httpCode === 200) {
 				$proxies = array_filter(explode("\n", $content), 'trim');
 				$stats['total'] += count($proxies);
-				
+
 				$stmt = $db->prepare('INSERT INTO mythicaldash_proxylist (ip) VALUES (:ip)');
-				
+
 				foreach ($proxies as $ip) {
 					$ip = trim($ip);
 					if (filter_var($ip, FILTER_VALIDATE_IP)) {
@@ -122,12 +72,10 @@ class ProxyListProcessor implements TimeTask
 			} else {
 				$stats['failed_sources']++;
 			}
-			
-			curl_multi_remove_handle($mh, $ch);
+
 			curl_close($ch);
 		}
-		
-		curl_multi_close($mh);
+
 		return $stats;
 	}
 
@@ -138,21 +86,23 @@ class ProxyListProcessor implements TimeTask
 			$cron->runIfDue(function () {
 				$app = \MythicalDash\App::getInstance(false, true);
 				$db = $app->getDatabase()->getPdo();
-				
-				// Clear existing proxies
+
+				// Only clear existing proxies ONCE before fetching all sources
 				$db->query('SET foreign_key_checks = 0');
 				$db->query('TRUNCATE TABLE mythicaldash_proxylist');
-				
-				// Fetch new proxies
+
+				// Fetch new proxies from all sources
 				$stats = $this->fetchProxies($db);
-				
+
 				$db->query('SET foreign_key_checks = 1');
-				
+
 				// Log results
 				$app->getLogger()->info('Proxy list updated successfully ' . $stats['valid'] . ' valid proxies and ' . $stats['invalid'] . ' invalid proxies');
+				TimedTask::markRun("proxy-list-processor", true, "Proxy list heartbeat " . $stats['valid'] . ' valid proxies and ' . $stats['invalid'] . ' invalid proxies');
 			});
 		} catch (\Exception $e) {
 			$app = \MythicalDash\App::getInstance(false, true);
+			TimedTask::markRun("proxy-list-processor", false, $e->getMessage());
 			$app->getLogger()->error('Failed to update proxy list: ' . $e->getMessage());
 		}
 	}

@@ -31,6 +31,7 @@
 
 use MythicalDash\App;
 use MythicalDash\Permissions;
+use MythicalDash\Chat\TimedTask;
 use MythicalDash\Middleware\PermissionMiddleware;
 use MythicalDash\Services\Cloud\MythicalCloudLogs;
 
@@ -252,7 +253,42 @@ $router->get('/api/admin/health', function (): void {
         $health['status'] = 'warning';
     }
 
-    $appInstance->OK('Health check passed', ['health' => $health]);
+    // Recent cron/timed task heartbeats
+    $recentCronsRaw = TimedTask::getAll(null, 10, 0);
+    $now = time();
+    $expectedMap = [
+        'mail-sender' => 60, // 1 minute
+        'a-check-cron' => 60, // 1 minute
+        'server-schedule-processor' => 60, // 1 minute
+        'proxy-list-processor' => 604800, // 7 days
+        'renew-worker' => 86400, // 1 day
+        'update-env' => 3600, // 1 hour
+        'daily-backup-job' => 86400, // 1 day
+    ];
+    $recentCrons = array_map(function ($row) use ($now, $expectedMap) {
+        $name = $row['task_name'] ?? '';
+        $lastRunAt = isset($row['last_run_at']) && $row['last_run_at'] !== null ? strtotime($row['last_run_at']) : null;
+        $expected = $expectedMap[$name] ?? 300; // default 5 minutes if unknown
+        $late = $lastRunAt ? (($now - $lastRunAt) > ($expected * 2)) : true; // late if never ran or >2x expected
+
+        return [
+            'id' => (int) ($row['id'] ?? 0),
+            'task_name' => $name,
+            'last_run_at' => $row['last_run_at'] ?? null,
+            'last_run_success' => (int) ($row['last_run_success'] ?? 0) === 1,
+            'last_run_message' => $row['last_run_message'] ?? null,
+            'expected_interval_seconds' => $expected,
+            'late' => $late,
+        ];
+    }, $recentCronsRaw);
+
+    $appInstance->OK('Health check passed', [
+        'health' => $health,
+        'cron' => [
+            'recent' => $recentCrons,
+            'summary' => empty($recentCrons) ? 'Cron tasks have not run yet.' : null,
+        ],
+    ]);
 
 });
 

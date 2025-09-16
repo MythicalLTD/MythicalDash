@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { HealthData, MemoryUsage, DiskSpace } from '@/types/health';
+import type { HealthData, MemoryUsage, DiskSpace, CronData } from '@/types/health';
 
 export const useHealthStore = defineStore('health', () => {
     const healthData = ref<HealthData | null>(null);
     const memoryUsage = ref<MemoryUsage | null>(null);
     const diskSpace = ref<DiskSpace | null>(null);
     const systemStatus = ref<'healthy' | 'warning' | 'unhealthy'>('healthy');
+    const cronData = ref<CronData | null>(null);
 
     const fetchHealthData = async () => {
         try {
@@ -17,6 +18,7 @@ export const useHealthStore = defineStore('health', () => {
                 memoryUsage.value = data.health.system.memory_usage;
                 diskSpace.value = data.health.system.disk_space;
                 systemStatus.value = data.health.status;
+                cronData.value = data.cron || null;
             }
         } catch (error) {
             console.error('Error fetching health data:', error);
@@ -29,6 +31,7 @@ export const useHealthStore = defineStore('health', () => {
         memoryUsage,
         diskSpace,
         systemStatus,
+        cronData,
         fetchHealthData,
     };
 });

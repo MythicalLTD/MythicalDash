@@ -27,6 +27,20 @@
                     </div>
 
                     <div class="md:col-span-2">
+                        <label for="subject" class="block text-sm font-medium text-gray-400 mb-1"
+                            >Template Subject</label
+                        >
+                        <input
+                            id="subject"
+                            v-model="templateForm.subject"
+                            type="text"
+                            required
+                            class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="Enter template subject"
+                        />
+                    </div>
+
+                    <div class="md:col-span-2">
                         <div class="flex items-center justify-between mb-4">
                             <label for="content" class="block text-sm font-medium text-gray-400"
                                 >Template Content</label
@@ -57,7 +71,7 @@
                             <!-- Code Editor -->
                             <div class="flex flex-col">
                                 <SimpleHtmlEditor
-                                    v-model="templateForm.content"
+                                    v-model="templateForm.body"
                                     :height="splitView ? '500px' : '400px'"
                                     placeholder="Enter your HTML template content..."
                                 />
@@ -138,7 +152,8 @@
         <!-- Template Preview Modal -->
         <TemplatePreviewModal
             :is-open="previewModalOpen"
-            :html-content="templateForm.content"
+            :html-content="templateForm.body"
+            :subject="templateForm.subject"
             @close="previewModalOpen = false"
         />
     </LayoutDashboard>
@@ -154,7 +169,8 @@ import { ArrowLeftIcon, SaveIcon, LoaderIcon, MaximizeIcon, RefreshCcwIcon } fro
 
 interface TemplateForm {
     name: string;
-    content: string;
+    subject: string;
+    body: string;
     isActive: boolean;
 }
 
@@ -164,7 +180,8 @@ interface ApiResponse {
     mail_template?: {
         id: number;
         name: string;
-        content: string;
+        subject: string;
+        body: string;
         active: string;
     };
 }
@@ -180,8 +197,8 @@ const livePreviewFrame = ref<HTMLIFrameElement | null>(null);
 // Form state with default values
 const templateForm = ref<TemplateForm>({
     name: '',
-    content:
-        '<!DOCTYPE html>\n<html>\n<head>\n  <meta charset="utf-8">\n  <title>Email Template</title>\n</head>\n<body>\n  <h1>Hello {user_name},</h1>\n  <p>Welcome to {company_name}!</p>\n  <p>Your content here...</p>\n</body>\n</html>',
+    subject: '',
+    body: '<!DOCTYPE html>\n<html>\n<head>\n  <meta charset="utf-8">\n  <title>Email Template</title>\n</head>\n<body>\n  <h1>Hello {user_name},</h1>\n  <p>Welcome to {company_name}!</p>\n  <p>Your content here...</p>\n</body>\n</html>',
     isActive: false,
 });
 
@@ -194,8 +211,8 @@ const previewValues = {
 };
 
 // Replace template variables with sample data
-const processContent = (content: string): string => {
-    let processed = content;
+const processContent = (body: string): string => {
+    let processed = body;
     Object.entries(previewValues).forEach(([key, value]) => {
         processed = processed.replace(new RegExp(key, 'g'), value);
     });
@@ -211,7 +228,7 @@ const openPreview = () => {
 const updateLivePreview = () => {
     if (!livePreviewFrame.value || !splitView.value) return;
 
-    const processed = processContent(templateForm.value.content);
+    const processed = processContent(templateForm.value.body);
 
     // Get the iframe document
     const doc = livePreviewFrame.value.contentDocument || livePreviewFrame.value.contentWindow?.document;
@@ -283,7 +300,8 @@ const createTemplate = async (): Promise<void> => {
         // Create FormData object
         const formData = new FormData();
         formData.append('name', templateForm.value.name);
-        formData.append('content', templateForm.value.content);
+        formData.append('subject', templateForm.value.subject);
+        formData.append('body', templateForm.value.body);
         formData.append('active', templateForm.value.isActive ? 'true' : 'false');
 
         // Send create request to API
@@ -314,7 +332,16 @@ const createTemplate = async (): Promise<void> => {
 
 // Watch for content changes to update the live preview
 watch(
-    () => templateForm.value.content,
+    () => templateForm.value.subject,
+    () => {
+        if (splitView.value) {
+            updateLivePreview();
+        }
+    },
+);
+
+watch(
+    () => templateForm.value.body,
     () => {
         if (splitView.value) {
             updateLivePreview();

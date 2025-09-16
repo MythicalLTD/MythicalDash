@@ -28,6 +28,21 @@ export interface GithubData {
     last_update: string;
 }
 
+export interface CronJob {
+    id: number;
+    task_name: string;
+    last_run_at: string | null;
+    last_run_success: boolean;
+    last_run_message: string | null;
+    expected_interval_seconds: number;
+    late: boolean;
+}
+
+export interface CronData {
+    recent: CronJob[];
+    summary: string | null;
+}
+
 export interface SystemConfig {
     php_version: {
         current: string;

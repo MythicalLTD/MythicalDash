@@ -31,8 +31,8 @@
 
 use MythicalDash\App;
 use MythicalDash\Permissions;
+use MythicalDash\Chat\Mails\MailTemplate;
 use MythicalDash\Chat\columns\UserColumns;
-use MythicalDash\Chat\Mails\MailTemplates;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
 use MythicalDash\Middleware\PermissionMiddleware;
@@ -46,7 +46,7 @@ $router->get('/api/admin/mail/mail-templates', function (): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MAIL_TEMPLATES_LIST, $session);
-    $mailTemplates = MailTemplates::getAll();
+    $mailTemplates = MailTemplate::getAll();
     $appInstance->OK('Mail templates retrieved successfully.', ['mail_templates' => $mailTemplates]);
 });
 
@@ -57,10 +57,11 @@ $router->post('/api/admin/mail/mail-templates/create', function (): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MAIL_TEMPLATES_CREATE, $session);
-    if (isset($_POST['name']) && isset($_POST['content']) && isset($_POST['active'])) {
+    if (isset($_POST['name']) && isset($_POST['body']) && isset($_POST['active']) && isset($_POST['subject'])) {
         $name = $_POST['name'];
-        $content = $_POST['content'];
+        $body = $_POST['body'];
         $active = $_POST['active'];
+        $subject = $_POST['subject'];
         $active = strtolower($active);
         if (!in_array($active, ['true', 'false'])) {
             $appInstance->BadRequest('Invalid active value', ['error_code' => 'INVALID_ACTIVE_VALUE']);
@@ -74,7 +75,7 @@ $router->post('/api/admin/mail/mail-templates/create', function (): void {
             return;
         }
 
-        if (strlen($content) > 65535) {
+        if (strlen($body) > 65535) {
             $appInstance->BadRequest('Content is too long', ['error_code' => 'CONTENT_TOO_LONG']);
 
             return;
@@ -86,25 +87,25 @@ $router->post('/api/admin/mail/mail-templates/create', function (): void {
             return;
         }
 
-        if (strlen($content) < 1) {
+        if (strlen($body) < 1) {
             $appInstance->BadRequest('Content is too short', ['error_code' => 'CONTENT_TOO_SHORT']);
 
             return;
         }
 
-        if (MailTemplates::existsByName($name)) {
+        if (MailTemplate::existsByName($name)) {
             $appInstance->BadRequest('Mail template already exists', ['error_code' => 'MAIL_TEMPLATE_ALREADY_EXISTS']);
 
             return;
         }
 
-        $mailTemplates = MailTemplates::create($name, $content, $active);
+        $mailTemplates = MailTemplate::createLegacy($name, $body, $active, $subject);
         if ($mailTemplates) {
             global $eventManager;
             $eventManager->emit(MailTemplatesEvent::onCreateMailTemplate(), [
                 'id' => $mailTemplates,
                 'name' => $name,
-                'content' => $content,
+                'body' => $body,
                 'active' => $active,
             ]);
             UserActivities::add(
@@ -129,11 +130,12 @@ $router->post('/api/admin/mail/mail-templates/(.*)/update', function (string $id
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MAIL_TEMPLATES_EDIT, $session);
-    if (isset($_POST['name']) && isset($_POST['content']) && isset($_POST['active'])) {
+    if (isset($_POST['name']) && isset($_POST['body']) && isset($_POST['active']) && isset($_POST['subject'])) {
         $name = $_POST['name'];
-        $content = $_POST['content'];
+        $body = $_POST['body'];
         $active = $_POST['active'];
-        if (!MailTemplates::exists($id)) {
+        $subject = $_POST['subject'];
+        if (!MailTemplate::exists($id)) {
             $appInstance->BadRequest('Mail template does not exist', ['error_code' => 'MAIL_TEMPLATE_DOES_NOT_EXIST']);
 
             return;
@@ -151,7 +153,7 @@ $router->post('/api/admin/mail/mail-templates/(.*)/update', function (string $id
             return;
         }
 
-        if (strlen($content) > 65535) {
+        if (strlen($body) > 65535) {
             $appInstance->BadRequest('Content is too long', ['error_code' => 'CONTENT_TOO_LONG']);
 
             return;
@@ -163,27 +165,27 @@ $router->post('/api/admin/mail/mail-templates/(.*)/update', function (string $id
             return;
         }
 
-        if (strlen($content) < 1) {
+        if (strlen($body) < 1) {
             $appInstance->BadRequest('Content is too short', ['error_code' => 'CONTENT_TOO_SHORT']);
 
             return;
         }
-        $info = MailTemplates::get($id);
+        $info = MailTemplate::get($id);
         if ($info['name'] !== $name) {
-            if (MailTemplates::existsByName($name)) {
+            if (MailTemplate::existsByName($name)) {
                 $appInstance->BadRequest('Mail template already exists: ' . $name . ' with id: ' . $id . ' and name: ' . $info['name'], ['error_code' => 'MAIL_TEMPLATE_ALREADY_EXISTS']);
 
                 return;
             }
         }
 
-        $mailTemplates = MailTemplates::update($id, $name, $content, $active);
+        $mailTemplates = MailTemplate::updateLegacy($id, $name, $body, $active, $subject);
         if ($mailTemplates) {
             global $eventManager;
             $eventManager->emit(MailTemplatesEvent::onUpdateMailTemplate(), [
                 'id' => $id,
                 'name' => $name,
-                'content' => $content,
+                'body' => $body,
                 'active' => $active,
             ]);
             UserActivities::add(
@@ -208,7 +210,7 @@ $router->post('/api/admin/mail/mail-templates/(.*)/delete', function (string $id
     $session = new MythicalDash\Chat\User\Session($appInstance);
 
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MAIL_TEMPLATES_DELETE, $session);
-    if (!MailTemplates::exists($id)) {
+    if (!MailTemplate::exists($id)) {
         $appInstance->BadRequest('Mail template does not exist', ['error_code' => 'MAIL_TEMPLATE_DOES_NOT_EXIST']);
 
         return;
@@ -225,7 +227,7 @@ $router->post('/api/admin/mail/mail-templates/(.*)/delete', function (string $id
         "Deleted mail template $id"
     );
 
-    if (MailTemplates::delete($id)) {
+    if (MailTemplate::delete($id)) {
         $appInstance->OK('Mail template deleted successfully.', ['mail_template' => $id]);
     } else {
         $appInstance->BadRequest('Failed to delete mail template', ['error_code' => 'FAILED_TO_DELETE_MAIL_TEMPLATE']);

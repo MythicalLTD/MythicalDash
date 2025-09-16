@@ -285,6 +285,64 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Cron Jobs -->
+            <div class="bg-gray-800/50 backdrop-blur-md rounded-xl p-6 border border-gray-800/30">
+                <h2 class="text-xl font-semibold mb-4">Cron Jobs</h2>
+                <div v-if="cronData?.summary" class="text-sm text-gray-400 mb-4">
+                    {{ cronData.summary }}
+                </div>
+                <div v-else class="space-y-3">
+                    <div
+                        v-for="cron in cronData?.recent"
+                        :key="cron.id"
+                        class="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg border border-gray-600/30"
+                    >
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-3 h-3 rounded-full"
+                                :class="{
+                                    'bg-green-500': !cron.late && cron.last_run_success,
+                                    'bg-yellow-500': cron.late && cron.last_run_success,
+                                    'bg-red-500': !cron.last_run_success,
+                                }"
+                            ></div>
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-200">
+                                    {{ cron.task_name.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) }}
+                                </h3>
+                                <p class="text-xs text-gray-400">
+                                    Expected: {{ formatInterval(cron.expected_interval_seconds) }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span
+                                    class="text-xs px-2 py-1 rounded-full"
+                                    :class="{
+                                        'bg-green-500/20 text-green-400': !cron.late && cron.last_run_success,
+                                        'bg-yellow-500/20 text-yellow-400': cron.late && cron.last_run_success,
+                                        'bg-red-500/20 text-red-400': !cron.last_run_success,
+                                    }"
+                                >
+                                    {{ cron.late ? 'Late' : cron.last_run_success ? 'Success' : 'Failed' }}
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-400">
+                                {{ formatTimeAgo(cron.last_run_at) }}
+                            </p>
+                            <p
+                                v-if="cron.last_run_message"
+                                class="text-xs text-gray-500 mt-1 max-w-xs truncate"
+                                :title="cron.last_run_message"
+                            >
+                                {{ cron.last_run_message }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </LayoutDashboard>
 </template>
@@ -304,7 +362,7 @@ import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import { RouterLink } from 'vue-router';
 import { useSettingsStore } from '@/stores/settings';
 import { useHealthStore } from '@/stores/health';
-import type { HealthData, MemoryUsage, DiskSpace, GithubData } from '@/types/health';
+import type { HealthData, MemoryUsage, DiskSpace, GithubData, CronData } from '@/types/health';
 import Swal from 'sweetalert2';
 
 const Settings = useSettingsStore();
@@ -315,6 +373,7 @@ const healthData = ref<HealthData | null>(null);
 const githubData = ref<GithubData | null>(null);
 const memoryUsage = ref<MemoryUsage | null>(null);
 const diskSpace = ref<DiskSpace | null>(null);
+const cronData = ref<CronData | null>(null);
 
 // Format bytes to human readable format
 const formatBytes = (bytes: number | undefined): string => {
@@ -340,6 +399,31 @@ const calculatePercentage = (current: number | undefined, total: number | undefi
     return (current / total) * 100;
 };
 
+// Format time ago
+const formatTimeAgo = (dateString: string | null): string => {
+    if (!dateString) return 'Never';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffSeconds < 60) return `${diffSeconds}s ago`;
+    if (diffMinutes < 60) return `${diffMinutes}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return `${diffDays}d ago`;
+};
+
+// Format interval to human readable
+const formatInterval = (seconds: number): string => {
+    if (seconds < 60) return `${seconds}s`;
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
+    return `${Math.floor(seconds / 86400)}d`;
+};
+
 // Load health data
 const loadData = async () => {
     try {
@@ -348,6 +432,7 @@ const loadData = async () => {
         memoryUsage.value = healthStore.memoryUsage;
         diskSpace.value = healthStore.diskSpace;
         githubData.value = healthStore.healthData?.github_data || null;
+        cronData.value = healthStore.cronData;
     } catch (error) {
         console.error('Error loading health data:', error);
         Swal.fire({

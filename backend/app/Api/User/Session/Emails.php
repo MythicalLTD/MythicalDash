@@ -31,8 +31,8 @@
 
 use MythicalDash\App;
 use MythicalDash\Chat\User\User;
-use MythicalDash\Chat\User\Mails;
 use MythicalDash\Chat\User\Session;
+use MythicalDash\Chat\Mails\MailList;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\User\UserActivities;
 use MythicalDash\CloudFlare\CloudFlareRealIP;
@@ -45,7 +45,7 @@ $router->get('/api/user/session/emails', function (): void {
     $session = new Session($appInstance);
     $accountToken = $session->SESSION_KEY;
     $appInstance->OK('User emails', [
-        'emails' => Mails::getAll(User::getInfo($accountToken, UserColumns::UUID, false)),
+        'emails' => MailList::getByUserUuid(User::getInfo($accountToken, UserColumns::UUID, false)),
     ]);
 });
 
@@ -54,11 +54,13 @@ $router->get('/api/user/session/emails/(.*)/raw', function (string $id): void {
 
     $appInstance = App::getInstance(true);
     if ($id == '') {
-        exit(header('location: /account'));
+        header('location: /account');
+        exit();
     }
 
     if (!is_numeric($id)) {
-        exit(header('location: /account'));
+        header('location: /account');
+        exit();
     }
     $id = (int) $id;
 
@@ -68,10 +70,10 @@ $router->get('/api/user/session/emails/(.*)/raw', function (string $id): void {
 
     $accountToken = $session->SESSION_KEY;
 
-    if (Mails::exists($id)) {
-        if (Mails::doesUserOwnEmail(User::getInfo($accountToken, UserColumns::UUID, false), $id)) {
+    if (MailList::exists($id)) {
+        if (MailList::doesUserOwnEmail(User::getInfo($accountToken, UserColumns::UUID, false), $id)) {
             $eventManager->emit(MythicalDash\Plugins\Events\Events\UserEmailEvent::onEmailView(), [$id]);
-            $mail = Mails::get($id);
+            $mail = MailList::get($id);
             UserActivities::add(
                 User::getInfo($accountToken, UserColumns::UUID, false),
                 UserActivitiesTypes::$email_view,
@@ -81,10 +83,12 @@ $router->get('/api/user/session/emails/(.*)/raw', function (string $id): void {
             echo $mail['body'];
             exit;
         }
-        exit(header('location: /account'));
+        header('location: /account');
+        exit();
 
     }
-    exit(header('location: /account'));
+    header('location: /account');
+    exit();
 
 });
 
@@ -101,15 +105,15 @@ $router->delete('/api/user/session/emails/(.*)/delete', function (string $id): v
     $appInstance->allowOnlyDELETE();
     $session = new Session($appInstance);
     $accountToken = $session->SESSION_KEY;
-    if (Mails::exists($id)) {
-        if (Mails::doesUserOwnEmail(User::getInfo($accountToken, UserColumns::UUID, false), $id)) {
+    if (MailList::exists($id)) {
+        if (MailList::doesUserOwnEmail(User::getInfo($accountToken, UserColumns::UUID, false), $id)) {
             $eventManager->emit(MythicalDash\Plugins\Events\Events\UserEmailEvent::onEmailDelete(), [$id]);
             UserActivities::add(
                 User::getInfo($accountToken, UserColumns::UUID, false),
                 UserActivitiesTypes::$email_delete,
                 CloudFlareRealIP::getRealIP()
             );
-            Mails::delete($id, User::getInfo($accountToken, UserColumns::UUID, false));
+            MailList::delete($id, User::getInfo($accountToken, UserColumns::UUID, false));
             $appInstance->OK('Email deleted successfully!', []);
         } else {
             $appInstance->Unauthorized('Unauthorized', ['error_code' => 'UNAUTHORIZED']);

@@ -33,7 +33,7 @@ use MythicalDash\App;
 use MythicalDash\Permissions;
 use MythicalDash\Chat\Eggs\Eggs;
 use MythicalDash\Chat\User\User;
-use MythicalDash\Chat\User\Mails;
+use MythicalDash\Chat\Mails\MailList;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
 use MythicalDash\Chat\Locations\Locations;
@@ -159,7 +159,7 @@ $router->get('/api/admin/user/(.*)/info', function ($userId): void {
         }
 
         $activity = UserActivities::get($userInfo[UserColumns::UUID], 1000);
-        $mails = Mails::getAll($userInfo[UserColumns::UUID]);
+        $mails = MailList::getByUserUuid($userInfo[UserColumns::UUID]);
 
         // Get user servers with full information (same logic as Session.php)
         $pterodactylUserId = $userInfo[UserColumns::PTERODACTYL_USER_ID];
@@ -270,7 +270,7 @@ $router->post('/api/admin/user/(.*)/update', function ($userId): void {
              * Inject the banned column to suspend/unsuspend all servers of the user.
              */
             if ($column == UserColumns::BANNED) {
-                if ($value == 'true') {
+                if ($value == 'YES') {
                     $serversQ = ServerQueue::getByUser($userId, [], false);
                     foreach ($serversQ as $server) {
                         ServerQueue::updateStatus((int) $server['id'], 'failed');
@@ -303,6 +303,74 @@ $router->post('/api/admin/user/(.*)/update', function ($userId): void {
         $appInstance->NotFound('User not found', ['error_code' => 'USER_NOT_FOUND']);
     }
 
+});
+
+$router->post('/api/admin/user/(.*)/ban', function ($userId): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $session = new MythicalDash\Chat\User\Session($appInstance);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_USERS_EDIT, $session);
+
+    if (empty($userId)) {
+        $appInstance->BadRequest('User ID is required', ['error_code' => 'USER_ID_REQUIRED']);
+    }
+
+    if (!isset($_POST['status'])) {
+        $appInstance->BadRequest('Status is required', ['error_code' => 'STATUS_REQUIRED']);
+    }
+
+    $status = strtoupper((string) $_POST['status']);
+    if ($status !== 'YES' && $status !== 'NO') {
+        $appInstance->BadRequest('Status must be YES or NO', ['error_code' => 'STATUS_INVALID']);
+    }
+
+    if (User::exists(UserColumns::UUID, $userId)) {
+        // Audit log
+        UserActivities::add(
+            $session->getInfo(UserColumns::UUID, false),
+            UserActivitiesTypes::$admin_user_update,
+            CloudFlareRealIP::getRealIP(),
+            ($status === 'YES' ? 'Banned' : 'Unbanned') . " user $userId"
+        );
+
+        // Trigger event
+        global $eventManager;
+        $eventManager->emit(UserEvent::onUserUpdate(), [
+            'user' => $userId,
+        ]);
+
+        $token = User::getTokenFromUUID($userId);
+
+        // When banning, fail queued servers and suspend active ones. When unbanning, unsuspend active ones.
+        if ($status === 'YES') {
+            $serversQ = ServerQueue::getByUser($userId, [], false);
+            foreach ($serversQ as $server) {
+                ServerQueue::updateStatus((int) $server['id'], 'failed');
+            }
+            $servers = Servers::getUserServersList(User::getInfo($token, UserColumns::PTERODACTYL_USER_ID, false));
+            foreach ($servers as $server) {
+                Servers::performSuspendServer($server['id']);
+            }
+        } else {
+            $servers = Servers::getUserServersList(User::getInfo($token, UserColumns::PTERODACTYL_USER_ID, false));
+            foreach ($servers as $server) {
+                Servers::performUnsuspendServer($server['id']);
+            }
+        }
+
+        // Persist the banned flag
+        if (User::updateInfo($token, UserColumns::BANNED, $status, false)) {
+            $appInstance->OK('Ban status updated successfully.', [
+                'error_code' => 'USER_BAN_STATUS_UPDATED',
+                'status' => $status,
+            ]);
+        } else {
+            $appInstance->InternalServerError('Failed to update ban status', ['error_code' => 'USER_BAN_STATUS_FAILED']);
+        }
+    } else {
+        $appInstance->NotFound('User not found', ['error_code' => 'USER_NOT_FOUND']);
+    }
 });
 
 $router->post('/api/admin/user/(.*)/delete', function ($userId): void {

@@ -98,7 +98,7 @@ $router->get('/api/user/images/sharex/download', function () use ($app, $config)
     }
     header('Content-Type: application/json');
     header('Content-Disposition: attachment; filename="sharex_config.sxcu"');
-    $appUrl = $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
+    $appUrl =  $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
     if (strpos($appUrl, 'https://') !== 0) {
         $appUrl = 'https://' . $appUrl;
     }
@@ -189,7 +189,7 @@ $router->get('/api/user/images/sharex', function () use ($app, $config) {
     $app->OK('Success', [
         'status' => 200,
         'data' => [
-            'config' => ShareXApi::createConfig($config->getDBSetting(ConfigInterface::APP_NAME, 'MythicalDash'), $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems'), $session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)),
+            'config' => ShareXApi::createConfig($config->getDBSetting(ConfigInterface::APP_NAME, 'MythicalDash'), 'https://' . $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems'), $session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)),
         ],
     ]);
 });

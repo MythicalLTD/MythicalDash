@@ -2,6 +2,7 @@
 
 namespace MythicalDash\Cron;
 
+use MythicalDash\Chat\TimedTask;
 use MythicalDash\Config\ConfigInterface;
 use Exception;
 use MythicalDash\Cron\TimeTask;
@@ -17,9 +18,11 @@ class ServerRenewJob implements TimeTask
 			$cron = new Cron('renew-worker', '1D');
 			$cron->runIfDue(function () {
 				self::processServerRenewals();
+				TimedTask::markRun("renew-worker", true, "Server renewal job completed");
 			});
 		} catch (Exception $e) {
 			self::logError("Critical error in ServerRenewJob: " . $e->getMessage());
+			TimedTask::markRun("renew-worker", false, "Server renewal job failed: " . $e->getMessage());
 		}
 	}
 
@@ -51,6 +54,7 @@ class ServerRenewJob implements TimeTask
 		} catch (Exception $e) {
 			self::logError("Error processing server renewals: " . $e->getMessage());
 			$chat->sendOutputWithNewLine("&cError processing server renewals: " . $e->getMessage());
+			TimedTask::markRun("renew-worker", false, "Server renewal job failed: " . $e->getMessage());
 		}
 	}
 
@@ -69,11 +73,13 @@ class ServerRenewJob implements TimeTask
 
 			if (!self::validateServerData($pterodactyl_ID, $user, $expires_at)) {
 				$chat->sendOutputWithNewLine("&cInvalid server data for ID: $pterodactyl_ID");
+				TimedTask::markRun("renew-worker", false, "Server renewal job failed for server " . $pterodactyl_ID . " because invalid server data");
 				return;
 			}
 
 			if (!\MythicalDash\Hooks\Pterodactyl\Admin\Servers::serverExists($pterodactyl_ID)) {
 				self::handleNonExistentServer($pterodactyl_ID, $chat);
+				TimedTask::markRun("renew-worker", false, "Server renewal job failed for server " . $pterodactyl_ID . " because server does not exist");
 				return;
 			}
 
@@ -82,6 +88,7 @@ class ServerRenewJob implements TimeTask
 		} catch (Exception $e) {
 			self::logError("Error processing server $pterodactyl_ID: " . $e->getMessage());
 			$chat->sendOutputWithNewLine("&cError processing server $pterodactyl_ID: " . $e->getMessage());
+			TimedTask::markRun("renew-worker", false, "Server renewal job failed for server " . $pterodactyl_ID . " because error processing server: " . $e->getMessage());
 		}
 	}
 
@@ -97,6 +104,7 @@ class ServerRenewJob implements TimeTask
 			$chat->sendOutputWithNewLine("&cServer $pterodactyl_ID does not exist and has been deleted");
 		} catch (Exception $e) {
 			self::logError("Failed to delete non-existent server $pterodactyl_ID: " . $e->getMessage());
+			TimedTask::markRun("renew-worker", false, "Server renewal job failed for server " . $pterodactyl_ID . " because failed to delete non-existent server: " . $e->getMessage());
 		}
 	}
 
@@ -138,6 +146,7 @@ class ServerRenewJob implements TimeTask
 			\MythicalDash\Mail\templates\ServerRenewReminder::sendMail($user, $pterodactyl_ID);
 		} catch (Exception $e) {
 			self::logError("Failed to send renewal reminder for server $pterodactyl_ID: " . $e->getMessage());
+			TimedTask::markRun("renew-worker", false, "Server renewal job failed for server " . $pterodactyl_ID . " because failed to send renewal reminder: " . $e->getMessage());
 		}
 	}
 
@@ -161,6 +170,7 @@ class ServerRenewJob implements TimeTask
 		} catch (Exception $e) {
 			self::logError("Failed to handle final day server $pterodactyl_ID: " . $e->getMessage());
 			$chat->sendOutputWithNewLine("&cFailed to handle final day server: " . $e->getMessage());
+			TimedTask::markRun("renew-worker", false, "Server renewal job failed for server " . $pterodactyl_ID . " because failed to handle final day server: " . $e->getMessage());
 		}
 	}
 
@@ -174,6 +184,7 @@ class ServerRenewJob implements TimeTask
 				$retries++;
 				if ($retries < self::MAX_RETRIES) {
 					sleep(self::RETRY_DELAY);
+					TimedTask::markRun("renew-worker", false, "Server renewal job failed for server " . $pterodactyl_ID . " because failed to get server info with retry: " . $e->getMessage());
 				}
 			}
 		}
@@ -187,6 +198,7 @@ class ServerRenewJob implements TimeTask
 			\MythicalDash\Hooks\Pterodactyl\Admin\Servers::performSuspendServer($pterodactyl_ID);
 			$chat->sendOutputWithNewLine("&aServer suspended successfully");
 		} catch (Exception $e) {
+			TimedTask::markRun("renew-worker", false, "Server renewal job failed for server " . $pterodactyl_ID . " because failed to suspend server: " . $e->getMessage());
 			throw new Exception("Failed to suspend server: " . $e->getMessage());
 		}
 	}
@@ -201,6 +213,7 @@ class ServerRenewJob implements TimeTask
 		} catch (Exception $e) {
 			$logger->error("Failed to delete expired server $pterodactyl_ID: " . $e->getMessage());
 			$chat->sendOutputWithNewLine("&cFailed to delete server: " . $e->getMessage());
+			TimedTask::markRun("renew-worker", false, "Server renewal job failed for server " . $pterodactyl_ID . " because failed to delete expired server: " . $e->getMessage());
 		}
 	}
 

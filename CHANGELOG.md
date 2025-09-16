@@ -1,20 +1,29 @@
-# v3.4.1-Nexus 
+# v3.4.1-Nexus
 
-# Bugs Fixed
+# Bug Fixes
 
-- BUG: Fixed autofill by password managers in settings!
-- BUG: Fixed monaco editor being to small to modify mail templates by @Th3HunterGamer
-- BUG: Version missmatch in cli!
-- BUG: Some files weren't deleted on update!
-- BUG: Broken mail template editor!
-- BUG: Fixed broken version system
+- BUG: Resolved an issue where password managers would autofill fields incorrectly in settings.
+- BUG: Improved the Monaco editor: it now displays at the correct size for editing mail templates (thanks @Th3HunterGamer).
+- BUG: Fixed an exploit in Linkvertise rewards where users could bypass the 1-hour cooldown and claim double coins by using multiple browsers. (thanks @Th3HunterGamer)
+- BUG: Fixed a version mismatch problem in the CLI.
+- BUG: Ensured all files are properly deleted during updates.
+- BUG: Addressed issues with the mail template editor not functioning as expected.
+- BUG: Corrected problems with the versioning system.
+- BUG: Fixed a bug preventing users from banning other users.
+- BUG: Fixed https not being indexed some times!
 
-# Features Added:
+# New Features
 
+- Feature: Completely overhauled the mail system for improved reliability and flexibility.
+- Feature: Introduced a robust new TimedTask system to enhance cron job management.
+- Feature: Added a nice popup to show the timed tasks status!
+- Feature: Discord authentication logic was reworked. Thanks @Th3HunterGamer for the cleanup!
+- Feature: New mail templates for the dashboard!
+- Feature: Support for latest php version! 
 
-# Features Removed:
+# Features Removed
 
-- Custom code editor (For better performance!)
+- Removed: Removed the custom code editor to boost overall performance.
 
 # v3.4.0-Nexus
 

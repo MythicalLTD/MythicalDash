@@ -35,9 +35,8 @@ use MythicalDash\App;
 use MythicalDash\Mail\Mail;
 use MythicalDash\Chat\Database;
 use MythicalDash\Chat\User\User;
-use MythicalDash\Chat\User\Mails;
 
-use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Config\ConfigInterface;
 
 class ServerDeleted extends Mail
 {
@@ -45,9 +44,8 @@ class ServerDeleted extends Mail
     {
         try {
             $template = self::getFinalTemplate($uuid);
-            $email = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::EMAIL, false);
-            Mails::add('Server Deleted', $template, $uuid);
-            self::send($email, 'Server Deleted', $template);
+            $appName = App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::APP_NAME, 'MythicalSystems');
+            \MythicalDash\Chat\Mails\MailList::addEmail('Server Deleted - ' . $appName, $template, $uuid);
         } catch (\Exception $e) {
             App::getInstance(true)->getLogger()->error('(' . APP_SOURCECODE_DIR . '/Mail/templates/ServerDeleted.php) [sendMail] Failed to send email: ' . $e->getMessage());
         }
@@ -62,7 +60,7 @@ class ServerDeleted extends Mail
     {
         try {
             $conn = Database::getPdoConnection();
-            $query = $conn->prepare('SELECT content FROM mythicaldash_mail_templates WHERE name = :name');
+            $query = $conn->prepare('SELECT body FROM mythicaldash_mail_templates WHERE name = :name');
             $query->execute(['name' => 'server_deleted']);
             $template = $query->fetchColumn();
 

@@ -70,7 +70,7 @@ class DiscordOAuthHelper
      */
     public function getSecureBaseUrl(): string
     {
-        $url = $this->config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
+        $url = 'https://' . $this->config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems');
 
         // Always enforce HTTPS
         if (strpos($url, 'https://') !== 0) {

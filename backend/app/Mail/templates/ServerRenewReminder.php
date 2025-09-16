@@ -35,11 +35,8 @@ use MythicalDash\App;
 use MythicalDash\Mail\Mail;
 use MythicalDash\Chat\Database;
 use MythicalDash\Chat\User\User;
-use MythicalDash\Chat\User\Mails;
 use MythicalDash\Chat\Servers\Server;
 use MythicalDash\Config\ConfigInterface;
-
-use MythicalDash\Chat\columns\UserColumns;
 
 class ServerRenewReminder extends Mail
 {
@@ -47,9 +44,7 @@ class ServerRenewReminder extends Mail
     {
         try {
             $template = self::getFinalTemplate($uuid, $ptero_server_id);
-            $email = User::getInfo(User::getTokenFromUUID($uuid), UserColumns::EMAIL, false);
-            Mails::add('Server Renewal Reminder', $template, $uuid);
-            self::send($email, 'Server Renewal Reminder', $template);
+            \MythicalDash\Chat\Mails\MailList::addEmail('Server Renewal Required - Expires in 7 Days', $template, $uuid);
         } catch (\Exception $e) {
             App::getInstance(true)->getLogger()->error('(' . APP_SOURCECODE_DIR . '/Mail/templates/ServerRenewReminder.php) [sendMail] Failed to send email: ' . $e->getMessage());
         }
@@ -64,7 +59,7 @@ class ServerRenewReminder extends Mail
     {
         try {
             $conn = Database::getPdoConnection();
-            $query = $conn->prepare('SELECT content FROM mythicaldash_mail_templates WHERE name = :name');
+            $query = $conn->prepare('SELECT body FROM mythicaldash_mail_templates WHERE name = :name');
             $query->execute(['name' => 'server_renewal_reminder']);
             $template = $query->fetchColumn();
 

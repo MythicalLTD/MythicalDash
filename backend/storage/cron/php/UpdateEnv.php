@@ -7,6 +7,7 @@ use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Cron\Cron;
 use MythicalDash\Cron\TimeTask;
 use PDO;
+use MythicalDash\Chat\TimedTask;
 
 class UpdateEnv implements TimeTask
 {
@@ -38,10 +39,12 @@ class UpdateEnv implements TimeTask
 				}
 
 				// Log results
+				TimedTask::markRun("update-env", true, "Update env values completed");
 			});
 		} catch (\Exception $e) {
 			$app = \MythicalDash\App::getInstance(false, true);
 			$app->getLogger()->error('Failed to update env values: ' . $e->getMessage());
+			TimedTask::markRun("update-env", false, "Failed to update env values: " . $e->getMessage());
 		}
 	}
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, h, defineComponent } from 'vue';
+import { ref, reactive, onMounted, h, defineComponent, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
 import {
@@ -915,6 +915,52 @@ const saveField = async (column: string, value: string | number): Promise<void> 
     }
 };
 
+// Ban helpers
+const isBanned = computed<boolean>(() => {
+    // Prefer the form state when present, fall back to loaded user state
+    return (formData.value?.banned || user.value?.banned || 'NO') === 'YES';
+});
+
+const setBanned = async (status: 'YES' | 'NO'): Promise<void> => {
+    saving.banned = true;
+    try {
+        const resp = await fetch(`/api/admin/user/${userId}/ban`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ status }),
+        });
+        const data = await resp.json();
+        if (resp.ok && data?.status === status) {
+            formData.value.banned = status;
+            if (user.value) {
+                (user.value as unknown as Record<string, string>)['banned'] = status;
+            }
+            playSuccess();
+            Swal.fire({
+                icon: 'success',
+                title: status === 'YES' ? 'User Banned' : 'User Unbanned',
+                toast: true,
+                position: 'top-end',
+                timer: 2000,
+                showConfirmButton: false,
+            });
+        } else {
+            throw new Error(data?.message || 'Failed to update ban status');
+        }
+    } catch (e) {
+        console.error('Ban toggle failed:', e);
+        playError();
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to update ban status' });
+    } finally {
+        saving.banned = false;
+    }
+};
+
+const toggleBan = async (): Promise<void> => {
+    const next = isBanned.value ? 'NO' : 'YES';
+    await setBanned(next);
+};
+
 onMounted(() => {
     fetchUser();
     fetchRoles();
@@ -1016,6 +1062,32 @@ onMounted(() => {
                                         <TrashIcon class="h-3.5 w-3.5" />
                                         Delete User
                                     </button>
+                                </div>
+                                <div class="flex">
+                                    <button
+                                        @click="toggleBan()"
+                                        :class="[
+                                            'flex items-center gap-1 px-3 py-1 rounded-lg transition-colors text-sm',
+                                            isBanned
+                                                ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
+                                                : 'bg-red-500/20 text-red-400 hover:bg-red-500/30',
+                                        ]"
+                                    >
+                                        <PauseIcon class="h-3.5 w-3.5" />
+                                        {{ isBanned ? 'Unban User' : 'Ban User' }}
+                                    </button>
+                                </div>
+                                <div class="flex items-center">
+                                    <span
+                                        :class="[
+                                            'ml-1 px-2 py-0.5 rounded-full text-xs border',
+                                            isBanned
+                                                ? 'border-red-500/40 text-red-300 bg-red-500/10'
+                                                : 'border-green-500/40 text-green-300 bg-green-500/10',
+                                        ]"
+                                    >
+                                        {{ isBanned ? 'BANNED' : 'NOT BANNED' }}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -1192,16 +1264,7 @@ onMounted(() => {
                                             :saving="saving.background"
                                             @save="saveField('background', formData.background)"
                                         />
-                                        <FormSelect
-                                            label="Banned"
-                                            v-model="formData.banned"
-                                            :options="[
-                                                { value: 'NO', label: 'No (Enabled)' },
-                                                { value: 'YES', label: 'Yes (Banned)' },
-                                            ]"
-                                            :saving="saving.banned"
-                                            @save="saveField('banned', formData.banned)"
-                                        />
+                                        <!-- Removed banned dropdown. Ban/Unban is handled by header button. -->
                                         <FormSelect
                                             label="Verified"
                                             v-model="formData.verified"

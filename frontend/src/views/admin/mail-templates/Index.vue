@@ -29,7 +29,7 @@ import { useRouter } from 'vue-router';
 interface MailTemplate {
     id: number;
     name: string;
-    content: string;
+    body: string;
     deleted: string;
     locked: string;
     active: string;
