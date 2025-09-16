@@ -116,6 +116,7 @@
                         <input
                             id="smtp_pass"
                             :type="showPassword ? 'text' : 'password'"
+                            autocomplete="new-password"
                             v-model="formData.smtp_pass"
                             @change="markChanged('smtp_pass')"
                             class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 pr-10 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"

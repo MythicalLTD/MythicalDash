@@ -1,3 +1,21 @@
+# v3.4.1-Nexus 
+
+# Bugs Fixed
+
+- BUG: Fixed autofill by password managers in settings!
+- BUG: Fixed monaco editor being to small to modify mail templates by @Th3HunterGamer
+- BUG: Version missmatch in cli!
+- BUG: Some files weren't deleted on update!
+- BUG: Broken mail template editor!
+- BUG: Fixed broken version system
+
+# Features Added:
+
+
+# Features Removed:
+
+- Custom code editor (For better performance!)
+
 # v3.4.0-Nexus
 
 # Bugs Fixed:

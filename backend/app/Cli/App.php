@@ -61,8 +61,20 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
                 }
             }
             rmdir($addonDir);
-            exit('Upgrade complete! Please run the command again.');
         }
+
+        if (file_exists(getcwd() . '/backend/app/Api/System/License.php')) {
+            $this->sendOutput('Removing License.php...');
+            unlink(getcwd() . '/backend/app/Api/System/License.php');
+            $this->sendOutput('License.php removed successfully!');
+        }
+
+        if (file_exists(getcwd() . '/backend/storage/cron/php/TelemetryJob.php')) {
+            $this->sendOutput('Removing TelemetryJob.php...');
+            unlink(getcwd() . '/backend/storage/cron/php/TelemetryJob.php');
+            $this->sendOutput('TelemetryJob.php removed successfully!');
+        }
+
         // Check if mythicaldash-v3.log exists and rename it to mythicaldash.log
         $oldLogFile = getcwd() . '/backend/storage/logs/mythicaldash-v3.log';
         $newLogFile = getcwd() . '/backend/storage/logs/mythicaldash.log';

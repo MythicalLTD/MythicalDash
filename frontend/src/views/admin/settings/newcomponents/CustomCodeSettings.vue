@@ -5,21 +5,10 @@
             <div class="bg-gray-900/50 rounded-lg p-4">
                 <h3 class="text-lg font-medium text-gray-200 mb-4">Custom CSS</h3>
                 <div class="h-[400px] border border-gray-700 rounded-lg overflow-hidden">
-                    <MonacoEditor
-                        v-model:value="customCss"
-                        theme="vs-dark"
-                        language="css"
-                        :options="{
-                            fontSize: 14,
-                            wordWrap: 'on',
-                            formatOnPaste: true,
-                            formatOnType: true,
-                            minimap: { enabled: false },
-                            scrollBeyondLastLine: false,
-                            lineNumbers: 'on',
-                            automaticLayout: true,
-                            tabSize: 2,
-                        }"
+                    <SimpleHtmlEditor
+                        v-model="customCss"
+                        height="100%"
+                        placeholder="Enter your custom CSS here..."
                         @change="handleCssChange"
                     />
                 </div>
@@ -29,21 +18,10 @@
             <div class="bg-gray-900/50 rounded-lg p-4">
                 <h3 class="text-lg font-medium text-gray-200 mb-4">Custom JavaScript</h3>
                 <div class="h-[400px] border border-gray-700 rounded-lg overflow-hidden">
-                    <MonacoEditor
-                        v-model:value="customJs"
-                        theme="vs-dark"
-                        language="javascript"
-                        :options="{
-                            fontSize: 14,
-                            wordWrap: 'on',
-                            formatOnPaste: true,
-                            formatOnType: true,
-                            minimap: { enabled: false },
-                            scrollBeyondLastLine: false,
-                            lineNumbers: 'on',
-                            automaticLayout: true,
-                            tabSize: 2,
-                        }"
+                    <SimpleHtmlEditor
+                        v-model="customJs"
+                        height="100%"
+                        placeholder="Enter your custom JavaScript here..."
                         @change="handleJsChange"
                     />
                 </div>
@@ -81,7 +59,7 @@ import { ref, onMounted, defineAsyncComponent, computed, watch } from 'vue';
 import { SaveIcon, LoaderIcon } from 'lucide-vue-next';
 import { useSettingsStore } from '@/stores/settings';
 
-const MonacoEditor = defineAsyncComponent(() => import('monaco-editor-vue3'));
+import SimpleHtmlEditor from '@/components/admin/editors/SimpleHtmlEditor.vue';
 
 // Props
 const props = defineProps<{

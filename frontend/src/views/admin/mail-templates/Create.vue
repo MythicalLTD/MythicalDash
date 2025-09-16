@@ -27,11 +27,11 @@
                     </div>
 
                     <div class="md:col-span-2">
-                        <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center justify-between mb-4">
                             <label for="content" class="block text-sm font-medium text-gray-400"
                                 >Template Content</label
                             >
-                            <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-6">
                                 <div class="flex items-center">
                                     <input
                                         type="checkbox"
@@ -39,46 +39,44 @@
                                         v-model="splitView"
                                         class="rounded border-gray-700 text-pink-500 focus:ring-pink-500 bg-gray-800/30 mr-2"
                                     />
-                                    <label for="splitView" class="text-xs text-gray-400">Side-by-side Preview</label>
+                                    <label for="splitView" class="text-sm text-gray-400">Side-by-side Preview</label>
                                 </div>
                                 <button
                                     type="button"
                                     @click="openPreview"
-                                    class="text-pink-400 hover:text-pink-300 text-xs flex items-center"
+                                    class="text-pink-400 hover:text-pink-300 text-sm flex items-center"
                                 >
-                                    <MaximizeIcon class="w-3.5 h-3.5 mr-1" />
+                                    <MaximizeIcon class="w-4 h-4 mr-1" />
                                     Full Preview
                                 </button>
-                                <div class="text-xs text-gray-500">HTML and variables supported</div>
+                                <div class="text-sm text-gray-500">HTML and variables supported</div>
                             </div>
                         </div>
 
                         <div :class="{ 'grid grid-cols-1 md:grid-cols-2 gap-4': splitView }">
                             <!-- Code Editor -->
                             <div class="flex flex-col">
-                                <MonacoHtmlEditor
+                                <SimpleHtmlEditor
                                     v-model="templateForm.content"
                                     :height="splitView ? '500px' : '400px'"
-                                    :options="{
-                                        fontSize: 14,
-                                        wordWrap: 'on',
-                                        formatOnPaste: true,
-                                        formatOnType: true,
-                                    }"
+                                    placeholder="Enter your HTML template content..."
                                 />
                             </div>
 
                             <!-- Live Preview -->
                             <div v-if="splitView" class="flex flex-col h-[500px]">
                                 <div
-                                    class="bg-gray-700/50 px-3 py-2 text-xs text-gray-300 rounded-t-md flex justify-between items-center"
+                                    class="bg-gray-700/50 px-4 py-4 text-sm text-gray-300 rounded-t-md flex justify-between items-center"
                                 >
-                                    <span>Live Preview</span>
-                                    <button @click="refreshLivePreview" class="text-gray-400 hover:text-white">
-                                        <RefreshCcwIcon class="w-3.5 h-3.5" />
+                                    <span class="font-medium">Live Preview</span>
+                                    <button
+                                        @click="refreshLivePreview"
+                                        class="text-gray-400 hover:text-white transition-colors p-1"
+                                    >
+                                        <RefreshCcwIcon class="w-4 h-4" />
                                     </button>
                                 </div>
-                                <div class="flex-1 bg-white overflow-auto rounded-b-md shadow">
+                                <div class="flex-1 bg-white overflow-auto rounded-b-md shadow border border-gray-600">
                                     <iframe ref="livePreviewFrame" class="w-full h-full border-0"></iframe>
                                 </div>
                             </div>
@@ -150,7 +148,7 @@
 import { ref, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
-import MonacoHtmlEditor from '@/components/admin/editors/MonacoHtmlEditor.vue';
+import SimpleHtmlEditor from '@/components/admin/editors/SimpleHtmlEditor.vue';
 import TemplatePreviewModal from '@/components/admin/editors/TemplatePreviewModal.vue';
 import { ArrowLeftIcon, SaveIcon, LoaderIcon, MaximizeIcon, RefreshCcwIcon } from 'lucide-vue-next';
 
@@ -219,9 +217,54 @@ const updateLivePreview = () => {
     const doc = livePreviewFrame.value.contentDocument || livePreviewFrame.value.contentWindow?.document;
     if (!doc) return;
 
-    // Write content to iframe
+    // Write content to iframe with proper styling
     doc.open();
-    doc.write(processed);
+    doc.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <style>
+                * {
+                    box-sizing: border-box;
+                }
+                body {
+                    margin: 0;
+                    padding: 24px;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                    line-height: 1.6;
+                    color: #333;
+                    background: #fff;
+                }
+                h1, h2, h3, h4, h5, h6 {
+                    margin-top: 0;
+                    margin-bottom: 16px;
+                    font-weight: 600;
+                }
+                p {
+                    margin-bottom: 16px;
+                }
+                strong, b {
+                    font-weight: 600;
+                }
+                em, i {
+                    font-style: italic;
+                }
+                a {
+                    color: #3b82f6;
+                    text-decoration: none;
+                }
+                a:hover {
+                    text-decoration: underline;
+                }
+            </style>
+        </head>
+        <body>
+            ${processed}
+        </body>
+        </html>
+    `);
     doc.close();
 };
 

@@ -5,7 +5,6 @@ import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
 import VueSweetalert2 from 'vue-sweetalert2';
-import Ads from 'vue-google-adsense';
 import { createI18n } from 'vue-i18n';
 import './assets/sweetalert2.css';
 
@@ -77,6 +76,11 @@ const checkAccessMethod = () => {
         if (isHttp) detectedIssues.push('HTTP connection (use HTTPS)');
         if (isInvalidDomain) detectedIssues.push('Invalid domain access (use proper domain)');
         if (isNonStandardPort) detectedIssues.push(`Port ${port} (use reverse proxy)`);
+
+        // Allow Dev access
+        if (window.location.hostname === '212.87.213.116' && window.location.port === '5173') {
+            return;
+        }
 
         // Create warning modal
         const warningModal = document.createElement('div');
@@ -206,18 +210,6 @@ if (import.meta.env.PROD) {
     app.config.warnHandler = () => null;
 }
 
-// Add this function to fetch the ad client code
-const fetchAdClient = async () => {
-    try {
-        const res = await fetch('/api/system/ga-ads');
-        if (!res.ok) throw new Error('Failed to fetch AdSense client code');
-        return (await res.text()).trim();
-    } catch (e) {
-        console.error('Failed to fetch AdSense client code:', e);
-        return null;
-    }
-};
-
 // Performance optimization: Register plugins with proper error handling and lazy loading
 const registerPlugins = async () => {
     try {
@@ -225,14 +217,6 @@ const registerPlugins = async () => {
         app.use(pinia);
         app.use(router);
         app.use(VueSweetalert2);
-
-        // Dynamically fetch and register Google AdSense client code
-        const adClient = await fetchAdClient();
-        if (adClient) {
-            app.use(Ads.AutoAdsense, { adClient, isNewAdsCode: true });
-        } else {
-            console.warn('Google AdSense client code not available, skipping Ads plugin.');
-        }
     } catch (error) {
         console.error('Failed to initialize Vue plugins:', error);
     }

@@ -264,7 +264,7 @@ $router->post('/api/admin/logs/upload', function (): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
     $accountToken = $session->SESSION_KEY;
 
-    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MYTHICALCLOUD_UPLOAD, $session);
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_DASHBOARD_VIEW, $session);
     // Get logs directory
 
     // Upload dashboard logs

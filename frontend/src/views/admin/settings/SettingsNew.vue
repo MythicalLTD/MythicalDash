@@ -16,15 +16,6 @@
                     </p>
                 </div>
             </div>
-            <div class="flex items-center space-x-2">
-                <a
-                    href="/mc-admin/settings/old"
-                    class="flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm"
-                >
-                    <SettingsIcon class="w-4 h-4 mr-2" />
-                    Legacy Settings
-                </a>
-            </div>
         </div>
 
         <!-- Header -->

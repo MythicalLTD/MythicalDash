@@ -52,6 +52,7 @@
                         <input
                             id="pterodactyl_api_key"
                             :type="showApiKey ? 'text' : 'password'"
+                            autocomplete="new-password"
                             v-model="formData.pterodactyl_api_key"
                             @input="markChanged('pterodactyl_api_key')"
                             class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 pr-10 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
@@ -347,6 +348,7 @@
                         id="discord_bot_token"
                         type="password"
                         v-model="formData.discord_bot_token"
+                        autocomplete="new-password"
                         @change="markChanged('discord_bot_token')"
                         class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         placeholder="Bot Token (keep this secret)"

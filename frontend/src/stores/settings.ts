@@ -92,13 +92,7 @@ export const useSettingsStore = defineStore('settings', () => {
         }
 
         if (!data.success) {
-            if (data.error_code === 'LICENSE_INVALID') {
-                showErrorPage(
-                    'License Invalid',
-                    'The licensekey provided is invalid or has expired. Please contact support.',
-                    data.error_code,
-                );
-            } else if (data.error_code === 'RATE_LIMITED') {
+            if (data.error_code === 'RATE_LIMITED') {
                 showErrorPage('Rate Limited', 'You have been rate limited. Please try again later.', data.error_code);
             } else {
                 showErrorPage(

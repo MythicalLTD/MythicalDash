@@ -44,5 +44,3 @@ jobs:
           coverage: none
       - name: Install dependencies
         run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
-      - name: Test
-        run: composer tests

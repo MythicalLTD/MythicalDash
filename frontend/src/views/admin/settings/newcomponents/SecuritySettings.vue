@@ -89,6 +89,7 @@
                             <input
                                 id="turnstile_key_priv"
                                 :type="showSecretKey ? 'text' : 'password'"
+                                autocomplete="new-password"
                                 v-model="formData.turnstile_key_priv"
                                 @input="markChanged('turnstile_key_priv')"
                                 class="bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 pr-10 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
