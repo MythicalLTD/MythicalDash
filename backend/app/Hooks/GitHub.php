@@ -37,7 +37,7 @@ use MythicalDash\Cache\Cache;
 class GitHub
 {
     private $cacheKey = 'github_repo_data';
-    private $cacheTTL = 3600; // 1 hour in seconds
+    private $cacheTTL = 60; // 1 minute in seconds
     private $client;
     // Cache key for releases list
     private $releasesCacheKey = 'github_repo_releases';
@@ -111,8 +111,7 @@ class GitHub
                 $data = [];
             }
 
-            // Cache for 30 minutes to keep fairly fresh
-            Cache::putJson($cacheKey, $data, 1800);
+            Cache::putJson($cacheKey, $data, $this->cacheTTL);
 
             return $data;
         } catch (\Throwable $e) {
