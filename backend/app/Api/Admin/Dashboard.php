@@ -46,8 +46,9 @@ $router->get('/api/admin', function (): void {
     $session = new Session($appInstance);
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_DASHBOARD_VIEW, $session);
     try {
-        $github_data = new GitHub();
-        $github_data = $github_data->getRepoData();
+        $github_dataInterface = new GitHub();
+        $github_data = $github_dataInterface->getRepoData();
+        $github_release = $github_dataInterface->getReleases();
         $activity = UserActivities::getAll(150);
         $userCount = Database::getTableRowCount('mythicaldash_users', true);
         $addonsCount = Database::getTableRowCount('mythicaldash_addons', true);
@@ -85,6 +86,7 @@ $router->get('/api/admin', function (): void {
             'core' => [
                 'github_data' => $github_data,
                 'logs' => $logs,
+                'github_release' => $github_release,
             ],
             'count' => [
                 'user_count' => $userCount,

@@ -120,6 +120,7 @@ ADMIN_MAIL_TEMPLATES_CREATE=admin.mail.templates.create | Admin Mail Templates |
 ADMIN_MAIL_TEMPLATES_EDIT=admin.mail.templates.edit | Admin Mail Templates | Edit existing mail templates
 ADMIN_MAIL_TEMPLATES_DELETE=admin.mail.templates.delete | Admin Mail Templates | Delete mail templates
 ADMIN_MAIL_TEMPLATES_LIST=admin.mail.templates.list | Admin Mail Templates | List all mail templates
+ADMIN_MAIL_SEND_MASS_MAIL=admin.mail.send.mass.mails | Admin Mail | Send mass mails to all users!
 
 # Redirect Links
 ADMIN_REDIRECT_LINKS_CREATE=admin.redirect.links.create | Admin Redirect Links | Create new redirect links

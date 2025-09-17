@@ -1,4 +1,4 @@
-# v3.4.1-Nexus
+# v3.5.0-Aurora
 
 # Bug Fixes
 
@@ -10,9 +10,9 @@
 - BUG: Addressed issues with the mail template editor not functioning as expected.
 - BUG: Corrected problems with the versioning system.
 - BUG: Fixed a bug preventing users from banning other users.
-- BUG: Fixed https not being indexed some times!
-- BUG: Missing translations keys for j4r!
-- BUG: Broken Attachments on tickets!
+- BUG: Fixed HTTPS not being indexed sometimes!
+- BUG: Missing translation keys for J4R!
+- BUG: Broken attachments on tickets!
 
 # New Features
 
@@ -22,7 +22,10 @@
 - Feature: Discord authentication logic was reworked. Thanks @Th3HunterGamer for the cleanup!
 - Feature: New mail templates for the dashboard!
 - Feature: Support for latest php version! 
-- Feature: Rework of all the imporntant pages (Users,Servers,Tickets) to allow more than 400 items!
+- Feature: Complete redesign of critical admin pages (Users, Servers, Tickets) with enhanced pagination and performance optimizations to handle thousands of items seamlessly!
+- Feature: Comprehensive mass email system with template support and queue management for efficient bulk communications!
+- Feature: Enhanced admin interface with modern visual styling and improved user experience!
+- Feature: Admin interface now shows the change logs!
 
 # Features Removed
 

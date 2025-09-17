@@ -1,7 +1,15 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-[#0A0B14] via-[#0D0F1A] to-[#070A16] text-gray-100 font-sans">
+    <div
+        class="min-h-screen bg-gradient-to-br from-[#0A0B14] via-[#0D0F1A] to-[#070A16] text-gray-100 font-sans relative"
+    >
+        <!-- Background Image -->
+        <div
+            class="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20 z-0"
+            style="background-image: url('https://cdn.mythical.systems/mc.jpg')"
+        ></div>
+
         <!-- Mobile Menu Button -->
         <MobileMenuButton :is-sidebar-open="isSidebarOpen" @toggle="isSidebarOpen = !isSidebarOpen" />
 
@@ -14,7 +22,7 @@
         />
 
         <!-- Main Content Area -->
-        <div class="lg:ml-72 min-h-screen flex flex-col">
+        <div class="lg:ml-72 min-h-screen flex flex-col relative z-10">
             <!-- Top Navigation -->
             <TheHeader
                 :search-query="searchQuery"

@@ -67,8 +67,26 @@ $router->get('/api/admin/server-queue', function (): void {
     }
 
     $paginated = ServerQueue::getPaginated($page, $limit);
-    $serverQueue = $paginated['items'] ?? [];
-    $total = (int) ($paginated['total'] ?? 0);
+    // Normalize possible structures: {items,total} or {data, meta: {total, per_page, current_page}}
+    $items = [];
+    $total = 0;
+    if (is_array($paginated)) {
+        $items = $paginated['items'] ?? $paginated['data'] ?? [];
+        if (isset($paginated['total'])) {
+            $total = (int) $paginated['total'];
+        } elseif (isset($paginated['meta']) && is_array($paginated['meta'])) {
+            $total = (int) ($paginated['meta']['total'] ?? 0);
+            // Prefer backend-provided paging info if present
+            if (isset($paginated['meta']['per_page']) && (int) $paginated['meta']['per_page'] > 0) {
+                $limit = (int) $paginated['meta']['per_page'];
+            }
+            if (isset($paginated['meta']['current_page']) && (int) $paginated['meta']['current_page'] > 0) {
+                $page = (int) $paginated['meta']['current_page'];
+            }
+        }
+    }
+
+    $serverQueue = is_array($items) ? $items : [];
 
     foreach ($serverQueue as $key => $value) {
         $serverQueue[$key]['location'] = Locations::get($value['location']);

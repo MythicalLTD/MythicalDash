@@ -4,9 +4,9 @@ This document provides a comprehensive overview of all permission nodes used in 
 
 ## Overview
 
-- **Total Permissions:** 87
-- **Categories:** 29
-- **With Descriptions:** 87
+- **Total Permissions:** 88
+- **Categories:** 30
+- **With Descriptions:** 88
 
 ## Format
 
@@ -218,6 +218,12 @@ if (auth.user.hasPermission(Permissions.ADMIN_DASHBOARD_VIEW)) {
 | `ADMIN_MAIL_TEMPLATES_DELETE` | `admin.mail.templates.delete` | Delete mail templates |
 | `ADMIN_MAIL_TEMPLATES_LIST` | `admin.mail.templates.list` | List all mail templates |
 
+## Admin Mail
+
+| Permission | Node | Description |
+|------------|------|-------------|
+| `ADMIN_MAIL_SEND_MASS_MAIL` | `admin.mail.send.mass.mails` | Send mass mails to all users! |
+
 ## Admin Redirect Links
 
 | Permission | Node | Description |
@@ -291,4 +297,4 @@ To add a new permission node:
 
 ---
 
-*This documentation was auto-generated on 2025-09-17 12:07:09*
+*This documentation was auto-generated on 2025-09-17 12:53:03*

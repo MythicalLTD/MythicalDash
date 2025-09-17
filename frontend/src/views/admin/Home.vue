@@ -29,6 +29,38 @@
                         </RouterLink>
                     </div>
                 </div>
+
+                <!-- Update warning banner -->
+                <div v-if="!isUpToDate && latestRelease" class="mt-6">
+                    <div class="rounded-xl p-5 border border-gray-800/40 bg-gray-800/30">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h3 class="text-white font-semibold">
+                                    New release available: {{ latestRelease.tag_name }}
+                                </h3>
+                                <p class="text-sm text-gray-400">
+                                    Your current version is {{ Settings.getSetting('debug_version') }}
+                                </p>
+                            </div>
+                            <a
+                                :href="latestRelease.html_url"
+                                target="_blank"
+                                class="text-xs text-indigo-300 underline decoration-dotted hover:text-indigo-200"
+                                >View on GitHub</a
+                            >
+                        </div>
+                        <div class="mt-4">
+                            <div
+                                v-if="latestReleaseBodyHtml"
+                                class="prose prose-invert max-w-none"
+                                v-html="latestReleaseBodyHtml"
+                            ></div>
+                            <pre v-else class="whitespace-pre-wrap text-gray-200 text-sm">{{
+                                latestRelease?.body || ''
+                            }}</pre>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Main Dashboard Grid -->
@@ -220,9 +252,20 @@
                                 Your system is running the latest version. The last update check was performed
                                 {{ lastCheckTime }}.
                             </p>
-                            <p v-else class="text-amber-400 text-sm mb-4">
-                                A new version ({{ latestVersion }}) is available. Please update your system.
-                            </p>
+                            <div v-else class="text-amber-400 text-sm mb-4">
+                                <p class="mb-2">
+                                    A new version ({{ latestVersion }}) is available. Please update your system.
+                                </p>
+                                <a
+                                    v-if="latestRelease"
+                                    :href="latestRelease.html_url"
+                                    target="_blank"
+                                    class="inline-flex items-center gap-2 text-amber-200 underline decoration-dotted hover:text-amber-100"
+                                >
+                                    <Github class="w-4 h-4" />
+                                    View release
+                                </a>
+                            </div>
                             <button
                                 @click="checkForUpdates"
                                 :disabled="isChecking"
@@ -475,6 +518,23 @@ interface Activity {
     context: string;
 }
 
+// Releases types
+interface GitHubReleaseAsset {
+    browser_download_url: string;
+}
+interface GitHubRelease {
+    id: number;
+    tag_name: string;
+    name: string;
+    body: string;
+    body_html?: string;
+    html_url: string;
+    draft: boolean;
+    prerelease: boolean;
+    published_at: string | null;
+    assets?: GitHubReleaseAsset[];
+}
+
 const dashboardData = ref({
     counts: {
         user_count: 0,
@@ -493,6 +553,7 @@ const dashboardData = ref({
         redeem_codes_count: 0,
     },
     github_data: null as GitHubData | null,
+    github_release: [] as GitHubRelease[],
     activity: [] as Activity[],
     logs: [] as string[],
 });
@@ -519,7 +580,11 @@ const isChecking = ref(false);
 const latestVersion = ref('');
 const lastCheckTime = ref('never');
 
-// Format time ago for cron jobs
+// Latest release refs
+const latestRelease = ref<GitHubRelease | null>(null);
+const latestReleaseBodyHtml = ref('');
+
+// No markdown parsing: we prefer GitHub-rendered HTML or plain text fallback
 const formatTimeAgo = (dateString: string | null): string => {
     if (!dateString) return 'Never';
     const date = new Date(dateString);
@@ -544,24 +609,25 @@ const formatInterval = (seconds: number): string => {
     return `${Math.floor(seconds / 86400)}d`;
 };
 
+const computeUpdateStateFromReleases = () => {
+    const currentVersion = Settings.getSetting('debug_version');
+    const releases = dashboardData.value.github_release || [];
+    const stableReleases = releases.filter((r) => !r.draft && !r.prerelease);
+    const top = stableReleases[0] || releases[0] || null;
+    latestRelease.value = top || null;
+    latestVersion.value = top?.tag_name || '';
+    isUpToDate.value = currentVersion === latestVersion.value || latestVersion.value === '';
+    latestReleaseBodyHtml.value = top?.body_html || '';
+    lastCheckTime.value = 'just now';
+};
+
 const checkForUpdates = async () => {
+    // Use backend-provided releases; no direct GitHub call here
     isChecking.value = true;
     try {
-        const response = await fetch('https://api.github.com/repos/mythicalltd/mythicaldash/releases/latest');
-        const data = await response.json();
-        const currentVersion = Settings.getSetting('debug_version');
-        latestVersion.value = data.tag_name;
-
-        // Simple string comparison - if they are exactly the same, we're up to date
-        isUpToDate.value = currentVersion === latestVersion.value;
-
-        console.log('Current version:', currentVersion);
-        console.log('Latest version:', latestVersion.value);
-        console.log('Is up to date:', isUpToDate.value);
-
-        lastCheckTime.value = 'just now';
+        computeUpdateStateFromReleases();
     } catch (error) {
-        console.error('Failed to check for updates:', error);
+        console.error('Failed to compute update state:', error);
     } finally {
         isChecking.value = false;
     }
@@ -574,6 +640,7 @@ onMounted(async () => {
         dashboardData.value = {
             counts: data.count || dashboardData.value.counts,
             github_data: data.core?.github_data || null,
+            github_release: data.core?.github_release || [],
             activity: data.etc?.activity || [],
             logs: data.core?.logs || [],
         };
@@ -599,6 +666,7 @@ const refreshData = async () => {
         dashboardData.value = {
             counts: data.count || dashboardData.value.counts,
             github_data: data.core?.github_data || null,
+            github_release: data.core?.github_release || [],
             activity: data.etc?.activity || [],
             logs: data.core?.logs || [],
         };
@@ -608,6 +676,8 @@ const refreshData = async () => {
         // Refresh health data including cron jobs
         await healthStore.fetchHealthData();
         cronData.value = healthStore.cronData;
+
+        computeUpdateStateFromReleases();
     } catch (error) {
         console.error('Failed to refresh dashboard data:', error);
     } finally {

@@ -233,3 +233,58 @@ $router->post('/api/admin/mail/mail-templates/(.*)/delete', function (string $id
         $appInstance->BadRequest('Failed to delete mail template', ['error_code' => 'FAILED_TO_DELETE_MAIL_TEMPLATE']);
     }
 });
+
+// Mass send using a mail template to all users
+$router->post('/api/admin/mail/mail-templates/(.*)/mass-send', function (string $id): void {
+    App::init();
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $session = new MythicalDash\Chat\User\Session($appInstance);
+
+    // Reuse list permission for now; optionally define a dedicated permission later
+    PermissionMiddleware::handle($appInstance, Permissions::ADMIN_MAIL_SEND_MASS_MAIL, $session);
+
+    // Validate template
+    if (!MailTemplate::exists((int) $id)) {
+        $appInstance->BadRequest('Mail template does not exist', ['error_code' => 'MAIL_TEMPLATE_DOES_NOT_EXIST']);
+
+        return;
+    }
+    $tpl = MailTemplate::get((int) $id);
+    if (!$tpl || ($tpl['active'] ?? 'false') !== 'true') {
+        $appInstance->BadRequest('Mail template is inactive or invalid', ['error_code' => 'MAIL_TEMPLATE_INACTIVE']);
+
+        return;
+    }
+
+    // Retrieve all users with uuids and valid emails
+    $users = MythicalDash\Chat\User\User::getListWithFilters([
+        UserColumns::UUID,
+        UserColumns::EMAIL,
+    ], []);
+
+    $queued = 0;
+    foreach ($users as $user) {
+        $email = $user['email'] ?? null;
+        $uuid = $user['uuid'] ?? null;
+        if (!$uuid || !$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            continue;
+        }
+        // Queue email via MailList -> MailQueue
+        if (MythicalDash\Chat\Mails\MailList::addEmail((string) ($tpl['subject'] ?? 'Notification'), (string) ($tpl['body'] ?? ''), (string) $uuid)) {
+            ++$queued;
+        }
+    }
+
+    UserActivities::add(
+        $session->getInfo(UserColumns::UUID, false),
+        UserActivitiesTypes::$mail_template_update,
+        CloudFlareRealIP::getRealIP(),
+        "Mass mailed template $id to $queued users"
+    );
+
+    $appInstance->OK('Mass email queued successfully.', [
+        'queued' => $queued,
+        'template' => (int) $id,
+    ]);
+});

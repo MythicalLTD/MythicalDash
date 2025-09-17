@@ -52,6 +52,11 @@ class MailSender implements TimeTask
 			BungeeChatApi::sendOutputWithNewLine('&aProcessing mail: ' . $mail['id']);
 			return ($mail['status'] ?? 'pending') === 'pending' && ($mail['locked'] ?? 'false') === 'false';
 		});
+		$totalToProcess = count($mailQueue);
+		if ($totalToProcess > 25) {
+			$mailQueue = array_slice(array_values($mailQueue), 0, 25);
+			BungeeChatApi::sendOutputWithNewLine('&eLimiting mail send to 25 items this run (out of ' . $totalToProcess . ')');
+		}
 		BungeeChatApi::sendOutputWithNewLine('&aFound ' . count($mailQueue) . ' mails to process');
 
 		BungeeChatApi::sendOutputWithNewLine('&aProcessing mails');

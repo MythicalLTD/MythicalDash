@@ -39,6 +39,8 @@ class GitHub
     private $cacheKey = 'github_repo_data';
     private $cacheTTL = 3600; // 1 hour in seconds
     private $client;
+    // Cache key for releases list
+    private $releasesCacheKey = 'github_repo_releases';
 
     public function __construct()
     {
@@ -72,5 +74,54 @@ class GitHub
         Cache::putJson($this->cacheKey, $data, $this->cacheTTL);
 
         return $data;
+    }
+
+    /**
+     * Retrieves releases (changelogs) from GitHub API, using cache if available.
+     *
+     * @param int $perPage Number of releases to fetch (GitHub max 100)
+     *
+     * @return array list of release objects as associative arrays
+     */
+    public function getReleases(int $perPage = 20)
+    {
+        $perPage = max(1, min(100, $perPage));
+        $cacheKey = $this->releasesCacheKey . ':' . $perPage;
+
+        if (Cache::exists($cacheKey)) {
+            return Cache::getJson($cacheKey);
+        }
+
+        try {
+            $response = $this->client->request('GET', 'https://api.github.com/repos/mythicalltd/mythicaldash/releases', [
+                'headers' => [
+                    // Request GitHub-rendered HTML in addition to JSON fields
+                    'Accept' => 'application/vnd.github.v3.html+json',
+                    'X-GitHub-Api-Version' => '2022-11-28',
+                    'User-Agent' => 'MythicalDash',
+                ],
+                'query' => [
+                    'per_page' => $perPage,
+                    'page' => 1,
+                ],
+            ]);
+
+            $data = json_decode($response->getBody()->getContents(), true);
+            if (!is_array($data)) {
+                $data = [];
+            }
+
+            // Cache for 30 minutes to keep fairly fresh
+            Cache::putJson($cacheKey, $data, 1800);
+
+            return $data;
+        } catch (\Throwable $e) {
+            // On error, return cached data if any, else empty array
+            if (Cache::exists($cacheKey)) {
+                return Cache::getJson($cacheKey);
+            }
+
+            return [];
+        }
     }
 }

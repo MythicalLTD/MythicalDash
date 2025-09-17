@@ -197,6 +197,10 @@ class Permissions {
     /** List all mail templates */
     public static ADMIN_MAIL_TEMPLATES_LIST = 'admin.mail.templates.list';
 
+    // Admin Mail Permissions
+    /** Send mass mails to all users! */
+    public static ADMIN_MAIL_SEND_MASS_MAIL = 'admin.mail.send.mass.mails';
+
     // Admin Redirect Links Permissions
     /** Create new redirect links */
     public static ADMIN_REDIRECT_LINKS_CREATE = 'admin.redirect.links.create';
@@ -673,6 +677,12 @@ class Permissions {
                 value: Permissions.ADMIN_MAIL_TEMPLATES_LIST,
                 category: 'Admin Mail Templates',
                 description: 'List all mail templates',
+            },
+            {
+                constant: 'ADMIN_MAIL_SEND_MASS_MAIL',
+                value: Permissions.ADMIN_MAIL_SEND_MASS_MAIL,
+                category: 'Admin Mail',
+                description: 'Send mass mails to all users!',
             },
             {
                 constant: 'ADMIN_REDIRECT_LINKS_CREATE',
