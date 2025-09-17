@@ -1,11 +1,11 @@
 class Users {
     /**
-     * Get all users
-     *
-     * @returns Promise with all users
+     * Get all users with pagination and optional search
      */
-    public static async getUsers() {
-        const response = await fetch('/api/admin/users', {
+    public static async getUsers(page: number = 1, limit: number = 20, search: string = '') {
+        const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+        if (search && search.trim()) params.set('search', search.trim());
+        const response = await fetch(`/api/admin/users?${params.toString()}`, {
             method: 'GET',
         });
         return await response.json();

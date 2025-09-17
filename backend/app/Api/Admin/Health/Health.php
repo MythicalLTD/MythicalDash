@@ -259,7 +259,7 @@ $router->get('/api/admin/health', function (): void {
     $expectedMap = [
         'mail-sender' => 60, // 1 minute
         'a-check-cron' => 60, // 1 minute
-        'server-schedule-processor' => 60, // 1 minute
+        'server-deploy' => 60, // 1 minute
         'proxy-list-processor' => 604800, // 7 days
         'renew-worker' => 86400, // 1 day
         'update-env' => 3600, // 1 hour

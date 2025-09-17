@@ -936,4 +936,67 @@ class User extends Database
             return null;
         }
     }
+
+    /**
+     * Get paginated users with optional search across username and email.
+     *
+     * @return array{items: array<int, array<string,mixed>>, total: int}
+     */
+    public static function getPaginatedWithSearch(array $rows, array $encrypted, int $page = 1, int $limit = 20, ?string $search = null): array
+    {
+        try {
+            $page = max(1, $page);
+            $limit = max(1, min(100, $limit));
+            $offset = ($page - 1) * $limit;
+
+            $con = self::getPdoConnection();
+
+            $where = 'deleted = "false"';
+            $params = [];
+            if ($search !== null && $search !== '') {
+                $where .= ' AND (username LIKE :q OR email LIKE :q)';
+                $params[':q'] = '%' . $search . '%';
+            }
+
+            // Total count
+            $countSql = 'SELECT COUNT(*) as cnt FROM ' . self::TABLE_NAME . ' WHERE ' . $where;
+            $countStmt = $con->prepare($countSql);
+            foreach ($params as $k => $v) {
+                $countStmt->bindValue($k, $v);
+            }
+            $countStmt->execute();
+            $total = (int) $countStmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
+
+            // Page items
+            $sql = 'SELECT ' . implode(', ', $rows) . ' FROM ' . self::TABLE_NAME . ' WHERE ' . $where . ' ORDER BY id ASC LIMIT :limit OFFSET :offset';
+            $stmt = $con->prepare($sql);
+            foreach ($params as $k => $v) {
+                $stmt->bindValue($k, $v);
+            }
+            $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+            $stmt->execute();
+            $users = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            foreach ($users as &$user) {
+                foreach ($rows as $row) {
+                    if (in_array($row, $encrypted)) {
+                        $user[$row] = App::getInstance(true)->decrypt($user[$row]);
+                    }
+                }
+            }
+
+            return [
+                'items' => $users,
+                'total' => $total,
+            ];
+        } catch (\Exception $e) {
+            Database::db_Error('Failed to get paginated user list: ' . $e->getMessage());
+
+            return [
+                'items' => [],
+                'total' => 0,
+            ];
+        }
+    }
 }

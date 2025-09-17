@@ -53,10 +53,35 @@ $router->get('/api/admin/users', function (): void {
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_USERS_LIST, $session);
-    $user = User::getListWithFilters(['id', 'username', 'email', 'avatar', 'pterodactyl_user_id', 'role', 'last_seen', 'uuid'], []);
+
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+    $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 20;
+    $search = isset($_GET['search']) ? trim((string) $_GET['search']) : null;
+
+    if ($page < 1) {
+        $page = 1;
+    }
+    $maxLimit = 100;
+    if ($limit < 1) {
+        $limit = 20;
+    } elseif ($limit > $maxLimit) {
+        $limit = $maxLimit;
+    }
+
+    $result = User::getPaginatedWithSearch(['id', 'username', 'email', 'avatar', 'pterodactyl_user_id', 'role', 'last_seen', 'uuid'], [], $page, $limit, $search);
+
+    $total = (int) ($result['total'] ?? 0);
+    $totalPages = $limit > 0 ? (int) ceil($total / $limit) : 0;
 
     $appInstance->OK('Users data retrieved successfully.', [
-        'users' => $user,
+        'users' => $result['items'] ?? [],
+        'pagination' => [
+            'page' => $page,
+            'limit' => $limit,
+            'total' => $total,
+            'pages' => $totalPages,
+            'has_more' => $page < $totalPages,
+        ],
     ]);
 
 });

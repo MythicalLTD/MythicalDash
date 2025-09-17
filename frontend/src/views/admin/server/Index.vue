@@ -2,18 +2,35 @@
     <LayoutDashboard>
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-pink-400">Server List</h1>
-            <button
-                @click="goToCreation()"
-                class="bg-gradient-to-r from-pink-500 to-violet-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center"
-            >
-                <PlusIcon class="w-4 h-4 mr-2" />
-                Create New Server
-            </button>
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-2 bg-gray-800/60 border border-gray-700 rounded-lg px-3 py-2">
+                    <span class="text-gray-400 text-xs">Per page</span>
+                    <select
+                        class="bg-transparent text-gray-200 text-sm focus:outline-none"
+                        :value="pagination.limit"
+                        @change="changePageSize(($event.target as HTMLSelectElement).value)"
+                    >
+                        <option class="bg-gray-900" :value="10">10</option>
+                        <option class="bg-gray-900" :value="20">20</option>
+                        <option class="bg-gray-900" :value="30">30</option>
+                        <option class="bg-gray-900" :value="50">50</option>
+                    </select>
+                </div>
+                <button
+                    @click="goToCreation()"
+                    class="bg-gradient-to-r from-pink-500 to-violet-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-90 shadow ring-1 ring-pink-400/30 flex items-center"
+                >
+                    <PlusIcon class="w-4 h-4 mr-2" />
+                    Create New Server
+                </button>
+            </div>
         </div>
 
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div class="bg-gray-800/50 backdrop-blur-md rounded-lg p-4 shadow-md">
+            <div
+                class="bg-gradient-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-md rounded-xl p-4 shadow-md border border-gray-700/80"
+            >
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-400 text-sm">Total Servers</p>
@@ -22,7 +39,9 @@
                     <ServerIcon class="h-8 w-8 text-pink-400" />
                 </div>
             </div>
-            <div class="bg-gray-800/50 backdrop-blur-md rounded-lg p-4 shadow-md">
+            <div
+                class="bg-gradient-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-md rounded-xl p-4 shadow-md border border-gray-700/80"
+            >
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-400 text-sm">Suspended</p>
@@ -36,14 +55,142 @@
         <div v-if="loading" class="flex justify-center items-center py-10">
             <LoaderCircle class="h-8 w-8 animate-spin text-pink-400" />
         </div>
-        <TableTanstack v-else :data="servers" :columns="columns" tableName="Server List" />
+
+        <!-- Cards Grid -->
+        <div v-else>
+            <div v-if="servers.length === 0" class="text-center text-gray-400 py-10">
+                No servers found for this page.
+            </div>
+
+            <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-6">
+                <div
+                    v-for="item in servers"
+                    :key="item.attributes.id"
+                    class="group relative rounded-xl p-4 bg-gradient-to-br from-gray-800/70 to-gray-900/70 border border-gray-700/70 hover:border-pink-500/40 transition-all duration-200 shadow hover:shadow-pink-500/10"
+                >
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <h3 class="text-lg font-semibold text-white truncate max-w-[240px]">
+                                    {{ item.attributes.name }}
+                                </h3>
+                                <span
+                                    class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full border"
+                                    :class="
+                                        item.attributes.suspended
+                                            ? 'bg-red-500/10 text-red-400 border-red-500/30'
+                                            : 'bg-green-500/10 text-green-400 border-green-500/30'
+                                    "
+                                >
+                                    {{ item.attributes.suspended ? 'Suspended' : 'Active' }}
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">ID: {{ item.attributes.id }}</p>
+                        </div>
+                        <div class="flex items-center space-x-2 opacity-90">
+                            <span
+                                class="text-[10px] text-gray-300 bg-gray-900/60 border border-gray-700/70 rounded px-2 py-0.5"
+                            >
+                                {{ item.location?.name || 'Unknown location' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 grid grid-cols-3 gap-3 text-xs">
+                        <div class="bg-gray-900/50 rounded-lg p-2 border border-gray-700/60">
+                            <p class="text-gray-400">RAM</p>
+                            <p class="text-white font-medium">{{ item.attributes.limits.memory }} MB</p>
+                        </div>
+                        <div class="bg-gray-900/50 rounded-lg p-2 border border-gray-700/60">
+                            <p class="text-gray-400">CPU</p>
+                            <p class="text-white font-medium">{{ item.attributes.limits.cpu }}%</p>
+                        </div>
+                        <div class="bg-gray-900/50 rounded-lg p-2 border border-gray-700/60">
+                            <p class="text-gray-400">Disk</p>
+                            <p class="text-white font-medium">{{ item.attributes.limits.disk }} MB</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex items-center justify-between text-xs text-gray-300">
+                        <div>
+                            <span class="text-gray-400">Created</span>
+                            <span class="ml-2 text-white">{{
+                                new Date(item.attributes.created_at).toLocaleString()
+                            }}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button
+                                class="p-2 rounded-md bg-gray-800/60 border border-gray-700/60 text-blue-400 hover:bg-gray-800 hover:border-blue-400/40"
+                                title="Go to Panel"
+                                @click="goToPanel(item)"
+                            >
+                                <ExternalLinkIcon class="h-4 w-4" />
+                            </button>
+                            <button
+                                class="p-2 rounded-md bg-gray-800/60 border border-gray-700/60 text-yellow-400 hover:bg-gray-800 hover:border-yellow-400/40"
+                                :title="item.attributes.suspended ? 'Unsuspend' : 'Suspend'"
+                                @click="toggleSuspend(item)"
+                            >
+                                <PauseIcon class="h-4 w-4" />
+                            </button>
+                            <button
+                                class="p-2 rounded-md bg-gray-800/60 border border-gray-700/60 text-red-400 hover:bg-gray-800 hover:border-red-400/40"
+                                title="Delete"
+                                @click="confirmDelete(item)"
+                            >
+                                <TrashIcon class="h-4 w-4" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="flex items-center justify-between border-t border-gray-700 pt-4">
+                <div class="text-sm text-gray-400">
+                    Page {{ pagination.page }} of {{ pagination.pages }} · {{ pagination.total }} total
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button
+                        class="px-3 py-1 rounded bg-gray-800 text-gray-200 border border-gray-700 disabled:opacity-50"
+                        :disabled="pagination.page <= 1"
+                        @click="changePage(pagination.page - 1)"
+                    >
+                        Previous
+                    </button>
+
+                    <template v-for="p in visiblePages" :key="p">
+                        <button
+                            v-if="p !== '…'"
+                            class="px-3 py-1 rounded border"
+                            :class="
+                                p === pagination.page
+                                    ? 'bg-pink-600/80 text-white border-pink-400'
+                                    : 'bg-gray-800 text-gray-200 border-gray-700 hover:border-pink-400/40'
+                            "
+                            @click="changePage(p as number)"
+                        >
+                            {{ p }}
+                        </button>
+                        <span v-else class="px-2 text-gray-500">…</span>
+                    </template>
+
+                    <button
+                        class="px-3 py-1 rounded bg-gray-800 text-gray-200 border border-gray-700 disabled:opacity-50"
+                        :disabled="!pagination.has_more"
+                        @click="changePage(pagination.page + 1)"
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
     </LayoutDashboard>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, h } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
-import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
 import {
     PlusIcon,
     TrashIcon,
@@ -68,89 +215,24 @@ interface Server {
     object: string;
     attributes: {
         id: number;
-        external_id: string;
-        uuid: string;
-        identifier: string;
         name: string;
-        description: string;
-        status: string | null;
         suspended: boolean;
         limits: {
             memory: number;
-            swap: number;
-            disk: number;
-            io: number;
             cpu: number;
-            threads: number | null;
-            oom_disabled: boolean;
+            disk: number;
         };
-        feature_limits: {
-            databases: number;
-            allocations: number;
-            backups: number;
-        };
-        user: number;
-        node: number;
-        allocation: number;
-        nest: number;
-        egg: number;
-        container: {
-            startup_command: string;
-            image: string;
-            installed: number;
-            environment: Record<string, string>;
-        };
-        updated_at: string;
         created_at: string;
     };
-    location: {
+    location?: {
         id: number;
         name: string;
-        description: string;
-        pterodactyl_location_id: number;
-        node_ip: string;
-        status: string;
-        slots: number;
-        deleted: string;
-        locked: string;
-        updated_at: string;
-        created_at: string;
-    };
-    service: {
-        id: number;
-        name: string;
-        description: string;
-        category: number;
-        pterodactyl_egg_id: number;
-        enabled: string;
-        deleted: string;
-        locked: string;
-        updated_at: string;
-        created_at: string;
-    };
-    category: {
-        id: number;
-        name: string;
-        description: string;
-        pterodactyl_nest_id: number;
-        enabled: string;
-        deleted: string;
-        locked: string;
-        updated_at: string;
-        created_at: string;
     };
 }
 
 interface ServerStats {
     total: number;
     suspended: number;
-}
-
-interface CellInfo {
-    getValue: () => unknown;
-    row: {
-        original: Server;
-    };
 }
 
 const router = useRouter();
@@ -161,172 +243,89 @@ const stats = ref<ServerStats>({
     suspended: 0,
 });
 
+const pagination = ref<{ page: number; limit: number; total: number; pages: number; has_more: boolean }>({
+    page: 1,
+    limit: 20,
+    total: 0,
+    pages: 0,
+    has_more: false,
+});
+
+const visiblePages = computed<(number | '…')[]>(() => {
+    const pages: (number | '…')[] = [];
+    const total = pagination.value.pages;
+    const current = pagination.value.page;
+    if (total <= 7) {
+        for (let i = 1; i <= total; i++) pages.push(i);
+        return pages;
+    }
+    pages.push(1);
+    if (current > 3) pages.push('…');
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (current < total - 2) pages.push('…');
+    pages.push(total);
+    return pages;
+});
+
 const { play: playError } = useSound(failedAlertSfx);
 const { play: playSuccess } = useSound(successAlertSfx);
-
-// Define columns for TableTanstack
-const columns = [
-    {
-        header: 'ID',
-        accessorKey: 'attributes.id',
-        cell: (info: CellInfo) => info.getValue(),
-    },
-    {
-        header: 'Name',
-        accessorKey: 'attributes.name',
-        cell: (info: CellInfo) => info.getValue(),
-    },
-    {
-        header: 'Service',
-        id: 'service',
-        cell: (info: CellInfo) => {
-            const service = info.row.original.service;
-            return service ? service.name : 'Unknown';
-        },
-    },
-    {
-        header: 'Location',
-        id: 'location',
-        cell: (info: CellInfo) => {
-            const location = info.row.original.location;
-            return location ? location.name : 'Unknown';
-        },
-    },
-    {
-        header: 'Resources',
-        id: 'resources',
-        cell: (info: CellInfo) => {
-            const item = info.row.original.attributes;
-            return h('div', { class: 'text-xs' }, [
-                h('div', { class: 'flex items-center space-x-2' }, [
-                    h('span', { class: 'text-gray-400' }, 'RAM:'),
-                    h('span', { class: 'text-white' }, `${item.limits.memory} MB`),
-                    h('span', { class: 'text-gray-400 ml-2' }, 'CPU:'),
-                    h('span', { class: 'text-white' }, `${item.limits.cpu}%`),
-                    h('span', { class: 'text-gray-400 ml-2' }, 'Disk:'),
-                    h('span', { class: 'text-white' }, `${item.limits.disk} MB`),
-                ]),
-            ]);
-        },
-    },
-    {
-        header: 'Status',
-        id: 'status',
-        cell: (info: CellInfo) => {
-            const suspended = info.row.original.attributes.suspended;
-            let statusClass = '';
-            let statusText = '';
-
-            if (suspended) {
-                statusClass = 'bg-red-500/20 text-red-400';
-                statusText = 'Suspended';
-            } else {
-                statusClass = 'bg-green-500/20 text-green-400';
-                statusText = 'Active';
-            }
-
-            return h('span', { class: `px-2 py-1 rounded-full text-xs ${statusClass}` }, statusText);
-        },
-    },
-    {
-        header: 'Created',
-        accessorKey: 'attributes.created_at',
-        cell: (info: CellInfo) => {
-            const date = new Date(info.getValue() as string);
-            return date.toLocaleString();
-        },
-    },
-    {
-        header: 'Actions',
-        id: 'actions',
-        cell: (info: CellInfo) => {
-            const item = info.row.original;
-            const actions = [];
-
-            // Go to Panel button
-            actions.push(
-                h(
-                    'button',
-                    {
-                        class: 'p-1 text-blue-400 hover:text-blue-300 transition-colors',
-                        title: 'Go to Panel',
-                        onClick: () => goToPanel(item),
-                    },
-                    [h(ExternalLinkIcon, { class: 'h-4 w-4' })],
-                ),
-            );
-
-            // Suspend/Unsuspend button
-            actions.push(
-                h(
-                    'button',
-                    {
-                        class: 'p-1 text-yellow-400 hover:text-yellow-300 transition-colors',
-                        title: item.attributes.suspended ? 'Unsuspend' : 'Suspend',
-                        onClick: () => toggleSuspend(item),
-                    },
-                    [h(PauseIcon, { class: 'h-4 w-4' })],
-                ),
-            );
-
-            // Delete button
-            actions.push(
-                h(
-                    'button',
-                    {
-                        class: 'p-1 text-red-400 hover:text-red-300 transition-colors',
-                        title: 'Delete',
-                        onClick: () => confirmDelete(item),
-                    },
-                    [h(TrashIcon, { class: 'h-4 w-4' })],
-                ),
-            );
-
-            return h('div', { class: 'flex space-x-2' }, actions);
-        },
-    },
-];
 
 // Fetch servers from API
 const fetchServers = async () => {
     loading.value = true;
     try {
-        const response = await ServerList.getList();
+        const response = await ServerList.getList(pagination.value.page, pagination.value.limit);
         if (response.success) {
-            // Check if response has the expected structure
             if (response.servers && response.servers.data) {
-                servers.value = response.servers.data;
-                // Update stats based on server status
+                servers.value = response.servers.data as Server[];
                 stats.value = {
-                    total: response.servers.meta.pagination.total,
+                    total: response.pagination?.total ?? response.servers.meta.pagination.total,
                     suspended: servers.value.filter((item) => item.attributes.suspended).length,
                 };
+                if (response.pagination) {
+                    pagination.value = response.pagination;
+                } else if (response.servers?.meta?.pagination) {
+                    const p = response.servers.meta.pagination;
+                    pagination.value = {
+                        page: p.current_page,
+                        limit: p.per_page,
+                        total: p.total,
+                        pages: p.total_pages,
+                        has_more: p.current_page < p.total_pages,
+                    };
+                }
             } else {
-                console.error('Invalid server data structure:', response);
                 servers.value = [];
-                stats.value = {
-                    total: 0,
-                    suspended: 0,
-                };
+                stats.value = { total: 0, suspended: 0 };
             }
         } else {
-            console.error('Failed to fetch servers:', response);
             servers.value = [];
-            stats.value = {
-                total: 0,
-                suspended: 0,
-            };
+            stats.value = { total: 0, suspended: 0 };
         }
     } catch (error) {
         console.error('Error fetching servers:', error);
         servers.value = [];
-        stats.value = {
-            total: 0,
-            suspended: 0,
-        };
+        stats.value = { total: 0, suspended: 0 };
     } finally {
         loading.value = false;
     }
+};
+
+const changePage = async (newPage: number) => {
+    if (newPage < 1 || newPage === pagination.value.page) return;
+    pagination.value.page = newPage;
+    await fetchServers();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+const changePageSize = async (val: string) => {
+    const size = Number(val);
+    if (!Number.isFinite(size) || size <= 0) return;
+    pagination.value.limit = size;
+    pagination.value.page = 1;
+    await fetchServers();
 };
 
 const goToCreation = () => {
@@ -342,30 +341,15 @@ const toggleSuspend = async (item: Server) => {
         const response = await ServerList.toggleSuspend(item.attributes.id);
         if (response.success) {
             playSuccess();
-            Swal.fire({
-                title: 'Success',
-                text: `Server has been ${item.attributes.suspended ? 'unsuspended' : 'suspended'}`,
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false,
-            });
             await fetchServers();
         } else {
             playError();
-            Swal.fire({
-                title: 'Error',
-                text: response.message || 'Failed to toggle suspend status',
-                icon: 'error',
-            });
+            Swal.fire({ title: 'Error', text: response.message || 'Failed to toggle suspend status', icon: 'error' });
         }
     } catch (error) {
         console.error('Error toggling suspend status:', error);
         playError();
-        Swal.fire({
-            title: 'Error',
-            text: 'An unexpected error occurred',
-            icon: 'error',
-        });
+        Swal.fire({ title: 'Error', text: 'An unexpected error occurred', icon: 'error' });
     }
 };
 
@@ -383,21 +367,10 @@ const confirmDelete = (item: Server) => {
             const response = await ServerList.deleteServer(item.attributes.id);
             if (response.success) {
                 playSuccess();
-                Swal.fire({
-                    title: 'Success',
-                    text: 'Server deleted successfully',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false,
-                });
                 await fetchServers();
             } else {
                 playError();
-                Swal.fire({
-                    title: 'Error',
-                    text: response.message || 'Failed to delete server',
-                    icon: 'error',
-                });
+                Swal.fire({ title: 'Error', text: response.message || 'Failed to delete server', icon: 'error' });
             }
         }
     });

@@ -335,4 +335,44 @@ class ServerQueue extends Database
             return false;
         }
     }
+
+    /**
+     * Get paginated server queue items.
+     *
+     * @return array{items: array<int, array<string,mixed>>, total: int}
+     */
+    public static function getPaginated(int $page = 1, int $limit = 20): array
+    {
+        try {
+            $page = max(1, $page);
+            $limit = max(1, min(100, $limit));
+            $offset = ($page - 1) * $limit;
+
+            $dbConn = Database::getPdoConnection();
+
+            $countStmt = $dbConn->prepare('SELECT COUNT(*) as cnt FROM ' . self::getTableName() . ' WHERE deleted = "false"');
+            $countStmt->execute();
+            $total = (int) $countStmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
+
+            $query = 'SELECT * FROM ' . self::getTableName() . ' WHERE deleted = "false" ORDER BY id DESC LIMIT :limit OFFSET :offset';
+            $stmt = $dbConn->prepare($query);
+            $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+            $stmt->execute();
+
+            $items = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            return [
+                'items' => $items,
+                'total' => $total,
+            ];
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get paginated server queue items: ' . $e->getMessage());
+
+            return [
+                'items' => [],
+                'total' => 0,
+            ];
+        }
+    }
 }

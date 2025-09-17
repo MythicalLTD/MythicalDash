@@ -50,7 +50,26 @@ $router->get('/api/admin/server-queue', function (): void {
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SERVER_QUEUE_LIST, $session);
-    $serverQueue = ServerQueue::getAll();
+
+    // Pagination params
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+    $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 20;
+
+    if ($page < 1) {
+        $page = 1;
+    }
+
+    $maxLimit = 100;
+    if ($limit < 1) {
+        $limit = 20;
+    } elseif ($limit > $maxLimit) {
+        $limit = $maxLimit;
+    }
+
+    $paginated = ServerQueue::getPaginated($page, $limit);
+    $serverQueue = $paginated['items'] ?? [];
+    $total = (int) ($paginated['total'] ?? 0);
+
     foreach ($serverQueue as $key => $value) {
         $serverQueue[$key]['location'] = Locations::get($value['location']);
         $serverQueue[$key]['nest'] = EggCategories::get($value['nest']);
@@ -73,8 +92,18 @@ $router->get('/api/admin/server-queue', function (): void {
             ]
         );
     }
+
+    $totalPages = $limit > 0 ? (int) ceil($total / $limit) : 0;
+
     $appInstance->OK('Server queue retrieved successfully.', [
         'server_queue' => $serverQueue,
+        'pagination' => [
+            'page' => $page,
+            'limit' => $limit,
+            'total' => $total,
+            'pages' => $totalPages,
+            'has_more' => $page < $totalPages,
+        ],
     ]);
 });
 
@@ -265,6 +294,11 @@ $router->post('/api/admin/server-queue/(.*)/delete', function (string $id): void
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SERVER_QUEUE_DELETE, $session);
     $serverQueueExists = ServerQueue::exists($id);
     if ($serverQueueExists) {
+        // Block deletion for completed items
+        $item = ServerQueue::getById((int) $id);
+        if (isset($item['status']) && $item['status'] === 'completed') {
+            $appInstance->BadRequest('Cannot delete a completed queue item.', ['error_code' => 'SERVER_QUEUE_COMPLETED_CANNOT_DELETE']);
+        }
         global $eventManager;
         $eventManager->emit(ServerQueueEvent::onServerQueueDeleted(), [
             'id' => $id,

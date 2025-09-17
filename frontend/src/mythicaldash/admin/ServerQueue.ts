@@ -4,8 +4,9 @@ class ServerQueue {
      *
      * @returns Promise with all server queue items
      */
-    public static async getServerQueue() {
-        const response = await fetch('/api/admin/server-queue', {
+    public static async getServerQueue(page: number = 1, limit: number = 20) {
+        const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+        const response = await fetch(`/api/admin/server-queue?${params.toString()}`, {
             method: 'GET',
         });
         return await response.json();
@@ -78,17 +79,15 @@ class ServerQueue {
     }
 
     /**
-     * Update a server queue item's status
+     * Update status of a server queue item by ID
      *
      * @param id The ID of the server queue item to update
-     * @param status The new status (pending, building, failed)
-     *
-     * @returns Promise with the response
+     * @param status The status to update to
+     * @returns Promise with the updated server queue item
      */
     public static async updateServerQueueItemStatus(id: number, status: 'pending' | 'building' | 'failed') {
         const formData = new FormData();
         formData.append('status', status);
-
         const response = await fetch(`/api/admin/server-queue/${id}/update-status`, {
             method: 'POST',
             body: formData,
@@ -97,11 +96,10 @@ class ServerQueue {
     }
 
     /**
-     * Delete a server queue item
+     * Delete a server queue item by ID
      *
      * @param id The ID of the server queue item to delete
-     *
-     * @returns Promise with the response
+     * @returns Promise with the deleted server queue item
      */
     public static async deleteServerQueueItem(id: number) {
         const response = await fetch(`/api/admin/server-queue/${id}/delete`, {
@@ -125,9 +123,7 @@ class ServerQueue {
     }
 
     /**
-     * Get server queue statistics
-     *
-     * @returns Promise with the statistics
+     * Get queue stats
      */
     public static async getServerQueueStats() {
         const response = await fetch('/api/admin/server-queue/stats', {

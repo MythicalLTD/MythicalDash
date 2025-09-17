@@ -23,14 +23,12 @@ class ServerCreationJob implements TimeTask
 
 	public function run()
 	{
-		$cron = new Cron('server-schedule-processor', '1M');
+		$cron = new Cron('server-deploy', '1M');
 		try {
 			$cron->runIfDue(function () {
 			$app = \MythicalDash\App::getInstance(false, true);
 			$logger = $app->getLogger();
 			$chat = new \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi;
-			$chat->sendOutputWithNewLine("&aServer creation job started");
-			self::logMessage("Server creation job started");
 
 			// Get all pending servers from the queue
 			$serversQ = ServerQueue::getAll();
@@ -39,18 +37,20 @@ class ServerCreationJob implements TimeTask
 			});
 
 			if (empty($pendingServers)) {
+				TimedTask::markRun("server-deploy", true, "Server creation job completed with no servers to process");
 				return;
 			}
 
 			foreach ($pendingServers as $server) {
 				self::processServer($server, $app, $logger, $chat);
 			}
-			TimedTask::markRun("server-schedule-processor", true, "Server creation job completed with " . count($pendingServers) . " servers processed");
+			TimedTask::markRun("server-deploy", true, "Server creation job completed with " . count($pendingServers) . " servers processed");
+
 		}, true);
 		} catch (\Exception $e) {
 			$app = \MythicalDash\App::getInstance(false, true);
 			$app->getLogger()->error('Failed to run server creation job: ' . $e->getMessage());
-			TimedTask::markRun("server-schedule-processor", false, "Server creation job failed: " . $e->getMessage());
+			TimedTask::markRun("server-deploy", false, "Server creation job failed: " . $e->getMessage());
 		}
 	}
 
@@ -105,7 +105,7 @@ class ServerCreationJob implements TimeTask
 				$chat->sendOutputWithNewLine(print_r($eggData, true));
 				$chat->sendOutputWithNewLine(print_r($category, true));
 				ServerQueue::updateStatus($id, 'failed');
-				TimedTask::markRun("service-worker", false, "Server creation job failed for server " . $id . " because location, egg, or nest not found");
+				TimedTask::markRun("server-deploy", false, "Server creation job failed for server " . $id . " because location, egg, or nest not found");
 			} else {
 				$serverOwnerToken = User::getTokenFromUUID($userUUID);
 				$pterodactylUserId = User::getInfo($serverOwnerToken, UserColumns::PTERODACTYL_USER_ID, false);
@@ -135,7 +135,7 @@ class ServerCreationJob implements TimeTask
 					$chat,
 					$userUUID
 				);
-				TimedTask::markRun("service-worker", true, "Server creation job completed for server " . $id);
+				TimedTask::markRun("server-deploy", true, "Server creation job completed for server " . $id);
 			}
 		} catch (\Exception $e) {
 			$errorMsg = "Error creating server {$id}: " . $e->getMessage();
@@ -146,7 +146,7 @@ class ServerCreationJob implements TimeTask
 
 			// Save failure logs
 			ServerQueueLogs::logFailure($id, self::$logs, $e->getMessage());
-			TimedTask::markRun("service-worker", false, "Server creation job failed for server " . $id . " because " . $e->getMessage());
+			TimedTask::markRun("server-deploy", false, "Server creation job failed for server " . $id . " because " . $e->getMessage());
 		}
 	}
 
@@ -159,7 +159,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cUser no longer exists: " . $userUUID);
 			$chat->sendOutputWithNewLine($servePrefix . "&cUser no longer exists: " . $userUUID);
 			ServerQueue::updateStatus($id, 'failed');
-			TimedTask::markRun("service-worker", false, "Server creation job failed for server " . $id . " because user no longer exists: " . $userUUID);
+			TimedTask::markRun("server-deploy", false, "Server creation job failed for server " . $id . " because user no longer exists: " . $userUUID);
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -178,7 +178,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cNest no longer exists: " . $nest);
 			$chat->sendOutputWithNewLine($servePrefix . "&cNest no longer exists: " . $nest);
 			ServerQueue::updateStatus($id, 'failed');
-			TimedTask::markRun("service-worker", false, "Server creation job failed for server " . $id . " because nest no longer exists: " . $nest);
+			TimedTask::markRun("server-deploy", false, "Server creation job failed for server " . $id . " because nest no longer exists: " . $nest);
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -197,7 +197,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cEgg no longer exists: " . $egg);
 			$chat->sendOutputWithNewLine($servePrefix . "&cEgg no longer exists: " . $egg);
 			ServerQueue::updateStatus($id, 'failed');
-			TimedTask::markRun("service-worker", false, "Server creation job failed for server " . $id . " because egg no longer exists: " . $egg);
+			TimedTask::markRun("server-deploy", false, "Server creation job failed for server " . $id . " because egg no longer exists: " . $egg);
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -216,7 +216,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cLocation no longer exists: " . $location);
 			$chat->sendOutputWithNewLine($servePrefix . "&cLocation no longer exists: " . $location);
 			ServerQueue::updateStatus($id, 'failed');
-			TimedTask::markRun("service-worker", false, "Server creation job failed for server " . $id . " because location no longer exists: " . $location);
+			TimedTask::markRun("server-deploy", false, "Server creation job failed for server " . $id . " because location no longer exists: " . $location);
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -240,7 +240,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cEgg no longer exists in Pterodactyl: " . $eggId);
 			$chat->sendOutputWithNewLine($servePrefix . "&cEgg no longer exists in Pterodactyl: " . $eggId);
 			ServerQueue::updateStatus($id, 'failed');
-			TimedTask::markRun("service-worker", false, "Server creation job failed for server " . $id . " because egg no longer exists in Pterodactyl: " . $eggId);
+			TimedTask::markRun("server-deploy", false, "Server creation job failed for server " . $id . " because egg no longer exists in Pterodactyl: " . $eggId);
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -259,7 +259,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cLocation no longer exists in Pterodactyl: " . $locationId);
 			$chat->sendOutputWithNewLine($servePrefix . "&cLocation no longer exists in Pterodactyl: " . $locationId);
 			ServerQueue::updateStatus($id, 'failed');
-			TimedTask::markRun("service-worker", false, "Server creation job failed for server " . $id . " because location no longer exists in Pterodactyl: " . $locationId);
+			TimedTask::markRun("server-deploy", false, "Server creation job failed for server " . $id . " because location no longer exists in Pterodactyl: " . $locationId);
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -278,7 +278,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cNest no longer exists in Pterodactyl: " . $nestId);
 			$chat->sendOutputWithNewLine($servePrefix . "&cNest no longer exists in Pterodactyl: " . $nestId);
 			ServerQueue::updateStatus($id, 'failed');
-			TimedTask::markRun("service-worker", false, "Server creation job failed for server " . $id . " because nest no longer exists in Pterodactyl: " . $nestId);
+			TimedTask::markRun("server-deploy", false, "Server creation job failed for server " . $id . " because nest no longer exists in Pterodactyl: " . $nestId);
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -297,7 +297,7 @@ class ServerCreationJob implements TimeTask
 			self::logMessage($servePrefix . "&cUser no longer exists in Pterodactyl: " . $pterodactylUserId);
 			$chat->sendOutputWithNewLine($servePrefix . "&cUser no longer exists in Pterodactyl: " . $pterodactylUserId);
 			ServerQueue::updateStatus($id, 'failed');
-			TimedTask::markRun("service-worker", false, "Server creation job failed for server " . $id . " because user no longer exists in Pterodactyl: " . $pterodactylUserId);
+			TimedTask::markRun("server-deploy", false, "Server creation job failed for server " . $id . " because user no longer exists in Pterodactyl: " . $pterodactylUserId);
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -412,7 +412,7 @@ class ServerCreationJob implements TimeTask
 				$chat->sendOutputWithNewLine($servePrefix . "&cFailed to create server: " . json_encode($response));
 				self::logMessage($servePrefix . "&cFailed to create server: " . json_encode($response));
 				ServerQueue::updateStatus($id, 'failed');
-				TimedTask::markRun("service-worker", false, "Server creation job failed for server " . $id . " because failed to create server: " . json_encode($response));
+				TimedTask::markRun("server-deploy", false, "Server creation job failed for server " . $id . " because failed to create server: " . json_encode($response));
 				// Save failure logs
 				if (self::$logId) {
 					ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);
@@ -429,7 +429,7 @@ class ServerCreationJob implements TimeTask
 			$chat->sendOutputWithNewLine($servePrefix . "&cError during server creation: " . $e->getMessage());
 			self::logMessage($servePrefix . "&cError during server creation: " . $e->getMessage());
 			ServerQueue::updateStatus($id, 'failed');
-			TimedTask::markRun("service-worker", false, "Server creation job failed for server " . $id . " because error during server creation: " . $e->getMessage());		
+			TimedTask::markRun("server-deploy", false, "Server creation job failed for server " . $id . " because error during server creation: " . $e->getMessage());		
 			// Save failure logs
 			if (self::$logId) {
 				ServerQueueLogs::appendLogs(self::$logId, "ERROR: " . $errorMsg);

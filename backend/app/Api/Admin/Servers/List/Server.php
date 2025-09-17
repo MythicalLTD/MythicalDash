@@ -118,10 +118,26 @@ $router->get('/api/admin/servers/list', function (): void {
     $session = new MythicalDash\Chat\User\Session($appInstance);
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_SERVERS_LIST, $session);
 
-    $servers = MythicalDash\Hooks\Pterodactyl\Admin\Servers::getAllServers();
+    // Pagination params
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+    $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 20;
+
+    if ($page < 1) {
+        $page = 1;
+    }
+
+    $maxLimit = 100;
+    if ($limit < 1) {
+        $limit = 20;
+    } elseif ($limit > $maxLimit) {
+        $limit = $maxLimit;
+    }
+
+    $servers = MythicalDash\Hooks\Pterodactyl\Admin\Servers::getAllServers($page, $limit);
     $serversWithInfo = [];
     if (isset($servers['data'])) {
-        foreach ($servers['data'] as $server) {
+        $allServers = $servers['data'];
+        foreach ($allServers as $server) {
             // Only include essential data for the frontend
             $serverData = [
                 'object' => $server['object'],
@@ -166,8 +182,29 @@ $router->get('/api/admin/servers/list', function (): void {
         }
         $servers['data'] = $serversWithInfo;
 
+        // Build pagination info from Pterodactyl API response if available
+        $paginationMeta = $servers['meta']['pagination'] ?? null;
+        if (is_array($paginationMeta)) {
+            $currentPage = (int) ($paginationMeta['current_page'] ?? $page);
+            $perPage = (int) ($paginationMeta['per_page'] ?? $limit);
+            $totalCount = (int) ($paginationMeta['total'] ?? 0);
+            $totalPages = (int) ($paginationMeta['total_pages'] ?? (($perPage > 0) ? (int) ceil($totalCount / $perPage) : 0));
+        } else {
+            $currentPage = $page;
+            $perPage = $limit;
+            $totalCount = is_array($serversWithInfo) ? count($serversWithInfo) : 0;
+            $totalPages = ($perPage > 0) ? (int) ceil($totalCount / $perPage) : 0;
+        }
+
         $appInstance->OK('Servers fetched successfully', [
             'servers' => $servers,
+            'pagination' => [
+                'page' => $currentPage,
+                'limit' => $perPage,
+                'total' => $totalCount,
+                'pages' => $totalPages,
+                'has_more' => $currentPage < $totalPages,
+            ],
         ]);
     } else {
         $appInstance->BadRequest('No servers found', ['error_code' => 'NO_SERVERS_FOUND']);

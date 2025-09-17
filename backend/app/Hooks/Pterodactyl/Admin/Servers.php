@@ -314,7 +314,7 @@ class Servers extends ServersResource
         }
     }
 
-    public static function getAllServers(): array
+    public static function getAllServers(int $page = 1, int $perPage = 250): array
     {
         $appInstance = App::getInstance(true);
 
@@ -324,7 +324,7 @@ class Servers extends ServersResource
                 App::getInstance(true)->getConfig()->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '')
             );
 
-            return $serversResource->listServers();
+            return $serversResource->listServers($page, $perPage);
         } catch (ResourceNotFoundException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getAllServers] User not found: ' . $e->getMessage(), false);
 

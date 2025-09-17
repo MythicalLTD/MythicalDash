@@ -11,6 +11,8 @@
 - BUG: Corrected problems with the versioning system.
 - BUG: Fixed a bug preventing users from banning other users.
 - BUG: Fixed https not being indexed some times!
+- BUG: Missing translations keys for j4r!
+- BUG: Broken Attachments on tickets!
 
 # New Features
 
@@ -20,6 +22,7 @@
 - Feature: Discord authentication logic was reworked. Thanks @Th3HunterGamer for the cleanup!
 - Feature: New mail templates for the dashboard!
 - Feature: Support for latest php version! 
+- Feature: Rework of all the imporntant pages (Users,Servers,Tickets) to allow more than 400 items!
 
 # Features Removed
 

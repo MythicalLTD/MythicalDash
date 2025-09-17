@@ -238,7 +238,7 @@
                     <!-- Cron Jobs Status -->
                     <div class="bg-gray-800/50 rounded-xl border border-gray-800/30">
                         <div class="p-4 border-b border-gray-800/30">
-                            <h2 class="text-lg font-medium text-white">Cron Jobs Status</h2>
+                            <h2 class="text-lg font-medium text-white">Automations Status</h2>
                         </div>
                         <div class="p-4">
                             <div v-if="cronData?.summary" class="text-sm text-gray-400 mb-4">

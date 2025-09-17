@@ -376,7 +376,7 @@ const goBackToTicketList = () => {
 
 // Function to open attachment in modal
 const openAttachmentModal = (attachment: Attachment) => {
-    selectedAttachment.value = Settings.getSetting('app_url') + '/attachments/' + attachment.file;
+    selectedAttachment.value = 'https://' + Settings.getSetting('app_url') + '/attachments/' + attachment.file;
     isAttachmentModalOpen.value = true;
 };
 
@@ -576,7 +576,12 @@ const isImage = (filename: string): boolean => {
                                     class="w-32 h-32 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity border border-gray-700"
                                 >
                                     <img
-                                        :src="Settings.getSetting('app_url') + '/attachments/' + attachment.file"
+                                        :src="
+                                            'https://' +
+                                            Settings.getSetting('app_url') +
+                                            '/attachments/' +
+                                            attachment.file
+                                        "
                                         alt="Attachment"
                                         class="w-full h-full object-cover"
                                     />
@@ -590,7 +595,9 @@ const isImage = (filename: string): boolean => {
                                 <!-- File Link (if not an image) -->
                                 <a
                                     v-else
-                                    :href="Settings.getSetting('app_url') + '/attachments/' + attachment.file"
+                                    :href="
+                                        'https://' + Settings.getSetting('app_url') + '/attachments/' + attachment.file
+                                    "
                                     target="_blank"
                                     class="flex items-center gap-2 p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
                                 >

@@ -318,4 +318,64 @@ class Tickets extends Database
     {
         return self::getById($id);
     }
+
+    /**
+     * Get paginated tickets with optional search across title, description, and status.
+     *
+     * @return array{items: array<int, array<string,mixed>>, total: int}
+     */
+    public static function getPaginatedWithSearch(int $page = 1, int $limit = 20, ?string $search = null, ?string $status = null, ?string $priority = null): array
+    {
+        try {
+            $page = max(1, $page);
+            $limit = max(1, min(100, $limit));
+            $offset = ($page - 1) * $limit;
+
+            $dbConn = self::getPdoConnection();
+            $where = 'deleted = "false"';
+            $params = [];
+            if ($search !== null && $search !== '') {
+                $where .= ' AND (title LIKE :q OR description LIKE :q OR status LIKE :q OR priority LIKE :q)';
+                $params[':q'] = '%' . $search . '%';
+            }
+            if ($status !== null && $status !== '') {
+                $where .= ' AND status = :status';
+                $params[':status'] = $status;
+            }
+            if ($priority !== null && $priority !== '') {
+                $where .= ' AND priority = :priority';
+                $params[':priority'] = $priority;
+            }
+
+            $countSql = 'SELECT COUNT(*) as cnt FROM ' . self::getTableName() . ' WHERE ' . $where;
+            $countStmt = $dbConn->prepare($countSql);
+            foreach ($params as $k => $v) {
+                $countStmt->bindValue($k, $v);
+            }
+            $countStmt->execute();
+            $total = (int) $countStmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
+
+            $sql = 'SELECT * FROM ' . self::getTableName() . ' WHERE ' . $where . ' ORDER BY id DESC LIMIT :limit OFFSET :offset';
+            $stmt = $dbConn->prepare($sql);
+            foreach ($params as $k => $v) {
+                $stmt->bindValue($k, $v);
+            }
+            $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+            $stmt->execute();
+            $items = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            return [
+                'items' => $items,
+                'total' => $total,
+            ];
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get paginated tickets: ' . $e->getMessage());
+
+            return [
+                'items' => [],
+                'total' => 0,
+            ];
+        }
+    }
 }

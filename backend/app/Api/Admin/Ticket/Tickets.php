@@ -42,15 +42,30 @@ $router->get('/api/admin/tickets', function (): void {
     $appInstance->allowOnlyGET();
     $session = new MythicalDash\Chat\User\Session($appInstance);
     PermissionMiddleware::handle($appInstance, Permissions::ADMIN_TICKETS_LIST, $session);
-    $tickets = Tickets::getAllTickets(9500);
+
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+    $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 20;
+    $search = isset($_GET['search']) ? trim((string) $_GET['search']) : null;
+    $status = isset($_GET['status']) ? trim((string) $_GET['status']) : null;
+    $priority = isset($_GET['priority']) ? trim((string) $_GET['priority']) : null;
+
+    if ($page < 1) {
+        $page = 1;
+    }
+    $maxLimit = 100;
+    if ($limit < 1) {
+        $limit = 20;
+    } elseif ($limit > $maxLimit) {
+        $limit = $maxLimit;
+    }
+
+    $result = Tickets::getPaginatedWithSearch($page, $limit, $search, $status, $priority);
+    $tickets = $result['items'] ?? [];
 
     // Process tickets to include user information instead of just UUID
     foreach ($tickets as &$ticket) {
-        // Get user token from UUID
         $userToken = User::getTokenFromUUID($ticket['user']);
-
         if ($userToken) {
-            // Get user information
             $userInfo = User::getInfoArray($userToken, [
                 UserColumns::USERNAME,
                 UserColumns::FIRST_NAME,
@@ -61,8 +76,6 @@ $router->get('/api/admin/tickets', function (): void {
                 UserColumns::FIRST_NAME,
                 UserColumns::LAST_NAME,
             ]);
-
-            // Add user information to ticket
             $ticket['user_details'] = [
                 'uuid' => $ticket['user'],
                 'username' => $userInfo[UserColumns::USERNAME] ?? 'Unknown',
@@ -81,8 +94,18 @@ $router->get('/api/admin/tickets', function (): void {
         }
     }
 
+    $total = (int) ($result['total'] ?? 0);
+    $totalPages = $limit > 0 ? (int) ceil($total / $limit) : 0;
+
     $appInstance->OK('Tickets', [
         'tickets' => $tickets,
+        'pagination' => [
+            'page' => $page,
+            'limit' => $limit,
+            'total' => $total,
+            'pages' => $totalPages,
+            'has_more' => $page < $totalPages,
+        ],
     ]);
 
 });

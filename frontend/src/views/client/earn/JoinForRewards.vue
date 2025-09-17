@@ -39,7 +39,7 @@
 
                                     <div v-if="!discordLinked" class="mt-3 text-center">
                                         <p class="text-sm text-amber-400">
-                                            {{ t('j4r.pages.alerts.error.discord_not_linked') }}
+                                            {{ t('j4r.pages.index.alerts.error.discord_not_linked') }}
                                         </p>
                                     </div>
                                 </div>
@@ -346,7 +346,7 @@ const loadJ4RData = async () => {
         }
     } catch (error) {
         console.error('Failed to load J4R data:', error);
-        showStatusMessage(t('j4r.pages.alerts.error.generic'), 'error');
+        showStatusMessage(t('j4r.pages.index.alerts.error.generic'), 'error');
     } finally {
         isLoading.value = false;
     }
@@ -364,7 +364,7 @@ const claimRewards = async () => {
         window.location.href = '/api/user/j4r/check';
     } catch (error) {
         console.error('Failed to claim rewards:', error);
-        showStatusMessage(t('j4r.pages.alerts.error.claim_failed'), 'error');
+        showStatusMessage(t('j4r.pages.index.alerts.error.claim_failed'), 'error');
     } finally {
         isClaiming.value = false;
     }
@@ -385,7 +385,7 @@ const checkUrlParams = () => {
     const error = urlParams.get('error');
 
     if (success === 'j4r_check_completed') {
-        showStatusMessage(t('j4r.pages.alerts.success.rewards_claimed'), 'success');
+        showStatusMessage(t('j4r.pages.index.alerts.success.rewards_claimed'), 'success');
 
         // Clean up URL
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -395,23 +395,23 @@ const checkUrlParams = () => {
             loadJ4RData();
         }, 1000);
     } else if (error) {
-        let errorMessage = t('j4r.pages.alerts.error.generic');
+        let errorMessage = t('j4r.pages.index.alerts.error.generic');
 
         switch (error) {
             case 'discord_not_enabled':
-                errorMessage = t('j4r.pages.alerts.error.discord_not_enabled');
+                errorMessage = t('j4r.pages.index.alerts.error.discord_not_enabled');
                 break;
             case 'discord_not_linked':
-                errorMessage = t('j4r.pages.alerts.error.discord_not_linked');
+                errorMessage = t('j4r.pages.index.alerts.error.discord_not_linked');
                 break;
             case 'discord_token_failed':
-                errorMessage = t('j4r.pages.alerts.error.check_failed');
+                errorMessage = t('j4r.pages.index.alerts.error.check_failed');
                 break;
             case 'discord_user_failed':
-                errorMessage = t('j4r.pages.alerts.error.check_failed');
+                errorMessage = t('j4r.pages.index.alerts.error.check_failed');
                 break;
             case 'discord_user_mismatch':
-                errorMessage = t('j4r.pages.alerts.error.check_failed');
+                errorMessage = t('j4r.pages.index.alerts.error.check_failed');
                 break;
         }
 

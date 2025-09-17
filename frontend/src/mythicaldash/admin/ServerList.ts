@@ -1,6 +1,7 @@
 class ServerList {
-    public static async getList() {
-        const response = await fetch('/api/admin/servers/list', {
+    public static async getList(page: number = 1, limit: number = 20) {
+        const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+        const response = await fetch(`/api/admin/servers/list?${params.toString()}`, {
             method: 'GET',
         });
         return await response.json();
