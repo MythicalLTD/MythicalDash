@@ -47,361 +47,396 @@ use MythicalDash\Plugins\Events\Events\ServerEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\ServerQueueEvent;
 
+// Th3Hunter FIX: Add CSRF protection to all POST endpoints
+function validateCSRFToken(Session $session): bool {
+    if (!isset($_POST['csrf_token']) || empty($_POST['csrf_token'])) {
+        return false;
+    }
+    
+    return $session->validateCSRFToken($_POST['csrf_token']);
+}
+
 // Update server
 $router->post('/api/user/server/(.*)/update', function (string $id): void {
     App::init();
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new Session($appInstance);
+    
+    // Th3Hunter FIX: Validate CSRF token to prevent CSRF attacks
+    if (!validateCSRFToken($session)) {
+        $appInstance->Forbidden('Invalid CSRF token', ['error_code' => 'INVALID_CSRF_TOKEN']);
+        return;
+    }
+    
     $accountToken = $session->SESSION_KEY;
     $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
 
-    // Get the server first to check ownership
-    // Get server details
-    $server = Servers::getServerPterodactylDetails((int) $id);
-
-    if (!$server) {
-        $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
-
-        return;
-    }
-
-    $pterodactylUserId = $session->getInfo(UserColumns::PTERODACTYL_USER_ID, false);
-    $owner = $server['attributes']['user'];
-    if ($owner != $pterodactylUserId) {
-        $appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
-
-        return;
-    }
-
-    // Add additional server information
-    $locationId = $server['attributes']['relationships']['location']['attributes']['id'];
-    $location = Locations::getLocationByPterodactylLocationId($locationId);
-    $server['location'] = $location;
-
-    $eggId = $server['attributes']['relationships']['egg']['attributes']['id'];
-    $egg = Eggs::getByPterodactylEggId($eggId);
-    $server['service'] = $egg;
-
-    $nestId = $server['attributes']['relationships']['nest']['attributes']['id'];
-    $nest = EggCategories::getByPterodactylNestId($nestId);
-    $server['category'] = $nest;
-    $allocation = $server['attributes']['allocation'];
-
-    // Validate input data
-    if (isset($_POST['name']) && !empty($_POST['name'])) {
-        $name = $_POST['name'];
-    } else {
-        $appInstance->BadRequest('Name is required', ['error_code' => 'NAME_REQUIRED']);
-
-        return;
-    }
-    if (isset($_POST['description']) && !empty($_POST['description'])) {
-        $description = $_POST['description'];
-    } else {
-        $appInstance->BadRequest('Description is required', ['error_code' => 'DESCRIPTION_REQUIRED']);
-
-        return;
-    }
-    // Validate memory field
-    if (!isset($_POST['memory'])) {
-        $appInstance->BadRequest('Memory is required', ['error_code' => 'MEMORY_REQUIRED']);
-
-        return;
-    }
-
-    if (!is_numeric($_POST['memory'])) {
-        $appInstance->BadRequest('Memory must be a numeric value', ['error_code' => 'MEMORY_INVALID_TYPE']);
-
-        return;
-    }
-
-    $memory = (int) $_POST['memory'];
-
-    // Validate that memory is not negative
-    if ($memory < 0) {
-        $appInstance->BadRequest('Memory cannot be a negative number', ['error_code' => 'MEMORY_NEGATIVE']);
-
-        return;
-    }
-
-    if (isset($_POST['cpu']) && !empty($_POST['cpu'])) {
-        $cpu = (int) $_POST['cpu'];
-    } else {
-        $appInstance->BadRequest('CPU is required', ['error_code' => 'CPU_REQUIRED']);
-
-        return;
-    }
-
-    // Validate that CPU is not negative
-    if ($cpu < 0) {
-        $appInstance->BadRequest('CPU cannot be a negative number', ['error_code' => 'CPU_NEGATIVE']);
-
-        return;
-    }
-    if (isset($_POST['disk']) && !empty($_POST['disk'])) {
-        $disk = (int) $_POST['disk'];
-    } else {
-        $appInstance->BadRequest('Disk is required', ['error_code' => 'DISK_REQUIRED']);
-
-        return;
-    }
-
-    // Validate that disk is not negative
-    if ($disk < 0) {
-        $appInstance->BadRequest('Disk cannot be a negative number', ['error_code' => 'DISK_NEGATIVE']);
-
-        return;
-    }
-    if (isset($_POST['databases']) && !empty($_POST['databases'])) {
-        $databases = max(0, intval($_POST['databases']));
-    } else {
-        // Servers may not require databases
-        $databases = 0;
-    }
-    // Validate that databases is not negative
-    if ($databases < 0) {
-        $appInstance->BadRequest('Databases cannot be a negative number', ['error_code' => 'DATABASES_NEGATIVE']);
-
-        return;
-    }
-    // Validate backups field
-    if (!isset($_POST['backups'])) {
-        $appInstance->BadRequest('Backups is required', ['error_code' => 'BACKUPS_REQUIRED']);
-
-        return;
-    }
-
-    if (!is_numeric($_POST['backups'])) {
-        $appInstance->BadRequest('Backups must be a numeric value', ['error_code' => 'BACKUPS_INVALID_TYPE']);
-
-        return;
-    }
-
-    $backups = (int) $_POST['backups'];
-
-    // Validate that backups is not negative
-    if ($backups < 0) {
-        $appInstance->BadRequest('Backups cannot be a negative number', ['error_code' => 'BACKUPS_NEGATIVE']);
-
-        return;
-    }
-    if (isset($_POST['allocations']) && !empty($_POST['allocations'])) {
-        $allocations = $_POST['allocations'];
-    } else {
-        $appInstance->BadRequest('Allocations is required', ['error_code' => 'ALLOCATIONS_REQUIRED']);
-
-        return;
-    }
-
-    // Validate that allocations is not negative
-    if ($allocations < 0) {
-        $appInstance->BadRequest('Allocations cannot be a negative number', ['error_code' => 'ALLOCATIONS_NEGATIVE']);
-
-        return;
-    }
-
-    // Validate required fields
-    if (empty($name)) {
-        $appInstance->BadRequest('Name is required', ['error_code' => 'NAME_REQUIRED']);
-
-        return;
-    }
-
-    // Validate resource limits
-    if ($memory < 256) {
-        $appInstance->BadRequest('Memory must be at least 256MB', ['error_code' => 'MEMORY_MINIMUM']);
-
-        return;
-    }
-
-    if ($cpu < 5) {
-        $appInstance->BadRequest('CPU must be at least 5%', ['error_code' => 'CPU_MINIMUM']);
-
-        return;
-    }
-
-    if ($disk < 256) {
-        $appInstance->BadRequest('Disk must be at least 256MB', ['error_code' => 'DISK_MINIMUM']);
-
-        return;
-    }
-
-    if ($allocations < 1) {
-        $appInstance->BadRequest('Allocations must be at least 1', ['error_code' => 'ALLOCATIONS_MINIMUM']);
-
-        return;
-    }
-
-    $resources = Servers::getUserTotalResourcesUsage($pterodactylUserId);
-    $available_resources = User::getInfoArray($accountToken, [
-        UserColumns::MEMORY_LIMIT,
-        UserColumns::DISK_LIMIT,
-        UserColumns::CPU_LIMIT,
-        UserColumns::DATABASE_LIMIT,
-        UserColumns::BACKUP_LIMIT,
-        UserColumns::ALLOCATION_LIMIT,
-        UserColumns::SERVER_LIMIT,
-    ], []);
-
-    // Get current server resources to calculate the difference
-    $currentServerResources = [
-        'memory' => $server['attributes']['limits']['memory'],
-        'disk' => $server['attributes']['limits']['disk'],
-        'cpu' => $server['attributes']['limits']['cpu'],
-        'databases' => $server['attributes']['feature_limits']['databases'],
-        'backups' => $server['attributes']['feature_limits']['backups'],
-        'allocations' => $server['attributes']['feature_limits']['allocations'],
-    ];
-
-    // Calculate resource difference (new - current)
-    $resourceDifference = [
-        'memory' => $memory - $currentServerResources['memory'],
-        'disk' => $disk - $currentServerResources['disk'],
-        'cpu' => $cpu - $currentServerResources['cpu'],
-        'databases' => $databases - $currentServerResources['databases'],
-        'backups' => $backups - $currentServerResources['backups'],
-        'allocations' => $allocations - $currentServerResources['allocations'],
-    ];
-
-    // Check if the update would exceed available resources
-    if ($resourceDifference['memory'] > 0) {
-        $freeMemory = $available_resources[UserColumns::MEMORY_LIMIT] - $resources['memory'];
-        if ($resourceDifference['memory'] > $freeMemory) {
-            $appInstance->BadRequest('This update would exceed your maximum memory limit', [
-                'error_code' => 'MAX_MEMORY_LIMIT',
-                'required' => $available_resources[UserColumns::MEMORY_LIMIT],
-                'current_usage' => $resources['memory'],
-                'attempted_to_add' => $resourceDifference['memory'],
-            ]);
-
-            return;
-        }
-    }
-
-    if ($resourceDifference['disk'] > 0) {
-        $freeDisk = $available_resources[UserColumns::DISK_LIMIT] - $resources['disk'];
-        if ($resourceDifference['disk'] > $freeDisk) {
-            $appInstance->BadRequest('This update would exceed your maximum disk limit', [
-                'error_code' => 'MAX_DISK_LIMIT',
-                'required' => $available_resources[UserColumns::DISK_LIMIT],
-                'current_usage' => $resources['disk'],
-                'attempted_to_add' => $resourceDifference['disk'],
-            ]);
-
-            return;
-        }
-    }
-
-    if ($resourceDifference['cpu'] > 0) {
-        $freeCpu = $available_resources[UserColumns::CPU_LIMIT] - $resources['cpu'];
-        if ($resourceDifference['cpu'] > $freeCpu) {
-            $appInstance->BadRequest('This update would exceed your maximum CPU limit', [
-                'error_code' => 'MAX_CPU_LIMIT',
-                'required' => $available_resources[UserColumns::CPU_LIMIT],
-                'current_usage' => $resources['cpu'],
-                'attempted_to_add' => $resourceDifference['cpu'],
-            ]);
-
-            return;
-        }
-    }
-
-    if ($resourceDifference['databases'] > 0 && $available_resources[UserColumns::DATABASE_LIMIT] >= 0) {
-        $freeDatabases = $available_resources[UserColumns::DATABASE_LIMIT] - $resources['databases'];
-        if ($resourceDifference['databases'] > $freeDatabases) {
-            $appInstance->BadRequest('This update would exceed your maximum databases limit', [
-                'error_code' => 'MAX_DATABASES_LIMIT',
-                'required' => $available_resources[UserColumns::DATABASE_LIMIT],
-                'current_usage' => $resources['databases'],
-                'attempted_to_add' => $resourceDifference['databases'],
-            ]);
-
-            return;
-        }
-    }
-
-    if ($resourceDifference['backups'] > 0 && $available_resources[UserColumns::BACKUP_LIMIT] >= 0) {
-        $freeBackups = $available_resources[UserColumns::BACKUP_LIMIT] - $resources['backups'];
-        if ($resourceDifference['backups'] > $freeBackups) {
-            $appInstance->BadRequest('This update would exceed your maximum backups limit', [
-                'error_code' => 'MAX_BACKUPS_LIMIT',
-                'required' => $available_resources[UserColumns::BACKUP_LIMIT],
-                'current_usage' => $resources['backups'],
-                'attempted_to_add' => $resourceDifference['backups'],
-            ]);
-
-            return;
-        }
-    }
-
-    if ($resourceDifference['allocations'] > 0) {
-        $freeAllocations = $available_resources[UserColumns::ALLOCATION_LIMIT] - $resources['allocations'];
-        if ($resourceDifference['allocations'] > $freeAllocations) {
-            $appInstance->BadRequest('This update would exceed your maximum allocations limit', [
-                'error_code' => 'MAX_ALLOCATIONS_LIMIT',
-                'required' => $available_resources[UserColumns::ALLOCATION_LIMIT],
-                'current_usage' => $resources['allocations'],
-                'attempted_to_add' => $resourceDifference['allocations'],
-            ]);
-
-            return;
-        }
-    }
-
-    // Update server details
+    // Th3Hunter FIX: Use database transaction to prevent race conditions
+    $db = $appInstance->getDatabase();
+    $db->beginTransaction();
+    
     try {
-        $updateData = [
-            'allocation' => $allocation,
-            'memory' => $memory,
-            'cpu' => $cpu,
-            'swap' => 0,
-            'io' => 500,
-            'disk' => $disk,
-            'feature_limits' => [
-                'databases' => $databases,
-                'backups' => $backups,
-                'allocations' => $allocations,
-            ],
-        ];
+        // Get the server first to check ownership
+        // Get server details
+        $server = Servers::getServerPterodactylDetails((int) $id);
 
-        $details = [
-            'name' => $name,
-            'user' => $pterodactylUserId,
-            'description' => $description,
-            'external_id' => '',
-        ];
-        if (!isset($server['attributes']['id'])) {
-            $appInstance->BadRequest('Server not found', ['error_code' => 'SERVER_NOT_FOUND']);
-
+        if (!$server) {
+            $db->rollBack();
+            $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
             return;
         }
-        $serverId = $server['attributes']['id'];
-        $svAw1 = Servers::updatePterodactylServer($serverId, $updateData);
-        $svAw2 = Servers::updatePterodactylServerDetails($serverId, $details);
-        global $eventManager;
-        $eventManager->emit(ServerEvent::onServerUpdated(), [
-            'server' => $server,
-            'updateData' => $updateData,
-            'details' => $details,
-        ]);
-        UserActivities::add(
-            $session->getInfo(UserColumns::UUID, false),
-            UserActivitiesTypes::$server_update,
-            CloudFlareRealIP::getRealIP(),
-            "Updated server $serverId"
-        );
-        $appInstance->OK('Server updated successfully', [
-            'build' => $updateData,
-            'details' => $details,
-            'server' => $server,
-            'rsp' => [
-                'svAw1' => $svAw1,
-                'svAw2' => $svAw2,
-            ],
-        ]);
 
+        $pterodactylUserId = $session->getInfo(UserColumns::PTERODACTYL_USER_ID, false);
+        $owner = $server['attributes']['user'];
+        if ($owner != $pterodactylUserId) {
+            $db->rollBack();
+            $appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
+            return;
+        }
+
+        // Add additional server information
+        $locationId = $server['attributes']['relationships']['location']['attributes']['id'];
+        $location = Locations::getLocationByPterodactylLocationId($locationId);
+        $server['location'] = $location;
+
+        $eggId = $server['attributes']['relationships']['egg']['attributes']['id'];
+        $egg = Eggs::getByPterodactylEggId($eggId);
+        $server['service'] = $egg;
+
+        $nestId = $server['attributes']['relationships']['nest']['attributes']['id'];
+        $nest = EggCategories::getByPterodactylNestId($nestId);
+        $server['category'] = $nest;
+        $allocation = $server['attributes']['allocation'];
+
+        // Validate input data
+        if (isset($_POST['name']) && !empty($_POST['name'])) {
+            $name = $_POST['name'];
+        } else {
+            $db->rollBack();
+            $appInstance->BadRequest('Name is required', ['error_code' => 'NAME_REQUIRED']);
+            return;
+        }
+        if (isset($_POST['description']) && !empty($_POST['description'])) {
+            $description = $_POST['description'];
+        } else {
+            $db->rollBack();
+            $appInstance->BadRequest('Description is required', ['error_code' => 'DESCRIPTION_REQUIRED']);
+            return;
+        }
+        // Validate memory field
+        if (!isset($_POST['memory'])) {
+            $db->rollBack();
+            $appInstance->BadRequest('Memory is required', ['error_code' => 'MEMORY_REQUIRED']);
+            return;
+        }
+
+        if (!is_numeric($_POST['memory'])) {
+            $db->rollBack();
+            $appInstance->BadRequest('Memory must be a numeric value', ['error_code' => 'MEMORY_INVALID_TYPE']);
+            return;
+        }
+
+        $memory = (int) $_POST['memory'];
+
+        // Validate that memory is not negative
+        if ($memory < 0) {
+            $db->rollBack();
+            $appInstance->BadRequest('Memory cannot be a negative number', ['error_code' => 'MEMORY_NEGATIVE']);
+            return;
+        }
+
+        if (isset($_POST['cpu']) && !empty($_POST['cpu'])) {
+            $cpu = (int) $_POST['cpu'];
+        } else {
+            $db->rollBack();
+            $appInstance->BadRequest('CPU is required', ['error_code' => 'CPU_REQUIRED']);
+            return;
+        }
+
+        // Validate that CPU is not negative
+        if ($cpu < 0) {
+            $db->rollBack();
+            $appInstance->BadRequest('CPU cannot be a negative number', ['error_code' => 'CPU_NEGATIVE']);
+            return;
+        }
+        if (isset($_POST['disk']) && !empty($_POST['disk'])) {
+            $disk = (int) $_POST['disk'];
+        } else {
+            $db->rollBack();
+            $appInstance->BadRequest('Disk is required', ['error_code' => 'DISK_REQUIRED']);
+            return;
+        }
+
+        // Validate that disk is not negative
+        if ($disk < 0) {
+            $db->rollBack();
+            $appInstance->BadRequest('Disk cannot be a negative number', ['error_code' => 'DISK_NEGATIVE']);
+            return;
+        }
+        if (isset($_POST['databases']) && !empty($_POST['databases'])) {
+            $databases = max(0, intval($_POST['databases']));
+        } else {
+            // Servers may not require databases
+            $databases = 0;
+        }
+        // Validate that databases is not negative
+        if ($databases < 0) {
+            $db->rollBack();
+            $appInstance->BadRequest('Databases cannot be a negative number', ['error_code' => 'DATABASES_NEGATIVE']);
+            return;
+        }
+        // Validate backups field
+        if (!isset($_POST['backups'])) {
+            $db->rollBack();
+            $appInstance->BadRequest('Backups is required', ['error_code' => 'BACKUPS_REQUIRED']);
+            return;
+        }
+
+        if (!is_numeric($_POST['backups'])) {
+            $db->rollBack();
+            $appInstance->BadRequest('Backups must be a numeric value', ['error_code' => 'BACKUPS_INVALID_TYPE']);
+            return;
+        }
+
+        $backups = (int) $_POST['backups'];
+
+        // Validate that backups is not negative
+        if ($backups < 0) {
+            $db->rollBack();
+            $appInstance->BadRequest('Backups cannot be a negative number', ['error_code' => 'BACKUPS_NEGATIVE']);
+            return;
+        }
+        if (isset($_POST['allocations']) && !empty($_POST['allocations'])) {
+            $allocations = $_POST['allocations'];
+        } else {
+            $db->rollBack();
+            $appInstance->BadRequest('Allocations is required', ['error_code' => 'ALLOCATIONS_REQUIRED']);
+            return;
+        }
+
+        // Validate that allocations is not negative
+        if ($allocations < 0) {
+            $db->rollBack();
+            $appInstance->BadRequest('Allocations cannot be a negative number', ['error_code' => 'ALLOCATIONS_NEGATIVE']);
+            return;
+        }
+
+        // Validate required fields
+        if (empty($name)) {
+            $db->rollBack();
+            $appInstance->BadRequest('Name is required', ['error_code' => 'NAME_REQUIRED']);
+            return;
+        }
+
+        // Validate resource limits
+        if ($memory < 256) {
+            $db->rollBack();
+            $appInstance->BadRequest('Memory must be at least 256MB', ['error_code' => 'MEMORY_MINIMUM']);
+            return;
+        }
+
+        if ($cpu < 5) {
+            $db->rollBack();
+            $appInstance->BadRequest('CPU must be at least 5%', ['error_code' => 'CPU_MINIMUM']);
+            return;
+        }
+
+        if ($disk < 256) {
+            $db->rollBack();
+            $appInstance->BadRequest('Disk must be at least 256MB', ['error_code' => 'DISK_MINIMUM']);
+            return;
+        }
+
+        if ($allocations < 1) {
+            $db->rollBack();
+            $appInstance->BadRequest('Allocations must be at least 1', ['error_code' => 'ALLOCATIONS_MINIMUM']);
+            return;
+        }
+
+        // Th3Hunter FIX: Use row locking to prevent race conditions when checking resources
+        $resources = Servers::getUserTotalResourcesUsage($pterodactylUserId, true, true); // Added lock parameter
+        $available_resources = User::getInfoArray($accountToken, [
+            UserColumns::MEMORY_LIMIT,
+            UserColumns::DISK_LIMIT,
+            UserColumns::CPU_LIMIT,
+            UserColumns::DATABASE_LIMIT,
+            UserColumns::BACKUP_LIMIT,
+            UserColumns::ALLOCATION_LIMIT,
+            UserColumns::SERVER_LIMIT,
+        ], [], true); // Added lock parameter
+
+        // Get current server resources to calculate the difference
+        $currentServerResources = [
+            'memory' => $server['attributes']['limits']['memory'],
+            'disk' => $server['attributes']['limits']['disk'],
+            'cpu' => $server['attributes']['limits']['cpu'],
+            'databases' => $server['attributes']['feature_limits']['databases'],
+            'backups' => $server['attributes']['feature_limits']['backups'],
+            'allocations' => $server['attributes']['feature_limits']['allocations'],
+        ];
+
+        // Calculate resource difference (new - current)
+        $resourceDifference = [
+            'memory' => $memory - $currentServerResources['memory'],
+            'disk' => $disk - $currentServerResources['disk'],
+            'cpu' => $cpu - $currentServerResources['cpu'],
+            'databases' => $databases - $currentServerResources['databases'],
+            'backups' => $backups - $currentServerResources['backups'],
+            'allocations' => $allocations - $currentServerResources['allocations'],
+        ];
+
+        // Check if the update would exceed available resources
+        if ($resourceDifference['memory'] > 0) {
+            $freeMemory = $available_resources[UserColumns::MEMORY_LIMIT] - $resources['memory'];
+            if ($resourceDifference['memory'] > $freeMemory) {
+                $db->rollBack();
+                $appInstance->BadRequest('This update would exceed your maximum memory limit', [
+                    'error_code' => 'MAX_MEMORY_LIMIT',
+                    'required' => $available_resources[UserColumns::MEMORY_LIMIT],
+                    'current_usage' => $resources['memory'],
+                    'attempted_to_add' => $resourceDifference['memory'],
+                ]);
+                return;
+            }
+        }
+
+        if ($resourceDifference['disk'] > 0) {
+            $freeDisk = $available_resources[UserColumns::DISK_LIMIT] - $resources['disk'];
+            if ($resourceDifference['disk'] > $freeDisk) {
+                $db->rollBack();
+                $appInstance->BadRequest('This update would exceed your maximum disk limit', [
+                    'error_code' => 'MAX_DISK_LIMIT',
+                    'required' => $available_resources[UserColumns::DISK_LIMIT],
+                    'current_usage' => $resources['disk'],
+                    'attempted_to_add' => $resourceDifference['disk'],
+                ]);
+                return;
+            }
+        }
+
+        if ($resourceDifference['cpu'] > 0) {
+            $freeCpu = $available_resources[UserColumns::CPU_LIMIT] - $resources['cpu'];
+            if ($resourceDifference['cpu'] > $freeCpu) {
+                $db->rollBack();
+                $appInstance->BadRequest('This update would exceed your maximum CPU limit', [
+                    'error_code' => 'MAX_CPU_LIMIT',
+                    'required' => $available_resources[UserColumns::CPU_LIMIT],
+                    'current_usage' => $resources['cpu'],
+                    'attempted_to_add' => $resourceDifference['cpu'],
+                ]);
+                return;
+            }
+        }
+
+        if ($resourceDifference['databases'] > 0 && $available_resources[UserColumns::DATABASE_LIMIT] >= 0) {
+            $freeDatabases = $available_resources[UserColumns::DATABASE_LIMIT] - $resources['databases'];
+            if ($resourceDifference['databases'] > $freeDatabases) {
+                $db->rollBack();
+                $appInstance->BadRequest('This update would exceed your maximum databases limit', [
+                    'error_code' => 'MAX_DATABASES_LIMIT',
+                    'required' => $available_resources[UserColumns::DATABASE_LIMIT],
+                    'current_usage' => $resources['databases'],
+                    'attempted_to_add' => $resourceDifference['databases'],
+                ]);
+                return;
+            }
+        }
+
+        if ($resourceDifference['backups'] > 0 && $available_resources[UserColumns::BACKUP_LIMIT] >= 0) {
+            $freeBackups = $available_resources[UserColumns::BACKUP_LIMIT] - $resources['backups'];
+            if ($resourceDifference['backups'] > $freeBackups) {
+                $db->rollBack();
+                $appInstance->BadRequest('This update would exceed your maximum backups limit', [
+                    'error_code' => 'MAX_BACKUPS_LIMIT',
+                    'required' => $available_resources[UserColumns::BACKUP_LIMIT],
+                    'current_usage' => $resources['backups'],
+                    'attempted_to_add' => $resourceDifference['backups'],
+                ]);
+                return;
+            }
+        }
+
+        if ($resourceDifference['allocations'] > 0) {
+            $freeAllocations = $available_resources[UserColumns::ALLOCATION_LIMIT] - $resources['allocations'];
+            if ($resourceDifference['allocations'] > $freeAllocations) {
+                $db->rollBack();
+                $appInstance->BadRequest('This update would exceed your maximum allocations limit', [
+                    'error_code' => 'MAX_ALLOCATIONS_LIMIT',
+                    'required' => $available_resources[UserColumns::ALLOCATION_LIMIT],
+                    'current_usage' => $resources['allocations'],
+                    'attempted_to_add' => $resourceDifference['allocations'],
+                ]);
+                return;
+            }
+        }
+
+        // Update server details
+        try {
+            $updateData = [
+                'allocation' => $allocation,
+                'memory' => $memory,
+                'cpu' => $cpu,
+                'swap' => 0,
+                'io' => 500,
+                'disk' => $disk,
+                'feature_limits' => [
+                    'databases' => $databases,
+                    'backups' => $backups,
+                    'allocations' => $allocations,
+                ],
+            ];
+
+            $details = [
+                'name' => $name,
+                'user' => $pterodactylUserId,
+                'description' => $description,
+                'external_id' => '',
+            ];
+            if (!isset($server['attributes']['id'])) {
+                $db->rollBack();
+                $appInstance->BadRequest('Server not found', ['error_code' => 'SERVER_NOT_FOUND']);
+                return;
+            }
+            $serverId = $server['attributes']['id'];
+            $svAw1 = Servers::updatePterodactylServer($serverId, $updateData);
+            $svAw2 = Servers::updatePterodactylServerDetails($serverId, $details);
+            
+            // Th3Hunter FIX: Commit transaction after all operations are successful
+            $db->commit();
+            
+            global $eventManager;
+            $eventManager->emit(ServerEvent::onServerUpdated(), [
+                'server' => $server,
+                'updateData' => $updateData,
+                'details' => $details,
+            ]);
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$server_update,
+                CloudFlareRealIP::getRealIP(),
+                "Updated server $serverId"
+            );
+            $appInstance->OK('Server updated successfully', [
+                'build' => $updateData,
+                'details' => $details,
+                'server' => $server,
+                'rsp' => [
+                    'svAw1' => $svAw1,
+                    'svAw2' => $svAw2,
+                ],
+            ]);
+
+        } catch (Exception $e) {
+            // Th3Hunter FIX: Rollback transaction on error
+            $db->rollBack();
+            $appInstance->ServiceUnavailable('Error updating server: ' . $e->getMessage(), ['error_code' => 'FAILED_TO_UPDATE_SERVER']);
+        }
     } catch (Exception $e) {
+        // Th3Hunter FIX: Rollback transaction on error
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
         $appInstance->ServiceUnavailable('Error updating server: ' . $e->getMessage(), ['error_code' => 'FAILED_TO_UPDATE_SERVER']);
     }
 });
@@ -412,99 +447,113 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new Session($appInstance);
+    
+    // Th3Hunter FIX: Validate CSRF token to prevent CSRF attacks
+    if (!validateCSRFToken($session)) {
+        $appInstance->Forbidden('Invalid CSRF token', ['error_code' => 'INVALID_CSRF_TOKEN']);
+        return;
+    }
+    
     $config = $appInstance->getConfig();
 
     // Check if server renewal is enabled
     if ($config->getDBSetting(ConfigInterface::SERVER_RENEW_ENABLED, 'false') == 'false') {
         $appInstance->BadRequest('Server renewal is not enabled', ['error_code' => 'SERVER_RENEWAL_NOT_ENABLED']);
-
         return;
     }
 
-    // Get server details
-    $server = Servers::getServerPterodactylDetails((int) $id);
-    if (!$server) {
-        $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
-
-        return;
-    }
-
-    // Verify ownership
-    $pterodactylUserId = $session->getInfo(UserColumns::PTERODACTYL_USER_ID, false);
-    $owner = $server['attributes']['user'];
-    if ($owner != $pterodactylUserId) {
-        $appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
-
-        return;
-    }
-
-    // Get server info from database
-    if (isset($server['attributes']['id'])) {
-        $serverId = $server['attributes']['id'];
-        $serverInfoDb = MythicalDash\Chat\Servers\Server::getByPterodactylId((int) $serverId);
-        if (!$serverInfoDb) {
-            $appInstance->BadRequest('Server not found in database', ['error_code' => 'SERVER_NOT_FOUND_IN_DB']);
-
+    // Th3Hunter FIX: Use database transaction to prevent race conditions
+    $db = $appInstance->getDatabase();
+    $db->beginTransaction();
+    
+    try {
+        // Get server details
+        $server = Servers::getServerPterodactylDetails((int) $id);
+        if (!$server) {
+            $db->rollBack();
+            $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
             return;
         }
-    }
 
-    // Get renewal settings
-    $server_renew_cost = (int) $config->getDBSetting(ConfigInterface::SERVER_RENEW_COST, 120);
-    $server_renew_days = (int) $config->getDBSetting(ConfigInterface::SERVER_RENEW_DAYS, 30);
+        // Verify ownership
+        $pterodactylUserId = $session->getInfo(UserColumns::PTERODACTYL_USER_ID, false);
+        $owner = $server['attributes']['user'];
+        if ($owner != $pterodactylUserId) {
+            $db->rollBack();
+            $appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
+            return;
+        }
 
-    // Validate renewal settings
-    if ($server_renew_cost <= 0) {
-        $appInstance->BadRequest('Invalid renewal cost configuration', ['error_code' => 'INVALID_RENEWAL_COST']);
+        // Get server info from database
+        if (isset($server['attributes']['id'])) {
+            $serverId = $server['attributes']['id'];
+            $serverInfoDb = MythicalDash\Chat\Servers\Server::getByPterodactylId((int) $serverId);
+            if (!$serverInfoDb) {
+                $db->rollBack();
+                $appInstance->BadRequest('Server not found in database', ['error_code' => 'SERVER_NOT_FOUND_IN_DB']);
+                return;
+            }
+        }
 
-        return;
-    }
+        // Get renewal settings
+        $server_renew_cost = (int) $config->getDBSetting(ConfigInterface::SERVER_RENEW_COST, 120);
+        $server_renew_days = (int) $config->getDBSetting(ConfigInterface::SERVER_RENEW_DAYS, 30);
 
-    if ($server_renew_days <= 0) {
-        $appInstance->BadRequest('Invalid renewal days configuration', ['error_code' => 'INVALID_RENEWAL_DAYS']);
+        // Validate renewal settings
+        if ($server_renew_cost <= 0) {
+            $db->rollBack();
+            $appInstance->BadRequest('Invalid renewal cost configuration', ['error_code' => 'INVALID_RENEWAL_COST']);
+            return;
+        }
 
-        return;
-    }
+        if ($server_renew_days <= 0) {
+            $db->rollBack();
+            $appInstance->BadRequest('Invalid renewal days configuration', ['error_code' => 'INVALID_RENEWAL_DAYS']);
+            return;
+        }
 
-    // Check user balance atomically to prevent race conditions
-    $creditCheck = $session->checkCreditsAtomic($server_renew_cost);
-    if (!$creditCheck['has_sufficient']) {
-        $appInstance->BadRequest('You do not have enough credits to renew this server', [
-            'error_code' => 'INSUFFICIENT_CREDITS',
-            'required' => $server_renew_cost,
-            'available' => $creditCheck['current_credits'],
-        ]);
+        // Check user balance atomically to prevent race conditions
+        $creditCheck = $session->checkCreditsAtomic($server_renew_cost);
+        if (!$creditCheck['has_sufficient']) {
+            $db->rollBack();
+            $appInstance->BadRequest('You do not have enough credits to renew this server', [
+                'error_code' => 'INSUFFICIENT_CREDITS',
+                'required' => $server_renew_cost,
+                'available' => $creditCheck['current_credits'],
+            ]);
+            return;
+        }
 
-        return;
-    }
+        // Calculate new expiration date
+        $currentExpiresAt = strtotime($serverInfoDb['expires_at']);
+        if ($currentExpiresAt === false) {
+            $db->rollBack();
+            $appInstance->BadRequest('Invalid server expiration date', ['error_code' => 'INVALID_EXPIRATION_DATE']);
+            return;
+        }
 
-    // Calculate new expiration date
-    $currentExpiresAt = strtotime($serverInfoDb['expires_at']);
-    if ($currentExpiresAt === false) {
-        $appInstance->BadRequest('Invalid server expiration date', ['error_code' => 'INVALID_EXPIRATION_DATE']);
+        $newExpiresAt = $currentExpiresAt + ($server_renew_days * 86400); // Convert days to seconds
+        $newExpiresAtFormatted = date('Y-m-d H:i:s', $newExpiresAt);
 
-        return;
-    }
-
-    $newExpiresAt = $currentExpiresAt + ($server_renew_days * 86400); // Convert days to seconds
-    $newExpiresAtFormatted = date('Y-m-d H:i:s', $newExpiresAt);
-
-    try {
         // Update server expiration
         if (!MythicalDash\Chat\Servers\Server::update($serverInfoDb['id'], $newExpiresAt)) {
+            $db->rollBack();
             throw new Exception('Failed to update server expiration');
         }
 
         // Remove credits atomically to prevent race conditions
         if (!$session->removeCreditsAtomic($server_renew_cost)) {
+            $db->rollBack();
             // If removing credits failed, we need to rollback the server expiration update
             // This is a critical error that should be logged
             $appInstance->getLogger()->error('Failed to remove renewal credits atomically for user: ' . $session->getInfo(UserColumns::UUID, false) . ' for server: ' . $serverId);
             $appInstance->BadRequest('Failed to process renewal - credit deduction failed', ['error_code' => 'CREDIT_DEDUCTION_FAILED']);
-
             return;
         }
 
+        // Th3Hunter FIX: Commit transaction after all operations are successful
+        $db->commit();
+        
         // Log activity
         UserActivities::add(
             $session->getInfo(UserColumns::UUID, false),
@@ -533,7 +582,10 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
         ]);
 
     } catch (Exception $e) {
-        // Rollback transaction on error
+        // Th3Hunter FIX: Rollback transaction on error
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
         $appInstance->ServiceUnavailable('Error renewing server: ' . $e->getMessage(), ['error_code' => 'FAILED_TO_RENEW_SERVER']);
     }
 });
@@ -544,26 +596,36 @@ $router->post('/api/user/server/(.*)/delete', function (string $id): void {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new Session($appInstance);
-
-    // Get the server first to check ownership
-    $server = Servers::getServerPterodactylDetails((int) $id);
-
-    if (!$server) {
-        $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
-
+    
+    // Th3Hunter FIX: Validate CSRF token to prevent CSRF attacks
+    if (!validateCSRFToken($session)) {
+        $appInstance->Forbidden('Invalid CSRF token', ['error_code' => 'INVALID_CSRF_TOKEN']);
         return;
     }
 
-    $pterodactylUserId = $session->getInfo(UserColumns::PTERODACTYL_USER_ID, false);
-    $owner = $server['attributes']['user'];
-    if ($owner != $pterodactylUserId) {
-        $appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
-
-        return;
-    }
-    $serverId = $server['attributes']['id'];
-
+    // Th3Hunter FIX: Use database transaction to prevent race conditions
+    $db = $appInstance->getDatabase();
+    $db->beginTransaction();
+    
     try {
+        // Get the server first to check ownership
+        $server = Servers::getServerPterodactylDetails((int) $id);
+
+        if (!$server) {
+            $db->rollBack();
+            $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
+            return;
+        }
+
+        $pterodactylUserId = $session->getInfo(UserColumns::PTERODACTYL_USER_ID, false);
+        $owner = $server['attributes']['user'];
+        if ($owner != $pterodactylUserId) {
+            $db->rollBack();
+            $appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
+            return;
+        }
+        $serverId = $server['attributes']['id'];
+
         // Delete from Pterodactyl first
         Servers::deletePterodactylServer($serverId, false);
 
@@ -572,6 +634,9 @@ $router->post('/api/user/server/(.*)/delete', function (string $id): void {
             MythicalDash\Chat\Servers\Server::deleteServerByPterodactylId($serverId);
         }
 
+        // Th3Hunter FIX: Commit transaction after all operations are successful
+        $db->commit();
+        
         global $eventManager;
         $eventManager->emit(ServerEvent::onServerDeleted(), [
             'server' => $serverId,
@@ -584,9 +649,14 @@ $router->post('/api/user/server/(.*)/delete', function (string $id): void {
         );
         $appInstance->OK('Server deleted successfully', []);
     } catch (Exception $e) {
+        // Th3Hunter FIX: Rollback transaction on error
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
         $appInstance->ServiceUnavailable('Error deleting server: ' . $e->getMessage(), ['error_code' => 'FAILED_TO_DELETE_SERVER']);
     }
 });
+
 $router->get('/api/user/server/create', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
@@ -677,6 +747,9 @@ $router->get('/api/user/server/create', function (): void {
         $category['image'] = Image::get((int) $category['image_id']);
     }
 
+    // Th3Hunter FIX: Generate CSRF token for the form
+    $csrfToken = $session->generateCSRFToken();
+    
     $appInstance->OK('Server Creation', [
         'locations' => array_values($locations), // Reset array keys
         'categories' => array_values($structuredCategories), // Reset array keys
@@ -684,6 +757,7 @@ $router->get('/api/user/server/create', function (): void {
         'total_resources' => $total_resources,
         'free_resources' => $free_resources,
         'has_vip_permission' => $hasVipPermission,
+        'csrf_token' => $csrfToken, // Th3Hunter FIX: Add CSRF token to response
     ]);
 });
 
@@ -691,18 +765,23 @@ $router->post('/api/user/server/create', function (): void {
     App::init();
     $appInstance = App::getInstance(true);
     $session = new Session($appInstance);
+    
+    // Th3Hunter FIX: Validate CSRF token to prevent CSRF attacks
+    if (!validateCSRFToken($session)) {
+        $appInstance->Forbidden('Invalid CSRF token', ['error_code' => 'INVALID_CSRF_TOKEN']);
+        return;
+    }
+    
     $accountToken = $session->SESSION_KEY;
     $config = $appInstance->getConfig();
     if ($config->getDBSetting(ConfigInterface::ALLOW_SERVERS, 'false') == 'false') {
         $appInstance->BadRequest('Server creation is not allowed', ['error_code' => 'SERVER_CREATION_NOT_ALLOWED']);
-
         return;
     }
     if ($config->getDBSetting(ConfigInterface::FORCE_DISCORD_LINK, 'false') == 'true') {
         $discordLinked = User::getInfo($accountToken, UserColumns::DISCORD_LINKED, false);
         if ($discordLinked == 'false') {
             $appInstance->BadRequest('Discord account linking is required', ['error_code' => 'DISCORD_LINKING_REQUIRED']);
-
             return;
         }
     }
@@ -710,7 +789,6 @@ $router->post('/api/user/server/create', function (): void {
         $githubLinked = User::getInfo($accountToken, UserColumns::GITHUB_LINKED, false);
         if ($githubLinked == 'false') {
             $appInstance->BadRequest('GitHub account linking is required', ['error_code' => 'GITHUB_LINKING_REQUIRED']);
-
             return;
         }
     }
@@ -718,7 +796,6 @@ $router->post('/api/user/server/create', function (): void {
         $emailVerified = User::getInfo($accountToken, UserColumns::VERIFIED, false);
         if ($emailVerified == 'false') {
             $appInstance->BadRequest('Email verification is required', ['error_code' => 'EMAIL_VERIFICATION_REQUIRED']);
-
             return;
         }
     }
@@ -736,7 +813,6 @@ $router->post('/api/user/server/create', function (): void {
         || !isset($_POST['allocations'])
     ) {
         $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
-
         return;
     }
     if (
@@ -753,17 +829,14 @@ $router->post('/api/user/server/create', function (): void {
         || $_POST['allocations'] == ''
     ) {
         $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);
-
         return;
     }
     if (strlen($_POST['name']) > 32) {
         $appInstance->BadRequest('Name must be less than 32 characters', ['error_code' => 'NAME_TOO_LONG']);
-
         return;
     }
     if (strlen($_POST['description']) > 255) {
         $appInstance->BadRequest('Description must be less than 255 characters', ['error_code' => 'DESCRIPTION_TOO_LONG']);
-
         return;
     }
 
@@ -779,21 +852,18 @@ $router->post('/api/user/server/create', function (): void {
     // Validate that memory is not negative
     if ($memory < 0) {
         $appInstance->BadRequest('Memory cannot be a negative number', ['error_code' => 'MEMORY_NEGATIVE']);
-
         return;
     }
 
     // Validate that CPU is not negative
     if ($cpu < 0) {
         $appInstance->BadRequest('CPU cannot be a negative number', ['error_code' => 'CPU_NEGATIVE']);
-
         return;
     }
 
     // Validate that disk is not negative
     if ($disk < 0) {
         $appInstance->BadRequest('Disk cannot be a negative number', ['error_code' => 'DISK_NEGATIVE']);
-
         return;
     }
     $databases = (int) $_POST['databases'];
@@ -803,207 +873,217 @@ $router->post('/api/user/server/create', function (): void {
     // Validate that databases is not negative
     if ($databases < 0) {
         $appInstance->BadRequest('Databases cannot be a negative number', ['error_code' => 'DATABASES_NEGATIVE']);
-
         return;
     }
 
     // Validate that backups is not negative
     if ($backups < 0) {
         $appInstance->BadRequest('Backups cannot be a negative number', ['error_code' => 'BACKUPS_NEGATIVE']);
-
         return;
     }
 
     // Validate that allocations is not negative
     if ($allocations < 0) {
         $appInstance->BadRequest('Allocations cannot be a negative number', ['error_code' => 'ALLOCATIONS_NEGATIVE']);
-
         return;
     }
 
     if (!Locations::exists($location_id)) {
         $appInstance->BadRequest('Location does not exist', ['error_code' => 'LOCATION_DOES_NOT_EXIST']);
-
         return;
     }
 
     if (!EggCategories::exists($category_id)) {
         $appInstance->BadRequest('Category does not exist', ['error_code' => 'CATEGORY_DOES_NOT_EXIST']);
-
         return;
     }
 
     if (!Eggs::exists($egg_id)) {
         $appInstance->BadRequest('Egg does not exist', ['error_code' => 'EGG_DOES_NOT_EXIST']);
-
         return;
     }
 
     if ($memory < 256) {
         $appInstance->BadRequest('Memory must be at least 256MB', ['error_code' => 'MEMORY_TOO_LOW']);
-
         return;
     }
 
     if ($cpu < 5) {
         $appInstance->BadRequest('CPU must be at least 5%', ['error_code' => 'CPU_TOO_LOW']);
-
         return;
     }
 
     if ($disk < 256) {
         $appInstance->BadRequest('Disk must be at least 256MB', ['error_code' => 'DISK_TOO_LOW']);
-
         return;
     }
 
     if ($allocations < 1) {
         $appInstance->BadRequest('Allocations must be at least 1', ['error_code' => 'ALLOCATIONS_TOO_LOW']);
-
         return;
     }
 
     $uuid = User::getInfo($accountToken, UserColumns::UUID, false);
     if (ServerQueue::hasAtLeastOnePendingItem($uuid)) {
         $appInstance->BadRequest('You already have a pending server creation request', ['error_code' => 'PENDING_SERVER_CREATION_REQUEST']);
-
         return;
     }
-    $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
-    $resources = Servers::getUserTotalResourcesUsage($pterodactylUserId);
-    $available_resources = User::getInfoArray($accountToken, [
-        UserColumns::MEMORY_LIMIT,
-        UserColumns::DISK_LIMIT,
-        UserColumns::CPU_LIMIT,
-        UserColumns::DATABASE_LIMIT,
-        UserColumns::BACKUP_LIMIT,
-        UserColumns::ALLOCATION_LIMIT,
-        UserColumns::SERVER_LIMIT,
-    ], []);
-
-    $free_resources = [
-        'memory' => $available_resources[UserColumns::MEMORY_LIMIT] - $resources['memory'],
-        'disk' => $available_resources[UserColumns::DISK_LIMIT] - $resources['disk'],
-        'cpu' => $available_resources[UserColumns::CPU_LIMIT] - $resources['cpu'],
-        'databases' => $available_resources[UserColumns::DATABASE_LIMIT] - $resources['databases'],
-        'backups' => $available_resources[UserColumns::BACKUP_LIMIT] - $resources['backups'],
-        'allocations' => $available_resources[UserColumns::ALLOCATION_LIMIT] - $resources['allocations'],
-        'servers' => $available_resources[UserColumns::SERVER_LIMIT] - $resources['servers'],
-    ];
-
-    $total_resources = [
-        'memory' => $available_resources[UserColumns::MEMORY_LIMIT],
-        'disk' => $available_resources[UserColumns::DISK_LIMIT],
-        'cpu' => $available_resources[UserColumns::CPU_LIMIT],
-        'databases' => $available_resources[UserColumns::DATABASE_LIMIT],
-        'backups' => $available_resources[UserColumns::BACKUP_LIMIT],
-        'allocations' => $available_resources[UserColumns::ALLOCATION_LIMIT],
-        'servers' => $available_resources[UserColumns::SERVER_LIMIT],
-    ];
-
-    if ($memory > $free_resources['memory'] || ($resources['memory'] + $memory) > $total_resources['memory']) {
-        $appInstance->BadRequest('This server would exceed your maximum memory limit', ['error_code' => 'MAX_MEMORY_LIMIT', 'required' => $total_resources['memory'], 'current_usage' => $resources['memory'], 'attempted_to_add' => $memory]);
-
-        return;
-    }
-    if ($cpu > $free_resources['cpu'] || ($resources['cpu'] + $cpu) > $total_resources['cpu']) {
-        $appInstance->BadRequest('This server would exceed your maximum CPU limit', ['error_code' => 'MAX_CPU_LIMIT', 'required' => $total_resources['cpu'], 'current_usage' => $resources['cpu'], 'attempted_to_add' => $cpu]);
-
-        return;
-    }
-    if ($disk > $free_resources['disk'] || ($resources['disk'] + $disk) > $total_resources['disk']) {
-        $appInstance->BadRequest('This server would exceed your maximum disk limit', ['error_code' => 'MAX_DISK_LIMIT', 'required' => $total_resources['disk'], 'current_usage' => $resources['disk'], 'attempted_to_add' => $disk]);
-
-        return;
-    }
-    if ($databases > $free_resources['databases'] || ($resources['databases'] + $databases) > $total_resources['databases']) {
-        $appInstance->BadRequest('This server would exceed your maximum databases limit', ['error_code' => 'MAX_DATABASES_LIMIT', 'required' => $total_resources['databases'], 'current_usage' => $resources['databases'], 'attempted_to_add' => $databases]);
-
-        return;
-    }
-    if ($backups > $free_resources['backups'] || ($resources['backups'] + $backups) > $total_resources['backups']) {
-        $appInstance->BadRequest('This server would exceed your maximum backups limit', ['error_code' => 'MAX_BACKUPS_LIMIT', 'required' => $total_resources['backups'], 'current_usage' => $resources['backups'], 'attempted_to_add' => $backups]);
-
-        return;
-    }
-    if ($allocations > $free_resources['allocations'] || ($resources['allocations'] + $allocations) > $total_resources['allocations']) {
-        $appInstance->BadRequest('This server would exceed your maximum allocations limit', ['error_code' => 'MAX_ALLOCATIONS_LIMIT', 'required' => $total_resources['allocations'], 'current_usage' => $resources['allocations'], 'attempted_to_add' => $allocations]);
-
-        return;
-    }
-    if ($free_resources['servers'] < 1) {
-        $appInstance->BadRequest('Not enough servers', ['error_code' => 'NOT_ENOUGH_SERVERS']);
-
-        return;
-    }
-
-    $locationInfo = Locations::get($location_id);
-    $eggInfo = Eggs::getById($egg_id);
-
-    // Check if location is VIP only and user doesn't have VIP permission
-    if (isset($locationInfo['vip_only']) && $locationInfo['vip_only'] === 'true' && !$session->hasPermission(Permissions::USER_PERMISSION_VIP)) {
-        $appInstance->BadRequest('Location is VIP only', ['error_code' => 'LOCATION_VIP_ONLY']);
-
-        return;
-    }
-
-    // Check if egg is VIP only and user doesn't have VIP permission
-    if (isset($eggInfo['vip_only']) && $eggInfo['vip_only'] === 'true' && !$session->hasPermission(Permissions::USER_PERMISSION_VIP)) {
-        $appInstance->BadRequest('Egg is VIP only', ['error_code' => 'EGG_VIP_ONLY']);
-
-        return;
-    }
-
-    if ($locationInfo['slots'] < 1) {
-        $appInstance->BadRequest('Location is full', ['error_code' => 'LOCATION_FULL']);
-
-        return;
-    }
-
-    $serverCount = MythicalDash\Chat\Servers\Server::getServerCountByLocationId($location_id);
-    if ($serverCount >= $locationInfo['slots']) {
-        $appInstance->BadRequest('Location is full', ['error_code' => 'LOCATION_FULL', 'server_count' => $serverCount, 'location_slots' => $locationInfo['slots']]);
-
-        return;
-    }
-
-    $sv = ServerQueue::create($name, $description, $memory, $disk, $cpu, $allocations, $databases, $backups, $location_id, $uuid, $category_id, $egg_id);
-    if ($sv == false) {
-        $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
-    }
-
-    if ($sv == 0) {
-        $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
-    }
-
+    
+    // Th3Hunter FIX: Use database transaction to prevent race conditions
+    $db = $appInstance->getDatabase();
+    $db->beginTransaction();
+    
     try {
-        global $eventManager;
-        $eventManager->emit(ServerQueueEvent::onServerQueueCreated(), [
-            'id' => $sv,
-            'name' => $name,
-            'description' => $description,
-            'ram' => $memory,
-            'disk' => $disk,
-            'cpu' => $cpu,
-            'ports' => $allocations,
-            'databases' => $databases,
-            'backups' => $backups,
-            'location' => $location_id,
-            'user' => $uuid,
-            'nest' => $category_id,
-            'egg' => $egg_id,
-            'status' => 'pending',
-        ]);
-        UserActivities::add(
-            $session->getInfo(UserColumns::UUID, false),
-            UserActivitiesTypes::$server_create,
-            CloudFlareRealIP::getRealIP(),
-            "Created server queue item $sv"
-        );
+        $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
+        
+        // Th3Hunter FIX: Use row locking to prevent race conditions when checking resources
+        $resources = Servers::getUserTotalResourcesUsage($pterodactylUserId, true, true); // Added lock parameter
+        $available_resources = User::getInfoArray($accountToken, [
+            UserColumns::MEMORY_LIMIT,
+            UserColumns::DISK_LIMIT,
+            UserColumns::CPU_LIMIT,
+            UserColumns::DATABASE_LIMIT,
+            UserColumns::BACKUP_LIMIT,
+            UserColumns::ALLOCATION_LIMIT,
+            UserColumns::SERVER_LIMIT,
+        ], [], true); // Added lock parameter
 
-        $appInstance->OK('Server queue item created successfully.', ['error_code' => 'SERVER_QUEUE_ITEM_CREATED', 'server_queue_item' => $sv, 'server_count' => $serverCount, 'location_slots' => $locationInfo['slots']]);
+        $free_resources = [
+            'memory' => $available_resources[UserColumns::MEMORY_LIMIT] - $resources['memory'],
+            'disk' => $available_resources[UserColumns::DISK_LIMIT] - $resources['disk'],
+            'cpu' => $available_resources[UserColumns::CPU_LIMIT] - $resources['cpu'],
+            'databases' => $available_resources[UserColumns::DATABASE_LIMIT] - $resources['databases'],
+            'backups' => $available_resources[UserColumns::BACKUP_LIMIT] - $resources['backups'],
+            'allocations' => $available_resources[UserColumns::ALLOCATION_LIMIT] - $resources['allocations'],
+            'servers' => $available_resources[UserColumns::SERVER_LIMIT] - $resources['servers'],
+        ];
+
+        $total_resources = [
+            'memory' => $available_resources[UserColumns::MEMORY_LIMIT],
+            'disk' => $available_resources[UserColumns::DISK_LIMIT],
+            'cpu' => $available_resources[UserColumns::CPU_LIMIT],
+            'databases' => $available_resources[UserColumns::DATABASE_LIMIT],
+            'backups' => $available_resources[UserColumns::BACKUP_LIMIT],
+            'allocations' => $available_resources[UserColumns::ALLOCATION_LIMIT],
+            'servers' => $available_resources[UserColumns::SERVER_LIMIT],
+        ];
+
+        if ($memory > $free_resources['memory'] || ($resources['memory'] + $memory) > $total_resources['memory']) {
+            $db->rollBack();
+            $appInstance->BadRequest('This server would exceed your maximum memory limit', ['error_code' => 'MAX_MEMORY_LIMIT', 'required' => $total_resources['memory'], 'current_usage' => $resources['memory'], 'attempted_to_add' => $memory]);
+            return;
+        }
+        if ($cpu > $free_resources['cpu'] || ($resources['cpu'] + $cpu) > $total_resources['cpu']) {
+            $db->rollBack();
+            $appInstance->BadRequest('This server would exceed your maximum CPU limit', ['error_code' => 'MAX_CPU_LIMIT', 'required' => $total_resources['cpu'], 'current_usage' => $resources['cpu'], 'attempted_to_add' => $cpu]);
+            return;
+        }
+        if ($disk > $free_resources['disk'] || ($resources['disk'] + $disk) > $total_resources['disk']) {
+            $db->rollBack();
+            $appInstance->BadRequest('This server would exceed your maximum disk limit', ['error_code' => 'MAX_DISK_LIMIT', 'required' => $total_resources['disk'], 'current_usage' => $resources['disk'], 'attempted_to_add' => $disk]);
+            return;
+        }
+        if ($databases > $free_resources['databases'] || ($resources['databases'] + $databases) > $total_resources['databases']) {
+            $db->rollBack();
+            $appInstance->BadRequest('This server would exceed your maximum databases limit', ['error_code' => 'MAX_DATABASES_LIMIT', 'required' => $total_resources['databases'], 'current_usage' => $resources['databases'], 'attempted_to_add' => $databases]);
+            return;
+        }
+        if ($backups > $free_resources['backups'] || ($resources['backups'] + $backups) > $total_resources['backups']) {
+            $db->rollBack();
+            $appInstance->BadRequest('This server would exceed your maximum backups limit', ['error_code' => 'MAX_BACKUPS_LIMIT', 'required' => $total_resources['backups'], 'current_usage' => $resources['backups'], 'attempted_to_add' => $backups]);
+            return;
+        }
+        if ($allocations > $free_resources['allocations'] || ($resources['allocations'] + $allocations) > $total_resources['allocations']) {
+            $db->rollBack();
+            $appInstance->BadRequest('This server would exceed your maximum allocations limit', ['error_code' => 'MAX_ALLOCATIONS_LIMIT', 'required' => $total_resources['allocations'], 'current_usage' => $resources['allocations'], 'attempted_to_add' => $allocations]);
+            return;
+        }
+        if ($free_resources['servers'] < 1) {
+            $db->rollBack();
+            $appInstance->BadRequest('Not enough servers', ['error_code' => 'NOT_ENOUGH_SERVERS']);
+            return;
+        }
+
+        $locationInfo = Locations::get($location_id);
+        $eggInfo = Eggs::getById($egg_id);
+
+        // Check if location is VIP only and user doesn't have VIP permission
+        if (isset($locationInfo['vip_only']) && $locationInfo['vip_only'] === 'true' && !$session->hasPermission(Permissions::USER_PERMISSION_VIP)) {
+            $db->rollBack();
+            $appInstance->BadRequest('Location is VIP only', ['error_code' => 'LOCATION_VIP_ONLY']);
+            return;
+        }
+
+        // Check if egg is VIP only and user doesn't have VIP permission
+        if (isset($eggInfo['vip_only']) && $eggInfo['vip_only'] === 'true' && !$session->hasPermission(Permissions::USER_PERMISSION_VIP)) {
+            $db->rollBack();
+            $appInstance->BadRequest('Egg is VIP only', ['error_code' => 'EGG_VIP_ONLY']);
+            return;
+        }
+
+        if ($locationInfo['slots'] < 1) {
+            $db->rollBack();
+            $appInstance->BadRequest('Location is full', ['error_code' => 'LOCATION_FULL']);
+            return;
+        }
+
+        // Th3Hunter FIX: Use row locking when checking server count to prevent race conditions
+        $serverCount = MythicalDash\Chat\Servers\Server::getServerCountByLocationId($location_id, true);
+        if ($serverCount >= $locationInfo['slots']) {
+            $db->rollBack();
+            $appInstance->BadRequest('Location is full', ['error_code' => 'LOCATION_FULL', 'server_count' => $serverCount, 'location_slots' => $locationInfo['slots']]);
+            return;
+        }
+
+        $sv = ServerQueue::create($name, $description, $memory, $disk, $cpu, $allocations, $databases, $backups, $location_id, $uuid, $category_id, $egg_id);
+        if ($sv == false) {
+            $db->rollBack();
+            $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
+        }
+
+        if ($sv == 0) {
+            $db->rollBack();
+            $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
+        }
+
+        // Th3Hunter FIX: Commit transaction after all operations are successful
+        $db->commit();
+        
+        try {
+            global $eventManager;
+            $eventManager->emit(ServerQueueEvent::onServerQueueCreated(), [
+                'id' => $sv,
+                'name' => $name,
+                'description' => $description,
+                'ram' => $memory,
+                'disk' => $disk,
+                'cpu' => $cpu,
+                'ports' => $allocations,
+                'databases' => $databases,
+                'backups' => $backups,
+                'location' => $location_id,
+                'user' => $uuid,
+                'nest' => $category_id,
+                'egg' => $egg_id,
+                'status' => 'pending',
+            ]);
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$server_create,
+                CloudFlareRealIP::getRealIP(),
+                "Created server queue item $sv"
+            );
+
+            $appInstance->OK('Server queue item created successfully.', ['error_code' => 'SERVER_QUEUE_ITEM_CREATED', 'server_queue_item' => $sv, 'server_count' => $serverCount, 'location_slots' => $locationInfo['slots']]);
+        } catch (Exception $e) {
+            $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
+        }
     } catch (Exception $e) {
-        $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
+        // Th3Hunter FIX: Rollback transaction on error
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        $appInstance->BadRequest('Failed to create server: ' . $e->getMessage(), ['error_code' => 'FAILED_TO_CREATE_SERVER']);
     }
 });
 
@@ -1012,13 +1092,38 @@ $router->post('/api/user/queue/(.*)/delete', function (string $id): void {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyPOST();
     $session = new Session($appInstance);
-    $accountToken = $session->SESSION_KEY;
-    $serverQueue = ServerQueue::getByUserAndId($session->getInfo(UserColumns::UUID, false), (int) $id);
-    if (empty($serverQueue)) {
-        $appInstance->BadRequest('Server queue item not found', ['error_code' => 'SERVER_QUEUE_ITEM_NOT_FOUND', 'server_queue' => $serverQueue]);
+    
+    // Th3Hunter FIX: Validate CSRF token to prevent CSRF attacks
+    if (!validateCSRFToken($session)) {
+        $appInstance->Forbidden('Invalid CSRF token', ['error_code' => 'INVALID_CSRF_TOKEN']);
+        return;
     }
-    ServerQueue::delete((int) $serverQueue['id'] ?? 0);
-    $appInstance->OK('Server queue item deleted successfully.', ['error_code' => 'SERVER_QUEUE_ITEM_DELETED']);
+    
+    $accountToken = $session->SESSION_KEY;
+    
+    // Th3Hunter FIX: Use database transaction to prevent race conditions
+    $db = $appInstance->getDatabase();
+    $db->beginTransaction();
+    
+    try {
+        $serverQueue = ServerQueue::getByUserAndId($session->getInfo(UserColumns::UUID, false), (int) $id);
+        if (empty($serverQueue)) {
+            $db->rollBack();
+            $appInstance->BadRequest('Server queue item not found', ['error_code' => 'SERVER_QUEUE_ITEM_NOT_FOUND', 'server_queue' => $serverQueue]);
+        }
+        ServerQueue::delete((int) $serverQueue['id'] ?? 0);
+        
+        // Th3Hunter FIX: Commit transaction after all operations are successful
+        $db->commit();
+        
+        $appInstance->OK('Server queue item deleted successfully.', ['error_code' => 'SERVER_QUEUE_ITEM_DELETED']);
+    } catch (Exception $e) {
+        // Th3Hunter FIX: Rollback transaction on error
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        $appInstance->BadRequest('Failed to delete server queue item: ' . $e->getMessage(), ['error_code' => 'FAILED_TO_DELETE_SERVER_QUEUE_ITEM']);
+    }
 });
 
 // Get server by ID
@@ -1035,14 +1140,12 @@ $router->get('/api/user/server/(.*)', function (string $id): void {
 
     if (empty($server)) {
         $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND', 'server' => $server]);
-
         return;
     }
     $pterodactylUserId = $session->getInfo(UserColumns::PTERODACTYL_USER_ID, false);
     $owner = $server['attributes']['user'];
     if ($owner != $pterodactylUserId) {
         $appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
-
         return;
     }
     // Add additional server information
