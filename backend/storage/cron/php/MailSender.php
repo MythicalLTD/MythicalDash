@@ -206,7 +206,7 @@ class MailSender implements TimeTask
             
             // Add List-Unsubscribe header (important for deliverability and usually main reason something gets sent to spam) 
             $unsubscribeUrl = $config->getDBSetting(ConfigInterface::APP_URL, '') . '/unsubscribe?email={recipient}';
-            $mailObj->addCustomHeader('List-Unsubscribe', '<' . $unsubscribeUrl . '>', 'mailto:unsubscribe@' . parse_url($fromEmail, PHP_URL_HOST));
+            $mailObj->addCustomHeader('List-Unsubscribe', '<' . $unsubscribeUrl . '>'. 'mailto:unsubscribe@' . parse_url($fromEmail, PHP_URL_HOST));
             $mailObj->addCustomHeader('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
             
             // Add Precedence header to avoid auto-responders
@@ -298,7 +298,7 @@ class MailSender implements TimeTask
                 // Update List-Unsubscribe header with recipient-specific URL 
                 $unsubscribeUrl = $config->getDBSetting(ConfigInterface::APP_URL, '') . '/unsubscribe?email=' . urlencode($userInfo['email']);
                 $this->smtpConnection->clearCustomHeaders();
-                $this->smtpConnection->addCustomHeader('List-Unsubscribe', '<' . $unsubscribeUrl . '>', 'mailto:unsubscribe@' . parse_url($config->getDBSetting(ConfigInterface::SMTP_FROM, null), PHP_URL_HOST));
+                $this->smtpConnection->addCustomHeader('List-Unsubscribe', '<' . $unsubscribeUrl . '>' . 'mailto:unsubscribe@' . parse_url($config->getDBSetting(ConfigInterface::SMTP_FROM, null), PHP_URL_HOST));
                 $this->smtpConnection->addCustomHeader('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
                 $this->smtpConnection->addCustomHeader('Precedence', 'bulk');
                 $this->smtpConnection->addCustomHeader('X-Auto-Response-Suppress', 'OOF, AutoReply');
