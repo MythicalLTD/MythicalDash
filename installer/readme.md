@@ -1,0 +1,1 @@
+# Mythical Dash installer (Beta)
