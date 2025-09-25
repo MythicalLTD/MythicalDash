@@ -456,7 +456,7 @@ CF_HOSTNAME=""
                     # Add universe repository if you are on Ubuntu 18.04
                     sudo apt-add-repository -y universe
                     # Install Dependencies
-                    install_packages php8.3 php8.3-common php8.3-cli php8.3-gd php8.3-mysql php8.3-mbstring php8.3-bcmath php8.3-xml php8.3-fpm php8.3-curl php8.3-zip php8.3-redis mariadb-server mariadb-client
+                    install_packages mariadb-server mariadb-client
                     echo "Ubuntu/Ubuntu Server dependencies installed."
                 elif [ "$OS" = "debian" ]; then
                     echo "Installing dependencies for Debian..."
@@ -548,11 +548,12 @@ CF_HOSTNAME=""
                     exit 1
                 fi
                 DB_PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9_ | head -c 16)
-                sudo mysql -e "CREATE USER 'mythicaldash_remastered'@'127.0.0.1' IDENTIFIED BY '$DB_PASSWORD';"
-                sudo mysql -e "CREATE DATABASE mythicaldash_remastered;"
+                sudo mysql -e "CREATE USER IF NOT EXISTS 'mythicaldash_remastered'@'127.0.0.1';"
+                sudo mysql -e "ALTER USER 'mythicaldash_remastered'@'127.0.0.1' IDENTIFIED BY '$DB_PASSWORD';"
+                sudo mysql -e "CREATE DATABASE IF NOT EXISTS mythicaldash_remastered;"
                 sudo mysql -e "GRANT ALL PRIVILEGES ON mythicaldash_remastered.* TO 'mythicaldash_remastered'@'127.0.0.1' WITH GRANT OPTION;"
-                echo "MariaDB user 'mythicaldash_remastered' created with password: $DB_PASSWORD"
-                echo "MariaDB database 'mythicaldash_remastered' created."
+                echo "MariaDB user 'mythicaldash_remastered' created/updated with password: $DB_PASSWORD"
+                echo "MariaDB database 'mythicaldash_remastered' created/ensured."
 
                 echo "Setting application to production mode..."
                 cd /var/www/mythicaldash-v3
@@ -564,10 +565,12 @@ CF_HOSTNAME=""
                 sudo make set-prod
                 echo "Application set to production mode."
 
-                echo "Adding cron jobs..."
-                (crontab -l 2>/dev/null; echo "* * * * * bash /var/www/mythicaldash-v3/backend/storage/cron/runner.bash >> /dev/null 2>&1") | crontab -
-                (crontab -l 2>/dev/null; echo "* * * * * php /var/www/mythicaldash-v3/backend/storage/cron/runner.php >> /dev/null 2>&1") | crontab -
-                echo "Cron jobs added."
+                echo "Adding/Updating cron jobs..."
+                { crontab -l 2>/dev/null | grep -v -F "/var/www/mythicaldash-v3/backend/storage/cron/runner.bash"; \
+                  crontab -l 2>/dev/null | grep -v -F "/var/www/mythicaldash-v3/backend/storage/cron/runner.php"; \
+                  echo "* * * * * bash /var/www/mythicaldash-v3/backend/storage/cron/runner.bash >> /dev/null 2>&1"; \
+                  echo "* * * * * php /var/www/mythicaldash-v3/backend/storage/cron/runner.php >> /dev/null 2>&1"; } | crontab -
+                echo "Cron jobs added/updated."
                 sudo chown -R www-data:www-data /var/www/mythicaldash-v3/*
                 
                 # Automate post-installation setup
