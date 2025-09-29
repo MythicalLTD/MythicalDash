@@ -1,6 +1,6 @@
 # Mythical Dash Installer
 
-### 🚧 Installer is in Beta!
+## 🚧 Installer is in Beta!
 If you encounter any issues, please create a ticket on our [Discord](https://discord.gg/mythicaldash) or open an issue on [GitHub](https://github.com/MythicalLTD/MythicalDash/issues).
 
 ## 🖥️ Supported Operating Systems
@@ -17,7 +17,7 @@ If you encounter any issues, please create a ticket on our [Discord](https://dis
 To install Mythical Dash, run the following command in your terminal:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/MythicalLTD/MythicalDash/refs/heads/v3-remastered/installer/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/MythicalLTD/MythicalDash/refs/heads/v3-remastered/installer/install.sh)
 ```
 
 This command will automatically download and execute the installer script.  
