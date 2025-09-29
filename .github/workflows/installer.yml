@@ -1,0 +1,38 @@
+name: Installer Checks
+
+on:
+  push:
+    paths:
+      - 'installer/**'
+      - '.github/workflows/installer.yml'
+  pull_request:
+    paths:
+      - 'installer/**'
+      - '.github/workflows/installer.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: ShellCheck installer script (${{ matrix.target }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: ubuntu-24.04
+            container: ubuntu:24.04
+          - target: debian-stable
+            container: debian:stable-slim
+    container: ${{ matrix.container }}
+    steps:
+      - name: Prepare environment
+        run: |
+          apt-get update
+          # Git is required for actions/checkout when running inside the container
+          DEBIAN_FRONTEND=noninteractive apt-get install -y git shellcheck
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Lint installer
+        run: shellcheck installer/install.sh
