@@ -35,4 +35,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Lint installer
-        run: shellcheck installer/install.sh
+        run: |
+          bash -n installer/install.sh
+          shellcheck -x installer/install.sh
