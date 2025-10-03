@@ -47,14 +47,6 @@ use MythicalDash\Plugins\Events\Events\ServerEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\ServerQueueEvent;
 
-// =============================================================================
-// CRITICAL FIX: Resource Validation Vulnerability
-// =============================================================================
-// The main vulnerability was that server creation didn't account for resources
-// already allocated to pending servers in the queue. This allowed users to
-// deploy multiple servers simultaneously, exceeding their resource limits.
-// =============================================================================
-
 // Update server
 $router->post('/api/user/server/(.*)/update', function (string $id): void {
     App::init();
@@ -79,26 +71,19 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         return;
     }
 
-    // Add additional server information with null safety checks
-    $locationId = $server['attributes']['relationships']['location']['attributes']['id'] ?? null;
-    if ($locationId !== null) {
-        $location = Locations::getLocationByPterodactylLocationId((int)$locationId);
-        $server['location'] = $location;
-    }
+    // Add additional server information
+    $locationId = $server['attributes']['relationships']['location']['attributes']['id'];
+    $location = Locations::getLocationByPterodactylLocationId($locationId);
+    $server['location'] = $location;
 
-    $eggId = $server['attributes']['relationships']['egg']['attributes']['id'] ?? null;
-    if ($eggId !== null) {
-        $egg = Eggs::getByPterodactylEggId($eggId);
-        $server['service'] = $egg;
-    }
+    $eggId = $server['attributes']['relationships']['egg']['attributes']['id'];
+    $egg = Eggs::getByPterodactylEggId($eggId);
+    $server['service'] = $egg;
 
-    $nestId = $server['attributes']['relationships']['nest']['attributes']['id'] ?? null;
-    if ($nestId !== null) {
-        $nest = EggCategories::getByPterodactylNestId($nestId);
-        $server['category'] = $nest;
-    }
-    
-    $allocation = $server['attributes']['allocation'] ?? null;
+    $nestId = $server['attributes']['relationships']['nest']['attributes']['id'];
+    $nest = EggCategories::getByPterodactylNestId($nestId);
+    $server['category'] = $nest;
+    $allocation = $server['attributes']['allocation'];
 
     // Validate input data
     if (isset($_POST['name']) && !empty($_POST['name'])) {
@@ -225,40 +210,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         return;
     }
 
-    // =========================================================================
-    // FIX: Include queued resources in resource validation
-    // =========================================================================
-    $uuid = $session->getInfo(UserColumns::UUID, false);
-    
-    // Get queued resources safely (fallback to 0 if method doesn't exist)
-    $queuedResources = [
-        'memory' => 0,
-        'disk' => 0,
-        'cpu' => 0,
-        'databases' => 0,
-        'backups' => 0,
-        'allocations' => 0,
-        'servers' => 0
-    ];
-    
-    // Check if the method exists before calling it
-    if (method_exists('MythicalDash\Chat\Servers\ServerQueue', 'getUserTotalQueuedResources')) {
-        $queuedResources = ServerQueue::getUserTotalQueuedResources($uuid);
-    }
-    
     $resources = Servers::getUserTotalResourcesUsage($pterodactylUserId);
-    
-    // Combine active and queued resources for accurate validation
-    $totalUsedResources = [
-        'memory' => $resources['memory'] + $queuedResources['memory'],
-        'disk' => $resources['disk'] + $queuedResources['disk'],
-        'cpu' => $resources['cpu'] + $queuedResources['cpu'],
-        'databases' => $resources['databases'] + $queuedResources['databases'],
-        'backups' => $resources['backups'] + $queuedResources['backups'],
-        'allocations' => $resources['allocations'] + $queuedResources['allocations'],
-        'servers' => $resources['servers'] + $queuedResources['servers']
-    ];
-
     $available_resources = User::getInfoArray($accountToken, [
         UserColumns::MEMORY_LIMIT,
         UserColumns::DISK_LIMIT,
@@ -271,12 +223,12 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
 
     // Get current server resources to calculate the difference
     $currentServerResources = [
-        'memory' => $server['attributes']['limits']['memory'] ?? 0,
-        'disk' => $server['attributes']['limits']['disk'] ?? 0,
-        'cpu' => $server['attributes']['limits']['cpu'] ?? 0,
-        'databases' => $server['attributes']['feature_limits']['databases'] ?? 0,
-        'backups' => $server['attributes']['feature_limits']['backups'] ?? 0,
-        'allocations' => $server['attributes']['feature_limits']['allocations'] ?? 0,
+        'memory' => $server['attributes']['limits']['memory'],
+        'disk' => $server['attributes']['limits']['disk'],
+        'cpu' => $server['attributes']['limits']['cpu'],
+        'databases' => $server['attributes']['feature_limits']['databases'],
+        'backups' => $server['attributes']['feature_limits']['backups'],
+        'allocations' => $server['attributes']['feature_limits']['allocations'],
     ];
 
     // Calculate resource difference (new - current)
@@ -289,14 +241,14 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         'allocations' => $allocations - $currentServerResources['allocations'],
     ];
 
-    // Check if the update would exceed available resources (including queued)
+    // Check if the update would exceed available resources
     if ($resourceDifference['memory'] > 0) {
-        $freeMemory = $available_resources[UserColumns::MEMORY_LIMIT] - $totalUsedResources['memory'];
+        $freeMemory = $available_resources[UserColumns::MEMORY_LIMIT] - $resources['memory'];
         if ($resourceDifference['memory'] > $freeMemory) {
             $appInstance->BadRequest('This update would exceed your maximum memory limit', [
                 'error_code' => 'MAX_MEMORY_LIMIT',
                 'required' => $available_resources[UserColumns::MEMORY_LIMIT],
-                'current_usage' => $totalUsedResources['memory'],
+                'current_usage' => $resources['memory'],
                 'attempted_to_add' => $resourceDifference['memory'],
             ]);
             return;
@@ -304,12 +256,12 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     }
 
     if ($resourceDifference['disk'] > 0) {
-        $freeDisk = $available_resources[UserColumns::DISK_LIMIT] - $totalUsedResources['disk'];
+        $freeDisk = $available_resources[UserColumns::DISK_LIMIT] - $resources['disk'];
         if ($resourceDifference['disk'] > $freeDisk) {
             $appInstance->BadRequest('This update would exceed your maximum disk limit', [
                 'error_code' => 'MAX_DISK_LIMIT',
                 'required' => $available_resources[UserColumns::DISK_LIMIT],
-                'current_usage' => $totalUsedResources['disk'],
+                'current_usage' => $resources['disk'],
                 'attempted_to_add' => $resourceDifference['disk'],
             ]);
             return;
@@ -317,12 +269,12 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     }
 
     if ($resourceDifference['cpu'] > 0) {
-        $freeCpu = $available_resources[UserColumns::CPU_LIMIT] - $totalUsedResources['cpu'];
+        $freeCpu = $available_resources[UserColumns::CPU_LIMIT] - $resources['cpu'];
         if ($resourceDifference['cpu'] > $freeCpu) {
             $appInstance->BadRequest('This update would exceed your maximum CPU limit', [
                 'error_code' => 'MAX_CPU_LIMIT',
                 'required' => $available_resources[UserColumns::CPU_LIMIT],
-                'current_usage' => $totalUsedResources['cpu'],
+                'current_usage' => $resources['cpu'],
                 'attempted_to_add' => $resourceDifference['cpu'],
             ]);
             return;
@@ -330,12 +282,12 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     }
 
     if ($resourceDifference['databases'] > 0 && $available_resources[UserColumns::DATABASE_LIMIT] >= 0) {
-        $freeDatabases = $available_resources[UserColumns::DATABASE_LIMIT] - $totalUsedResources['databases'];
+        $freeDatabases = $available_resources[UserColumns::DATABASE_LIMIT] - $resources['databases'];
         if ($resourceDifference['databases'] > $freeDatabases) {
             $appInstance->BadRequest('This update would exceed your maximum databases limit', [
                 'error_code' => 'MAX_DATABASES_LIMIT',
                 'required' => $available_resources[UserColumns::DATABASE_LIMIT],
-                'current_usage' => $totalUsedResources['databases'],
+                'current_usage' => $resources['databases'],
                 'attempted_to_add' => $resourceDifference['databases'],
             ]);
             return;
@@ -343,12 +295,12 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     }
 
     if ($resourceDifference['backups'] > 0 && $available_resources[UserColumns::BACKUP_LIMIT] >= 0) {
-        $freeBackups = $available_resources[UserColumns::BACKUP_LIMIT] - $totalUsedResources['backups'];
+        $freeBackups = $available_resources[UserColumns::BACKUP_LIMIT] - $resources['backups'];
         if ($resourceDifference['backups'] > $freeBackups) {
             $appInstance->BadRequest('This update would exceed your maximum backups limit', [
                 'error_code' => 'MAX_BACKUPS_LIMIT',
                 'required' => $available_resources[UserColumns::BACKUP_LIMIT],
-                'current_usage' => $totalUsedResources['backups'],
+                'current_usage' => $resources['backups'],
                 'attempted_to_add' => $resourceDifference['backups'],
             ]);
             return;
@@ -356,12 +308,12 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     }
 
     if ($resourceDifference['allocations'] > 0) {
-        $freeAllocations = $available_resources[UserColumns::ALLOCATION_LIMIT] - $totalUsedResources['allocations'];
+        $freeAllocations = $available_resources[UserColumns::ALLOCATION_LIMIT] - $resources['allocations'];
         if ($resourceDifference['allocations'] > $freeAllocations) {
             $appInstance->BadRequest('This update would exceed your maximum allocations limit', [
                 'error_code' => 'MAX_ALLOCATIONS_LIMIT',
                 'required' => $available_resources[UserColumns::ALLOCATION_LIMIT],
-                'current_usage' => $totalUsedResources['allocations'],
+                'current_usage' => $resources['allocations'],
                 'attempted_to_add' => $resourceDifference['allocations'],
             ]);
             return;
@@ -638,41 +590,7 @@ $router->get('/api/user/server/create', function (): void {
     });
 
     $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
-    
-    // =========================================================================
-    // FIX: Safe resource calculation with fallback for missing methods
-    // =========================================================================
-    $uuid = $session->getInfo(UserColumns::UUID, false);
-    
-    // Initialize queued resources with safe defaults
-    $queuedResources = [
-        'memory' => 0,
-        'disk' => 0,
-        'cpu' => 0,
-        'databases' => 0,
-        'backups' => 0,
-        'allocations' => 0,
-        'servers' => 0
-    ];
-    
-    // Safely get queued resources if method exists
-    if (method_exists('MythicalDash\Chat\Servers\ServerQueue', 'getUserTotalQueuedResources')) {
-        $queuedResources = ServerQueue::getUserTotalQueuedResources($uuid);
-    }
-    
-    $activeResources = Servers::getUserTotalResourcesUsage($pterodactylUserId, true);
-    
-    // Combine active and queued resources
-    $resources = [
-        'memory' => $activeResources['memory'] + $queuedResources['memory'],
-        'disk' => $activeResources['disk'] + $queuedResources['disk'],
-        'cpu' => $activeResources['cpu'] + $queuedResources['cpu'],
-        'databases' => $activeResources['databases'] + $queuedResources['databases'],
-        'backups' => $activeResources['backups'] + $queuedResources['backups'],
-        'allocations' => $activeResources['allocations'] + $queuedResources['allocations'],
-        'servers' => $activeResources['servers'] + $queuedResources['servers']
-    ];
-
+    $resources = Servers::getUserTotalResourcesUsage($pterodactylUserId, true);
     $available_resources = User::getInfoArray($accountToken, [
         UserColumns::MEMORY_LIMIT,
         UserColumns::DISK_LIMIT,
@@ -733,10 +651,7 @@ $router->post('/api/user/server/create', function (): void {
     $config = $appInstance->getConfig();
     
     // =========================================================================
-    // ENHANCED VALIDATION: Comprehensive pre-check system
-    // =========================================================================
-    // This section performs all validations BEFORE any database operations
-    // to prevent partial failures and ensure data consistency
+    // LAYER 1: Basic validation and requirements
     // =========================================================================
     
     // Check if server creation is globally enabled
@@ -843,24 +758,13 @@ $router->post('/api/user/server/create', function (): void {
     }
     
     $uuid = User::getInfo($accountToken, UserColumns::UUID, false);
-    
-    // =========================================================================
-    // CRITICAL FIX: Prevent multiple simultaneous server creations
-    // =========================================================================
-    // This check prevents race conditions by ensuring only one server creation
-    // request can be processed per user at a time
-    if (ServerQueue::hasAtLeastOnePendingItem($uuid)) {
-        $appInstance->BadRequest('You already have a pending server creation request', ['error_code' => 'PENDING_SERVER_CREATION_REQUEST']);
-        return;
-    }
-    
     $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
     
     // =========================================================================
-    // ENHANCED RESOURCE VALIDATION: Safe resource calculation
+    // LAYER 2: Comprehensive resource validation with queued resources
     // =========================================================================
-    // This is the main fix for the vulnerability - we now include resources
-    // from both active servers AND queued servers in our validation
+    
+    // Get queued resources safely (fallback to 0 if method doesn't exist)
     $queuedResources = [
         'memory' => 0,
         'disk' => 0,
@@ -871,7 +775,7 @@ $router->post('/api/user/server/create', function (): void {
         'servers' => 0
     ];
     
-    // Safely get queued resources if method exists
+    // Check if the method exists before calling it
     if (method_exists('MythicalDash\Chat\Servers\ServerQueue', 'getUserTotalQueuedResources')) {
         $queuedResources = ServerQueue::getUserTotalQueuedResources($uuid);
     }
@@ -889,6 +793,17 @@ $router->post('/api/user/server/create', function (): void {
         'servers' => $activeResources['servers'] + $queuedResources['servers']
     ];
     
+    // Add the new server's resources to calculate total after creation
+    $totalAfterCreation = [
+        'memory' => $totalUsedResources['memory'] + $memory,
+        'disk' => $totalUsedResources['disk'] + $disk,
+        'cpu' => $totalUsedResources['cpu'] + $cpu,
+        'databases' => $totalUsedResources['databases'] + $databases,
+        'backups' => $totalUsedResources['backups'] + $backups,
+        'allocations' => $totalUsedResources['allocations'] + $allocations,
+        'servers' => $totalUsedResources['servers'] + 1
+    ];
+    
     $available_resources = User::getInfoArray($accountToken, [
         UserColumns::MEMORY_LIMIT,
         UserColumns::DISK_LIMIT,
@@ -899,54 +814,29 @@ $router->post('/api/user/server/create', function (): void {
         UserColumns::SERVER_LIMIT,
     ], []);
     
-    // Calculate free resources after accounting for both active and queued
-    $free_resources = [
-        'memory' => $available_resources[UserColumns::MEMORY_LIMIT] - $totalUsedResources['memory'],
-        'disk' => $available_resources[UserColumns::DISK_LIMIT] - $totalUsedResources['disk'],
-        'cpu' => $available_resources[UserColumns::CPU_LIMIT] - $totalUsedResources['cpu'],
-        'databases' => $available_resources[UserColumns::DATABASE_LIMIT] - $totalUsedResources['databases'],
-        'backups' => $available_resources[UserColumns::BACKUP_LIMIT] - $totalUsedResources['backups'],
-        'allocations' => $available_resources[UserColumns::ALLOCATION_LIMIT] - $totalUsedResources['allocations'],
-        'servers' => $available_resources[UserColumns::SERVER_LIMIT] - $totalUsedResources['servers'],
-    ];
-    
-    $total_resources = [
-        'memory' => $available_resources[UserColumns::MEMORY_LIMIT],
-        'disk' => $available_resources[UserColumns::DISK_LIMIT],
-        'cpu' => $available_resources[UserColumns::CPU_LIMIT],
-        'databases' => $available_resources[UserColumns::DATABASE_LIMIT],
-        'backups' => $available_resources[UserColumns::BACKUP_LIMIT],
-        'allocations' => $available_resources[UserColumns::ALLOCATION_LIMIT],
-        'servers' => $available_resources[UserColumns::SERVER_LIMIT],
-    ];
-    
-    // Enhanced resource validation with detailed error messages
+    // Enhanced resource validation with queued resources included
     $resourceValidations = [
-        ['type' => 'memory', 'requested' => $memory, 'free' => $free_resources['memory'], 'total' => $total_resources['memory'], 'used' => $totalUsedResources['memory'], 'error' => 'MAX_MEMORY_LIMIT'],
-        ['type' => 'cpu', 'requested' => $cpu, 'free' => $free_resources['cpu'], 'total' => $total_resources['cpu'], 'used' => $totalUsedResources['cpu'], 'error' => 'MAX_CPU_LIMIT'],
-        ['type' => 'disk', 'requested' => $disk, 'free' => $free_resources['disk'], 'total' => $total_resources['disk'], 'used' => $totalUsedResources['disk'], 'error' => 'MAX_DISK_LIMIT'],
-        ['type' => 'databases', 'requested' => $databases, 'free' => $free_resources['databases'], 'total' => $total_resources['databases'], 'used' => $totalUsedResources['databases'], 'error' => 'MAX_DATABASES_LIMIT'],
-        ['type' => 'backups', 'requested' => $backups, 'free' => $free_resources['backups'], 'total' => $total_resources['backups'], 'used' => $totalUsedResources['backups'], 'error' => 'MAX_BACKUPS_LIMIT'],
-        ['type' => 'allocations', 'requested' => $allocations, 'free' => $free_resources['allocations'], 'total' => $total_resources['allocations'], 'used' => $totalUsedResources['allocations'], 'error' => 'MAX_ALLOCATIONS_LIMIT'],
+        ['type' => 'memory', 'requested' => $memory, 'total_after' => $totalAfterCreation['memory'], 'limit' => $available_resources[UserColumns::MEMORY_LIMIT], 'error' => 'MAX_MEMORY_LIMIT'],
+        ['type' => 'cpu', 'requested' => $cpu, 'total_after' => $totalAfterCreation['cpu'], 'limit' => $available_resources[UserColumns::CPU_LIMIT], 'error' => 'MAX_CPU_LIMIT'],
+        ['type' => 'disk', 'requested' => $disk, 'total_after' => $totalAfterCreation['disk'], 'limit' => $available_resources[UserColumns::DISK_LIMIT], 'error' => 'MAX_DISK_LIMIT'],
+        ['type' => 'databases', 'requested' => $databases, 'total_after' => $totalAfterCreation['databases'], 'limit' => $available_resources[UserColumns::DATABASE_LIMIT], 'error' => 'MAX_DATABASES_LIMIT'],
+        ['type' => 'backups', 'requested' => $backups, 'total_after' => $totalAfterCreation['backups'], 'limit' => $available_resources[UserColumns::BACKUP_LIMIT], 'error' => 'MAX_BACKUPS_LIMIT'],
+        ['type' => 'allocations', 'requested' => $allocations, 'total_after' => $totalAfterCreation['allocations'], 'limit' => $available_resources[UserColumns::ALLOCATION_LIMIT], 'error' => 'MAX_ALLOCATIONS_LIMIT'],
+        ['type' => 'servers', 'requested' => 1, 'total_after' => $totalAfterCreation['servers'], 'limit' => $available_resources[UserColumns::SERVER_LIMIT], 'error' => 'MAX_SERVER_LIMIT'],
     ];
     
     foreach ($resourceValidations as $validation) {
-        if ($validation['requested'] > $validation['free']) {
+        if ($validation['total_after'] > $validation['limit']) {
             $appInstance->BadRequest('This server would exceed your maximum ' . $validation['type'] . ' limit', [
                 'error_code' => $validation['error'],
-                'required' => $validation['total'],
-                'current_usage' => $validation['used'],
+                'limit' => $validation['limit'],
+                'current_usage' => $totalUsedResources[$validation['type']],
+                'queued_usage' => $queuedResources[$validation['type']],
                 'attempted_to_add' => $validation['requested'],
-                'free_available' => $validation['free']
+                'total_after_creation' => $validation['total_after']
             ]);
             return;
         }
-    }
-    
-    // Server count validation
-    if ($free_resources['servers'] < 1) {
-        $appInstance->BadRequest('Not enough servers', ['error_code' => 'NOT_ENOUGH_SERVERS']);
-        return;
     }
     
     $locationInfo = Locations::get($location_id);
@@ -976,59 +866,160 @@ $router->post('/api/user/server/create', function (): void {
     }
     
     // =========================================================================
-    // FINAL VALIDATION: Atomic server queue creation
+    // LAYER 3: Atomic locking and race condition prevention
     // =========================================================================
-    // Only after ALL validations pass do we create the server queue item
-    // This prevents partial failures and ensures data consistency
-    $sv = ServerQueue::create($name, $description, $memory, $disk, $cpu, $allocations, $databases, $backups, $location_id, $uuid, $category_id, $egg_id);
     
-    if ($sv == false || $sv == 0) {
-        $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
+    // Use file-based locking as a fallback to prevent race conditions
+    $lockFile = sys_get_temp_dir() . '/mythicaldash_server_create_' . md5($uuid) . '.lock';
+    $lockHandle = fopen($lockFile, 'w+');
+    
+    if (!$lockHandle) {
+        $appInstance->ServiceUnavailable('Server creation temporarily unavailable', ['error_code' => 'LOCK_UNAVAILABLE']);
         return;
     }
     
+    // Try to acquire exclusive lock with timeout
+    $lockAcquired = flock($lockHandle, LOCK_EX | LOCK_NB, $wouldBlock);
+    
+    if (!$lockAcquired) {
+        if ($wouldBlock) {
+            // Another process is already creating a server for this user
+            fclose($lockHandle);
+            $appInstance->BadRequest('Server creation already in progress', ['error_code' => 'CREATION_IN_PROGRESS']);
+            return;
+        } else {
+            // Lock failed for some other reason
+            fclose($lockHandle);
+            $appInstance->ServiceUnavailable('Server creation temporarily unavailable', ['error_code' => 'LOCK_FAILED']);
+            return;
+        }
+    }
+    
     try {
-        global $eventManager;
-        $eventManager->emit(ServerQueueEvent::onServerQueueCreated(), [
-            'id' => $sv,
-            'name' => $name,
-            'description' => $description,
-            'ram' => $memory,
-            'disk' => $disk,
-            'cpu' => $cpu,
-            'ports' => $allocations,
-            'databases' => $databases,
-            'backups' => $backups,
-            'location' => $location_id,
-            'user' => $uuid,
-            'nest' => $category_id,
-            'egg' => $egg_id,
-            'status' => 'pending',
-        ]);
+        // Double-check pending items with the lock held
+        if (ServerQueue::hasAtLeastOnePendingItem($uuid)) {
+            flock($lockHandle, LOCK_UN);
+            fclose($lockHandle);
+            $appInstance->BadRequest('You already have a pending server creation request', ['error_code' => 'PENDING_SERVER_CREATION_REQUEST']);
+            return;
+        }
         
-        UserActivities::add(
-            $session->getInfo(UserColumns::UUID, false),
-            UserActivitiesTypes::$server_create,
-            CloudFlareRealIP::getRealIP(),
-            "Created server queue item $sv"
-        );
+        // Final resource check with lock held (in case something changed)
+        $finalQueuedResources = method_exists('MythicalDash\Chat\Servers\ServerQueue', 'getUserTotalQueuedResources') 
+            ? ServerQueue::getUserTotalQueuedResources($uuid) 
+            : $queuedResources;
+            
+        $finalActiveResources = Servers::getUserTotalResourcesUsage($pterodactylUserId);
         
-        $appInstance->OK('Server queue item created successfully.', [
-            'error_code' => 'SERVER_QUEUE_ITEM_CREATED', 
-            'server_queue_item' => $sv, 
-            'server_count' => $serverCount, 
-            'location_slots' => $locationInfo['slots']
-        ]);
+        $finalTotalUsed = [
+            'memory' => $finalActiveResources['memory'] + $finalQueuedResources['memory'],
+            'disk' => $finalActiveResources['disk'] + $finalQueuedResources['disk'],
+            'cpu' => $finalActiveResources['cpu'] + $finalQueuedResources['cpu'],
+            'databases' => $finalActiveResources['databases'] + $finalQueuedResources['databases'],
+            'backups' => $finalActiveResources['backups'] + $finalQueuedResources['backups'],
+            'allocations' => $finalActiveResources['allocations'] + $finalQueuedResources['allocations'],
+            'servers' => $finalActiveResources['servers'] + $finalQueuedResources['servers']
+        ];
+        
+        $finalTotalAfter = [
+            'memory' => $finalTotalUsed['memory'] + $memory,
+            'disk' => $finalTotalUsed['disk'] + $disk,
+            'cpu' => $finalTotalUsed['cpu'] + $cpu,
+            'databases' => $finalTotalUsed['databases'] + $databases,
+            'backups' => $finalTotalUsed['backups'] + $backups,
+            'allocations' => $finalTotalUsed['allocations'] + $allocations,
+            'servers' => $finalTotalUsed['servers'] + 1
+        ];
+        
+        // Final validation with latest data
+        foreach ($resourceValidations as $validation) {
+            $type = $validation['type'];
+            if ($finalTotalAfter[$type] > $validation['limit']) {
+                flock($lockHandle, LOCK_UN);
+                fclose($lockHandle);
+                $appInstance->BadRequest('Resources changed - this server would now exceed your maximum ' . $type . ' limit', [
+                    'error_code' => $validation['error'] . '_CHANGED',
+                    'limit' => $validation['limit'],
+                    'current_usage' => $finalTotalUsed[$type],
+                    'attempted_to_add' => $validation['requested'],
+                    'total_after_creation' => $finalTotalAfter[$type]
+                ]);
+                return;
+            }
+        }
+        
+        // Create server queue item
+        $sv = ServerQueue::create($name, $description, $memory, $disk, $cpu, $allocations, $databases, $backups, $location_id, $uuid, $category_id, $egg_id);
+        
+        if ($sv == false || $sv == 0) {
+            flock($lockHandle, LOCK_UN);
+            fclose($lockHandle);
+            $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
+            return;
+        }
+        
+        // Release the lock
+        flock($lockHandle, LOCK_UN);
+        fclose($lockHandle);
+        
+        // Success handling
+        try {
+            global $eventManager;
+            $eventManager->emit(ServerQueueEvent::onServerQueueCreated(), [
+                'id' => $sv,
+                'name' => $name,
+                'description' => $description,
+                'ram' => $memory,
+                'disk' => $disk,
+                'cpu' => $cpu,
+                'ports' => $allocations,
+                'databases' => $databases,
+                'backups' => $backups,
+                'location' => $location_id,
+                'user' => $uuid,
+                'nest' => $category_id,
+                'egg' => $egg_id,
+                'status' => 'pending',
+            ]);
+            
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$server_create,
+                CloudFlareRealIP::getRealIP(),
+                "Created server queue item $sv"
+            );
+            
+            $appInstance->OK('Server queue item created successfully.', [
+                'error_code' => 'SERVER_QUEUE_ITEM_CREATED', 
+                'server_queue_item' => $sv, 
+                'server_count' => $serverCount, 
+                'location_slots' => $locationInfo['slots'],
+                'resource_usage' => [
+                    'before' => $finalTotalUsed,
+                    'after' => $finalTotalAfter,
+                    'limits' => $available_resources
+                ]
+            ]);
+            
+        } catch (Exception $e) {
+            // If event emission fails, we should still consider the creation successful
+            // but log the error for debugging
+            $appInstance->getLogger()->error('Server queue created but event emission failed: ' . $e->getMessage());
+            $appInstance->OK('Server queue item created successfully (with event error).', [
+                'error_code' => 'SERVER_QUEUE_ITEM_CREATED', 
+                'server_queue_item' => $sv,
+                'warning' => 'Event emission failed'
+            ]);
+        }
         
     } catch (Exception $e) {
-        // If event emission fails, we should still consider the creation successful
-        // but log the error for debugging
-        $appInstance->getLogger()->error('Server queue created but event emission failed: ' . $e->getMessage());
-        $appInstance->OK('Server queue item created successfully (with event error).', [
-            'error_code' => 'SERVER_QUEUE_ITEM_CREATED', 
-            'server_queue_item' => $sv,
-            'warning' => 'Event emission failed'
-        ]);
+        // Ensure lock is released on error
+        if ($lockHandle) {
+            flock($lockHandle, LOCK_UN);
+            fclose($lockHandle);
+        }
+        $appInstance->ServiceUnavailable('Error creating server: ' . $e->getMessage(), ['error_code' => 'SERVER_CREATION_FAILED']);
+        return;
     }
 });
 
@@ -1073,24 +1064,18 @@ $router->get('/api/user/server/(.*)', function (string $id): void {
         return;
     }
     
-    // Add additional server information with null safety
-    $locationId = $server['attributes']['relationships']['location']['attributes']['id'] ?? null;
-    if ($locationId !== null) {
-        $location = Locations::getLocationByPterodactylLocationId((int)$locationId);
-        $server['location'] = $location;
-    }
+    // Add additional server information
+    $locationId = $server['attributes']['relationships']['location']['attributes']['id'];
+    $location = Locations::getLocationByPterodactylLocationId($locationId);
+    $server['location'] = $location;
 
-    $eggId = $server['attributes']['relationships']['egg']['attributes']['id'] ?? null;
-    if ($eggId !== null) {
-        $egg = Eggs::getByPterodactylEggId($eggId);
-        $server['service'] = $egg;
-    }
+    $eggId = $server['attributes']['relationships']['egg']['attributes']['id'];
+    $egg = Eggs::getByPterodactylEggId($eggId);
+    $server['service'] = $egg;
 
-    $nestId = $server['attributes']['relationships']['nest']['attributes']['id'] ?? null;
-    if ($nestId !== null) {
-        $nest = EggCategories::getByPterodactylNestId($nestId);
-        $server['category'] = $nest;
-    }
+    $nestId = $server['attributes']['relationships']['nest']['attributes']['id'];
+    $nest = EggCategories::getByPterodactylNestId($nestId);
+    $server['category'] = $nest;
 
     if (MythicalDash\Chat\Servers\Server::doesServerExistByPterodactylId($id)) {
         $serverInfoDb = MythicalDash\Chat\Servers\Server::getByPterodactylId($id);
