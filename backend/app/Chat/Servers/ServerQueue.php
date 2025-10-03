@@ -123,6 +123,102 @@ class ServerQueue extends Database
     }
 
     /**
+     * =========================================================================
+     * CRITICAL SECURITY FIX: Resource calculation for pending servers
+     * =========================================================================
+     * These methods are used to calculate total resources allocated to pending
+     * servers in the queue, preventing users from exceeding their resource limits
+     * by creating multiple servers simultaneously.
+     * =========================================================================
+     */
+
+    /**
+     * Calculate total resources for all pending servers a user has in the queue.
+     *
+     * @param string $user_uuid The UUID of the user
+     * @return array An array containing the sum of all queued resources
+     */
+    public static function getUserTotalQueuedResources(string $user_uuid): array
+    {
+        try {
+            $dbConn = Database::getPdoConnection();
+
+            $stmt = $dbConn->prepare("SELECT 
+                SUM(ram) as memory, 
+                SUM(disk) as disk, 
+                SUM(cpu) as cpu, 
+                SUM(databases) as databases, 
+                SUM(backups) as backups, 
+                SUM(ports) as allocations 
+                FROM " . self::getTableName() . " 
+                WHERE user = :user_uuid 
+                AND status = 'pending' 
+                AND deleted = 'false'");
+
+            $stmt->bindParam(':user_uuid', $user_uuid);
+            $stmt->execute();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            return [
+                'memory' => (int)($result['memory'] ?? 0),
+                'disk' => (int)($result['disk'] ?? 0),
+                'cpu' => (int)($result['cpu'] ?? 0),
+                'databases' => (int)($result['databases'] ?? 0),
+                'backups' => (int)($result['backups'] ?? 0),
+                'allocations' => (int)($result['allocations'] ?? 0),
+                'servers' => self::countPendingServers($user_uuid)
+            ];
+        } catch (\Exception $e) {
+            self::db_Error('Failed to get user total queued resources: ' . $e->getMessage());
+
+            return [
+                'memory' => 0,
+                'disk' => 0,
+                'cpu' => 0,
+                'databases' => 0,
+                'backups' => 0,
+                'allocations' => 0,
+                'servers' => 0
+            ];
+        }
+    }
+
+    /**
+     * Count the number of pending servers a user has in the queue.
+     *
+     * @param string $user_uuid The UUID of the user
+     * @return int The number of pending servers
+     */
+    public static function countPendingServers(string $user_uuid): int
+    {
+        try {
+            $dbConn = Database::getPdoConnection();
+
+            $stmt = $dbConn->prepare("SELECT COUNT(*) as count 
+                FROM " . self::getTableName() . " 
+                WHERE user = :user_uuid 
+                AND status = 'pending' 
+                AND deleted = 'false'");
+
+            $stmt->bindParam(':user_uuid', $user_uuid);
+            $stmt->execute();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            return (int)($result['count'] ?? 0);
+        } catch (\Exception $e) {
+            self::db_Error('Failed to count pending servers: ' . $e->getMessage());
+
+            return 0;
+        }
+    }
+
+    /**
+     * =========================================================================
+     * END OF SECURITY FIX METHODS
+     * =========================================================================
+     */
+
+    /**
      * Get a specific server queue item by ID.
      *
      * @param int $id The ID of the server queue item
