@@ -16,7 +16,7 @@ install_packages() {
     done
 
     if [ ${#packages_to_install[@]} -gt 0 ]; then
-        echo "Installing packages: ${packages_to_install[@]}"
+    printf 'Installing packages: %s\n' "${packages_to_install[*]}"
         sudo apt-get -qq install -y "${packages_to_install[@]}"
     fi
 }
@@ -65,6 +65,7 @@ uninstall_no_docker() {
 uninstall_cloudflare_tunnel() {
     echo "Uninstalling Cloudflare Tunnel..."
     if [ -f /var/www/mythicaldash-v3/.cf_creds ]; then
+        # shellcheck source=/dev/null
         . /var/www/mythicaldash-v3/.cf_creds
 
         if [ -n "$TUNNEL_ID" ] && [ -n "$ACCOUNT_ID" ] && [ -n "$ZONE_ID" ] && [ -n "$CF_HOSTNAME" ]; then
@@ -109,18 +110,18 @@ setup_cloudflare_tunnel_full_auto() {
          -H "X-Auth-Key: $CF_API_KEY" \
          -H "Content-Type: application/json")
 
-    ACCOUNT_COUNT=$(echo $ACCOUNTS_DATA | jq -r '.result | length')
+    ACCOUNT_COUNT=$(echo "$ACCOUNTS_DATA" | jq -r '.result | length')
 
     if [ "$ACCOUNT_COUNT" == "0" ]; then
         echo "Error: No Cloudflare accounts found. Please check your email and API key."
         return 1
     elif [ "$ACCOUNT_COUNT" -gt "1" ]; then
         echo "Multiple Cloudflare accounts found. Please choose one:"
-        echo $ACCOUNTS_DATA | jq -r '.result[] | "\(.id) \(.name)"' | nl
-        read -p "Enter the number of the account you want to use: " ACCOUNT_CHOICE
-        ACCOUNT_ID=$(echo $ACCOUNTS_DATA | jq -r ".result[$((ACCOUNT_CHOICE-1))].id")
+    echo "$ACCOUNTS_DATA" | jq -r '.result[] | "\(.id) \(.name)"' | nl
+    read -r -p "Enter the number of the account you want to use: " ACCOUNT_CHOICE
+    ACCOUNT_ID=$(echo "$ACCOUNTS_DATA" | jq -r ".result[$((ACCOUNT_CHOICE-1))].id")
     else
-        ACCOUNT_ID=$(echo $ACCOUNTS_DATA | jq -r '.result[0].id')
+    ACCOUNT_ID=$(echo "$ACCOUNTS_DATA" | jq -r '.result[0].id')
     fi
 
     if [ "$ACCOUNT_ID" == "null" ] || [ -z "$ACCOUNT_ID" ]; then
@@ -140,7 +141,7 @@ setup_cloudflare_tunnel_full_auto() {
              -H "X-Auth-Key: $CF_API_KEY" \
              -H "Content-Type: application/json" \
              --data '{"name":"Mythical-Dash"}')
-        TUNNEL_ID=$(echo $TUNNEL_CREATE_DATA | jq -r '.result.id')
+    TUNNEL_ID=$(echo "$TUNNEL_CREATE_DATA" | jq -r '.result.id')
         if [ "$TUNNEL_ID" == "null" ] || [ -z "$TUNNEL_ID" ]; then
             echo "Error: Could not create Cloudflare Tunnel."
             echo "API Response: $TUNNEL_CREATE_DATA"
@@ -161,7 +162,7 @@ setup_cloudflare_tunnel_full_auto() {
         return 1
     fi
 
-    ZONE_NAME=$(echo $CF_HOSTNAME | awk -F. '{print $(NF-1)"."$NF}')
+    ZONE_NAME=$(echo "$CF_HOSTNAME" | awk -F. '{print $(NF-1)"."$NF}')
     ZONE_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$ZONE_NAME" \
          -H "X-Auth-Email: $CF_EMAIL" \
          -H "X-Auth-Key: $CF_API_KEY" \
@@ -174,26 +175,28 @@ setup_cloudflare_tunnel_full_auto() {
 
     echo "Configuring DNS and ingress rules..."
     curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records" \
-         -H "X-Auth-Email: $CF_EMAIL" \
-         -H "X-Auth-Key: $CF_API_KEY" \
-         -H "Content-Type: application/json" \
-         --data '{"type":"CNAME","name":"'$CF_HOSTNAME'","content":"'$TUNNEL_ID'.cfargotunnel.com","proxied":true}' > /dev/null
+        -H "X-Auth-Email: $CF_EMAIL" \
+        -H "X-Auth-Key: $CF_API_KEY" \
+        -H "Content-Type: application/json" \
+        --data "$(jq -n --arg host "$CF_HOSTNAME" --arg tunnel "$TUNNEL_ID" '{type:"CNAME",name:$host,content:($tunnel + ".cfargotunnel.com"),proxied:true}')" > /dev/null
 
     curl -s -X PUT "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/cfd_tunnel/$TUNNEL_ID/configurations" \
-         -H "X-Auth-Email: $CF_EMAIL" \
-         -H "X-Auth-Key: $CF_API_KEY" \
-         -H "Content-Type: application/json" \
-         --data '{"config":{"ingress":[{"hostname":"'$CF_HOSTNAME'","service":"http://localhost:4830"},{"service":"http_status:404"}]}}' > /dev/null
+        -H "X-Auth-Email: $CF_EMAIL" \
+        -H "X-Auth-Key: $CF_API_KEY" \
+        -H "Content-Type: application/json" \
+        --data "$(jq -n --arg hostname "$CF_HOSTNAME" '{config:{ingress:[{hostname:$hostname,service:"http://localhost:4830"},{service:"http_status:404"}]}}')" > /dev/null
 
     echo "Full-automatic Cloudflare Tunnel setup complete."
 
     # Save Cloudflare credentials for uninstallation
-    echo "CF_EMAIL=\"$CF_EMAIL\"" > /var/www/mythicaldash-v3/.cf_creds
-    echo "CF_API_KEY=\"$CF_API_KEY\"" >> /var/www/mythicaldash-v3/.cf_creds
-    echo "ACCOUNT_ID=\"$ACCOUNT_ID\"" >> /var/www/mythicaldash-v3/.cf_creds
-    echo "TUNNEL_ID=\"$TUNNEL_ID\"" >> /var/www/mythicaldash-v3/.cf_creds
-    echo "ZONE_ID=\"$ZONE_ID\"" >> /var/www/mythicaldash-v3/.cf_creds
-    echo "CF_HOSTNAME=\"$CF_HOSTNAME\"" >> /var/www/mythicaldash-v3/.cf_creds
+    {
+        printf 'CF_EMAIL="%s"\n' "$CF_EMAIL"
+        printf 'CF_API_KEY="%s"\n' "$CF_API_KEY"
+        printf 'ACCOUNT_ID="%s"\n' "$ACCOUNT_ID"
+        printf 'TUNNEL_ID="%s"\n' "$TUNNEL_ID"
+        printf 'ZONE_ID="%s"\n' "$ZONE_ID"
+        printf 'CF_HOSTNAME="%s"\n' "$CF_HOSTNAME"
+    } > /var/www/mythicaldash-v3/.cf_creds
     sudo chmod 600 /var/www/mythicaldash-v3/.cf_creds
 }
 
@@ -213,7 +216,7 @@ setup_cloudflare_tunnel_client() {
                 sudo systemctl enable --now docker
 
                 # Add your user to docker group (optional, allows running docker without sudo)
-                sudo usermod -aG docker $USER
+                sudo usermod -aG docker "$USER"
                 echo "Docker installation complete. Please log out and log back in for group changes to take effect."
             fi
             docker run -d --network host --restart always cloudflare/cloudflared:latest tunnel --no-autoupdate run --token "$CF_TUNNEL_TOKEN"
@@ -239,6 +242,7 @@ setup_cloudflare_tunnel_client() {
 }
 
 if [ -f /etc/os-release ]; then
+    # shellcheck source=/dev/null
     . /etc/os-release
     OS=$ID
     if [ "$OS" = "ubuntu" ] || [ "$OS" = "ubuntu-server" ] || [ "$OS" = "debian" ]; then
@@ -252,7 +256,7 @@ if [ -f /etc/os-release ]; then
             echo "1: Install without Docker"
             echo "2: Uninstall Docker installation"
             echo "3: Uninstall without-Docker installation"
-            read -p "Option (0/1/2/3): " INST_TYPE
+            read -r -p "Option (0/1/2/3): " INST_TYPE
             if [[ ! "$INST_TYPE" =~ ^[0-3]$ ]]; then
                 echo "Invalid input. Please enter a number between 0 and 3."
             fi
@@ -277,7 +281,7 @@ CF_HOSTNAME=""
 
         if [[ "$INST_TYPE" == "0" || "$INST_TYPE" == "1" ]]; then
             if [ -f /var/www/mythicaldash-v3/.installed ]; then
-                read -p "MythicalDash appears to be already installed. Do you want to reinstall? (y/n): " reinstall
+                read -r -p "MythicalDash appears to be already installed. Do you want to reinstall? (y/n): " reinstall
                 if [ "$reinstall" != "y" ]; then
                     echo "Exiting installation."
                     exit 0
@@ -285,7 +289,7 @@ CF_HOSTNAME=""
             fi
 
             while [[ ! "$CF_TUNNEL_SETUP" =~ ^[ynYN]$ ]]; do
-                read -p "Do you want to set up Cloudflare Tunnel? (y/n): " CF_TUNNEL_SETUP
+                read -r -p "Do you want to set up Cloudflare Tunnel? (y/n): " CF_TUNNEL_SETUP
                 if [[ ! "$CF_TUNNEL_SETUP" =~ ^[ynYN]$ ]]; then
                     echo "Invalid input. Please enter 'y' or 'n'."
                 fi
@@ -296,7 +300,7 @@ CF_HOSTNAME=""
                 echo "1: Full Automatic (needs Cloudflare API key, creates tunnel and DNS records)"
                 echo "2: Semi-Automatic (you provide a tunnel token)"
                 while [[ ! "$CF_TUNNEL_MODE" =~ ^[12]$ ]]; do
-                    read -p "Mode (1/2): " CF_TUNNEL_MODE
+                    read -r -p "Mode (1/2): " CF_TUNNEL_MODE
                     if [[ ! "$CF_TUNNEL_MODE" =~ ^[12]$ ]]; then
                         echo "Invalid input. Please enter 1 or 2."
                     fi
@@ -305,18 +309,18 @@ CF_HOSTNAME=""
                 if [ "$CF_TUNNEL_MODE" == "1" ]; then
                     echo "Entering Full Automatic setup for Cloudflare Tunnel."
                     while [ -z "$CF_EMAIL" ]; do
-                        read -p "Enter your Cloudflare email: " CF_EMAIL
+                        read -r -p "Enter your Cloudflare email: " CF_EMAIL
                     done
                     while [ -z "$CF_API_KEY" ]; do
-                        read -p "Enter your Cloudflare Global API Key: " CF_API_KEY
+                        read -r -p "Enter your Cloudflare Global API Key: " CF_API_KEY
                     done
                     while [ -z "$CF_HOSTNAME" ]; do
-                        read -p "Enter the hostname for MythicalDash (e.g., dash.example.com): " CF_HOSTNAME
+                        read -r -p "Enter the hostname for MythicalDash (e.g., dash.example.com): " CF_HOSTNAME
                     done
                 else
                     echo "Entering Semi-Automatic setup for Cloudflare Tunnel."
                     while [ -z "$CF_TUNNEL_TOKEN" ]; do
-                        read -p "Enter your Cloudflare Tunnel token: " CF_TUNNEL_TOKEN
+                        read -r -p "Enter your Cloudflare Tunnel token: " CF_TUNNEL_TOKEN
                     done
                 fi
             else
@@ -325,7 +329,7 @@ CF_HOSTNAME=""
 
             
             while [[ ! "$PTERO_CONFIGURE" =~ ^[ynYN]$ ]]; do
-                read -p "Do you want to configure the Pterodactyl panel settings now? (y/n): " PTERO_CONFIGURE
+                read -r -p "Do you want to configure the Pterodactyl panel settings now? (y/n): " PTERO_CONFIGURE
                 if [[ ! "$PTERO_CONFIGURE" =~ ^[ynYN]$ ]]; then
                     echo "Invalid input. Please enter 'y' or 'n'."
                 fi
@@ -333,13 +337,13 @@ CF_HOSTNAME=""
 
             if [[ "$PTERO_CONFIGURE" =~ ^[yY]$ ]]; then
                 while [ -z "$PTERO_URL" ]; do
-                    read -p "Enter your Pterodactyl panel URL (e.g., panel.example.com): " PTERO_URL
+                    read -r -p "Enter your Pterodactyl panel URL (e.g., panel.example.com): " PTERO_URL
                     if [ -z "$PTERO_URL" ]; then
                         echo "Pterodactyl panel URL cannot be empty."
                     fi
                 done
                 while [ -z "$PTERO_API_KEY" ]; do
-                    read -p "Enter your Pterodactyl panel API key: " PTERO_API_KEY
+                    read -r -p "Enter your Pterodactyl panel API key: " PTERO_API_KEY
                     if [ -z "$PTERO_API_KEY" ]; then
                         echo "Pterodactyl panel API key cannot be empty."
                     fi
@@ -349,27 +353,27 @@ CF_HOSTNAME=""
             if [ "$INST_TYPE" == "1" ]; then
                 echo "Let's create an admin user."
                 while [ -z "$ADMIN_EMAIL" ]; do
-                    read -p "Enter admin email : " ADMIN_EMAIL
+                    read -r -p "Enter admin email : " ADMIN_EMAIL
                 done
 
                 while [ -z "$ADMIN_USERNAME" ]; do
-                    read -p "Enter admin username : " ADMIN_USERNAME
+                    read -r -p "Enter admin username : " ADMIN_USERNAME
                 done
                 while [ -z "$ADMIN_FIRST_NAME" ]; do
-                    read -p "Enter admin first name : " ADMIN_FIRST_NAME
+                    read -r -p "Enter admin first name : " ADMIN_FIRST_NAME
                 done
                 while [ -z "$ADMIN_LAST_NAME" ]; do
-                    read -p "Enter admin last name : " ADMIN_LAST_NAME
+                    read -r -p "Enter admin last name : " ADMIN_LAST_NAME
                 done
                 while [ -z "$ADMIN_PASSWORD" ]; do
-                    read -s -p "Enter admin password : " ADMIN_PASSWORD
+                    read -r -s -p "Enter admin password : " ADMIN_PASSWORD
                     echo
                 done
             fi
         elif [[ "$INST_TYPE" == "2" ]]; then
-            read -p "Are you sure you want to uninstall the Docker-based installation? (y/n): " confirm
+            read -r -p "Are you sure you want to uninstall the Docker-based installation? (y/n): " confirm
         elif [[ "$INST_TYPE" == "3" ]]; then
-            read -p "Are you sure you want to uninstall the without-Docker installation? (y/n): " confirm
+            read -r -p "Are you sure you want to uninstall the without-Docker installation? (y/n): " confirm
         fi
 
         case $INST_TYPE in
@@ -393,16 +397,16 @@ CF_HOSTNAME=""
                     sudo systemctl enable --now docker
 
                     # Add your user to docker group (optional, allows running docker without sudo)
-                    sudo usermod -aG docker $USER
+                    sudo usermod -aG docker "$USER"
                     echo "Docker installation complete. Please log out and log back in for group changes to take effect."
                 fi
                 
                 echo "Setting up MythicalDash-v3..."
                 sudo mkdir -p /var/www/mythicaldash-v3
-                cd /var/www/mythicaldash-v3
+                cd /var/www/mythicaldash-v3 || exit 1
                 sudo curl -Lo MythicalDash.zip https://github.com/MythicalLTD/MythicalDash/releases/latest/download/MythicalDash.zip
                 sudo unzip -o MythicalDash.zip -d /var/www/mythicaldash-v3
-                cd /var/www/mythicaldash-v3
+                cd /var/www/mythicaldash-v3 || exit 1
                 sudo docker compose up -d
                 echo "MythicalDash-v3 setup complete."
                 if [[ "$PTERO_CONFIGURE" =~ ^[yY]$ ]]; then
@@ -416,8 +420,7 @@ CF_HOSTNAME=""
                 fi
                 if [[ "$CF_TUNNEL_SETUP" =~ ^[yY]$ ]]; then
                     if [ "$CF_TUNNEL_MODE" == "1" ]; then
-                        setup_cloudflare_tunnel_full_auto
-                        if [ $? -ne 0 ]; then
+                        if ! setup_cloudflare_tunnel_full_auto; then
                             CF_TUNNEL_TOKEN=""
                         fi
                     fi
@@ -506,7 +509,7 @@ CF_HOSTNAME=""
 
                 echo "Setting up MythicalDash-v3..."
                 sudo mkdir -p /var/www/mythicaldash-v3
-                cd /var/www/mythicaldash-v3
+                cd /var/www/mythicaldash-v3 || exit 1
                 sudo curl -Lo MythicalDash.zip https://github.com/MythicalLTD/MythicalDash/releases/latest/download/MythicalDash.zip
                 sudo unzip -o MythicalDash.zip -d /var/www/mythicaldash-v3
                 # Find the actual extracted directory (e.g., MythicalDash-main)
@@ -519,7 +522,7 @@ CF_HOSTNAME=""
                 echo "MythicalDash-v3 downloaded and extracted."
 
                 echo "Installing backend dependencies with Composer..."
-                cd /var/www/mythicaldash-v3/backend
+                cd /var/www/mythicaldash-v3/backend || exit 1
                 COMPOSER_ALLOW_SUPERUSER=1 sudo composer install --no-dev --optimize-autoloader 
                 echo "Backend dependencies installed."
 
@@ -556,7 +559,7 @@ CF_HOSTNAME=""
                 echo "MariaDB database 'mythicaldash_remastered' created/ensured."
 
                 echo "Setting application to production mode..."
-                cd /var/www/mythicaldash-v3
+                cd /var/www/mythicaldash-v3 || exit 1
                 # Ensure make is available after installation
                 if ! command -v make &> /dev/null; then
                     echo "Error: make command not found after installation. Aborting."
@@ -574,7 +577,7 @@ CF_HOSTNAME=""
                 sudo chown -R www-data:www-data /var/www/mythicaldash-v3/*
                 
                 # Automate post-installation setup
-                cd /var/www/mythicaldash-v3/
+                cd /var/www/mythicaldash-v3/ || exit 1
 
                 # Setup database
                 # Ensure php is available after installation
@@ -594,8 +597,7 @@ CF_HOSTNAME=""
 
                 if [[ "$CF_TUNNEL_SETUP" =~ ^[yY]$ ]]; then
                     if [ "$CF_TUNNEL_MODE" == "1" ]; then
-                        setup_cloudflare_tunnel_full_auto
-                        if [ $? -ne 0 ]; then
+                        if ! setup_cloudflare_tunnel_full_auto; then
                             CF_TUNNEL_TOKEN=""
                         fi
                     fi
