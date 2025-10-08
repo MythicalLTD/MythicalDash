@@ -43,6 +43,7 @@ const requiredLinksCount = computed(() => {
 });
 
 const loading = ref(false);
+const turnstileVerified = ref(false);
 const form = reactive({
     firstName: '',
     lastName: '',
@@ -148,6 +149,15 @@ onMounted(() => {
 onUnmounted(() => {
     document.removeEventListener('click', hideSuggestions);
     document.removeEventListener('keydown', hideSuggestions);
+});
+
+// Watch for Turnstile response changes
+watch(() => form.turnstileResponse, (newToken) => {
+    if (newToken && newToken.length > 0) {
+        turnstileVerified.value = true;
+    } else {
+        turnstileVerified.value = false;
+    }
 });
 
 if (router.currentRoute.value.query.ref) {
@@ -522,13 +532,20 @@ const handleSubmit = async () => {
             </div>
             <button
                 type="submit"
-                class="w-full mt-6 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
-                :disabled="loading"
+                class="w-full mt-6 px-4 py-2 rounded-lg transition-colors"
+                :class="[
+                    (loading || (Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified)) 
+                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+                        : 'bg-purple-600 hover:bg-purple-700 text-white'
+                ]"
+                :disabled="loading || (Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified)"
             >
                 {{
                     loading
                         ? t('auth.pages.register.page.form.register_button.loading')
-                        : t('auth.pages.register.page.form.register_button.label')
+                        : (Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified)
+                          ? 'Please verify you are human'
+                          : t('auth.pages.register.page.form.register_button.label')
                 }}
             </button>
 
@@ -536,7 +553,10 @@ const handleSubmit = async () => {
                 v-if="Settings.getSetting('turnstile_enabled') == 'true'"
                 style="display: flex; justify-content: center; margin-top: 20px"
             >
-                <Turnstile :site-key="Settings.getSetting('turnstile_key_pub')" v-model="form.turnstileResponse" />
+                <Turnstile 
+                    :site-key="Settings.getSetting('turnstile_key_pub')" 
+                    v-model="form.turnstileResponse"
+                />
             </div>
 
             <p class="mt-4 text-center text-sm text-gray-400">

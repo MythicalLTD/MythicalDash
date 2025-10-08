@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, watch } from 'vue';
 import Layout from '@/components/client/Layout.vue';
 import FormCard from '@/components/client/Auth/FormCard.vue';
 import FormInput from '@/components/client/Auth/FormInput.vue';
@@ -24,6 +24,7 @@ sessionStorage.clear();
 MythicalDOM.setPageTitle(t('auth.pages.login.page.title'));
 
 const loading = ref(false);
+const turnstileVerified = ref(false);
 const form = reactive({
     email: '',
     password: '',
@@ -175,6 +176,15 @@ const handleGithubLogin = () => {
     }, 1000);
 };
 
+// Watch for Turnstile response changes
+watch(() => form.turnstileResponse, (newToken) => {
+    if (newToken && newToken.length > 0) {
+        turnstileVerified.value = true;
+    } else {
+        turnstileVerified.value = false;
+    }
+});
+
 onMounted(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const email = base64_decode(urlParams.get('email'));
@@ -258,17 +268,27 @@ if (isEnterpriseLogin) {
                 v-if="Settings.getSetting('turnstile_enabled') == 'true'"
                 style="display: flex; justify-content: center; margin-top: 20px"
             >
-                <Turnstile :site-key="Settings.getSetting('turnstile_key_pub')" v-model="form.turnstileResponse" />
+                <Turnstile 
+                    :site-key="Settings.getSetting('turnstile_key_pub')" 
+                    v-model="form.turnstileResponse"
+                />
             </div>
             <button
                 type="submit"
-                class="w-full mt-6 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
-                :disabled="loading"
+                class="w-full mt-6 px-4 py-2 rounded-lg transition-colors"
+                :class="[
+                    (loading || (Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified)) 
+                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+                        : 'bg-purple-600 hover:bg-purple-700 text-white'
+                ]"
+                :disabled="loading || (Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified)"
             >
                 {{
                     loading
                         ? $t('auth.pages.login.page.form.login_button.loading')
-                        : $t('auth.pages.login.page.form.login_button.label')
+                        : (Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified)
+                          ? 'Please verify you are human'
+                          : $t('auth.pages.login.page.form.login_button.label')
                 }}
             </button>
 

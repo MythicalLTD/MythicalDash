@@ -3,10 +3,12 @@
 # New Features
 
 - Feature: Made the € - Coin ratio editable for easier use of the store (#329).
+- Feature: Improved Turnstile integration for Login and Register pages. The Login and Register buttons are now disabled until Turnstile verification is complete (green checkmark shown). This prevents users from clicking too early, eliminates Turnstile errors, and enhances the overall user experience by ensuring the buttons are only clickable after successful human verification.
 
 # Bug Fixes
 
 - BUG: Fixed server duplication issues during creation. Added Turnstile verification to the server creation page to prevent duplicate server submissions.
+- BUG: Description field is now required before allowing users to proceed to the next step when creating a server.
 
 # v3.5.0-Aurora
 
