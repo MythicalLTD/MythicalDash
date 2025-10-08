@@ -78,37 +78,6 @@
                 <div class="bg-gray-800/50 backdrop-blur-md rounded-xl p-6 border border-gray-800/30">
                     <h2 class="text-xl font-semibold mb-4">System Resources</h2>
                     <div class="space-y-4">
-                        <!-- Memory Usage -->
-                        <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-gray-400">Memory Usage</span>
-                                <span
-                                    class="text-sm"
-                                    :class="{
-                                        'text-green-400': memoryUsage?.status === 'ok',
-                                        'text-yellow-400': memoryUsage?.status === 'warning',
-                                        'text-red-400': memoryUsage?.status === 'error',
-                                    }"
-                                >
-                                    {{ formatBytes(memoryUsage?.current) }} /
-                                    {{ formatBytes(parseMemoryLimit(memoryUsage?.limit)) }}
-                                </span>
-                            </div>
-                            <div class="w-full bg-gray-700/50 rounded-full h-2">
-                                <div
-                                    class="h-2 rounded-full"
-                                    :class="{
-                                        'bg-green-500': memoryUsage?.status === 'ok',
-                                        'bg-yellow-500': memoryUsage?.status === 'warning',
-                                        'bg-red-500': memoryUsage?.status === 'error',
-                                    }"
-                                    :style="{
-                                        width: `${calculatePercentage(memoryUsage?.current, parseMemoryLimit(memoryUsage?.limit))}%`,
-                                    }"
-                                ></div>
-                            </div>
-                        </div>
-
                         <!-- Disk Space -->
                         <div>
                             <div class="flex justify-between items-center mb-2">

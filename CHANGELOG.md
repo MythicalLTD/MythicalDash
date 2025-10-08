@@ -10,6 +10,10 @@
 - BUG: Fixed server duplication issues during creation. Added Turnstile verification to the server creation page to prevent duplicate server submissions.
 - BUG: Description field is now required before allowing users to proceed to the next step when creating a server.
 
+# Features Removed
+
+- Removed: Removed the free RAM and RAM usage display from the health page due to bugs.
+
 # v3.5.0-Aurora
 
 # Bug Fixes

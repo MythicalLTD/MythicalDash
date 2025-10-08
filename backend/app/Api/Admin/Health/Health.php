@@ -84,7 +84,7 @@ $router->get('/api/admin/health', function (): void {
                 'recommended' => '8.1.0',
                 'status' => version_compare(PHP_VERSION, '8.1.0', '>=') ? 'ok' : 'warning',
             ],
-            'memory_usage' => [
+            'php_memory_usage' => [
                 'current' => memory_get_usage(true),
                 'peak' => memory_get_peak_usage(true),
                 'limit' => ini_get('memory_limit'),
@@ -124,11 +124,32 @@ $router->get('/api/admin/health', function (): void {
                 'status' => ($load[0] < $cpuCores) ? 'ok' : 'warning',
             ],
             'system_memory' => [
-                'total' => $memInfo['MemTotal'] ?? 0,
-                'free' => $memInfo['MemFree'] ?? 0,
-                'cached' => $memInfo['Cached'] ?? 0,
-                'buffers' => $memInfo['Buffers'] ?? 0,
-                'status' => 'ok',
+                'total' => isset($memInfo['MemTotal']) ? $memInfo['MemTotal'] * 1024 : 0, // Convert KB to bytes
+                'free' => isset($memInfo['MemFree']) ? $memInfo['MemFree'] * 1024 : 0,
+                'available' => isset($memInfo['MemAvailable']) ? $memInfo['MemAvailable'] * 1024 : (isset($memInfo['MemFree']) ? $memInfo['MemFree'] * 1024 : 0),
+                'cached' => isset($memInfo['Cached']) ? $memInfo['Cached'] * 1024 : 0,
+                'buffers' => isset($memInfo['Buffers']) ? $memInfo['Buffers'] * 1024 : 0,
+                'used' => (isset($memInfo['MemTotal'], $memInfo['MemAvailable'])
+                            ? ($memInfo['MemTotal'] - $memInfo['MemAvailable']) * 1024
+                            : (isset($memInfo['MemTotal'], $memInfo['MemFree'])
+                                ? ($memInfo['MemTotal'] - $memInfo['MemFree']) * 1024
+                                : 0)),
+                'used_percent' => (isset($memInfo['MemTotal']) && $memInfo['MemTotal'] > 0)
+                    ? round(
+                        (
+                            $memInfo['MemTotal']
+                            - ($memInfo['MemAvailable'] ?? ($memInfo['MemFree'] ?? 0))
+                        ) / $memInfo['MemTotal'] * 100,
+                        2
+                    )
+                    : 0,
+                'status' => (isset($memInfo['MemTotal'], $memInfo['MemAvailable']) && $memInfo['MemTotal'] > 0)
+                    ? (
+                        (($memInfo['MemTotal'] - $memInfo['MemAvailable']) / $memInfo['MemTotal']) < 0.9
+                            ? 'ok'
+                            : 'warning'
+                    )
+                    : 'unknown',
             ],
             'opcache' => [
                 'enabled' => ini_get('opcache.enable'),
@@ -234,11 +255,35 @@ $router->get('/api/admin/health', function (): void {
         $health['status'] = 'warning';
     }
 
-    // Check memory usage warning (if more than 80% used)
-    $memoryUsedPercent = ($health['system']['memory_usage']['current'] / $health['system']['memory_usage']['peak']) * 100;
-    if ($memoryUsedPercent > 80) {
-        $health['system']['memory_usage']['status'] = 'warning';
-        $health['status'] = 'warning';
+    // Check system memory usage warning (if more than 80% used)
+    if ($health['system']['system_memory']['used_percent'] > 80) {
+        $health['system']['system_memory']['status'] = 'warning';
+        if ($health['status'] !== 'unhealthy') {
+            $health['status'] = 'warning';
+        }
+    }
+
+    // Check PHP memory usage warning (if more than 80% of limit)
+    $phpMemoryLimit = $health['system']['php_memory_usage']['limit'];
+    if ($phpMemoryLimit !== '-1') {
+        $limitBytes = ini_get('memory_limit');
+        if (preg_match('/^(\d+)(.)$/', $limitBytes, $matches)) {
+            $limitValue = (int) $matches[1];
+            $limitUnit = $matches[2];
+            $limitInBytes = match ($limitUnit) {
+                'K' => $limitValue * 1024,
+                'M' => $limitValue * 1024 * 1024,
+                'G' => $limitValue * 1024 * 1024 * 1024,
+                default => $limitValue,
+            };
+            $phpMemoryUsedPercent = ($health['system']['php_memory_usage']['current'] / $limitInBytes) * 100;
+            if ($phpMemoryUsedPercent > 80) {
+                $health['system']['php_memory_usage']['status'] = 'warning';
+                if ($health['status'] !== 'unhealthy') {
+                    $health['status'] = 'warning';
+                }
+            }
+        }
     }
 
     // Check database connection warning (if more than 80% of max connections)

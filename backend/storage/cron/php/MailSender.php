@@ -2,6 +2,7 @@
 
 namespace MythicalDash\Cron;
 
+use MythicalDash\Chat\TimedTask;
 use MythicalDash\Config\ConfigFactory;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Cron\Cron;
@@ -69,6 +70,7 @@ class MailSender implements TimeTask
         // If no emails to process, exit early saving resources
         if ($totalToProcess === 0) {
             BungeeChatApi::sendOutputWithNewLine('&aNo emails to process');
+			TimedTask::markRun('mail-sender', true, 'No emails to process');
             return;
         }
         
@@ -77,6 +79,7 @@ class MailSender implements TimeTask
         
         if ($availableThisHour <= 0) {
             BungeeChatApi::sendOutputWithNewLine('&eHourly limit reached (' . $this->emailsSentThisHour . '/500), waiting for reset');
+			TimedTask::markRun('mail-sender', false, 'Hourly limit reached (' . $this->emailsSentThisHour . '/500), waiting for reset');
             return;
         }
         
@@ -98,6 +101,7 @@ class MailSender implements TimeTask
             if (time() - $this->connectionStartTime > $this->maxConnectionTime) {
                 $this->closeSmtpConnection();
                 BungeeChatApi::sendOutputWithNewLine('&aRotating SMTP connection after maximum time');
+				TimedTask::markRun('mail-sender', false, 'Rotating SMTP connection after maximum time');
             }
             
             // Lock the mail queue item to avoid duplicate processing
@@ -109,6 +113,7 @@ class MailSender implements TimeTask
                 MailQueue::update($mail['id'], ['status' => 'failed', 'locked' => 'false']);
                 $failCount++;
                 $processedCount++;
+				TimedTask::markRun('mail-sender', false, 'MailList entry not found for queue ID: ' . $mail['id']);
                 continue;
             }
             
@@ -117,6 +122,7 @@ class MailSender implements TimeTask
                 MailQueue::update($mail['id'], ['status' => 'failed', 'locked' => 'false']);
                 $failCount++;
                 $processedCount++;
+				TimedTask::markRun('mail-sender', false, 'User not found for email: ' . $userInfo['email']);
                 continue;
             }
             
@@ -130,6 +136,7 @@ class MailSender implements TimeTask
                 MailQueue::update($mail['id'], ['locked' => 'false']);
                 $this->lastRateLimitError = time();
                 $rateLimitHit = true;
+				TimedTask::markRun('mail-sender', false, 'Rate limit detected - stopping batch processing');
                 continue;
             } else {
                 $failCount++;
@@ -141,6 +148,7 @@ class MailSender implements TimeTask
             if ($this->emailsSentThisConnection >= $this->maxEmailsPerConnection) {
                 $this->closeSmtpConnection();
                 BungeeChatApi::sendOutputWithNewLine('&aRotating SMTP connection after ' . $this->emailsSentThisConnection . ' emails');
+				TimedTask::markRun('mail-sender', false, 'Rotating SMTP connection after ' . $this->emailsSentThisConnection . ' emails');
             }
         }
         
@@ -151,6 +159,7 @@ class MailSender implements TimeTask
         BungeeChatApi::sendOutputWithNewLine('&aTotal sent this hour: ' . $this->emailsSentThisHour . '/500');
         
         \MythicalDash\Chat\TimedTask::markRun('mail-sender', true, 'Processed ' . $processedCount . ' mails: ' . $successCount . ' succeeded, ' . $failCount . ' failed');
+		TimedTask::markRun('mail-sender', true, 'Processed ' . $processedCount . ' mails: ' . $successCount . ' succeeded, ' . $failCount . ' failed');
     }
 
     /**
@@ -228,6 +237,7 @@ class MailSender implements TimeTask
         } catch (\Exception $e) {
             BungeeChatApi::sendOutputWithNewLine('&cFailed to initialize SMTP connection: ' . $e->getMessage());
             $this->smtpConnection = null;
+			TimedTask::markRun('mail-sender', false, 'Failed to initialize SMTP connection: ' . $e->getMessage());
             return null;
         }
     }
@@ -348,6 +358,7 @@ class MailSender implements TimeTask
                 if (strpos($error, 'mailbox unavailable') !== false) {
                     BungeeChatApi::sendOutputWithNewLine('&cMailbox unavailable: ' . $userInfo['email']);
                     MailQueue::update($mail['id'], ['status' => 'failed', 'locked' => 'false']);
+					TimedTask::markRun('mail-sender', false, 'Mailbox unavailable: ' . $userInfo['email']);
                     return 'failure';
                 }
                 
@@ -355,33 +366,41 @@ class MailSender implements TimeTask
                 if (strpos($error, '421') !== false || strpos($error, 'too many connections') !== false) {
                     BungeeChatApi::sendOutputWithNewLine('&eConnection rate limit hit - slowing down');
                     $this->closeSmtpConnection();
+					TimedTask::markRun('mail-sender', false, 'Connection rate limit hit - slowing down');
                     // Small delay before continuing with next email
                     usleep(100000);
                 } else if (strpos($error, '450') !== false || strpos($error, '451') !== false) {
                     BungeeChatApi::sendOutputWithNewLine('&eTemporary sending limit exceeded - slowing down');
                     $this->closeSmtpConnection();
+					TimedTask::markRun('mail-sender', false, 'Temporary sending limit exceeded - slowing down');
                     // Small delay before continuing with next email
                     usleep(100000);
                 } else if (strpos($error, '550') !== false || strpos($error, 'rejected') !== false) {
                     BungeeChatApi::sendOutputWithNewLine('&cEmail rejected by server: ' . $userInfo['email']);
                     MailQueue::update($mail['id'], ['status' => 'failed', 'locked' => 'false']);
+					TimedTask::markRun('mail-sender', false, 'Email rejected by server: ' . $userInfo['email']);
                     return 'failure';
                 } else if (strpos($error, 'connection') !== false || strpos($error, 'socket') !== false) {
                     BungeeChatApi::sendOutputWithNewLine('&eConnection error - reinitializing connection');
                     $this->closeSmtpConnection();
+					TimedTask::markRun('mail-sender', false, 'Connection error - reinitializing connection');
                     // Small delay before retrying
                     usleep(50000);
                 } else {
                     BungeeChatApi::sendOutputWithNewLine('&cFailed to send mail to ' . $userInfo['email'] . ': ' . $error);
+					TimedTask::markRun('mail-sender', false, 'Failed to send mail to ' . $userInfo['email'] . ': ' . $error);
                 }
                 
                 if ($attempt >= $maxRetries) {
                     MailQueue::update($mail['id'], ['status' => 'failed', 'locked' => 'false']);
+					TimedTask::markRun('mail-sender', false, 'Failed to send mail to ' . $userInfo['email'] . ': ' . $error);
                     return 'failure';
                 }
+				TimedTask::markRun('mail-sender', false, 'Failed to send mail to ' . $userInfo['email'] . ': ' . $error);
             }
         }
         
+        TimedTask::markRun('mail-sender', false, 'Failed to send mail to ' . $userInfo['email'] . ': ' . $error);
         return 'failure';
     }
 }
