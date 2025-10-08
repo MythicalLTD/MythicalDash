@@ -122,7 +122,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </CardComponent>
             </div>
@@ -468,13 +467,10 @@
                     </div>
 
                     <!-- Turnstile -->
-                    <div
-                        v-if="Settings.getSetting('turnstile_enabled') === 'true'"
-                        class="mt-8 flex justify-center"
-                    >
-                        <Turnstile 
-                            :site-key="Settings.getSetting('turnstile_key_pub')" 
-                            v-model="form.turnstileResponse" 
+                    <div v-if="Settings.getSetting('turnstile_enabled') === 'true'" class="mt-8 flex justify-center">
+                        <Turnstile
+                            :site-key="Settings.getSetting('turnstile_key_pub')"
+                            v-model="form.turnstileResponse"
                         />
                     </div>
                 </CardComponent>
@@ -807,7 +803,7 @@ const updateEggs = () => {
 const canCreateServer = computed(() => {
     const turnstileRequired = Settings.getSetting('turnstile_enabled') === 'true';
     const turnstileValid = turnstileRequired ? form.turnstileResponse.trim() !== '' : true;
-    
+
     return (
         form.name &&
         form.description &&
@@ -864,7 +860,7 @@ const createServer = async () => {
         formData.append('databases', form.databases.toString());
         formData.append('backups', form.backups.toString());
         formData.append('allocations', form.allocations.toString());
-        
+
         // Add Turnstile response if enabled
         if (Settings.getSetting('turnstile_enabled') === 'true') {
             formData.append('turnstile_response', form.turnstileResponse);
@@ -972,9 +968,7 @@ const getResourceIcon = (type: keyof ResourceLimits) => {
 const canProceed = computed(() => {
     switch (currentStep.value) {
         case 0:
-            return form.name.trim() !== '' && 
-                   form.description.trim() !== '' && 
-                   form.acceptedTerms;
+            return form.name.trim() !== '' && form.description.trim() !== '' && form.acceptedTerms;
         case 1:
             return form.category_id !== '';
         case 2:

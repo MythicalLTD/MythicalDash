@@ -29,13 +29,16 @@ const form = reactive({
 MythicalDOM.setPageTitle(t('auth.pages.forgot_password.page.title'));
 
 // Watch for Turnstile response changes
-watch(() => form.turnstileResponse, (newToken) => {
-    if (newToken && newToken.length > 0) {
-        turnstileVerified.value = true;
-    } else {
-        turnstileVerified.value = false;
-    }
-});
+watch(
+    () => form.turnstileResponse,
+    (newToken) => {
+        if (newToken && newToken.length > 0) {
+            turnstileVerified.value = true;
+        } else {
+            turnstileVerified.value = false;
+        }
+    },
+);
 
 const handleSubmit = async () => {
     loading.value = true;
@@ -111,25 +114,22 @@ const handleSubmit = async () => {
                 v-if="Settings.getSetting('turnstile_enabled') == 'true'"
                 style="display: flex; justify-content: center; margin-top: 20px"
             >
-                <Turnstile 
-                    :site-key="Settings.getSetting('turnstile_key_pub')" 
-                    v-model="form.turnstileResponse"
-                />
+                <Turnstile :site-key="Settings.getSetting('turnstile_key_pub')" v-model="form.turnstileResponse" />
             </div>
             <button
                 type="submit"
                 class="w-full mt-6 px-4 py-2 rounded-lg transition-colors"
                 :class="[
-                    (loading || (Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified)) 
-                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
-                        : 'bg-purple-600 hover:bg-purple-700 text-white'
+                    loading || (Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified)
+                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                        : 'bg-purple-600 hover:bg-purple-700 text-white',
                 ]"
                 :disabled="loading || (Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified)"
             >
                 {{
                     loading
                         ? t('auth.pages.forgot_password.page.form.reset_button.loading')
-                        : (Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified)
+                        : Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified
                           ? 'Please verify you are human'
                           : t('auth.pages.forgot_password.page.form.reset_button.label')
                 }}
