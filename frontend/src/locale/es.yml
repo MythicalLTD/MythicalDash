@@ -851,19 +851,26 @@ billing:
                 amount:
                     label: Cantidad
                     placeholder: Introducir cantidad
+                coins:
+                    label: Monedas
+                    placeholder: Introducir cantidad de monedas
                 payment_method:
                     label: Método de Pago
                 submit: Añadir Fondos
                 processing: Procesando...
             summary:
                 title: Resumen de Cuenta
+                conversion_rate: Tasa de Conversión
+                coins_per_currency: 'monedas por {currency}'
                 current_balance: Saldo Actual
+                balance_after_payment: Saldo Después del Pago
                 info: Los fondos se añadirán a tu cuenta inmediatamente después del procesamiento exitoso del pago. Estos fondos pueden ser utilizados para cualquier servicio o producto dentro de nuestra plataforma.
             alerts:
                 error:
                     title: Error
                     missing_fields: Por favor, completa todos los campos requeridos.
                     invalid_amount: Por favor, introduce una cantidad válida mayor que 0.
+                    invalid_conversion: La cantidad de monedas no coincide con la cantidad de moneda. Por favor, verifica tu entrada.
                     payment_failed: Procesamiento de pago fallido. Por favor, inténtalo de nuevo.
                     footer: Por favor, contacta con soporte para obtener ayuda.
                     no_gateway: No se encontró pasarela de pago.

@@ -1,3 +1,9 @@
+# v3.5.1-Aurora
+
+# New Features
+
+- Feature: Made the € - Coin ratio editable for easier use of the store (#329).
+
 # v3.5.0-Aurora
 
 # Bug Fixes

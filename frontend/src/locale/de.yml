@@ -851,19 +851,26 @@ billing:
                 amount:
                     label: Betrag
                     placeholder: Betrag eingeben
+                coins:
+                    label: Münzen
+                    placeholder: Münzenbetrag eingeben
                 payment_method:
                     label: Zahlungsmethode
                 submit: Guthaben hinzufügen
                 processing: Verarbeitung...
             summary:
                 title: Kontoübersicht
+                conversion_rate: Wechselkurs
+                coins_per_currency: 'Münzen pro {currency}'
                 current_balance: Aktuelles Guthaben
+                balance_after_payment: Guthaben nach Zahlung
                 info: Guthaben wird Ihrem Konto sofort nach erfolgreicher Zahlungsabwicklung gutgeschrieben. Dieses Guthaben kann für alle Dienste oder Produkte innerhalb unserer Plattform verwendet werden.
             alerts:
                 error:
                     title: Fehler
                     missing_fields: Bitte füllen Sie alle erforderlichen Felder aus.
                     invalid_amount: Bitte geben Sie einen gültigen Betrag größer als 0 ein.
+                    invalid_conversion: Der Münzenbetrag stimmt nicht mit dem Währungsbetrag überein. Bitte überprüfen Sie Ihre Eingabe.
                     payment_failed: Zahlungsabwicklung fehlgeschlagen. Bitte versuchen Sie es erneut.
                     footer: Bitte kontaktieren Sie den Support für Hilfe.
                     no_gateway: Kein Zahlungs-Gateway gefunden.

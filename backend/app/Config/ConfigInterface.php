@@ -193,6 +193,10 @@ interface ConfigInterface
      * Credits Recharge.
      */
     public const CREDITS_RECHARGE_ENABLED = 'credits_recharge_enabled';
+    /**
+     * Number of coins a user receives per 1 unit of currency (e.g., 1€/$/£).
+     */
+    public const CREDITS_RECHARGE_AMOUNT = 'credits_recharge_amount';
     public const COMPANY_NAME = 'company_name';
     public const COMPANY_ADDRESS = 'company_address';
     public const COMPANY_CITY = 'company_city';

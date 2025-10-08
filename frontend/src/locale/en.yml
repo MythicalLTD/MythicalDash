@@ -1016,19 +1016,26 @@ billing:
                 amount:
                     label: Amount
                     placeholder: Enter amount
+                coins:
+                    label: Coins
+                    placeholder: Enter coin amount
                 payment_method:
                     label: Payment Method
                 submit: Add Funds
                 processing: Processing...
             summary:
                 title: Account Summary
+                conversion_rate: Conversion Rate
+                coins_per_currency: 'coins per {currency}'
                 current_balance: Current Balance
+                balance_after_payment: Balance After Payment
                 info: Funds will be added to your account immediately after successful payment processing. These funds can be used for any services or products within our platform.
             alerts:
                 error:
                     title: Error
                     missing_fields: Please fill in all required fields.
                     invalid_amount: Please enter a valid amount greater than 0.
+                    invalid_conversion: The coin amount does not match the currency amount. Please check your input.
                     payment_failed: Payment processing failed. Please try again.
                     footer: Please contact support for assistance.
                     no_gateway: No payment gateway found.

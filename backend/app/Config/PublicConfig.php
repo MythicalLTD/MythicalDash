@@ -175,6 +175,7 @@ class PublicConfig extends ConfigFactory
 
             // Gateway settings
             ConfigInterface::CREDITS_RECHARGE_ENABLED => 'false',
+            ConfigInterface::CREDITS_RECHARGE_AMOUNT => '100',
             ConfigInterface::ENABLE_STRIPE => 'false',
             ConfigInterface::ENABLE_PAYPAL => 'false',
             ConfigInterface::PAYPAL_CLIENT_ID => '',

@@ -845,19 +845,26 @@ billing:
                 amount:
                     label: 金额
                     placeholder: 输入金额
+                coins:
+                    label: 硬币
+                    placeholder: 输入硬币数量
                 payment_method:
                     label: 支付方式
                 submit: 添加资金
                 processing: 处理中...
             summary:
                 title: 账户摘要
+                conversion_rate: 转换率
+                coins_per_currency: '{currency}的硬币数量'
                 current_balance: 当前余额
+                balance_after_payment: 付款后余额
                 info: 成功处理付款后，资金将立即添加到您的账户。这些资金可用于我们平台上的任何服务或产品。
             alerts:
                 error:
                     title: 错误
                     missing_fields: 请填写所有必填字段。
                     invalid_amount: 请输入大于0的有效金额。
+                    invalid_conversion: 硬币数量与货币金额不匹配。请检查您的输入。
                     payment_failed: 支付处理失败。请重试。
                     footer: 请联系支持获取帮助。
                     no_gateway: 未找到支付网关。

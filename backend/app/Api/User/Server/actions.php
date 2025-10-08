@@ -61,6 +61,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
 
     if (!$server) {
         $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
+
         return;
     }
 
@@ -68,6 +69,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     $owner = $server['attributes']['user'];
     if ($owner != $pterodactylUserId) {
         $appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
+
         return;
     }
 
@@ -90,22 +92,26 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         $name = $_POST['name'];
     } else {
         $appInstance->BadRequest('Name is required', ['error_code' => 'NAME_REQUIRED']);
+
         return;
     }
     if (isset($_POST['description']) && !empty($_POST['description'])) {
         $description = $_POST['description'];
     } else {
         $appInstance->BadRequest('Description is required', ['error_code' => 'DESCRIPTION_REQUIRED']);
+
         return;
     }
     // Validate memory field
     if (!isset($_POST['memory'])) {
         $appInstance->BadRequest('Memory is required', ['error_code' => 'MEMORY_REQUIRED']);
+
         return;
     }
 
     if (!is_numeric($_POST['memory'])) {
         $appInstance->BadRequest('Memory must be a numeric value', ['error_code' => 'MEMORY_INVALID_TYPE']);
+
         return;
     }
 
@@ -114,6 +120,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     // Validate that memory is not negative
     if ($memory < 0) {
         $appInstance->BadRequest('Memory cannot be a negative number', ['error_code' => 'MEMORY_NEGATIVE']);
+
         return;
     }
 
@@ -121,24 +128,28 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         $cpu = (int) $_POST['cpu'];
     } else {
         $appInstance->BadRequest('CPU is required', ['error_code' => 'CPU_REQUIRED']);
+
         return;
     }
 
     // Validate that CPU is not negative
     if ($cpu < 0) {
         $appInstance->BadRequest('CPU cannot be a negative number', ['error_code' => 'CPU_NEGATIVE']);
+
         return;
     }
     if (isset($_POST['disk']) && !empty($_POST['disk'])) {
         $disk = (int) $_POST['disk'];
     } else {
         $appInstance->BadRequest('Disk is required', ['error_code' => 'DISK_REQUIRED']);
+
         return;
     }
 
     // Validate that disk is not negative
     if ($disk < 0) {
         $appInstance->BadRequest('Disk cannot be a negative number', ['error_code' => 'DISK_NEGATIVE']);
+
         return;
     }
     if (isset($_POST['databases']) && !empty($_POST['databases'])) {
@@ -150,16 +161,19 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     // Validate that databases is not negative
     if ($databases < 0) {
         $appInstance->BadRequest('Databases cannot be a negative number', ['error_code' => 'DATABASES_NEGATIVE']);
+
         return;
     }
     // Validate backups field
     if (!isset($_POST['backups'])) {
         $appInstance->BadRequest('Backups is required', ['error_code' => 'BACKUPS_REQUIRED']);
+
         return;
     }
 
     if (!is_numeric($_POST['backups'])) {
         $appInstance->BadRequest('Backups must be a numeric value', ['error_code' => 'BACKUPS_INVALID_TYPE']);
+
         return;
     }
 
@@ -168,45 +182,53 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
     // Validate that backups is not negative
     if ($backups < 0) {
         $appInstance->BadRequest('Backups cannot be a negative number', ['error_code' => 'BACKUPS_NEGATIVE']);
+
         return;
     }
     if (isset($_POST['allocations']) && !empty($_POST['allocations'])) {
         $allocations = $_POST['allocations'];
     } else {
         $appInstance->BadRequest('Allocations is required', ['error_code' => 'ALLOCATIONS_REQUIRED']);
+
         return;
     }
 
     // Validate that allocations is not negative
     if ($allocations < 0) {
         $appInstance->BadRequest('Allocations cannot be a negative number', ['error_code' => 'ALLOCATIONS_NEGATIVE']);
+
         return;
     }
 
     // Validate required fields
     if (empty($name)) {
         $appInstance->BadRequest('Name is required', ['error_code' => 'NAME_REQUIRED']);
+
         return;
     }
 
     // Validate resource limits
     if ($memory < 256) {
         $appInstance->BadRequest('Memory must be at least 256MB', ['error_code' => 'MEMORY_MINIMUM']);
+
         return;
     }
 
     if ($cpu < 5) {
         $appInstance->BadRequest('CPU must be at least 5%', ['error_code' => 'CPU_MINIMUM']);
+
         return;
     }
 
     if ($disk < 256) {
         $appInstance->BadRequest('Disk must be at least 256MB', ['error_code' => 'DISK_MINIMUM']);
+
         return;
     }
 
     if ($allocations < 1) {
         $appInstance->BadRequest('Allocations must be at least 1', ['error_code' => 'ALLOCATIONS_MINIMUM']);
+
         return;
     }
 
@@ -251,6 +273,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
                 'current_usage' => $resources['memory'],
                 'attempted_to_add' => $resourceDifference['memory'],
             ]);
+
             return;
         }
     }
@@ -264,6 +287,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
                 'current_usage' => $resources['disk'],
                 'attempted_to_add' => $resourceDifference['disk'],
             ]);
+
             return;
         }
     }
@@ -277,6 +301,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
                 'current_usage' => $resources['cpu'],
                 'attempted_to_add' => $resourceDifference['cpu'],
             ]);
+
             return;
         }
     }
@@ -290,6 +315,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
                 'current_usage' => $resources['databases'],
                 'attempted_to_add' => $resourceDifference['databases'],
             ]);
+
             return;
         }
     }
@@ -303,6 +329,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
                 'current_usage' => $resources['backups'],
                 'attempted_to_add' => $resourceDifference['backups'],
             ]);
+
             return;
         }
     }
@@ -316,6 +343,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
                 'current_usage' => $resources['allocations'],
                 'attempted_to_add' => $resourceDifference['allocations'],
             ]);
+
             return;
         }
     }
@@ -344,6 +372,7 @@ $router->post('/api/user/server/(.*)/update', function (string $id): void {
         ];
         if (!isset($server['attributes']['id'])) {
             $appInstance->BadRequest('Server not found', ['error_code' => 'SERVER_NOT_FOUND']);
+
             return;
         }
         $serverId = $server['attributes']['id'];
@@ -387,6 +416,7 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
     // Check if server renewal is enabled
     if ($config->getDBSetting(ConfigInterface::SERVER_RENEW_ENABLED, 'false') == 'false') {
         $appInstance->BadRequest('Server renewal is not enabled', ['error_code' => 'SERVER_RENEWAL_NOT_ENABLED']);
+
         return;
     }
 
@@ -394,6 +424,7 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
     $server = Servers::getServerPterodactylDetails((int) $id);
     if (!$server) {
         $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
+
         return;
     }
 
@@ -402,6 +433,7 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
     $owner = $server['attributes']['user'];
     if ($owner != $pterodactylUserId) {
         $appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
+
         return;
     }
 
@@ -411,6 +443,7 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
         $serverInfoDb = MythicalDash\Chat\Servers\Server::getByPterodactylId((int) $serverId);
         if (!$serverInfoDb) {
             $appInstance->BadRequest('Server not found in database', ['error_code' => 'SERVER_NOT_FOUND_IN_DB']);
+
             return;
         }
     }
@@ -422,11 +455,13 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
     // Validate renewal settings
     if ($server_renew_cost <= 0) {
         $appInstance->BadRequest('Invalid renewal cost configuration', ['error_code' => 'INVALID_RENEWAL_COST']);
+
         return;
     }
 
     if ($server_renew_days <= 0) {
         $appInstance->BadRequest('Invalid renewal days configuration', ['error_code' => 'INVALID_RENEWAL_DAYS']);
+
         return;
     }
 
@@ -438,6 +473,7 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
             'required' => $server_renew_cost,
             'available' => $creditCheck['current_credits'],
         ]);
+
         return;
     }
 
@@ -445,6 +481,7 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
     $currentExpiresAt = strtotime($serverInfoDb['expires_at']);
     if ($currentExpiresAt === false) {
         $appInstance->BadRequest('Invalid server expiration date', ['error_code' => 'INVALID_EXPIRATION_DATE']);
+
         return;
     }
 
@@ -463,6 +500,7 @@ $router->post('/api/user/server/(.*)/renew', function (string $id): void {
             // This is a critical error that should be logged
             $appInstance->getLogger()->error('Failed to remove renewal credits atomically for user: ' . $session->getInfo(UserColumns::UUID, false) . ' for server: ' . $serverId);
             $appInstance->BadRequest('Failed to process renewal - credit deduction failed', ['error_code' => 'CREDIT_DEDUCTION_FAILED']);
+
             return;
         }
 
@@ -510,6 +548,7 @@ $router->post('/api/user/server/(.*)/delete', function (string $id): void {
 
     if (!$server) {
         $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND']);
+
         return;
     }
 
@@ -517,6 +556,7 @@ $router->post('/api/user/server/(.*)/delete', function (string $id): void {
     $owner = $server['attributes']['user'];
     if ($owner != $pterodactylUserId) {
         $appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
+
         return;
     }
     $serverId = $server['attributes']['id'];
@@ -564,6 +604,7 @@ $router->get('/api/user/server/create', function (): void {
         if ($location['vip_only'] === 'true' && !$hasVipPermission) {
             return false;
         }
+
         return true;
     });
 
@@ -573,6 +614,7 @@ $router->get('/api/user/server/create', function (): void {
         if ($egg['vip_only'] === 'true' && !$hasVipPermission) {
             return false;
         }
+
         return true;
     });
 
@@ -581,6 +623,7 @@ $router->get('/api/user/server/create', function (): void {
         $category['eggs'] = array_filter($eggs, function ($egg) use ($category) {
             return $egg['category'] == $category['id'];
         });
+
         return $category;
     }, $categories);
 
@@ -649,64 +692,71 @@ $router->post('/api/user/server/create', function (): void {
     $session = new Session($appInstance);
     $accountToken = $session->SESSION_KEY;
     $config = $appInstance->getConfig();
-    
+
     // =========================================================================
     // LAYER 1: Basic validation and requirements
     // =========================================================================
-    
+
     // Check if server creation is globally enabled
     if ($config->getDBSetting(ConfigInterface::ALLOW_SERVERS, 'false') == 'false') {
         $appInstance->BadRequest('Server creation is not allowed', ['error_code' => 'SERVER_CREATION_NOT_ALLOWED']);
+
         return;
     }
-    
+
     // Check account linking requirements
     if ($config->getDBSetting(ConfigInterface::FORCE_DISCORD_LINK, 'false') == 'true') {
         $discordLinked = User::getInfo($accountToken, UserColumns::DISCORD_LINKED, false);
         if ($discordLinked == 'false') {
             $appInstance->BadRequest('Discord account linking is required', ['error_code' => 'DISCORD_LINKING_REQUIRED']);
+
             return;
         }
     }
-    
+
     if ($config->getDBSetting(ConfigInterface::FORCE_GITHUB_LINK, 'false') == 'true') {
         $githubLinked = User::getInfo($accountToken, UserColumns::GITHUB_LINKED, false);
         if ($githubLinked == 'false') {
             $appInstance->BadRequest('GitHub account linking is required', ['error_code' => 'GITHUB_LINKING_REQUIRED']);
+
             return;
         }
     }
-    
+
     if ($config->getDBSetting(ConfigInterface::FORCE_MAIL_LINK, 'false') == 'true') {
         $emailVerified = User::getInfo($accountToken, UserColumns::VERIFIED, false);
         if ($emailVerified == 'false') {
             $appInstance->BadRequest('Email verification is required', ['error_code' => 'EMAIL_VERIFICATION_REQUIRED']);
+
             return;
         }
     }
-    
+
     // Validate all required fields are present
-    $requiredFields = ['name', 'description', 'location_id', 'category_id', 'egg_id', 
-                      'memory', 'cpu', 'disk', 'databases', 'backups', 'allocations'];
-    
+    $requiredFields = ['name', 'description', 'location_id', 'category_id', 'egg_id',
+        'memory', 'cpu', 'disk', 'databases', 'backups', 'allocations'];
+
     foreach ($requiredFields as $field) {
         if (!isset($_POST[$field]) || $_POST[$field] === '') {
             $appInstance->BadRequest('Missing required field: ' . $field, ['error_code' => 'MISSING_REQUIRED_FIELDS', 'missing_field' => $field]);
+
             return;
         }
     }
-    
+
     // Field length validation
     if (strlen($_POST['name']) > 32) {
         $appInstance->BadRequest('Name must be less than 32 characters', ['error_code' => 'NAME_TOO_LONG']);
+
         return;
     }
-    
+
     if (strlen($_POST['description']) > 255) {
         $appInstance->BadRequest('Description must be less than 255 characters', ['error_code' => 'DESCRIPTION_TOO_LONG']);
+
         return;
     }
-    
+
     // Extract and validate numeric values
     $name = $_POST['name'];
     $description = $_POST['description'];
@@ -719,7 +769,7 @@ $router->post('/api/user/server/create', function (): void {
     $databases = (int) $_POST['databases'];
     $backups = (int) $_POST['backups'];
     $allocations = (int) $_POST['allocations'];
-    
+
     // Validate numeric ranges
     $numericValidations = [
         ['field' => 'memory', 'value' => $memory, 'min' => 0, 'error_negative' => 'MEMORY_NEGATIVE', 'error_min' => 'MEMORY_TOO_LOW', 'min_value' => 256],
@@ -729,41 +779,46 @@ $router->post('/api/user/server/create', function (): void {
         ['field' => 'backups', 'value' => $backups, 'min' => 0, 'error_negative' => 'BACKUPS_NEGATIVE'],
         ['field' => 'allocations', 'value' => $allocations, 'min' => 0, 'error_negative' => 'ALLOCATIONS_NEGATIVE', 'error_min' => 'ALLOCATIONS_TOO_LOW', 'min_value' => 1],
     ];
-    
+
     foreach ($numericValidations as $validation) {
         if ($validation['value'] < 0) {
             $appInstance->BadRequest(ucfirst($validation['field']) . ' cannot be a negative number', ['error_code' => $validation['error_negative']]);
+
             return;
         }
         if (isset($validation['min_value']) && $validation['value'] < $validation['min_value']) {
             $appInstance->BadRequest(ucfirst($validation['field']) . ' must be at least ' . $validation['min_value'], ['error_code' => $validation['error_min']]);
+
             return;
         }
     }
-    
+
     // Validate existence of location, category, and egg
     if (!Locations::exists($location_id)) {
         $appInstance->BadRequest('Location does not exist', ['error_code' => 'LOCATION_DOES_NOT_EXIST']);
+
         return;
     }
-    
+
     if (!EggCategories::exists($category_id)) {
         $appInstance->BadRequest('Category does not exist', ['error_code' => 'CATEGORY_DOES_NOT_EXIST']);
+
         return;
     }
-    
+
     if (!Eggs::exists($egg_id)) {
         $appInstance->BadRequest('Egg does not exist', ['error_code' => 'EGG_DOES_NOT_EXIST']);
+
         return;
     }
-    
+
     $uuid = User::getInfo($accountToken, UserColumns::UUID, false);
     $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
-    
+
     // =========================================================================
     // LAYER 2: Comprehensive resource validation with queued resources
     // =========================================================================
-    
+
     // Get queued resources safely (fallback to 0 if method doesn't exist)
     $queuedResources = [
         'memory' => 0,
@@ -772,16 +827,16 @@ $router->post('/api/user/server/create', function (): void {
         'databases' => 0,
         'backups' => 0,
         'allocations' => 0,
-        'servers' => 0
+        'servers' => 0,
     ];
-    
+
     // Check if the method exists before calling it
     if (method_exists('MythicalDash\Chat\Servers\ServerQueue', 'getUserTotalQueuedResources')) {
         $queuedResources = ServerQueue::getUserTotalQueuedResources($uuid);
     }
-    
+
     $activeResources = Servers::getUserTotalResourcesUsage($pterodactylUserId);
-    
+
     // Combine active and queued resources for accurate validation
     $totalUsedResources = [
         'memory' => $activeResources['memory'] + $queuedResources['memory'],
@@ -790,9 +845,9 @@ $router->post('/api/user/server/create', function (): void {
         'databases' => $activeResources['databases'] + $queuedResources['databases'],
         'backups' => $activeResources['backups'] + $queuedResources['backups'],
         'allocations' => $activeResources['allocations'] + $queuedResources['allocations'],
-        'servers' => $activeResources['servers'] + $queuedResources['servers']
+        'servers' => $activeResources['servers'] + $queuedResources['servers'],
     ];
-    
+
     // Add the new server's resources to calculate total after creation
     $totalAfterCreation = [
         'memory' => $totalUsedResources['memory'] + $memory,
@@ -801,9 +856,9 @@ $router->post('/api/user/server/create', function (): void {
         'databases' => $totalUsedResources['databases'] + $databases,
         'backups' => $totalUsedResources['backups'] + $backups,
         'allocations' => $totalUsedResources['allocations'] + $allocations,
-        'servers' => $totalUsedResources['servers'] + 1
+        'servers' => $totalUsedResources['servers'] + 1,
     ];
-    
+
     $available_resources = User::getInfoArray($accountToken, [
         UserColumns::MEMORY_LIMIT,
         UserColumns::DISK_LIMIT,
@@ -813,7 +868,7 @@ $router->post('/api/user/server/create', function (): void {
         UserColumns::ALLOCATION_LIMIT,
         UserColumns::SERVER_LIMIT,
     ], []);
-    
+
     // Enhanced resource validation with queued resources included
     $resourceValidations = [
         ['type' => 'memory', 'requested' => $memory, 'total_after' => $totalAfterCreation['memory'], 'limit' => $available_resources[UserColumns::MEMORY_LIMIT], 'error' => 'MAX_MEMORY_LIMIT'],
@@ -824,7 +879,7 @@ $router->post('/api/user/server/create', function (): void {
         ['type' => 'allocations', 'requested' => $allocations, 'total_after' => $totalAfterCreation['allocations'], 'limit' => $available_resources[UserColumns::ALLOCATION_LIMIT], 'error' => 'MAX_ALLOCATIONS_LIMIT'],
         ['type' => 'servers', 'requested' => 1, 'total_after' => $totalAfterCreation['servers'], 'limit' => $available_resources[UserColumns::SERVER_LIMIT], 'error' => 'MAX_SERVER_LIMIT'],
     ];
-    
+
     foreach ($resourceValidations as $validation) {
         if ($validation['total_after'] > $validation['limit']) {
             $appInstance->BadRequest('This server would exceed your maximum ' . $validation['type'] . ' limit', [
@@ -833,84 +888,93 @@ $router->post('/api/user/server/create', function (): void {
                 'current_usage' => $totalUsedResources[$validation['type']],
                 'queued_usage' => $queuedResources[$validation['type']],
                 'attempted_to_add' => $validation['requested'],
-                'total_after_creation' => $validation['total_after']
+                'total_after_creation' => $validation['total_after'],
             ]);
+
             return;
         }
     }
-    
+
     $locationInfo = Locations::get($location_id);
     $eggInfo = Eggs::getById($egg_id);
-    
+
     // VIP permission checks
     if (isset($locationInfo['vip_only']) && $locationInfo['vip_only'] === 'true' && !$session->hasPermission(Permissions::USER_PERMISSION_VIP)) {
         $appInstance->BadRequest('Location is VIP only', ['error_code' => 'LOCATION_VIP_ONLY']);
+
         return;
     }
-    
+
     if (isset($eggInfo['vip_only']) && $eggInfo['vip_only'] === 'true' && !$session->hasPermission(Permissions::USER_PERMISSION_VIP)) {
         $appInstance->BadRequest('Egg is VIP only', ['error_code' => 'EGG_VIP_ONLY']);
+
         return;
     }
-    
+
     // Location capacity validation
     if ($locationInfo['slots'] < 1) {
         $appInstance->BadRequest('Location is full', ['error_code' => 'LOCATION_FULL']);
+
         return;
     }
-    
+
     $serverCount = MythicalDash\Chat\Servers\Server::getServerCountByLocationId($location_id);
     if ($serverCount >= $locationInfo['slots']) {
         $appInstance->BadRequest('Location is full', ['error_code' => 'LOCATION_FULL', 'server_count' => $serverCount, 'location_slots' => $locationInfo['slots']]);
+
         return;
     }
-    
+
     // =========================================================================
     // LAYER 3: Atomic locking and race condition prevention
     // =========================================================================
-    
+
     // Use file-based locking as a fallback to prevent race conditions
     $lockFile = sys_get_temp_dir() . '/mythicaldash_server_create_' . md5($uuid) . '.lock';
     $lockHandle = fopen($lockFile, 'w+');
-    
+
     if (!$lockHandle) {
         $appInstance->ServiceUnavailable('Server creation temporarily unavailable', ['error_code' => 'LOCK_UNAVAILABLE']);
+
         return;
     }
-    
+
     // Try to acquire exclusive lock with timeout
     $lockAcquired = flock($lockHandle, LOCK_EX | LOCK_NB, $wouldBlock);
-    
+
     if (!$lockAcquired) {
         if ($wouldBlock) {
             // Another process is already creating a server for this user
             fclose($lockHandle);
             $appInstance->BadRequest('Server creation already in progress', ['error_code' => 'CREATION_IN_PROGRESS']);
-            return;
-        } else {
-            // Lock failed for some other reason
-            fclose($lockHandle);
-            $appInstance->ServiceUnavailable('Server creation temporarily unavailable', ['error_code' => 'LOCK_FAILED']);
+
             return;
         }
+        // Lock failed for some other reason
+        fclose($lockHandle);
+        $appInstance->ServiceUnavailable('Server creation temporarily unavailable', ['error_code' => 'LOCK_FAILED']);
+
+        return;
+
     }
-    
+
     try {
         // Double-check pending items with the lock held
         if (ServerQueue::hasAtLeastOnePendingItem($uuid)) {
             flock($lockHandle, LOCK_UN);
             fclose($lockHandle);
             $appInstance->BadRequest('You already have a pending server creation request', ['error_code' => 'PENDING_SERVER_CREATION_REQUEST']);
+
             return;
         }
-        
+
         // Final resource check with lock held (in case something changed)
-        $finalQueuedResources = method_exists('MythicalDash\Chat\Servers\ServerQueue', 'getUserTotalQueuedResources') 
-            ? ServerQueue::getUserTotalQueuedResources($uuid) 
+        $finalQueuedResources = method_exists('MythicalDash\Chat\Servers\ServerQueue', 'getUserTotalQueuedResources')
+            ? ServerQueue::getUserTotalQueuedResources($uuid)
             : $queuedResources;
-            
+
         $finalActiveResources = Servers::getUserTotalResourcesUsage($pterodactylUserId);
-        
+
         $finalTotalUsed = [
             'memory' => $finalActiveResources['memory'] + $finalQueuedResources['memory'],
             'disk' => $finalActiveResources['disk'] + $finalQueuedResources['disk'],
@@ -918,9 +982,9 @@ $router->post('/api/user/server/create', function (): void {
             'databases' => $finalActiveResources['databases'] + $finalQueuedResources['databases'],
             'backups' => $finalActiveResources['backups'] + $finalQueuedResources['backups'],
             'allocations' => $finalActiveResources['allocations'] + $finalQueuedResources['allocations'],
-            'servers' => $finalActiveResources['servers'] + $finalQueuedResources['servers']
+            'servers' => $finalActiveResources['servers'] + $finalQueuedResources['servers'],
         ];
-        
+
         $finalTotalAfter = [
             'memory' => $finalTotalUsed['memory'] + $memory,
             'disk' => $finalTotalUsed['disk'] + $disk,
@@ -928,9 +992,9 @@ $router->post('/api/user/server/create', function (): void {
             'databases' => $finalTotalUsed['databases'] + $databases,
             'backups' => $finalTotalUsed['backups'] + $backups,
             'allocations' => $finalTotalUsed['allocations'] + $allocations,
-            'servers' => $finalTotalUsed['servers'] + 1
+            'servers' => $finalTotalUsed['servers'] + 1,
         ];
-        
+
         // Final validation with latest data
         foreach ($resourceValidations as $validation) {
             $type = $validation['type'];
@@ -942,26 +1006,28 @@ $router->post('/api/user/server/create', function (): void {
                     'limit' => $validation['limit'],
                     'current_usage' => $finalTotalUsed[$type],
                     'attempted_to_add' => $validation['requested'],
-                    'total_after_creation' => $finalTotalAfter[$type]
+                    'total_after_creation' => $finalTotalAfter[$type],
                 ]);
+
                 return;
             }
         }
-        
+
         // Create server queue item
         $sv = ServerQueue::create($name, $description, $memory, $disk, $cpu, $allocations, $databases, $backups, $location_id, $uuid, $category_id, $egg_id);
-        
+
         if ($sv == false || $sv == 0) {
             flock($lockHandle, LOCK_UN);
             fclose($lockHandle);
             $appInstance->BadRequest('Failed to create server queue item', ['error_code' => 'FAILED_TO_CREATE_SERVER_QUEUE_ITEM']);
+
             return;
         }
-        
+
         // Release the lock
         flock($lockHandle, LOCK_UN);
         fclose($lockHandle);
-        
+
         // Success handling
         try {
             global $eventManager;
@@ -981,37 +1047,37 @@ $router->post('/api/user/server/create', function (): void {
                 'egg' => $egg_id,
                 'status' => 'pending',
             ]);
-            
+
             UserActivities::add(
                 $session->getInfo(UserColumns::UUID, false),
                 UserActivitiesTypes::$server_create,
                 CloudFlareRealIP::getRealIP(),
                 "Created server queue item $sv"
             );
-            
+
             $appInstance->OK('Server queue item created successfully.', [
-                'error_code' => 'SERVER_QUEUE_ITEM_CREATED', 
-                'server_queue_item' => $sv, 
-                'server_count' => $serverCount, 
+                'error_code' => 'SERVER_QUEUE_ITEM_CREATED',
+                'server_queue_item' => $sv,
+                'server_count' => $serverCount,
                 'location_slots' => $locationInfo['slots'],
                 'resource_usage' => [
                     'before' => $finalTotalUsed,
                     'after' => $finalTotalAfter,
-                    'limits' => $available_resources
-                ]
+                    'limits' => $available_resources,
+                ],
             ]);
-            
+
         } catch (Exception $e) {
             // If event emission fails, we should still consider the creation successful
             // but log the error for debugging
             $appInstance->getLogger()->error('Server queue created but event emission failed: ' . $e->getMessage());
             $appInstance->OK('Server queue item created successfully (with event error).', [
-                'error_code' => 'SERVER_QUEUE_ITEM_CREATED', 
+                'error_code' => 'SERVER_QUEUE_ITEM_CREATED',
                 'server_queue_item' => $sv,
-                'warning' => 'Event emission failed'
+                'warning' => 'Event emission failed',
             ]);
         }
-        
+
     } catch (Exception $e) {
         // Ensure lock is released on error
         if ($lockHandle) {
@@ -1019,6 +1085,7 @@ $router->post('/api/user/server/create', function (): void {
             fclose($lockHandle);
         }
         $appInstance->ServiceUnavailable('Error creating server: ' . $e->getMessage(), ['error_code' => 'SERVER_CREATION_FAILED']);
+
         return;
     }
 });
@@ -1030,12 +1097,13 @@ $router->post('/api/user/queue/(.*)/delete', function (string $id): void {
     $session = new Session($appInstance);
     $accountToken = $session->SESSION_KEY;
     $serverQueue = ServerQueue::getByUserAndId($session->getInfo(UserColumns::UUID, false), (int) $id);
-    
+
     if (empty($serverQueue)) {
         $appInstance->BadRequest('Server queue item not found', ['error_code' => 'SERVER_QUEUE_ITEM_NOT_FOUND', 'server_queue' => $serverQueue]);
+
         return;
     }
-    
+
     ServerQueue::delete((int) $serverQueue['id'] ?? 0);
     $appInstance->OK('Server queue item deleted successfully.', ['error_code' => 'SERVER_QUEUE_ITEM_DELETED']);
 });
@@ -1054,16 +1122,18 @@ $router->get('/api/user/server/(.*)', function (string $id): void {
 
     if (empty($server)) {
         $appInstance->Forbidden('Server not found or you do not have permission to access it', ['error_code' => 'SERVER_NOT_FOUND', 'server' => $server]);
+
         return;
     }
-    
+
     $pterodactylUserId = $session->getInfo(UserColumns::PTERODACTYL_USER_ID, false);
     $owner = $server['attributes']['user'];
     if ($owner != $pterodactylUserId) {
         $appInstance->Forbidden('You do not have permission to access this server', ['error_code' => 'FORBIDDEN']);
+
         return;
     }
-    
+
     // Add additional server information
     $locationId = $server['attributes']['relationships']['location']['attributes']['id'];
     $location = Locations::getLocationByPterodactylLocationId($locationId);
@@ -1082,6 +1152,7 @@ $router->get('/api/user/server/(.*)', function (string $id): void {
         $server['mythicaldash'] = $serverInfoDb;
     } else {
         $appInstance->BadRequest('Server not found in MythicalDash', ['error_code' => 'SERVER_NOT_FOUND_IN_MYTHICALDASH']);
+
         return;
     }
 

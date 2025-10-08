@@ -20,6 +20,21 @@
                     />
                     <p class="mt-1 text-xs text-gray-500">Enable or disable the credits recharge feature.</p>
                 </div>
+                <div>
+                    <label for="credits_recharge_amount" class="block text-sm font-medium text-gray-400 mb-1"
+                        >Credits Recharge Amount</label
+                    >
+                    <input
+                        id="credits_recharge_amount"
+                        type="number"
+                        v-model="formData.credits_recharge_amount"
+                        @change="markChanged('credits_recharge_amount')"
+                        class="bg-gray-800/30 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    />
+                    <p class="mt-1 text-xs text-gray-500">
+                        The amount of credits a user receives per 1 unit of currency.
+                    </p>
+                </div>
             </div>
         </div>
         <div class="space-y-6">
@@ -323,6 +338,7 @@ const formData = ref({
 
     // Credits Recharge
     credits_recharge_enabled: 'false',
+    credits_recharge_amount: '100',
 });
 
 // Track changed fields
@@ -367,6 +383,7 @@ watch(
 
                 // Credits Recharge
                 credits_recharge_enabled: newSettings['credits_recharge_enabled'] || 'false',
+                credits_recharge_amount: newSettings['credits_recharge_amount'] || '100',
             };
 
             // Clear changed fields when settings are loaded

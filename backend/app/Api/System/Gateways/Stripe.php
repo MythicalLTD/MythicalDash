@@ -110,6 +110,10 @@ $router->add('/api/stripe/process', function (): void {
             try {
                 Stripe\Stripe::setApiKey($appInstance->getConfig()->getDBSetting(ConfigInterface::STRIPE_SECRET_KEY, 'NULL'));
 
+                // Get the credits recharge amount setting to convert coins to currency
+                $creditsRechargeAmount = (int) $appInstance->getConfig()->getDBSetting(ConfigInterface::CREDITS_RECHARGE_AMOUNT, '100');
+                $currencyAmount = $coins / $creditsRechargeAmount;
+
                 $checkout_session = Stripe\Checkout\Session::create([
                     'mode' => 'payment',
                     'customer_email' => $session->getInfo(UserColumns::EMAIL, false),
@@ -120,7 +124,7 @@ $router->add('/api/stripe/process', function (): void {
                             'quantity' => 1,
                             'price_data' => [
                                 'currency' => $appInstance->getConfig()->getDBSetting(ConfigInterface::CURRENCY, 'EUR'),
-                                'unit_amount' => $coins * 100,
+                                'unit_amount' => (int) round($currencyAmount * 100), // Convert to cents
                                 'product_data' => [
                                     'name' => 'Account Topup',
                                     'description' => 'Topup your account with ' . $coins . ' coins!',

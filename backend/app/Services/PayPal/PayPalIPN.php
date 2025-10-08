@@ -95,7 +95,12 @@ class PayPalIPN
     {
         try {
             $code = bin2hex(random_bytes(16));
-            PayPalDB::create($code, $amount, $uuid);
+
+            // Convert currency amount back to coins for storage
+            $creditsRechargeAmount = (int) $this->app->getConfig()->getDBSetting(ConfigInterface::CREDITS_RECHARGE_AMOUNT, '100');
+            $coins = (int) round($amount * $creditsRechargeAmount);
+
+            PayPalDB::create($code, $coins, $uuid);
 
             $params = [
                 'cmd' => '_xclick',

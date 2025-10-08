@@ -63,7 +63,7 @@ class ISaaS extends App implements CommandBuilder
                 exit;
             }
             $config = new ConfigFactory($db->getPdo());
-            
+
             $result = $config->setSetting($setting, $value);
             if ($result) {
                 $cliApp->send('&aSetting &e' . $setting . ' &ahas been set to &e' . $value);

@@ -129,13 +129,14 @@ class ServerQueue extends Database
      * These methods are used to calculate total resources allocated to pending
      * servers in the queue, preventing users from exceeding their resource limits
      * by creating multiple servers simultaneously.
-     * =========================================================================
+     * =========================================================================.
      */
 
     /**
      * Calculate total resources for all pending servers a user has in the queue.
      *
      * @param string $user_uuid The UUID of the user
+     *
      * @return array An array containing the sum of all queued resources
      */
     public static function getUserTotalQueuedResources(string $user_uuid): array
@@ -144,7 +145,7 @@ class ServerQueue extends Database
             $dbConn = Database::getPdoConnection();
 
             // OPTIMIZED: Combined COUNT and SUM query in single database call
-            $stmt = $dbConn->prepare("SELECT 
+            $stmt = $dbConn->prepare('SELECT 
                 COUNT(*) as count,
                 SUM(ram) as memory, 
                 SUM(disk) as disk, 
@@ -152,7 +153,7 @@ class ServerQueue extends Database
                 SUM(databases) as databases, 
                 SUM(backups) as backups, 
                 SUM(ports) as allocations 
-                FROM " . self::getTableName() . " 
+                FROM ' . self::getTableName() . " 
                 WHERE user = :user_uuid 
                 AND status = 'pending' 
                 AND deleted = 'false'");
@@ -162,13 +163,13 @@ class ServerQueue extends Database
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             return [
-                'memory' => (int)($result['memory'] ?? 0),
-                'disk' => (int)($result['disk'] ?? 0),
-                'cpu' => (int)($result['cpu'] ?? 0),
-                'databases' => (int)($result['databases'] ?? 0),
-                'backups' => (int)($result['backups'] ?? 0),
-                'allocations' => (int)($result['allocations'] ?? 0),
-                'servers' => (int)($result['count'] ?? 0)
+                'memory' => (int) ($result['memory'] ?? 0),
+                'disk' => (int) ($result['disk'] ?? 0),
+                'cpu' => (int) ($result['cpu'] ?? 0),
+                'databases' => (int) ($result['databases'] ?? 0),
+                'backups' => (int) ($result['backups'] ?? 0),
+                'allocations' => (int) ($result['allocations'] ?? 0),
+                'servers' => (int) ($result['count'] ?? 0),
             ];
         } catch (\Exception $e) {
             self::db_Error('Failed to get user total queued resources: ' . $e->getMessage());
@@ -180,7 +181,7 @@ class ServerQueue extends Database
                 'databases' => 0,
                 'backups' => 0,
                 'allocations' => 0,
-                'servers' => 0
+                'servers' => 0,
             ];
         }
     }
@@ -189,6 +190,7 @@ class ServerQueue extends Database
      * Count the number of pending servers a user has in the queue.
      *
      * @param string $user_uuid The UUID of the user
+     *
      * @return int The number of pending servers
      */
     public static function countPendingServers(string $user_uuid): int
@@ -196,8 +198,8 @@ class ServerQueue extends Database
         try {
             $dbConn = Database::getPdoConnection();
 
-            $stmt = $dbConn->prepare("SELECT COUNT(*) as count 
-                FROM " . self::getTableName() . " 
+            $stmt = $dbConn->prepare('SELECT COUNT(*) as count 
+                FROM ' . self::getTableName() . " 
                 WHERE user = :user_uuid 
                 AND status = 'pending' 
                 AND deleted = 'false'");
@@ -206,7 +208,7 @@ class ServerQueue extends Database
             $stmt->execute();
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-            return (int)($result['count'] ?? 0);
+            return (int) ($result['count'] ?? 0);
         } catch (\Exception $e) {
             self::db_Error('Failed to count pending servers: ' . $e->getMessage());
 
@@ -217,7 +219,7 @@ class ServerQueue extends Database
     /**
      * =========================================================================
      * END OF SECURITY FIX METHODS
-     * =========================================================================
+     * =========================================================================.
      */
 
     /**

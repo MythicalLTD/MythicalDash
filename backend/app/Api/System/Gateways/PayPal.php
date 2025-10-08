@@ -60,9 +60,15 @@ $router->get('/api/paypal/process', function () {
             throw new InvalidArgumentException('Missing coins parameter');
         }
 
+        $coins = (float) $_GET['coins'];
+
+        // Get the credits recharge amount setting to convert coins to currency
+        $creditsRechargeAmount = (int) $app->getConfig()->getDBSetting(MythicalDash\Config\ConfigInterface::CREDITS_RECHARGE_AMOUNT, '100');
+        $currencyAmount = $coins / $creditsRechargeAmount;
+
         $paypal = new MythicalDash\Services\PayPal\PayPalIPN();
         $redirectUrl = $paypal->createPayment(
-            (float) $_GET['coins'],
+            $currencyAmount,
             $session->getInfo(UserColumns::UUID, false)
         );
 

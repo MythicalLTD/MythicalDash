@@ -850,19 +850,26 @@ billing:
                 amount:
                     label: Montant
                     placeholder: Entrer le montants
+                coins:
+                    label: Pièces
+                    placeholder: Entrer le montant de pièces
                 payment_method:
                     label: Méthode de paiement
                 submit: Ajouter des fonds
                 processing: Processing...
             summary:
-                title: Account Summary
+                title: Résumé du compte
+                conversion_rate: Taux de conversion
+                coins_per_currency: 'pièces par {currency}'
                 current_balance: Balance actuel
+                balance_after_payment: Balance après paiement
                 info: Les fonds seront ajouté sur votre compte immédiatement après un paiement avec succès. Ces fonds peuvent être utilisé n'importe où sur notre plateforme.
             alerts:
                 error:
                     title: Erreur
                     missing_fields: Remplissez toutes les zones de texte nécessaires.
                     invalid_amount: Entrer un montant valide supérieur à 0.
+                    invalid_conversion: Le montant de pièces ne correspond pas au montant de devise. Veuillez vérifier votre saisie.
                     payment_failed: Procédé de paiement échoué. Réessayez plus tard.
                     footer: Veuillez contacter le support pour de l'assistance.
                     no_gateway: Aucune porte de paiement trouvé.

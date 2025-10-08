@@ -846,19 +846,26 @@ billing:
                 amount:
                     label: Sumă
                     placeholder: Introduceți suma
+                coins:
+                    label: Monede
+                    placeholder: Introduceți suma de monede
                 payment_method:
                     label: Metodă de Plată
                 submit: Adaugă Fonduri
                 processing: Procesare...
             summary:
                 title: Rezumat Cont
+                conversion_rate: Rata de Conversie
+                coins_per_currency: 'monede per {currency}'
                 current_balance: Sold Curent
+                balance_after_payment: Sold după Plată
                 info: Fondurile vor fi adăugate în contul dvs. imediat după procesarea cu succes a plății. Aceste fonduri pot fi utilizate pentru orice servicii sau produse din cadrul platformei noastre.
             alerts:
                 error:
                     title: Eroare
                     missing_fields: Vă rugăm să completați toate câmpurile obligatorii.
                     invalid_amount: Vă rugăm să introduceți o sumă validă mai mare decât 0.
+                    invalid_conversion: Suma de monede nu se potrivește cu suma de valută. Vă rugăm să verificați intrarea.
                     payment_failed: Procesarea plății a eșuat. Vă rugăm să încercați din nou.
                     footer: Vă rugăm să contactați suportul pentru asistență.
                     no_gateway: Nu s-a găsit nicio poartă de plată.

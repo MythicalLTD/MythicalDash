@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed, watch } from 'vue';
 import LayoutDashboard from '@/components/client/LayoutDashboard.vue';
 import CardComponent from '@/components/client/ui/Card/CardComponent.vue';
 import TextInput from '@/components/client/ui/TextForms/TextInput.vue';
@@ -26,10 +26,56 @@ MythicalDOM.setPageTitle(t('billing.pages.add_funds.title'));
 const loading = ref(false);
 const form = reactive({
     amount: '',
+    coins: '',
     payment_method: '',
 });
 
 const paymentMethods = ref<{ value: string; label: string }[]>([]);
+
+// Get the credits recharge amount setting
+const creditsRechargeAmount = parseInt(Settings.getSetting('credits_recharge_amount') || '100');
+const currencySymbol = Settings.getSetting('currency_symbol') || '€';
+
+// Computed values for conversion
+const coinAmount = computed(() => {
+    if (!form.amount) return '';
+    const amount = parseFloat(form.amount);
+    if (isNaN(amount) || amount <= 0) return '';
+    return Math.floor(amount * creditsRechargeAmount).toString();
+});
+
+const currencyAmount = computed(() => {
+    if (!form.coins) return '';
+    const coins = parseInt(form.coins);
+    if (isNaN(coins) || coins <= 0) return '';
+    return (coins / creditsRechargeAmount).toFixed(2);
+});
+
+// Watch for changes in amount and update coins
+watch(
+    () => form.amount,
+    (newAmount) => {
+        if (newAmount) {
+            const amount = parseFloat(newAmount);
+            if (!isNaN(amount) && amount > 0) {
+                form.coins = Math.floor(amount * creditsRechargeAmount).toString();
+            }
+        }
+    },
+);
+
+// Watch for changes in coins and update amount
+watch(
+    () => form.coins,
+    (newCoins) => {
+        if (newCoins) {
+            const coins = parseInt(newCoins);
+            if (!isNaN(coins) && coins > 0) {
+                form.amount = (coins / creditsRechargeAmount).toFixed(2);
+            }
+        }
+    },
+);
 
 if (Settings.getSetting('credits_recharge_enabled') === 'false') {
     Swal.fire({
@@ -66,7 +112,7 @@ if (paymentMethods.value.length === 0) {
 }
 
 const handleSubmit = async () => {
-    if (!form.amount || !form.payment_method) {
+    if (!form.amount || !form.coins || !form.payment_method) {
         playError();
         Swal.fire({
             icon: 'error',
@@ -78,7 +124,9 @@ const handleSubmit = async () => {
     }
 
     const amount = parseFloat(form.amount);
-    if (isNaN(amount) || amount <= 0) {
+    const coins = parseInt(form.coins);
+
+    if (isNaN(amount) || amount <= 0 || isNaN(coins) || coins <= 0) {
         playError();
         Swal.fire({
             icon: 'error',
@@ -89,13 +137,26 @@ const handleSubmit = async () => {
         return;
     }
 
+    // Verify that the conversion is correct
+    const expectedCoins = Math.floor(amount * creditsRechargeAmount);
+    if (coins !== expectedCoins) {
+        playError();
+        Swal.fire({
+            icon: 'error',
+            title: t('billing.pages.add_funds.alerts.error.title'),
+            text: t('billing.pages.add_funds.alerts.error.invalid_conversion'),
+            showConfirmButton: true,
+        });
+        return;
+    }
+
     try {
         loading.value = true;
         await new Promise((resolve) => setTimeout(resolve, 1500));
         if (form.payment_method === 'stripe') {
-            location.href = `/api/stripe/process?coins=` + amount;
+            location.href = `/api/stripe/process?coins=` + coins;
         } else if (form.payment_method === 'paypal') {
-            location.href = `/api/paypal/process?coins=` + amount;
+            location.href = `/api/paypal/process?coins=` + coins;
         }
     } catch (error) {
         playError();
@@ -142,7 +203,7 @@ if (Session.getInfo('city') == 'N/A' && Session.getInfo('state') == 'N/A' && Ses
                         <form @submit.prevent="handleSubmit" class="space-y-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-300 mb-2">
-                                    {{ t('billing.pages.add_funds.form.amount.label') }}
+                                    {{ t('billing.pages.add_funds.form.amount.label') }} ({{ currencySymbol }})
                                 </label>
                                 <TextInput
                                     v-model="form.amount"
@@ -151,6 +212,20 @@ if (Session.getInfo('city') == 'N/A' && Session.getInfo('state') == 'N/A' && Ses
                                     min="0"
                                     required
                                     :placeholder="t('billing.pages.add_funds.form.amount.placeholder')"
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    {{ t('billing.pages.add_funds.form.coins.label') }}
+                                </label>
+                                <TextInput
+                                    v-model="form.coins"
+                                    type="number"
+                                    step="1"
+                                    min="0"
+                                    required
+                                    :placeholder="t('billing.pages.add_funds.form.coins.placeholder')"
                                 />
                             </div>
 
@@ -179,11 +254,42 @@ if (Session.getInfo('city') == 'N/A' && Session.getInfo('state') == 'N/A' && Ses
                 <div>
                     <CardComponent :cardTitle="t('billing.pages.add_funds.summary.title')">
                         <div class="space-y-4">
+                            <!-- Conversion Rate -->
+                            <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-medium text-blue-200">
+                                        {{ t('billing.pages.add_funds.summary.conversion_rate') }}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-blue-200">
+                                    {{ creditsRechargeAmount }}
+                                    {{
+                                        t('billing.pages.add_funds.summary.coins_per_currency', {
+                                            currency: currencySymbol,
+                                        })
+                                    }}
+                                </p>
+                            </div>
+
+                            <!-- Current Balance -->
                             <div class="flex justify-between items-center p-4 bg-gray-800/50 rounded-lg">
                                 <span class="text-gray-300">{{
                                     t('billing.pages.add_funds.summary.current_balance')
                                 }}</span>
                                 <span class="text-white font-medium">{{ Session.getInfo('credits') ?? 0 }}</span>
+                            </div>
+
+                            <!-- Balance After Payment -->
+                            <div
+                                v-if="form.coins"
+                                class="flex justify-between items-center p-4 bg-green-500/10 border border-green-500/20 rounded-lg"
+                            >
+                                <span class="text-gray-300">{{
+                                    t('billing.pages.add_funds.summary.balance_after_payment')
+                                }}</span>
+                                <span class="text-white font-medium">{{
+                                    parseInt(Session.getInfo('credits') ?? '0') + parseInt(form.coins || '0')
+                                }}</span>
                             </div>
 
                             <div class="p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg">
