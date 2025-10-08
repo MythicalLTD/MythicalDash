@@ -75,7 +75,7 @@
                         <!-- Server Description -->
                         <div class="transform transition-all duration-300 hover:scale-[1.02]">
                             <label for="description" class="block text-lg font-medium text-gray-200 mb-2">
-                                {{ t('create.pages.index.form.description') }}
+                                {{ t('create.pages.index.form.description') }} <span class="text-red-400">*</span>
                             </label>
                             <TextArea
                                 id="description"
@@ -83,6 +83,7 @@
                                 :placeholder="t('create.pages.index.form.descriptionPlaceholder')"
                                 :rows="4"
                                 class="w-full text-lg"
+                                required
                             />
                         </div>
 
@@ -121,6 +122,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </CardComponent>
             </div>
@@ -464,6 +466,17 @@
                             <TextInput id="allocations" v-model="allocationsModel" type="number" required />
                         </div>
                     </div>
+
+                    <!-- Turnstile -->
+                    <div
+                        v-if="Settings.getSetting('turnstile_enabled') === 'true'"
+                        class="mt-8 flex justify-center"
+                    >
+                        <Turnstile 
+                            :site-key="Settings.getSetting('turnstile_key_pub')" 
+                            v-model="form.turnstileResponse" 
+                        />
+                    </div>
                 </CardComponent>
             </div>
 
@@ -514,6 +527,7 @@ import successAlertSfx from '@/assets/sounds/success.mp3';
 import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '@/stores/settings';
 import { Cpu, HardDrive, Database, Archive, Server, FolderOpen, Box, Wifi, Crown } from 'lucide-vue-next';
+import Turnstile from 'vue-turnstile';
 
 const { t } = useI18n();
 const Settings = useSettingsStore();
@@ -651,6 +665,7 @@ const form = reactive({
     backups: 1,
     allocations: 1,
     acceptedTerms: false,
+    turnstileResponse: '',
 });
 
 // Create computed properties for number inputs to handle string-number conversion
@@ -790,8 +805,12 @@ const updateEggs = () => {
 
 // Check if server can be created
 const canCreateServer = computed(() => {
+    const turnstileRequired = Settings.getSetting('turnstile_enabled') === 'true';
+    const turnstileValid = turnstileRequired ? form.turnstileResponse.trim() !== '' : true;
+    
     return (
         form.name &&
+        form.description &&
         form.location_id &&
         form.category_id &&
         form.egg_id &&
@@ -809,6 +828,7 @@ const canCreateServer = computed(() => {
         form.allocations <= resources.free.allocations &&
         resources.free.servers > 0 &&
         Settings.getSetting('allow_servers') === 'true' &&
+        turnstileValid &&
         (() => {
             const location = locations.value.find((location) => location.id === parseInt(form.location_id));
             return location ? location.used_slots < location.slots : false;
@@ -844,6 +864,11 @@ const createServer = async () => {
         formData.append('databases', form.databases.toString());
         formData.append('backups', form.backups.toString());
         formData.append('allocations', form.allocations.toString());
+        
+        // Add Turnstile response if enabled
+        if (Settings.getSetting('turnstile_enabled') === 'true') {
+            formData.append('turnstile_response', form.turnstileResponse);
+        }
 
         const response = await fetch('/api/user/server/create', {
             method: 'POST',
@@ -893,6 +918,7 @@ const createServer = async () => {
                 ),
                 LOCATION_VIP_ONLY: t('create.pages.alerts.error.deploy.LOCATION_VIP_ONLY'),
                 EGG_VIP_ONLY: t('create.pages.alerts.error.deploy.EGG_VIP_ONLY'),
+                TURNSTILE_FAILED: t('auth.pages.login.alerts.error.cloudflare_error'),
             };
 
             playError();
@@ -946,7 +972,9 @@ const getResourceIcon = (type: keyof ResourceLimits) => {
 const canProceed = computed(() => {
     switch (currentStep.value) {
         case 0:
-            return form.name.trim() !== '' && form.acceptedTerms;
+            return form.name.trim() !== '' && 
+                   form.description.trim() !== '' && 
+                   form.acceptedTerms;
         case 1:
             return form.category_id !== '';
         case 2:

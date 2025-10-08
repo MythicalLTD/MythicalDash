@@ -4,6 +4,10 @@
 
 - Feature: Made the € - Coin ratio editable for easier use of the store (#329).
 
+# Bug Fixes
+
+- BUG: Fixed server duplication issues during creation. Added Turnstile verification to the server creation page to prevent duplicate server submissions.
+
 # v3.5.0-Aurora
 
 # Bug Fixes

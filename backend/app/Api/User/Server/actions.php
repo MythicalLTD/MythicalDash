@@ -46,6 +46,7 @@ use MythicalDash\Hooks\Pterodactyl\Admin\Servers;
 use MythicalDash\Plugins\Events\Events\ServerEvent;
 use MythicalDash\Chat\interface\UserActivitiesTypes;
 use MythicalDash\Plugins\Events\Events\ServerQueueEvent;
+use MythicalDash\Hooks\MythicalSystems\CloudFlare\Turnstile;
 
 // Update server
 $router->post('/api/user/server/(.*)/update', function (string $id): void {
@@ -755,6 +756,18 @@ $router->post('/api/user/server/create', function (): void {
         $appInstance->BadRequest('Description must be less than 255 characters', ['error_code' => 'DESCRIPTION_TOO_LONG']);
 
         return;
+    }
+
+    // Process turnstile if enabled
+    if ($appInstance->getConfig()->getDBSetting(ConfigInterface::TURNSTILE_ENABLED, 'false') == 'true') {
+        if (!isset($_POST['turnstile_response']) || $_POST['turnstile_response'] == '') {
+            $appInstance->BadRequest('Bad Request', ['error_code' => 'TURNSTILE_FAILED']);
+        }
+
+        $cfTurnstileResponse = $_POST['turnstile_response'];
+        if (!Turnstile::validate($cfTurnstileResponse, CloudFlareRealIP::getRealIP(), $config->getDBSetting(ConfigInterface::TURNSTILE_KEY_PRIV, 'XXXX'))) {
+            $appInstance->BadRequest('Invalid TurnStile Key', ['error_code' => 'TURNSTILE_FAILED']);
+        }
     }
 
     // Extract and validate numeric values
