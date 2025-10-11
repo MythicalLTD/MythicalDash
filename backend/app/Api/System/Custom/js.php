@@ -39,7 +39,10 @@ $router->add('/api/system/custom.js', function () {
 
     $customJs = $config->getDBSetting(ConfigInterface::CUSTOM_JS, '');
 
-    header('Content-Type: application/javascript');
+    // Set the correct MIME headers for JavaScript
+    header('Content-Type: application/javascript; charset=UTF-8');
+    header('X-Content-Type-Options: nosniff');
+
     echo "// Custom JS\n";
     echo $customJs;
     echo "\n";
@@ -56,5 +59,4 @@ $router->add('/api/system/custom.js', function () {
             }
         }
     }
-
 });

@@ -39,7 +39,10 @@ $router->add('/api/system/custom.css', function () {
 
     $customCss = $config->getDBSetting(ConfigInterface::CUSTOM_CSS, '');
 
-    header('Content-Type: text/css');
+    // Set the correct MIME headers for CSS
+    header('Content-Type: text/css; charset=UTF-8');
+    header('X-Content-Type-Options: nosniff');
+
     echo "// Custom CSS\n";
     echo $customCss;
     echo "\n";

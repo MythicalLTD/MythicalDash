@@ -43,7 +43,6 @@ const requiredLinksCount = computed(() => {
 });
 
 const loading = ref(false);
-const turnstileVerified = ref(false);
 const form = reactive({
     firstName: '',
     lastName: '',
@@ -150,18 +149,6 @@ onUnmounted(() => {
     document.removeEventListener('click', hideSuggestions);
     document.removeEventListener('keydown', hideSuggestions);
 });
-
-// Watch for Turnstile response changes
-watch(
-    () => form.turnstileResponse,
-    (newToken) => {
-        if (newToken && newToken.length > 0) {
-            turnstileVerified.value = true;
-        } else {
-            turnstileVerified.value = false;
-        }
-    },
-);
 
 if (router.currentRoute.value.query.ref) {
     form.referralCode = router.currentRoute.value.query.ref as string;
@@ -535,20 +522,13 @@ const handleSubmit = async () => {
             </div>
             <button
                 type="submit"
-                class="w-full mt-6 px-4 py-2 rounded-lg transition-colors"
-                :class="[
-                    loading || (Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified)
-                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                        : 'bg-purple-600 hover:bg-purple-700 text-white',
-                ]"
-                :disabled="loading || (Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified)"
+                class="w-full mt-6 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                :disabled="loading"
             >
                 {{
                     loading
                         ? t('auth.pages.register.page.form.register_button.loading')
-                        : Settings.getSetting('turnstile_enabled') === 'true' && !turnstileVerified
-                          ? 'Please verify you are human'
-                          : t('auth.pages.register.page.form.register_button.label')
+                        : t('auth.pages.register.page.form.register_button.label')
                 }}
             </button>
 

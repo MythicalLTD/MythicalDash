@@ -801,9 +801,6 @@ const updateEggs = () => {
 
 // Check if server can be created
 const canCreateServer = computed(() => {
-    const turnstileRequired = Settings.getSetting('turnstile_enabled') === 'true';
-    const turnstileValid = turnstileRequired ? form.turnstileResponse.trim() !== '' : true;
-
     return (
         form.name &&
         form.description &&
@@ -824,7 +821,6 @@ const canCreateServer = computed(() => {
         form.allocations <= resources.free.allocations &&
         resources.free.servers > 0 &&
         Settings.getSetting('allow_servers') === 'true' &&
-        turnstileValid &&
         (() => {
             const location = locations.value.find((location) => location.id === parseInt(form.location_id));
             return location ? location.used_slots < location.slots : false;

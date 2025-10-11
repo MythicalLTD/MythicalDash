@@ -78,7 +78,10 @@ const checkAccessMethod = () => {
         if (isNonStandardPort) detectedIssues.push(`Port ${port} (use reverse proxy)`);
 
         // Allow Dev access
-        if (window.location.hostname === '212.87.213.116' && window.location.port === '5173') {
+        if (
+            window.location.hostname === '212.87.213.116' &&
+            (window.location.port === '5173' || window.location.port === '5174')
+        ) {
             return;
         }
 

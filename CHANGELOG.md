@@ -1,3 +1,9 @@
+# v3.5.2-Aurora
+
+# Bug Fixes
+
+- BUG: Fixed an issue where you will get the button form auth with please verify that you are a human.
+
 # v3.5.1-Aurora
 
 # New Features
