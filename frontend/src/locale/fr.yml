@@ -15,13 +15,13 @@ Components:
     ErrorsPage:
         Buttons:
             GoBack: 'Retour'
-            GoHome: "Retour à l' acueil"
+            GoHome: "Retour à l'accueil"
     Global:
         Navigation:
             Loading: 'Chargement...'
             Copy:
                 Title: 'Copié'
-                Success: 'Copié dans le presse papier comme un boss.'
+                Success: 'Copié dans le presse papier.'
                 Footer: 'Yay sa a marché ;)'
             Error: 'Une erreur est survenu. Veuillez réessayer plus tard.'
     QuickLinks:
@@ -196,7 +196,7 @@ auth:
                         loading: Connection en cours...
                     register:
                         label: Vous n'avez pas de compte?
-                        link: S'inscire
+                        link: S’inscrire
         register:
             alerts:
                 success:
@@ -205,7 +205,7 @@ auth:
                     footer: Merci de nous avoir choisi !
                 error:
                     title: L'inscription a échoué
-                    csrf_error: CSRF token mismatch
+                    csrf_error: CSRF token ne correspond pas
                     username_exists: Nom d'utilisateur déjà existant
                     email_exists: Email déjà existante
                     generic: Une erreur est survenu. Veuillez réessayez plus tard.
@@ -381,7 +381,7 @@ account:
     components:
         header:
             uuid: 'UUID:'
-            ip: 'Addresse IP!'
+            ip: 'Adresse IP!'
             first: 'Première:'
             current: 'Actuel:'
             firstSeen: 'Première vu'
@@ -506,7 +506,7 @@ account:
             page:
                 title: Emails
                 subTitle: Voyez vos emails!
-                description: "Ceci est une liste d'email. You can view the details of each email by clicking the view button."
+                description: "Ceci est une liste d'email. Vous pouvez consulter les détails de chaque e-mail en cliquant sur le bouton Voir."
                 loading: Chargement des emails...
                 loadingText: Chargement de votre historique d'email..
                 error: Erreur lors du chargement des emails
@@ -607,16 +607,16 @@ account:
                             loading: Changement du mot de passe...
         apikey:
             page:
-                title: API Key
-                subTitle: Manage your API key
+                title: Clé API
+                subTitle: Gérer votre clé API
                 card:
-                    title: API Key
-                    description: Votre API key vous donne accès à l'API MythicalDash.
-                    yourKey: Votre API Key
-                    loading: Chargement de votre API key...
-                    noApiKey: Pas de API key disponible
+                    title: Clé API
+                    description: Votre Clé API vous donne accès à l'API MythicalDash.
+                    yourKey: Votre Clé API
+                    loading: Chargement de votre Clé API...
+                    noApiKey: Pas de Clé API disponible
                     info: Cette clé donne un accès complet à votre compte via l'API. Garder là en sécurité et ne la partager jamais publiquement.
-                    resetKey: Reset API Key
+                    resetKey: Réinitialiser la clé API
                     apiDocumentation: API Documentation
         activity:
             page:
@@ -672,7 +672,7 @@ tickets:
                 status_closed: 'Fermé'
                 status_waiting: 'En attente de réponse'
                 status_inprogress: 'En cours'
-                preview: 'Image Preview'
+                preview: 'Aperçu de l’image'
                 open_in_new_tab: 'Ouvrir dans un nouvel onglet'
                 messages: 'Messages'
                 response: 'Réponse'
@@ -744,7 +744,7 @@ tickets:
                     message_missing: 'Message est manquant'
                     subject_missing: 'Sujet est manquant'
                     limit_reached: 'Vous avez atteint la limite de ticket que vous pouvez créé'
-                    failed_to_create_ticket: 'Cluster down, réessayez plus tar'
+                    failed_to_create_ticket: 'Cluster indisponible, réessayez plus tard'
 
 components:
     sidebar:
@@ -761,7 +761,7 @@ components:
         logs: Logs
         settings: Paramètres
         users: Utilisateurs
-        apikeys: API Keys
+        apikeys: Clé API
         support: Support & Info
         open_ticket: Ouvrir un Ticket
         all_tickets: Tout les tickets
@@ -794,12 +794,12 @@ components:
         view_all: 'Voir tout'
     errors:
         go_back: 'Retour'
-        go_home: "Retur à l'accueil"
+        go_home: "Retour à l'accueil"
     dashboard:
         title: 'Mon Tableau de bord'
         portal_home: 'Portail accueil'
         client_area: 'Zone client'
-        welcome_back: 'Welcome back'
+        welcome_back: 'Bon retour!'
         stats:
             services: 'Services'
             unpaid_invoices: 'Factures non payé'
@@ -838,7 +838,7 @@ components:
         showing: 'Vu de la page: '
         per_page: 'items par page'
         no_data_description: 'Nous sommes désolé, mais nous ne pouvons pas trouvé aucune donnée pour cette page.'
-        no_data: 'No data found'
+        no_data: 'Aucune donnée trouvée'
 billing:
     pages:
         add_funds:
@@ -913,7 +913,7 @@ code_redemption:
     notEnabled:
         title: 'Code Redemption'
         text: "Code redemption n'est pas activer sur cette hébergeur !"
-        button: 'Go to Dashboard'
+        button: 'Retour au tableau de bord'
     pages:
         index:
             title: 'Code Redemption'
@@ -952,7 +952,7 @@ referrals:
     notEnabled:
         title: 'Référentiels'
         text: 'Référentiels ne sont pas activer sur cette hébergeur!'
-        button: 'Allez au tableau de bord'
+        button: 'Retour au tableau de bord'
     pages:
         index:
             title: 'Référentiels'
@@ -1050,10 +1050,10 @@ create:
                 of: 'of'
                 available: 'Disponible'
                 depleted: 'Épuisée'
-            slots: 'Slots'
+            slots: 'Emplacements'
             resources:
-                title: 'Resource Availability'
-                available: 'Available'
+                title: 'Disponibilité des ressources'
+                available: 'Disponible'
                 depleted: 'Épuisée'
                 memory: 'Mémoire'
                 cpu: 'CPU'
@@ -1187,12 +1187,12 @@ store:
         title: 'Store'
         text: "Store n'est pas activé par cette hébergeur!"
         footer: "Veuillez contacter le support pour de l'assistance"
-        button: 'Allez au tableau de bord'
+        button: 'Retour au tableau de bord'
     pages:
         alerts:
             buy:
                 title: 'Voulez vous acheter ceci?'
-                description: 'Êtes vous sûre de vouloir acheter sa?'
+                description: 'Êtes vous sûre de vouloir acheter ceci?'
                 confirmButtonText: 'OK'
                 cancelButtonText: 'Annuler'
             error:
@@ -1230,7 +1230,7 @@ store:
             redeemCodes: 'Réclamer des codes'
             earnMore: 'Gagner plus'
             buyButton: 'Acheter'
-            insufficientButton: 'Coins Insufisant'
+            insufficientButton: 'Coins insuffisants'
             howItWorks:
                 title: 'Comment sa marche?'
                 description: 'Dépenser vos coins dans des ressources et upgrades'
@@ -1241,7 +1241,7 @@ store:
                         description: 'Completer des taches dans la catégorie earn pour gagner des coins'
                     two:
                         number: '2'
-                        title: 'Dépenser des Coins'
+                        title: 'Dépenser des coins'
                         description: 'Dépenser vos coins dans des ressources et upgrades pour vos serveurs'
                     three:
                         number: '3'
@@ -1266,14 +1266,14 @@ store:
                         description: 'Vous avez acheter {0} avec succès'
                         confirmButtonText: 'OK'
                 ram:
-                    title: 'RAM Additionel'
+                    title: 'RAM supplementaire'
                     description: 'Augmenter la capacité RAM de votre serveur'
                     features:
                         one: 'Alocation instantanée'
                         two: "Mise à l'échelle flexible"
                         three: 'Pas de redémarrage nécessaire'
                 disk:
-                    title: 'Stockage additionel'
+                    title: 'Stockage supplementaire'
                     description: 'Augmenter la capacité de stockage de votre serveur'
                     features:
                         one: 'Allocation instantanée'
@@ -1287,7 +1287,7 @@ store:
                         two: 'Ressources dédiées'
                         three: "Mise à l'échelle en temps réel"
                 server_slot:
-                    title: 'Emplacement du Serveur'
+                    title: 'Emplacement de Serveur'
                     description: 'Ajouter un serveur supplémentaira à votre compte'
                     features:
                         one: 'Accès compler au serveur'
@@ -1323,7 +1323,7 @@ l4r:
     pages:
         index:
             title: 'Liens pour les récompenses'
-            subTitle: "Cliquez sur n'importe quel fournisseur pour compléter les offre."
+            subTitle: "Cliquez sur n’importe quel fournisseur pour compléter l’offre."
             loading: 'Chargement des liens...'
             empty: 'Lien non trouvées'
             linkvertise:
@@ -1461,18 +1461,18 @@ profile:
     activity:
         title: 'Activité'
         first_seen: 'Première vue'
-        last_seen: 'Dérnier Vues'
-        last_seen_afk: 'Dérnier AFK'
+        last_seen: 'Dernière vue'
+        last_seen_afk: 'Dernier AFK'
     social:
         title: 'Comptes Sociaux'
         discord: 'Discord'
         github: 'GitHub'
     resources:
-        title: 'Resource Limits'
-        memory: 'Memory'
+        title: 'Limites des ressources'
+        memory: 'Memoire'
         cpu: 'CPU'
-        disk: 'Disk'
-        servers: 'Serveers'
+        disk: 'Disque'
+        servers: 'Serveurs'
         backups: 'Backups'
         databases: 'Base de Donnée'
         allocations: 'Allocations'
