@@ -103,6 +103,12 @@ Experience MythicalDash in action at our demo site:
 1 490 650 284
 ```
 
+                        
+## Stargazers over time
+[![Stargazers over time](https://starchart.cc/MythicalLTD/MythicalDash.svg?variant=adaptive)](https://starchart.cc/MythicalLTD/MythicalDash)
+
+                    
+
 ## 📄 License
 
 MythicalDash is licensed under the MIT. See the LICENSE file for more details.
