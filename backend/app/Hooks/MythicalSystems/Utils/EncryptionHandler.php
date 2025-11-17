@@ -41,7 +41,7 @@ class EncryptionHandler
      *
      * @return string|array The encrypted data!
      */
-    public static function encrypt(string|array $data, string $key): string|array
+    public static function encrypt(string | array $data, string $key): string | array
     {
         $encrypted = '';
 
@@ -63,7 +63,7 @@ class EncryptionHandler
      *
      * @return string|array The decrypted data!
      */
-    public static function decrypt(string|array $data, string $key): string|array
+    public static function decrypt(string | array $data, string $key): string | array
     {
         $encryptedData = base64_decode($data);
         $decrypted = '';

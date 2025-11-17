@@ -64,7 +64,7 @@ class Departments extends Database
         string $open,
         string $close,
         string $enabled,
-    ): int|false {
+    ): int | false {
         try {
             $dbConn = self::getPdoConnection();
             $sql = 'INSERT INTO ' . self::getTableName() . ' (name, description, time_open, time_close, enabled) VALUES (:name, :description, :open, :close, :enabled)';

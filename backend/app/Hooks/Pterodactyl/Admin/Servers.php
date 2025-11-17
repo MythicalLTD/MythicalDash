@@ -230,7 +230,7 @@ class Servers extends ServersResource
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#updatePterodactylServer] Server not found', false);
 
             return [];
-        } catch (PterodactylException|ValidationException $e) {
+        } catch (PterodactylException | ValidationException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#updatePterodactylServer] Failed to update server: ' . $e->getMessage(), false);
 
             return [];
@@ -264,7 +264,7 @@ class Servers extends ServersResource
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#updatePterodactylServerDetails] Server not found', false);
 
             return [];
-        } catch (PterodactylException|ValidationException $e) {
+        } catch (PterodactylException | ValidationException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#updatePterodactylServerDetails] Failed to update server details: ' . $e->getMessage(), false);
 
             return [];
@@ -307,7 +307,7 @@ class Servers extends ServersResource
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getServerCountByLocation] Locations not found: ' . $e->getMessage(), false);
 
             return 0;
-        } catch (PterodactylException|ValidationException $e) {
+        } catch (PterodactylException | ValidationException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getServerCountByLocation] Location error:  ' . $e->getMessage(), false);
 
             return 0;
@@ -329,7 +329,7 @@ class Servers extends ServersResource
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getAllServers] User not found: ' . $e->getMessage(), false);
 
             return [];
-        } catch (PterodactylException|ValidationException $e) {
+        } catch (PterodactylException | ValidationException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getAllServers] Failed to fetch user data: ' . $e->getMessage(), false);
 
             return [];
@@ -415,7 +415,7 @@ class Servers extends ServersResource
             ];
         } catch (ResourceNotFoundException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] User not found: ' . $e->getMessage(), false);
-        } catch (PterodactylException|ValidationException $e) {
+        } catch (PterodactylException | ValidationException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Failed to fetch user data: ' . $e->getMessage(), false);
         } catch (\Throwable $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Servers#getUserData] Unexpected pterodactyl panel error: ' . $e->getMessage(), false);

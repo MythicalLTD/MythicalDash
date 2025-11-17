@@ -158,7 +158,7 @@ class User extends UsersResource
                 }
 
                 return $newUser['attributes']['id'];
-            } catch (ValidationException|PterodactylException $e) {
+            } catch (ValidationException | PterodactylException $e) {
                 $appInstance->getLogger()->error('[Pterodactyl/Admin/User#performRegister:2] Failed to register user in Pterodactyl: ' . $e->getMessage());
                 throw new \Exception('Failed to register user in Pterodactyl: ' . $e->getMessage());
             }

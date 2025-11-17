@@ -377,7 +377,7 @@ class User extends Database
      *
      * @return bool If the user info exists
      */
-    public static function exists(UserColumns|string $info, string $value, bool $doNotIncludeDeleted = false): bool
+    public static function exists(UserColumns | string $info, string $value, bool $doNotIncludeDeleted = false): bool
     {
         try {
             if (!in_array($info, UserColumns::getColumns())) {
@@ -476,7 +476,7 @@ class User extends Database
      *
      * @return string|null The value of the column
      */
-    public static function getInfo(string $token, UserColumns|string $info, bool $encrypted): ?string
+    public static function getInfo(string $token, UserColumns | string $info, bool $encrypted): ?string
     {
         try {
             if (!in_array($info, UserColumns::getColumns())) {
@@ -507,7 +507,7 @@ class User extends Database
      *
      * @return string|null The value of the column
      */
-    public static function getInfoUUID(string $uuid, UserColumns|string $info, bool $encrypted): ?string
+    public static function getInfoUUID(string $uuid, UserColumns | string $info, bool $encrypted): ?string
     {
         try {
             $con = self::getPdoConnection();
@@ -578,7 +578,7 @@ class User extends Database
      *
      * @return bool If the update was successful
      */
-    public static function updateInfo(string $token, UserColumns|string $info, ?string $value, bool $encrypted): bool
+    public static function updateInfo(string $token, UserColumns | string $info, ?string $value, bool $encrypted): bool
     {
         try {
             if (!in_array($info, UserColumns::getColumns())) {
@@ -631,7 +631,7 @@ class User extends Database
      *
      * @return string The UUID
      */
-    public static function getUUIDFromInfo(UserColumns|string $info, string $value): string
+    public static function getUUIDFromInfo(UserColumns | string $info, string $value): string
     {
         try {
             $con = self::getPdoConnection();

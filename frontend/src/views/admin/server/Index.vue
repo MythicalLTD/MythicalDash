@@ -1,5 +1,16 @@
 <template>
     <LayoutDashboard>
+        <!-- Alert Banner -->
+        <div class="mb-4 bg-amber-900/20 border border-amber-500/30 rounded-lg px-3 py-2 shadow-sm">
+            <div class="flex items-center gap-2">
+                <AlertTriangleIcon class="h-4 w-4 text-amber-400 shrink-0" />
+                <p class="text-xs text-amber-300">
+                    <span class="font-semibold">Note:</span> This list shows all Pterodactyl servers. Servers not managed by
+                    MythicalDash are marked with a warning badge.
+                </p>
+            </div>
+        </div>
+
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-pink-400">Server List</h1>
             <div class="flex items-center space-x-3">
@@ -66,11 +77,16 @@
                 <div
                     v-for="item in servers"
                     :key="item.attributes.id"
-                    class="group relative rounded-xl p-4 bg-gradient-to-br from-gray-800/70 to-gray-900/70 border border-gray-700/70 hover:border-pink-500/40 transition-all duration-200 shadow hover:shadow-pink-500/10"
+                    :class="[
+                        'group relative rounded-xl p-4 bg-gradient-to-br transition-all duration-200 shadow',
+                        item.exists_in_mythicaldash === false
+                            ? 'from-amber-900/20 to-gray-900/70 border-2 border-amber-500/40 hover:border-amber-500/60 hover:shadow-amber-500/10'
+                            : 'from-gray-800/70 to-gray-900/70 border border-gray-700/70 hover:border-pink-500/40 hover:shadow-pink-500/10',
+                    ]"
                 >
                     <div class="flex items-start justify-between">
                         <div>
-                            <div class="flex items-center space-x-2">
+                            <div class="flex items-center space-x-2 flex-wrap">
                                 <h3 class="text-lg font-semibold text-white truncate max-w-[240px]">
                                     {{ item.attributes.name }}
                                 </h3>
@@ -83,6 +99,14 @@
                                     "
                                 >
                                     {{ item.attributes.suspended ? 'Suspended' : 'Active' }}
+                                </span>
+                                <span
+                                    v-if="item.exists_in_mythicaldash === false"
+                                    class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-400 border-amber-500/30 flex items-center gap-1"
+                                    title="This server is not managed by MythicalDash"
+                                >
+                                    <AlertTriangleIcon class="h-3 w-3" />
+                                    Not Managed
                                 </span>
                             </div>
                             <p class="text-xs text-gray-400 mt-1">ID: {{ item.attributes.id }}</p>
@@ -228,6 +252,7 @@ interface Server {
         id: number;
         name: string;
     };
+    exists_in_mythicaldash?: boolean;
 }
 
 interface ServerStats {

@@ -76,7 +76,7 @@ class PayPalDB extends Database
      *
      * @return array|false Payment data or false if not found
      */
-    public static function getByCode(string $code): array|false
+    public static function getByCode(string $code): array | false
     {
         try {
             $con = self::getPdoConnection();

@@ -96,7 +96,7 @@ class ReferralUses extends Database
      *
      * @return int|false The ID of newly created use, or false on failure
      */
-    public static function create(int $referralCodeId, string $referredUserId): int|false
+    public static function create(int $referralCodeId, string $referredUserId): int | false
     {
         try {
             $dbConn = Database::getPdoConnection();
@@ -142,7 +142,7 @@ class ReferralUses extends Database
      *
      * @return array|false The referral use data or false if not found
      */
-    public static function getById(int $id): array|false
+    public static function getById(int $id): array | false
     {
         try {
             $dbConn = Database::getPdoConnection();

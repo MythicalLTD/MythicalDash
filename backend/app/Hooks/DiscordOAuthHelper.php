@@ -262,7 +262,7 @@ class DiscordOAuthHelper
 
             $newlyJoinedServers = [];
             $totalCoinsEarned = 0;
-// Updated To Fix J4R
+            // Updated To Fix J4R
             // Check each J4R server
             foreach ($j4rServers as $j4rServer) {
                 $serverId = $j4rServer['server_id'];

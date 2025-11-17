@@ -106,7 +106,7 @@ class Nodes extends NodesResource
             ];
         } catch (ResourceNotFoundException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Nodes#getNodeData] Node not found', false);
-        } catch (PterodactylException|ValidationException $e) {
+        } catch (PterodactylException | ValidationException $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Nodes#getNodeData] Failed to fetch node data', false);
         } catch (\Throwable $e) {
             $appInstance->getLogger()->error('[Pterodactyl/Admin/Nodes#getNodeData] Unexpected error', false);

@@ -303,9 +303,7 @@ export function useAdminMenu(route: { path: string }, dashBoard: { value: Dashbo
                     icon: ImageIcon,
                     active: route.path === `${adminBaseUri}/images`,
                     count: computed(() => dashBoard.value.count.images_count || 0),
-                    visible: computed(
-                        () => Session.Permission.Has(Permissions.ADMIN_IMAGES_LIST) && isImageHostingEnabled.value,
-                    ),
+                    visible: computed(() => Session.Permission.Has(Permissions.ADMIN_IMAGES_LIST)),
                 },
                 {
                     name: 'Mail Templates',

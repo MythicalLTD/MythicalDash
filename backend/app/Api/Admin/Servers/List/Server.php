@@ -178,6 +178,10 @@ $router->get('/api/admin/servers/list', function (): void {
                 }
             }
 
+            // Check if server exists in MythicalDash
+            $pterodactylId = (int) $server['attributes']['id'];
+            $serverData['exists_in_mythicaldash'] = MythicalDash\Chat\Servers\Server::doesServerExistByPterodactylId($pterodactylId);
+
             $serversWithInfo[] = $serverData;
         }
         $servers['data'] = $serversWithInfo;

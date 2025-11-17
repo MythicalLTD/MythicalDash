@@ -176,7 +176,6 @@ const handleSearchBlur = () => {
 
 // Footer links
 const footerLinks = [
-    { name: 'Buy a license', path: 'https://discord.mythical.systems' },
     { name: 'Documentation', path: 'https://mythical.systems' },
     { name: 'Status', path: 'https://status.mythical.systems' },
 ];

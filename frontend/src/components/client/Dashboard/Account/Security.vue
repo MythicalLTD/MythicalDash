@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue';
 import Button from '@/components/client/ui/Button.vue';
 import { useRouter } from 'vue-router';
 import Session from '@/mythicaldash/Session';
+import Auth from '@/mythicaldash/Auth';
+import Swal from 'sweetalert2';
 import { useI18n } from 'vue-i18n';
 import { MythicalDOM } from '@/mythicaldash/MythicalDOM';
 import {
@@ -14,6 +16,9 @@ import {
     XCircle as XCircleIcon,
     Lock as LockIcon,
     LogOut as LogOutIcon,
+    X as XIcon,
+    Eye as EyeIcon,
+    EyeOff as EyeOffIcon,
 } from 'lucide-vue-next';
 
 const router = useRouter();
@@ -22,6 +27,18 @@ const { t } = useI18n();
 const isLoading = ref(true);
 const is2FAEnabled = Session.getInfo('2fa_enabled') === 'true' ? ref(true) : ref(false);
 const lastPasswordChange = ref('2023-11-15T14:30:00Z'); // Mock data
+const showPasswordModal = ref(false);
+const isChangingPassword = ref(false);
+const showCurrentPassword = ref(false);
+const showNewPassword = ref(false);
+const showConfirmPassword = ref(false);
+
+// Password change form
+const passwordForm = ref({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+});
 
 MythicalDOM.setPageTitle(t('account.pages.security.page.title'));
 
@@ -45,7 +62,113 @@ const disable2FA = () => {
 };
 
 const changePassword = () => {
-    router.push('/auth/forgot-password');
+    showPasswordModal.value = true;
+};
+
+const closePasswordModal = () => {
+    showPasswordModal.value = false;
+    passwordForm.value = {
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+    };
+};
+
+const handlePasswordChange = async () => {
+    if (!passwordForm.value.currentPassword || !passwordForm.value.newPassword || !passwordForm.value.confirmPassword) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please fill in all fields',
+            showConfirmButton: true,
+            background: '#12121f',
+            color: '#e5e7eb',
+            confirmButtonColor: '#6366f1',
+        });
+        return;
+    }
+
+    if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'New password and confirmation do not match',
+            showConfirmButton: true,
+            background: '#12121f',
+            color: '#e5e7eb',
+            confirmButtonColor: '#6366f1',
+        });
+        return;
+    }
+
+    if (passwordForm.value.newPassword.length < 8) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Password must be at least 8 characters long',
+            showConfirmButton: true,
+            background: '#12121f',
+            color: '#e5e7eb',
+            confirmButtonColor: '#6366f1',
+        });
+        return;
+    }
+
+    isChangingPassword.value = true;
+    try {
+        const response = await Auth.changePassword(
+            passwordForm.value.currentPassword,
+            passwordForm.value.newPassword,
+            passwordForm.value.confirmPassword,
+        );
+
+        if (response.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Password changed successfully!',
+                showConfirmButton: true,
+                background: '#12121f',
+                color: '#e5e7eb',
+                confirmButtonColor: '#6366f1',
+            });
+            closePasswordModal();
+        } else {
+            let errorMessage = 'Failed to change password';
+            if (response.error_code === 'INVALID_CURRENT_PASSWORD') {
+                errorMessage = 'Current password is incorrect';
+            } else if (response.error_code === 'PASSWORD_MISMATCH') {
+                errorMessage = 'New password and confirmation do not match';
+            } else if (response.error_code === 'PASSWORD_TOO_SHORT') {
+                errorMessage = 'Password must be at least 8 characters long';
+            } else if (response.message) {
+                errorMessage = response.message;
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMessage,
+                showConfirmButton: true,
+                background: '#12121f',
+                color: '#e5e7eb',
+                confirmButtonColor: '#6366f1',
+            });
+        }
+    } catch (error) {
+        console.error('Error changing password:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An unexpected error occurred',
+            showConfirmButton: true,
+            background: '#12121f',
+            color: '#e5e7eb',
+            confirmButtonColor: '#6366f1',
+        });
+    } finally {
+        isChangingPassword.value = false;
+    }
 };
 
 const logoutAllDevices = () => {
@@ -281,6 +404,122 @@ const formatDate = (dateString: string): string => {
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Password Change Modal -->
+        <div
+            v-if="showPasswordModal"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            @click.self="closePasswordModal"
+        >
+            <div
+                class="bg-[#12121f] border border-[#2a2a3f]/30 rounded-xl p-6 w-full max-w-md mx-4 shadow-2xl"
+                @click.stop
+            >
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-semibold text-gray-100 flex items-center gap-2">
+                        <KeyIcon class="h-5 w-5 text-indigo-400" />
+                        Change Password
+                    </h3>
+                    <button
+                        @click="closePasswordModal"
+                        class="text-gray-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-[#1a1a2e]"
+                    >
+                        <XIcon class="h-5 w-5" />
+                    </button>
+                </div>
+
+                <form @submit.prevent="handlePasswordChange" class="space-y-4">
+                    <!-- Current Password -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1.5">Current Password</label>
+                        <div class="relative">
+                            <input
+                                :type="showCurrentPassword ? 'text' : 'password'"
+                                v-model="passwordForm.currentPassword"
+                                name="currentPassword"
+                                id="currentPassword"
+                                placeholder="Enter your current password"
+                                class="w-full bg-[#0a0a15]/50 border border-[#2a2a3f]/30 rounded-lg px-4 py-2.5 pl-10 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                            />
+                            <LockIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            <button
+                                type="button"
+                                @click="showCurrentPassword = !showCurrentPassword"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                            >
+                                <EyeIcon v-if="showCurrentPassword" class="h-5 w-5" />
+                                <EyeOffIcon v-else class="h-5 w-5" />
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- New Password -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1.5">New Password</label>
+                        <div class="relative">
+                            <input
+                                :type="showNewPassword ? 'text' : 'password'"
+                                v-model="passwordForm.newPassword"
+                                name="newPassword"
+                                id="newPassword"
+                                placeholder="Enter your new password"
+                                class="w-full bg-[#0a0a15]/50 border border-[#2a2a3f]/30 rounded-lg px-4 py-2.5 pl-10 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                            />
+                            <LockIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            <button
+                                type="button"
+                                @click="showNewPassword = !showNewPassword"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                            >
+                                <EyeIcon v-if="showNewPassword" class="h-5 w-5" />
+                                <EyeOffIcon v-else class="h-5 w-5" />
+                            </button>
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500">Password must be at least 8 characters long</p>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1.5">Confirm New Password</label>
+                        <div class="relative">
+                            <input
+                                :type="showConfirmPassword ? 'text' : 'password'"
+                                v-model="passwordForm.confirmPassword"
+                                name="confirmPassword"
+                                id="confirmPassword"
+                                placeholder="Confirm your new password"
+                                class="w-full bg-[#0a0a15]/50 border border-[#2a2a3f]/30 rounded-lg px-4 py-2.5 pl-10 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                            />
+                            <LockIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            <button
+                                type="button"
+                                @click="showConfirmPassword = !showConfirmPassword"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                            >
+                                <EyeIcon v-if="showConfirmPassword" class="h-5 w-5" />
+                                <EyeOffIcon v-else class="h-5 w-5" />
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex gap-3 pt-4">
+                        <Button
+                            type="button"
+                            @click="closePasswordModal"
+                            variant="secondary"
+                            class="flex-1"
+                            :disabled="isChangingPassword"
+                        >
+                            Cancel
+                        </Button>
+                        <Button type="submit" variant="primary" class="flex-1" :loading="isChangingPassword">
+                            Change Password
+                        </Button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

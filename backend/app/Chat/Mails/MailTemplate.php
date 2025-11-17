@@ -37,7 +37,7 @@ class MailTemplate extends Database
 {
     private static string $table = 'mythicaldash_mail_templates';
 
-    public static function create(array $data): int|false
+    public static function create(array $data): int | false
     {
         $required = ['name', 'subject', 'body'];
         foreach ($required as $field) {
@@ -179,7 +179,7 @@ class MailTemplate extends Database
     }
 
     // Legacy methods for API compatibility - these map to the new structure
-    public static function createLegacy(string $name, string $content, string $active, string $subject): int|false
+    public static function createLegacy(string $name, string $content, string $active, string $subject): int | false
     {
         // Map content to body and add subject field
         $data = [

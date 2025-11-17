@@ -53,7 +53,7 @@ class UserActivities extends Database
      *
      * @return bool True if the activity was added, false otherwise
      */
-    public static function add(string $uuid, string|UserActivitiesTypes $type, string $ipv4, string $context = 'None'): bool
+    public static function add(string $uuid, string | UserActivitiesTypes $type, string $ipv4, string $context = 'None'): bool
     {
         try {
             $dbConn = Database::getPdoConnection();

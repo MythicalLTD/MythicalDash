@@ -100,7 +100,7 @@ class Router
      *
      * @return self For method chaining
      */
-    public function all(string $expr, callable $callback, array|string|null $methods = null): self
+    public function all(string $expr, callable $callback, array | string | null $methods = null): self
     {
         // Apply middleware to the callback if any middleware is in the stack
         if (!empty($this->middlewareStack)) {

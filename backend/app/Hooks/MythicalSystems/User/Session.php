@@ -70,7 +70,7 @@ class Session
      *
      * @return mixed|null The value of the session variable if it exists, null otherwise
      */
-    public static function get(string $name): string|array|null
+    public static function get(string $name): string | array | null
     {
         self::start();
 

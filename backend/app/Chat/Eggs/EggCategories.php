@@ -254,7 +254,7 @@ class EggCategories extends Database
      *
      * @return array|null The category data or null if not found
      */
-    public static function getByPterodactylNestId(int $pterodactylNestId): array|bool
+    public static function getByPterodactylNestId(int $pterodactylNestId): array | bool
     {
         try {
             $dbConn = Database::getPdoConnection();

@@ -2,7 +2,6 @@ import { fileURLToPath, URL } from 'node:url';
 
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import vueDevTools from 'vite-plugin-vue-devtools';
 import oxlintPlugin from 'vite-plugin-oxlint';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
 import tailwindcss from '@tailwindcss/vite';
@@ -16,7 +15,6 @@ export default defineConfig({
             },
         }),
         vue(),
-        vueDevTools(),
         tailwindcss(),
         oxlintPlugin(),
     ],
@@ -49,35 +47,7 @@ export default defineConfig({
         },
     },
     build: {
-        sourcemap: false,
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    // Core Vue ecosystem
-                    'vue-core': ['vue', 'vue-router', 'pinia'],
-                    // Chart.js bundle
-                    'charts': ['chart.js'],
-                    // UI components
-                    'ui': ['lucide-vue-next', 'sweetalert2', 'vue-sweetalert2'],
-                    // Utilities
-                    'utils': ['date-fns', 'qrcode', 'vue-qrcode']
-                },
-                // Optimize chunk size
-                chunkFileNames: () => {
-                    return `js/[name]-[hash].js`;
-                },
-                entryFileNames: 'js/[name]-[hash].js',
-                assetFileNames: (assetInfo) => {
-                    if (!assetInfo.name) return 'assets/[name]-[hash].[ext]';
-                    const info = assetInfo.name.split('.');
-                    const ext = info[info.length - 1];
-                    if (/\.(css)$/.test(assetInfo.name)) {
-                        return `css/[name]-[hash].${ext}`;
-                    }
-                    return `assets/[name]-[hash].${ext}`;
-                }
-            }
-        },
+        sourcemap: false,    
         // Increase chunk size warning limit
         chunkSizeWarningLimit: 1000,
     },

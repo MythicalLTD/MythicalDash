@@ -883,6 +883,8 @@ const saveField = async (column: string, value: string | number): Promise<void> 
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 3000,
+                backdrop: false,
+                allowOutsideClick: true,
             });
 
             // Update the user object with the new value
@@ -943,6 +945,8 @@ const setBanned = async (status: 'YES' | 'NO'): Promise<void> => {
                 position: 'top-end',
                 timer: 2000,
                 showConfirmButton: false,
+                backdrop: false,
+                allowOutsideClick: true,
             });
         } else {
             throw new Error(data?.message || 'Failed to update ban status');

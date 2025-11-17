@@ -37,7 +37,7 @@ class MailQueue extends Database
 {
     private static string $table = 'mythicaldash_mail_queue';
 
-    public static function create(array $data): int|false
+    public static function create(array $data): int | false
     {
         $required = ['user_uuid', 'subject', 'body'];
         foreach ($required as $field) {

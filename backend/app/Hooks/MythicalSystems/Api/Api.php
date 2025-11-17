@@ -139,7 +139,7 @@ class Api extends ResponseHandler
     /**
      * Get the request method.
      */
-    public static function getRequestMethod(): string|array|null
+    public static function getRequestMethod(): string | array | null
     {
         if ($_SERVER['REQUEST_METHOD'] == null) {
             return null;

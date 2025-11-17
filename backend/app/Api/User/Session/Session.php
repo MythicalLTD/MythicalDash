@@ -138,6 +138,91 @@ $router->add('/api/user/session/newPin', function (): void {
     }
 });
 
+$router->post('/api/user/session/password/change', function (): void {
+    App::init();
+    global $eventManager;
+    $appInstance = App::getInstance(true);
+    $appInstance->allowOnlyPOST();
+    $session = new Session($appInstance);
+    $accountToken = $session->SESSION_KEY;
+
+    try {
+        if (!isset($_POST['current_password']) || empty($_POST['current_password'])) {
+            $appInstance->BadRequest('Current password is required!', ['error_code' => 'CURRENT_PASSWORD_MISSING']);
+        }
+        if (!isset($_POST['new_password']) || empty($_POST['new_password'])) {
+            $appInstance->BadRequest('New password is required!', ['error_code' => 'NEW_PASSWORD_MISSING']);
+        }
+        if (!isset($_POST['confirm_password']) || empty($_POST['confirm_password'])) {
+            $appInstance->BadRequest('Password confirmation is required!', ['error_code' => 'CONFIRM_PASSWORD_MISSING']);
+        }
+
+        $currentPassword = $_POST['current_password'];
+        $newPassword = $_POST['new_password'];
+        $confirmPassword = $_POST['confirm_password'];
+
+        if ($newPassword !== $confirmPassword) {
+            $appInstance->BadRequest('New password and confirmation do not match!', ['error_code' => 'PASSWORD_MISMATCH']);
+        }
+
+        if (strlen($newPassword) < 8) {
+            $appInstance->BadRequest('Password must be at least 8 characters long!', ['error_code' => 'PASSWORD_TOO_SHORT']);
+        }
+
+        // Verify current password
+        $userPassword = User::getInfo($accountToken, UserColumns::PASSWORD, false);
+        $decryptedPassword = $appInstance->decrypt($userPassword);
+
+        if ($decryptedPassword !== $currentPassword) {
+            $appInstance->BadRequest('Current password is incorrect!', ['error_code' => 'INVALID_CURRENT_PASSWORD']);
+        }
+
+        // Update password
+        if (User::updateInfo($accountToken, UserColumns::PASSWORD, $newPassword, true)) {
+            // Update Pterodactyl password if user has Pterodactyl account
+            $pterodactylUserId = User::getInfo($accountToken, UserColumns::PTERODACTYL_USER_ID, false);
+            if (!empty($pterodactylUserId)) {
+                try {
+                    $userInfoArray = User::getInfoArray($accountToken, [
+                        UserColumns::EMAIL,
+                        UserColumns::USERNAME,
+                        UserColumns::FIRST_NAME,
+                        UserColumns::LAST_NAME,
+                    ], []);
+                    MythicalDash\Hooks\Pterodactyl\Admin\User::performLogin(
+                        $pterodactylUserId,
+                        $userInfoArray[UserColumns::EMAIL],
+                        $userInfoArray[UserColumns::USERNAME],
+                        $userInfoArray[UserColumns::FIRST_NAME],
+                        $userInfoArray[UserColumns::LAST_NAME],
+                        $newPassword
+                    );
+                } catch (Exception $e) {
+                    $appInstance->getLogger()->error('[Session#changePassword] Failed to update Pterodactyl password: ' . $e->getMessage());
+                    // Continue even if Pterodactyl update fails
+                }
+            }
+
+            UserActivities::add(
+                $session->getInfo(UserColumns::UUID, false),
+                UserActivitiesTypes::$change_password,
+                CloudFlareRealIP::getRealIP()
+            );
+
+            $eventManager->emit(UserEvent::onUserUpdate(), [
+                'user' => $session->getInfo(UserColumns::UUID, false),
+            ]);
+
+            $appInstance->OK('Password changed successfully!', []);
+        } else {
+            $appInstance->BadRequest('Failed to update password!', ['error_code' => 'PASSWORD_UPDATE_FAILED']);
+        }
+    } catch (Exception $e) {
+        $appInstance->getLogger()->error('Failed to change password! ' . $e->getMessage());
+        $appInstance->BadRequest('Bad Request', ['error_code' => 'DB_ERROR', 'error' => $e->getMessage()]);
+    }
+});
+
 $router->get('/api/user/session', function (): void {
     App::init();
     $appInstance = App::getInstance(true);

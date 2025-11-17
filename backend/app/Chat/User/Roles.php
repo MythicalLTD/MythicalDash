@@ -68,7 +68,7 @@ class Roles extends Database
      *
      * @return string|null The value of the column
      */
-    public static function getInfo(RolesInterface|string $real_name, RolesColumns|string $info): ?string
+    public static function getInfo(RolesInterface | string $real_name, RolesColumns | string $info): ?string
     {
         try {
             if (!in_array($info, RolesColumns::getColumns())) {
@@ -95,7 +95,7 @@ class Roles extends Database
      *
      * @throws \InvalidArgumentException If the column name is invalid
      */
-    public static function updateInfo(int $id, RolesColumns|string $info, string $value): bool
+    public static function updateInfo(int $id, RolesColumns | string $info, string $value): bool
     {
         try {
             if (!in_array($info, RolesColumns::getColumns())) {

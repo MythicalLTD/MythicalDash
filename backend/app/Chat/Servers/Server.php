@@ -75,7 +75,7 @@ class Server extends Database
         int $pterodactylId,
         ?int $build,
         string $user,
-    ): int|false {
+    ): int | false {
         try {
             $dbConn = self::getPdoConnection();
             $sql = 'INSERT INTO ' . self::getTableName() . ' 

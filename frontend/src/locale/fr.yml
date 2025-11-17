@@ -1323,7 +1323,7 @@ l4r:
     pages:
         index:
             title: 'Liens pour les récompenses'
-            subTitle: "Cliquez sur n’importe quel fournisseur pour compléter l’offre."
+            subTitle: 'Cliquez sur n’importe quel fournisseur pour compléter l’offre.'
             loading: 'Chargement des liens...'
             empty: 'Lien non trouvées'
             linkvertise:

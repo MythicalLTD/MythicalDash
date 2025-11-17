@@ -75,7 +75,7 @@ class Tickets extends Database
         string $title,
         string $description,
         string $priority,
-    ): int|false {
+    ): int | false {
         try {
             $dbConn = self::getPdoConnection();
             $sql = 'INSERT INTO ' . self::getTableName() . ' (user, department, priority, title, description) VALUES (:uuid, :department, :priority, :title, :description)';

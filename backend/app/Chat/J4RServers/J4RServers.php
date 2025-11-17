@@ -101,7 +101,7 @@ class J4RServers extends Database
         ?string $serverId = null,
         ?string $description = null,
         ?string $iconUrl = null,
-    ): int|false {
+    ): int | false {
         try {
             $dbConn = self::getPdoConnection();
             $sql = 'INSERT INTO ' . self::getTableName() . ' 

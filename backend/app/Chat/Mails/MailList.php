@@ -37,7 +37,7 @@ class MailList extends Database
 {
     private static string $table = 'mythicaldash_mail_list';
 
-    public static function create(array $data): int|false
+    public static function create(array $data): int | false
     {
         $required = ['queue_id', 'user_uuid'];
         foreach ($required as $field) {

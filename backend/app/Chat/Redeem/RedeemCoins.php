@@ -268,7 +268,7 @@ class RedeemCoins extends Database
      *
      * @return array|false Array with redemption data on success, false on failure
      */
-    public static function redeemCodeAtomic(string $code, string $userUuid): array|false
+    public static function redeemCodeAtomic(string $code, string $userUuid): array | false
     {
         try {
             $dbConn = Database::getPdoConnection();
@@ -341,7 +341,7 @@ class RedeemCoins extends Database
      *
      * @return array|false Array with validation data on success, false on failure
      */
-    public static function validateCodeAtomic(string $code, string $userUuid): array|false
+    public static function validateCodeAtomic(string $code, string $userUuid): array | false
     {
         try {
             $dbConn = Database::getPdoConnection();

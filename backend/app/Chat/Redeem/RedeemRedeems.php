@@ -69,7 +69,7 @@ class RedeemRedeems extends Database
      *
      * @return int|false The ID of newly created redeem record, or false on failure
      */
-    public static function create(string $user, int $code): int|false
+    public static function create(string $user, int $code): int | false
     {
         try {
             $dbConn = Database::getPdoConnection();
@@ -188,7 +188,7 @@ class RedeemRedeems extends Database
      *
      * @return bool|int True if redemption successful, false otherwise
      */
-    public static function redeemCode(int $code, string $uuid): bool|int
+    public static function redeemCode(int $code, string $uuid): bool | int
     {
         return self::create($uuid, $code);
     }

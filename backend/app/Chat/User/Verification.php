@@ -47,7 +47,7 @@ class Verification extends Database
      * @param string $uuid The user's UUID
      * @param EmailVerificationColumns|string $type The type of verification [password,verify]
      */
-    public static function add(string $code, string $uuid, EmailVerificationColumns|string $type): void
+    public static function add(string $code, string $uuid, EmailVerificationColumns | string $type): void
     {
         try {
             if (User::exists(UserColumns::UUID, $uuid)) {
@@ -70,7 +70,7 @@ class Verification extends Database
      * @param string $code The code to verify
      * @param EmailVerificationColumns|string $type The type of verification [password,verify]
      */
-    public static function verify(string $code, EmailVerificationColumns|string $type): bool
+    public static function verify(string $code, EmailVerificationColumns | string $type): bool
     {
         try {
             $conn = self::getPdoConnection();

@@ -56,7 +56,7 @@ class Eggs extends Database
      *
      * @return int|false The ID of the newly created egg, or false on failure
      */
-    public static function create(string $name, string $description, int $categoryId, int $pterodactylEggId, string $enabled = 'false', ?int $imageId = null, string $vipOnly = 'false'): int|false
+    public static function create(string $name, string $description, int $categoryId, int $pterodactylEggId, string $enabled = 'false', ?int $imageId = null, string $vipOnly = 'false'): int | false
     {
         try {
             $dbConn = Database::getPdoConnection();

@@ -129,7 +129,7 @@ class ServerQueueLogs extends Database
     public static function create(
         int $buildId,
         string $log,
-    ): int|false {
+    ): int | false {
         try {
             $dbConn = Database::getPdoConnection();
 
@@ -354,7 +354,7 @@ class ServerQueueLogs extends Database
      *
      * @return int|false The ID of the newly created log entry, or false on failure
      */
-    public static function saveJobLogs(int $buildId, array $logs, bool $isPurge = false, ?string $expirationDate = null): int|false
+    public static function saveJobLogs(int $buildId, array $logs, bool $isPurge = false, ?string $expirationDate = null): int | false
     {
         try {
             // Join log messages with newlines
@@ -429,7 +429,7 @@ class ServerQueueLogs extends Database
      *
      * @return int|false The ID of the newly created log entry, or false on failure
      */
-    public static function logFailure(int $buildId, array $logs, string $errorMessage): int|false
+    public static function logFailure(int $buildId, array $logs, string $errorMessage): int | false
     {
         try {
             // Add error message to logs

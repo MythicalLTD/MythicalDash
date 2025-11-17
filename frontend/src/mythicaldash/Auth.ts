@@ -261,6 +261,32 @@ class Auth {
         const data = await response.json();
         return parseInt(data.pin, 10);
     }
+
+    /**
+     * Change the user's password
+     *
+     * @param currentPassword The current password
+     * @param newPassword The new password
+     * @param confirmPassword The password confirmation
+     *
+     * @returns The response from the server
+     */
+    static async changePassword(
+        currentPassword: string,
+        newPassword: string,
+        confirmPassword: string,
+    ) {
+        const response = await fetch('/api/user/session/password/change', {
+            method: 'POST',
+            body: new URLSearchParams({
+                current_password: currentPassword,
+                new_password: newPassword,
+                confirm_password: confirmPassword,
+            }),
+        });
+        const data = await response.json();
+        return data;
+    }
 }
 
 export default Auth;

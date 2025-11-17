@@ -283,7 +283,7 @@ class ServerQueue extends Database
         int $nest,
         int $egg,
         string $status = 'pending',
-    ): int|false {
+    ): int | false {
         try {
             $dbConn = Database::getPdoConnection();
 

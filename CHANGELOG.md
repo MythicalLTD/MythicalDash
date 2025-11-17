@@ -1,3 +1,21 @@
+# v3.5.3-Aurora
+
+# Bug Fixed
+
+- Fixed: Meta Admin page now properly displays images even when image hosting is disabled.
+- Fixed: Corrected the display of the license key in the admin menu.
+- Fixed: The background now displays correctly after saving a user.
+- Fixed: References to Pelican Panel (which is not supported) have been replaced with FeatherPanel throughout the application.
+- Fixed: Minor issues with claiming coins from J4R have been resolved!
+- Fixed: Successfully resolved an issue where changing your password would redirect you to the home page. #342
+- Fixed: Resolved an issue where IP addresses would sometimes incorrectly default to 127.0.0.1.
+- Fixed: Resolved an issue where the .env file could randomly become corrupted.
+
+# New Features
+
+- Feature: Servers that exist in Pterodactyl but are not found in the MythicalDash database are now highlighted with an alert banner for easy identification.
+- Feature: Enhanced server deployment logs more detailed deployment information is now shown.
+
 # v3.5.2-Aurora
 
 # Bug Fixes

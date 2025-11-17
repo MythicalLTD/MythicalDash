@@ -52,7 +52,7 @@ class Leaderboard extends Database
      *
      * @return array The leaderboard data
      */
-    public static function getLeaderboard(int $limit = 15, LeaderboardTypes|string $type = LeaderboardTypes::COINS)
+    public static function getLeaderboard(int $limit = 15, LeaderboardTypes | string $type = LeaderboardTypes::COINS)
     {
         try {
             $con = self::getPdoConnection();

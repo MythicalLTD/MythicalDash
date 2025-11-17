@@ -75,7 +75,7 @@ class ReferralCodes extends Database
      *
      * @return int|false The ID of newly created code, or false on failure
      */
-    public static function create(string $user, string $code): int|false
+    public static function create(string $user, string $code): int | false
     {
         try {
             $dbConn = Database::getPdoConnection();
@@ -145,7 +145,7 @@ class ReferralCodes extends Database
      *
      * @return array|false The referral code data or false if not found
      */
-    public static function getById(int $id): array|false
+    public static function getById(int $id): array | false
     {
         try {
             $dbConn = Database::getPdoConnection();
@@ -168,7 +168,7 @@ class ReferralCodes extends Database
      *
      * @return array|false The referral code data or false if not found
      */
-    public static function getByCode(string $code): array|false
+    public static function getByCode(string $code): array | false
     {
         try {
             $dbConn = Database::getPdoConnection();

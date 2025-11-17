@@ -91,7 +91,7 @@ class Session extends Database
         }
     }
 
-    public function getInfo(string|UserColumns $info, bool $encrypted): string
+    public function getInfo(string | UserColumns $info, bool $encrypted): string
     {
         if (!in_array($info, UserColumns::getColumns())) {
             throw new \InvalidArgumentException('Invalid column name: ' . $info);
@@ -102,7 +102,7 @@ class Session extends Database
         return $value ?? '';
     }
 
-    public function setInfo(string|UserColumns $info, ?string $value, bool $encrypted): void
+    public function setInfo(string | UserColumns $info, ?string $value, bool $encrypted): void
     {
         if (!in_array($info, UserColumns::getColumns())) {
             throw new \InvalidArgumentException('Invalid column name: ' . $info);
