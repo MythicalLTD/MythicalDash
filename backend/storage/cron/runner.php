@@ -46,7 +46,7 @@ define('APP_DEBUG', false);
 define('SYSTEM_OS_NAME', gethostname() . '/' . PHP_OS_FAMILY);
 define('SYSTEM_KERNEL_NAME', php_uname('s'));
 define('TELEMETRY', true);
-define('APP_VERSION', '3.5.2-aurora');
+define('APP_VERSION', '3.5.3-aurora');
 define('APP_UPSTREAM', 'github.com/mythicalltd/mythicaldash');
 
 require __DIR__ . '/../packages/autoload.php';
