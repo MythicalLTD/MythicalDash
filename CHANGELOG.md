@@ -2,6 +2,7 @@
 
 # Bug Fixed
 
+- Fixed: Major performance issues on older devices by switching to a new Rust-based compiler, resulting in up to 40x faster speeds!
 - Fixed: Meta Admin page now properly displays images even when image hosting is disabled.
 - Fixed: Corrected the display of the license key in the admin menu.
 - Fixed: The background now displays correctly after saving a user.
