@@ -71,8 +71,8 @@
                         </button>
                     </div>
                     <p class="mt-1 text-xs text-gray-500">
-                        Enter your Panel API key. This should be a full access Application API key, not a Client API key.
-                        Works with both FeatherPanel and Pterodactyl Panel.
+                        Enter your Panel API key. This should be a full access Application API key, not a Client API
+                        key. Works with both FeatherPanel and Pterodactyl Panel.
                     </p>
                 </div>
             </div>

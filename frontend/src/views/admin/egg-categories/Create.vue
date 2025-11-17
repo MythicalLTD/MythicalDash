@@ -131,6 +131,25 @@
                             </div>
                         </div>
                     </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1">Status</label>
+                        <div class="flex items-center space-x-3">
+                            <label class="flex items-center cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    v-model="categoryForm.enabled"
+                                    true-value="true"
+                                    false-value="false"
+                                    class="w-4 h-4 text-pink-500 bg-gray-700 border-gray-600 rounded focus:ring-pink-500 focus:ring-2"
+                                />
+                                <span class="ml-2 text-sm text-gray-300">
+                                    {{ categoryForm.enabled === 'true' ? 'Enabled' : 'Disabled' }}
+                                </span>
+                            </label>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Enable or disable this category</p>
+                    </div>
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-4 border-t border-gray-700">

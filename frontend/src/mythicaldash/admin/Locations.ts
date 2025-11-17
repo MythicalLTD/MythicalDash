@@ -28,7 +28,7 @@ class Locations {
         description: string,
         pterodactylLocationId: number,
         nodeIp: string,
-        status: string,
+        status: string = 'online',
         slots: number,
         image_id: number | null,
     ) {

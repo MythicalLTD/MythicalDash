@@ -199,27 +199,27 @@
                         <div
                             class="percentage-badge"
                             :class="[
-                                (serverSlots.used / serverSlots.total) * 100 >= 80
+                                serverSlotsPercentage >= 80
                                     ? 'high-usage'
-                                    : (serverSlots.used / serverSlots.total) * 100 >= 50
+                                    : serverSlotsPercentage >= 50
                                       ? 'medium-usage'
                                       : 'low-usage',
                             ]"
                         >
-                            {{ Math.round((serverSlots.used / serverSlots.total) * 100) }}%
+                            {{ Math.round(serverSlotsPercentage) }}%
                         </div>
                     </div>
                     <div class="progress-container">
                         <div
                             class="progress-bar"
                             :class="[
-                                (serverSlots.used / serverSlots.total) * 100 >= 80
+                                serverSlotsPercentage >= 80
                                     ? 'high-usage'
-                                    : (serverSlots.used / serverSlots.total) * 100 >= 50
+                                    : serverSlotsPercentage >= 50
                                       ? 'medium-usage'
                                       : 'low-usage',
                             ]"
-                            :style="{ width: (serverSlots.used / serverSlots.total) * 100 + '%' }"
+                            :style="{ width: serverSlotsPercentage + '%' }"
                         ></div>
                     </div>
                 </div>
@@ -249,27 +249,27 @@
                         <div
                             class="percentage-badge"
                             :class="[
-                                (backups.used / backups.total) * 100 >= 80
+                                backupsPercentage >= 80
                                     ? 'high-usage'
-                                    : (backups.used / backups.total) * 100 >= 50
+                                    : backupsPercentage >= 50
                                       ? 'medium-usage'
                                       : 'low-usage',
                             ]"
                         >
-                            {{ Math.round((backups.used / backups.total) * 100) }}%
+                            {{ Math.round(backupsPercentage) }}%
                         </div>
                     </div>
                     <div class="progress-container">
                         <div
                             class="progress-bar"
                             :class="[
-                                (backups.used / backups.total) * 100 >= 80
+                                backupsPercentage >= 80
                                     ? 'high-usage'
-                                    : (backups.used / backups.total) * 100 >= 50
+                                    : backupsPercentage >= 50
                                       ? 'medium-usage'
                                       : 'low-usage',
                             ]"
-                            :style="{ width: (backups.used / backups.total) * 100 + '%' }"
+                            :style="{ width: backupsPercentage + '%' }"
                         ></div>
                     </div>
                 </div>
@@ -296,27 +296,27 @@
                         <div
                             class="percentage-badge"
                             :class="[
-                                (allocations.used / allocations.total) * 100 >= 80
+                                allocationsPercentage >= 80
                                     ? 'high-usage'
-                                    : (allocations.used / allocations.total) * 100 >= 50
+                                    : allocationsPercentage >= 50
                                       ? 'medium-usage'
                                       : 'low-usage',
                             ]"
                         >
-                            {{ Math.round((allocations.used / allocations.total) * 100) }}%
+                            {{ Math.round(allocationsPercentage) }}%
                         </div>
                     </div>
                     <div class="progress-container">
                         <div
                             class="progress-bar"
                             :class="[
-                                (allocations.used / allocations.total) * 100 >= 80
+                                allocationsPercentage >= 80
                                     ? 'high-usage'
-                                    : (allocations.used / allocations.total) * 100 >= 50
+                                    : allocationsPercentage >= 50
                                       ? 'medium-usage'
                                       : 'low-usage',
                             ]"
-                            :style="{ width: (allocations.used / allocations.total) * 100 + '%' }"
+                            :style="{ width: allocationsPercentage + '%' }"
                         ></div>
                     </div>
                 </div>
@@ -343,27 +343,27 @@
                         <div
                             class="percentage-badge"
                             :class="[
-                                (databases.used / databases.total) * 100 >= 80
+                                databasesPercentage >= 80
                                     ? 'high-usage'
-                                    : (databases.used / databases.total) * 100 >= 50
+                                    : databasesPercentage >= 50
                                       ? 'medium-usage'
                                       : 'low-usage',
                             ]"
                         >
-                            {{ Math.round((databases.used / databases.total) * 100) }}%
+                            {{ Math.round(databasesPercentage) }}%
                         </div>
                     </div>
                     <div class="progress-container">
                         <div
                             class="progress-bar"
                             :class="[
-                                (databases.used / databases.total) * 100 >= 80
+                                databasesPercentage >= 80
                                     ? 'high-usage'
-                                    : (databases.used / databases.total) * 100 >= 50
+                                    : databasesPercentage >= 50
                                       ? 'medium-usage'
                                       : 'low-usage',
                             ]"
-                            :style="{ width: (databases.used / databases.total) * 100 + '%' }"
+                            :style="{ width: databasesPercentage + '%' }"
                         ></div>
                     </div>
                 </div>
@@ -440,13 +440,11 @@
                                 <div
                                     class="h-full bg-indigo-500 rounded-full"
                                     :style="{
-                                        width: Math.min((serverSlots.used / serverSlots.total) * 100, 100) + '%',
+                                        width: Math.min(serverSlotsPercentage, 100) + '%',
                                     }"
                                 ></div>
                             </div>
-                            <span class="ml-2 text-xs"
-                                >{{ Math.round((serverSlots.used / serverSlots.total) * 100) }}%</span
-                            >
+                            <span class="ml-2 text-xs">{{ Math.round(serverSlotsPercentage) }}%</span>
                         </td>
                     </tr>
                     <tr>
@@ -457,10 +455,10 @@
                             <div class="w-32 h-2 bg-gray-700 rounded-full overflow-hidden">
                                 <div
                                     class="h-full bg-indigo-500 rounded-full"
-                                    :style="{ width: Math.min((backups.used / backups.total) * 100, 100) + '%' }"
+                                    :style="{ width: Math.min(backupsPercentage, 100) + '%' }"
                                 ></div>
                             </div>
-                            <span class="ml-2 text-xs">{{ Math.round((backups.used / backups.total) * 100) }}%</span>
+                            <span class="ml-2 text-xs">{{ Math.round(backupsPercentage) }}%</span>
                         </td>
                     </tr>
                     <tr>
@@ -472,13 +470,11 @@
                                 <div
                                     class="h-full bg-indigo-500 rounded-full"
                                     :style="{
-                                        width: Math.min((allocations.used / allocations.total) * 100, 100) + '%',
+                                        width: Math.min(allocationsPercentage, 100) + '%',
                                     }"
                                 ></div>
                             </div>
-                            <span class="ml-2 text-xs"
-                                >{{ Math.round((allocations.used / allocations.total) * 100) }}%</span
-                            >
+                            <span class="ml-2 text-xs">{{ Math.round(allocationsPercentage) }}%</span>
                         </td>
                     </tr>
                     <tr>
@@ -489,12 +485,10 @@
                             <div class="w-32 h-2 bg-gray-700 rounded-full overflow-hidden">
                                 <div
                                     class="h-full bg-indigo-500 rounded-full"
-                                    :style="{ width: Math.min((databases.used / databases.total) * 100, 100) + '%' }"
+                                    :style="{ width: Math.min(databasesPercentage, 100) + '%' }"
                                 ></div>
                             </div>
-                            <span class="ml-2 text-xs"
-                                >{{ Math.round((databases.used / databases.total) * 100) }}%</span
-                            >
+                            <span class="ml-2 text-xs">{{ Math.round(databasesPercentage) }}%</span>
                         </td>
                     </tr>
                 </tbody>
@@ -553,9 +547,7 @@
                     <div class="flex items-center gap-2">
                         <span class="text-white font-semibold">{{ serverSlots.used }}</span>
                         <span class="text-xs text-gray-400">/ {{ serverSlots.total }}</span>
-                        <span class="ml-2 text-xs text-indigo-400"
-                            >{{ Math.round((serverSlots.used / serverSlots.total) * 100) }}%</span
-                        >
+                        <span class="ml-2 text-xs text-indigo-400">{{ Math.round(serverSlotsPercentage) }}%</span>
                     </div>
                 </div>
                 <div class="flex items-center justify-between bg-gray-900/40 border border-gray-800 rounded-lg p-3">
@@ -566,9 +558,7 @@
                     <div class="flex items-center gap-2">
                         <span class="text-white font-semibold">{{ backups.used }}</span>
                         <span class="text-xs text-gray-400">/ {{ backups.total }}</span>
-                        <span class="ml-2 text-xs text-indigo-400"
-                            >{{ Math.round((backups.used / backups.total) * 100) }}%</span
-                        >
+                        <span class="ml-2 text-xs text-indigo-400">{{ Math.round(backupsPercentage) }}%</span>
                     </div>
                 </div>
                 <div class="flex items-center justify-between bg-gray-900/40 border border-gray-800 rounded-lg p-3">
@@ -579,9 +569,7 @@
                     <div class="flex items-center gap-2">
                         <span class="text-white font-semibold">{{ allocations.used }}</span>
                         <span class="text-xs text-gray-400">/ {{ allocations.total }}</span>
-                        <span class="ml-2 text-xs text-indigo-400"
-                            >{{ Math.round((allocations.used / allocations.total) * 100) }}%</span
-                        >
+                        <span class="ml-2 text-xs text-indigo-400">{{ Math.round(allocationsPercentage) }}%</span>
                     </div>
                 </div>
                 <div class="flex items-center justify-between bg-gray-900/40 border border-gray-800 rounded-lg p-3">
@@ -592,9 +580,7 @@
                     <div class="flex items-center gap-2">
                         <span class="text-white font-semibold">{{ databases.used }}</span>
                         <span class="text-xs text-gray-400">/ {{ databases.total }}</span>
-                        <span class="ml-2 text-xs text-indigo-400"
-                            >{{ Math.round((databases.used / databases.total) * 100) }}%</span
-                        >
+                        <span class="ml-2 text-xs text-indigo-400">{{ Math.round(databasesPercentage) }}%</span>
                     </div>
                 </div>
             </div>
@@ -646,10 +632,25 @@ const toggleLayout = () => {
     }
 };
 
+// Helper function to safely calculate percentage
+const safePercentage = (used: number, total: number): number => {
+    if (!total || total === 0) return 0;
+    return Math.min((used / total) * 100, 100);
+};
+
 // Computed properties for usage percentages
-const memoryUsagePercentage = computed(() => (resources.value.memory / Session.getInfoInt('memory_limit')) * 100 || 0);
-const diskUsagePercentage = computed(() => (resources.value.disk / Session.getInfoInt('disk_limit')) * 100 || 0);
-const cpuUsagePercentage = computed(() => (resources.value.cpu / Session.getInfoInt('cpu_limit')) * 100 || 0);
+const memoryUsagePercentage = computed(() => {
+    const limit = Session.getInfoInt('memory_limit');
+    return limit > 0 ? safePercentage(resources.value.memory, limit) : 0;
+});
+const diskUsagePercentage = computed(() => {
+    const limit = Session.getInfoInt('disk_limit');
+    return limit > 0 ? safePercentage(resources.value.disk, limit) : 0;
+});
+const cpuUsagePercentage = computed(() => {
+    const limit = Session.getInfoInt('cpu_limit');
+    return limit > 0 ? safePercentage(resources.value.cpu, limit) : 0;
+});
 
 // Computed properties for feature limits
 const serverSlots = computed(() => ({
@@ -671,6 +672,12 @@ const databases = computed(() => ({
     used: resources.value.databases,
     total: Session.getInfoInt('database_limit'),
 }));
+
+// Computed properties for feature percentages
+const serverSlotsPercentage = computed(() => safePercentage(serverSlots.value.used, serverSlots.value.total));
+const backupsPercentage = computed(() => safePercentage(backups.value.used, backups.value.total));
+const allocationsPercentage = computed(() => safePercentage(allocations.value.used, allocations.value.total));
+const databasesPercentage = computed(() => safePercentage(databases.value.used, databases.value.total));
 
 // Function to fetch data
 const fetchData = async () => {

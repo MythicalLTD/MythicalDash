@@ -83,21 +83,19 @@ $router->post('/api/admin/locations/create', function (): void {
         CloudFlareRealIP::getRealIP()
     );
 
-    if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['pterodactyl_location_id']) && isset($_POST['node_ip']) && isset($_POST['status']) && isset($_POST['slots']) && isset($_POST['image_id'])) {
+    if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['pterodactyl_location_id']) && isset($_POST['node_ip']) && isset($_POST['slots']) && isset($_POST['image_id'])) {
         $name = $_POST['name'];
         $description = $_POST['description'];
         $pterodactyl_location_id = $_POST['pterodactyl_location_id'];
         $node_ip = $_POST['node_ip'];
-        $status = $_POST['status'];
+        $status = $_POST['status'] ?? 'online';
         $slots = (int) $_POST['slots'];
         $image_id = $_POST['image_id'];
         $vipOnly = $_POST['vip_only'] ?? 'false';
 
         $status_list = ['online', 'offline', 'maintenance'];
         if (!in_array($status, $status_list)) {
-            $appInstance->BadRequest('Invalid status', ['error_code' => 'ERROR_INVALID_STATUS']);
-
-            return;
+            $status = 'online'; // Default to online if invalid status provided
         }
 
         if ($name == '' || $description == '' || $pterodactyl_location_id == '' || $node_ip == '' || $status == '' || $slots == '' || $image_id == '') {

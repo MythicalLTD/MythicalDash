@@ -1,12 +1,48 @@
 <template>
     <LayoutDashboard>
+        <!-- Sponsor Banner -->
+        <DismissibleBanner
+            cookie-key="sponsor_banner_hidden"
+            title="Support MythicalDash"
+            subtitle="Help us continue providing free updates and patches"
+            :icon="Heart"
+            class="mb-4"
+        >
+            <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                MythicalDash has been providing <strong class="text-white">free updates and patches since 2021</strong>.
+                We're committed to keeping the platform free and open-source. Your support helps us maintain, improve,
+                and add new features to MythicalDash.
+            </p>
+
+            <template #actions>
+                <a
+                    href="https://donate.stripe.com/00gcO2epX5yj2ysfYY"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-black hover:bg-gray-900 border border-gray-800 hover:border-gray-700 rounded-lg text-sm font-medium text-white transition-all duration-200"
+                >
+                    <span>Donate via Stripe</span>
+                    <ExternalLinkIcon class="w-4 h-4" />
+                </a>
+                <a
+                    href="https://www.paypal.com/paypalme/nayskutzu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg text-sm font-medium text-gray-200 hover:text-white transition-all duration-200"
+                >
+                    <span>Donate via PayPal</span>
+                    <ExternalLinkIcon class="w-4 h-4" />
+                </a>
+            </template>
+        </DismissibleBanner>
+
         <!-- Alert Banner -->
         <div class="mb-4 bg-amber-900/20 border border-amber-500/30 rounded-lg px-3 py-2 shadow-sm">
             <div class="flex items-center gap-2">
                 <AlertTriangleIcon class="h-4 w-4 text-amber-400 shrink-0" />
                 <p class="text-xs text-amber-300">
-                    <span class="font-semibold">Note:</span> This list shows all Pterodactyl servers. Servers not managed by
-                    MythicalDash are marked with a warning badge.
+                    <span class="font-semibold">Note:</span> This list shows all Pterodactyl servers. Servers not
+                    managed by MythicalDash are marked with a warning badge.
                 </p>
             </div>
         </div>
@@ -215,6 +251,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
+import DismissibleBanner from '@/components/admin/DismissibleBanner.vue';
 import {
     PlusIcon,
     TrashIcon,
@@ -223,6 +260,7 @@ import {
     AlertTriangleIcon,
     ExternalLinkIcon,
     PauseIcon,
+    Heart,
 } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';

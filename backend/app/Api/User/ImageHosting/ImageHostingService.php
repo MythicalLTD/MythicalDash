@@ -35,10 +35,42 @@ use MythicalDash\Chat\User\Session;
 use MythicalDash\Services\ShareXApi;
 use MythicalDash\Config\ConfigInterface;
 use MythicalDash\Chat\columns\UserColumns;
+use MythicalDash\Hooks\MythicalSystems\User\UUIDManager;
 
 $app = App::getInstance(true);
 $logger = $app->getLogger();
 $config = $app->getConfig();
+
+/**
+ * Ensure user has an image hosting upload key, generate one if missing.
+ *
+ * @param Session $session The user session
+ * @param mixed $config The config instance (ConfigFactory)
+ *
+ * @return string|null The upload key or null if image hosting is disabled
+ */
+function ensureImageHostingKey(Session $session, $config): ?string
+{
+    // Only generate key if image hosting is enabled
+    if ($config->getDBSetting(ConfigInterface::IMAGE_HOSTING_ENABLED, 'false') !== 'true') {
+        return null;
+    }
+
+    $uploadKey = $session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false);
+
+    // Generate key if missing
+    if (empty($uploadKey)) {
+        $uploadKey = UUIDManager::generateUUID();
+        $token = $session->getInfo(UserColumns::ACCOUNT_TOKEN, false);
+        if ($token) {
+            User::updateInfo($token, UserColumns::IMAGE_HOSTING_UPLOAD_KEY, $uploadKey, false);
+            $app = App::getInstance(true);
+            $app->getLogger()->debug('Auto-generated image hosting API key for user: ' . $session->getInfo(UserColumns::USERNAME, false));
+        }
+    }
+
+    return $uploadKey;
+}
 
 $router->post('/api/user/images/toggle', function () use ($app) {
     $session = new Session($app);
@@ -88,13 +120,16 @@ $router->post('/api/user/images/embed/settings', function () use ($app) {
 
 $router->get('/api/user/images/sharex/download', function () use ($app, $config) {
     $session = new Session($app);
-    if (!$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)) {
+    $uploadKey = ensureImageHostingKey($session, $config);
+    if (!$uploadKey) {
         $app->BadRequest('You do not have permission to upload images.', [
             'status' => 400,
             'data' => [
                 'error' => 'You do not have permission to upload images.',
             ],
         ]);
+
+        return;
     }
     header('Content-Type: application/json');
     header('Content-Disposition: attachment; filename="sharex_config.sxcu"');
@@ -105,7 +140,7 @@ $router->get('/api/user/images/sharex/download', function () use ($app, $config)
     echo json_encode(ShareXApi::createConfig(
         $config->getDBSetting(ConfigInterface::APP_NAME, 'MythicalDash'),
         $appUrl,
-        $session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)
+        $uploadKey
     ));
 });
 $router->get('/api/user/images/list', function () use ($app, $config) {
@@ -177,32 +212,38 @@ $router->get('/api/user/images/list', function () use ($app, $config) {
 });
 $router->get('/api/user/images/sharex', function () use ($app, $config) {
     $session = new Session($app);
-    if (!$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)) {
+    $uploadKey = ensureImageHostingKey($session, $config);
+    if (!$uploadKey) {
         $app->BadRequest('You do not have permission to upload images.', [
             'status' => 400,
             'data' => [
                 'error' => 'You do not have permission to upload images.',
             ],
         ]);
+
+        return;
     }
 
     $app->OK('Success', [
         'status' => 200,
         'data' => [
-            'config' => ShareXApi::createConfig($config->getDBSetting(ConfigInterface::APP_NAME, 'MythicalDash'), 'https://' . $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems'), $session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)),
+            'config' => ShareXApi::createConfig($config->getDBSetting(ConfigInterface::APP_NAME, 'MythicalDash'), 'https://' . $config->getDBSetting(ConfigInterface::APP_URL, 'https://mythicaldash-v3.mythical.systems'), $uploadKey),
         ],
     ]);
 });
 
-$router->get('/api/user/images/delete/(.*)', function ($name) use ($app) {
+$router->get('/api/user/images/delete/(.*)', function ($name) use ($app, $config) {
     $session = new Session($app);
-    if (!$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)) {
+    $uploadKey = ensureImageHostingKey($session, $config);
+    if (!$uploadKey) {
         $app->BadRequest('You do not have permission to delete images.', [
             'status' => 400,
             'data' => [
                 'error' => 'You do not have permission to delete images.',
             ],
         ]);
+
+        return;
     }
 
     $user_uuid = $session->getInfo(UserColumns::UUID, false);
@@ -539,13 +580,16 @@ $router->post('/api/user/images/upload', function () use ($app, $logger, $config
 
 $router->get('/api/user/images/upload/config', function () use ($app, $config) {
     $session = new Session($app);
-    if (!$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)) {
+    $uploadKey = ensureImageHostingKey($session, $config);
+    if (!$uploadKey) {
         $app->BadRequest('You do not have permission to upload images.', [
             'status' => 400,
             'data' => [
                 'error' => 'You do not have permission to upload images.',
             ],
         ]);
+
+        return;
     }
 
     $app->OK('Success', [
@@ -561,13 +605,16 @@ $router->get('/api/user/images/upload/config', function () use ($app, $config) {
 
 $router->post('/api/user/images/upload/web', function () use ($app, $logger, $config) {
     $session = new Session($app);
-    if (!$session->getInfo(UserColumns::IMAGE_HOSTING_UPLOAD_KEY, false)) {
+    $uploadKey = ensureImageHostingKey($session, $config);
+    if (!$uploadKey) {
         $app->BadRequest('You do not have permission to upload images.', [
             'status' => 400,
             'data' => [
                 'error' => 'You do not have permission to upload images.',
             ],
         ]);
+
+        return;
     }
 
     if (!isset($_FILES['file'])) {

@@ -16,7 +16,7 @@
                         class="w-8 h-8 flex items-center justify-center bg-[#1a1a2e]/30 rounded-lg transition-all duration-200 group-hover:bg-indigo-500/10 group-hover:scale-105"
                         :class="topNavSettings.borderGlow ? 'shadow-md shadow-indigo-500/20' : ''"
                     >
-                        <img :src="appLogo" alt="McCloudAdmin" class="h-6 w-6" />
+                        <img :src="appLogo" alt="MythicalDash" class="h-6 w-6" />
                     </div>
                     <span
                         class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent transition-all duration-200 group-hover:from-indigo-300 group-hover:to-indigo-500 drop-shadow-sm"

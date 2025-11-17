@@ -232,7 +232,7 @@ class Users extends App implements CommandBuilder
 
             // Status indicators
             $verified = $user['verified'] === 'true' ? '&a✓' : '&c✗';
-            $banned = $user['banned'] === 'YES' ? '&c[BANNED]' : '';
+            $banned = ($user['banned'] ?? 'NO') !== 'NO' ? '&c[BANNED]' : '';
             $role = self::getRoleName($user['role']);
 
             $line = sprintf(
@@ -361,7 +361,7 @@ class Users extends App implements CommandBuilder
     private static function showUserDetails(array $user): void
     {
         $verified = $user['verified'] === 'true' ? '&aVerified' : '&cNot Verified';
-        $banned = $user['banned'] === 'YES' ? '&cBanned' : '&aActive';
+        $banned = ($user['banned'] ?? 'NO') !== 'NO' ? '&cBanned' : '&aActive';
         $locked = ($user['locked'] ?? 'false') === 'true' ? '&cLocked' : '&aUnlocked';
         $imageHosting = ($user['image_hosting_enabled'] ?? 'false') === 'true' ? '&aEnabled' : '&cDisabled';
         $twoFaEnabled = ($user['2fa_enabled'] ?? 'false') === 'true' ? '&aEnabled' : '&cDisabled';
@@ -622,7 +622,8 @@ class Users extends App implements CommandBuilder
 
     private static function toggleUserBan(array &$user): void
     {
-        $currentlyBanned = $user['banned'] === 'YES';
+        // Anything other than 'NO' means the user is banned
+        $currentlyBanned = ($user['banned'] ?? 'NO') !== 'NO';
         $newStatus = $currentlyBanned ? 'NO' : 'YES';
         $statusText = $currentlyBanned ? 'unbanned' : 'banned';
 
@@ -632,6 +633,7 @@ class Users extends App implements CommandBuilder
         self::$cliApp->send('&6╠══════════════════════════════════════════════════════════════╣');
         self::$cliApp->send('&6║  &7User: &e' . $user['username'] . ' &6║');
         self::$cliApp->send('&6║  &7Current Status: ' . ($currentlyBanned ? '&cBanned' : '&aActive') . ' &6║');
+        self::$cliApp->send('&6║  &7Current Ban Value: &e' . ($user['banned'] ?? 'NO') . ' &6║');
         self::$cliApp->send('&6║                                                              &6║');
         self::$cliApp->send('&6║  &7' . ($currentlyBanned ? 'Unban' : 'Ban') . ' this user? (y/N): &e');
         self::$cliApp->send('&6╚══════════════════════════════════════════════════════════════╝');
@@ -649,6 +651,7 @@ class Users extends App implements CommandBuilder
             if ($result) {
                 $user['banned'] = $newStatus; // Update local array
                 self::$cliApp->send('&a✓ User has been ' . $statusText . '!');
+                self::$cliApp->send('&7Ban status set to: &e' . $newStatus);
                 self::$cliApp->send('&7Press any key to continue...');
                 self::waitForInput();
             } else {

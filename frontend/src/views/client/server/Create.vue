@@ -149,7 +149,7 @@
                             "
                         >
                             <div
-                                class="relative overflow-hidden rounded-lg border transition-all duration-300"
+                                class="relative overflow-hidden rounded-lg border transition-all duration-300 bg-gradient-to-br from-indigo-900/20 via-purple-900/20 to-pink-900/20"
                                 :class="
                                     form.category_id === category.id.toString()
                                         ? 'border-indigo-500 ring-2 ring-indigo-500'
@@ -157,10 +157,18 @@
                                 "
                             >
                                 <img
-                                    :src="category.image?.image || '/images/default-category.jpg'"
+                                    v-if="category.image?.image && !imageErrors[`category-${category.id}`]"
+                                    :src="category.image.image"
                                     :alt="category.name"
                                     class="w-full h-40 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                    @error="imageErrors[`category-${category.id}`] = true"
                                 />
+                                <div
+                                    v-else-if="!category.image?.image || imageErrors[`category-${category.id}`]"
+                                    class="w-full h-40 flex items-center justify-center bg-gradient-to-br from-indigo-900/30 via-purple-900/30 to-pink-900/30"
+                                >
+                                    <FolderOpen class="w-16 h-16 text-indigo-400/50" />
+                                </div>
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                                 ></div>
@@ -198,7 +206,7 @@
                             @click="form.location_id = location.id.toString()"
                         >
                             <div
-                                class="relative overflow-hidden rounded-lg border transition-all duration-300"
+                                class="relative overflow-hidden rounded-lg border transition-all duration-300 bg-gradient-to-br from-blue-900/20 via-cyan-900/20 to-teal-900/20"
                                 :class="
                                     form.location_id === location.id.toString()
                                         ? 'border-indigo-500 ring-2 ring-indigo-500'
@@ -206,10 +214,18 @@
                                 "
                             >
                                 <img
-                                    :src="location.image?.image || '/images/default-location.jpg'"
+                                    v-if="location.image?.image && !imageErrors[`location-${location.id}`]"
+                                    :src="location.image.image"
                                     :alt="location.name"
                                     class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                    @error="imageErrors[`location-${location.id}`] = true"
                                 />
+                                <div
+                                    v-else-if="!location.image?.image || imageErrors[`location-${location.id}`]"
+                                    class="w-full h-48 flex items-center justify-center bg-gradient-to-br from-blue-900/30 via-cyan-900/30 to-teal-900/30"
+                                >
+                                    <Server class="w-20 h-20 text-blue-400/50" />
+                                </div>
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                                 ></div>
@@ -247,24 +263,18 @@
                                                     {{ location.status }}
                                                 </span>
                                                 <span
-                                                    v-if="locationPings[location.id] !== undefined"
+                                                    v-if="(locationPings[location.id] ?? -1) >= 0"
                                                     class="text-xs px-2 py-0.5 rounded-full flex items-center space-x-1"
                                                     :class="
-                                                        (locationPings[location.id] ?? -1) < 0
-                                                            ? 'bg-red-900/30 text-red-400'
-                                                            : (locationPings[location.id] ?? -1) < 100
-                                                              ? 'bg-green-900/30 text-green-400'
-                                                              : (locationPings[location.id] ?? -1) < 200
-                                                                ? 'bg-yellow-900/30 text-yellow-400'
-                                                                : 'bg-red-900/30 text-red-400'
+                                                        (locationPings[location.id] ?? 0) < 100
+                                                            ? 'bg-green-900/30 text-green-400'
+                                                            : (locationPings[location.id] ?? 0) < 200
+                                                              ? 'bg-yellow-900/30 text-yellow-400'
+                                                              : 'bg-red-900/30 text-red-400'
                                                     "
                                                 >
                                                     <Wifi class="w-3 h-3" />
-                                                    <span>{{
-                                                        (locationPings[location.id] ?? -1) < 0
-                                                            ? 'N/A'
-                                                            : `${locationPings[location.id]}ms`
-                                                    }}</span>
+                                                    <span>{{ locationPings[location.id] }}ms</span>
                                                 </span>
                                             </div>
                                         </div>
@@ -296,7 +306,7 @@
                             @click="form.egg_id = egg.id.toString()"
                         >
                             <div
-                                class="relative overflow-hidden rounded-lg border transition-all duration-300"
+                                class="relative overflow-hidden rounded-lg border transition-all duration-300 bg-gradient-to-br from-emerald-900/20 via-green-900/20 to-lime-900/20"
                                 :class="
                                     form.egg_id === egg.id.toString()
                                         ? 'border-indigo-500 ring-2 ring-indigo-500'
@@ -304,10 +314,18 @@
                                 "
                             >
                                 <img
-                                    :src="egg.image?.image || '/images/default-egg.jpg'"
+                                    v-if="egg.image?.image && !imageErrors[`egg-${egg.id}`]"
+                                    :src="egg.image.image"
                                     :alt="egg.name"
                                     class="w-full h-40 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                    @error="imageErrors[`egg-${egg.id}`] = true"
                                 />
+                                <div
+                                    v-else-if="!egg.image?.image || imageErrors[`egg-${egg.id}`]"
+                                    class="w-full h-40 flex items-center justify-center bg-gradient-to-br from-emerald-900/30 via-green-900/30 to-lime-900/30"
+                                >
+                                    <Box class="w-16 h-16 text-emerald-400/50" />
+                                </div>
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                                 ></div>
@@ -733,6 +751,9 @@ const calculatePing = async (ip: string): Promise<number> => {
 
 // Add ping state
 const locationPings = reactive<Record<number, number>>({});
+
+// Add image error state
+const imageErrors = reactive<Record<string, boolean>>({});
 
 // Modify the onMounted function to calculate pings
 onMounted(async () => {

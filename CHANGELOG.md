@@ -10,11 +10,17 @@
 - Fixed: Successfully resolved an issue where changing your password would redirect you to the home page. #342
 - Fixed: Resolved an issue where IP addresses would sometimes incorrectly default to 127.0.0.1.
 - Fixed: Resolved an issue where the .env file could randomly become corrupted.
+- Fixed: Improved the reliability of user ban and unban operations when using the CLI.
+- Fixed: Resolved an issue where certain admin menu values were incorrectly defaulting to "enabled" or a "false" status, even when the saved value was true or not set at all.
+- Fixed: Users who did not already have an upload key can now upload images immediately after image hosting is enabled, without needing to log out and log back in.
+- Fixed: Fixing division-by-zero when limits are 0, which causes NaN and incorrect progress bars. Adding checks to handle zero limits:
+- Improved: If a node cannot be pinged, it will now be gracefully hidden from the server creation page instead of displaying N/A.
 
 # New Features
 
 - Feature: Servers that exist in Pterodactyl but are not found in the MythicalDash database are now highlighted with an alert banner for easy identification.
 - Feature: Enhanced server deployment logs more detailed deployment information is now shown.
+- Feature: Improved visual presentation for the server creation page when an egg or location image is missing!
 
 # v3.5.2-Aurora
 

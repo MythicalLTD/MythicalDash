@@ -1,6 +1,173 @@
 <template>
     <LayoutDashboard>
         <div class="space-y-6">
+            <!-- FeatherPanel Advertisement - Above All -->
+            <DismissibleBanner
+                cookie-key="featherpanel_ad_hidden"
+                title="Upgrade to FeatherPanel"
+                subtitle="The Next Generation Game Server Panel"
+                dismiss-title="Hide this advertisement"
+            >
+                <template #icon>
+                    <img
+                        src="https://cdn.mythical.systems/featherpanel/logo.png"
+                        alt="FeatherPanel Logo"
+                        class="w-12 h-12 object-contain"
+                    />
+                </template>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h3 class="text-lg font-medium text-white mb-3 flex items-center gap-2">
+                            <Sparkles class="w-5 h-5 text-gray-400" />
+                            Why FeatherPanel?
+                        </h3>
+                        <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                            FeatherPanel is a powerful, modern alternative to Pterodactyl that runs seamlessly with your
+                            existing infrastructure. Built on the same foundation you trust, but enhanced with
+                            cutting-edge features and tools that make server management easier, faster, and more
+                            cost-effective.
+                        </p>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            <strong class="text-white">100% Compatible</strong> - Works with MythicalDash v3 and all
+                            other Pterodactyl Products. No migration needed, no other special steps needed.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-medium text-white mb-3 flex items-center gap-2">
+                            <CheckCircle class="w-5 h-5 text-gray-400" />
+                            Free Features Included
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-2">
+                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
+                                <div>
+                                    <p class="text-sm font-medium text-white">Free Subdomains</p>
+                                    <p class="text-xs text-gray-400">
+                                        Unlimited subdomains for all your servers - no additional costs, no hidden fees
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
+                                <div>
+                                    <p class="text-sm font-medium text-white">Advanced Anti-Abuse Protection</p>
+                                    <p class="text-xs text-gray-400">
+                                        Built-in DDoS protection, rate limiting, and abuse detection - completely free
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
+                                <div>
+                                    <p class="text-sm font-medium text-white">Premium Minecraft Plugins</p>
+                                    <p class="text-xs text-gray-400">
+                                        Access to paid Blueprint/Legacy Minecraft plugins worth hundreds of dollars -
+                                        all included free
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
+                                <div>
+                                    <p class="text-sm font-medium text-white">Enhanced Performance</p>
+                                    <p class="text-xs text-gray-400">
+                                        Optimized codebase for faster load times and better resource management
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
+                                <div>
+                                    <p class="text-sm font-medium text-white">Modern UI/UX</p>
+                                    <p class="text-xs text-gray-400">
+                                        Beautiful, intuitive interface designed for the best user experience
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Migration Warning -->
+                <DismissibleBanner
+                    v-if="showMigrationWarning"
+                    cookie-key="featherpanel_migration_warning_hidden"
+                    title="Important Migration Notice"
+                    dismiss-title="Don't show this again"
+                    :dismissible="true"
+                    class="mb-4"
+                >
+                    <template #icon>
+                        <AlertTriangle class="w-5 h-5 text-gray-400" />
+                    </template>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        FeatherPanel does not support migrating from existing Pterodactyl installations. This panel is
+                        recommended only for new setups and fresh installations. If you're currently using Pterodactyl,
+                        please continue using your existing setup.
+                    </p>
+                </DismissibleBanner>
+
+                <template #actions>
+                    <a
+                        href="https://featherpanel.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="group flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-black hover:bg-gray-900 border border-gray-800 hover:border-gray-700 rounded-lg text-sm font-medium text-white transition-all duration-200"
+                    >
+                        <Sparkles class="w-4 h-4" />
+                        <span>Visit FeatherPanel.com</span>
+                        <ExternalLink class="w-4 h-4" />
+                    </a>
+                    <a
+                        href="https://docs.mythical.systems/docs/featherpanel/welcome-featherpanel#installing-featherpanel-beta"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="group flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg text-sm font-medium text-gray-200 hover:text-white transition-all duration-200"
+                    >
+                        <BookOpen class="w-4 h-4" />
+                        <span>View Documentation</span>
+                        <ExternalLink class="w-4 h-4" />
+                    </a>
+                </template>
+            </DismissibleBanner>
+
+            <!-- Sponsor Us Banner -->
+            <DismissibleBanner
+                cookie-key="sponsor_banner_hidden"
+                title="Support MythicalDash"
+                subtitle="Help us continue providing free updates and patches"
+                :icon="Heart"
+            >
+                <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                    MythicalDash has been providing
+                    <strong class="text-white">free updates and patches since 2021</strong>. We're committed to keeping
+                    the platform free and open-source. Your support helps us maintain, improve, and add new features to
+                    MythicalDash.
+                </p>
+
+                <template #actions>
+                    <a
+                        href="https://donate.stripe.com/00gcO2epX5yj2ysfYY"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="group flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-black hover:bg-gray-900 border border-gray-800 hover:border-gray-700 rounded-lg text-sm font-medium text-white transition-all duration-200"
+                    >
+                        <span>Donate via Stripe</span>
+                        <ExternalLink class="w-4 h-4" />
+                    </a>
+                    <a
+                        href="https://www.paypal.com/paypalme/nayskutzu"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="group flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg text-sm font-medium text-gray-200 hover:text-white transition-all duration-200"
+                    >
+                        <span>Donate via PayPal</span>
+                        <ExternalLink class="w-4 h-4" />
+                    </a>
+                </template>
+            </DismissibleBanner>
+
             <!-- Welcome Header -->
             <div
                 class="bg-gradient-to-r from-gray-900/70 to-gray-800/50 backdrop-blur-md rounded-xl p-6 border border-gray-800/30"
@@ -479,6 +646,7 @@ import {
     XCircle,
 } from 'lucide-vue-next';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
+import DismissibleBanner from '@/components/admin/DismissibleBanner.vue';
 import { useSettingsStore } from '@/stores/settings';
 import Dashboard from '@/mythicaldash/admin/Dashboard';
 import { RouterLink } from 'vue-router';
@@ -492,6 +660,30 @@ const Settings = useSettingsStore();
 const healthStore = useHealthStore();
 const isRefreshing = ref(false);
 const cronData = ref<CronData | null>(null);
+
+// Cookie helper function for migration warning (used in nested banner)
+const getCookie = (name: string): string | null => {
+    const nameEQ = `${name}=`;
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        const cookie = ca[i];
+        if (!cookie) continue;
+        const c = cookie.trim();
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+};
+
+// Migration warning visibility (for nested banner inside FeatherPanel ad)
+const showMigrationWarning = ref(true);
+
+// Check if warning was previously hidden
+const checkMigrationWarningCookie = () => {
+    const hidden = getCookie('featherpanel_migration_warning_hidden');
+    if (hidden === 'true') {
+        showMigrationWarning.value = false;
+    }
+};
 
 // Add interfaces for GitHub data and activity
 interface GitHubOwner {
@@ -635,6 +827,9 @@ const checkForUpdates = async () => {
 
 // Check for updates on mount
 onMounted(async () => {
+    // Check cookie for migration warning preference
+    checkMigrationWarningCookie();
+
     try {
         const data = await Dashboard.get();
         dashboardData.value = {

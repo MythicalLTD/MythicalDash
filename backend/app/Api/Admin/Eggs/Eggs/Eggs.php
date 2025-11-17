@@ -153,7 +153,7 @@ $router->post('/api/admin/eggs/create', function (): void {
         $name = $_POST['name'];
         $description = $_POST['description'];
         $category = $_POST['category'];
-        $enabled = $_POST['enabled'] ?? 'false';
+        $enabled = $_POST['enabled'] ?? 'true';
         $vipOnly = $_POST['vip_only'] ?? 'false';
         $pterodactylEggId = $_POST['pterodactyl_egg_id'];
         $imageId = $_POST['image_id'];
@@ -180,7 +180,7 @@ $router->post('/api/admin/eggs/create', function (): void {
 
         // Validate enabled value
         if ($enabled !== 'true' && $enabled !== 'false') {
-            $enabled = 'false';
+            $enabled = 'true';
         }
 
         // Validate vip_only value

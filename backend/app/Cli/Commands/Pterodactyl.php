@@ -88,9 +88,20 @@ class Pterodactyl extends CliApp implements CommandBuilder
             );
             $config = new ConfigFactory($db->getPdo());
 
+            $url = $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, '');
+            $apiKey = $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, '');
+
+            // Normalize URL by removing trailing slash if present
+            $originalUrl = $url;
+            $url = rtrim($url, '/');
+            if ($originalUrl !== $url && !empty($url)) {
+                $cliApp->send('&eWarning: Trailing slash detected in stored URL. Normalizing...');
+                $config->setSetting(ConfigInterface::PTERODACTYL_BASE_URL, $url);
+            }
+
             $cliApp->send('&7Debug mode enabled!');
-            $cliApp->send('&7Pterodactyl panel URL: &e' . $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''));
-            $cliApp->send('&7Pterodactyl API key: &e' . $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+            $cliApp->send('&7Pterodactyl panel URL: &e' . $url);
+            $cliApp->send('&7Pterodactyl API key: &e' . $apiKey);
             $cliApp->send('&7--------------------------------');
 
             $cliApp->send('&7What do you want to test?');
@@ -105,25 +116,25 @@ class Pterodactyl extends CliApp implements CommandBuilder
 
             switch ($answer) {
                 case '1':
-                    self::testUsers($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testUsers($cliApp, $appInstance, $url, $apiKey);
                     break;
                 case '2':
-                    self::testServers($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testServers($cliApp, $appInstance, $url, $apiKey);
                     break;
                 case '3':
-                    self::testLocations($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testLocations($cliApp, $appInstance, $url, $apiKey);
                     break;
                 case '4':
-                    self::testNodes($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testNodes($cliApp, $appInstance, $url, $apiKey);
                     break;
                 case '5':
-                    self::testNests($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testNests($cliApp, $appInstance, $url, $apiKey);
                     break;
                 case '6':
-                    self::testEggs($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testEggs($cliApp, $appInstance, $url, $apiKey);
                     break;
                 case '7':
-                    self::testAll($cliApp, $appInstance, $config->getDBSetting(ConfigInterface::PTERODACTYL_BASE_URL, ''), $config->getDBSetting(ConfigInterface::PTERODACTYL_API_KEY, ''));
+                    self::testAll($cliApp, $appInstance, $url, $apiKey);
                     break;
                 default:
                     $cliApp->send('&cInvalid option!');
@@ -295,19 +306,35 @@ class Pterodactyl extends CliApp implements CommandBuilder
             $config = new ConfigFactory($db->getPdo());
 
             $cliApp->send('&7Enter your pterodactyl panel url:');
+            $cliApp->send('&eIMPORTANT: Do NOT include a trailing slash (/) at the end!');
+            $cliApp->send('&7Example: &ehttps://panel.example.com');
             $newUrl = readline('> ');
 
             if (!empty($newUrl)) {
-                $config->setSetting(ConfigInterface::PTERODACTYL_BASE_URL, rtrim($newUrl, '/'));
+                $originalUrl = $newUrl;
+                $newUrl = rtrim($newUrl, '/');
+
+                if ($originalUrl !== $newUrl) {
+                    $cliApp->send('&eWarning: Trailing slash detected and removed from URL.');
+                    $cliApp->send("&7Original: &c{$originalUrl}");
+                    $cliApp->send("&7Saved as: &a{$newUrl}");
+                }
+
+                $config->setSetting(ConfigInterface::PTERODACTYL_BASE_URL, $newUrl);
                 $cliApp->send('&aPanel URL updated successfully!');
             }
 
+            $cliApp->send('&7--------------------------------');
             $cliApp->send('&7Enter your pterodactyl panel api key:');
+            $cliApp->send('&eCRITICAL: Your API key MUST have READ AND WRITE permissions!');
+            $cliApp->send('&7The API key needs both read and write access to function properly.');
+            $cliApp->send('&7If your API key only has read permissions, many features will fail!');
             $newApiKey = readline('> ');
 
             if (!empty($newApiKey)) {
                 $config->setSetting(ConfigInterface::PTERODACTYL_API_KEY, $newApiKey);
                 $cliApp->send('&aAPI key updated successfully!');
+                $cliApp->send('&eRemember: Ensure your API key has READ AND WRITE permissions!');
             }
 
             $cliApp->send('&7Pterodactyl panel configuration completed successfully!');
@@ -344,6 +371,19 @@ class Pterodactyl extends CliApp implements CommandBuilder
 
                 return;
             }
+
+            // Normalize URL by removing trailing slash if present
+            $originalUrl = $url;
+            $url = rtrim($url, '/');
+            if ($originalUrl !== $url) {
+                $cliApp->send('&eWarning: Trailing slash detected in stored URL. Normalizing...');
+                $config->setSetting(ConfigInterface::PTERODACTYL_BASE_URL, $url);
+            }
+
+            $cliApp->send('&7--------------------------------');
+            $cliApp->send('&eIMPORTANT: Ensure your API key has READ AND WRITE permissions!');
+            $cliApp->send('&7These tests only verify read access. Write permissions are required for full functionality.');
+            $cliApp->send('&7--------------------------------');
 
             $userResource = new UsersResource($url, $apiKey);
             $serverResource = new ServersResource($url, $apiKey);
@@ -424,6 +464,14 @@ class Pterodactyl extends CliApp implements CommandBuilder
                 $cliApp->send('&cPterodactyl panel is not configured. Please run &epterodactyl configure &cfirst.');
 
                 return;
+            }
+
+            // Normalize URL by removing trailing slash if present
+            $originalUrl = $url;
+            $url = rtrim($url, '/');
+            if ($originalUrl !== $url) {
+                $cliApp->send('&eWarning: Trailing slash detected in stored URL. Normalizing...');
+                $config->setSetting(ConfigInterface::PTERODACTYL_BASE_URL, $url);
             }
 
             $userResource = new UsersResource($url, $apiKey);

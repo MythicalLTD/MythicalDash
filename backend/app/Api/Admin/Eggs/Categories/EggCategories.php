@@ -112,7 +112,15 @@ $router->post('/api/admin/egg-categories/create', function (): void {
         $name = $_POST['name'];
         $description = $_POST['description'];
         $pterodactyl_nest_id = $_POST['pterodactyl_nest_id'];
-        $enabled = isset($_POST['enabled']) ? filter_var($_POST['enabled'], FILTER_VALIDATE_BOOLEAN) : true;
+        // Default to true if not set or not explicitly 'false', ensure proper boolean conversion
+        if (isset($_POST['enabled']) && $_POST['enabled'] !== '') {
+            $enabledValue = strtolower(trim($_POST['enabled']));
+            // Only set to false if explicitly 'false', '0', 'no', or 'off'
+            $enabled = !($enabledValue === 'false' || $enabledValue === '0' || $enabledValue === 'no' || $enabledValue === 'off');
+        } else {
+            // Default to enabled (true) if not provided
+            $enabled = true;
+        }
         $image_id = $_POST['image_id'];
         if ($name == '' || $description == '' || $pterodactyl_nest_id == '' || $image_id == '') {
             $appInstance->BadRequest('Missing required fields', ['error_code' => 'MISSING_REQUIRED_FIELDS']);

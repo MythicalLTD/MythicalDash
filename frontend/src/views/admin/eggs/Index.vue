@@ -1,5 +1,41 @@
 <template>
     <LayoutDashboard>
+        <!-- Sponsor Banner -->
+        <DismissibleBanner
+            cookie-key="sponsor_banner_hidden"
+            title="Support MythicalDash"
+            subtitle="Help us continue providing free updates and patches"
+            :icon="Heart"
+            class="mb-4"
+        >
+            <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                MythicalDash has been providing <strong class="text-white">free updates and patches since 2021</strong>.
+                We're committed to keeping the platform free and open-source. Your support helps us maintain, improve,
+                and add new features to MythicalDash.
+            </p>
+
+            <template #actions>
+                <a
+                    href="https://donate.stripe.com/00gcO2epX5yj2ysfYY"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-black hover:bg-gray-900 border border-gray-800 hover:border-gray-700 rounded-lg text-sm font-medium text-white transition-all duration-200"
+                >
+                    <span>Donate via Stripe</span>
+                    <ExternalLink class="w-4 h-4" />
+                </a>
+                <a
+                    href="https://www.paypal.com/paypalme/nayskutzu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg text-sm font-medium text-gray-200 hover:text-white transition-all duration-200"
+                >
+                    <span>Donate via PayPal</span>
+                    <ExternalLink class="w-4 h-4" />
+                </a>
+            </template>
+        </DismissibleBanner>
+
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-pink-400">Eggs</h1>
             <button
@@ -21,8 +57,9 @@
 <script setup lang="ts">
 import { ref, onMounted, h } from 'vue';
 import LayoutDashboard from '@/components/admin/LayoutDashboard.vue';
+import DismissibleBanner from '@/components/admin/DismissibleBanner.vue';
 import TableTanstack from '@/components/client/ui/Table/TableTanstack.vue';
-import { PlusIcon, EditIcon, TrashIcon, LoaderCircle } from 'lucide-vue-next';
+import { PlusIcon, EditIcon, TrashIcon, LoaderCircle, Heart, ExternalLink } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 import Eggs from '@/mythicaldash/admin/Eggs';
 import EggCategories from '@/mythicaldash/admin/EggCategories';

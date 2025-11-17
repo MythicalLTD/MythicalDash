@@ -271,11 +271,7 @@ class Auth {
      *
      * @returns The response from the server
      */
-    static async changePassword(
-        currentPassword: string,
-        newPassword: string,
-        confirmPassword: string,
-    ) {
+    static async changePassword(currentPassword: string, newPassword: string, confirmPassword: string) {
         const response = await fetch('/api/user/session/password/change', {
             method: 'POST',
             body: new URLSearchParams({

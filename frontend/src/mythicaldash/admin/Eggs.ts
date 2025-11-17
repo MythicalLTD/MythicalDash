@@ -40,7 +40,7 @@ class Eggs {
         description: string,
         categoryId: number,
         pterodactylEggId: number,
-        enabled: string = 'false',
+        enabled: string = 'true',
         image_id: number | null,
         vip: string = 'false',
     ) {

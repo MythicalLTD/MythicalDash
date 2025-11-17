@@ -75,10 +75,13 @@ class EggCategories extends Database
                 (name, description, pterodactyl_nest_id, enabled, image_id) 
                 VALUES (:name, :description, :pterodactyl_nest_id, :enabled, :image_id)');
 
+            // Convert boolean to string for ENUM column ('true' or 'false')
+            $enabledString = $enabled ? 'true' : 'false';
+
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':pterodactyl_nest_id', $pterodactylNestId);
-            $stmt->bindParam(':enabled', $enabled, \PDO::PARAM_BOOL);
+            $stmt->bindParam(':enabled', $enabledString);
             $stmt->bindParam(':image_id', $imageId);
             $stmt->execute();
 
