@@ -694,10 +694,7 @@ onMounted(() => {
                         <!-- Left side: Server info -->
                         <div class="flex items-center gap-4 flex-1 min-w-0">
                             <div class="flex items-center gap-2 min-w-0">
-                                <div
-                                    class="w-2 h-2 rounded-full flex-shrink-0"
-                                    :class="getServerStatus(server).color"
-                                ></div>
+                                <div class="w-2 h-2 rounded-full shrink-0" :class="getServerStatus(server).color"></div>
                                 <div class="min-w-0">
                                     <div class="font-medium text-white truncate">{{ server.name }}</div>
                                     <div class="text-xs text-gray-400 truncate">{{ getServerIdentifier(server) }}</div>

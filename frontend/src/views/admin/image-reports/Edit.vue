@@ -11,7 +11,7 @@
                 <button
                     @click="saveReport"
                     :disabled="loading || saving || report?.status === 'resolved'"
-                    class="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="bg-linear-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <SaveIcon class="w-4 h-4 mr-2" />
                     {{ saving ? 'Saving...' : report?.status === 'resolved' ? 'Status Locked' : 'Save Changes' }}
@@ -108,7 +108,7 @@
                                 <a
                                     :href="`/mc-admin/users/${getImageOwnerUuid(report.image_id)}/edit`"
                                     target="_blank"
-                                    class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80"
+                                    class="inline-flex items-center gap-2 bg-linear-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80"
                                 >
                                     <UserIcon class="w-4 h-4" />
                                     Manage User

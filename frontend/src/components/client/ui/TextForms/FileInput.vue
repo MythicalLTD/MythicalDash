@@ -57,7 +57,7 @@
                 class="flex items-center justify-between p-3 bg-[#12121f] border border-[#2a2a3f]/30 rounded-lg"
             >
                 <div class="flex items-center space-x-3">
-                    <div class="flex-shrink-0">
+                    <div class="shrink-0">
                         <FileIcon v-if="!isImage(file)" class="w-8 h-8 text-indigo-400" />
                         <img
                             v-else

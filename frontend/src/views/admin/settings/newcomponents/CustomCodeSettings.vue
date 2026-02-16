@@ -34,7 +34,7 @@
                 type="button"
                 @click="saveChanges"
                 :disabled="saving || !hasChanges"
-                class="px-4 py-2 bg-gradient-to-r from-pink-500 to-violet-500 rounded-lg text-white hover:opacity-90 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                class="px-4 py-2 bg-linear-to-r from-pink-500 to-violet-500 rounded-lg text-white hover:opacity-90 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
                 <LoaderIcon v-if="saving" class="animate-spin w-4 h-4 mr-2" />
                 <SaveIcon v-else class="w-4 h-4 mr-2" />

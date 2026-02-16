@@ -310,11 +310,11 @@ class PerformanceManager {
                 transition: none !important;
             }
             
-            .disable-backgrounds .bg-gradient-to-r,
+            .disable-backgrounds .bg-linear-to-r,
             .disable-backgrounds .bg-gradient-to-l,
             .disable-backgrounds .bg-gradient-to-t,
             .disable-backgrounds .bg-gradient-to-b,
-            .disable-backgrounds .bg-gradient-to-br,
+            .disable-backgrounds .bg-linear-to-br,
             .disable-backgrounds .bg-gradient-to-bl,
             .disable-backgrounds .bg-gradient-to-tr,
             .disable-backgrounds .bg-gradient-to-tl {

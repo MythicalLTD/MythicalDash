@@ -174,7 +174,7 @@
                                     <div class="flex items-start">
                                         <div class="relative">
                                             <div
-                                                class="bg-[#1a1a2e]/50 text-gray-400 w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0"
+                                                class="bg-[#1a1a2e]/50 text-gray-400 w-8 h-8 rounded-full flex items-center justify-center mr-3 shrink-0"
                                             >
                                                 <span class="text-sm font-medium">{{ user.rank }}</span>
                                             </div>

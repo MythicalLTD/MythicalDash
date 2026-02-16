@@ -19,7 +19,7 @@
             <!-- Warning Alert -->
             <div class="bg-red-500/20 border border-red-500/30 rounded-lg p-6 mb-6">
                 <div class="flex items-start">
-                    <AlertTriangleIcon class="w-6 h-6 text-red-400 mt-1 mr-4 flex-shrink-0" />
+                    <AlertTriangleIcon class="w-6 h-6 text-red-400 mt-1 mr-4 shrink-0" />
                     <div>
                         <h3 class="text-lg font-medium text-red-400 mb-2">Confirm Server Deletion</h3>
                         <p class="text-red-300 text-sm mb-4">
@@ -119,7 +119,7 @@
 
                 <div v-if="errorMessage" class="bg-red-500/20 text-red-400 p-4 rounded-lg">
                     <div class="flex items-start">
-                        <AlertCircleIcon class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                        <AlertCircleIcon class="w-5 h-5 mr-2 mt-0.5 shrink-0" />
                         <div>
                             <p class="font-medium">Error</p>
                             <p class="text-sm">{{ errorMessage }}</p>
@@ -129,7 +129,7 @@
 
                 <div v-if="successMessage" class="bg-green-500/20 text-green-400 p-4 rounded-lg">
                     <div class="flex items-start">
-                        <CheckCircleIcon class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                        <CheckCircleIcon class="w-5 h-5 mr-2 mt-0.5 shrink-0" />
                         <div>
                             <p class="font-medium">Success</p>
                             <p class="text-sm">{{ successMessage }}</p>
@@ -148,7 +148,7 @@
                     <button
                         type="submit"
                         :disabled="deleting || confirmText !== 'DELETE'"
-                        class="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 rounded-lg text-white hover:opacity-90 transition-colors flex items-center disabled:opacity-50"
+                        class="px-4 py-2 bg-linear-to-r from-red-500 to-red-600 rounded-lg text-white hover:opacity-90 transition-colors flex items-center disabled:opacity-50"
                     >
                         <LoaderIcon v-if="deleting" class="animate-spin w-4 h-4 mr-2" />
                         <TrashIcon v-else class="w-4 h-4 mr-2" />

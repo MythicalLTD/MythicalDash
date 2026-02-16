@@ -1,6 +1,6 @@
 <template>
     <div
-        class="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#0a0a15] via-[#12121f] to-[#181825] overflow-hidden"
+        class="fixed inset-0 flex items-center justify-center bg-linear-to-br from-[#0a0a15] via-[#12121f] to-[#181825] overflow-hidden"
     >
         <!-- Subtle starry background using Tailwind utilities and inline style -->
         <div

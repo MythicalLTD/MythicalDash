@@ -985,7 +985,7 @@ onMounted(() => {
         <div v-else class="space-y-6">
             <!-- User Profile Header -->
             <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                <div class="bg-gradient-to-r from-pink-500/10 to-blue-500/10 p-6 border-b border-gray-700">
+                <div class="bg-linear-to-r from-pink-500/10 to-blue-500/10 p-6 border-b border-gray-700">
                     <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
                         <div class="relative">
                             <img
@@ -1102,7 +1102,7 @@ onMounted(() => {
             <!-- Main Content with Sidebar -->
             <div class="flex gap-6">
                 <!-- Sidebar Navigation -->
-                <div class="w-64 flex-shrink-0">
+                <div class="w-64 shrink-0">
                     <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden sticky top-4">
                         <div class="p-4 border-b border-gray-700">
                             <h3 class="text-lg font-medium text-white">Categories</h3>
@@ -1119,7 +1119,7 @@ onMounted(() => {
                                         : 'text-gray-400 hover:text-white hover:bg-gray-700/50',
                                 ]"
                             >
-                                <component :is="tab.icon" class="h-4 w-4 flex-shrink-0" />
+                                <component :is="tab.icon" class="h-4 w-4 shrink-0" />
                                 {{ tab.name }}
                             </button>
                         </nav>
@@ -1615,14 +1615,14 @@ onMounted(() => {
                                         <!-- Action Buttons -->
                                         <div class="mt-4 pt-4 border-t border-gray-800 flex flex-wrap gap-2">
                                             <button
-                                                class="flex-1 min-w-0 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm"
+                                                class="flex-1 min-w-0 px-4 py-2.5 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm"
                                                 @click="jumpToPanel(getServerIdentifier(server))"
                                             >
                                                 <ExternalLinkIcon class="w-4 h-4" />
                                                 View Panel
                                             </button>
                                             <button
-                                                class="flex-1 min-w-0 px-4 py-2.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm"
+                                                class="flex-1 min-w-0 px-4 py-2.5 bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm"
                                                 @click="deleteServer(server)"
                                             >
                                                 <TrashIcon class="w-4 h-4" />
@@ -1632,8 +1632,8 @@ onMounted(() => {
                                                 :class="[
                                                     'flex-1 min-w-0 px-4 py-2.5 font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm',
                                                     server.suspended
-                                                        ? 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white'
-                                                        : 'bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white',
+                                                        ? 'bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white'
+                                                        : 'bg-linear-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white',
                                                 ]"
                                                 @click="toggleSuspend(server)"
                                             >
@@ -1777,7 +1777,7 @@ onMounted(() => {
                                             class="mt-4 pt-4 border-t border-gray-800 flex items-center justify-center gap-2"
                                         >
                                             <button
-                                                class="px-4 py-2.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 text-sm"
+                                                class="px-4 py-2.5 bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 text-sm"
                                                 @click="deleteQueuedServer(server)"
                                             >
                                                 <TrashIcon class="w-4 h-4" />

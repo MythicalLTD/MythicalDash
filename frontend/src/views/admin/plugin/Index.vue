@@ -78,7 +78,7 @@
                         <div class="mt-6 pt-4 border-t border-gray-700/30">
                             <button
                                 @click="navigateToConfig(plugin.plugin.identifier)"
-                                class="w-full py-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white rounded-lg transition-all duration-200 hover:opacity-90 flex items-center justify-center"
+                                class="w-full py-2 bg-linear-to-r from-pink-500 to-violet-500 text-white rounded-lg transition-all duration-200 hover:opacity-90 flex items-center justify-center"
                             >
                                 <SettingsIcon class="w-4 h-4 mr-2" />
                                 Plugin Config

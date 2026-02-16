@@ -40,7 +40,7 @@
                         </h3>
                         <div class="space-y-3">
                             <div class="flex items-start gap-2">
-                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
+                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 shrink-0" />
                                 <div>
                                     <p class="text-sm font-medium text-white">Free Subdomains</p>
                                     <p class="text-xs text-gray-400">
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                             <div class="flex items-start gap-2">
-                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
+                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 shrink-0" />
                                 <div>
                                     <p class="text-sm font-medium text-white">Advanced Anti-Abuse Protection</p>
                                     <p class="text-xs text-gray-400">
@@ -58,7 +58,7 @@
                                 </div>
                             </div>
                             <div class="flex items-start gap-2">
-                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
+                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 shrink-0" />
                                 <div>
                                     <p class="text-sm font-medium text-white">Premium Minecraft Plugins</p>
                                     <p class="text-xs text-gray-400">
@@ -68,7 +68,7 @@
                                 </div>
                             </div>
                             <div class="flex items-start gap-2">
-                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
+                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 shrink-0" />
                                 <div>
                                     <p class="text-sm font-medium text-white">Enhanced Performance</p>
                                     <p class="text-xs text-gray-400">
@@ -77,7 +77,7 @@
                                 </div>
                             </div>
                             <div class="flex items-start gap-2">
-                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
+                                <CheckCircle class="w-4 h-4 text-gray-400 mt-1 shrink-0" />
                                 <div>
                                     <p class="text-sm font-medium text-white">Modern UI/UX</p>
                                     <p class="text-xs text-gray-400">
@@ -170,7 +170,7 @@
 
             <!-- Welcome Header -->
             <div
-                class="bg-gradient-to-r from-gray-900/70 to-gray-800/50 backdrop-blur-md rounded-xl p-6 border border-gray-800/30"
+                class="bg-linear-to-r from-gray-900/70 to-gray-800/50 backdrop-blur-md rounded-xl p-6 border border-gray-800/30"
             >
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                     <div>
@@ -970,7 +970,7 @@ const showActivityModal = ref(false);
     animation: spin 1s linear infinite;
 }
 
-.bg-gradient-to-r {
+.bg-linear-to-r {
     background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
 </style>

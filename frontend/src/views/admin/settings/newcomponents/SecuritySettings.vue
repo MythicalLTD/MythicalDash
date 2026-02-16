@@ -243,7 +243,7 @@
                     <div class="flex items-start text-yellow-500">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4 mr-2 flex-shrink-0 mt-0.5"
+                            class="h-4 w-4 mr-2 shrink-0 mt-0.5"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"

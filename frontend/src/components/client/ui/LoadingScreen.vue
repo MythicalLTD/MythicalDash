@@ -32,7 +32,7 @@
                     ></path>
                 </svg>
             </div>
-            <div class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent">
+            <div class="text-xl font-bold bg-linear-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent">
                 {{ $t('components.loading.title') }}
             </div>
             <p class="text-gray-400 mt-2 text-sm">Please wait while we load your dashboard</p>
@@ -47,7 +47,7 @@
     background: radial-gradient(circle at center, rgba(18, 18, 31, 0.9) 0%, rgba(10, 10, 15, 0.95) 100%);
 }
 
-.bg-gradient-to-r {
+.bg-linear-to-r {
     -webkit-background-clip: text;
     background-clip: text;
 }

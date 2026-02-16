@@ -55,7 +55,7 @@
 
             <div class="bg-yellow-500/20 text-yellow-400 p-4 rounded-lg">
                 <div class="flex">
-                    <AlertTriangleIcon class="h-5 w-5 mr-2 flex-shrink-0" />
+                    <AlertTriangleIcon class="h-5 w-5 mr-2 shrink-0" />
                     <div>
                         <p class="font-medium">Legal Notice</p>
                         <p class="text-sm mt-1">

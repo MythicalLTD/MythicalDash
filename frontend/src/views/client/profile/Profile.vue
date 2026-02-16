@@ -23,7 +23,7 @@
                         alt="Profile Background"
                         class="w-full h-full object-cover"
                     />
-                    <div v-else class="w-full h-full bg-gradient-to-r from-indigo-900/30 to-purple-900/30"></div>
+                    <div v-else class="w-full h-full bg-linear-to-r from-indigo-900/30 to-purple-900/30"></div>
                 </div>
 
                 <div class="absolute inset-0 bg-gradient-to-t from-[#030305]/80 to-transparent"></div>

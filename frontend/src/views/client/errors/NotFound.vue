@@ -86,7 +86,7 @@ onMounted(() => {
             </div>
             <div class="space-y-4">
                 <h2
-                    class="text-3xl font-bold text-white bg-gradient-to-r from-pink-400 to-violet-400 bg-clip-text text-transparent"
+                    class="text-3xl font-bold text-white bg-linear-to-r from-pink-400 to-violet-400 bg-clip-text text-transparent"
                 >
                     {{ Translation.getTranslation('redirect.title') }}
                 </h2>
@@ -105,7 +105,7 @@ onMounted(() => {
             <div class="pt-4">
                 <a
                     :href="targetUrl"
-                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-pink-500 to-violet-500 text-white rounded-lg hover:opacity-90 transition-all duration-200 transform hover:scale-105 shadow-lg shadow-pink-500/20"
+                    class="inline-flex items-center px-6 py-3 bg-linear-to-r from-pink-500 to-violet-500 text-white rounded-lg hover:opacity-90 transition-all duration-200 transform hover:scale-105 shadow-lg shadow-pink-500/20"
                 >
                     <ExternalLinkIcon class="w-5 h-5 mr-2" />
                     {{ Translation.getTranslation('redirect.go_now') }}

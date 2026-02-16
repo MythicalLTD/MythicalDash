@@ -66,7 +66,7 @@
         <div class="mt-4 text-center">
             <button
                 @click="goToAnnouncements"
-                class="view-all-btn px-4 py-2.5 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 hover:from-indigo-500/30 hover:to-blue-500/30 text-indigo-400 rounded-lg text-sm transition-all duration-300 w-full relative overflow-hidden border border-indigo-500/10"
+                class="view-all-btn px-4 py-2.5 bg-linear-to-r from-indigo-500/20 to-blue-500/20 hover:from-indigo-500/30 hover:to-blue-500/30 text-indigo-400 rounded-lg text-sm transition-all duration-300 w-full relative overflow-hidden border border-indigo-500/10"
             >
                 <span class="relative z-10">{{ t('Components.Announcements.Card.ReadMore') }}</span>
             </button>

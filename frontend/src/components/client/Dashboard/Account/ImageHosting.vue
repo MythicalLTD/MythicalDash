@@ -112,7 +112,7 @@
                         <Button
                             :loading="savingEmbedSettings"
                             @click="saveEmbedSettings"
-                            class="bg-gradient-to-r from-pink-500 to-violet-500"
+                            class="bg-linear-to-r from-pink-500 to-violet-500"
                         >
                             {{
                                 savingEmbedSettings

@@ -9,7 +9,7 @@
                 </div>
                 <div
                     v-if="hasVipPermission"
-                    class="flex items-center space-x-2 bg-gradient-to-r from-yellow-600/20 to-yellow-400/20 border border-yellow-500/30 rounded-lg px-3 py-2"
+                    class="flex items-center space-x-2 bg-linear-to-r from-yellow-600/20 to-yellow-400/20 border border-yellow-500/30 rounded-lg px-3 py-2"
                 >
                     <Crown class="w-5 h-5 text-yellow-400" />
                     <span class="text-yellow-400 font-medium">{{ t('create.pages.index.vip_access') }}</span>
@@ -149,7 +149,7 @@
                             "
                         >
                             <div
-                                class="relative overflow-hidden rounded-lg border transition-all duration-300 bg-gradient-to-br from-indigo-900/20 via-purple-900/20 to-pink-900/20"
+                                class="relative overflow-hidden rounded-lg border transition-all duration-300 bg-linear-to-br from-indigo-900/20 via-purple-900/20 to-pink-900/20"
                                 :class="
                                     form.category_id === category.id.toString()
                                         ? 'border-indigo-500 ring-2 ring-indigo-500'
@@ -165,12 +165,12 @@
                                 />
                                 <div
                                     v-else-if="!category.image?.image || imageErrors[`category-${category.id}`]"
-                                    class="w-full h-40 flex items-center justify-center bg-gradient-to-br from-indigo-900/30 via-purple-900/30 to-pink-900/30"
+                                    class="w-full h-40 flex items-center justify-center bg-linear-to-br from-indigo-900/30 via-purple-900/30 to-pink-900/30"
                                 >
                                     <FolderOpen class="w-16 h-16 text-indigo-400/50" />
                                 </div>
                                 <div
-                                    class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    class="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                                 ></div>
                                 <div
                                     class="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
@@ -206,7 +206,7 @@
                             @click="form.location_id = location.id.toString()"
                         >
                             <div
-                                class="relative overflow-hidden rounded-lg border transition-all duration-300 bg-gradient-to-br from-blue-900/20 via-cyan-900/20 to-teal-900/20"
+                                class="relative overflow-hidden rounded-lg border transition-all duration-300 bg-linear-to-br from-blue-900/20 via-cyan-900/20 to-teal-900/20"
                                 :class="
                                     form.location_id === location.id.toString()
                                         ? 'border-indigo-500 ring-2 ring-indigo-500'
@@ -222,12 +222,12 @@
                                 />
                                 <div
                                     v-else-if="!location.image?.image || imageErrors[`location-${location.id}`]"
-                                    class="w-full h-48 flex items-center justify-center bg-gradient-to-br from-blue-900/30 via-cyan-900/30 to-teal-900/30"
+                                    class="w-full h-48 flex items-center justify-center bg-linear-to-br from-blue-900/30 via-cyan-900/30 to-teal-900/30"
                                 >
                                     <Server class="w-20 h-20 text-blue-400/50" />
                                 </div>
                                 <div
-                                    class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    class="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                                 ></div>
                                 <div
                                     class="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
@@ -306,7 +306,7 @@
                             @click="form.egg_id = egg.id.toString()"
                         >
                             <div
-                                class="relative overflow-hidden rounded-lg border transition-all duration-300 bg-gradient-to-br from-emerald-900/20 via-green-900/20 to-lime-900/20"
+                                class="relative overflow-hidden rounded-lg border transition-all duration-300 bg-linear-to-br from-emerald-900/20 via-green-900/20 to-lime-900/20"
                                 :class="
                                     form.egg_id === egg.id.toString()
                                         ? 'border-indigo-500 ring-2 ring-indigo-500'
@@ -322,12 +322,12 @@
                                 />
                                 <div
                                     v-else-if="!egg.image?.image || imageErrors[`egg-${egg.id}`]"
-                                    class="w-full h-40 flex items-center justify-center bg-gradient-to-br from-emerald-900/30 via-green-900/30 to-lime-900/30"
+                                    class="w-full h-40 flex items-center justify-center bg-linear-to-br from-emerald-900/30 via-green-900/30 to-lime-900/30"
                                 >
                                     <Box class="w-16 h-16 text-emerald-400/50" />
                                 </div>
                                 <div
-                                    class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    class="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                                 ></div>
                                 <div
                                     class="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"

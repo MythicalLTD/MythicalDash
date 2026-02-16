@@ -5,7 +5,7 @@
             <div
                 @click="$emit('toggleSubmenu', item)"
                 class="flex items-center px-3 py-2.5 rounded-xl transition-all duration-200 hover:bg-white/5 cursor-pointer group"
-                :class="{ 'bg-gradient-to-r from-indigo-600/20 to-indigo-600/10 text-white': item.isOpen }"
+                :class="{ 'bg-linear-to-r from-indigo-600/20 to-indigo-600/10 text-white': item.isOpen }"
             >
                 <div
                     class="p-1.5 rounded-lg bg-gray-800/50 mr-3 group-hover:bg-indigo-500/20 transition-colors"
@@ -61,7 +61,7 @@
             v-else
             :to="item.path || ''"
             class="flex items-center px-3 py-2.5 rounded-xl transition-all duration-200 hover:bg-white/5 text-sm group"
-            :class="{ 'bg-gradient-to-r from-indigo-600/20 to-indigo-600/10 text-white': item.active }"
+            :class="{ 'bg-linear-to-r from-indigo-600/20 to-indigo-600/10 text-white': item.active }"
         >
             <div
                 class="p-1.5 rounded-lg bg-gray-800/50 mr-3 group-hover:bg-indigo-500/20 transition-colors"

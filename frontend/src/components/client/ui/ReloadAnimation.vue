@@ -42,7 +42,7 @@ watch(
         <!-- Progress bar at the top -->
         <div class="fixed top-0 left-0 w-full h-1 z-[60]" v-show="isReloading">
             <div
-                class="h-full bg-gradient-to-r from-purple-600 via-purple-400 to-purple-600 animate-pulse"
+                class="h-full bg-linear-to-r from-purple-600 via-purple-400 to-purple-600 animate-pulse"
                 :style="{ width: `${progress}%` }"
             />
         </div>
@@ -193,7 +193,7 @@ watch(
 }
 
 /* Progress bar animation */
-.bg-gradient-to-r {
+.bg-linear-to-r {
     background-size: 200% 100%;
     animation: gradient 2s linear infinite;
 }

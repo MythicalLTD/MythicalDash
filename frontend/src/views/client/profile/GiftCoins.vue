@@ -21,7 +21,7 @@
             <!-- Gift Card -->
             <div class="bg-[#0a0a15]/50 border border-[#1a1a2f]/50 rounded-xl overflow-hidden shadow-lg">
                 <!-- Card Header -->
-                <div class="bg-gradient-to-r from-[#1a1a2e]/50 to-[#12121f]/50 py-4 px-5 border-b border-[#1a1a2f]/30">
+                <div class="bg-linear-to-r from-[#1a1a2e]/50 to-[#12121f]/50 py-4 px-5 border-b border-[#1a1a2f]/30">
                     <h2 class="text-lg font-medium text-white flex items-center">
                         <Coins class="w-5 h-5 text-amber-400 mr-2" />
                         {{ t('profile.gift.recipient', { username: recipientUser.username }) }}

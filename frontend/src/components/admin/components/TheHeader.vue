@@ -1,6 +1,6 @@
 <template>
     <header
-        class="bg-gradient-to-r from-[#0F1322]/95 via-[#0D0F1A]/95 to-[#0A0E1A]/95 backdrop-blur-xl border-b border-gray-800/30 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-lg"
+        class="bg-linear-to-r from-[#0F1322]/95 via-[#0D0F1A]/95 to-[#0A0E1A]/95 backdrop-blur-xl border-b border-gray-800/30 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-lg"
     >
         <div class="flex items-center gap-6 flex-1">
             <!-- Breadcrumb -->

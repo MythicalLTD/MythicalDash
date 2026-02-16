@@ -9,12 +9,12 @@
             <!-- Decorative header gradient -->
             <div
                 v-if="notificationSettings.showBackground"
-                class="absolute top-0 left-0 right-0 h-20 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-blue-500/10 pointer-events-none"
+                class="absolute top-0 left-0 right-0 h-20 bg-linear-to-br from-indigo-500/10 via-purple-500/5 to-blue-500/10 pointer-events-none"
             ></div>
 
             <!-- Header -->
             <div
-                class="relative p-4 border-b border-[#2a2a3f]/30 flex items-center justify-between bg-gradient-to-br from-[#1a1a2e]/30 to-transparent"
+                class="relative p-4 border-b border-[#2a2a3f]/30 flex items-center justify-between bg-linear-to-br from-[#1a1a2e]/30 to-transparent"
             >
                 <h3 class="font-semibold text-gray-200 flex items-center gap-2 drop-shadow-sm">
                     <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
@@ -39,7 +39,7 @@
                     <div
                         v-for="notification in notifications"
                         :key="notification.id"
-                        class="flex items-start gap-3 p-4 hover:bg-gradient-to-r hover:from-[#1a1a2e]/40 hover:to-indigo-500/5 transition-all duration-200 cursor-pointer transform hover:translate-x-1 hover:scale-[1.01] group"
+                        class="flex items-start gap-3 p-4 hover:bg-linear-to-r hover:from-[#1a1a2e]/40 hover:to-indigo-500/5 transition-all duration-200 cursor-pointer transform hover:translate-x-1 hover:scale-[1.01] group"
                         :class="notificationSettings.borderGlow ? 'hover:shadow-sm hover:shadow-indigo-500/10' : ''"
                     >
                         <div
@@ -67,7 +67,7 @@
                 <div v-else class="p-8 text-center">
                     <div class="flex flex-col items-center">
                         <div
-                            class="w-16 h-16 rounded-full bg-gradient-to-br from-[#1a1a2e]/50 to-[#2a2a3f]/30 flex items-center justify-center mb-4 transition-all duration-200 hover:scale-105 shadow-lg"
+                            class="w-16 h-16 rounded-full bg-linear-to-br from-[#1a1a2e]/50 to-[#2a2a3f]/30 flex items-center justify-center mb-4 transition-all duration-200 hover:scale-105 shadow-lg"
                         >
                             <BellOffIcon class="h-8 w-8 text-gray-500" />
                         </div>
@@ -80,9 +80,7 @@
             </div>
 
             <!-- Footer -->
-            <div
-                class="p-3 bg-gradient-to-r from-[#1a1a2e]/20 to-[#2a2a3f]/10 text-center border-t border-[#2a2a3f]/30"
-            >
+            <div class="p-3 bg-linear-to-r from-[#1a1a2e]/20 to-[#2a2a3f]/10 text-center border-t border-[#2a2a3f]/30">
                 <a
                     href="#"
                     class="text-sm text-indigo-400 hover:text-indigo-300 transition-all duration-200 hover:scale-105 inline-block px-3 py-1 rounded-md hover:bg-indigo-500/10"

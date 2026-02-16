@@ -169,7 +169,7 @@ onMounted(() => {
 
         <!-- Error Alert -->
         <div v-if="error" class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-start gap-3">
-            <AlertIcon class="h-5 w-5 text-red-400 mt-0.5 flex-shrink-0" />
+            <AlertIcon class="h-5 w-5 text-red-400 mt-0.5 shrink-0" />
             <div>
                 <h3 class="text-sm font-medium text-red-400">
                     {{ t('account.pages.linked_accounts.errors.title') }}

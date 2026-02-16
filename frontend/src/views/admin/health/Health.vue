@@ -3,7 +3,7 @@
         <div class="space-y-6">
             <!-- Header -->
             <div
-                class="flex flex-col md:flex-row md:items-center md:justify-between bg-gradient-to-r from-gray-900/70 to-gray-800/50 backdrop-blur-md rounded-xl p-6 border border-gray-800/30"
+                class="flex flex-col md:flex-row md:items-center md:justify-between bg-linear-to-r from-gray-900/70 to-gray-800/50 backdrop-blur-md rounded-xl p-6 border border-gray-800/30"
             >
                 <div>
                     <h1 class="text-3xl font-bold mb-2">System Health</h1>
@@ -498,7 +498,7 @@ onMounted(() => {
     animation: spin 1s linear infinite;
 }
 
-.bg-gradient-to-r {
+.bg-linear-to-r {
     background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
 </style>

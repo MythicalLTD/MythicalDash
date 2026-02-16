@@ -159,7 +159,7 @@
                                         ]"
                                     >
                                         <div class="flex items-start">
-                                            <div class="flex-shrink-0">
+                                            <div class="shrink-0">
                                                 <CheckCircle v-if="statusMessage.type === 'success'" class="h-5 w-5" />
                                                 <AlertTriangle v-else class="h-5 w-5" />
                                             </div>
@@ -238,7 +238,7 @@
                         <div class="space-y-4">
                             <div v-for="(step, index) in steps" :key="index" class="flex items-start space-x-3">
                                 <div
-                                    class="flex-shrink-0 w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                                    class="shrink-0 w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-bold"
                                 >
                                     {{ step.number }}
                                 </div>

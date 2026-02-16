@@ -17,7 +17,7 @@
                     :style="{ animationDelay: `${index * 0.1}s` }"
                 >
                     <div
-                        class="icon-container w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600/20 to-blue-600/20 flex items-center justify-center mr-3 relative overflow-hidden"
+                        class="icon-container w-10 h-10 rounded-lg bg-linear-to-br from-indigo-600/20 to-blue-600/20 flex items-center justify-center mr-3 relative overflow-hidden"
                     >
                         <component :is="link.icon" class="w-5 h-5 text-indigo-400 relative z-10" />
                         <div class="icon-glow"></div>

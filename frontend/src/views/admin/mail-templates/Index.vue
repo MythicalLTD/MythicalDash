@@ -5,14 +5,14 @@
             <div class="flex items-center gap-2">
                 <button
                     @click="openMassSendDialog()"
-                    class="bg-gradient-to-r from-amber-500 to-pink-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center"
+                    class="bg-linear-to-r from-amber-500 to-pink-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center"
                 >
                     <SendIcon class="w-4 h-4 mr-2" />
                     Send Mass Email
                 </button>
                 <button
                     @click="goToCreation()"
-                    class="bg-gradient-to-r from-pink-500 to-violet-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center"
+                    class="bg-linear-to-r from-pink-500 to-violet-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center"
                 >
                     <PlusIcon class="w-4 h-4 mr-2" />
                     Add Template

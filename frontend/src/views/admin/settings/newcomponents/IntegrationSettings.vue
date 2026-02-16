@@ -368,7 +368,7 @@
                         class="mt-3 p-3 bg-amber-900/20 border border-amber-500/30 rounded-lg"
                     >
                         <div class="flex items-start">
-                            <div class="flex-shrink-0">
+                            <div class="shrink-0">
                                 <AlertTriangleIcon class="w-5 h-5 text-amber-400" />
                             </div>
                             <div class="ml-3">

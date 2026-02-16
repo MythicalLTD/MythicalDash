@@ -45,7 +45,7 @@
                                         ]"
                                     >
                                         <div class="flex items-start">
-                                            <div class="flex-shrink-0">
+                                            <div class="shrink-0">
                                                 <CheckCircleIcon
                                                     v-if="statusMessage.type === 'success'"
                                                     class="h-5 w-5"
@@ -77,7 +77,7 @@
                                     >
                                         <div class="flex items-start mb-4">
                                             <div
-                                                class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center mr-4 flex-shrink-0"
+                                                class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center mr-4 shrink-0"
                                             >
                                                 <component :is="item.icon" class="h-6 w-6 text-indigo-400" />
                                             </div>
@@ -204,7 +204,7 @@
                             <div class="bg-gray-800/30 p-4 rounded-lg">
                                 <div class="flex items-start mb-2">
                                     <div
-                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
+                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 shrink-0"
                                     >
                                         <span class="text-xs">{{
                                             t('store.pages.index.howItWorks.steps.one.number')
@@ -224,7 +224,7 @@
                             <div class="bg-gray-800/30 p-4 rounded-lg">
                                 <div class="flex items-start mb-2">
                                     <div
-                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
+                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 shrink-0"
                                     >
                                         <span class="text-xs">{{
                                             t('store.pages.index.howItWorks.steps.two.number')
@@ -244,7 +244,7 @@
                             <div class="bg-gray-800/30 p-4 rounded-lg">
                                 <div class="flex items-start mb-2">
                                     <div
-                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
+                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 shrink-0"
                                     >
                                         <span class="text-xs">{{
                                             t('store.pages.index.howItWorks.steps.three.number')
@@ -264,7 +264,7 @@
                             <div class="bg-gray-800/30 p-4 rounded-lg">
                                 <div class="flex items-start mb-2">
                                     <div
-                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
+                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 shrink-0"
                                     >
                                         <span class="text-xs">{{
                                             t('store.pages.index.howItWorks.steps.four.number')

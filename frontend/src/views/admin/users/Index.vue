@@ -64,7 +64,7 @@
                 </div>
                 <button
                     @click="supportPinModal()"
-                    class="bg-gradient-to-r from-pink-500 to-violet-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-90 shadow ring-1 ring-pink-400/30 flex items-center"
+                    class="bg-linear-to-r from-pink-500 to-violet-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-90 shadow ring-1 ring-pink-400/30 flex items-center"
                 >
                     <SearchIcon class="w-4 h-4 mr-2" />
                     Enter Support Pin
@@ -83,7 +83,7 @@
                 <div
                     v-for="u in users"
                     :key="u.uuid"
-                    class="group relative rounded-xl p-4 bg-gradient-to-br from-gray-800/70 to-gray-900/70 border border-gray-700/70 hover:border-pink-500/40 transition-all duration-200 shadow hover:shadow-pink-500/10"
+                    class="group relative rounded-xl p-4 bg-linear-to-br from-gray-800/70 to-gray-900/70 border border-gray-700/70 hover:border-pink-500/40 transition-all duration-200 shadow hover:shadow-pink-500/10"
                 >
                     <div class="flex items-center space-x-3">
                         <img :src="u.avatar" alt="avatar" class="w-10 h-10 rounded-full border border-gray-700" />

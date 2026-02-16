@@ -128,7 +128,7 @@
             <div class="pt-4 border-t border-gray-700">
                 <div class="mb-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
                     <div class="flex items-start">
-                        <div class="flex-shrink-0">
+                        <div class="shrink-0">
                             <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
                                 <path
                                     fill-rule="evenodd"

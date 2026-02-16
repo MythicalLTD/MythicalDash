@@ -46,7 +46,7 @@
                     <button
                         type="submit"
                         :disabled="loading"
-                        class="bg-gradient-to-r from-pink-500 to-violet-500 text-white px-6 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center disabled:opacity-50"
+                        class="bg-linear-to-r from-pink-500 to-violet-500 text-white px-6 py-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center disabled:opacity-50"
                     >
                         <LoaderCircle v-if="loading" class="w-4 h-4 mr-2 animate-spin" />
                         <span>{{ loading ? 'Creating...' : 'Create Image' }}</span>

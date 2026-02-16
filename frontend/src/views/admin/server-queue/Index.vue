@@ -55,7 +55,7 @@
                 <div class="flex space-x-3">
                     <button
                         @click="goToCreation()"
-                        class="bg-gradient-to-r from-pink-500 to-violet-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-90 shadow ring-1 ring-pink-400/30 flex items-center"
+                        class="bg-linear-to-r from-pink-500 to-violet-500 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-90 shadow ring-1 ring-pink-400/30 flex items-center"
                     >
                         <PlusIcon class="w-4 h-4 mr-2" />
                         Add Server to Queue
@@ -74,7 +74,7 @@
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div
-                class="bg-gradient-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-md rounded-xl p-4 shadow-md border border-gray-700/80"
+                class="bg-linear-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-md rounded-xl p-4 shadow-md border border-gray-700/80"
             >
                 <div class="flex items-center justify-between">
                     <div>
@@ -85,7 +85,7 @@
                 </div>
             </div>
             <div
-                class="bg-gradient-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-md rounded-xl p-4 shadow-md border border-gray-700/80"
+                class="bg-linear-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-md rounded-xl p-4 shadow-md border border-gray-700/80"
             >
                 <div class="flex items-center justify-between">
                     <div>
@@ -96,7 +96,7 @@
                 </div>
             </div>
             <div
-                class="bg-gradient-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-md rounded-xl p-4 shadow-md border border-gray-700/80"
+                class="bg-linear-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-md rounded-xl p-4 shadow-md border border-gray-700/80"
             >
                 <div class="flex items-center justify-between">
                     <div>
@@ -107,7 +107,7 @@
                 </div>
             </div>
             <div
-                class="bg-gradient-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-md rounded-xl p-4 shadow-md border border-gray-700/80"
+                class="bg-linear-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-md rounded-xl p-4 shadow-md border border-gray-700/80"
             >
                 <div class="flex items-center justify-between">
                     <div>
@@ -133,7 +133,7 @@
                 <div
                     v-for="item in queueItems"
                     :key="item.id"
-                    class="group relative rounded-xl p-4 bg-gradient-to-br from-gray-800/70 to-gray-900/70 border border-gray-700/70 hover:border-pink-500/40 transition-all duration-200 shadow hover:shadow-pink-500/10"
+                    class="group relative rounded-xl p-4 bg-linear-to-br from-gray-800/70 to-gray-900/70 border border-gray-700/70 hover:border-pink-500/40 transition-all duration-200 shadow hover:shadow-pink-500/10"
                 >
                     <div class="flex items-start justify-between">
                         <div>

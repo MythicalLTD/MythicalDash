@@ -105,7 +105,11 @@ const handleSubmit = async () => {
                 v-if="Settings.getSetting('turnstile_enabled') == 'true'"
                 style="display: flex; justify-content: center; margin-top: 20px"
             >
-                <Turnstile :key="turnstileKey" :site-key="Settings.getSetting('turnstile_key_pub')" v-model="form.turnstileResponse" />
+                <Turnstile
+                    :key="turnstileKey"
+                    :site-key="Settings.getSetting('turnstile_key_pub')"
+                    v-model="form.turnstileResponse"
+                />
             </div>
             <button
                 type="submit"

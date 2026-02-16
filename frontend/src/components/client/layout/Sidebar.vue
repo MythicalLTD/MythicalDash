@@ -349,11 +349,11 @@ const compactClass = computed(() => (sidebarSettings.compactMode ? 'compact' : '
                                 ]"
                             >
                                 <div
-                                    class="h-px flex-1 bg-gradient-to-r from-transparent via-[#2a2a3f]/30 to-transparent"
+                                    class="h-px flex-1 bg-linear-to-r from-transparent via-[#2a2a3f]/30 to-transparent"
                                 ></div>
                                 <span class="px-2 text-xs">{{ section.title }}</span>
                                 <div
-                                    class="h-px flex-1 bg-gradient-to-r from-transparent via-[#2a2a3f]/30 to-transparent"
+                                    class="h-px flex-1 bg-linear-to-r from-transparent via-[#2a2a3f]/30 to-transparent"
                                 ></div>
                             </div>
 
@@ -550,7 +550,7 @@ const compactClass = computed(() => (sidebarSettings.compactMode ? 'compact' : '
     }
 }
 
-.bg-gradient-to-r {
+.bg-linear-to-r {
     background-size: 200% 100%;
     animation: gradientLine 3s ease infinite;
 }

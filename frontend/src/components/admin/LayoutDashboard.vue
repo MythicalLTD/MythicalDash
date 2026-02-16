@@ -2,7 +2,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
     <div
-        class="min-h-screen bg-gradient-to-br from-[#0A0B14] via-[#0D0F1A] to-[#070A16] text-gray-100 font-sans relative"
+        class="min-h-screen bg-linear-to-br from-[#0A0B14] via-[#0D0F1A] to-[#070A16] text-gray-100 font-sans relative"
     >
         <!-- Background Image -->
         <div

@@ -39,7 +39,7 @@
                         <button
                             type="submit"
                             :disabled="isSearching || searchQuery.length < 3"
-                            class="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                            class="flex-1 bg-linear-to-r from-indigo-500 to-purple-600 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                         >
                             <Search v-if="!isSearching" class="w-4 h-4 mr-2" />
                             <Loader v-else class="w-4 h-4 mr-2 animate-spin" />

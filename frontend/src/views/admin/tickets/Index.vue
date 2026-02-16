@@ -108,7 +108,7 @@
                 <div
                     v-for="t in tickets"
                     :key="t.id"
-                    class="group relative rounded-xl p-4 bg-gradient-to-br from-gray-800/70 to-gray-900/70 border border-gray-700/70 hover:border-pink-500/40 transition-all duration-200 shadow hover:shadow-pink-500/10"
+                    class="group relative rounded-xl p-4 bg-linear-to-br from-gray-800/70 to-gray-900/70 border border-gray-700/70 hover:border-pink-500/40 transition-all duration-200 shadow hover:shadow-pink-500/10"
                 >
                     <div class="flex items-start justify-between">
                         <div class="flex items-center space-x-3">

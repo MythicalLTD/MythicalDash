@@ -226,7 +226,7 @@
                             <div class="bg-gray-800/30 p-4 rounded-lg">
                                 <div class="flex items-start mb-2">
                                     <div
-                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
+                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 shrink-0"
                                     >
                                         <span class="text-xs">{{
                                             t('referrals.pages.index.refferals.sharelink.steps.one.id')
@@ -246,7 +246,7 @@
                             <div class="bg-gray-800/30 p-4 rounded-lg">
                                 <div class="flex items-start mb-2">
                                     <div
-                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
+                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 shrink-0"
                                     >
                                         <span class="text-xs">{{
                                             t('referrals.pages.index.refferals.sharelink.steps.two.id')
@@ -266,7 +266,7 @@
                             <div class="bg-gray-800/30 p-4 rounded-lg">
                                 <div class="flex items-start mb-2">
                                     <div
-                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
+                                        class="bg-indigo-900/50 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center mr-2 shrink-0"
                                     >
                                         <span class="text-xs">{{
                                             t('referrals.pages.index.refferals.sharelink.steps.three.id')

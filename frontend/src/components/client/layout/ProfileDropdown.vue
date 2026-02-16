@@ -96,7 +96,7 @@ const optimizedAvatar = computed(() => {
             <!-- Decorative header gradient -->
             <div
                 v-if="dropdownSettings.showBackground"
-                class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-blue-500/10 pointer-events-none"
+                class="absolute top-0 left-0 right-0 h-32 bg-linear-to-br from-indigo-500/10 via-purple-500/5 to-blue-500/10 pointer-events-none"
             ></div>
 
             <!-- User Profile Section -->
@@ -111,7 +111,7 @@ const optimizedAvatar = computed(() => {
                 <!-- Background overlay for better text readability -->
                 <div
                     v-if="props.userInfo.background && dropdownSettings.showUserBackground"
-                    class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50"
+                    class="absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-black/50"
                 ></div>
                 <div class="flex items-center gap-4 relative z-10">
                     <div class="relative group">
@@ -124,7 +124,7 @@ const optimizedAvatar = computed(() => {
                             <img :src="optimizedAvatar" alt="User Avatar" class="h-full w-full object-cover" />
                         </div>
                         <div
-                            class="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 ring-3 ring-white shadow-lg animate-pulse"
+                            class="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-linear-to-r from-green-400 to-emerald-500 ring-3 ring-white shadow-lg animate-pulse"
                         ></div>
                     </div>
                     <div class="flex-1 min-w-0 relative z-10">
@@ -150,11 +150,11 @@ const optimizedAvatar = computed(() => {
                     v-for="item in profileMenu"
                     :key="item.name"
                     :to="item.href"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gradient-to-r hover:from-[#1a1a2e]/70 hover:to-indigo-500/10 transition-all duration-200 group transform hover:translate-x-1 hover:scale-[1.02]"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-linear-to-r hover:from-[#1a1a2e]/70 hover:to-indigo-500/10 transition-all duration-200 group transform hover:translate-x-1 hover:scale-[1.02]"
                     :class="dropdownSettings.borderGlow ? 'hover:shadow-md hover:shadow-indigo-500/10' : ''"
                 >
                     <div
-                        class="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1a1a2e]/50 to-[#2a2a3f]/30 flex items-center justify-center group-hover:from-indigo-500/10 group-hover:to-purple-500/10 transition-all duration-200 border border-[#2a2a3f]/20 group-hover:border-indigo-500/30"
+                        class="w-10 h-10 rounded-lg bg-linear-to-br from-[#1a1a2e]/50 to-[#2a2a3f]/30 flex items-center justify-center group-hover:from-indigo-500/10 group-hover:to-purple-500/10 transition-all duration-200 border border-[#2a2a3f]/20 group-hover:border-indigo-500/30"
                     >
                         <component
                             :is="item.icon"
@@ -177,11 +177,11 @@ const optimizedAvatar = computed(() => {
                 <!-- Logout Button -->
                 <button
                     @click="handleLogout"
-                    class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gradient-to-r hover:from-red-500/10 hover:to-red-600/10 text-gray-300 hover:text-red-400 transition-all duration-200 group mt-3 transform hover:translate-x-1 hover:scale-[1.02] border border-transparent hover:border-red-500/20"
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-linear-to-r hover:from-red-500/10 hover:to-red-600/10 text-gray-300 hover:text-red-400 transition-all duration-200 group mt-3 transform hover:translate-x-1 hover:scale-[1.02] border border-transparent hover:border-red-500/20"
                     :class="dropdownSettings.borderGlow ? 'hover:shadow-md hover:shadow-red-500/10' : ''"
                 >
                     <div
-                        class="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1a1a2e]/50 to-[#2a2a3f]/30 flex items-center justify-center group-hover:from-red-500/10 group-hover:to-red-600/10 transition-all duration-200 border border-[#2a2a3f]/20 group-hover:border-red-500/30"
+                        class="w-10 h-10 rounded-lg bg-linear-to-br from-[#1a1a2e]/50 to-[#2a2a3f]/30 flex items-center justify-center group-hover:from-red-500/10 group-hover:to-red-600/10 transition-all duration-200 border border-[#2a2a3f]/20 group-hover:border-red-500/30"
                     >
                         <LogOutIcon
                             class="h-5 w-5 text-gray-400 group-hover:text-red-400 transition-colors duration-200"
@@ -203,7 +203,7 @@ const optimizedAvatar = computed(() => {
 
             <!-- Footer -->
             <div
-                class="p-4 bg-gradient-to-r from-[#1a1a2e]/30 to-[#2a2a3f]/20 text-center text-xs text-gray-500 border-t border-[#2a2a3f]/30"
+                class="p-4 bg-linear-to-r from-[#1a1a2e]/30 to-[#2a2a3f]/20 text-center text-xs text-gray-500 border-t border-[#2a2a3f]/30"
             >
                 <p class="flex items-center justify-center gap-2">
                     <span>Made with</span>

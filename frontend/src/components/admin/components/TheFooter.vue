@@ -3,7 +3,7 @@
         <div class="max-w-7xl mx-auto px-6 py-4">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center gap-3">
-                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-1.5 rounded-lg shadow-lg">
+                    <div class="bg-linear-to-r from-indigo-500 to-purple-600 p-1.5 rounded-lg shadow-lg">
                         <img src="https://github.com/mythicalltd.png" alt="Logo" class="h-5 w-5" />
                     </div>
                     <div class="text-sm text-gray-400">

@@ -2,7 +2,7 @@
     <nav :class="navClasses" :style="backgroundStyle">
         <div class="h-full px-4 flex items-center justify-between">
             <!-- Left: Logo & Menu Button -->
-            <div class="flex items-center gap-3 flex-shrink-0">
+            <div class="flex items-center gap-3 shrink-0">
                 <button
                     class="lg:hidden p-2 hover:bg-[#1a1a2e]/50 rounded-lg transition-all duration-200 hover:scale-105"
                     @click="$emit('toggle-sidebar')"
@@ -19,7 +19,7 @@
                         <img :src="appLogo" alt="MythicalDash" class="h-6 w-6" />
                     </div>
                     <span
-                        class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent transition-all duration-200 group-hover:from-indigo-300 group-hover:to-indigo-500 drop-shadow-sm"
+                        class="text-xl font-bold bg-linear-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent transition-all duration-200 group-hover:from-indigo-300 group-hover:to-indigo-500 drop-shadow-sm"
                     >
                         {{ appName }}
                     </span>
@@ -53,7 +53,7 @@
             </button>
 
             <!-- Right: Actions -->
-            <div class="flex items-center gap-2 flex-shrink-0">
+            <div class="flex items-center gap-2 shrink-0">
                 <SocialMediaLinks class="hidden lg:flex" />
 
                 <!-- Language Selector -->
@@ -63,7 +63,7 @@
                         class="flex items-center gap-2 px-3 py-2 bg-[#1a1a2e]/30 border border-[#2a2a3f]/30 rounded-lg text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all duration-200 cursor-pointer hover:bg-[#1a1a2e]/50 group-hover:border-indigo-500/30 backdrop-blur-sm"
                         :class="topNavSettings.borderGlow ? 'focus:shadow-lg focus:shadow-indigo-500/20' : ''"
                     >
-                        <div class="w-5 h-5 rounded-sm overflow-hidden flex-shrink-0">
+                        <div class="w-5 h-5 rounded-sm overflow-hidden shrink-0">
                             <img
                                 :src="getFlagUrl(currentLocale)"
                                 :alt="currentLocale"
@@ -91,7 +91,7 @@
                                 class="flex items-center gap-3 px-4 py-3 text-sm text-gray-200 hover:bg-[#2a2a3f]/50 transition-colors duration-200 cursor-pointer group"
                                 :class="{ 'bg-indigo-500/20 text-indigo-300': currentLocale === lang }"
                             >
-                                <div class="w-5 h-5 rounded-sm overflow-hidden flex-shrink-0">
+                                <div class="w-5 h-5 rounded-sm overflow-hidden shrink-0">
                                     <img :src="getFlagUrl(lang)" :alt="lang" class="w-full h-full object-cover" />
                                 </div>
                                 <span class="font-medium">{{ getLanguageName(lang) }}</span>
@@ -273,7 +273,7 @@ const backgroundStyle = computed(() => {
 </script>
 
 <style scoped>
-.bg-gradient-to-r {
+.bg-linear-to-r {
     -webkit-background-clip: text;
     background-clip: text;
 }

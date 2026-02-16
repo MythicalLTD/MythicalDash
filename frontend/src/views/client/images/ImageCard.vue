@@ -11,7 +11,7 @@
             />
             <!-- Overlay on hover -->
             <div
-                class="absolute inset-0 bg-gradient-to-t from-[#18182a]/90 via-[#18182a]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end"
+                class="absolute inset-0 bg-linear-to-t from-[#18182a]/90 via-[#18182a]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end"
             >
                 <div class="p-4 flex flex-col gap-2">
                     <div class="flex items-center gap-2">
