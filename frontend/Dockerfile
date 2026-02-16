@@ -8,16 +8,16 @@ WORKDIR /app
 RUN npm install -g pnpm
 
 # Copy package files
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
-RUN yarn install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .
 
 # Build the application
-RUN yarn build
+RUN pnpm run build
 
 # Production stage with nginx
 FROM nginx:alpine AS production

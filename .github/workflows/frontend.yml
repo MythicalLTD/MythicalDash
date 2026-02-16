@@ -23,14 +23,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          if [ -f yarn.lock ]; then
-            yarn install --frozen-lockfile
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
           else
-            echo "yarn.lock file not found"
+            echo "pnpm-lock.yaml file not found"
             exit 1
           fi
       - name: Build
-        run: yarn build
+        run: pnpm run build
   lint:
     name: Frontend Lint
     runs-on: ubuntu-latest
@@ -52,14 +52,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          if [ -f yarn.lock ]; then
-            yarn install --frozen-lockfile
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
           else
-            echo "yarn.lock file not found"
+            echo "pnpm-lock.yaml file not found"
             exit 1
           fi
       - name: Lint
-        run: yarn lint
+        run: pnpm run lint
   format:
     name: Frontend Format
     runs-on: ubuntu-latest
@@ -81,11 +81,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          if [ -f yarn.lock ]; then
-            yarn install --frozen-lockfile
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
           else
-            echo "yarn.lock file not found"
+            echo "pnpm-lock.yaml file not found"
             exit 1
           fi
       - name: Format
-        run: yarn format
+        run: pnpm run format

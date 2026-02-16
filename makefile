@@ -7,7 +7,7 @@ FRONTEND_DIR = frontend
 BACKEND_DIR = backend
 
 # Commands
-YARN = yarn
+YARN = pnpm
 NPM = npm
 PHP = php
 COMPOSER = COMPOSER_ALLOW_SUPERUSER=1 composer
@@ -62,7 +62,7 @@ frontend:
 	@echo -e "\n${BOLD}${BLUE}Frontend Build${NC} ${ROCKET}"
 	@echo -e "${CYAN}=================${NC}"
 	@echo -e "${GREEN}${INFO} Building frontend for production...${NC}"
-	@cd $(FRONTEND_DIR) && $(YARN) build
+	@cd $(FRONTEND_DIR) && $(YARN) run build
 	@echo -e "${GREEN}${CHECK} Frontend build complete!${NC}\n"
 
 # Backend tasks
@@ -91,7 +91,7 @@ release:
 	@echo -e "${GREEN}${CHECK} Backend dependencies installed${NC}\n"
 
 	@echo -e "${PURPLE}${INFO} Installing frontend dependencies...${NC}" 
-	@cd $(FRONTEND_DIR) && $(YARN)
+	@cd $(FRONTEND_DIR) && $(YARN) install
 	@echo -e "${GREEN}${CHECK} Frontend dependencies installed${NC}\n"
 
 	@echo -e "${PURPLE}${INFO} Exporting permissions...${NC}"
@@ -101,16 +101,16 @@ release:
 	@echo -e "${PURPLE}${INFO} Frontend checks...${NC}"
 
 	@cd $(BACKEND_DIR) && $(COMPOSER) run lint
-	@cd $(FRONTEND_DIR) && $(YARN) format
+	@cd $(FRONTEND_DIR) && $(YARN) run format
 	@echo -e "${GREEN}${CHECK} Frontend checks complete${NC}\n"
 	
 	@echo -e "${PURPLE}${INFO} Updating dependencies...${NC}"
-	@cd $(FRONTEND_DIR) && $(YARN)
+	@cd $(FRONTEND_DIR) && $(YARN) install
 	@cd $(BACKEND_DIR) && $(COMPOSER) update
 	@echo -e "${GREEN}${CHECK} Dependencies updated${NC}\n"
 	
 	@echo -e "${PURPLE}${INFO} Building applications...${NC}"
-	@cd $(FRONTEND_DIR) && $(YARN) build
+	@cd $(FRONTEND_DIR) && $(YARN) run build
 	@cd $(BACKEND_DIR) && $(COMPOSER) dump-autoload
 	@cd $(BACKEND_DIR) && $(COMPOSER) install --optimize-autoloader
 	@echo -e "${GREEN}${CHECK} Build complete${NC}\n"
@@ -133,7 +133,7 @@ release-package:
 
 lint: 
 	@cd $(BACKEND_DIR) && $(COMPOSER) run lint
-	@cd $(FRONTEND_DIR) && $(YARN) format
+	@cd $(FRONTEND_DIR) && $(YARN) run format
 
 # Clean build artifacts
 clean:
@@ -174,21 +174,21 @@ get-tools:
 		[ -s "$$NVM_DIR/nvm.sh" ] && \. "$$NVM_DIR/nvm.sh"; \
 		nvm install 24 && nvm use 24 && echo -e "${GREEN}${CHECK} Node.js 24 installed and activated${NC}"' || \
 		echo -e "${YELLOW}${WARN} Could not automatically install Node.js 24. Please run 'nvm install 24 && nvm use 24' manually${NC}"
-	@echo -e "${GREEN}${INFO} Installing Yarn package manager globally...${NC}"
+	@echo -e "${GREEN}${INFO} Installing PNPM package manager globally...${NC}"
 	@bash -c 'export NVM_DIR="$$([ -z "$${XDG_CONFIG_HOME-}" ] && printf %s "$${HOME}/.nvm" || printf %s "$${XDG_CONFIG_HOME}/nvm")"; \
 		[ -s "$$NVM_DIR/nvm.sh" ] && \. "$$NVM_DIR/nvm.sh"; \
-		npm i -g yarn && echo -e "${GREEN}${CHECK} Yarn installed successfully${NC}"' || \
-		echo -e "${YELLOW}${WARN} Could not install Yarn. Please run 'npm i -g yarn' manually${NC}"
+		npm i -g pnpm && echo -e "${GREEN}${CHECK} PNPM installed successfully${NC}"' || \
+		echo -e "${YELLOW}${WARN} Could not install PNPM. Please run 'npm i -g pnpm' manually${NC}"
 	@echo -e "${GREEN}${INFO} Installing PNPM package manager globally (for future use)...${NC}"
 	@bash -c 'export NVM_DIR="$$([ -z "$${XDG_CONFIG_HOME-}" ] && printf %s "$${HOME}/.nvm" || printf %s "$${XDG_CONFIG_HOME}/nvm")"; \
 		[ -s "$$NVM_DIR/nvm.sh" ] && \. "$$NVM_DIR/nvm.sh"; \
 		npm i -g pnpm && echo -e "${GREEN}${CHECK} PNPM installed successfully${NC}"' || \
 		echo -e "${YELLOW}${WARN} Could not install PNPM. Please run 'npm i -g pnpm' manually${NC}"
-	@echo -e "${GREEN}${INFO} Installing frontend packages with Yarn...${NC}"
+	@echo -e "${GREEN}${INFO} Installing frontend packages with PNPM...${NC}"
 	@bash -c 'export NVM_DIR="$$([ -z "$${XDG_CONFIG_HOME-}" ] && printf %s "$${HOME}/.nvm" || printf %s "$${XDG_CONFIG_HOME}/nvm")"; \
 		[ -s "$$NVM_DIR/nvm.sh" ] && \. "$$NVM_DIR/nvm.sh"; \
-		cd $(FRONTEND_DIR) && yarn && echo -e "${GREEN}${CHECK} Frontend packages installed successfully${NC}"' || \
-		echo -e "${YELLOW}${WARN} Could not install frontend packages. Please run 'cd $(FRONTEND_DIR) && yarn' manually${NC}"
+		cd $(FRONTEND_DIR) && pnpm install && echo -e "${GREEN}${CHECK} Frontend packages installed successfully${NC}"' || \
+		echo -e "${YELLOW}${WARN} Could not install frontend packages. Please run 'cd $(FRONTEND_DIR) && pnpm install' manually${NC}"
 	@echo -e "${GREEN}${CHECK} All development tools installed successfully!${NC}\n"
 	@echo -e "${GREEN}${INFO} Installing backend dependencies with Composer...${NC}"
 	@cd $(BACKEND_DIR) && $(COMPOSER) install && echo -e "${GREEN}${CHECK} Backend dependencies installed successfully${NC}" || \

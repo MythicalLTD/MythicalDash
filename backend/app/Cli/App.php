@@ -219,7 +219,7 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
     private function handleCustomCommands(string $cmdName, array $subCmd): void
     {
         if ($cmdName == 'frontend:build') {
-            $process = popen('cd frontend && yarn build 2>&1', 'r');
+            $process = popen('cd frontend && pnpm run build 2>&1', 'r');
             if (is_resource($process)) {
                 while (!feof($process)) {
                     $output = fgets($process);
@@ -239,7 +239,7 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
 
             exit;
         } elseif ($cmdName == 'frontend:watch') {
-            $process = popen('cd frontend && yarn dev 2>&1', 'r');
+            $process = popen('cd frontend && pnpm run dev 2>&1', 'r');
             if (is_resource($process)) {
                 while (!feof($process)) {
                     $output = fgets($process);
@@ -339,7 +339,7 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
                 $this->sendOutput($this->prefix . 'Failed to start backend lint process.');
             }
 
-            $process = popen('cd frontend && yarn lint 2>&1', 'r');
+            $process = popen('cd frontend && pnpm run lint 2>&1', 'r');
             if (is_resource($process)) {
                 while (!feof($process)) {
                     $output = fgets($process);
@@ -357,7 +357,7 @@ class App extends \MythicalDash\Hooks\MythicalSystems\Utils\BungeeChatApi
                 $this->sendOutput($this->prefix . 'Failed to start frontend lint process.');
             }
 
-            $process = popen('cd frontend && yarn format 2>&1', 'r');
+            	$process = popen('cd frontend && pnpm run format 2>&1', 'r');
             if (is_resource($process)) {
                 while (!feof($process)) {
                     $output = fgets($process);
