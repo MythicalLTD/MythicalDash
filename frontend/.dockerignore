@@ -24,8 +24,13 @@ Thumbs.db
 
 # Docker
 Dockerfile
+.dockerignore
 
 # Documentation
 README.md
 *.md
 
+# Development tools
+.vite
+eslint.config.js
+.prettierrc.json

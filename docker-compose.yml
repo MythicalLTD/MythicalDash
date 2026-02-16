@@ -1,4 +1,3 @@
-
 services:
   mysql:
     image: mariadb:11.4
@@ -16,13 +15,23 @@ services:
     networks:
       - mythicaldash_v3_network
     healthcheck:
-      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-pmythicaldash_v3_root"]
+      test:
+        [
+          "CMD",
+          "mariadb-admin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-pmythicaldsah_v3_root",
+        ]
       timeout: 20s
       retries: 10
 
   redis:
     image: redis:7-alpine
-    container_name: mythicaldash_v3_redis
+    container_name:  mythicaldash_v3_redis
     restart: unless-stopped
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-mythicaldash_v3_redis}
     volumes:
@@ -35,9 +44,7 @@ services:
       retries: 10
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ghcr.io/mythicalltd/mythicaldash_v3-backend:latest
     container_name: mythicaldash_v3_backend
     restart: unless-stopped
     environment:
@@ -46,30 +53,43 @@ services:
       - DATABASE_DATABASE=${MARIADB_DATABASE:-mythicaldash_v3}
       - DATABASE_USER=${MARIADB_USER:-mythicaldash_v3}
       - DATABASE_PASSWORD=${MARIADB_PASSWORD:-mythicaldash_v3_password}
-      - DATABASE_ENCRYPTION=plaintext
+      - DATABASE_ENCRYPTION=xchacha20
       - REDIS_HOST=redis
       - REDIS_PASSWORD=${REDIS_PASSWORD:-mythicaldash_v3_redis}
-    volumes:
-      - ./backend/storage:/var/www/html/storage
-      - ./backend/public:/var/www/html/public
     depends_on:
       mysql:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "php", "cli", "help"]
+      timeout: 20s
+      retries: 10
+    volumes:
+      - mythicaldash_v3_attachments:/var/www/html/public/attachments
+      - mythicaldash_v3_config:/var/www/html/storage/.env
+      - mythicaldash_v3_snapshots:/var/www/html/storage/backups
     networks:
       - mythicaldash_v3_network
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: ghcr.io/mythicalltd/mythicaldash_v3-frontend:latest
     container_name: mythicaldash_v3_frontend
     restart: unless-stopped
-    ports:
-      - "4830:80"
+    volumes: []
     depends_on:
-      - backend
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      timeout: 20s
+      retries: 10
+    ports:
+      - "4831:80"
     networks:
       - mythicaldash_v3_network
 
@@ -77,6 +97,12 @@ volumes:
   mariadb_data:
     driver: local
   redis_data:
+    driver: local
+  mythicaldash_v3_attachments:
+    driver: local
+  mythicaldash_v3_config:
+    driver: local
+  mythicaldash_v3_snapshots:
     driver: local
 
 networks:
