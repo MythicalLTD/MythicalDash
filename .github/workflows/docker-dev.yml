@@ -3,7 +3,7 @@ name: Docker Build & Publish (Dev)
 on:
   push:
     branches:
-      - main
+      - v3-remastered
   workflow_dispatch:
     inputs:
       branch:
