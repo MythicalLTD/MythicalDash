@@ -1,5 +1,15 @@
 # v3.5.3-Aurora
 
+## Bugs Fixed
+
+- Turnstile didn't work if you failed the login
+
+## New Features
+
+- Docker installs are now working and forced by default!
+
+# v3.5.3-Aurora
+
 # Bug Fixed
 
 - Fixed: Major performance issues on older devices by switching to a new Rust-based compiler, resulting in up to 40x faster speeds!

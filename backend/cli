@@ -13,7 +13,7 @@ define('APP_START', microtime(true));
 define('APP_DIR', APP_PUBLIC.'/');
 define('APP_CRON_DIR', APP_PUBLIC.'/storage/cron/');
 define('SYSTEM_KERNEL_NAME', php_uname('s'));
-define('APP_VERSION', '3.5.3-aurora');
+define('APP_VERSION', '3.5.4-aurora');
 define("TELEMETRY", true);
 define('IS_CLI', true);
 
