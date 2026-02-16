@@ -32,8 +32,7 @@
 		"url": "https://github.com/sponsors/nayskutzu"
 	},
 	"engines": {
-		"node": ">=22.0.0",
-		"yarn": ">=1.22.0"
+		"node": ">=22.0.0"
 	},
 	"scripts": {
 		"dev": "vite --host",
@@ -44,10 +43,10 @@
 		"preview": "vite preview",
 		"build-only": "vite build",
 		"type-check": "vue-tsc --build --force",
-		"lint": "yarn format && oxlint . --fix",
+		"lint": "pnpm format && oxlint . --fix",
 		"format": "prettier --log-level silent --write src/",
 		"clean": "rm -rf dist node_modules .vite",
-		"check": "yarn lint && yarn type-check"
+		"check": "pnpm lint && pnpm type-check"
 	},
 	"packageManager": "pnpm@10.22.0",
 	"dependencies": {
