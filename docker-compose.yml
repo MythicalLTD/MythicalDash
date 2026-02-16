@@ -31,7 +31,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name:  mythicaldash_v3_redis
+    container_name: mythicaldash_v3_redis
     restart: unless-stopped
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-mythicaldash_v3_redis}
     volumes:
@@ -56,6 +56,7 @@ services:
       - DATABASE_ENCRYPTION=xchacha20
       - REDIS_HOST=redis
       - REDIS_PASSWORD=${REDIS_PASSWORD:-mythicaldash_v3_redis}
+      - DATABASE_ENCRYPTION_KEY=${DATABASE_ENCRYPTION_KEY:-zKZ7//AocUD2wCuzjW5rdTbb8FvGBgKTZ8iCATslZ/8=}
     depends_on:
       mysql:
         condition: service_healthy
@@ -67,7 +68,7 @@ services:
       retries: 10
     volumes:
       - mythicaldash_v3_attachments:/var/www/html/public/attachments
-      - mythicaldash_v3_config:/var/www/html/storage/.env
+      - ./.env:/var/www/html/storage/.env
       - mythicaldash_v3_snapshots:/var/www/html/storage/backups
     networks:
       - mythicaldash_v3_network
@@ -99,8 +100,6 @@ volumes:
   redis_data:
     driver: local
   mythicaldash_v3_attachments:
-    driver: local
-  mythicaldash_v3_config:
     driver: local
   mythicaldash_v3_snapshots:
     driver: local
