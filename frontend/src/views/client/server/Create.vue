@@ -487,6 +487,7 @@
                     <!-- Turnstile -->
                     <div v-if="Settings.getSetting('turnstile_enabled') === 'true'" class="mt-8 flex justify-center">
                         <Turnstile
+                            :key="turnstileKey"
                             :site-key="Settings.getSetting('turnstile_key_pub')"
                             v-model="form.turnstileResponse"
                         />
@@ -681,6 +682,7 @@ const form = reactive({
     acceptedTerms: false,
     turnstileResponse: '',
 });
+const turnstileKey = ref(0);
 
 // Create computed properties for number inputs to handle string-number conversion
 const memoryModel = computed({
@@ -942,6 +944,7 @@ const createServer = async () => {
                 footer: t('create.pages.alerts.error.footer'),
                 showConfirmButton: true,
             });
+            turnstileKey.value++;
         }
     } catch (error) {
         console.error('Error creating server:', error);
@@ -953,6 +956,7 @@ const createServer = async () => {
             footer: t('create.pages.alerts.error.footer'),
             showConfirmButton: true,
         });
+        turnstileKey.value++;
     } finally {
         isSubmitting.value = false;
     }

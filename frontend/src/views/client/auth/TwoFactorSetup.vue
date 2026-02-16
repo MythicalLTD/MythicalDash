@@ -42,6 +42,7 @@ const form = reactive({
     code: '',
     turnstileResponse: '',
 });
+const turnstileKey = ref(0);
 
 MythicalDOM.setPageTitle(t('auth.pages.twofactor_setup.page.title'));
 
@@ -100,13 +101,9 @@ const handleSubmit = async () => {
     } catch (error) {
         playError();
         console.error('Error verifying code:', error);
-        Swal.fire({
-            icon: 'error',
-            title: t('auth.pages.twofactor_setup.alerts.error.title'),
-            text: t('auth.pages.twofactor_setup.alerts.error.generic'),
-        });
     } finally {
         loading.value = false;
+        turnstileKey.value++;
     }
 };
 
@@ -158,7 +155,7 @@ fetchSecret();
                 v-if="Settings.getSetting('turnstile_enabled') == 'true'"
                 style="display: flex; justify-content: center; margin-top: 20px"
             >
-                <Turnstile :site-key="Settings.getSetting('turnstile_key_pub')" v-model="form.turnstileResponse" />
+                <Turnstile :key="turnstileKey" :site-key="Settings.getSetting('turnstile_key_pub')" v-model="form.turnstileResponse" />
             </div>
         </FormCard>
     </Layout>

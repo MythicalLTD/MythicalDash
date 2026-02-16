@@ -49,6 +49,7 @@
 		"clean": "rm -rf dist node_modules .vite",
 		"check": "yarn lint && yarn type-check"
 	},
+	"packageManager": "pnpm@10.22.0",
 	"dependencies": {
 		"@modyfi/vite-plugin-yaml": "^1.1.1",
 		"@tailwindcss/vite": "^4.1.18",

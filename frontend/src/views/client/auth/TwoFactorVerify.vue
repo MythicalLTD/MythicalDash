@@ -30,6 +30,7 @@ const form = reactive({
     code: '',
     turnstileResponse: '',
 });
+const turnstileKey = ref(0);
 
 MythicalDOM.setPageTitle(t('auth.pages.twofactor_verify.page.title'));
 
@@ -74,6 +75,7 @@ const handleSubmit = async () => {
         });
     } finally {
         loading.value = false;
+        turnstileKey.value++;
     }
 };
 </script>
@@ -107,7 +109,7 @@ const handleSubmit = async () => {
                 v-if="Settings.getSetting('turnstile_enabled') == 'true'"
                 style="display: flex; justify-content: center; margin-top: 20px"
             >
-                <Turnstile :site-key="Settings.getSetting('turnstile_key_pub')" v-model="form.turnstileResponse" />
+                <Turnstile :key="turnstileKey" :site-key="Settings.getSetting('turnstile_key_pub')" v-model="form.turnstileResponse" />
             </div>
         </FormCard>
     </Layout>

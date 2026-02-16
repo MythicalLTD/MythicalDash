@@ -29,6 +29,7 @@ const form = reactive({
     password: '',
     turnstileResponse: '',
 });
+const turnstileKey = ref(0);
 const domainName = localStorage.getItem('domain_name');
 
 interface AltAccount {
@@ -147,7 +148,9 @@ const handleSubmit = async () => {
         }, 1500);
     } catch (error) {
         console.error('Login failed:', error);
+    } finally {
         loading.value = false;
+        turnstileKey.value++;
     }
 };
 
@@ -258,7 +261,7 @@ if (isEnterpriseLogin) {
                 v-if="Settings.getSetting('turnstile_enabled') == 'true'"
                 style="display: flex; justify-content: center; margin-top: 20px"
             >
-                <Turnstile :site-key="Settings.getSetting('turnstile_key_pub')" v-model="form.turnstileResponse" />
+                <Turnstile :key="turnstileKey" :site-key="Settings.getSetting('turnstile_key_pub')" v-model="form.turnstileResponse" />
             </div>
             <button
                 type="submit"

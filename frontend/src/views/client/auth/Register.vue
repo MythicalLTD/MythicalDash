@@ -52,6 +52,7 @@ const form = reactive({
     turnstileResponse: '',
     referralCode: '',
 });
+const turnstileKey = ref(0);
 
 // Add email suggestions
 const emailSuggestions = ref<string[]>([]);
@@ -261,6 +262,7 @@ const handleSubmit = async () => {
                     showConfirmButton: true,
                     footer: t('auth.pages.register.alerts.error.footer'),
                 });
+                turnstileKey.value++;
                 throw new Error('Registration failed');
             }
         }
@@ -312,6 +314,7 @@ const handleSubmit = async () => {
         console.error('Register failed:', error);
     } finally {
         loading.value = false;
+        turnstileKey.value++;
     }
 };
 </script>
@@ -536,7 +539,7 @@ const handleSubmit = async () => {
                 v-if="Settings.getSetting('turnstile_enabled') == 'true'"
                 style="display: flex; justify-content: center; margin-top: 20px"
             >
-                <Turnstile :site-key="Settings.getSetting('turnstile_key_pub')" v-model="form.turnstileResponse" />
+                <Turnstile :key="turnstileKey" :site-key="Settings.getSetting('turnstile_key_pub')" v-model="form.turnstileResponse" />
             </div>
 
             <p class="mt-4 text-center text-sm text-gray-400">
