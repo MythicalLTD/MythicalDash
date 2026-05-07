@@ -1,1 +1,0 @@
-ALTER TABLE `mythicaldash_servers_queue` CHANGE `status` `status` ENUM('pending','building','failed','completed') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending';

@@ -1,8 +1,1 @@
-dockerfiles/mariadb/data
-.installed
-package.json
-yarn.lock
-count-results/
-/frontend/.vite
-MythicalDash.zip
-*.mypycache
+error.log

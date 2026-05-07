@@ -1,2 +1,0 @@
-ALTER TABLE `mythicaldash_eggs_categories` ADD `image_id` INT NULL DEFAULT NULL AFTER `description`;
-ALTER TABLE `mythicaldash_eggs_categories` ADD FOREIGN KEY (`image_id`) REFERENCES `mythicaldash_image_db`(`id`);

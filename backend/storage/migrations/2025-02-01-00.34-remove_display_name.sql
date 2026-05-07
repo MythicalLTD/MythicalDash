@@ -1,1 +1,0 @@
-ALTER TABLE `mythicaldash_addons` DROP `display_name`;

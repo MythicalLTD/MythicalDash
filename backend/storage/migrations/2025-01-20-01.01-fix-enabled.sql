@@ -1,1 +1,0 @@
-ALTER TABLE `mythicaldash_tickets` DROP `enabled`;

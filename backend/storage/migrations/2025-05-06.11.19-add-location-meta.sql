@@ -1,2 +1,0 @@
-ALTER TABLE `mythicaldash_locations` ADD `image` TEXT NULL DEFAULT NULL AFTER `node_ip`;
-ALTER TABLE `mythicaldash_locations` ADD `vip_only` ENUM('false','true') NOT NULL DEFAULT 'false' AFTER `image`;

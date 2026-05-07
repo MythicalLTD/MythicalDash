@@ -1,1 +1,0 @@
-ALTER TABLE `mythicaldash_settings` CHANGE `value` `value` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'The value of the setting!';

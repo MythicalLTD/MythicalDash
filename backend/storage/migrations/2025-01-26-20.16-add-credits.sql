@@ -1,1 +1,0 @@
-ALTER TABLE `mythicaldash_users` ADD `credits` INT (16) NOT NULL DEFAULT '0' AFTER `avatar`;

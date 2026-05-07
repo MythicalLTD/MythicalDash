@@ -1,1 +1,0 @@
-ALTER TABLE `mythicaldash_locations` ADD `slots` INT NOT NULL DEFAULT '15' AFTER `status`;
