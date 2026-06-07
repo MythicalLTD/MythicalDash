@@ -48,17 +48,54 @@ $router->add('/api/stripe/processed', function (): void {
     $appInstance = App::getInstance(true);
     $appInstance->allowOnlyGET();
 
+    // FIX 1: require an authenticated session. The success redirect endpoint
+    // credits real money value, so it must never be reachable unauthenticated.
+    $session = new Session($appInstance);
+    $sessionUuid = $session->getInfo(UserColumns::UUID, false);
+
     if (isset($_GET['code']) && !$_GET['code'] == '') {
         $code = $_GET['code'];
         $stripe = StripeDB::getByCode($code);
         if ($stripe) {
             $uuid = $stripe['user'];
+
+            // FIX 2: the redeeming user must own the payment code.
+            if ($uuid !== $sessionUuid) {
+                header('location: /?error=stripe_error=invalid_code');
+                exit;
+            }
+
             $coins = $stripe['coins'];
 
             $token = User::getTokenFromUUID($uuid);
             if (StripeDB::isPending($code)) {
 
                 Stripe\Stripe::setApiKey($appInstance->getConfig()->getDBSetting(ConfigInterface::STRIPE_SECRET_KEY, 'NULL'));
+
+                // FIX 3: confirm with Stripe that the payment actually completed
+                // before granting any credits. Without a verified 'paid' status,
+                // the redemption is rejected (fail-closed).
+                $paymentId = $stripe['payment_id'] ?? '';
+                $paid = false;
+                if ($paymentId !== '') {
+                    try {
+                        $checkout = \Stripe\Checkout\Session::retrieve($paymentId);
+                        $expectedCents = (int) round(
+                            ((int) $coins / (int) $appInstance->getConfig()->getDBSetting(ConfigInterface::CREDITS_RECHARGE_AMOUNT, '100')) * 100
+                        );
+                        $paid = ($checkout->payment_status === 'paid')
+                            && ((int) $checkout->amount_total === $expectedCents);
+                    } catch (\Exception $e) {
+                        $appInstance->getLogger()->error('Stripe verification failed for ' . $code . ': ' . $e->getMessage());
+                        $paid = false;
+                    }
+                }
+
+                if (!$paid) {
+                    StripeDB::updateStatus($code, 'failed');
+                    header('location: /?error=stripe_error=payment_not_confirmed');
+                    exit;
+                }
 
                 // Add credits atomically to prevent race conditions
                 if (!User::addCreditsAtomic($token, (int) $coins)) {
@@ -134,6 +171,9 @@ $router->add('/api/stripe/process', function (): void {
                         ],
                     ],
                 ]);
+                // FIX: persist the Stripe Checkout Session id so /processed can
+                // verify the payment status against Stripe before crediting.
+                StripeDB::setPaymentId($code, $checkout_session->id);
                 http_response_code(303);
                 header('location: ' . $checkout_session->url);
                 exit;

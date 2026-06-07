@@ -43,6 +43,31 @@ class StripeDB extends Database
     }
 
     /**
+     * Store the Stripe Checkout Session id for a payment so the success redirect
+     * handler can verify the payment status against Stripe before granting credits.
+     *
+     * @param string $code Payment code
+     * @param string $paymentId Stripe Checkout Session id
+     *
+     * @return bool Success status
+     */
+    public static function setPaymentId(string $code, string $paymentId): bool
+    {
+        try {
+            $con = self::getPdoConnection();
+            $stmt = $con->prepare('UPDATE ' . self::TABLE_NAME . ' SET payment_id = :payment_id WHERE code = :code');
+            $stmt->bindParam(':payment_id', $paymentId);
+            $stmt->bindParam(':code', $code);
+
+            return $stmt->execute();
+        } catch (\Exception $e) {
+            self::db_Error('Failed to set Stripe payment id: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
+    /**
      * Create a new Stripe payment record.
      *
      * @param string $code Stripe payment code/token
